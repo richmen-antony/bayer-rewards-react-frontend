@@ -1,0 +1,76 @@
+* {
+    font-family: 'Lato', sans-serif;
+    padding: 0;
+    margin: 0;
+  }
+.stepper-wrapper-horizontal {
+    display: flex;
+    justify-content:center;
+
+    .step-wrapper {
+        width: 10%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        font-size: 10px;
+    }
+
+    .step-number {
+        border-radius: 70%;
+        border: 1px solid grey;
+        width: 30px;
+        height: 30px;
+        padding: 8px;
+        text-align: center;
+        margin-bottom: 1.2rem;
+    }
+
+    .divider-line {
+        height: 1px;
+        background-color: #bdbdbd;
+        position: absolute;
+        top: 20%;
+        left: 70%
+    }
+
+    .divider-line-2 {
+        width: 296%
+    }
+
+    .divider-line-3 {
+        width: 125%
+    }
+
+    .divider-line-4 {
+        width: 70%
+    }
+
+    .divider-line-5 {
+        width: 60%
+    }
+    .divider-line-6 {
+        left: 60%;
+        width: 80%
+    }
+}
+
+
+
+.step-number-selected {
+    // background: purple;
+    border: 1px solid #bdbdbd;
+    color: #fff;
+    font-weight: bold;
+
+}
+
+.step-number-disabled {
+    border: 1px solid #838383;
+}
+
+.step-description-active {
+    font-weight: bold;
+}
