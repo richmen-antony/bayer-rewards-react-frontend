@@ -1,4 +1,4 @@
-import React , {Component, Fragment } from 'react';
+import React , {Component } from 'react';
 
 import AUX from "../../hoc/Aux_";
 // import Settings from '../Subpages/Settings';
@@ -8,15 +8,24 @@ import AUX from "../../hoc/Aux_";
 // import { Scrollbars } from 'react-custom-scrollbars';
 
 // import { Link } from 'react-router-dom';
-import Chart from "react-apexcharts";
 import Radial from "../../container/charts/Radial";
 import Bar from "../../container/charts/Bar";
 import Donut from "../../container/charts/Donut";
 import Line from "../../container/charts/Line";
 import "../../assets/scss/dashboard.scss";
 
-class Dashboard extends Component{
-    constructor(props){
+type Props={
+}
+
+type States={
+  productToggle: boolean;
+  customerToggle:boolean
+  sellingCustomer: Array<any>;
+  products: Array<any>;
+}
+
+class Dashboard extends Component<Props, States>{
+    constructor(props:any){
         super(props);
         this.state={
             productToggle: true,
@@ -161,13 +170,13 @@ render(){
                                              <h8 className="mt-0 header-title mb-4">Top 5 Selling {productToggle ? "Products" : "Customers"}</h8>
                                         </div>
                                         <div className="topRight headingText">
-                                            <button type="button" class={productToggle ? "btn toggleList" : "btn btn-light"} onClick={this.toggleClick}>Products</button>
-                                            <button type="button" class={customerToggle ? "btn toggleList" : "btn btn-light"} onClick={this.toggleClick}>Customers</button>
+                                            <button type="button" className={productToggle ? "btn toggleList" : "btn btn-light"} onClick={this.toggleClick}>Products</button>
+                                            <button type="button" className={customerToggle ? "btn toggleList" : "btn btn-light"} onClick={this.toggleClick}>Customers</button>
                                         </div>
                                     </div>
                                     {productToggle ? 
                                     <div className="table-responsive">
-                                        <table class="table table-borderless">
+                                        <table className="table table-borderless">
                                             <thead>
                                             <tr>
                                                 <th>No</th>
@@ -185,8 +194,8 @@ render(){
                                                             <td>{data.name}</td>
                                                             <td>{data.salesachieved}</td>
                                                             <td>
-                                                            <div class="progress"> 
-                                                                <div class="progress-bar" role="progressbar" aria-valuenow={data.targetAchieved} aria-valuemin="0" aria-valuemax="100" style={{width: "50%"}}>
+                                                            <div className="progress"> 
+                                                                <div className="progress-bar" role="progressbar" aria-valuenow={data.targetAchieved} aria-valuemin={0} aria-valuemax={100}style={{width: "50%"}}>
                                                                 </div>
                                                             </div>
                                                             </td>   
@@ -204,7 +213,7 @@ render(){
                                         </table>
                                     </div> : 
                                     <div className="table-responsive">
-                                        <table class="table table-borderless">
+                                        <table className="table table-borderless">
                                             <thead>
                                             <tr>
                                                 <th>No</th>
@@ -804,4 +813,4 @@ render(){
     }
 }
 
-export { Dashboard };   
+export  { Dashboard };   

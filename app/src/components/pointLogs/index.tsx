@@ -1,12 +1,13 @@
 import React , {Component } from 'react';
-import AUX from '../../../hoc/Aux_';
+import AUX from '../../hoc/Aux_';
 import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit';
 import BootstrapTable from 'react-bootstrap-table-next';
-import Loaders from '../../widgets/loader';
+import Loaders from '../../utility/widgets/loader'
 import '../scanLogs/scanLogs.scss';
 
 const { ExportCSVButton } = CSVExport;
-const columns = [{
+
+const columns :  Array<any>= [{
     dataField: 'sNo',
     text: 'S.No'
   }, {
@@ -30,11 +31,18 @@ const columns = [{
     text: 'Net to pay (\u20AC)'
   }
 ];
-
-class ScanLogs extends Component{
-    constructor(props) {
+type Props={}
+type States={
+  allRideList: Array<any>;
+  searchText:string,
+  isLoader:boolean;
+}
+class ScanLogs extends Component<Props, States>{
+    constructor(props :any) {
         super(props)
         this.state = {
+            searchText:'',
+            isLoader:false,
             allRideList: [
                 {
                     'sNo': "1",
@@ -75,11 +83,11 @@ render(){
                     <ToolkitProvider
                                 keyField="id"
                                 data={ this.state.allRideList }
-                                columns={ columns }
+                                columns={ columns}
                                 exportCSV
                                 >
                                 {
-                                    props => (
+                                    (props:any) => (
                                     <div>
                                         <div className="row">
                                             <div className="col-md-6 mt-4">
@@ -93,7 +101,7 @@ render(){
                                                         <label className="col-form-label"> Search : </label>
                                                         <div className="ml-2"></div>
                                                         <div>
-                                                            <input className="form-control" onChange={this.searchRecord} type="search" value={this.state.searchText} />
+                                                            <input className="form-control"  type="search" value={this.state.searchText} />
                                                         </div>
                                                     </div> 
                                                 }
