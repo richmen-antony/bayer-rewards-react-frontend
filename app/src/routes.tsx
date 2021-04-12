@@ -6,11 +6,11 @@ import TopBar from './container/Layout/TopBar';
 import SideBar from './container/Layout/SideBar';
 
 const Dashboard = lazy(() =>
-  import('./components/dashboard')
+  import('./components/dashboard/index')
     .then(({ Dashboard }) => ({ default: Dashboard }))
 );
 const ScanLogs = lazy(() =>
-  import('./components/scanLogs')
+  import('./components/scanLogs/index')
     .then(({ ScanLogs }) => ({ default: ScanLogs }))
 );
 
