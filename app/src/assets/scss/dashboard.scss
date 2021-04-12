@@ -1,0 +1,19 @@
+.totalUsers {
+    display: flex;
+    justify-content: space-around;
+}
+.card {
+    border: 2px solid rgba(0,0,0,.125) !important;
+}
+.toggleList {
+    background-color: #006cf8;
+}
+.topList {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.headingText {
+    color: black;
+    font-weight: bold;
+}

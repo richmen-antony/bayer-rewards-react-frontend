@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <g id="calendar_icon" transform="translate(-10 -9.9)">
+    <path id="Fill-133" d="M-2.081-446.461H-18.009a2.011,2.011,0,0,1-1.991-2V-463.1a1.847,1.847,0,0,1,1.674-2h1v1.315h-1c-.136,0-.317.272-.317.68v14.648a.7.7,0,0,0,.679.68H-2.036a.7.7,0,0,0,.679-.68V-463.1c0-.408-.226-.68-.317-.68h-1V-465.1h1A1.879,1.879,0,0,1,0-463.1v14.648a2.156,2.156,0,0,1-2.081,2" transform="translate(30 476.361)" fill="#505050"/>
+    <path id="Fill-134" d="M-10.521-464.064a.7.7,0,0,1-.679-.68v-2.676a.7.7,0,0,1,.679-.68.7.7,0,0,1,.679.68v2.676a.73.73,0,0,1-.679.68" transform="translate(25.182 478)" fill="#505050"/>
+    <path id="Fill-135" d="M12.879-464.064a.7.7,0,0,1-.679-.68v-2.676a.7.7,0,0,1,.679-.68.7.7,0,0,1,.679.68v2.676a.7.7,0,0,1-.679.68" transform="translate(12.37 478)" fill="#505050"/>
+    <path id="Fill-136" d="M-5.3-465.1H1.306v1.361H-5.3Z" transform="translate(21.952 476.361)" fill="#505050"/>
+    <path id="Fill-137" d="M-17.1-456.3H.185v1.361H-17.1Z" transform="translate(28.412 471.551)" fill="#505050"/>
+    <path id="Fill-138" d="M15.2-450.4h1.312v1.315H15.2Z" transform="translate(10.728 468.327)" fill="#505050"/>
+    <path id="Fill-139" d="M9.3-450.4h1.357v1.315H9.3Z" transform="translate(12.148 468.327)" fill="#505050"/>
+    <path id="Fill-142" d="M-8.3-450.4h1.357v1.315H-8.3Z" transform="translate(25.404 468.327)" fill="#505050"/>
+    <path id="Fill-143" d="M15.2-444.5h1.312v1.315H15.2Z" transform="translate(10.728 465.103)" fill="#505050"/>
+    <path id="Fill-144" d="M9.3-444.5h1.357v1.315H9.3Z" transform="translate(12.148 465.103)" fill="#505050"/>
+    <path id="Fill-147" d="M-8.3-444.5h1.357v1.315H-8.3Z" transform="translate(25.404 465.103)" fill="#505050"/>
+    <path id="Fill-148" d="M-14.1-444.5h1.312v1.315H-14.1Z" transform="translate(26.77 465.103)" fill="#505050"/>
+    <path id="Fill-149" d="M15.2-438.7h1.312v1.36H15.2Z" transform="translate(10.728 461.933)" fill="#505050"/>
+    <path id="Fill-150" d="M9.3-438.7h1.357v1.36H9.3Z" transform="translate(12.148 461.933)" fill="#505050"/>
+    <path id="Fill-153" d="M-8.3-438.7h1.357v1.36H-8.3Z" transform="translate(25.404 461.933)" fill="#505050"/>
+    <path id="Fill-154" d="M-14.1-438.7h1.312v1.36H-14.1Z" transform="translate(26.77 461.933)" fill="#505050"/>
+    <path id="Fill-155" d="M9.3-432.8h1.357v1.315H9.3Z" transform="translate(12.148 458.709)" fill="#505050"/>
+    <path id="Fill-158" d="M-8.3-432.8h1.357v1.315H-8.3Z" transform="translate(25.404 458.709)" fill="#505050"/>
+    <path id="Fill-159" d="M-14.1-432.8h1.312v1.315H-14.1Z" transform="translate(26.77 458.709)" fill="#505050"/>
+  </g>
+</svg>

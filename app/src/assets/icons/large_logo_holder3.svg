@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 114" width="300" height="114">
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #ffffff } 
+	</style>
+	<path id="large_logo_holder" class="shp0" d="M0 -52L300 -52L300 86.87C300 86.87 250 116.75 200 113C150 109.25 133 86.75 83 83C33 79.25 0 98 0 98L0 -52Z" />
+</svg>
