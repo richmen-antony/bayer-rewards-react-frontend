@@ -92,10 +92,11 @@ class Sidebar extends Component<Props, States> {
                                             <img src={addUserIcon} alt="User" width="16" /> <span> Create a new user </span>
                                         </Link>
                                     </li>
+
                                     <li className="d-flex">
-                                        <span className={activeTab === 'usersList' ? 'waves-effect active':'waves-effect'}></span>
-                                        <Link  to="/usersList" className={activeTab === 'usersList' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('usersList')}>
-                                            <img src={userListIcon} alt="User" width="16" /> <span> Registered users </span>
+                                        <span className={activeTab === 'configurations' ? 'waves-effect active':'waves-effect'}></span>
+                                        <Link  to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('usersList')}>
+                                            <img src={userListIcon} alt="User" width="16" /> <span> Configurations </span>
                                         </Link>
                                     </li>
 

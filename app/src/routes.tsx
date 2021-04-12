@@ -14,6 +14,11 @@ const ScanLogs = lazy(() =>
     .then(({ ScanLogs }) => ({ default: ScanLogs }))
 );
 
+const Configurations = lazy(() =>
+  import('./components/configurations')
+    .then(({ Configurations }) => ({ default: Configurations }))
+);
+
 class MyApp extends Component<any, any> {
   constructor(props: any){
     super(props)
@@ -37,6 +42,7 @@ class MyApp extends Component<any, any> {
                         <Redirect to={`/dashboard`} />
                       </Route>
                       <Route path={`/dashboard`} component={Dashboard} />
+                      <Route path={`/configurations`} component={Configurations} />
                       <Route path={`/scanLogs`} component={ScanLogs} />
                       {/* <Route path={`${path}/userList`} component={Contacts} /> */}
                       {/* <Route path='*' render={() => <Error404 />} /> */}
