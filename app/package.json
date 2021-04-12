@@ -67,6 +67,7 @@
   "devDependencies": {
     "@types/jquery": "^3.5.5",
     "@types/js-cookie": "^2.2.6",
+    "@types/react-bootstrap-table2-toolkit": "^2.1.4",
     "@types/react-custom-scrollbars": "^4.0.7",
     "@types/react-paginate": "^6.2.1",
     "@types/react-redux": "^7.1.16",
