@@ -28,6 +28,7 @@ import {
   getLocalStorageData,
   clearLocalStorageData,
 } from "../../utility/base/localStore";
+import DataTable from "../../container/grid/CustomTable";
 
 import { downloadExcel, downloadCsvFile } from "../../utility/helper";
 type SelectedFiltersTypes = {
@@ -632,7 +633,70 @@ class ScanLogs extends Component<Props, States> {
           <div className="test">
             {allScanLogs.length > 0 ? (
               <div>
-                <div className="table-responsive">
+                <DataTable
+                  columnData={[
+                    {
+                      id: "productlabelid",
+                      name: "Label ID",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "firstname",
+                      name: "Customer Name",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "userprimaryid",
+                      name: "Customer Id",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "productname",
+                      name: "Product",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "quantity",
+                      name: "Quantity",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "scantype",
+                      name: "Scan Type",
+                      enableSort: true,
+                      align: "right",
+                    },{
+                      id: "warehousename",
+                      name: "Sold to",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "desc",
+                      name: "Scan Date",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "desc",
+                      name: "Action",
+                      enableSort: true,
+                      align: "right",
+                    },
+                  ]}
+                  rows={allScanLogs}
+                  collapsible={true}
+                    history={[
+                      { date: '2020-01-05', customerId: '11091700', amount: 3 },
+                      { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
+                    ]}
+                />
+                {/* <div className="table-responsive">
                   <table className="table" id="tableData">
                     <thead>
                       <tr>
@@ -719,7 +783,7 @@ class ScanLogs extends Component<Props, States> {
                       ))}
                     </tbody>
                   </table>
-                </div>
+                </div> */}
                 <div className="paginationNumber">
                   <div>
                     {/* <button id="btn_prev" className="btn btn-primary"  disabled onClick={()=>this.previous}>Prev</button> */}
