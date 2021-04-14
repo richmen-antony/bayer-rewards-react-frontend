@@ -20,7 +20,6 @@ import {
   invokeGetAuthService,
   invokeGetService,
 } from "../../utility/base/service";
-import moment from "moment";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import Loader from "../../utility/widgets/loader";
 import {
@@ -28,7 +27,8 @@ import {
   getLocalStorageData,
   clearLocalStorageData,
 } from "../../utility/base/localStore";
-import DataTable from "../../container/grid/CustomTable";
+import CustomTable from "../../container/grid/CustomTable";
+import moment from "moment";
 
 import { downloadExcel, downloadCsvFile } from "../../utility/helper";
 type SelectedFiltersTypes = {
@@ -66,6 +66,8 @@ type States = {
   endIndex: number;
   isLoader: boolean;
   dropdownOpenFilter: boolean;
+  accordionView:boolean,
+  accordionId:string
 };
 
 class ScanLogs extends Component<Props, States> {
@@ -110,6 +112,8 @@ class ScanLogs extends Component<Props, States> {
       endIndex: 3,
       isLoader: false,
       dropdownOpenFilter: false,
+      accordionView:false,
+      accordionId:''
     };
     this.timeOut = 0;
   }
@@ -228,8 +232,9 @@ class ScanLogs extends Component<Props, States> {
   };
 
   handleExpand = (data: any) => {
+  console.log('called')
     data.isExpand = !data.isExpand;
-    this.setState({ isRendered: true });
+    this.setState({ isRendered: true,accordionView : ! this.state.accordionView,accordionId:data.productlabelid });
   };
 
   onSort(name: string, data: any) {
@@ -633,7 +638,8 @@ class ScanLogs extends Component<Props, States> {
           <div className="test">
             {allScanLogs.length > 0 ? (
               <div>
-                <DataTable
+                
+                {/* <CustomTable
                   columnData={[
                     {
                       id: "productlabelid",
@@ -677,13 +683,13 @@ class ScanLogs extends Component<Props, States> {
                       align: "right",
                     },
                     {
-                      id: "desc",
+                      id: "selectedscanneddate",
                       name: "Scan Date",
                       enableSort: true,
                       align: "right",
                     },
                     {
-                      id: "desc",
+                      id: "action",
                       name: "Action",
                       enableSort: true,
                       align: "right",
@@ -695,8 +701,10 @@ class ScanLogs extends Component<Props, States> {
                       { date: '2020-01-05', customerId: '11091700', amount: 3 },
                       { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
                     ]}
-                />
-                {/* <div className="table-responsive">
+                    
+                /> */}
+                
+                <div className="table-responsive">
                   <table className="table" id="tableData">
                     <thead>
                       <tr>
@@ -725,14 +733,20 @@ class ScanLogs extends Component<Props, States> {
                       {allScanLogs.map((list, i) => (
                         <AUX key={i}>
                           <tr
-                            style={
-                              list.scanstatus === "valid"
-                                ? { borderLeft: "5px solid #89D329" }
-                                : { borderLeft: "5px solid #FF4848" }
-                            }
-                            onClick={() => this.handleExpand(list)}
+                          // data-toggle="collapse" data-target={"#"+list.productlabelid} className="accordion-toggle"
+                          onClick={() => this.handleExpand(list)}
+                           
                           >
-                            <td>{list.productlabelid}</td>
+                            <td colSpan={9} className="tbl-row"  style={
+                              list.scanstatus === "valid"
+                                ? { borderLeft: "10px solid #89D329" }
+                                : { borderLeft: "10px solid #FF4848" }
+                            }
+                           >
+                              <table>
+                                <tbody>
+                                  <tr>
+                                  <td>{list.productlabelid}</td>
                             <td>{list.firstname + list.lastname} </td>
                             <td>{list.userprimaryid} </td>
                             <td>{list.productname} </td>
@@ -744,6 +758,7 @@ class ScanLogs extends Component<Props, States> {
                                 "DD-MM-YYYY"
                               )}{" "}
                             </td>
+                            {/* <td><button className="btn btn-default btn-xs"><span className="glyphicon glyphicon-eye-open"></span></button></td> */}
                             <td width="10%" align="center">
                               {list.isExpand ? (
                                 <i className="fa fa-angle-down"></i>
@@ -751,9 +766,43 @@ class ScanLogs extends Component<Props, States> {
                                 <i className="fa fa-angle-up"></i>
                               )}
                             </td>
+                                  </tr>
+                                  { this.state.accordionView &&list.productlabelid===this.state.accordionId ?
+                                  // <tr id={list.productlabelid} className="accordian-body collapse" >
+                                  <tr>
+                                    <td colSpan ={9}>
+                                      <div className="accordion-content">
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">Batch #:</label>
+                                            <p>TCS20200206</p>
+                                          </div>
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">Expiry date:</label>
+                                            <p>26 December, 2021</p>
+                                          </div>
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">Product group:</label>
+                                            <p>Herbicides</p>
+                                          </div>
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">Scan ID:</label>
+                                            <p>#123456</p>
+                                          </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  : ""}
+                                </tbody>
+                              </table>
+                            </td>
+                           
                           </tr>
+                          {/* <tr>
+            <td colSpan={9} className="hiddenRow"><div id={list.productlabelid} className="accordian-body collapse">Demo2</div></td>
+        </tr> */}
+                         
 
-                          {list.isExpand && (
+                          {/* {list.isExpand && (
                             <div style={{ display: "grid" }}>
                               <div
                                 className={
@@ -778,12 +827,14 @@ class ScanLogs extends Component<Props, States> {
                                 </div>
                               </div>
                             </div>
-                          )}
+                          )} */}
                         </AUX>
                       ))}
+                     
+                      
                     </tbody>
                   </table>
-                </div> */}
+                </div>
                 <div className="paginationNumber">
                   <div>
                     {/* <button id="btn_prev" className="btn btn-primary"  disabled onClick={()=>this.previous}>Prev</button> */}

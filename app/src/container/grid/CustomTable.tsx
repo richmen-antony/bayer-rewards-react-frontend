@@ -1,26 +1,21 @@
-import {
-  createStyles,
-  TablePagination,
-  Theme,
-} from "@material-ui/core";
-import {
-  makeStyles,
-  TableSortLabel,
-} from "@material-ui/core";
+import { createStyles, TablePagination, Theme } from "@material-ui/core";
+import { makeStyles, TableSortLabel } from "@material-ui/core";
 import React from "react";
-import Box from '@material-ui/core/Box';
-import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import Box from "@material-ui/core/Box";
+import Collapse from "@material-ui/core/Collapse";
+import IconButton from "@material-ui/core/IconButton";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import { isValidDate } from "../../utility/helper";
+import moment from "moment";
 
 interface IDataTableColumn {
   id: string;
@@ -82,62 +77,70 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-
-  const useStyles = makeStyles({
-    root: {
-      '& > *': {
-        borderBottom: 'unset',
-      },
+const useStyles = makeStyles({
+  root: {
+    "& > *": {
+      borderBottom: "unset",
+      
     },
-  });
+  },
+});
 
-
+/**
+ * Table header names
+ * @param param0 
+ * @returns 
+ */
 const DataTableHead: React.FC<IDataTableHeadProps> = ({
   columns,
   order,
   orderBy,
   onRequestSort,
 }): JSX.Element => {
-  console.log(columns);
   const createSortHandler = (property: keyof any) => (
     event: React.MouseEvent<unknown>
   ) => {
     onRequestSort(event, property);
   };
   return (
-      <TableHead>
-        <TableRow>
-        <TableCell />
-          {columns.map((column) => (
-            <TableCell
-              key={column.id}
-              align="right"
-              sortDirection={orderBy === column.id ? order : false}
-            >
-              {column.enableSort ? (
-                <TableSortLabel
-                  active={orderBy === column.id}
-                  direction={orderBy === column.id ? order : "asc"}
-                  onClick={createSortHandler(column.id)}
-                >
-                  {column.name}
-                </TableSortLabel>
-              ) : (
-                column.name
-              )}
-            </TableCell>
-          ))}
-        </TableRow>
-      </TableHead>
+    <TableHead>
+      <TableRow>
+        {columns.map((column) => (
+          <TableCell
+            key={column.id}
+            align="center"
+            sortDirection={orderBy === column.id ? order : false}
+          >
+            {column.enableSort ? (
+              <TableSortLabel
+                active={orderBy === column.id}
+                direction={orderBy === column.id ? order : "asc"}
+                onClick={createSortHandler(column.id)}
+              >
+                {column.name}
+              </TableSortLabel>
+            ) : (
+              column.name
+            )}
+          </TableCell>
+        ))}
+        
+           
+      </TableRow>
+    </TableHead>
   );
 };
 
-const DataTable: React.FC<IDataTableProps> = ({
+/**
+ * Custom Table component
+ * @param param0 
+ * @returns 
+ */
+const CustomTable: React.FC<IDataTableProps> = ({
   columnData,
   rows,
-  history
+  history,
 }): JSX.Element => {
- 
   let internalColumnData: IDataTableColumn[] = [
     {
       id: "",
@@ -161,9 +164,8 @@ const DataTable: React.FC<IDataTableProps> = ({
   } else {
     internalColumnData = columnData;
   }
-  console.log({internalColumnData});
 
-  const classes =  useStyles();
+  const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof any>("");
   const [page, setPage] = React.useState(0);
@@ -173,7 +175,6 @@ const DataTable: React.FC<IDataTableProps> = ({
     event: React.MouseEvent<unknown>,
     property: keyof any
   ) => {
-    console.log(orderBy, property);
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -182,43 +183,63 @@ const DataTable: React.FC<IDataTableProps> = ({
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
-  function objectValues<T extends {}>(obj: T) {
-    return Object.keys(obj).map((objKey) => obj[objKey as keyof T]);
-  }
-  
-  function objectKeys<T extends {}>(obj: T) {
-    return Object.keys(obj).map((objKey) => objKey as keyof T);
-  }
-  function Row(props: { row:  any,history:any}) {
-    const { row,history } = props;
+
+  /**
+   * To append the table rows values
+   * @param props 
+   * @returns 
+   */
+  function Row(props: { row: any; history: any }) {
+    const { row, history } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
-   console.log('check',row);
     return (
       <React.Fragment>
-        <TableRow className={classes.root}>
-          <TableCell>
-            <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          </TableCell>
+        <TableRow
+          className={classes.root}
+          style={
+            open
+              ? { borderLeft: "5px solid #89D329" }
+              : { borderLeft: "5px solid #FF4848" }
+          }
+          onClick={() => setOpen(!open)}
+        >
+         
           {internalColumnData.map((key, index) => (
-                          
-                          <TableCell
-                            align={"right"
-                              // internalColumnData[index].align
-                              //   ? internalColumnData[index].align
-                              //   : "inherit"
-                            }
-                            key={key.id}
-                            component="th" scope="row"  
-                          >
-                            
-                            {row[key.id]&&row[key.id]}
-                          </TableCell>
-                        ))}
+            <TableCell
+              align={
+                "center"
+                // internalColumnData[index].align
+                //   ? internalColumnData[index].align
+                //   : "inherit"
+              }
+              key={key.id}
+              component="th"
+              scope="row"
+            >
+              {row[key.id] && isValidDate(row[key.id])
+                ? moment(row[key.id]).format("DD-MM-YYYY")
+                : key.id ==='action' ?
+                <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton> : row[key.id]
+              }
+            </TableCell>
+          ))}
+     
+          
         </TableRow>
-        <TableRow>
+        <TableRow
+          style={
+            open
+              ? { borderLeft: "5px solid #89D329" }
+              : { borderLeft: "5px solid #FF4848" }
+          }
+        >
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box margin={1}>
@@ -226,16 +247,16 @@ const DataTable: React.FC<IDataTableProps> = ({
                   History
                 </Typography>
                 <Table size="small" aria-label="purchases">
-                  <TableHead>
+                  {/* <TableHead>
                     <TableRow>
                       <TableCell>Date</TableCell>
                       <TableCell>Customer</TableCell>
                       <TableCell align="right">Amount</TableCell>
                       <TableCell align="right">Total price ($)</TableCell>
                     </TableRow>
-                  </TableHead>
+                  </TableHead> */}
                   <TableBody>
-                    {history?.map((historyRow :any) => (
+                    {/* {history?.map((historyRow: any) => (
                       <TableRow key={historyRow.date}>
                         <TableCell component="th" scope="row">
                           {historyRow.date}
@@ -243,10 +264,11 @@ const DataTable: React.FC<IDataTableProps> = ({
                         <TableCell>{historyRow.customerId}</TableCell>
                         <TableCell align="right">{historyRow.amount}</TableCell>
                         <TableCell align="right">
-                          {Math.round(historyRow.amount * row.price * 100) / 100}
+                          {Math.round(historyRow.amount * row.price * 100) /
+                            100}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))} */}
                   </TableBody>
                 </Table>
               </Box>
@@ -266,37 +288,33 @@ const DataTable: React.FC<IDataTableProps> = ({
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-    const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   return (
-          <TableContainer component={Paper}>
-            <Table
-              aria-label="collapsible table"
-            >
-              <DataTableHead
-                columns={internalColumnData}
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-              />
-              <TableBody>
-                {rows.map((row) => {
-                    return (
-                      <Row key={row.name} row={row} history={history} />
-                    );
-                  })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        
-        
-  
+    <div className="accordion-table">
+
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <DataTableHead
+          columns={internalColumnData}
+          order={order}
+          orderBy={orderBy}
+          onRequestSort={handleRequestSort}
+        />
+        <TableBody>
+          {rows.map((row) => {
+            return <Row key={row.name} row={row} history={history} />;
+          })}
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 53 * emptyRows }}>
+              <TableCell colSpan={6} />
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    </div>
   );
 };
 
-export default DataTable;
+export default CustomTable;
