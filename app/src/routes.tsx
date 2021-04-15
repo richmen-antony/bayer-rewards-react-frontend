@@ -19,6 +19,17 @@ const Configurations = lazy(() =>
     .then(({ Configurations }) => ({ default: Configurations }))
 );
 
+const CreateUser = lazy(() =>
+  import('./components/users/createUser')
+    .then(({ CreateUser }) => ({ default: CreateUser }))
+);
+
+
+const  UserList = lazy(() =>
+  import('./components/users/userList')
+    .then(({ UserList }) => ({ default: UserList }))
+);
+
 class MyApp extends Component<any, any> {
   constructor(props: any){
     super(props)
@@ -44,6 +55,8 @@ class MyApp extends Component<any, any> {
                       <Route path={`/dashboard`} component={Dashboard} />
                       <Route path={`/configurations`} component={Configurations} />
                       <Route path={`/scanLogs`} component={ScanLogs} />
+                      <Route path={`/createUser`} component={CreateUser} />
+                      <Route path={`/userList`} component={UserList} />
                       {/* <Route path={`${path}/userList`} component={Contacts} /> */}
                       {/* <Route path='*' render={() => <Error404 />} /> */}
                     </Switch>

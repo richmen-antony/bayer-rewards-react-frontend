@@ -25,6 +25,7 @@ import {
 } from "../../utility/base/localStore";
 import CustomTable from "../../container/grid/CustomTable";
 import moment from "moment";
+import { Pagination } from '../../utility/widgets/pagination';
 
 import { downloadExcel, downloadCsvFile } from "../../utility/helper";
 type SelectedFiltersTypes = {
@@ -99,7 +100,7 @@ class ScanLogs extends Component<Props, States> {
       },
       dateErrMsg: "",
       searchText: "",
-      rowsPerPage: 5,
+      rowsPerPage: 15,
       totalData: 0,
       isFiltered: false,
       userRole: "",
@@ -316,44 +317,44 @@ class ScanLogs extends Component<Props, States> {
       this.getScanLogs();
     }, 0);
   };
-  previous = () => {
-    this.setState((prevState) => ({
-      pageNo: prevState.pageNo - 1,
-    }));
-    setTimeout(() => {
-      this.getScanLogs();
-    }, 0);
-  };
-  next = () => {
-    this.setState((prevState) => ({
-      pageNo: prevState.pageNo + 1,
-    }));
-    setTimeout(() => {
-      this.getScanLogs();
-    }, 0);
-  };
-  pageNumberClick(number: number) {
-    this.setState({ pageNo: number });
-    setTimeout(() => {
-      this.getScanLogs();
-    }, 0);
+  previous = (pageNo: any) => {
+    console.log('pageno',this.state.pageNo)
+    // this.setState(prevState => ({
+    //     pageNo: prevState.pageNo-1
+    // }),()=>{
+    // });
+    this.setState({ pageNo: pageNo -1 })
+    setTimeout(()=>{
+        this.getScanLogs();
+    },0);
+    
+}
+next = (pageNo: any) => {
+  this.setState({ pageNo: pageNo + 1 })
+    setTimeout(()=>{
+        this.getScanLogs();
+    },0);
+}
+pageNumberClick(number: any) {
+  alert(number);
+  setTimeout(()=>{
+    this.setState({pageNo: number});
+  },0);
+    setTimeout(()=>{
+        this.getScanLogs();
+    },0);
   }
 
-  toggle = () => {
-    this.setState({ tooltipOpen: !this.state.tooltipOpen });
-  };
-  backForward = () => {
-    this.setState({
-      startIndex: this.state.startIndex - 3,
-      endIndex: this.state.endIndex - 1,
-    });
-  };
-  fastForward = () => {
-    this.setState({
-      startIndex: this.state.endIndex + 1,
-      endIndex: this.state.endIndex + 3,
-    });
-  };
+toggle = () => {
+    this.setState({ tooltipOpen : !this.state.tooltipOpen})
+}
+backForward = () => {
+    this.setState({startIndex: this.state.startIndex - 3, endIndex: this.state.endIndex - 1})
+}
+fastForward = () => {
+    this.setState({startIndex: this.state.endIndex + 1, endIndex: this.state.endIndex + 3})
+}
+
 
   render() {
     const {
@@ -367,6 +368,7 @@ class ScanLogs extends Component<Props, States> {
       pageNo,
       userRole,
       totalData,
+      rowsPerPage
     } = this.state;
 
     const pageNumbers = [];
@@ -374,41 +376,6 @@ class ScanLogs extends Component<Props, States> {
     for (let i = 1; i <= pageData; i++) {
       pageNumbers.push(i);
     }
-    const renderPageNumbers = pageNumbers.map((number, index) => {
-      return (
-        // <button className="page-numbers" onClick={()=>this.handleClick(number)}>{number}</button>
-        <span>
-          {totalData > 5 && number == 2 && (
-            <div>
-              <i
-                className="fa fa-fast-backward"
-                onClick={() => this.backForward()}
-              ></i>
-            </div>
-          )}
-          {index >= this.state.startIndex && index <= this.state.endIndex && (
-            <div>
-              <a
-                href="#"
-                className={pageNo == number ? "active" : ""}
-                onClick={() => this.pageNumberClick(number)}
-              >
-                {number}
-              </a>
-            </div>
-          )}
-
-          {totalData > 5 && number == pageData - 1 && (
-            <div>
-              <i
-                className="fa fa-fast-forward"
-                onClick={() => this.fastForward()}
-              ></i>
-            </div>
-          )}
-        </span>
-      );
-    });
     const tooltipItem = () => {
       return (
         <div>
@@ -795,30 +762,8 @@ class ScanLogs extends Component<Props, States> {
                     </tbody>
                   </table>
                 </div>
-                
-                <div className="paginationNumber">
-                  <div>
-                    {/* <button id="btn_prev" className="btn btn-primary"  disabled onClick={()=>this.previous}>Prev</button> */}
-                    <a
-                      href="#"
-                      className=""
-                      onClick={() => this.previous()}
-                      style={{ display: pageNo == 1 ? "none" : "block" }}
-                    >
-                      Prev
-                    </a>
-                  </div>
-                  <div>{renderPageNumbers}</div>
-                  <div>
-                    {/* <button id="btn_next" className="btn btn-primary" onClick={()=>this.next}>Next</button> */}
-                    <a
-                      href="#"
-                      onClick={() => this.next()}
-                      style={{ display: pageNo == pageData ? "none" : "block" }}
-                    >
-                      Next
-                    </a>
-                  </div>
+                <div>
+                  <Pagination totalData = {totalData} rowsPerPage={rowsPerPage} previous={this.previous} next={this.next} pageNumberClick={this.pageNumberClick} pageNo={pageNo} />
                 </div>
               </div>
             ) : this.state.isLoader ? (

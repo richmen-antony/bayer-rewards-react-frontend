@@ -1,0 +1,19 @@
+@import './variables.scss';
+
+.paginationNumber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.paginationNumber a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+  }
+  
+  .paginationNumber a.active {
+    background-color: $appSecondary;
+    color: $white;
+  }
