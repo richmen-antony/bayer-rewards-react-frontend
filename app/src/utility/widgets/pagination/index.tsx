@@ -34,7 +34,6 @@ class Pagination extends Component<Props,States>{
 
     render(){
         const {pageNo, previous, next, pageNumberClick} = this.props;
-        console.log('============================>',this.props);
         const pageNumbers = [];
         const pageData = Math.ceil(this.props.totalData / this.props.rowsPerPage);
         for (let i = 1; i <= pageData ; i++) {

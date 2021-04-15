@@ -334,13 +334,10 @@ next = (pageNo: any) => {
         this.getScanLogs();
     },0);
 }
-pageNumberClick(number: any) {
-  alert(number);
-  setTimeout(()=>{
+pageNumberClick = (number: any) => {
     this.setState({pageNo: number});
-  },0);
     setTimeout(()=>{
-        this.getScanLogs();
+      this.getScanLogs();
     },0);
   }
 
