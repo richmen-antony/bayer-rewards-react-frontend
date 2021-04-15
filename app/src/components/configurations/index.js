@@ -62,6 +62,7 @@ class Configurations extends Component {
     }
 
     return (
+      <div className='card-container'>
       <TabProvider defaultTab="one">
         <section className="my-tabs">
           <TabList className="my-tablist">
@@ -106,6 +107,7 @@ class Configurations extends Component {
           </div>
         </section>
       </TabProvider>
+      </div>
 
       
 

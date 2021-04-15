@@ -1,19 +1,5 @@
-import { createStyles, TablePagination, Theme } from "@material-ui/core";
-import { makeStyles, TableSortLabel } from "@material-ui/core";
+
 import React from "react";
-import Box from "@material-ui/core/Box";
-import Collapse from "@material-ui/core/Collapse";
-import IconButton from "@material-ui/core/IconButton";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import { isValidDate } from "../../utility/helper";
 import moment from "moment";
 
@@ -39,6 +25,7 @@ interface IDataTableProps {
   columnData?: IDataTableColumn[];
   collapsible?: boolean;
   history?: any[];
+  accordionKey?: any;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -77,19 +64,10 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const useStyles = makeStyles({
-  root: {
-    "& > *": {
-      borderBottom: "unset",
-      
-    },
-  },
-});
-
 /**
  * Table header names
- * @param param0 
- * @returns 
+ * @param param
+ * @returns
  */
 const DataTableHead: React.FC<IDataTableHeadProps> = ({
   columns,
@@ -103,43 +81,42 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
     onRequestSort(event, property);
   };
   return (
-    <TableHead>
-      <TableRow>
+    <thead>
+      <tr>
         {columns.map((column) => (
-          <TableCell
-            key={column.id}
-            align="center"
-            sortDirection={orderBy === column.id ? order : false}
-          >
+          <th>
             {column.enableSort ? (
-              <TableSortLabel
-                active={orderBy === column.id}
-                direction={orderBy === column.id ? order : "asc"}
-                onClick={createSortHandler(column.id)}
-              >
-                {column.name}
-              </TableSortLabel>
+              
+              <i
+              className={`fa ${
+                orderBy === column.id ? "fas fa-caret-down" : "fas fa-caret-up"
+              } ml-3`}
+              onClick={createSortHandler(column.id)}
+            > {column.name}
+             
+            </i>
+             
+              
             ) : (
               column.name
             )}
-          </TableCell>
+          </th>
         ))}
-        
-           
-      </TableRow>
-    </TableHead>
+      </tr>
+    </thead>
   );
 };
 
 /**
  * Custom Table component
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const CustomTable: React.FC<IDataTableProps> = ({
   columnData,
   rows,
   history,
+  accordionKey
 }): JSX.Element => {
   let internalColumnData: IDataTableColumn[] = [
     {
@@ -165,7 +142,6 @@ const CustomTable: React.FC<IDataTableProps> = ({
     internalColumnData = columnData;
   }
 
-  const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof any>("");
   const [page, setPage] = React.useState(0);
@@ -186,95 +162,88 @@ const CustomTable: React.FC<IDataTableProps> = ({
 
   /**
    * To append the table rows values
-   * @param props 
-   * @returns 
+   * @param props
+   * @returns
    */
-  function Row(props: { row: any; history: any }) {
-    const { row, history } = props;
+  function Row(props: { row: any; history: any,accordionKey:string }) {
+    const { row, history,accordionKey } = props;
     const [open, setOpen] = React.useState(false);
-    const classes = useStyles();
+    const [accordionView,handleAccordion]=React.useState(false);
+    const [accordionId,setAccordionId]=React.useState('');
+    const handleExpand =(value:any)=>{
+      handleAccordion(!accordionView)
+      setAccordionId(value[accordionKey])
+
+    }
+
     return (
       <React.Fragment>
-        <TableRow
-          className={classes.root}
-          style={
-            open
-              ? { borderLeft: "5px solid #89D329" }
-              : { borderLeft: "5px solid #FF4848" }
-          }
-          onClick={() => setOpen(!open)}
-        >
-         
-          {internalColumnData.map((key, index) => (
-            <TableCell
-              align={
-                "center"
-                // internalColumnData[index].align
-                //   ? internalColumnData[index].align
-                //   : "inherit"
-              }
-              key={key.id}
-              component="th"
-              scope="row"
-            >
-              {row[key.id] && isValidDate(row[key.id])
-                ? moment(row[key.id]).format("DD-MM-YYYY")
-                : key.id ==='action' ?
-                <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton> : row[key.id]
-              }
-            </TableCell>
-          ))}
-     
-          
-        </TableRow>
-        <TableRow
+        <tr
+        onClick={() => handleExpand(row)}
           style={
             open
               ? { borderLeft: "5px solid #89D329" }
               : { borderLeft: "5px solid #FF4848" }
           }
         >
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box margin={1}>
-                <Typography variant="h6" gutterBottom component="div">
-                  History
-                </Typography>
-                <Table size="small" aria-label="purchases">
-                  {/* <TableHead>
-                    <TableRow>
-                      <TableCell>Date</TableCell>
-                      <TableCell>Customer</TableCell>
-                      <TableCell align="right">Amount</TableCell>
-                      <TableCell align="right">Total price ($)</TableCell>
-                    </TableRow>
-                  </TableHead> */}
-                  <TableBody>
-                    {/* {history?.map((historyRow: any) => (
-                      <TableRow key={historyRow.date}>
-                        <TableCell component="th" scope="row">
-                          {historyRow.date}
-                        </TableCell>
-                        <TableCell>{historyRow.customerId}</TableCell>
-                        <TableCell align="right">{historyRow.amount}</TableCell>
-                        <TableCell align="right">
-                          {Math.round(historyRow.amount * row.price * 100) /
-                            100}
-                        </TableCell>
-                      </TableRow>
-                    ))} */}
-                  </TableBody>
-                </Table>
-              </Box>
-            </Collapse>
-          </TableCell>
-        </TableRow>
+          <td
+            colSpan={8}
+            className="tbl-row"
+            style={
+              row.scanstatus === "valid"
+                ? { borderLeft: "10px solid #89D329" }
+                : { borderLeft: "10px solid #FF4848" }
+            }
+          >
+            <table>
+              <tbody>
+                <tr>
+                  {internalColumnData.map((key, index) => (
+                    <td>
+                      {row[key.id] && isValidDate(row[key.id]) ? (
+                        moment(row[key.id]).format("DD-MM-YYYY")
+                      ) : key.id === "action" ? (
+                        accordionView ? (
+                          <i className="fas fa-caret-down"></i>
+                        ) : (
+                          <i className="fas fa-caret-up"></i>
+                        )
+                       
+                      ) : (
+                        row[key.id]
+                      )}
+                    </td>
+                  ))}
+                </tr>
+                {accordionView &&
+                                 row[accordionKey] ===
+                                  accordionId ? (
+                <tr>
+                  <td colSpan={8}>
+                    <div className="accordion-content">
+                      <div className="accordion-content-col">
+                        <label htmlFor="">Sold To #:</label>
+                        <p>TCS20200206</p>
+                      </div>
+                      <div className="accordion-content-col">
+                        <label htmlFor="">Expiry date:</label>
+                        <p>26 December, 2021</p>
+                      </div>
+                      <div className="accordion-content-col">
+                        <label htmlFor="">Product group:</label>
+                        <p>Herbicides</p>
+                      </div>
+                      <div className="accordion-content-col">
+                        <label htmlFor="">Scan ID:</label>
+                        <p>#123456</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr> ) :""}
+              </tbody>
+            </table>
+          </td>
+        </tr>
       </React.Fragment>
     );
   }
@@ -291,28 +260,25 @@ const CustomTable: React.FC<IDataTableProps> = ({
   const [open, setOpen] = React.useState(false);
 
   return (
-    <div className="accordion-table">
-
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
+    <div className="table-responsive">
+      <table className="table" id="tableData">
         <DataTableHead
           columns={internalColumnData}
           order={order}
           orderBy={orderBy}
           onRequestSort={handleRequestSort}
         />
-        <TableBody>
+        <tbody>
           {rows.map((row) => {
-            return <Row key={row.name} row={row} history={history} />;
+            return <Row key={row.name} row={row} history={history} accordionKey={accordionKey} />;
           })}
           {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
+            <tr style={{ height: 53 * emptyRows }}>
+              <td colSpan={6} />
+            </tr>
           )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </tbody>
+      </table>
     </div>
   );
 };
