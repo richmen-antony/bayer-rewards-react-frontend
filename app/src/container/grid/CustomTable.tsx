@@ -80,21 +80,22 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
   ) => {
     onRequestSort(event, property);
   };
+  console.log({orderBy,order})
   return (
     <thead>
       <tr>
         {columns.map((column) => (
           <th>
             {column.enableSort ? (
-              
               <i
               className={`fa ${
-                orderBy === column.id ? "fas fa-caret-down" : "fas fa-caret-up"
+                order === "desc" ? "fas fa-caret-down" : "fas fa-caret-up"
               } ml-3`}
               onClick={createSortHandler(column.id)}
-            > {column.name}
-             
+            > 
+             {column.name}
             </i>
+           
              
               
             ) : (
@@ -167,7 +168,6 @@ const CustomTable: React.FC<IDataTableProps> = ({
    */
   function Row(props: { row: any; history: any,accordionKey:string }) {
     const { row, history,accordionKey } = props;
-    const [open, setOpen] = React.useState(false);
     const [accordionView,handleAccordion]=React.useState(false);
     const [accordionId,setAccordionId]=React.useState('');
     const handleExpand =(value:any)=>{
@@ -180,14 +180,9 @@ const CustomTable: React.FC<IDataTableProps> = ({
       <React.Fragment>
         <tr
         onClick={() => handleExpand(row)}
-          style={
-            open
-              ? { borderLeft: "5px solid #89D329" }
-              : { borderLeft: "5px solid #FF4848" }
-          }
         >
           <td
-            colSpan={8}
+            colSpan={internalColumnData?.length}
             className="tbl-row"
             style={
               row.scanstatus === "valid"
@@ -202,8 +197,12 @@ const CustomTable: React.FC<IDataTableProps> = ({
                     <td>
                       {row[key.id] && isValidDate(row[key.id]) ? (
                         moment(row[key.id]).format("DD-MM-YYYY")
-                      ) : key.id === "action" ? (
-                        accordionView ? (
+                      ) : key.id==='firstname'?
+                      row[key.id]+ " "+row['lastname']
+
+                      :
+                      key.id === "action" ? (
+                        !accordionView ? (
                           <i className="fas fa-caret-down"></i>
                         ) : (
                           <i className="fas fa-caret-up"></i>
@@ -257,7 +256,6 @@ const CustomTable: React.FC<IDataTableProps> = ({
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-  const [open, setOpen] = React.useState(false);
 
   return (
     <div className="table-responsive">
@@ -269,12 +267,14 @@ const CustomTable: React.FC<IDataTableProps> = ({
           onRequestSort={handleRequestSort}
         />
         <tbody>
-          {rows.map((row) => {
+          {stableSort(rows, getComparator(order, orderBy)).map((row) => {
             return <Row key={row.name} row={row} history={history} accordionKey={accordionKey} />;
           })}
-          {emptyRows > 0 && (
+          {!rows?.length && (
             <tr style={{ height: 53 * emptyRows }}>
-              <td colSpan={6} />
+              <td colSpan={internalColumnData?.length} >
+                No records found 
+                </td>
             </tr>
           )}
         </tbody>
