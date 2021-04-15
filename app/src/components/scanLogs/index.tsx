@@ -4,7 +4,7 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
+
 } from "reactstrap";
 import { Tooltip } from "reactstrap";
 import AUX from "../../hoc/Aux_";
@@ -24,7 +24,6 @@ import {
   clearLocalStorageData,
 } from "../../utility/base/localStore";
 import CustomTable from "../../container/grid/CustomTable";
-import moment from "moment";
 import { Pagination } from '../../utility/widgets/pagination';
 
 import { downloadExcel, downloadCsvFile } from "../../utility/helper";
@@ -597,7 +596,7 @@ fastForward = () => {
           <div className="test">
             {allScanLogs.length > 0 ? (
               <div>
-                {/* <CustomTable
+                <CustomTable
                   columnData={[
                     {
                       id: "productlabelid",
@@ -610,6 +609,7 @@ fastForward = () => {
                       name: "Customer Name",
                       enableSort: false,
                       align: "right",
+                      appendKey:'userprimaryid'
                     },
                     {
                       id: "productname",
@@ -654,114 +654,7 @@ fastForward = () => {
                       { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
                     ]}
                     accordionKey ="productlabelid"
-                    ></CustomTable> */}
-
-                <div className="table-responsive">
-                  <table className="table" id="tableData">
-                    <thead>
-                      <tr>
-                        <th>
-                          Label ID
-                          <i
-                            className={`fa ${
-                              isAsc ? "fas fa-caret-down" : "fas fa-caret-up"
-                            } ml-3`}
-                            onClick={() =>
-                              this.onSort("productlabelid", allScanLogs)
-                            }
-                          ></i>
-                        </th>
-                        <th>Customer Name</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Scan Type</th>
-                        <th>Batch Id</th>
-                        <th>Scan Date</th>
-                        <th className="action-filter">Quick Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {allScanLogs.map((list, i) => (
-                        <AUX key={i}>
-                          <tr onClick={() => this.handleExpand(list)}>
-                            <td
-                              colSpan={8}
-                              className="tbl-row"
-                              style={
-                                list.scanstatus === "valid"
-                                  ? { borderLeft: "10px solid #89D329" }
-                                  : { borderLeft: "10px solid #FF4848" }
-                              }
-                            >
-                              <table>
-                                <tbody>
-                                  <tr>
-                                    <td>{list.productlabelid}</td>
-                                    <td>
-                                      {list.firstname +
-                                        list.lastname +
-                                        ", " +
-                                        list.userprimaryid}
-                                    </td>
-
-                                    <td>{list.productname} </td>
-                                    <td>{list.quantity} </td>
-                                    <td>{list.scantype} </td>
-                                    <td>{list.warehousename} </td>
-                                    <td>
-                                      {moment(list.selectedscanneddate).format(
-                                        "DD-MM-YYYY"
-                                      )}{" "}
-                                    </td>
-                                    <td width="10%" align="center">
-                                      {list.isExpand ? (
-                                        <i className="fas fa-caret-down"></i>
-                                      ) : (
-                                        <i className="fas fa-caret-up"></i>
-                                      )}
-                                    </td>
-                                  </tr>
-                                  {this.state.accordionView &&
-                                  list.productlabelid ===
-                                    this.state.accordionId ? (
-                                    <tr>
-                                      <td colSpan={8}>
-                                        <div className="accordion-content">
-                                          <div className="accordion-content-col">
-                                            <label htmlFor="">Sold To #:</label>
-                                            <p>TCS20200206</p>
-                                          </div>
-                                          <div className="accordion-content-col">
-                                            <label htmlFor="">
-                                              Expiry date:
-                                            </label>
-                                            <p>26 December, 2021</p>
-                                          </div>
-                                          <div className="accordion-content-col">
-                                            <label htmlFor="">
-                                              Product group:
-                                            </label>
-                                            <p>Herbicides</p>
-                                          </div>
-                                          <div className="accordion-content-col">
-                                            <label htmlFor="">Scan ID:</label>
-                                            <p>#123456</p>
-                                          </div>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ) : (
-                                    ""
-                                  )}
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
-                        </AUX>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    ></CustomTable>
                 <div>
                   <Pagination totalData = {totalData} rowsPerPage={rowsPerPage} previous={this.previous} next={this.next} pageNumberClick={this.pageNumberClick} pageNo={pageNo} />
                 </div>
