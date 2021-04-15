@@ -1,5 +1,6 @@
 @import './variables.scss';
 
+
 .card {
     border-radius: 15px;
 }
@@ -111,56 +112,7 @@
     width: 165px;
     background-color: $primary;
 }
-table {
-    display: flex;
-    flex-flow: column;
-    width: 100%;
-    border-collapse: separate;
-    // border-spacing: 0 10px; 
-}
 
-thead {
-    flex: 0 0 auto;
-}
-thead tr {
-    width: 100%;
-    display: table;
-    table-layout: fixed;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    margin-top: 10px;
-    background-color: $appSecondary;
-    color: $white;
-
-}
-.table th {
-    border: none !important;
-}
-
-tbody {
-    flex: 1 1 auto;
-    display: block;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-tbody tr {
-    width: 100%;
-    display: table;
-    table-layout: fixed;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    margin-top: 10px;
-    // border-left: 5px solid #45d329;
-}
-
-.table td {
-    border: none !important;
-    height: 50px;
-  vertical-align: center;
-}
-
-tbody { height: 400px; overflow-y: scroll }
 
 .validBoxShadow {
     border: 1px solid #cfcfcf;
@@ -244,3 +196,99 @@ tbody { height: 400px; overflow-y: scroll }
 }
     
 
+// .accordion-table{
+//   table{
+    
+//     thead{
+//       tr{
+//         background:#1F445A;
+//         th{
+//           color: #fff;
+//           &:first-child{
+//             border-radius: 10px 0px 0px 10px;
+//           }
+//           &:last-child{
+//             border-radius:0px 10px 10px 0px ;
+//           }
+//         }
+//       }
+//     }
+//     tbody{
+//       tr{
+
+//       }
+
+//     }
+//   }
+// }
+
+
+.hiddenRow {
+  padding: 0 !important;
+}
+.table-responsive{
+  table{
+    table-layout: fixed;
+         border-collapse: separate;
+         border-spacing: 0 15px;
+    thead{
+      tr{
+        background: #1F445A;
+        th{
+          color: #fff;
+          border: 0;
+          padding: 15px 20px;
+          vertical-align: middle;
+          font-size: 14px;
+          font-weight: 500;
+          &:first-child{
+            border-radius: 10px 0px 0px 10px !important;
+          }
+          &:last-child{
+            border-radius: 0px 10px 10px 0px !important;
+          }
+        }
+      }
+    }
+    tbody{
+      tr{
+        .tbl-row{
+           
+          border: 1px solid rgba(0, 0, 0, .1);
+          padding: 0;
+          border-radius: 10px;
+          table{
+            width: 100%;
+            border-spacing: 0px;
+            tbody{
+              td{
+                border: 0;
+          padding: 15px 20px;
+          vertical-align: middle;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.accordion-content{
+  display: flex;
+  .accordion-content-col{
+    display: flex;
+    margin-right: 50px;
+    label{
+      color: #707070;
+    padding-right: 10px;
+    font-size: 14px;
+    margin: 0;
+    }
+    p{
+      color: #242424;
+    font-size: 14px;
+    margin: 0;
+    }
+  }
+  
+}

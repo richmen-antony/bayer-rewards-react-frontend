@@ -58,3 +58,20 @@ export const downloadCsvFile=(csv :any, filename:string)=>{
     downloadLink.click();
 
 }
+
+export const isValidDate=(date:any)=>{
+    if (!isNaN(Date.parse(date))) {
+        return true
+      } else {
+        return false
+      }
+      
+}
+
+function objectValues<T extends {}>(obj: T) {
+    return Object.keys(obj).map((objKey) => obj[objKey as keyof T]);
+  }
+  
+  function objectKeys<T extends {}>(obj: T) {
+    return Object.keys(obj).map((objKey) => objKey as keyof T);
+  }

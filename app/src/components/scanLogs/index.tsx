@@ -6,10 +6,6 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-// import {  Tooltip, Overlay } from 'reactstrap';
-// import Button from "reactstrap/Button";
-// import {OverlayTrigger} from "reactstrap";
-// import Tooltip from "reactstrap";
 import { Tooltip } from "reactstrap";
 import AUX from "../../hoc/Aux_";
 import Loaders from "../../utility/widgets/loader";
@@ -20,7 +16,6 @@ import {
   invokeGetAuthService,
   invokeGetService,
 } from "../../utility/base/service";
-import moment from "moment";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import Loader from "../../utility/widgets/loader";
 import {
@@ -28,6 +23,8 @@ import {
   getLocalStorageData,
   clearLocalStorageData,
 } from "../../utility/base/localStore";
+import CustomTable from "../../container/grid/CustomTable";
+import moment from "moment";
 
 import { downloadExcel, downloadCsvFile } from "../../utility/helper";
 type SelectedFiltersTypes = {
@@ -65,6 +62,8 @@ type States = {
   endIndex: number;
   isLoader: boolean;
   dropdownOpenFilter: boolean;
+  accordionView: boolean;
+  accordionId: string;
 };
 
 class ScanLogs extends Component<Props, States> {
@@ -109,6 +108,8 @@ class ScanLogs extends Component<Props, States> {
       endIndex: 3,
       isLoader: false,
       dropdownOpenFilter: false,
+      accordionView: false,
+      accordionId: "",
     };
     this.timeOut = 0;
   }
@@ -194,7 +195,6 @@ class ScanLogs extends Component<Props, States> {
 
     invokeGetAuthService(scanLogs, data)
       .then((response) => {
-        console.log(response, "response");
         this.setState({
           isLoader: false,
           allScanLogs:
@@ -228,7 +228,7 @@ class ScanLogs extends Component<Props, States> {
 
   handleExpand = (data: any) => {
     data.isExpand = !data.isExpand;
-    this.setState({ isRendered: true });
+    this.setState({ isRendered: true,accordionView : ! this.state.accordionView,accordionId:data.productlabelid });
   };
 
   onSort(name: string, data: any) {
@@ -312,7 +312,6 @@ class ScanLogs extends Component<Props, States> {
   };
   applyFilter = () => {
     this.setState({ isFiltered: true });
-    console.log(this.state, "hjhjj");
     this.timeOut = setTimeout(() => {
       this.getScanLogs();
     }, 0);
@@ -369,7 +368,6 @@ class ScanLogs extends Component<Props, States> {
       userRole,
       totalData,
     } = this.state;
-    console.log("productCategory", this.state.productCategories);
 
     const pageNumbers = [];
     const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
@@ -632,6 +630,65 @@ class ScanLogs extends Component<Props, States> {
           <div className="test">
             {allScanLogs.length > 0 ? (
               <div>
+                {/* <CustomTable
+                  columnData={[
+                    {
+                      id: "productlabelid",
+                      name: "Label ID",
+                      enableSort: true,
+                      align: "right",
+                    },
+                    {
+                      id: "firstname",
+                      name: "Customer Name",
+                      enableSort: false,
+                      align: "right",
+                    },
+                    {
+                      id: "productname",
+                      name: "Product",
+                      enableSort: false,
+                      align: "right",
+                    },
+                    {
+                      id: "quantity",
+                      name: "Quantity",
+                      enableSort: false,
+                      align: "right",
+                    },
+                    {
+                      id: "scantype",
+                      name: "Scan Type",
+                      enableSort: false,
+                      align: "right",
+                    },{
+                      id: "warehousename",
+                      name: "Sold to",
+                      enableSort: false,
+                      align: "right",
+                    },
+                    {
+                      id: "selectedscanneddate",
+                      name: "Scan Date",
+                      enableSort: false,
+                      align: "right",
+                    },
+                    {
+                      id: "action",
+                      name: "Action",
+                      enableSort: false,
+                      align: "right",
+                    },
+                  ]}
+                  rows={allScanLogs}
+                  collapsible={true}
+                    history={[
+                      { date: '2020-01-05', customerId: '11091700', amount: 3 },
+                      { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
+                    ]}
+                    accordionKey ="productlabelid"
+                    ></CustomTable> */}
+
                 <div className="table-responsive">
                   <table className="table" id="tableData">
                     <thead>
@@ -640,7 +697,7 @@ class ScanLogs extends Component<Props, States> {
                           Label ID
                           <i
                             className={`fa ${
-                              isAsc ? "fa-angle-down" : "fa-angle-up"
+                              isAsc ? "fas fa-caret-down" : "fas fa-caret-up"
                             } ml-3`}
                             onClick={() =>
                               this.onSort("productlabelid", allScanLogs)
@@ -648,11 +705,10 @@ class ScanLogs extends Component<Props, States> {
                           ></i>
                         </th>
                         <th>Customer Name</th>
-                        <th>Customer ID</th>
                         <th>Product</th>
                         <th>Quantity</th>
                         <th>Scan Type</th>
-                        <th>Sold To</th>
+                        <th>Batch Id</th>
                         <th>Scan Date</th>
                         <th className="action-filter">Quick Action</th>
                       </tr>
@@ -660,66 +716,86 @@ class ScanLogs extends Component<Props, States> {
                     <tbody>
                       {allScanLogs.map((list, i) => (
                         <AUX key={i}>
-                          <tr
-                            style={
-                              list.scanstatus === "valid"
-                                ? { borderLeft: "5px solid #89D329" }
-                                : { borderLeft: "5px solid #FF4848" }
-                            }
-                            onClick={() => this.handleExpand(list)}
-                          >
-                            <td>{list.productlabelid}</td>
-                            <td>{list.firstname + list.lastname} </td>
-                            <td>{list.userprimaryid} </td>
-                            <td>{list.productname} </td>
-                            <td>{list.quantity} </td>
-                            <td>{list.scantype} </td>
-                            <td>{list.warehousename} </td>
-                            <td>
-                              {moment(list.selectedscanneddate).format(
-                                "DD-MM-YYYY"
-                              )}{" "}
-                            </td>
-                            <td width="10%" align="center">
-                              {list.isExpand ? (
-                                <i className="fa fa-angle-down"></i>
-                              ) : (
-                                <i className="fa fa-angle-up"></i>
-                              )}
+                          <tr onClick={() => this.handleExpand(list)}>
+                            <td
+                              colSpan={8}
+                              className="tbl-row"
+                              style={
+                                list.scanstatus === "valid"
+                                  ? { borderLeft: "10px solid #89D329" }
+                                  : { borderLeft: "10px solid #FF4848" }
+                              }
+                            >
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td>{list.productlabelid}</td>
+                                    <td>
+                                      {list.firstname +
+                                        list.lastname +
+                                        ", " +
+                                        list.userprimaryid}
+                                    </td>
+
+                                    <td>{list.productname} </td>
+                                    <td>{list.quantity} </td>
+                                    <td>{list.scantype} </td>
+                                    <td>{list.warehousename} </td>
+                                    <td>
+                                      {moment(list.selectedscanneddate).format(
+                                        "DD-MM-YYYY"
+                                      )}{" "}
+                                    </td>
+                                    <td width="10%" align="center">
+                                      {list.isExpand ? (
+                                        <i className="fas fa-caret-down"></i>
+                                      ) : (
+                                        <i className="fas fa-caret-up"></i>
+                                      )}
+                                    </td>
+                                  </tr>
+                                  {this.state.accordionView &&
+                                  list.productlabelid ===
+                                    this.state.accordionId ? (
+                                    <tr>
+                                      <td colSpan={8}>
+                                        <div className="accordion-content">
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">Sold To #:</label>
+                                            <p>TCS20200206</p>
+                                          </div>
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">
+                                              Expiry date:
+                                            </label>
+                                            <p>26 December, 2021</p>
+                                          </div>
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">
+                                              Product group:
+                                            </label>
+                                            <p>Herbicides</p>
+                                          </div>
+                                          <div className="accordion-content-col">
+                                            <label htmlFor="">Scan ID:</label>
+                                            <p>#123456</p>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ) : (
+                                    ""
+                                  )}
+                                </tbody>
+                              </table>
                             </td>
                           </tr>
-
-                          {list.isExpand && (
-                            <div style={{ display: "grid" }}>
-                              <div
-                                className={
-                                  list.scanstatus === "valid"
-                                    ? "validBoxShadow"
-                                    : "inValidBoxShadow"
-                                }
-                              >
-                                <div className="row">
-                                  <div className="col-3">
-                                    Batch : 89899898998
-                                  </div>
-                                  <div className="col-3">
-                                    Expiry Date : 23 Dec 2021
-                                  </div>
-                                  <div className="col-3">
-                                    Product group : BB-Bayer
-                                  </div>
-                                  <div className="col-3">
-                                    Scan ID : #67677677
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
                         </AUX>
                       ))}
                     </tbody>
                   </table>
                 </div>
+                
                 <div className="paginationNumber">
                   <div>
                     {/* <button id="btn_prev" className="btn btn-primary"  disabled onClick={()=>this.previous}>Prev</button> */}
