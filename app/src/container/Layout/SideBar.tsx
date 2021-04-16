@@ -59,7 +59,7 @@ class Sidebar extends Component<Props, States> {
             
                     <div className="left side-menu ">
                         <img className="sideMenuLine" src={lLogo} alt="" />
-                        <div className="">
+                        <div className="sideMenuNav">
                         <Scrollbars style={scrollHeight} autoHide
                         autoHideTimeout={1000}
                         autoHideDuration={200}

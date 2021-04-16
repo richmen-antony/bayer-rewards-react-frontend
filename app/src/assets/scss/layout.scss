@@ -66,16 +66,20 @@
   /// side menu
 
 .side-menu {
+  display: flex;
+  flex-direction: column;
   width: 240px;
   z-index: 10;
   background: $primary;
   bottom: 0;
   margin-top: 0;
-  padding-bottom: 30px;
   position: fixed;
   top: 70px;
   .sideMenuLine {
     width: 240px;
+  }
+  .sideMenuNav{
+    flex: 1;
   }
 }
 
@@ -84,7 +88,6 @@
 }
 
 .enlarged .side-menu {
-  position: absolute;
   .sideMenuLine {
     width: 100px;
   }

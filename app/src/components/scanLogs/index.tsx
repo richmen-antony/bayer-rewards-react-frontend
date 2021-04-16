@@ -630,7 +630,7 @@ fastForward = () => {
                       align: "right",
                     },{
                       id: "warehousename",
-                      name: "Sold to",
+                      name: "Batch ID",
                       enableSort: false,
                       align: "right",
                     },

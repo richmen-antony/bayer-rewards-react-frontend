@@ -48,6 +48,7 @@ function getComparator<Key extends keyof any>(
   a: { [key in Key]: number | string },
   b: { [key in Key]: number | string }
 ) => number {
+  console.log('get',order,order)
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -80,6 +81,7 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
   ) => {
     onRequestSort(event, property);
   };
+  console.log({order,orderBy})
   return (
     <thead>
       <tr>
@@ -149,6 +151,7 @@ const CustomTable: React.FC<IDataTableProps> = ({
     property: keyof any
   ) => {
     const isAsc = orderBy === property && order === "asc";
+    console.log({isAsc,order,orderBy,property})
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
@@ -190,14 +193,18 @@ const CustomTable: React.FC<IDataTableProps> = ({
                     <td>
                       {row[key.id] && isValidDate(row[key.id]) ? (
                         moment(row[key.id]).format("DD-MM-YYYY")
-                      ) : key.id === "firstname" &&
+                      ) : key.id === "firstname"&&
                         row["lastname"] &&
                         key?.appendKey ? (
-                        row[key.id] +
+                          <>
+                        {row[key.id] +
                         " " +
                         row["lastname"] +
                         ", " +
-                        row[key?.appendKey]
+                        row[key?.appendKey]}
+                        <div> Distributor </div>
+                        </>
+                       
                       ) : key.id === "action" ? (
                         !accordionView ? (
                           <i className="fas fa-caret-down"></i>
@@ -217,6 +224,8 @@ const CustomTable: React.FC<IDataTableProps> = ({
                         <div className="accordion-content-col">
                           <label htmlFor="">Sold To #:</label>
                           <p>TCS20200206</p>
+                        
+                          
                         </div>
                         <div className="accordion-content-col">
                           <label htmlFor="">Expiry date:</label>
