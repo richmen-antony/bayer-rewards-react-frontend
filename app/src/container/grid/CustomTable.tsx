@@ -24,8 +24,8 @@ interface IDataTableProps {
   rows: any[];
   columnData?: IDataTableColumn[];
   collapsible?: boolean;
-  history?: any[];
   accordionKey?: any;
+  subListName?: any[];
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -48,7 +48,6 @@ function getComparator<Key extends keyof any>(
   a: { [key in Key]: number | string },
   b: { [key in Key]: number | string }
 ) => number {
-  console.log('get',order,order)
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -81,7 +80,6 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
   ) => {
     onRequestSort(event, property);
   };
-  console.log({order,orderBy})
   return (
     <thead>
       <tr>
@@ -114,8 +112,8 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
 const CustomTable: React.FC<IDataTableProps> = ({
   columnData,
   rows,
-  history,
   accordionKey,
+  subListName,
 }): JSX.Element => {
   let internalColumnData: IDataTableColumn[] = [
     {
@@ -151,7 +149,6 @@ const CustomTable: React.FC<IDataTableProps> = ({
     property: keyof any
   ) => {
     const isAsc = orderBy === property && order === "asc";
-    console.log({isAsc,order,orderBy,property})
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
@@ -165,8 +162,8 @@ const CustomTable: React.FC<IDataTableProps> = ({
    * @param props
    * @returns
    */
-  function Row(props: { row: any; history: any; accordionKey: string }) {
-    const { row, history, accordionKey } = props;
+  function Row(props: { row: any; accordionKey: string; subListName: any }) {
+    const { row, accordionKey } = props;
     const [accordionView, handleAccordion] = React.useState(false);
     const [accordionId, setAccordionId] = React.useState("");
     const handleExpand = (value: any) => {
@@ -190,59 +187,56 @@ const CustomTable: React.FC<IDataTableProps> = ({
               <tbody>
                 <tr>
                   {internalColumnData.map((key, index) => (
-                    <td>
+                    <td key={index}>
                       {row[key.id] && isValidDate(row[key.id]) ? (
                         moment(row[key.id]).format("DD-MM-YYYY")
-                      ) : key.id === "firstname"&&
+                      ) : key.id === "firstname" &&
                         row["lastname"] &&
                         key?.appendKey ? (
-                          <>
-                        {row[key.id] +
-                        " " +
-                        row["lastname"] +
-                        ", " +
-                        row[key?.appendKey]}
-                        <div className='label'> Distributor </div>
+                        <>
+                          {row[key.id] +
+                            " " +
+                            row["lastname"] +
+                            ", " +
+                            row[key?.appendKey]}
+                          <div className="label"> Distributor </div>
                         </>
-                       
                       ) : key.id === "action" ? (
                         !accordionView ? (
                           <i className="fas fa-caret-down"></i>
                         ) : (
                           <i className="fas fa-caret-up"></i>
                         )
-                      ) : key.id ==="quickaction" ? 
-                      <div className='quick-action'>
-                      <i className="fas fa-edit"></i>
-                      <i className="fas fa-times-circle"></i>
-                      </div>:
+                      ) : key.id === "quickaction" ? (
+                        <div className="quick-action">
+                          <i className="fas fa-edit"></i>
+                          <i className="fas fa-times-circle"></i>
+                        </div>
+                      ) : (
                         row[key.id]
-                      }
+                      )}
                     </td>
                   ))}
                 </tr>
                 {accordionView && row[accordionKey] === accordionId ? (
                   <tr>
-                    <td colSpan={8}>
+                    <td colSpan={internalColumnData?.length}>
                       <div className="accordion-content">
-                        <div className="accordion-content-col">
-                          <label htmlFor="">Sold To #:</label>
-                          <p>TCS20200206</p>
-                        
-                          
-                        </div>
-                        <div className="accordion-content-col">
-                          <label htmlFor="">Expiry date:</label>
-                          <p>26 December, 2021</p>
-                        </div>
-                        <div className="accordion-content-col">
-                          <label htmlFor="">Product group:</label>
-                          <p>Herbicides</p>
-                        </div>
-                        <div className="accordion-content-col">
-                          <label htmlFor="">Scan ID:</label>
-                          <p>#123456</p>
-                        </div>
+                        {subListName &&
+                          subListName.map((list, index) => {
+                            return (
+                              <div className="accordion-content-col" key={index}>
+                                <label htmlFor="">{list.name}:</label>
+                                <p>
+                                  {isValidDate(row[list.key])
+                                    ? moment(row[list.key]).format(
+                                        "MMMM Do ,YYYY"
+                                      )
+                                    : row[list.key] || "-"}
+                                </p>
+                              </div>
+                            );
+                          })}
                       </div>
                     </td>
                   </tr>
@@ -268,7 +262,6 @@ const CustomTable: React.FC<IDataTableProps> = ({
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    
     <div className="table-responsive">
       <table className="table" id="tableData">
         <DataTableHead
@@ -283,8 +276,8 @@ const CustomTable: React.FC<IDataTableProps> = ({
               <Row
                 key={row.name}
                 row={row}
-                history={history}
                 accordionKey={accordionKey}
+                subListName={subListName}
               />
             );
           })}
@@ -295,7 +288,6 @@ const CustomTable: React.FC<IDataTableProps> = ({
           )}
         </tbody>
       </table>
-      
     </div>
   );
 };

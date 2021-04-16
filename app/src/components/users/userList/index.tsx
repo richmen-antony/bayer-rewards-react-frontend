@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-
-} from "reactstrap";
+import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import { Tooltip } from "reactstrap";
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
@@ -24,7 +18,7 @@ import {
   clearLocalStorageData,
 } from "../../../utility/base/localStore";
 import CustomTable from "../../../container/grid/CustomTable";
-import { Pagination } from '../../../utility/widgets/pagination';
+import { Pagination } from "../../../utility/widgets/pagination";
 
 import { downloadExcel, downloadCsvFile } from "../../../utility/helper";
 type SelectedFiltersTypes = {
@@ -109,39 +103,39 @@ class UserList extends Component<Props, States> {
       dropdownOpenFilter: false,
       accordionView: false,
       accordionId: "",
-      allUsersList : [
+      allUsersList: [
         {
-            'id' : 1,
-            'username' : 'vidhya',
-            'mobile': '9898789878',
-            'role': 'admin',
-            "district": 'demo',
-            'subdistrict': 'aaa',
-            'expirydate': '20/08/2021'
+          id: 1,
+          username: "vidhya",
+          mobile: "9898789878",
+          role: "admin",
+          district: "demo",
+          subdistrict: "aaa",
+          expirydate: "20/08/2021",
         },
         {
-            'id' : 1,
-            'username' : 'demo',
-            'mobile': '7898789878',
-            'role': 'user',
-            "district": 'demo1',
-            'subdistrict': 'bbb',
-            'expirydate': '05/08/2021'
-        }
-    ]
+          id: 1,
+          username: "demo",
+          mobile: "7898789878",
+          role: "user",
+          district: "demo1",
+          subdistrict: "bbb",
+          expirydate: "05/08/2021",
+        },
+      ],
     };
     this.timeOut = 0;
   }
-//   componentDidMount() {
-//     this.getScanLogs();
-//     let data: any = getLocalStorageData("userData");
-//     let userData = JSON.parse(data);
+  //   componentDidMount() {
+  //     this.getScanLogs();
+  //     let data: any = getLocalStorageData("userData");
+  //     let userData = JSON.parse(data);
 
-//     this.setState({
-//       userRole: userData.role,
-//     });
-//     this.getProductCategory();
-//   }
+  //     this.setState({
+  //       userRole: userData.role,
+  //     });
+  //     this.getProductCategory();
+  //   }
 
   downloadExcelFile = () => {
     let tableId: any = document.getElementById("tableData")?.id;
@@ -196,64 +190,64 @@ class UserList extends Component<Props, States> {
     this.export_table_to_csv(html, "table.csv");
   };
 
-//   getScanLogs = () => {
-//     const { scanLogs } = apiURL;
-//     this.setState({ isLoader: true });
-//     const data = {
-//       page: this.state.pageNo,
-//       searchtext: this.state.searchText,
-//       rowsperpage: this.state.rowsPerPage,
-//       role: this.state.selectedFilters.type,
-//       scantype: this.state.selectedFilters.scanType,
-//       productcategory: this.state.selectedFilters.productCategory,
-//       scanstatus: this.state.selectedFilters.status,
-//       isfiltered: this.state.isFiltered,
-//       startdate: this.state.selectedFilters.startDate,
-//       enddate: this.state.selectedFilters.endDate,
-//     };
+  //   getScanLogs = () => {
+  //     const { scanLogs } = apiURL;
+  //     this.setState({ isLoader: true });
+  //     const data = {
+  //       page: this.state.pageNo,
+  //       searchtext: this.state.searchText,
+  //       rowsperpage: this.state.rowsPerPage,
+  //       role: this.state.selectedFilters.type,
+  //       scantype: this.state.selectedFilters.scanType,
+  //       productcategory: this.state.selectedFilters.productCategory,
+  //       scanstatus: this.state.selectedFilters.status,
+  //       isfiltered: this.state.isFiltered,
+  //       startdate: this.state.selectedFilters.startDate,
+  //       enddate: this.state.selectedFilters.endDate,
+  //     };
 
-//     invokeGetAuthService(scanLogs, data)
-//       .then((response) => {
-//         this.setState({
-//           isLoader: false,
-//           allUsersList:
-//             Object.keys(response.body).length !== 0 ? response.body.rows : [],
-//         });
-//         const total = response.body.totalrows;
-//         this.setState({ totalData: Number(total) });
-//       })
-//       .catch((error) => {
-//         this.setState({ isLoader: false });
-//         console.log(error, "error");
-//       });
-//   };
+  //     invokeGetAuthService(scanLogs, data)
+  //       .then((response) => {
+  //         this.setState({
+  //           isLoader: false,
+  //           allUsersList:
+  //             Object.keys(response.body).length !== 0 ? response.body.rows : [],
+  //         });
+  //         const total = response.body.totalrows;
+  //         this.setState({ totalData: Number(total) });
+  //       })
+  //       .catch((error) => {
+  //         this.setState({ isLoader: false });
+  //         console.log(error, "error");
+  //       });
+  //   };
 
-//   getProductCategory = () => {
-//     const { productCategory } = apiURL;
-//     this.setState({ isLoader: true });
-//     invokeGetAuthService(productCategory).then((response) => {
-//       this.setState({
-//         isLoader: false,
-//         productCategories:
-//           Object.keys(response.body).length !== 0 ? response.body.rows : [],
-//       });
-//     });
-//     setTimeout(() => {
-//       this.setState({
-//         productCategories: ["All", ...this.state.productCategories],
-//       });
-//     }, 3000);
-//   };
+  //   getProductCategory = () => {
+  //     const { productCategory } = apiURL;
+  //     this.setState({ isLoader: true });
+  //     invokeGetAuthService(productCategory).then((response) => {
+  //       this.setState({
+  //         isLoader: false,
+  //         productCategories:
+  //           Object.keys(response.body).length !== 0 ? response.body.rows : [],
+  //       });
+  //     });
+  //     setTimeout(() => {
+  //       this.setState({
+  //         productCategories: ["All", ...this.state.productCategories],
+  //       });
+  //     }, 3000);
+  //   };
 
-//   handleExpand = (data: any) => {
-//     data.isExpand = !data.isExpand;
-//     this.setState({ isRendered: true,accordionView : ! this.state.accordionView,accordionId:data.productlabelid });
-//   };
+  //   handleExpand = (data: any) => {
+  //     data.isExpand = !data.isExpand;
+  //     this.setState({ isRendered: true,accordionView : ! this.state.accordionView,accordionId:data.productlabelid });
+  //   };
 
-//   onSort(name: string, data: any) {
-//     let response = sortBy(name, data);
-//     this.setState({ allScanLogs: response, isAsc: !this.state.isAsc });
-//   }
+  //   onSort(name: string, data: any) {
+  //     let response = sortBy(name, data);
+  //     this.setState({ allScanLogs: response, isAsc: !this.state.isAsc });
+  //   }
 
   toggleFilter = () => {
     this.setState((prevState) => ({
@@ -312,58 +306,57 @@ class UserList extends Component<Props, States> {
       isFiltered: false,
     });
     setTimeout(() => {
-    //   this.getScanLogs();
+      //   this.getScanLogs();
     }, 0);
   };
 
-//   handleSearch = (e: any) => {
-//     let searchText = e.target.value;
-//     this.setState({ searchText: searchText });
-//     if (this.timeOut) {
-//       clearTimeout(this.timeOut);
-//     }
-//     if (searchText.length >= 3 || searchText.length == 0) {
-//       this.timeOut = setTimeout(() => {
-//         this.getScanLogs();
-//       }, 1000);
-//     }
-//   };
-//   applyFilter = () => {
-//     this.setState({ isFiltered: true });
-//     this.timeOut = setTimeout(() => {
-//       this.getScanLogs();
-//     }, 0);
-//   };
-//   previous = (pageNo: any) => {
-//     this.setState({ pageNo: pageNo -1 })
-//     setTimeout(()=>{
-//         this.getScanLogs();
-//     },0);
-    
-// }
-// next = (pageNo: any) => {
-//   this.setState({ pageNo: pageNo + 1 })
-//     setTimeout(()=>{
-//         this.getScanLogs();
-//     },0);
-// }
-// pageNumberClick = (number: any) => {
-//     this.setState({pageNo: number});
-//     setTimeout(()=>{
-//       this.getScanLogs();
-//     },0);
-//   }
+  //   handleSearch = (e: any) => {
+  //     let searchText = e.target.value;
+  //     this.setState({ searchText: searchText });
+  //     if (this.timeOut) {
+  //       clearTimeout(this.timeOut);
+  //     }
+  //     if (searchText.length >= 3 || searchText.length == 0) {
+  //       this.timeOut = setTimeout(() => {
+  //         this.getScanLogs();
+  //       }, 1000);
+  //     }
+  //   };
+  //   applyFilter = () => {
+  //     this.setState({ isFiltered: true });
+  //     this.timeOut = setTimeout(() => {
+  //       this.getScanLogs();
+  //     }, 0);
+  //   };
+  //   previous = (pageNo: any) => {
+  //     this.setState({ pageNo: pageNo -1 })
+  //     setTimeout(()=>{
+  //         this.getScanLogs();
+  //     },0);
 
-toggle = () => {
-    this.setState({ tooltipOpen : !this.state.tooltipOpen})
-}
-// backForward = () => {
-//     this.setState({startIndex: this.state.startIndex - 3, endIndex: this.state.endIndex - 1})
-// }
-// fastForward = () => {
-//     this.setState({startIndex: this.state.endIndex + 1, endIndex: this.state.endIndex + 3})
-// }
+  // }
+  // next = (pageNo: any) => {
+  //   this.setState({ pageNo: pageNo + 1 })
+  //     setTimeout(()=>{
+  //         this.getScanLogs();
+  //     },0);
+  // }
+  // pageNumberClick = (number: any) => {
+  //     this.setState({pageNo: number});
+  //     setTimeout(()=>{
+  //       this.getScanLogs();
+  //     },0);
+  //   }
 
+  toggle = () => {
+    this.setState({ tooltipOpen: !this.state.tooltipOpen });
+  };
+  // backForward = () => {
+  //     this.setState({startIndex: this.state.startIndex - 3, endIndex: this.state.endIndex - 1})
+  // }
+  // fastForward = () => {
+  //     this.setState({startIndex: this.state.endIndex + 1, endIndex: this.state.endIndex + 3})
+  // }
 
   render() {
     const {
@@ -377,7 +370,7 @@ toggle = () => {
       pageNo,
       userRole,
       totalData,
-      rowsPerPage
+      rowsPerPage,
     } = this.state;
 
     const pageNumbers = [];
@@ -617,7 +610,7 @@ toggle = () => {
                       name: "Mobile",
                       enableSort: false,
                       align: "right",
-                      appendKey:'username'
+                      appendKey: "username",
                     },
                     {
                       id: "role",
@@ -636,7 +629,8 @@ toggle = () => {
                       name: "Sub-District",
                       enableSort: true,
                       align: "right",
-                    },{
+                    },
+                    {
                       id: "expirydate",
                       name: "Expiry Date",
                       enableSort: false,
@@ -657,12 +651,9 @@ toggle = () => {
                   ]}
                   rows={allUsersList}
                   collapsible={true}
-                    history={[
-                      { date: '2020-01-05', customerId: '11091700', amount: 3 },
-                      { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
-                    ]}
-                    accordionKey ="username"
-                    ></CustomTable>
+                  accordionKey="username"
+                 
+                ></CustomTable>
                 {/* <div>
                   <Pagination totalData = {totalData} rowsPerPage={rowsPerPage} previous={this.previous} next={this.next} pageNumberClick={this.pageNumberClick} pageNo={pageNo} />
                 </div> */}

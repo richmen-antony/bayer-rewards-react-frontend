@@ -658,11 +658,17 @@ fastForward = () => {
                   ]}
                   rows={allScanLogs}
                   collapsible={true}
-                    history={[
-                      { date: '2020-01-05', customerId: '11091700', amount: 3 },
-                      { date: '2020-01-02', customerId: 'Anonymous', amount: 1 },
-                    ]}
                     accordionKey ="productlabelid"
+                    subListName={[
+                      {
+                        key: "",
+                        name: "Sold To",
+                      },
+                      { key: "selectedscanneddate", name: "Expiry Date",type:'date' },
+                      { key: "prodgroupname", name: "Product Group" },
+                      { key: "", name: "Scan Id" },
+                      
+                    ]}
                     ></CustomTable>
                 <div>
                   <Pagination totalData = {totalData} rowsPerPage={rowsPerPage} previous={this.previous} next={this.next} pageNumberClick={this.pageNumberClick} pageNo={pageNo} />
