@@ -66,6 +66,18 @@ type States = {
   accordionId: string;
 };
 
+
+const headers = [
+  { label: "description", key: "description" },
+  { label: "firstname", key: "firstname" },
+  { label: "lastname", key: "lastname" },
+  { label: "prodgroupname", key: "prodgroupname" },
+  { label: "productlabelid", key: "productlabelid" },
+  { label: "productname", key: "productname" }
+];
+    
+var mockdata;
+
 class ScanLogs extends Component<Props, States> {
   timeOut: any;
   constructor(props: any) {
@@ -334,13 +346,10 @@ next = (pageNo: any) => {
         this.getScanLogs();
     },0);
 }
-pageNumberClick(number: any) {
-  alert(number);
-  setTimeout(()=>{
+pageNumberClick = (number: any) => {
     this.setState({pageNo: number});
-  },0);
     setTimeout(()=>{
-        this.getScanLogs();
+      this.getScanLogs();
     },0);
   }
 

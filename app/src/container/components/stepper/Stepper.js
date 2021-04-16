@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import "./Stepper.scss";
+import "../../../assets/scss/Stepper.scss";
 
 export default class Stepper extends Component {
   constructor() {

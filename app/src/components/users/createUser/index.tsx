@@ -16,29 +16,29 @@ const stepsArray = [
     "Geographical Mapping"
 ];
 const countryList = [
-    { code: '001', name: "India" },
+    { value: '001', text: "India" },
     { value: '002', text: "London" },
     { value: "003", text: "Australia" },
 ];
 const stateList = [
-    { code: '001', name: "Tamil Nadu" },
+    { value: '001', text: "Tamil Nadu" },
     { value: '002', text: "Kerala" },
     { value: "003", text: "Bangalore" },
 ];
 const districtList = [
-    { code: '001', name: "Vellore" },
+    { value: '001', text: "Vellore" },
     { value: '002', text: "Chengalpattu" },
     { value: "003", text: "kancheepuram" },
 ];
-const subdistrictList = [
-    { code: '001', name: "aaa" },
+const subDistrictList = [
+    { value: '001', text: "aaa" },
     { value: '002', text: "bbb" },
     { value: "003", text: "ccc" },
 ];
 const villageList = [
-    { code: '001', name: "aaa" },
-    { value: '002', text: "bbb" },
-    { value: "003", text: "cccc" },
+    { value: '001', text: "village1" },
+    { value: '002', text: "village2" },
+    { value: "003", text: "village3" },
 ];
 
 class CreateUser extends Component<any, any>{
@@ -58,7 +58,7 @@ class CreateUser extends Component<any, any>{
             countryErr:'',
             stateErr: '',
             districtErr: '',
-            subDitrictErr: '',
+            subDistrictErr: '',
             villageErr: '',
             userData : {
                 'fromDate' : new Date().toISOString().substr(0, 10),
@@ -335,7 +335,7 @@ class CreateUser extends Component<any, any>{
                                     <Dropdown
                                         name="subdistrict"  
                                         label="Sub District"
-                                        options={subdistrictList}
+                                        options={subDistrictList}
                                         handleChange={this.handlePersonalChange}
                                         value={userData.subDistrict} />
                                         {subDistrictErr && <span className="error">{ subDistrictErr } </span>}
