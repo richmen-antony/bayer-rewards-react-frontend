@@ -268,9 +268,15 @@
           vertical-align: middle;
           color: #242424;
           font-family: 'Open Sans', sans-serif;
-          div{
+          .label{
             color: #888888;
             font-size: 12px;
+          }
+          .quick-action{
+            i{
+            padding-right: 15px;
+            cursor: pointer;
+            }
           }
               }
             }

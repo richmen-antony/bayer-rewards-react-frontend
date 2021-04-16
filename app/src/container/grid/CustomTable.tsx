@@ -202,7 +202,7 @@ const CustomTable: React.FC<IDataTableProps> = ({
                         row["lastname"] +
                         ", " +
                         row[key?.appendKey]}
-                        <div> Distributor </div>
+                        <div className='label'> Distributor </div>
                         </>
                        
                       ) : key.id === "action" ? (
@@ -211,9 +211,13 @@ const CustomTable: React.FC<IDataTableProps> = ({
                         ) : (
                           <i className="fas fa-caret-up"></i>
                         )
-                      ) : (
+                      ) : key.id ==="quickaction" ? 
+                      <div className='quick-action'>
+                      <i className="fas fa-edit"></i>
+                      <i className="fas fa-times-circle"></i>
+                      </div>:
                         row[key.id]
-                      )}
+                      }
                     </td>
                   ))}
                 </tr>
