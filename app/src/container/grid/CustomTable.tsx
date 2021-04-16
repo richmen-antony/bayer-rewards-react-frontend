@@ -90,7 +90,7 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
                 {column.name}
                 <i
                   className={`fa ${
-                    order === "desc" ? "fas fa-caret-down" : "fas fa-caret-up"
+                    column.id ===orderBy &&order === "desc"  ? "fas fa-caret-down" : "fas fa-caret-up"
                   } ml-3`}
                 ></i>
               </div>

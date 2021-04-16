@@ -616,7 +616,7 @@ fastForward = () => {
                     {
                       id: "firstname",
                       name: "Customer Name",
-                      enableSort: false,
+                      enableSort: true,
                       align: "right",
                       appendKey:'userprimaryid'
                     },
