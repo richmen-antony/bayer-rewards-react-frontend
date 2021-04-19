@@ -6,7 +6,7 @@ interface IDataTableColumn {
   id: string;
   name: string;
   enableSort?: boolean;
-  align?: "center" | "inherit" | "justify" | "left" | "right";
+  align?: string;
   appendKey?: string;
 }
 
@@ -84,13 +84,19 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
     <thead>
       <tr>
         {columns.map((column) => (
-          <th>
+          <th
+            className={`${
+              column.align === "max-width" ? "max-width-header" : ""
+            }`}
+          >
             {column.enableSort ? (
               <div onClick={createSortHandler(column.id)}>
                 {column.name}
                 <i
                   className={`fa ${
-                    column.id ===orderBy &&order === "desc"  ? "fas fa-caret-down" : "fas fa-caret-up"
+                    column.id === orderBy && order === "desc"
+                      ? "fas fa-caret-down"
+                      : "fas fa-caret-up"
                   } ml-3`}
                 ></i>
               </div>
@@ -187,7 +193,12 @@ const CustomTable: React.FC<IDataTableProps> = ({
               <tbody>
                 <tr>
                   {internalColumnData.map((key, index) => (
-                    <td key={index}>
+                    <td
+                      key={index}
+                      className={`${
+                        key.align === "max-width" ? "max-width-header" : ""
+                      }`}
+                    >
                       {row[key.id] && isValidDate(row[key.id]) ? (
                         moment(row[key.id]).format("DD-MM-YYYY")
                       ) : key.id === "firstname" &&
@@ -225,15 +236,26 @@ const CustomTable: React.FC<IDataTableProps> = ({
                         {subListName &&
                           subListName.map((list, index) => {
                             return (
-                              <div className="accordion-content-col" key={index}>
-                                <label htmlFor="">{list.name}:</label>
-                                <p>
-                                  {isValidDate(row[list.key])
-                                    ? moment(row[list.key]).format(
-                                        "MMMM Do ,YYYY"
-                                      )
-                                    : row[list.key] || "-"}
-                                </p>
+                              <div
+                                className="accordion-content-col"
+                                key={index}
+                              >
+                                <div>
+                                  
+                                    <div style={{ display: "flex",color:"#888888",fontSize:"12px"}}>
+                                      <label htmlFor="">{list.name}:</label>
+
+                                      <p>
+                                        {isValidDate(row[list.key])
+                                          ? moment(row[list.key]).format(
+                                              "MMMM Do ,YYYY"
+                                            )
+                                          : row[list.key] || "-"}
+                                      </p>
+                                    </div>
+                                    {list.name==='Sold To' &&  <p>{"Retailer"}:</p>}
+                                  
+                                </div>
                               </div>
                             );
                           })}

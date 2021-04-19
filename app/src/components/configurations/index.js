@@ -12,6 +12,7 @@ import { RoleHierarchy } from './components/RoleHierarchy';
 import { TnTFlow } from './components/TnTFlow';
 import { ScanPointsAndAllocation } from './components/ScanPointsAndAllocation';
 import { Anticounterfeit } from './components/Anticounterfeit';
+import ConfigureFeature from './ConfigureFeature'
 
 class Configurations extends Component {
   constructor() {
@@ -219,6 +220,7 @@ class Configurations extends Component {
               </div>
             </TabPanel>
             <TabPanel tabId="two">
+             <ConfigureFeature />
               <br />
               <br />
               <div className="buttons-container">

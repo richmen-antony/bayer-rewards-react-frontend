@@ -624,7 +624,7 @@ fastForward = () => {
                       id: "productname",
                       name: "Product",
                       enableSort: false,
-                      align: "right",
+                      align: "max-width",
                     },
                     {
                       id: "quantity",
@@ -663,6 +663,7 @@ fastForward = () => {
                       {
                         key: "",
                         name: "Sold To",
+                        
                       },
                       { key: "selectedscanneddate", name: "Expiry Date",type:'date' },
                       { key: "prodgroupname", name: "Product Group" },
