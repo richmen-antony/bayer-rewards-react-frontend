@@ -132,7 +132,10 @@ class Configurations extends Component {
           </TabList>
 
           <div className="wrapper">
+          
             <TabPanel tabId="one">
+            <div className="panel">
+
               <div className="col-md-10">
                   <div className="container">
                     <div className="row rm-group">
@@ -218,11 +221,11 @@ class Configurations extends Component {
                 <button onClick={() => this.handleReset()}>Reset <i class="fa fa-redo-alt" aria-hidden="true"></i></button>
                 {button}
               </div>
+            </div>
             </TabPanel>
             <TabPanel tabId="two">
              <ConfigureFeature />
-              <br />
-              <br />
+             
               <div className="buttons-container">
                 <button class="btn">Reset <i class='fas fa-redo-alt'></i></button>
                 <button class="btn">Apply <i class="fa fa-check" aria-hidden="true"></i></button>
