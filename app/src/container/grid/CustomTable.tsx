@@ -1,6 +1,8 @@
 import React from "react";
 import { isValidDate } from "../../utility/helper";
 import moment from "moment";
+import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip'
 
 interface IDataTableColumn {
   id: string;
@@ -224,7 +226,10 @@ const CustomTable: React.FC<IDataTableProps> = ({
                           <i className="fas fa-times-circle"></i>
                         </div>
                       ) : (
-                        row[key.id]
+                        row[key.id]?.length>18? <Tooltip title={row[key.id]} arrow>
+                        <Button>{row[key.id].substr(0,9)} ...</Button>
+                      </Tooltip> : row[key.id]
+                        
                       )}
                     </td>
                   ))}
@@ -253,7 +258,7 @@ const CustomTable: React.FC<IDataTableProps> = ({
                                           : row[list.key] || "-"}
                                       </p>
                                     </div>
-                                    {list.name==='Sold To' &&  <p>{"Retailer"}:</p>}
+                                    {list.name==='Sold To' &&  <p className="label">{"Retailers"}</p>}
                                   
                                 </div>
                               </div>

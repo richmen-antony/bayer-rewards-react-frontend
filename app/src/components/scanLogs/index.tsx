@@ -615,16 +615,16 @@ fastForward = () => {
                     },
                     {
                       id: "firstname",
-                      name: "Customer Name",
+                      name: "Customer Name,ID",
                       enableSort: true,
-                      align: "right",
+                      align: "max-width",
                       appendKey:'userprimaryid'
                     },
                     {
                       id: "productname",
                       name: "Product",
                       enableSort: false,
-                      align: "max-width",
+                      align: "right",
                     },
                     {
                       id: "quantity",

@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PencilEditImg from "../../assets/images/pencil.svg";
 import { withStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { purple } from "@material-ui/core/colors";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch, { SwitchClassKey, SwitchProps } from "@material-ui/core/Switch";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import filterIcon from "../../assets/icons/filter_icon.svg";
+
 
 interface Styles extends Partial<Record<SwitchClassKey, string>> {
   focusVisible?: string;
@@ -15,21 +16,6 @@ interface Styles extends Partial<Record<SwitchClassKey, string>> {
 interface Props extends SwitchProps {
   classes: Styles;
 }
-
-const PurpleSwitch = withStyles({
-  switchBase: {
-    color: purple[300],
-    "&$checked": {
-      color: purple[500],
-    },
-    "&$checked + $track": {
-      backgroundColor: purple[500],
-    },
-  },
-  checked: {},
-  track: {},
-})(Switch);
-
 const IOSSwitch = withStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -85,82 +71,224 @@ const IOSSwitch = withStyles((theme: Theme) =>
   );
 });
 
-const AntSwitch = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: 28,
-      height: 16,
-      padding: 0,
-      display: "flex",
+const header = {
+  mobile: [
+    { title: "Level 1", subTitle: "Dealer" },
+    { title: "Level 2", subTitle: "Sub Dealer" },
+    { title: "Field Sales", subTitle: "" },
+    { title: "Field Sales Manager", subTitle: "" },
+  ],
+  web: [
+    { title: "Field Sales", subTitle: "" },
+    { title: "Field Sales Manager", subTitle: "" },
+    { title: "Country-Admin", subTitle: "Dealer" },
+    { title: "Country-Dev", subTitle: "Sub Dealer" },
+  ],
+};
+
+const data = {
+  mobile: [
+    {
+      label: "Dashboard Overview",
+      isLevelOneToggle: true,
+      isLevelTwoToggle: true,
+      isFieldSalesToggle: true,
+      isFieldSalesManagerToggle: true,
     },
-    switchBase: {
-      padding: 2,
-      color: theme.palette.grey[500],
-      "&$checked": {
-        transform: "translateX(12px)",
-        color: theme.palette.common.white,
-        "& + $track": {
-          opacity: 1,
-          backgroundColor: theme.palette.primary.main,
-          borderColor: theme.palette.primary.main,
-        },
-      },
+    {
+      label: "Dashboard Scan Button",
+      isLevelOneToggle: true,
+      isLevelTwoToggle: true,
+      isFieldSalesToggle: true,
+      isFieldSalesManagerToggle: true,
     },
-    thumb: {
-      width: 12,
-      height: 12,
-      boxShadow: "none",
+    {
+      label: "Redeem Points Button",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
     },
-    track: {
-      border: `1px solid ${theme.palette.grey[500]}`,
-      borderRadius: 16 / 2,
-      opacity: 1,
-      backgroundColor: theme.palette.common.white,
+    {
+      label: "Recently/Most Sold Products",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
     },
-    checked: {},
-  })
-)(Switch);
+    {
+      label: "Inventory Overview",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+    },
+    {
+      label: "Inventory Details",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+    },
+    {
+      label: "Scan History",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+    },
+    {
+      label: "Points History",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+    },
+    {
+      label: "Send Goods Plan",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+    },
+    {
+      label: "Receive Goods Plan",
+      isLevelOneToggle: false,
+      isLevelTwoToggle: false,
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+    },
+  ],
+  web: [
+    {
+      label: "Notification",
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+      isCountryAdminToggle: false,
+      isCountryDevToggle: false,
+    },
+    {
+      label: "Scan Overview",
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+      isCountryAdminToggle: false,
+      isCountryDevToggle: false,
+    },
+    {
+      label: "Dashboard Overview",
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+      isCountryAdminToggle: false,
+      isCountryDevToggle: false,
+    },
+    {
+      label: "Targets Overview",
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+      isCountryAdminToggle: false,
+      isCountryDevToggle: false,
+    },
+    {
+      label: "Overall User Info",
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+      isCountryAdminToggle: false,
+      isCountryDevToggle: false,
+    },
+    {
+      label: "Sales by Region",
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+      isCountryAdminToggle: false,
+      isCountryDevToggle: false,
+    },
+    {
+      label: "Top Selling Customers/Products",
+      isFieldSalesToggle: false,
+      isFieldSalesManagerToggle: false,
+      isCountryAdminToggle: false,
+      isCountryDevToggle: false,
+    },
+  ],
+};
 
 const ConfigureFeature: React.FC = (props) => {
-  // const [count, setCount] = React.useState(0) // The useState hook
-  const [state, setState] = React.useState({
-    checkedA: true,
-    checkedB: true,
-    checkedC: true,
-  });
+  const [activeButton, SetActiveButton] = React.useState("mobile"); // The useState hook
+  const [rows, setRows] = React.useState(data);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    let key = event.target.value;
+    const data = rows[activeButton === "mobile" ? "mobile" : "web"].map(
+      (value: any) => {
+        if (value.label === key) {
+          return (value = {
+            ...value,
+            [event.target.name]: event.target.checked,
+          });
+        }
+        return value;
+      }
+    );
+    rows[activeButton === "mobile" ? "mobile" : "web"] = data;
+    console.log("rows", rows);
+    setRows({ ...rows });
   };
+  const handleButton = (value: string) => {
+    SetActiveButton(value);
+    console.log("called");
+  };
+  useEffect(() => {
+    console.log({ rows });
+    //setRows(rows)
+  });
+  function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+    event.preventDefault();
+    console.info('You clicked a breadcrumb.');
+  }
   return (
     <div>
       <div className="title mt-2">
-      
-          <div className="breadcrums sub-title">
-            <p>{"EMEA >  Africa  >Malawi"}</p>
-          </div>
-          <div className="right-column">
-            <i className="fa fa-search icon"></i>
-            <input
-              placeholder="Search Customer Name"
-              className="input-field"
-              type="text"
-              // onChange='{this.handleSearch}'
-            />
-            <div
-              className="btn-group mobile-web "
-              role="group"
-              aria-label="Basic outlined example"
+        <div className="breadcrums sub-title">
+        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+        <Link color="inherit" href="/" onClick={handleClick}>
+        EMEA
+        </Link>
+        <Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>
+        Africa
+        </Link>
+        <Typography color="textPrimary">Malawi</Typography>
+      </Breadcrumbs>
+          {/* <p>{"EMEA >  Africa  >Malawi"}</p> */}
+        </div>
+        <div className="right-column">
+          <i className="fa fa-search icon"></i>
+          <input
+            placeholder="Search Customer Name"
+            className="input-field"
+            type="text"
+          />
+           <img src={filterIcon} width="17" alt="filter" />
+          <div
+            className="btn-group mobile-web "
+            role="group"
+            aria-label="Basic outlined example"
+          >
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={() => handleButton("mobile")}
             >
-              <button type="button" className="btn btn-outline-primary">
-                Mobile
-              </button>
-              <button type="button" className="btn btn-outline-primary">
-                Web
-              </button>
-            </div>
+              Mobile
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={() => handleButton("web")}
+            >
+              Web
+            </button>
           </div>
-        
+        </div>
       </div>
 
       <div className="card-body configure">
@@ -168,95 +296,98 @@ const ConfigureFeature: React.FC = (props) => {
           <thead>
             <tr>
               <th>T&T Features</th>
-              <th>
-                <div className="config-header">
-                  <img src={PencilEditImg}></img>
-                  <h3>Level One</h3>
-                  <p>Dealer</p>
-                </div>
-              </th>
-              <th>
-                <div className="config-header">
-                  <img src={PencilEditImg}></img>
-                  <h3>Level Two</h3>
-                  <p>Sub Dealer</p>
-                </div>
-              </th>
-              <th>
-                <div className="config-header">
-                  <img src={PencilEditImg}></img>
-                  <h3>Field sales</h3>
-                </div>
-              </th>
-              <th>
-                <div className="config-header">
-                  <img src={PencilEditImg}></img>
-                  <h3>Field Sales Manager</h3>
-                  <p>Dealer</p>
-                </div>
-              </th>
+
+              {header[activeButton === "mobile" ? "mobile" : "web"].map(
+                (value, index) => {
+                  return (
+                    <th>
+                      <div className="config-header">
+                        <img src={PencilEditImg}></img>
+                        <h3>{value.title}</h3>
+                        <p>{value.subTitle}</p>
+                      </div>
+                    </th>
+                  );
+                }
+              )}
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><p  className="text">Dashboard Overview</p></td>
-              <td>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
+            {rows[activeButton === "mobile" ? "mobile" : "web"].map(
+              (value: any, index: number) => {
+                return (
+                  <tr>
+                    <td key={index}>
+                      <p className="text"> {value.label}</p>
+                    </td>
+                    <td>
                       <IOSSwitch
-                        checked={state.checkedB}
+                        checked={
+                          activeButton === "mobile"
+                            ? value.isLevelOneToggle
+                            : value.isFieldSalesToggle
+                        }
                         onChange={handleChange}
-                        name="checkedB"
+                        name={
+                          activeButton === "mobile"
+                            ? "isLevelOneToggle"
+                            : "isFieldSalesToggle"
+                        }
+                        value={value.label}
                       />
-                    }
-                    label="iOS style"
-                  />
-                </FormGroup>
-              </td>
-              <td>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
+                    </td>
+                    <td>
                       <IOSSwitch
-                        checked={state.checkedB}
+                        checked={
+                          activeButton === "mobile"
+                            ? value.isLevelTwoToggle
+                            : value.isFieldSalesManagerToggle
+                        }
                         onChange={handleChange}
-                        name="checkedB"
+                        name={
+                          activeButton === "mobile"
+                            ? "isLevelTwoToggle"
+                            : "isFieldSalesManagerToggle"
+                        }
+                        value={value.label}
                       />
-                    }
-                    label="iOS style"
-                  />
-                </FormGroup>
-              </td>
-              <td>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
+                    </td>
+                    <td>
                       <IOSSwitch
-                        checked={state.checkedB}
+                        checked={
+                          activeButton === "mobile"
+                            ? value.isFieldSalesToggle
+                            : value.isCountryAdminToggle
+                        }
                         onChange={handleChange}
-                        name="checkedB"
+                        name={
+                          activeButton === "mobile"
+                            ? "isFieldSalesToggle"
+                            : "isCountryAdminToggle"
+                        }
+                        value={value.label}
                       />
-                    }
-                    label="iOS style"
-                  />
-                </FormGroup>
-              </td>
-              <td>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
+                    </td>
+                    <td>
                       <IOSSwitch
-                        checked={state.checkedB}
+                        checked={
+                          activeButton === "mobile"
+                            ? value.isFieldSalesManagerToggle
+                            : value.isCountryDevToggle
+                        }
                         onChange={handleChange}
-                        name="checkedB"
+                        name={
+                          activeButton === "mobile"
+                            ? "isFieldSalesManagerToggle"
+                            : "isCountryDevToggle"
+                        }
+                        value={value.label}
                       />
-                    }
-                    label="iOS style"
-                  />
-                </FormGroup>
-              </td>
-            </tr>
+                    </td>
+                  </tr>
+                );
+              }
+            )}
           </tbody>
         </table>
       </div>
