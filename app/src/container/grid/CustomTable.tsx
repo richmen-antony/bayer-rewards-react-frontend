@@ -10,6 +10,7 @@ interface IDataTableColumn {
   enableSort?: boolean;
   align?: string;
   appendKey?: string;
+  width?: string;
 }
 
 interface IDataTableHeadProps {
@@ -87,9 +88,10 @@ const DataTableHead: React.FC<IDataTableHeadProps> = ({
       <tr>
         {columns.map((column) => (
           <th
-            className={`${
-              column.align === "max-width" ? "max-width-header" : ""
-            }`}
+          style={{width:column.width}}
+            // className={`${
+            //   column.align === "max-width" ? "max-width-header" : ""
+            // }`}
           >
             {column.enableSort ? (
               <div onClick={createSortHandler(column.id)}>
@@ -197,9 +199,11 @@ const CustomTable: React.FC<IDataTableProps> = ({
                   {internalColumnData.map((key, index) => (
                     <td
                       key={index}
-                      className={`${
-                        key.align === "max-width" ? "max-width-header" : ""
-                      }`}
+                      style={{width:key.width}}
+                      
+                      // className={`${
+                      //   key.align === "max-width" ? "max-width-header" : ""
+                      // }`}
                     >
                       {row[key.id] && isValidDate(row[key.id]) ? (
                         moment(row[key.id]).format("DD-MM-YYYY")
@@ -226,9 +230,10 @@ const CustomTable: React.FC<IDataTableProps> = ({
                           <i className="fas fa-times-circle"></i>
                         </div>
                       ) : (
-                        row[key.id]?.length>18? <Tooltip title={row[key.id]} arrow>
-                        <Button>{row[key.id].substr(0,9)} ...</Button>
-                      </Tooltip> : row[key.id]
+                        row[key.id]
+                      //   row[key.id]?.length>18? <Tooltip title={row[key.id]} arrow>
+                      //   <Button>{row[key.id].substr(0,9)} ...</Button>
+                      // </Tooltip> : row[key.id]
                         
                       )}
                     </td>

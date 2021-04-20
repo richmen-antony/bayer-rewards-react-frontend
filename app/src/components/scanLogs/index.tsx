@@ -612,48 +612,57 @@ fastForward = () => {
                       name: "Label ID",
                       enableSort: true,
                       align: "right",
+                      width:"120px"
                     },
                     {
                       id: "firstname",
                       name: "Customer Name,ID",
                       enableSort: true,
                       align: "max-width",
-                      appendKey:'userprimaryid'
+                      appendKey:'userprimaryid',
+                      width:"200px"
                     },
                     {
                       id: "productname",
                       name: "Product",
                       enableSort: false,
                       align: "right",
+                      width:"270px"
                     },
                     {
                       id: "quantity",
                       name: "Quantity",
                       enableSort: false,
                       align: "right",
+                      width:"100px"
                     },
                     {
                       id: "scantype",
                       name: "Scan Type",
                       enableSort: false,
                       align: "right",
+                      width:"150px"
                     },{
                       id: "warehousename",
                       name: "Batch ID",
                       enableSort: false,
                       align: "right",
+                      width:"100px"
                     },
                     {
                       id: "selectedscanneddate",
                       name: "Scan Date",
                       enableSort: false,
                       align: "right",
+                      width:"100px"
+                      
                     },
                     {
                       id: "action",
                       name: "Action",
                       enableSort: false,
                       align: "right",
+                      width:"100px"
                     },
                   ]}
                   rows={allScanLogs}

@@ -261,12 +261,15 @@ const ConfigureFeature: React.FC = (props) => {
           {/* <p>{"EMEA >  Africa  >Malawi"}</p> */}
         </div>
         <div className="right-column">
+          <div className="search-configure">
           <i className="fa fa-search icon"></i>
           <input
             placeholder="Search Customer Name"
-            className="input-field"
+            className="search-input-field"
             type="text"
           />
+          </div>
+          
            <img src={filterIcon} width="17" alt="filter" />
           <div
             className="btn-group mobile-web "
