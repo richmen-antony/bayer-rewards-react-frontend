@@ -12,7 +12,7 @@ import { RoleHierarchy } from './components/RoleHierarchy';
 import { TnTFlow } from './components/TnTFlow';
 import { ScanPointsAndAllocation } from './components/ScanPointsAndAllocation';
 import { Anticounterfeit } from './components/Anticounterfeit';
-import ConfigureFeature from './ConfigureFeature'
+import ConfigureFeature from './feature/ConfigureFeature'
 
 class Configurations extends Component {
   constructor() {

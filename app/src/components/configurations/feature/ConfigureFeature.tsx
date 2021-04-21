@@ -1,18 +1,21 @@
 import React, { useEffect } from "react";
-import PencilEditImg from "../../assets/images/pencil.svg";
+import PencilEditImg from "../../../assets/images/pencil.svg";
 import { withStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Switch, { SwitchClassKey, SwitchProps } from "@material-ui/core/Switch";
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import filterIcon from "../../assets/icons/filter_icon.svg";
+import filterIcon from "../../../assets/icons/filter_icon.svg";
+import {headerData,rowsData } from "./Feature";
 
-
+/**
+ * Toggle styles
+ */
 interface Styles extends Partial<Record<SwitchClassKey, string>> {
   focusVisible?: string;
 }
-
+// Toggle props
 interface Props extends SwitchProps {
   classes: Styles;
 }
@@ -71,151 +74,22 @@ const IOSSwitch = withStyles((theme: Theme) =>
   );
 });
 
-const header = {
-  mobile: [
-    { title: "Level 1", subTitle: "Dealer" },
-    { title: "Level 2", subTitle: "Sub Dealer" },
-    { title: "Field Sales", subTitle: "" },
-    { title: "Field Sales Manager", subTitle: "" },
-  ],
-  web: [
-    { title: "Field Sales", subTitle: "" },
-    { title: "Field Sales Manager", subTitle: "" },
-    { title: "Country-Admin", subTitle: "Dealer" },
-    { title: "Country-Dev", subTitle: "Sub Dealer" },
-  ],
-};
 
-const data = {
-  mobile: [
-    {
-      label: "Dashboard Overview",
-      isLevelOneToggle: true,
-      isLevelTwoToggle: true,
-      isFieldSalesToggle: true,
-      isFieldSalesManagerToggle: true,
-    },
-    {
-      label: "Dashboard Scan Button",
-      isLevelOneToggle: true,
-      isLevelTwoToggle: true,
-      isFieldSalesToggle: true,
-      isFieldSalesManagerToggle: true,
-    },
-    {
-      label: "Redeem Points Button",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-    {
-      label: "Recently/Most Sold Products",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-    {
-      label: "Inventory Overview",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-    {
-      label: "Inventory Details",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-    {
-      label: "Scan History",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-    {
-      label: "Points History",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-    {
-      label: "Send Goods Plan",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-    {
-      label: "Receive Goods Plan",
-      isLevelOneToggle: false,
-      isLevelTwoToggle: false,
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-    },
-  ],
-  web: [
-    {
-      label: "Notification",
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-      isCountryAdminToggle: false,
-      isCountryDevToggle: false,
-    },
-    {
-      label: "Scan Overview",
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-      isCountryAdminToggle: false,
-      isCountryDevToggle: false,
-    },
-    {
-      label: "Dashboard Overview",
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-      isCountryAdminToggle: false,
-      isCountryDevToggle: false,
-    },
-    {
-      label: "Targets Overview",
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-      isCountryAdminToggle: false,
-      isCountryDevToggle: false,
-    },
-    {
-      label: "Overall User Info",
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-      isCountryAdminToggle: false,
-      isCountryDevToggle: false,
-    },
-    {
-      label: "Sales by Region",
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-      isCountryAdminToggle: false,
-      isCountryDevToggle: false,
-    },
-    {
-      label: "Top Selling Customers/Products",
-      isFieldSalesToggle: false,
-      isFieldSalesManagerToggle: false,
-      isCountryAdminToggle: false,
-      isCountryDevToggle: false,
-    },
-  ],
-};
 
+
+/**
+ * Configure Feature Functional Component
+ * @param props 
+ * @returns 
+ */
 const ConfigureFeature: React.FC = (props) => {
   const [activeButton, SetActiveButton] = React.useState("mobile"); // The useState hook
-  const [rows, setRows] = React.useState(data);
+  const [rows, setRows] = React.useState(rowsData);
 
+/**
+ * Function based on change toggle active or inactive
+ * @param event 
+ */
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let key = event.target.value;
     const data = rows[activeButton === "mobile" ? "mobile" : "web"].map(
@@ -230,17 +104,21 @@ const ConfigureFeature: React.FC = (props) => {
       }
     );
     rows[activeButton === "mobile" ? "mobile" : "web"] = data;
-    console.log("rows", rows);
+    // update the state value
     setRows({ ...rows });
   };
+  /**
+   * Function to handle active button ,where based on mobile and web category
+   * @param value 
+   */
   const handleButton = (value: string) => {
+    // call the SetActiveButton and update the activeButton value 
     SetActiveButton(value);
-    console.log("called");
   };
-  useEffect(() => {
-    console.log({ rows });
-    //setRows(rows)
-  });
+  /**
+   * Function handle breadcrumb selection
+   * @param event 
+   */
   function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     event.preventDefault();
     console.info('You clicked a breadcrumb.');
@@ -253,7 +131,7 @@ const ConfigureFeature: React.FC = (props) => {
         <Link color="inherit" href="/" onClick={handleClick}>
         EMEA
         </Link>
-        <Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>
+        <Link color="inherit" href="/" onClick={handleClick}>
         Africa
         </Link>
         <Typography color="textPrimary">Malawi</Typography>
@@ -302,7 +180,7 @@ const ConfigureFeature: React.FC = (props) => {
             <tr>
               <th>T&T Features</th>
 
-              {header[activeButton === "mobile" ? "mobile" : "web"].map(
+              {headerData[activeButton === "mobile" ? "mobile" : "web"].map(
                 (value, index) => {
                   return (
                     <th>
@@ -399,5 +277,5 @@ const ConfigureFeature: React.FC = (props) => {
     </div>
   );
 };
-
+// export name of component 
 export default ConfigureFeature;
