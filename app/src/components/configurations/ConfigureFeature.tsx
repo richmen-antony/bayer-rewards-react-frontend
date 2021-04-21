@@ -269,8 +269,10 @@ const ConfigureFeature: React.FC = (props) => {
             type="text"
           />
           </div>
-          
+           <button>
            <img src={filterIcon} width="17" alt="filter" />
+           </button>
+           
           <div
             className="btn-group mobile-web "
             role="group"
@@ -278,14 +280,14 @@ const ConfigureFeature: React.FC = (props) => {
           >
             <button
               type="button"
-              className="btn btn-outline-primary"
+              className={`btn btn-outline-primary ${activeButton==='mobile'? "active":""}`}
               onClick={() => handleButton("mobile")}
             >
               Mobile
             </button>
             <button
               type="button"
-              className="btn btn-outline-primary"
+              className={`btn btn-outline-primary ${activeButton==='web'? "active":""}`}
               onClick={() => handleButton("web")}
             >
               Web

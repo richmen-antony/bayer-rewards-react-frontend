@@ -144,12 +144,38 @@ top: 23px;
   align-items: center;
   .search-configure{
     border-bottom: 1px solid;
-
+    padding: 5px;
+    i{
+      padding-right: 20px;
+    }
+     
     .search-input-field{
       border: 0px;
-  
-    }
+      outline:0;
+      background-color: #FAFAFA;
+     
 
-  }
+    }}
+    button{
+      color: #080808;
+      background-color: #FFFFFF;
+      border-color: #dce4ea;
+      padding: 5px;
+      margin-left: 10px;
+     }
   
+}
+
+.my-tablist{
+ 
+  button[aria-selected='true']{
+        font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+
+  }::after{
+    border-bottom: 3px solid #006CF8 !important;
+  }
+ 
+  
+
 }
