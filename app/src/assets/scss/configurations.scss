@@ -1,57 +1,53 @@
-// * {
-//     font-family: 'Lato', sans-serif;
-//     padding: 0;
-//     margin: 0;
-//     font-size: 14px;
-//   }
-  
-  .stepper-container-horizontal {
-    border-radius: 5px;
-    margin: 40px auto;
-    width: 100%;
-  }
-  
-  .buttons-container {
-    text-align: right;
-    padding-right:10%;
-    position: absolute;
-    right: 0;
-    bottom: 20px;
-    button {
-      margin: 0 2rem;
-      width: 100px; 
-      padding: 4px;
-      background-color: blue; color: white;
-      border: 1px ;
-    }
-  }
-  .card-container{
-    margin: 10px auto;
-    width: 100%;
-    // border-radius: 15px;
-    //background: hsla(0, 0%, 100%, 1) 0% 0% no-repeat padding-box;
-    //background-color: #F1F2F5;
-    cursor: pointer;
-    transition: 0.4s;
-    position: relative;
-    div[role="tablist"]{
-      border-bottom: 0;
-    }
+.stepper-container-horizontal {
+  border-radius: 5px;
+  margin: 40px auto;
+  width: 100%;
 }
-  
-.configure-card{
-  background-color: #F1F2F5;
+
+.buttons-container {
+  text-align: right;
+  padding-right: 10%;
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+  button {
+    margin: 0 2rem;
+    min-width: 150px;
+    padding: 10px;
+    background-color: #006cf8;
+    color: white;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+    border: 0.5px solid rgba(0, 108, 248, 1);
+    border-radius: 10px;
+  }
+  .reset {
+    color: #000000;
+    background: #ffffff;
+  }
 }
-.mobile-web{
+.card-container {
+  margin: 10px auto;
+  width: 100%;
+  cursor: pointer;
+  transition: 0.4s;
+  position: relative;
+  div[role="tablist"] {
+    border-bottom: 0;
+  }
+}
+
+.configure-card {
+  background-color: #f1f2f5;
+}
+.mobile-web {
   margin-left: 60px;
-  button{
+  button {
     width: 100px;
   }
-
 }
 
-.card-body.configure{
-  background-color: #FAFAFA;
+.card-body.configure {
+  background-color: #fafafa;
   border-radius: 15px;
   margin: 20px;
   height: 490px;
@@ -59,123 +55,169 @@
   overflow: auto;
   padding: 0;
 }
-.config-header{
+.config-header {
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 100px;
-  background: rgba(255, 255, 255, 1) ;
+  background: rgba(255, 255, 255, 1);
   box-shadow: 0px 6px 6px rgba(168, 168, 168, 0.14);
-    border: 1px solid rgba(186, 186, 186, 1);
-    border-radius: 20px;
-    position: relative;
-    padding: 25px 55px 25px 20px;
-    h3{
-      font-size: 20px;
-      color: #10384F;
-      margin: 0;
+  border: 1px solid rgba(186, 186, 186, 1);
+  border-radius: 20px;
+  position: relative;
+  padding: 25px 55px 25px 20px;
+  h3 {
+    font-size: 20px;
+    color: #10384f;
+    margin: 0;
     line-height: normal;
-    }
-    p{
-      color: #5A5A5A;
-      font-size: 18px;
-      margin: 0;
+  }
+  p {
+    color: #5a5a5a;
+    font-size: 18px;
+    margin: 0;
     line-height: normal;
     font-weight: 400;
-    }
-    img{
-      width: 20px;
-height: 20px;
-position: absolute;
-right: 20px;
-top: 23px;
-    }
+  }
+  img {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 20px;
+    top: 23px;
+  }
 }
-.config-table{
+.config-table {
   width: 100%;
-  th{
+  th {
     padding: 20px;
     position: sticky;
     top: 0;
     z-index: 1;
-    background: #FAFAFA;
+    background: #fafafa;
     vertical-align: bottom;
   }
-  td{
+  td {
     padding: 10px 20px;
     text-align: center;
-  .text{
-    color:#212121;
-    font-size: 16px;
-    text-align: left;
-    
+    .text {
+      color: #212121;
+      font-size: 16px;
+      text-align: left;
+    }
+  }
+}
+.title {
+  padding: 20px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel {
+  border-radius: 20px;
+  background-color: #ffffff;
+  padding: 30px;
+  height: 800px;
+}
+
+.right-column {
+  display: flex;
+  align-items: center;
+  .search-configure {
+    border-bottom: 1px solid;
+    padding: 5px;
+    i {
+      padding-right: 20px;
+    }
+
+    .search-input-field {
+      border: 0px;
+      outline: 0;
+      background-color: #fafafa;
+    }
+  }
+  button {
+    color: #080808;
+    background-color: #ffffff;
+    border-color: #dce4ea;
+    padding: 5px;
+    margin-left: 10px;
   }
 }
 
+.my-tablist {
+  button[aria-selected="true"] {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+  }
+  ::after {
+    border-bottom: 3px solid #006cf8 !important;
+  }
 }
-.title{
-  padding: 20px 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+
+// dev configuration
+.dev-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  .title {
+    color: #10384f;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  button {
+  
+    background-color: rgba(0, 108, 248, 1);
+    border-radius: 5px;
+    text-align: center;
+    padding: 10px 20px;
+    color: #FFFFFF;
+    border: 0.5px solid #006cf8;
+  }
+  
 }
-.panel{
-  border-radius: 20px;
-    background-color: #FFFFFF;
-    padding: 30px;
+.card-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
+.pencilEditImg{
+  width: 20px;
+  height: 20px;
+}
+
+
+.checkbox-warning-filled [type="checkbox"][class*='filled-in']:checked+label:after {
+  border-color: #28a745 !important;
+  background-color: #28a745;
+}
+
 @media only screen and (max-width: 1440px) {
-  .config-header{
-    h3{
-        font-size: 17px;
-    } 
-    p{
+  .config-header {
+    h3 {
+      font-size: 17px;
+    }
+    p {
       font-size: 15px;
     }
-    img{
+    img {
       width: 16px;
       height: 16px;
     }
-  } 
-}
-
-.right-column{
-  display: flex;
-  align-items: center;
-  .search-configure{
-    border-bottom: 1px solid;
-    padding: 5px;
-    i{
-      padding-right: 20px;
-    }
-     
-    .search-input-field{
-      border: 0px;
-      outline:0;
-      background-color: #FAFAFA;
-     
-
-    }}
-    button{
-      color: #080808;
-      background-color: #FFFFFF;
-      border-color: #dce4ea;
-      padding: 5px;
-      margin-left: 10px;
-     }
-  
-}
-
-.my-tablist{
- 
-  button[aria-selected='true']{
-        font-family: 'Open Sans', sans-serif;
-    font-weight: 600;
-
-  }::after{
-    border-bottom: 3px solid #006CF8 !important;
   }
- 
-  
-
+  .panel {
+    border-radius: 20px;
+    background-color: #ffffff;
+    padding: 30px;
+    height: 600px;
+  }
+  .dev-header {
+    padding: 10px;
+    .title {
+      color: #10384f;
+      font-size: 18px;
+      font-weight: 400;
+    }
+  }
 }

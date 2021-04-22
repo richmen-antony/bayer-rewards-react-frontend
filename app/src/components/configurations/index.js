@@ -13,6 +13,7 @@ import { TnTFlow } from './components/TnTFlow';
 import { ScanPointsAndAllocation } from './components/ScanPointsAndAllocation';
 import { Anticounterfeit } from './components/Anticounterfeit';
 import ConfigureFeature from './feature/ConfigureFeature'
+import DevConfiguration from './dev';
 
 class Configurations extends Component {
   constructor() {
@@ -232,12 +233,15 @@ class Configurations extends Component {
               </div>
             </TabPanel>
             <TabPanel tabId="three">
-              <div className="buttons-container">
+            <div className="panel">
+              <DevConfiguration />
+              </div>
+              {/* <div className="buttons-container">
                 <br />
                 <br />
                 <button class="btn">Reset <i class='fas fa-redo-alt'></i></button>
                 <button class="btn">Apply <i class="fa fa-check" aria-hidden="true"></i></button>
-              </div>
+              </div> */}
             </TabPanel>
 
             
