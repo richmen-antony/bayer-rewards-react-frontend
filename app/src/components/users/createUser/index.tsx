@@ -5,6 +5,10 @@ import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from '../../../utility/widgets/input';
 import '../../../assets/scss/users.scss';
 import { toastSuccess } from '../../../utility/widgets/toaster';
+import { setLocalStorageData } from '../../../utility/base/localStore';
+import filterIcon from "../../assets/icons/filter_icon.svg";
+import { StarRateTwoTone, TrainRounded, TramOutlined } from '@material-ui/icons';
+import { convertCompilerOptionsFromJson } from 'typescript';
 
 const options = [
     { value: "father", text: "Father" },
@@ -14,81 +18,206 @@ const options = [
 const stepsArray = [
     "Personal Information",
     "Geographical Mapping"
+    // "With-Holding Tax"
 ];
-const countryList = [
-    { value: '001', text: "India" },
-    { value: '002', text: "London" },
-    { value: "003", text: "Australia" },
-];
-const stateList = [
-    { value: '001', text: "Tamil Nadu" },
-    { value: '002', text: "Kerala" },
-    { value: "003", text: "Bangalore" },
-];
-const districtList = [
-    { value: '001', text: "Vellore" },
-    { value: '002', text: "Chengalpattu" },
-    { value: "003", text: "kancheepuram" },
-];
-const subDistrictList = [
-    { value: '001', text: "aaa" },
-    { value: '002', text: "bbb" },
-    { value: "003", text: "ccc" },
-];
-const villageList = [
+
+const demo = [
     { value: '001', text: "village1" },
     { value: '002', text: "village2" },
     { value: "003", text: "village3" },
 ];
 
+const getStoreData = {
+    country: 'MAL',
+    Language: 'EN-US'
+}
+
 class CreateUser extends Component<any, any>{
     constructor(props: any) {
         super(props);
         this.state = {
+            geographicFields : [],
+            dynamicFields : [],
+            countryList : [],
+            hierarchyList : [],
+            isRendered: false,
+
             selectedValue : '',
             currentStep: 1,
             isActive: false,
             fromDateErr: '',
             toDateErr: '',
             userTypeErr: '',
-            userIdErr:'',
-            firstNameErr:'',
-            lastNameErr:'',
+            userNameErr:'',
+            accNameErr: '',
+            ownerNameErr:'',
             phoneErr:'',
+            emailErr:'',
+            postalCodeErr: '',
             countryErr:'',
             stateErr: '',
             districtErr: '',
             subDistrictErr: '',
             villageErr: '',
+
             userData : {
                 'fromDate' : new Date().toISOString().substr(0, 10),
                 'toDate' : new Date().toISOString().substr(0, 10),
                 'userType' : '',
-                'userId' : '',
-                'firstName' : '',
-                'lastName' : '',
+                'userName' : '',
+                'accName' : '',
+                'ownerName' : '',
                 'phone'  : '',
+                'email' : '',
+                'postalCode':'',
                 'country': '',
                 'state':'',
                 'district':'',
                 'subDistrict': '',
                 'village':''
             },
-            allUserDatas : []
+            allUserDatas : [],
+            geographicalLocation : ["country", "state", "district","subdistrict", "Village"],
+            fileds: [
+                'country',
+                'state' 
+        ],
+            country : [
+                { value: '001', text: "India" },
+                { value: '002', text: "London" },
+                { value: "003", text: "Australia" },
+            ],
+            state : [
+                { value: '001', text: "Tamil Nadu" },
+                { value: '002', text: "Kerala" },
+                { value: "003", text: "Bangalore" },
+            ],
+            district : [
+                { value: '001', text: "Vellore" },
+                { value: '002', text: "Chengalpattu" },
+                { value: "003", text: "kancheepuram" },
+            ],
+            subDistrict : [
+                { value: '001', text: "thirupathur" },
+                { value: '002', text: "bagalore" },
+                { value: "003", text: "chennai" },
+            ],
+            village : [
+                { value: '001', text: "village1" },
+                { value: '002', text: "village2" },
+                { value: "003", text: "village3" },
+            ]
         }
+    }
+
+    componentDidMount() {
+        ///API to get country and language settings
+        
+        this.getCountryList();
+        this.getGeographicFields();
+        this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
+        setTimeout(() => {
+            this.getDynamicOptionFields();
+        },0);
+
+
+    }
+
+    getCountryList() {
+         //service call
+         let res = [{ value: 'IND', text: 'INDIA'}, { value: 'MAL', text: 'Malawi'}];
+         this.setState({countryList: res});
+    }
+    getNextHierarchy(country: any, nextLevel: any) {
+        //API to get state options for initial set since mal is default option in country
+           const data = { 
+                type: country,
+                id: nextLevel
+            }
+
+        // let stateResponse = [{}];
+        let nextHierarchyResponse = [{text: 'Tamilnadu', value: 'TAMIL'}, {text: 'Bangalore', value: 'BANG'}];
+        this.setState({hierarchyList: nextHierarchyResponse});
+   }
+   getGeographicFields() {
+        //service call to get dynamic fields
+        // servicesVersion().then((res: any) => {
+        //     let res = ['country', 'state', 'district', 'village'];
+        // }).catch((err: any) => {
+        // })
+
+        let res = ['country', 'state', 'district', 'village'];
+        setTimeout(() => {
+            this.setState({ geographicFields : res});
+        },0)
+   }
+    getDynamicOptionFields() {
+         let setFormArray: any = [];
+        this.state.geographicFields.map((list: any, i: number) => {
+            setFormArray.push({
+                name: list,
+                placeHolder: true,
+                value: list === 'country' ?  getStoreData.country : '',
+                options: list === 'country' ?  this.state.countryList : (i==1) ?  this.state.hierarchyList : '',
+                error: ''
+            });
+        })
+        this.setState({dynamicFields: setFormArray});
+   }
+   getOptionLists = (type: any, value: any, index: any) => {
+       let nextHierarchyName = this.state.dynamicFields[index+1]['name'];
+       console.log('nextLevel', nextHierarchyName);
+       //API to get options
+       //params 
+        // if ( index !==  this.state.dynamicFields.length-1) {
+        //     const data = { 
+        //         type: type,  // region, 
+        //         id: value,
+        //         nextHierarchy: nextHierarchyName
+        //     }
+        // }
+        // let res = [{}];
+        let stateResponse = [{text: 'Tamilnadu', value: 'TAMIL'}, {text: 'Bangalore', value: 'BANG'}];
+        let districtResponse = [{text: 'vellore', value: 'VEL'}, { text: 'chennai', value: 'CHE'}];
+        let villageResponse = [{text: 'demo', value: 'DEM'}, { text: 'demo1', value: 'DEM1'}];
+
+        this.state.dynamicFields.map((list: any) => {
+            if(list.name === nextHierarchyName){
+                list.options = stateResponse; 
+            }
+            // } else if(list.name === 'district'){
+            //     list.options = districtResponse; 
+            // } else if ( list.name === 'village'){
+            //     list.options = villageResponse; 
+            // }
+        })
+    }
+
+    handleOptionChange = () => {
+
     }
 
     handleClick(clickType: any) {
         let formValid=true, geographicFormValid=true;
-        if (clickType === "next"){
+        if (clickType === "personalNext"){
             formValid = this.checkValidation();
-        } else if (clickType === "createUser"){
+        } else if (clickType === "createUser") {
+            // formValid = this.geographicValidation();
             geographicFormValid = this.geographicValidation();
             formValid = false;
         }
+        // }else if (clickType === "createUser"){
+        //     geographicFormValid = this.geographicValidation();
+        //     formValid = false;
+        // }
         const { currentStep } = this.state;
         let newStep = currentStep;
-        clickType === "next" ? newStep++ : newStep--;
+        if  (clickType == "personalNext" || clickType == "geographicNext") {
+            newStep = newStep+1;
+        } else {
+            newStep = newStep-1;
+        }
+        alert(formValid);
 
         if (newStep > 0 && newStep <= stepsArray.length) {
             if ( formValid ) {
@@ -102,7 +231,9 @@ class CreateUser extends Component<any, any>{
                 this.setState({
                     allUserDatas: [...this.state.allUserDatas, this.state.userData]
                 });
+                // setLocalStorageData('userData', this.state.allUserDatas);
                 toastSuccess('User Created Successfully');
+                this.props.history.push('/userList');
             } else {
                 alert('fail');
             }
@@ -163,23 +294,23 @@ class CreateUser extends Component<any, any>{
         } else {
             this.setState({ userTypeErr : '' });
         }
-        if (userData.userId === "" || userData.userId === null) {
-            this.setState({ userIdErr: 'Please enter the user ID' });
+        if (userData.userName === "" || userData.userName === null) {
+            this.setState({ userNameErr: 'Please enter the user Name' });
             formValid = false;
         } else {
-            this.setState({ userIdErr : '' });
+            this.setState({ userNameErr : '' });
         }
-        if (userData.firstName === "" || userData.firstName === null) {
-            this.setState({ firstNameErr: 'Please enter the first name' });
+        if (userData.accName === "" || userData.accName === null) {
+            this.setState({ accNameErr: 'Please enter the Account Name' });
+            formValid = false;
+        } else {
+            this.setState({ accNameErr : '' });
+        }
+        if (userData.ownerName === "" || userData.ownerName === null) {
+            this.setState({ ownerNameErr: 'Please enter the Owner name' });
             formValid = false;
         }  else {
-            this.setState({ firstNameErr : '' });
-        }
-        if (userData.lastName === "" || userData.lastName === null) {
-            this.setState({ lastNameErr: 'Please enter the last name' });
-            formValid = false;
-        } else {
-            this.setState({ lastNameErr : '' });
+            this.setState({ ownerNameErr : '' });
         }
         if (userData.phone === "" || userData.phone === null) {
             this.setState({ phoneErr: 'Please enter the phone' });
@@ -187,42 +318,64 @@ class CreateUser extends Component<any, any>{
         } else {
             this.setState({ phoneErr : '' });
         }
+        if (userData.email === "" || userData.lastName === null) {
+            this.setState({ emailErr: 'Please enter the Email' });
+            formValid = false;
+        } else {
+            this.setState({ emailErr : '' });
+        }
         return formValid;
     }
 
     geographicValidation = () => {
         let geographicFormValid = true;
         let userData = this.state.userData;
-        if (userData.country === "" || userData.country === null) {
-            this.setState({ countryErr : 'Please enter the Country' });
-            geographicFormValid = false;
-        } else {
-            this.setState({ countryErr : '' });
-        }
-        if (userData.state === "" || userData.state === null) {
-            this.setState({ stateErr : 'Please enter the State' });
-            geographicFormValid = false;
-        } else {
-            this.setState({ stateErr : '' });
-        }
-        if (userData.district === "" || userData.district === null) {
-            this.setState({ districtErr : 'Please enter the District' });
-            geographicFormValid = false;
-        } else {
-            this.setState({ districtErr : '' });
-        }
-        if (userData.subDistrict === "" || userData.subDistrict === null) {
-            this.setState({ subDistrictErr : 'Please enter the Sub District' });
-            geographicFormValid = false;
-        } else {
-            this.setState({ subDistrictErr : '' });
-        }
-        if (userData.village === "" || userData.village === null) {
-            this.setState({ villageErr : 'Please enter the village' });
-            geographicFormValid = false;
-        } else {
-            this.setState({ villageErr : '' });
-        }
+        let errMsg ='';
+
+        this.state.geographicalLocation.map((location: any) => {
+            let locationLower = location.toLowerCase();
+            let userDatas = userData+'.'+locationLower;
+            errMsg = locationLower+'Err';
+            alert(userDatas);
+            if ( userDatas === '' || userDatas === null){
+                alert('hi');
+                this.setState({ errMsg : 'Please enter the'+ locationLower });
+                geographicFormValid = false;
+            } else {
+                this.setState({ errMsg : '' });
+            }
+        })
+
+        // if (userData.country === "" || userData.country === null) {
+        //     this.setState({ countryErr : 'Please enter the Country' });
+        //     geographicFormValid = false;
+        // } else {
+        //     this.setState({ countryErr : '' });
+        // }
+        // if (userData.state === "" || userData.state === null) {
+        //     this.setState({ stateErr : 'Please enter the State' });
+        //     geographicFormValid = false;
+        // } else {
+        //     this.setState({ stateErr : '' });
+        // }
+        // if (userData.district === "" || userData.district === null) {
+        //     this.setState({ districtErr : 'Please enter the District' });
+        //     geographicFormValid = false;
+        // } else {
+        //     this.setState({ districtErr : '' });
+        // }
+        // if (userData.subDistrict === "" || userData.subDistrict === null) {
+        //     this.setState({ subDistrictErr : 'Please enter the Sub District' });
+        //     geographicFormValid = false;
+        // } else {
+        //     this.setState({ subDistrictErr : '' });
+        // }
+        // if (userData.village === "" || userData.village === null) {
+        //     this.setState({ villageErr : 'Please enter the village' });
+        //     geographicFormValid = false;
+        // } else {
+        //     this.setState({ villageErr : '' });
+        // }
         return geographicFormValid;
     }
 
@@ -231,18 +384,54 @@ class CreateUser extends Component<any, any>{
             userData : {
                 fromDate: '',
                 toDate: '',
-                userId: '',
+                userName: '',
+                accName: '',
                 userType:'',
-                firstName:'',
-                lastName:'',
+                ownerName:'',
+                email:'',
                 phone:''
             }
         });
     }
- 
+
+    testingChange = (e: any,data: any) => {
+        data.value = e.target.value;
+    }
+
     render(){
-        const { currentStep,userData, fromDateErr, toDateErr, userIdErr,userTypeErr,firstNameErr,lastNameErr,phoneErr, countryErr,stateErr,districtErr,subDistrictErr,villageErr} = this.state;
-        console.log('sttae', this.state);
+        const { currentStep,userData, fromDateErr, toDateErr, userNameErr,accNameErr, userTypeErr,ownerNameErr,phoneErr,emailErr,countryErr,stateErr,districtErr,subDistrictErr,villageErr,geographicalLocation, country,state,district,subdistrict,village} = this.state;
+
+        const locationList = geographicalLocation?.map((location: any, index:number) => {
+            let locationLower = location.toLowerCase();
+            let value = userData+'.'+locationLower;
+            return (
+                <>
+                    {(index != 0) &&
+                        <div className={index === 0 ? 'col-sm-12' : 'col-sm-3'}>
+                        <Dropdown
+                        name={locationLower}
+                        label={locationLower}  
+                        options={state}
+                        handleChange={this.handlePersonalChange}
+                        value={value}
+                        isPlaceholder />
+                        {locationLower+'Err' && <span className="error">{ locationLower+'Err' } </span>}
+                    </div>
+                    }
+                </>
+            );
+        });
+
+        let nextButton;
+        if ( currentStep === 1) {
+            nextButton = <button className='btn buttonColor createBtn' onClick={()=>this.handleClick('personalNext')}>Next</button>
+        } else if (currentStep === 2) {
+            nextButton = <button className='btn buttonColor createBtn' onClick={()=>this.handleClick('createUser')}>Create User</button>
+        }
+        // } else {
+        //     nextButton = <button className='btn buttonColor createBtn' onClick={()=>this.handleClick('createUser')}>Create User</button>
+        // }
+      
         return(
             <div>
                 <div className="stepper-container-horizontal">
@@ -253,9 +442,35 @@ class CreateUser extends Component<any, any>{
                         stepColor="#555555"
                     />
                 </div>
+                <>
+                
+                <div className='row'>
+                   { this.state.dynamicFields.map((list: any, index: number) =>
+                    <>
+                        <div className={index === 0 ? 'col-sm-12' : 'col-sm-3'}>
+
+                            <Dropdown
+                            name={list.name}
+                            options={list.options}
+                            handleChange={(list: any) => {
+                                list.value = list.value;
+                                this.setState({isRendered : true});
+                                this.getOptionLists(list.name, list.value, index);
+                            }}
+                            value={list.value}
+                            isPlaceholder />
+                            { list.error && <span className="error">{list.error}</span> }
+                        </div>
+                    </>
+                    )}
+                </div>
+                
+                </>
                 <div className="col-md-10">
                     <label className="font-weight-bold pt-4">{stepsArray[currentStep-1]}</label>
                     <div className="container">
+                    {currentStep == 1 ? (
+                        <>
                         <div className="row effectiveDate form-group">
                                 <div className="col-sm-3">
                                     <label className="font-weight-bold pt-4">Effective From</label>
@@ -268,7 +483,7 @@ class CreateUser extends Component<any, any>{
                                     {toDateErr && <span className="error">{ toDateErr } </span>}
                                 </div>
                         </div>
-                        {currentStep == 1 ? (
+                       
                         <div className="personal">
                             <div className="row age form-group">
                                 <div className="col-sm-3">
@@ -277,89 +492,71 @@ class CreateUser extends Component<any, any>{
                                     label="User Type"
                                     options={options}
                                     handleChange={this.handlePersonalChange}
-                                    value={userData.userType} />
+                                    value={userData.userType}
+                                    isPlaceholder />
                                     {userTypeErr && <span className="error">{ userTypeErr } </span>}
                                 </div>
                                 <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="userId" placeHolder="User Id" value={userData.userId} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                    {userIdErr && <span className="error">{ userIdErr } </span>}
+                                    <Input type="text" className="form-control" name="userName" placeHolder="User Name" value={userData.userName} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    {userNameErr && <span className="error">{ userNameErr } </span>}
+                                </div>
+                                <div className="col-sm-3">
+                                    <Input type="text" className="form-control" name="accName" placeHolder="Account name" value={userData.accName} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    {accNameErr && <span className="error">{ accNameErr } </span>}
                                 </div>
                             </div>
                             <div className="row age form-group">
                                 <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="firstName" placeHolder="First Name" value={userData.firstName} onChange={this.handlePersonalChange} />
-                                    {firstNameErr && <span className="error">{ firstNameErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="lastName" placeHolder="Last Name" value={userData.lastName} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                    {lastNameErr && <span className="error">{ lastNameErr } </span>}
+                                    <Input type="text" className="form-control" name="ownerName" placeHolder="Owner Name" value={userData.ownerName} onChange={this.handlePersonalChange} />
+                                    {ownerNameErr && <span className="error">{ ownerNameErr } </span>}
                                 </div>
                                 <div className="col-sm-3">
                                     <Input type="number" className="form-control" name="phone" placeHolder="Mobile Number" value={userData.phone} onChange={(e: any)=>this.handlePersonalChange(e)} />
                                     {phoneErr && <span className="error">{ phoneErr } </span>}
                                 </div>
+                                <div className="col-sm-3">
+                                    <Input type="text" className="form-control" name="email" placeHolder="EMail" value={userData.email} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    {emailErr && <span className="error">{ emailErr } </span>}
+                                </div>
                             </div>
-                        </div>) : (
+                        </div>
+                        </>) : (
                         <div className="geographical">
                             <div className="row age" style={{marginBottom: '14px'}}>
+                                {geographicalLocation.length > 0 &&
                                 <div className="col-sm-3">
                                     <Dropdown
-                                        name="country"  
-                                        label="Country"
-                                        options={countryList}
+                                        name={geographicalLocation[0]}  
+                                        label={geographicalLocation[0]}
+                                        options={country}
                                         handleChange={this.handlePersonalChange}
-                                        value={userData.country} />
-                                        {countryErr && <span className="error">{ countryErr } </span>}
+                                        value={userData.country}
+                                        isPlaceholder />
+                                        {geographicalLocation[0]+'Err' && <span className="error">{ geographicalLocation[0]+'Err' } </span>}
+                                </div> }
+                                <div className="col-sm-3">
+                                    <Input type="number" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    {/* {postalCodeErr && <span className="error">{ postalCodeErr } </span>} */}
                                 </div>
                             </div>
-                            <div className="row age">
-                                <div className="col-sm-3">
-                                    <Dropdown
-                                        name="state"  
-                                        label="State"
-                                        options={stateList}
-                                        handleChange={this.handlePersonalChange}
-                                        value={userData.state} />
-                                        {stateErr && <span className="error">{ stateErr } </span>}
-                                </div>
-                                <div className=" col-sm-3">
-                                    <Dropdown
-                                    name="district"  
-                                    label="District"
-                                    options={districtList}
-                                    handleChange={this.handlePersonalChange}
-                                    value={userData.district} />
-                                    {districtErr && <span className="error">{ districtErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <Dropdown
-                                        name="subdistrict"  
-                                        label="Sub District"
-                                        options={subDistrictList}
-                                        handleChange={this.handlePersonalChange}
-                                        value={userData.subDistrict} />
-                                        {subDistrictErr && <span className="error">{ subDistrictErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <Dropdown
-                                        name="village"  
-                                        label="Village"
-                                        options={villageList}
-                                        handleChange={this.handlePersonalChange}
-                                        value={userData.village} />
-                                        {villageErr && <span className="error">{ villageErr } </span>} 
-                                </div>
-                            </div> 
+                            {geographicalLocation.length > 1 &&
+                                <div className="row age">
+                                    {locationList}
+                                </div> 
+                            }
+                            {/* <div className="row age" style={{marginBottom: '14px'}}>
+                               <textarea rows:number='5' cols:number='20' />
+                            </div> */}
                         </div>)}
                     </div>
                     <div className="submit">
                         <div className="">
                             {this.state.currentStep == 1 && <button className="btn btn-outline-secondary buttonStyle" onClick={()=>this.reset()}> Cancel</button>}
-                            {stepsArray.length == this.state.currentStep &&
+                            {(this.state.currentStep !==1 ) &&
                             <button className="btn btn-outline-secondary buttonStyle" onClick={() => this.handleClick('back')}>Back</button>}
                         </div>
                         <div className="">
-                            <button className={currentStep === stepsArray.length ? 'btn buttonColor createBtn' : 'btn buttonStyle buttonColor'} onClick={() => this.handleClick(currentStep === stepsArray.length ? "createUser" : 'next')}>{currentStep === stepsArray.length ? 'Create User' : 'Next'}</button> 
+                            {nextButton}
                         </div>
                     </div>
                 </div>

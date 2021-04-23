@@ -15,6 +15,8 @@ export interface DropdownProps {
     handleChange?: any;
     value: any;
     name: any;
+    isPlaceholder?: boolean;
+    isLabel?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -70,7 +72,9 @@ const useStyles = makeStyles((theme: Theme) =>
  *   label="Age"
  *   options={this.options}
  *   handleChange={this.handleChange}
- *   value={this.state.selectedValue} />
+ *   value={this.state.selectedValue}
+ *   isPlaceholder   // With placeholder
+ *   isLabel  />    // with Label
  */
 
 export const Dropdown = ({
@@ -81,22 +85,27 @@ export const Dropdown = ({
     handleChange,
     value,
     name,
+    isPlaceholder,
+    isLabel,
     ...props
   }: DropdownProps) => {
   const classes = useStyles();
   const labelId = `${value}-label`;
+  console.log('value=====>', options);
 
   return (
     <div>
         <FormControl variant="outlined" className={`${classes.root} ${classes.formControl}`}>
-            <InputLabel htmlFor={labelId}>{label}</InputLabel>
+            {isLabel && <InputLabel htmlFor={labelId}>{label}</InputLabel>}
             <Select
             name={name}
             labelId={labelId}
             value={value}
-            label={label}
-            onChange={handleChange}>
-            {options?.map((person: any) => (
+            onChange={handleChange}
+            displayEmpty = {isPlaceholder ? true : false}
+            >
+            {isPlaceholder && <MenuItem value="" disabled>{label}</MenuItem>}
+            {options && options.map((person: any) => (
                 <MenuItem key={person.value} value={person.value}>
                         {person.text}
                     </MenuItem>

@@ -57,7 +57,7 @@ type States = {
   totalData: number;
   isFiltered: boolean;
   userRole: string;
-  tooltipOpen: boolean;
+  // tooltipOpen: boolean;
   startIndex: number;
   endIndex: number;
   isLoader: boolean;
@@ -111,11 +111,11 @@ class ScanLogs extends Component<Props, States> {
       },
       dateErrMsg: "",
       searchText: "",
-      rowsPerPage: 15,
+      rowsPerPage: 5,
       totalData: 0,
       isFiltered: false,
       userRole: "",
-      tooltipOpen: false,
+      // tooltipOpen: false,
       startIndex: 1,
       endIndex: 3,
       isLoader: false,
@@ -353,9 +353,9 @@ pageNumberClick = (number: any) => {
     },0);
   }
 
-toggle = () => {
-    this.setState({ tooltipOpen : !this.state.tooltipOpen})
-}
+// toggle = () => {
+//     this.setState({ tooltipOpen : !this.state.tooltipOpen})
+// }
 backForward = () => {
     this.setState({startIndex: this.state.startIndex - 3, endIndex: this.state.endIndex - 1})
 }
@@ -410,7 +410,7 @@ fastForward = () => {
               </div>
 
               <div className="col-sm-6 filterSide text-center">
-                <div>
+                {/* <div>
                   <i
                     className="fa fa-info-circle"
                     id="Tooltip"
@@ -424,7 +424,7 @@ fastForward = () => {
                   >
                     {tooltipItem}
                   </Tooltip>
-                </div>
+                </div> */}
                 <div className="searchInputRow">
                   <i className="fa fa-search icon"></i>
                   <input
@@ -616,16 +616,15 @@ fastForward = () => {
                     },
                     {
                       id: "firstname",
-                      name: "Customer Name,ID",
+                      name: "Customer Name",
                       enableSort: true,
-                      align: "max-width",
-                      appendKey:'userprimaryid',
-                      width:"200px"
+                      align: "right",
+                      appendKey:'userprimaryid'
                     },
                     {
                       id: "productname",
                       name: "Product",
-                      enableSort: false,
+                      enableSort: true,
                       align: "right",
                       width:"270px"
                     },
@@ -639,7 +638,7 @@ fastForward = () => {
                     {
                       id: "scantype",
                       name: "Scan Type",
-                      enableSort: false,
+                      enableSort: true,
                       align: "right",
                       width:"150px"
                     },{

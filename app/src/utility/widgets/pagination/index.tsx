@@ -55,28 +55,36 @@ class Pagination extends Component<Props,States>{
         return(
             <div className="paginationNumber">
                 <div>
-                    <a href="#" className="" onClick={()=>previous(pageNo)} style={{ display: pageNo == 1 ? 'none' : 'block'}}>Prev</a>
+                    <a href="#" className="" onClick={()=>previous(pageNo)} style={{ pointerEvents : pageNo == 1 ? 'none' : 'auto'}}>Prev</a>
+                </div>
+     
+                <div style={{ pointerEvents : this.state.startIndex != 1 ? 'auto' : 'none'}}>
+                    <i className="fa fa-fast-backward" onClick={()=>this.fastBackward()}></i>
                 </div>
                 {pageNumbers.length > 1 &&
                 <div>
                     <a href="#" className={pageNo == 1 ? "active" : ''} onClick={()=>pageNumberClick(1)}>1</a>
                 </div> }
+                
                 {this.state.startIndex != 1 ? 
                 <div>
-                    <i className="fa fa-fast-backward" onClick={()=>this.fastBackward()}></i>
+                    <i className="" onClick={()=>this.fastBackward()}>...</i>
                 </div> : ''}
                 <div>
                     {renderPageNumbers}
                 </div>
                 {(pageData != this.state.endIndex) && (pageData > 5) && 
                 <div>
-                    <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
+                    <i className="" onClick={()=>this.fastForward()}>...</i>
                 </div> }
                 {pageNumbers.length > 1 && <div>
                     <a href="#" className={pageNo == pageData ? "active" : ''} onClick={()=>pageNumberClick(pageData)}>{pageData}</a>
                 </div> }
+                <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
+                    <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
+                </div>
                 <div>
-                    <a href="#" onClick={()=>next(pageNo)} style={{ display: pageNo == pageData ? 'none' : 'block'}}>Next</a>
+                    <a href="#" onClick={()=>next(pageNo)} style={{ pointerEvents: pageNo == pageData ? 'none' : 'auto'}}>Next</a>
                 </div>
             </div>
         );
