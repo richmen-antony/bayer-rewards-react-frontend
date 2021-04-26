@@ -1,27 +1,28 @@
 import React from 'react';
-import { makeStyles, withStyles, withTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { AnySrvRecord } from 'node:dns';
+import { Theme } from '@material-ui/core';
 
-export interface CardTypes  {
-    outlineColor? : any;
-    icon? : any;
-    children? : any;
-}
-
-const useStyles = makeStyles({
-  root: {
+export interface StyleProps {
+  border?: string;
+  background?: string;
+  icon? : any;
+  children?: any;
+  cardClick?: () => void;
+ }
+  
+ const useStyles = makeStyles<Theme, StyleProps>(theme => ({
+    root: {
+      background: ({ background }) => background ? background : 'black',
+      border: ({ border }) => border ? border : 'grey',
       width: '250px',
       height: '250px',
-      border :  (props:any) =>  props.outlineColor ? `10px solid ${props.outlineColor}` : '10px solid pink',
-      borderRadius: '4px',
-      backgroundColor: (props:any) => props.outlineColor ? props.outlineColor : 'green'
-  },
-  action: {
+      borderRadius: '20px',
+    },
+    action: {
       fontSize: 14,
       marginTop: '95px',
       marginLeft: '16px'
@@ -30,26 +31,42 @@ const useStyles = makeStyles({
       marginLeft: '173px',
       marginTop: '20px'
   }
-});
+ }));
 
-export const SimpleCard = ({children,icon, outlineColor, ...props}: CardTypes) => {
-  const classes = useStyles(props);
-  // console.log('cardprops', CardTypes);
+ /**
+ * @Dropdown
+ *
+ * Defines the Card component. This component is reusable and can be custom
+ * rendered with props.
+ *
+ * @example
+ *  import CustomCard from "../../container/components/card";
+ *   // With border and background Color props
+ *   <CustomCard icon={icon} border = '1px solid #FFA343' background='#FFF4E7'>
+ *       <div style={{fontSize : '24px'}}>108</div>
+ *       <div style={{fontSize : '18px'}}>Scan Logs</div>
+ *   </CustomCard>
+**/
+
+export const CustomCard= ({ border, background, icon, children, cardClick }: StyleProps) => {
+  const classes = useStyles({ border, background });
 
   return (
-    <Card className={classes.root} variant="outlined">
-      <CardContent>
-          <div className={classes.iconStyle}>
-            <img src={icon} width="30" alt=""/>
-          </div>
-      </CardContent>
-      <CardActions>
-         <Typography className={classes.action} color="textSecondary" gutterBottom>
-           {children}
-        </Typography>
-      </CardActions>
-    </Card>
+    <div onClick={cardClick}>
+      <Card className={classes.root} variant="outlined">
+        <CardContent>
+            <div className={classes.iconStyle}>
+              <img src={icon} width="30" alt=""/>
+            </div>
+        </CardContent>
+        <CardActions>
+          <Typography className={classes.action} color="textSecondary" gutterBottom>
+              {children}
+          </Typography>
+        </CardActions>
+      </Card>
+    </div>
   );
 }
 
-export default SimpleCard;
+export default CustomCard;

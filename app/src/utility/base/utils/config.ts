@@ -1,6 +1,6 @@
 
 export const configApp = {
-    env: 'https://bayer-track-trace.herokuapp.com/api/v1.0/'
+    env: 'https://bayer-track-trace.herokuapp.com/api/'
 }
 export const apiURL = {
     login: "user/login",
