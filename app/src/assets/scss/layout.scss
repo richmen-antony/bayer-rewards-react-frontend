@@ -389,3 +389,8 @@
 //   background: $appSecondary;
 // }
 
+.tabs{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

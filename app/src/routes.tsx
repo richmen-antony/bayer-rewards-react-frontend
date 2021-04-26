@@ -11,7 +11,6 @@ const Dashboard = lazy(() =>
 );
 const ScanLogs = lazy(() =>
   import('./components/scanLogs/index')
-    .then(({ ScanLogs }) => ({ default: ScanLogs }))
 );
 
 const Configurations = lazy(() =>
