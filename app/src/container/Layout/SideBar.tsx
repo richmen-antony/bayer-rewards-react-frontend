@@ -20,12 +20,14 @@ type Props = {
 }
 type States = {
     activeTab: any;
+    userRole: any;
 }
 class Sidebar extends Component<Props, States> {
     constructor(props: any) {
         super(props);
         this.state = {
-            activeTab: 'dashboard'
+            activeTab: 'dashboard',
+            userRole: ''
         };
         console.log(this.props, 'test');
         // $("body").toggleClass("");
@@ -33,6 +35,11 @@ class Sidebar extends Component<Props, States> {
     }
     
     componentDidMount() {
+        let data: any = getLocalStorageData('userData');
+        let userData = JSON.parse(data);
+        this.setState({
+            userRole: userData.role
+        });
         $('.button-menu-mobile').on('click', (event: any) => {
             event.preventDefault();
             $("body").toggleClass("enlarged");
@@ -85,6 +92,8 @@ class Sidebar extends Component<Props, States> {
                                         </Link>
                                     </li>
 
+                                    {this.state.userRole === 'ADMIN' && (
+                                    <>
                                     <li className="menu-title">MANAGEMENT</li>
                                     <li className="d-flex">
                                         <span className={activeTab === 'createUser' ? 'waves-effect active':'waves-effect'}></span>
@@ -106,21 +115,24 @@ class Sidebar extends Component<Props, States> {
                                             <img src={userListIcon} alt="User" width="16" /> <span> User List </span>
                                         </Link>
                                     </li>
-                                    
+                                    </> )}
 
                                     <li className="menu-title">LOGS</li>
-                                    <li className="d-flex">
-                                        <span className={activeTab === 'scanLogs' ? 'waves-effect active':'waves-effect'}></span>
-                                        <Link  to="/scanLogs" className={activeTab === 'scanLogs' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('scanLogs')}>
-                                            <img src={scanLogsIcon} alt="Sacn" width="16" /> <span> Scan logs </span>
-                                        </Link>
-                                    </li>
-                                    <li className="d-flex">
-                                        <span className={activeTab === 'pointLogs' ? 'waves-effect active':'waves-effect'}></span>
-                                        <Link  to="/pointLogs" className={activeTab === 'pointLogs' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('pointLogs')}>
-                                            <img src={pointLogsIcon} alt="Points" width="16" /> <span> Point logs </span>
-                                        </Link>
-                                    </li>
+                                    {this.state.userRole === 'RSM' && (
+                                        <>
+                                        <li className="d-flex">
+                                            <span className={activeTab === 'scanLogs' ? 'waves-effect active':'waves-effect'}></span>
+                                            <Link  to="/scanLogs" className={activeTab === 'scanLogs' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('scanLogs')}>
+                                                <img src={scanLogsIcon} alt="Sacn" width="16" /> <span> Scan logs </span>
+                                            </Link>
+                                        </li>
+                                        <li className="d-flex">
+                                            <span className={activeTab === 'pointLogs' ? 'waves-effect active':'waves-effect'}></span>
+                                            <Link  to="/pointLogs" className={activeTab === 'pointLogs' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('pointLogs')}>
+                                                <img src={pointLogsIcon} alt="Points" width="16" /> <span> Point logs </span>
+                                            </Link>
+                                        </li> </> )
+                                    }
 
                                     <li className="menu-title">HELP</li>
                                     <li className="d-flex">
