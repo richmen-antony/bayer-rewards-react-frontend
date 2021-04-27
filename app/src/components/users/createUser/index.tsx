@@ -7,24 +7,12 @@ import '../../../assets/scss/users.scss';
 import { toastSuccess } from '../../../utility/widgets/toaster';
 import { setLocalStorageData } from '../../../utility/base/localStore';
 import filterIcon from "../../assets/icons/filter_icon.svg";
-import { StarRateTwoTone, TrainRounded, TramOutlined } from '@material-ui/icons';
-import { convertCompilerOptionsFromJson } from 'typescript';
+import CustomSwitch from '../../../container/components/switch';
 
 const options = [
-    { value: "father", text: "Father" },
-    { value: "son", text: "Son" },
-    { value: "spirit", text: "Holy Spirit" },
-];
-const stepsArray = [
-    "Personal Information",
-    "Geographical Mapping"
-    // "With-Holding Tax"
-];
-
-const demo = [
-    { value: '001', text: "village1" },
-    { value: '002', text: "village2" },
-    { value: "003", text: "village3" },
+    { value: "salesagent", text: "Area Sales Agent" },
+    { value: "distributor", text: "Distributor" },
+    { value: "retailer", text: "Retailer" },
 ];
 
 const getStoreData = {
@@ -44,7 +32,6 @@ class CreateUser extends Component<any, any>{
 
             selectedValue : '',
             currentStep: 1,
-            isActive: false,
             fromDateErr: '',
             toDateErr: '',
             userTypeErr: '',
@@ -59,11 +46,16 @@ class CreateUser extends Component<any, any>{
             districtErr: '',
             subDistrictErr: '',
             villageErr: '',
-
+            stepsArray : [
+                "Personal Information",
+                "Geographical Mapping",
+                "User Mapping"
+            ],
             userData : {
                 'fromDate' : new Date().toISOString().substr(0, 10),
                 'toDate' : new Date().toISOString().substr(0, 10),
-                'userType' : '',
+                'activateUser': true,
+                'userType' : options[0].value,
                 'userName' : '',
                 'accName' : '',
                 'ownerName' : '',
@@ -77,36 +69,6 @@ class CreateUser extends Component<any, any>{
                 'village':''
             },
             allUserDatas : [],
-            geographicalLocation : ["country", "state", "district","subdistrict", "Village"],
-            fileds: [
-                'country',
-                'state' 
-        ],
-            country : [
-                { value: '001', text: "India" },
-                { value: '002', text: "London" },
-                { value: "003", text: "Australia" },
-            ],
-            state : [
-                { value: '001', text: "Tamil Nadu" },
-                { value: '002', text: "Kerala" },
-                { value: "003", text: "Bangalore" },
-            ],
-            district : [
-                { value: '001', text: "Vellore" },
-                { value: '002', text: "Chengalpattu" },
-                { value: "003", text: "kancheepuram" },
-            ],
-            subDistrict : [
-                { value: '001', text: "thirupathur" },
-                { value: '002', text: "bagalore" },
-                { value: "003", text: "chennai" },
-            ],
-            village : [
-                { value: '001', text: "village1" },
-                { value: '002', text: "village2" },
-                { value: "003", text: "village3" },
-            ]
         }
     }
 
@@ -146,7 +108,7 @@ class CreateUser extends Component<any, any>{
         // }).catch((err: any) => {
         // })
 
-        let res = ['country', 'state', 'district', 'village'];
+        let res = ['country', 'Region', 'district', 'village'];
         setTimeout(() => {
             this.setState({ geographicFields : res});
         },0)
@@ -193,10 +155,6 @@ class CreateUser extends Component<any, any>{
         })
     }
 
-    handleOptionChange = () => {
-
-    }
-
     handleClick(clickType: any) {
         let formValid=true, geographicFormValid=true;
         if (clickType === "personalNext"){
@@ -217,9 +175,8 @@ class CreateUser extends Component<any, any>{
         } else {
             newStep = newStep-1;
         }
-        alert(formValid);
 
-        if (newStep > 0 && newStep <= stepsArray.length) {
+        if (newStep > 0 && newStep <= this.state.stepsArray.length) {
             if ( formValid ) {
                 this.setState({
                     currentStep: newStep
@@ -239,10 +196,26 @@ class CreateUser extends Component<any, any>{
             }
         }
     }
-
+    // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //         setState({ ...state, [event.target.name]: event.target.checked });
+    //       };
     handlePersonalChange = (e: any) => {
         let val = this.state.userData;
         val[e.target.name] = e.target.value;
+        if (e.target.name === 'activateUser') {
+            val[e.target.name] = e.target.checked;
+        }
+        if (e.target.name === 'userType') {
+            let steps = this.state.stepsArray;
+            this.setState({stepsArray : steps });
+            if(e.target.value !== 'salesagent' ) {
+                steps.splice(2,1,'With-Holding Tax');
+                this.setState({stepsArray : steps });
+            } else {
+                steps.splice(2,1,'User Mappings');
+                this.setState({stepsArray : steps});
+            }
+        }
         let dateVal =this.dateValidation(e);
         if ( dateVal ) {
             this.setState({ userData : val});
@@ -332,7 +305,7 @@ class CreateUser extends Component<any, any>{
         let userData = this.state.userData;
         let errMsg ='';
 
-        this.state.geographicalLocation.map((location: any) => {
+        this.state.geographicFields.map((location: any) => {
             let locationLower = location.toLowerCase();
             let userDatas = userData+'.'+locationLower;
             errMsg = locationLower+'Err';
@@ -399,38 +372,58 @@ class CreateUser extends Component<any, any>{
     }
 
     render(){
-        const { currentStep,userData, fromDateErr, toDateErr, userNameErr,accNameErr, userTypeErr,ownerNameErr,phoneErr,emailErr,countryErr,stateErr,districtErr,subDistrictErr,villageErr,geographicalLocation, country,state,district,subdistrict,village} = this.state;
+        const { currentStep,userData, fromDateErr, toDateErr, userNameErr,accNameErr, userTypeErr,ownerNameErr,phoneErr,emailErr,countryErr,stateErr,districtErr,subDistrictErr,villageErr,geographicFields, country,state,district,subdistrict,village, stepsArray} = this.state;
+        console.log('steps', this.state.stepsArray);
 
-        const locationList = geographicalLocation?.map((location: any, index:number) => {
-            let locationLower = location.toLowerCase();
-            let value = userData+'.'+locationLower;
+        // const locationList = geographicFields?.map((location: any, index:number) => {
+        //     let locationLower = location.toLowerCase();
+        //     let value = userData+'.'+locationLower;
+        //     return (
+        //         <>
+        //             {(index != 0) &&
+        //                 <div className={index === 0 ? 'col-sm-12' : 'col-sm-3'}>
+        //                 <Dropdown
+        //                 name={locationLower}
+        //                 label={locationLower}  
+        //                 options={state}
+        //                 handleChange={this.handlePersonalChange}
+        //                 value={value}
+        //                 isPlaceholder />
+        //                 {locationLower+'Err' && <span className="error">{ locationLower+'Err' } </span>}
+        //             </div>
+        //             }
+        //         </>
+        //     );
+        // });
+console.log('===>',this.state.dynamicFields)
+        const locationList = this.state.dynamicFields?.map((list: any, index: number) => {
             return (
                 <>
-                    {(index != 0) &&
-                        <div className={index === 0 ? 'col-sm-12' : 'col-sm-3'}>
+                    <div className={index === 0 ? 'col-sm-12 country' : 'col-sm-3'}>
                         <Dropdown
-                        name={locationLower}
-                        label={locationLower}  
-                        options={state}
-                        handleChange={this.handlePersonalChange}
-                        value={value}
+                        name={list.name}
+                        label={list.name}
+                        options={list.options}
+                        handleChange={(list: any) => {
+                            list.value = list.value;
+                            this.setState({isRendered : true});
+                            this.getOptionLists(list.name, list.value, index);
+                        }}
+                        value={list.value}
                         isPlaceholder />
-                        {locationLower+'Err' && <span className="error">{ locationLower+'Err' } </span>}
+                        { list.error && <span className="error">{list.error}</span> }
                     </div>
-                    }
                 </>
-            );
+            )
         });
-
         let nextButton;
         if ( currentStep === 1) {
-            nextButton = <button className='btn buttonColor createBtn' onClick={()=>this.handleClick('personalNext')}>Next</button>
+            nextButton = <button className='btn buttonColor buttonStyle' onClick={()=>this.handleClick('personalNext')}>Next</button>
         } else if (currentStep === 2) {
+            nextButton = <button className='btn buttonColor buttonStyle' onClick={()=>this.handleClick('geographicNext')}>Next</button>
+        } else {
             nextButton = <button className='btn buttonColor createBtn' onClick={()=>this.handleClick('createUser')}>Create User</button>
         }
-        // } else {
-        //     nextButton = <button className='btn buttonColor createBtn' onClick={()=>this.handleClick('createUser')}>Create User</button>
-        // }
       
         return(
             <div>
@@ -442,34 +435,10 @@ class CreateUser extends Component<any, any>{
                         stepColor="#555555"
                     />
                 </div>
-                <>
-                
-                <div className='row'>
-                   { this.state.dynamicFields.map((list: any, index: number) =>
-                    <>
-                        <div className={index === 0 ? 'col-sm-12' : 'col-sm-3'}>
-
-                            <Dropdown
-                            name={list.name}
-                            options={list.options}
-                            handleChange={(list: any) => {
-                                list.value = list.value;
-                                this.setState({isRendered : true});
-                                this.getOptionLists(list.name, list.value, index);
-                            }}
-                            value={list.value}
-                            isPlaceholder />
-                            { list.error && <span className="error">{list.error}</span> }
-                        </div>
-                    </>
-                    )}
-                </div>
-                
-                </>
                 <div className="col-md-10">
                     <label className="font-weight-bold pt-4">{stepsArray[currentStep-1]}</label>
                     <div className="container">
-                    {currentStep == 1 ? (
+                    {currentStep == 1 && (
                         <>
                         <div className="row effectiveDate form-group">
                                 <div className="col-sm-3">
@@ -481,6 +450,10 @@ class CreateUser extends Component<any, any>{
                                     <label className="font-weight-bold pt-4">Effective To</label>
                                     <input type="date" name="toDate" className="form-control" onChange={(e)=>this.handlePersonalChange(e)}  value={userData.toDate} />
                                     {toDateErr && <span className="error">{ toDateErr } </span>}
+                                </div>
+                                <div className="col-sm-3">
+                                <label className="pt-4">isActive?</label>
+                                    <CustomSwitch checked={userData.activateUser} onChange={(e: any)=>this.handlePersonalChange(e)} name="activateUser" />
                                 </div>
                         </div>
                        
@@ -520,40 +493,41 @@ class CreateUser extends Component<any, any>{
                                 </div>
                             </div>
                         </div>
-                        </>) : (
+                        </>)} 
+                      
                         <div className="geographical">
-                            <div className="row age" style={{marginBottom: '14px'}}>
-                                {geographicalLocation.length > 0 &&
+                            {currentStep == 3 &&
+                            <div className="row age form-group">
                                 <div className="col-sm-3">
-                                    <Dropdown
-                                        name={geographicalLocation[0]}  
-                                        label={geographicalLocation[0]}
-                                        options={country}
-                                        handleChange={this.handlePersonalChange}
-                                        value={userData.country}
-                                        isPlaceholder />
-                                        {geographicalLocation[0]+'Err' && <span className="error">{ geographicalLocation[0]+'Err' } </span>}
-                                </div> }
-                                <div className="col-sm-3">
-                                    <Input type="number" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                    {/* {postalCodeErr && <span className="error">{ postalCodeErr } </span>} */}
+                                <Input type="text" className="form-control" name="postalCode" placeHolder="Tax Id" value={userData.taxId} onChange={(e: any)=>this.handlePersonalChange(e)} />
                                 </div>
-                            </div>
-                            {geographicalLocation.length > 1 &&
-                                <div className="row age">
+                                <div className="col-sm-3"> 
+                                    <CustomSwitch checked={userData.accInfo} onChange={(e: any)=>this.handlePersonalChange(e)} name="accInfo" />
+                                </div>
+                            </div>}
+                            {currentStep == 2 &&
+                            (<>
+                                <div className="row age form-group">
                                     {locationList}
-                                </div> 
-                            }
+                                </div>
+                                <div className="row age" style={{marginBottom: '14px'}}>
+                                    <div className="col-sm-3">
+                                        <Input type="number" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                        {/* {postalCodeErr && <span className="error">{ postalCodeErr } </span>} */}
+                                    </div>
+                                </div>
                             {/* <div className="row age" style={{marginBottom: '14px'}}>
                                <textarea rows:number='5' cols:number='20' />
-                            </div> */}
-                        </div>)}
+                            </div>  */}
+                            </>
+                            )}
+                        </div>
                     </div>
                     <div className="submit">
                         <div className="">
-                            {this.state.currentStep == 1 && <button className="btn btn-outline-secondary buttonStyle" onClick={()=>this.reset()}> Cancel</button>}
-                            {(this.state.currentStep !==1 ) &&
-                            <button className="btn btn-outline-secondary buttonStyle" onClick={() => this.handleClick('back')}>Back</button>}
+                            {(currentStep !==1 ) &&
+                            <button className="btn btn-outline-secondary buttonStyle" style={{marginRight: '30px'}} onClick={() => this.handleClick('back')}>Back</button>}
+                             <button className="btn btn-outline-secondary buttonStyle" onClick={()=>this.reset()}>Reset</button>
                         </div>
                         <div className="">
                             {nextButton}

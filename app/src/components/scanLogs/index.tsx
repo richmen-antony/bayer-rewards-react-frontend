@@ -20,7 +20,7 @@ import {
 import { Pagination } from "../../utility/widgets/pagination";
 
 import { downloadExcel, downloadCsvFile } from "../../utility/helper";
-import SimpleTabs from "../../container/Layout/Tabs";
+// import SimpleTabs from "../../../container/Layout/Tabs";
 import "react-web-tabs/dist/react-web-tabs.css";
 
 import {
