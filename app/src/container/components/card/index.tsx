@@ -20,7 +20,7 @@ export interface StyleProps {
       border: ({ border }) => border ? border : 'grey',
       width: '250px',
       height: '250px',
-      borderRadius: '20px',
+      borderRadius: '20px'
     },
     action: {
       fontSize: 14,
@@ -52,7 +52,7 @@ export const CustomCard= ({ border, background, icon, children, cardClick }: Sty
   const classes = useStyles({ border, background });
 
   return (
-    <div onClick={cardClick}>
+    <div onClick={cardClick} style={{ cursor : cardClick ? 'pointer' : 'auto'}}>
       <Card className={classes.root} variant="outlined">
         <CardContent>
             <div className={classes.iconStyle}>

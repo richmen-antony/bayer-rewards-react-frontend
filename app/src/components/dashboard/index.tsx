@@ -4,6 +4,7 @@ import AUX from "../../hoc/Aux_";
 import leftArrow from "../../assets/icons/left_arrow.svg";
 import CustomCard from "../../container/components/card";
 import "../../assets/scss/rsmDashboard.scss";
+import { getLocalStorageData, clearLocalStorageData } from '../../utility/base/localStore';
 
 type Props={
     location?: any;
@@ -14,18 +15,25 @@ type States={
     scanLogCount: number;
     usersCount: number;
     isLoader: boolean;
+    userRole: any;
 }
 
 class Dashboard extends Component<Props, States>{
     constructor(props:any){
         super(props);
         this.state={
+            userRole : "",
             scanLogCount : 0,
             usersCount : 0,
             isLoader: false
         }
     }
     componentDidMount() {
+        let data: any = getLocalStorageData('userData');
+        let userData = JSON.parse(data);
+        this.setState({
+            userRole: userData.role
+        });
         this.getScanLogsCount();
         this.getUsersCount();
     }
@@ -53,13 +61,21 @@ class Dashboard extends Component<Props, States>{
     cardClick = () => {
         this.props.history.push('./scanlogs');
     }
+    cardCreateUserClick = () => {
+        this.props.history.push('./createUser');
+    }
+    totalUserClick = () => {
+        this.props.history.push('./userList');
+    }
 
 render(){
     return(
-            <AUX>
-                <div style={{display: 'flex'}}>
-                    <div style={{marginRight: '16px'}}>
-                    <CustomCard icon={leftArrow} border='1px solid #FFA343' background='#FFF4E7' cardClick={this.cardClick}>
+        <AUX>
+            <div style={{display: 'flex'}}>
+            {this.state.userRole === 'RSM' ? (
+                <>
+                <div style={{marginRight: '16px'}}>
+                    <CustomCard icon={leftArrow} border='1px solid #FFA343' background='#FFF4E7' cardClick={()=>this.cardClick()}>
                         <div style={{fontSize : '24px'}}>{this.state.scanLogCount}</div>
                         <div style={{fontSize : '18px'}}>Scan Logs</div>
                     </CustomCard>
@@ -68,10 +84,25 @@ render(){
                     <CustomCard icon={leftArrow} border = '1px solid #206BDD' background='#DFE8FA'>
                         <div style={{fontSize : '24px'}}>{this.state.usersCount}</div>
                         <div style={{fontSize : '18px'}}>Total Users</div>
+                    </CustomCard> 
+                </div> 
+                </>) : (
+                <>
+                <div style={{marginRight: '16px'}}>
+                    <CustomCard icon={leftArrow} border='1px solid #FFA343' background='#FFF4E7' cardClick={()=>this.cardCreateUserClick()}>
+                        <div style={{fontSize : '18px', marginTop:'30px'}}>Create New User</div>
                     </CustomCard>
                     </div>
-                </div>
-            </AUX>
+                    <div>
+                    <CustomCard icon={leftArrow} border = '1px solid #206BDD' background='#DFE8FA' cardClick={()=>this.totalUserClick()}>
+                        <div style={{fontSize : '24px'}}>{this.state.usersCount}</div>
+                        <div style={{fontSize : '18px'}}>Total Users</div>
+                    </CustomCard> 
+                </div> 
+                </>)
+            }   
+            </div>
+        </AUX>
         );
     }
 }
