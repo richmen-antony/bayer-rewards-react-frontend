@@ -106,7 +106,7 @@ const OrderTable: React.FC<Props> = ({ open, close }) => {
               <td></td>
                 <td></td>
                 <td></td>
-                <td>16</td>
+                <td>Total <span>16</span></td>
                 <td>-</td>
                 <td>-</td>
               </tr>

@@ -552,7 +552,7 @@ class ScanLogs extends Component<Props, States> {
                       {tooltipItem}
                     </Tooltip>
                   </div>
-                  <div className="searchInputRow">
+                  <div className="searchInputRow advisor-sales">
                     <i className="fa fa-search icon"></i>
                     <input
                       placeholder="Search..[Min 3 chars]"

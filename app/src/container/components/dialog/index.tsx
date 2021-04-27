@@ -28,10 +28,13 @@ const styles = (theme: Theme) =>
       padding: theme.spacing(2),
     },
     closeButton: {
-      position: "absolute",
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
+      // position: "absolute",
+      // right: theme.spacing(1),
+      // top: theme.spacing(1),
+      // color: theme.palette.grey[500],
+      position: "static",
+    display: "block",
+    marginLeft: "auto",
     },
   });
 
@@ -46,9 +49,7 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   const { header, classes, onClose,style, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
-        <div className={`popup-title ${style?.title? style.title:""}`}>
-       <p>{header?.title}, <label>{header?.sub}</label> </p>
-      </div>
+        
       
      
        

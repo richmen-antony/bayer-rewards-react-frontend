@@ -25,12 +25,12 @@ const dialogStyles = {
   paperWidthSm: {
     width: "800px",
     maxWidth: "800px",
-    maxHeight: "400px",
+    background: "transparent",
+    boxShadow: "none"
   },
-  title: {
-    position: "absolute",
-    right: "150px",
-  },
+  // title: {
+  //   right: "150px",
+  // },
 };
 
 const DialogContent = withStyles((theme: Theme) => ({
@@ -44,9 +44,9 @@ const DialogActions = withStyles((theme: Theme) => ({
     margin: 0,
     padding: theme.spacing(1),
     justifyContent: "center",
-    boxShadow: "0px 3px 6px #c7c7c729",
-    border: "1px solid #89D329",
-    borderRadius: "50px",
+    // boxShadow: "0px 3px 6px #c7c7c729",
+    // border: "1px solid #89D329",
+    // borderRadius: "50px",
   },
 }))(MuiDialogActions);
 
@@ -128,14 +128,16 @@ class ScanLogsTable extends Component<Props, States> {
                         <td>{value.order_id}</td>
                         <td>
                           <div className="retailer-id">
-                            <img
+                           
+                            <p> 
+                            {value.sellername}
+                              <img
                               className="retailer-icon"
                               onClick={(event) =>
                                 this.showPopup(event, "showPopup")
                               }
                               src={ExpandWindowImg}
-                            ></img>
-                            <p>{value.sellername}</p>
+                            ></img></p>
                             <label>DHCIP</label>
                           </div>
                         </td>
@@ -147,7 +149,12 @@ class ScanLogsTable extends Component<Props, States> {
                         <td>
                           {moment(value.ordereddate).format("DD-MM-YYYY")}
                         </td>
-                        <td>{value.status}</td>
+                        <td>
+                        <span className="status">
+                          <i className="fas fa-clock"></i>
+                          {value.status}
+                        </span>
+                       </td>
                         <td>
                           {moment(value.lastupdateddate).format("DD-MM-YYYY")}
                         </td>
@@ -191,6 +198,9 @@ class ScanLogsTable extends Component<Props, States> {
                   <img src={NoImage} />
                 </div>
                 <div className="popup-content">
+                <div className={`popup-title`}>
+       <p>{popupHeader?.title}, <label>{popupHeader?.sub}</label> </p>
+      </div>
                   <div className="popup-content-row">
                     <div className="content-list">
                       <label>UserName</label>
