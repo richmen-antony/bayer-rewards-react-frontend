@@ -335,12 +335,18 @@
           display: flex;
           align-items: center;
           border-radius: 30px;
-          background-color: #FFECF2;
-          color: #FF6397;
           padding: 10px;
           i{
             margin-right: 5px;
           }
+        }
+        .status.active{
+          color:#1CCEAD;
+          background-color: #E3F8F4;
+        }
+        .status.inactive{
+          color: #FF6397;
+          background-color: #FFECF2;
         }
       }
       }
@@ -369,9 +375,6 @@
 .popup-retailer{
   display: flex;
   justify-content: space-between;
-  background-color: #FFFFFF;
-    border-radius: 10px;
-    padding: 20px 25px;
   img{
     width: 350px;
     height: 300px;
@@ -429,7 +432,7 @@
   background-color: #F4F6FF;
 }
 
-.odered-table{
+.ordered-table{
   table{
     thead{
     background: rgba(255, 255, 255, 1);
@@ -444,4 +447,11 @@
       }
     }
   }
+}
+
+.popup-container{
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  padding: 20px 25px;
+
 }

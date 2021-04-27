@@ -8,10 +8,7 @@ import moment from "moment";
 import SimpleDialog from "../../container/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
-import {
-  Theme,
-  withStyles
-} from "@material-ui/core/styles";
+import { Theme, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import NoImage from "../../assets/images/no_image.svg";
 import OrderTable from "./Order";
@@ -26,7 +23,7 @@ const dialogStyles = {
     width: "800px",
     maxWidth: "800px",
     background: "transparent",
-    boxShadow: "none"
+    boxShadow: "none",
   },
   // title: {
   //   right: "150px",
@@ -128,16 +125,16 @@ class ScanLogsTable extends Component<Props, States> {
                         <td>{value.order_id}</td>
                         <td>
                           <div className="retailer-id">
-                           
-                            <p> 
-                            {value.sellername}
+                            <p>
+                              {value.sellername}
                               <img
-                              className="retailer-icon"
-                              onClick={(event) =>
-                                this.showPopup(event, "showPopup")
-                              }
-                              src={ExpandWindowImg}
-                            ></img></p>
+                                className="retailer-icon"
+                                onClick={(event) =>
+                                  this.showPopup(event, "showPopup")
+                                }
+                                src={ExpandWindowImg}
+                              ></img>
+                            </p>
                             <label>DHCIP</label>
                           </div>
                         </td>
@@ -150,11 +147,11 @@ class ScanLogsTable extends Component<Props, States> {
                           {moment(value.ordereddate).format("DD-MM-YYYY")}
                         </td>
                         <td>
-                        <span className="status">
-                          <i className="fas fa-clock"></i>
-                          {value.status}
-                        </span>
-                       </td>
+                          <span className={`status ${value.status ==="Fulfilled" ? "active":"inactive"}`}>
+                            <i className="fas fa-clock"></i>
+                            {value.status}
+                          </span>
+                        </td>
                         <td>
                           {moment(value.lastupdateddate).format("DD-MM-YYYY")}
                         </td>
@@ -193,14 +190,16 @@ class ScanLogsTable extends Component<Props, States> {
             header={popupHeader}
           >
             <DialogContent>
-              <div className="popup-retailer">
+              <div className="popup-container popup-retailer">
                 <div className="img">
                   <img src={NoImage} />
                 </div>
                 <div className="popup-content">
-                <div className={`popup-title`}>
-       <p>{popupHeader?.title}, <label>{popupHeader?.sub}</label> </p>
-      </div>
+                  <div className={`popup-title`}>
+                    <p>
+                      {popupHeader?.title}, <label>{popupHeader?.sub}</label>{" "}
+                    </p>
+                  </div>
                   <div className="popup-content-row">
                     <div className="content-list">
                       <label>UserName</label>

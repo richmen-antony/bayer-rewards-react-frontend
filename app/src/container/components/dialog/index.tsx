@@ -48,11 +48,7 @@ export interface DialogTitleProps extends WithStyles<typeof styles> {
 const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   const { header, classes, onClose,style, ...other } = props;
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-        
-      
-     
-       
+    <MuiDialogTitle disableTypography className={classes.root} {...other}> 
       {onClose ? (
         <IconButton
           aria-label="close"

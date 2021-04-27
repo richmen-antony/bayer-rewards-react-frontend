@@ -17,6 +17,8 @@ const popupHeader = {
 const dialogStyles = {
   paperWidthSm: {
     maxWidth: "800px",
+    background: "transparent",
+    boxShadow: "none",
   },
 };
 const DialogTitle = withStyles((theme: Theme) => ({
@@ -63,7 +65,14 @@ const OrderTable: React.FC<Props> = ({ open, close }) => {
       header={popupHeader}
     >
       <DialogContent>
-        <div className="odered-table">
+        <div className="popup-container ordered-table">
+          <div className="popup-content">
+            <div className={`popup-title`}>
+              <p>
+                {popupHeader?.title}, <label>{popupHeader?.sub}</label>{" "}
+              </p>
+            </div>
+          </div>
           <table className="table">
             <thead>
               <tr>
@@ -103,10 +112,12 @@ const OrderTable: React.FC<Props> = ({ open, close }) => {
             </tbody>
             <tfoot>
               <tr>
-              <td></td>
                 <td></td>
                 <td></td>
-                <td>Total <span>16</span></td>
+                <td></td>
+                <td>
+                  Total <span>16</span>
+                </td>
                 <td>-</td>
                 <td>-</td>
               </tr>
