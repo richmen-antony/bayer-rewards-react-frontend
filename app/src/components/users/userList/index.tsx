@@ -15,6 +15,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Box from "@material-ui/core/Box";
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
@@ -42,6 +45,9 @@ import moment from 'moment';
 import { downloadExcel, downloadCsvFile } from "../../../utility/helper";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import { Input } from '../../../utility/widgets/input';
+import ChannelPartners from './channelPartners';
+import ThirdPartyUsers from './thirdPartyUsers';
+import ChangeLogs from './changeLogs';
 
 const popupHeader={
   "title":"Maria Joseph",
@@ -66,6 +72,7 @@ type SelectedFiltersTypes = {
 type Props = {
   location?: any;
   history?: any;
+  classes?: any;
 }
 const DialogTitle = withStyles((theme: Theme) => ({
   root: {
@@ -122,7 +129,92 @@ type States = {
   isActivateUser: boolean;
   isdeActivateUser: boolean;
   isEditUser: boolean;
+  value: number;
 };
+
+const AntTabs = withStyles({
+  root: {
+    borderBottom: "0",
+  },
+  indicator: {
+    backgroundColor: "#1890ff",
+    height: "4px",
+  },
+})(Tabs);
+const useStyles = (theme: Theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  // padding: {
+  //   padding: theme.spacing(3),
+  // },
+  demo1: {
+    backgroundColor: theme.palette.background.paper,
+  },
+});
+const AntTab = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      textTransform: "none",
+      minWidth: 72,
+      fontWeight: theme.typography.fontWeightRegular,
+      marginRight: theme.spacing(4),
+      fontFamily: [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        '"Segoe UI"',
+        "Roboto",
+        '"Helvetica Neue"',
+        "Arial",
+        "sans-serif",
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(","),
+      "&:hover": {
+        color: "#40a9ff",
+        opacity: 1,
+      },
+      "&$selected": {
+        color: "#1890ff",
+        fontWeight: theme.typography.fontWeightMedium,
+      },
+      "&:focus": {
+        color: "#40a9ff",
+      },
+    },
+    selected: {},
+  })
+)((props: StyledTabProps) => <Tab disableRipple {...props} />);
+
+interface StyledTabProps {
+  label: string;
+}
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+}
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={2}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
 
 class UserList extends Component<Props, States> {
   timeOut: any;
@@ -171,44 +263,51 @@ class UserList extends Component<Props, States> {
             'id' : 1,
             'username' : 'vidhya',
             'mobile': '9898789878',
-            'role': 'admin',
+            'accName' : 'Choke Mangtol',
+            'ownerName': 'Aaron finch',
             'state': 'tamilnadu',
             "district": 'demo',
+            'lastUpdated': 'Angel Mathew',
             'subdistrict': 'aaa',
             'expirydate': '20/08/2021',
-            'activeStatus': 1,
-            'registeredUser': true
+            'activeStatus' : false,
+            'registeredUser' : false
         },
         {
             'id' : 2,
             'username' : 'demo',
             'mobile': '7898789878',
-            'role': 'user',
+            'accName' : 'Mono seeds',
+            'ownerName': 'Chris Harrish',
             'state': 'bangalore',
             "district": 'demo1',
+            "lastUpdated": 'Angel Mathew',
             'subdistrict': 'bbb',
             'expirydate': '05/08/2021',
-            'activeStatus': 2,
-            'registeredUser': false
+            'activeStatus' : false,
+            'registeredUser' : true
         },
         {
           'id' : 3,
           'username' : 'aaa',
           'mobile': '8987898789',
-          'role': 'dsfdf',
+          'accName' : 'Safe Crop',
+          'ownerName': 'kanteyeni',
           'state': 'bangalore',
           "district": 'demo1',
+          "lastUpdated": 'Angel Mathew',
           'subdistrict': 'bbb',
           'expirydate': '05/08/2021',
-          'activeStatus': 3,
-          'registeredUser': true
-      }
+          'activeStatus' : true,
+          'registeredUser' : true
+        }
     ],
     dialogOpen: false,
     changeLogOpen: false,
     isActivateUser: false,
     isdeActivateUser: false,
-    isEditUser: false
+    isEditUser: false,
+    value : 0
     };
     this.timeOut = 0;
   }
@@ -330,9 +429,9 @@ class UserList extends Component<Props, States> {
     this.setState({ isRendered: true,accordionView : ! this.state.accordionView,accordionId:data.productlabelid });
   };
 
-  onSort(name: string, data: any) {
+  onSort(name: string, data: any, isAsc: boolean) {
     let response = sortBy(name, data);
-    this.setState({ allUsersList: response, isAsc: !this.state.isAsc });
+    this.setState({ allUsersList: response, isAsc: !isAsc });
   }
 
   toggleFilter = () => {
@@ -448,22 +547,11 @@ class UserList extends Component<Props, States> {
   handleChangeLog=()=>{
     this.setState({changeLogOpen : true});
   };
-  handleEditDialogOpen = (e: any, id: any) => {
-    e.stopPropagation();
-    this.setState({isEditUser : true, dialogOpen : true});
-};
-  registerUser = (e: any, id: any) =>{
-    e.stopPropagation();
-    this.props.history.push('/createUser');
-  }
-  activateUser = (e: any, id: any) => {
-    e.stopPropagation();
-    this.setState({ isActivateUser : true, dialogOpen : true});
-  }
-  deActivateUser = (e: any, id: any) => {
-    e.stopPropagation();
-    this.setState({ isdeActivateUser : true, dialogOpen : true});
-  }
+
+  handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    this.setState({ value: newValue });
+    // setValue(newValue);
+  };
 
   render() {
     const {
@@ -517,74 +605,54 @@ class UserList extends Component<Props, States> {
       </div>
       );
     }
+    const { classes } = this.props;
 
     return (
       <AUX>
         {isLoader && <Loader />}
         <div className="container-fluid card">
-          <div className="page-title-box mt-2">
-            <div className="row align-items-center">
-              <div className="col-sm-6 scanTitle">
-                <div className="page-title">
-                  {!changeLogOpen ? 
-                    'Registered Users (' +this.state.allUsersList.length+')' 
+          <div className="row align-items-center">
+            <div className="col-sm-6">
+                {!changeLogOpen ? (
+                    <div className={classes?.root}>
+                      <div className={classes?.demo1}>
+                        <div className="tabs">
+                          <AntTabs
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            aria-label="ant example"
+                          >
+                            <AntTab label="Channel Partners" />
+                            <AntTab label="Third Party Users" />
+                          </AntTabs>
+                        </div>
+                      </div>
+                    </div> )
                     : <span>
                       <img style={{ marginRight: '8px'}} src={leftArrow} width="17" alt="leftArrow" onClick={()=>this.setState({changeLogOpen : false })}/>CHANGE LOGS</span>
                    }
-                  </div>
-                <h7 className="roleTitle">{userRole}</h7>
-              </div>
- 
-            <div>
-            {/* <button color="primary" onClick={this.handleDialogOpen}>
-                Open dialog
-            </button> */}
-                {this.state.dialogOpen &&
-                  <SimpleDialog 
-                  open={this.state.dialogOpen}
-                  onClose={this.handleDialogClose}
-                  dialogStyles={dialogStyles}
-                  header={popupHeader}>
-                  
-                    <DialogContent>
-                      { isActivateUser &&
-                          <Typography gutterBottom>
-                              Are you Sure. Do you want to activate the user?
-                          </Typography>}
-                      { isdeActivateUser &&
-                          <Typography gutterBottom>
-                              Are you Sure. Do you want to deActivate the user?
-                          </Typography> }
-                      {isEditUser &&
-                        <>
-                            <DialogContentText gutterBottom>
-                              <div className="text-center">
-                                AMITH, Retailer
-                              </div>
-                              {editForm}
-                            </DialogContentText>
-                           
-                          </>
-                        }
-                    </DialogContent>
-                    <DialogActions>
-                      { (isActivateUser || isdeActivateUser) && (
-                        <>
-                          <button onClick={this.handleDialogClose}>Cancel</button>
-                          <button>Confirm</button>
-                        </>) }
-                        {isEditUser && (
-                          <>
-                            <button onClick={this.handleDialogClose}>Cancel</button>
-                            <button>Update</button>
-                        </>) }
-                    </DialogActions>
-                  </SimpleDialog>
-                  
-                  }
             </div>
-              <div className="col-sm-6 filterSide text-center">
-                <div className="searchInputRow">
+            <div className="col-sm-6 leftAlign">
+              {!changeLogOpen && 
+                <div>
+                    <button className="form-control changeLogs" onClick={()=>this.handleChangeLog()}>
+                        <i className="fa fa-history mr-2"></i>{" "}
+                        <span>Change Logs</span>
+                    </button>
+                </div> }
+                <div>
+                    {/* <img src={downloadIcon} width="17" alt="filter" /> */}
+                    <button className="btn btn-primary downloadBtn" onClick={this.download}>
+                        <i className="fa fa-download mr-2"></i>{" "}
+                        <span>Download</span>
+                    </button>
+                </div>
+            </div>
+          </div>
+          {!changeLogOpen && (
+          <div className="row align-items-center">
+            <div className="col-sm-6">
+              <div className="searchInputRow">
                   <i className="fa fa-search icon"></i>
                   <input
                     placeholder="Search..[Min 3 chars]"
@@ -593,8 +661,14 @@ class UserList extends Component<Props, States> {
                     // onChange='{this.handleSearch}'
                     value={searchText}
                   />
-                </div>
-                {!changeLogOpen && 
+              </div>
+            </div>
+            <div className="col-sm-6 leftAlign">
+              <div className="col-sm-3">
+                <label className="font-weight-bold">Partner Type</label>
+              </div>
+              <div className="col-sm-3">
+              {!changeLogOpen && 
                 (
                 <div className="filterRow">
                 <Dropdown
@@ -749,171 +823,34 @@ class UserList extends Component<Props, States> {
                 </Dropdown>
               </div> ) 
               }
-                {!changeLogOpen && 
-                <div>
-                    <button className="form-control changeLogs" onClick={()=>this.handleChangeLog()}>
-                        <i className="fa fa-history mr-2"></i>{" "}
-                        <span>Change Logs</span>
-                    </button>
-                </div> }
-                <div>
-                    {/* <img src={downloadIcon} width="17" alt="filter" /> */}
-                    <button className="btn btn-primary downloadBtn" onClick={this.download}>
-                        <i className="fa fa-download mr-2"></i>{" "}
-                        <span>Download</span>
-                    </button>
-                </div>
               </div>
             </div>
-          </div>
+          </div> 
+          )}
           <div className='test'>
-          {!this.state.changeLogOpen ? (
-          allUsersList.length > 0 ?   
-            <div>
-            <div className="table-responsive">
-                <table className="table" id="tableData">
-                    <thead>
-                    <tr>
-                        <th>User Name
-                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => this.onSort('username', allUsersList)}></i>
-                        </th>
-                        <th>Mobile</th>
-                        <th>Role
-                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => this.onSort('role', allUsersList)}></i>
-                        </th>
-                        <th>State</th>
-                        <th>District</th>
-                        <th>Sub District</th>
-                        <th>Expiry Date</th>
-                        <th>Action</th>
-                        <th>Quick Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    { allUsersList.map((list,i) => 
-                        <AUX key={i}>
-                            <tr 
-                            style={{
-                              borderLeftColor: 'green',
-                              borderWidth:'5px',
-                              borderStyle: 'solid',
-                            }}
-                            onClick={() => this.handleExpand(list)} >
-
-                            {/* style={{borderLeft: `'5px solid' ${!(list.activeStatus) && !(list.registeredUser)}` ? 'orange' :
-                            `${!(list.activeStatus) && (list.registeredUser)}` ? 'red' : 'green'}}  */}
-                                <td >{list.username}</td>
-                                <td>{list.mobile}  </td>
-                                <td>{list.role}  </td>
-                                <td>{list.state}  </td>
-                                <td>{list.district}  </td>
-                                <td>{list.subdistrict}  </td>
-                                <td>{moment(list.expiryDate).format('DD-MM-YYYY')}  </td>
-                                <td>
-                                  <i className="fas fa-edit" onClick={(e)=>this.handleEditDialogOpen(e,list.id)}></i>
-                                  {!(list.activeStatus) && !(list.registeredUser) &&
-                                      <i className="fa fa-exclamation-circle" onClick={(e)=>this.registerUser(e,list.id)}>register</i>}
-                                  {list.activeStatus && (list.registeredUser) &&
-                                    <i className="fas fa-times-circle" onClick={(e)=>this.deActivateUser(e,list.id)}>Inactive</i>}
-                                  {!(list.activeStatus) && (list.registeredUser) &&
-                                    <i className="fa fa-check-circle" onClick={(e)=>this.activateUser(e,list.id)}>Active</i> }
-                                </td>
-                                <td width="10%" align="center">
-                                    {
-                                        list.isExpand ? <i className="fa fa-angle-down"></i> 
-                                        : <i className="fa fa-angle-up"></i>
-                                    }
-                                </td>
-                            </tr>
-                            { list.isExpand &&
-                                <div style={{display: 'grid'}} > 
-                                    <div className={list.scanstatus === 'valid' ? "validBoxShadow" : "inValidBoxShadow"}>
-                                        <div className="row">
-                                            <div className="col-3">
-                                                Batch : 89899898998
-                                            </div>
-                                            <div className="col-3">
-                                                Expiry Date : 23 Dec 2021
-                                            </div>
-                                            <div className="col-3">
-                                                Product group : BB-Bayer
-                                            </div>
-                                            <div className="col-3">
-                                                Scan ID : #67677677
-                                            </div>
-                                        </div>
-                    
-                                    </div>
-                                    
-                                </div>
-                            }
-                        </AUX>
-                    )}
-                    </tbody>
-                </table>
-            </div>
-            {/* <Pagination totalData = {totalData} rowsPerPage={rowsPerPage} previous={()=>this.previous()} next={()=>this.next()} pageNumberClick={()=>this.pageNumberClick()} pageNo={pageNo} /> */}
-            </div>
-            :
-              this.state.isLoader ? <Loaders /> : 
-              <div className="col-12 card mt-4">
-                  <div className="card-body ">
-                      <div className="text-red py-4 text-center">No Data Found</div>
-                  </div>
-              </div>
-            ) : (
-            allUsersList.length > 0 ? (
-              <div>
-                <div className="table-responsive">
-                <table className="table" id="tableData">
-                    <thead>
-                    <tr>
-                        <th>User Name
-                            <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => this.onSort('username', allUsersList)}></i>
-                        </th>
-                        <th>Field</th>
-                        <th>Old Value
-                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => this.onSort('role', allUsersList)}></i>
-                        </th>
-                        <th>New Value</th>
-                        <th>Modified Date</th>
-                        <th>Modified Time</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    { allUsersList.map((list,i) => 
-                        <AUX key={i}>
-                            <tr style={list.activeStatus ? {borderLeft: '5px solid #89D329'} : {borderLeft: '5px solid #FF4848' }}
-                                onClick={() => this.handleExpand(list) } >
-                                <td >{list.username}</td>
-                                <td>{list.mobile}  </td>
-                                <td>{list.role}  </td>
-                                <td>{list.state}  </td>
-                                <td>{list.district}  </td>
-                                <td>{list.subdistrict}  </td>
-                            </tr>
-                        </AUX>
-                    )}
-                    </tbody>
-                </table>
-            </div>
-                {/* <div>
-                  <Pagination totalData = {totalData} rowsPerPage={rowsPerPage} previous={this.previous} next={this.next} pageNumberClick={this.pageNumberClick} pageNo={pageNo} />
-                </div> */}
-              </div>
-            ) : this.state.isLoader ? (
-              <Loaders />
-            ) : (
-              <div className="col-12 card mt-4">
-                <div className="card-body ">
-                  <div className="text-red py-4 text-center">No Data Found</div>
-                </div>
-              </div>
-            )
-          )
-        } 
+            {!this.state.changeLogOpen ? (
+              <>
+                <TabPanel value={this.state.value} index={0}>
+                  <ChannelPartners 
+                      allUsersList={allUsersList}
+                      isAsc={isAsc}
+                      onSort={this.onSort} />
+              </TabPanel>
+                <TabPanel value={this.state.value} index={1}>
+                  <ThirdPartyUsers 
+                    allUsersList={allUsersList}
+                    isAsc={isAsc}
+                    onSort={this.onSort} />
+                </TabPanel>
+              </>
+              ) : (
+                <ChangeLogs 
+                  allUsersList={allUsersList}
+                  isAsc={isAsc}
+                  onSort={this.onSort} />
+              )
+            } 
           </div>
-
         </div>
       </AUX>
     );
