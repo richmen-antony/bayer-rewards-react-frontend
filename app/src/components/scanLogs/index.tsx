@@ -34,7 +34,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import ScanLogsTable from './ScanLogsTable';
+import ScanLogsTable from "./ScanLogsTable";
 
 type SelectedFiltersTypes = {
   type: string;
@@ -107,9 +107,10 @@ const useStyles = (theme: Theme) => ({
   root: {
     flexGrow: 1,
   },
-  // padding: {
-  //   padding: theme.spacing(3),
-  // },
+  padding: {
+    padding: "0px",
+    marginTop: "5px",
+  },
   demo1: {
     backgroundColor: theme.palette.background.paper,
   },
@@ -138,8 +139,8 @@ const AntTab = withStyles((theme: Theme) =>
         opacity: 1,
       },
       "&$selected": {
-        color: "#1890ff",
-        fontWeight: theme.typography.fontWeightMedium,
+        color: "#000000",
+        fontWeight: theme.typography.fontWeightBold,
       },
       "&:focus": {
         color: "#40a9ff",
@@ -157,9 +158,10 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
   value: any;
+  classes?: any;
 }
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, classes, ...other } = props;
 
   return (
     <div
@@ -170,7 +172,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box p={3} className={classes.padding}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -529,9 +531,9 @@ class ScanLogs extends Component<Props, States> {
                   onChange={this.handleChange}
                   aria-label="ant example"
                 >
-                  <AntTab label="Tab 1" />
-                  <AntTab label="Tab 2" />
-                  <AntTab label="Tab 3" />
+                  <AntTab label="Advisor Sales" />
+                  <AntTab label="Walk-In Sales" />
+                  <AntTab label="Send Goods" />
                 </AntTabs>
 
                 <div className="filterSide text-center">
@@ -722,8 +724,7 @@ class ScanLogs extends Component<Props, States> {
                       className="btn btn-primary downloadBtn"
                       onClick={this.download}
                     >
-                      <i className="fa fa-download mr-2"></i>{" "}
-                      <span>Download</span>
+                      <i className="fa fa-download"></i>
                     </button>
                   </div>
                 </div>
@@ -731,13 +732,19 @@ class ScanLogs extends Component<Props, States> {
 
               <Typography />
             </div>
-            <TabPanel value={this.state.value} index={0}>
-             <ScanLogsTable  />
+            <TabPanel value={this.state.value} index={0} classes={classes}>
+              <ScanLogsTable
+                data={allScanLogs}
+                state={this.state}
+                previous={this.previous}
+                next={this.next}
+                pageNumberClick={this.pageNumberClick}
+              />
             </TabPanel>
-            <TabPanel value={this.state.value} index={1}>
+            <TabPanel value={this.state.value} index={1} classes={classes}>
               Item Two
             </TabPanel>
-            <TabPanel value={this.state.value} index={2}>
+            <TabPanel value={this.state.value} index={2} classes={classes}>
               Item Three
             </TabPanel>
           </div>

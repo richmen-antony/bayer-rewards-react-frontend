@@ -43,6 +43,17 @@ import { downloadExcel, downloadCsvFile } from "../../../utility/helper";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import { Input } from '../../../utility/widgets/input';
 
+const popupHeader={
+  "title":"Maria Joseph",
+  "sub":"Retailer"
+}
+const dialogStyles = {
+  paperWidthSm: {
+ 
+    maxWidth: "600px",
+    
+  },
+}
 type SelectedFiltersTypes = {
   type: string;
   scanType: string;
@@ -531,12 +542,10 @@ class UserList extends Component<Props, States> {
                 {this.state.dialogOpen &&
                   <SimpleDialog 
                   open={this.state.dialogOpen}
-                  onClose={this.handleDialogClose}>
-                      <DialogTitle id="customized-dialog-title">
-                        <IconButton onClick={this.handleDialogClose}>
-                          <CloseIcon />
-                        </IconButton>
-                    </DialogTitle>
+                  onClose={this.handleDialogClose}
+                  dialogStyles={dialogStyles}
+                  header={popupHeader}>
+                  
                     <DialogContent>
                       { isActivateUser &&
                           <Typography gutterBottom>

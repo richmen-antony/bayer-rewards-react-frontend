@@ -90,7 +90,7 @@ export function invokeGetAuthService(path,formData) {
     const config = {
       method: 'GET',
       params: {
-        territory: 'PALOPO',
+        region: 'R1',
         ...formData
       },
       headers: {
