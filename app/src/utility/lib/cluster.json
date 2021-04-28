@@ -1,0 +1,107 @@
+[
+    {
+        "region":"EMEA",
+        "cluster":"Africa",
+        "isoCode": "MW",
+        "name": "Malawi",
+        "currency": "MWK",
+        "currencyDesc": "Malawian Kwacha"
+    },
+    {
+        "region":"EMEA",
+        "cluster":"Africa",
+        "isoCode": "ZA",
+        "name": "South Africa",
+        "currency": "ZAR",
+        "currencyDesc": "South African Rand"
+    },
+    {
+        "region":"EMEA",
+        "cluster":"Africa",
+        "isoCode": "EG",
+        "name": "Egypt",
+        "currency": "EGP",
+        "currencyDesc": "Egyptian Pound"
+    },
+    {
+        "region":"EMEA",
+        "cluster":"Europe",
+        "isoCode": "FR",
+        "name": "France",
+        "currency": "EUR",
+        "currencyDesc" : "Euro"
+    },
+    {
+        "region":"EMEA",
+        "cluster":"Europe",
+        "isoCode": "DE",
+        "name": "Germany",
+        "currency": "EUR",
+        "currencyDesc" : "Euro"
+    },
+    {
+        "region":"EMEA",
+        "cluster":"Europe",
+        "isoCode": "GB",
+        "name": "United Kingdom",
+        "currency" : "GBP",
+        "currencyDesc" : "British Pound Sterling"
+    },
+    {
+        "region":"EMEA",
+        "cluster":"Middle East",
+        "isoCode": "AE",
+        "name": "United Arab Emirates",
+        "currency": "AED",
+        "currencyDesc": "United Arab Emirates Dirham"
+    },
+    {
+        "region":"EMEA",
+        "cluster":"Middle East",
+        "isoCode": "SA",
+        "name": "Saudi Arabia",
+        "currency": "SAR",
+        "currencyDesc": "Saudi Riyal"
+    },
+    {
+        "region":"APAC",
+        "cluster":"Asia",
+        "isoCode": "CN",
+        "name": "China",
+        "currency": "CNY",
+        "currencyDesc": "Chinese Yuan"
+    },
+    {
+        "region":"APAC",
+        "cluster":"Asia",
+        "isoCode": "JP",
+        "name": "Japan",
+        "currency": "JPY",
+        "currencyDesc": "Japanese Yen"
+    },
+    {
+        "region":"APAC",
+        "cluster":"South Asia",
+        "isoCode": "IN",
+        "name": "India",
+        "currency": "INR",
+        "currencyDesc": "Indian Rupee"
+    },
+    {
+        "region":"APAC",
+        "cluster":"South Asia",
+        "isoCode": "PK",
+        "name": "Pakistan",
+        "currency": "PKR",
+        "currencyDesc": "Pakistani Rupee"
+    },
+    {
+        "region":"APAC",
+        "cluster":"South Asia",
+        "isoCode": "LK",
+        "name": "Sri Lanka",
+        "currency": "LKR",
+        "currencyDesc": "Sri Lankan Rupee"
+    }
+
+]

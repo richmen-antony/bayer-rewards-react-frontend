@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 import { Input } from '../../../../utility/widgets/input';
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/esm/Button'
 const dpstyle = {
   width: 185, 
   height: 35
