@@ -453,5 +453,27 @@
   background-color: #FFFFFF;
   border-radius: 10px;
   padding: 20px 25px;
+  
 
+}
+.popup-btn{
+  border-radius: 50px !important;
+  width: 15% !important;
+  text-transform: none !important;
+  
+ 
+}
+
+.popup-btn.close-btn{
+  background: #FFFFFF;
+  border: 1px solid #89D329;
+  color: #121212;
+  box-shadow: 0px 3px 6px #c7c7c729 !important;
+  margin-right: 20px;
+}
+.popup-btn.filter-scan{
+  background: #7EB343 ;
+  color: #FFFFFF;
+  // box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16) ;
+ 
 }

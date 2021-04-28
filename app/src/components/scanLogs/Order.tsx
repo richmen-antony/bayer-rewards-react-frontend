@@ -126,7 +126,7 @@ const OrderTable: React.FC<Props> = ({ open, close }) => {
         </div>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={close} color="primary">
+        <Button autoFocus onClick={close}  className="popup-btn close-btn">
           Close
         </Button>
       </DialogActions>

@@ -45,6 +45,12 @@ const DialogActions = withStyles((theme: Theme) => ({
     // border: "1px solid #89D329",
     // borderRadius: "50px",
   },
+  button:{
+    boxShadow: "0px 3px 6px #c7c7c729",
+    border: "1px solid #89D329",
+    borderRadius: "50px",
+
+  }
 }))(MuiDialogActions);
 
 type Props = {
@@ -238,12 +244,12 @@ class ScanLogsTable extends Component<Props, States> {
               </div>
             </DialogContent>
             <DialogActions>
-              <Button autoFocus onClick={this.handleClosePopup} color="primary">
+              <Button autoFocus onClick={this.handleClosePopup} className="popup-btn close-btn" >
                 Close
               </Button>
               <Button
                 onClick={this.handleClosePopup}
-                color="secondary"
+                className="popup-btn filter-scan"
                 autoFocus
               >
                 Filter Scans
