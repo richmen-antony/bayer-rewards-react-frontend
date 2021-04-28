@@ -14,7 +14,7 @@ const ScanLogs = lazy(() =>
 );
 
 const Configurations = lazy(() =>
-  import('./components/configurations')
+  import('./components/configurations/index')
     .then(({ Configurations }) => ({ default: Configurations }))
 );
 

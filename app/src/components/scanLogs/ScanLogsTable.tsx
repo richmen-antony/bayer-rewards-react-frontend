@@ -10,7 +10,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import NoImage from "../../assets/images/no_image.svg";
+import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
 
@@ -85,10 +85,17 @@ class ScanLogsTable extends Component<Props, States> {
     this.setState<never>({
       [key]: true,
     });
+    
   };
   handleCloseProductPopup = () => {
     this.setState({ showProductPopup: false });
   };
+  updateOrderData =(value :any)=>{
+    this.setState({
+      orderData:value
+    })
+
+  }
   render() {
     const {
       isLoader,
@@ -124,8 +131,11 @@ class ScanLogsTable extends Component<Props, States> {
                   {data.map((value, i) => {
                     return (
                       <tr
-                        onClick={(event) =>
-                          this.showPopup(event, "showProductPopup")
+                        onClick={(event) =>{
+                          this.showPopup(event, "showProductPopup");
+                          this.updateOrderData(value)
+                        }
+                        
                         }
                       >
                         <td>{value.order_id}</td>
@@ -264,6 +274,7 @@ class ScanLogsTable extends Component<Props, States> {
           <OrderTable
             open={showProductPopup}
             close={this.handleCloseProductPopup}
+            data={this.state.orderData}
           />
         ) : (
           ""

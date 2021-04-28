@@ -10,6 +10,11 @@ import {
   WithStyles,
 } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+
+import advisorImg from "../../assets/images/advisor.svg"
+import farmerImg from "../../assets/images/farmer.svg"
+import retailerImg from "../../assets/images/retailer.svg"
+
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -50,13 +55,15 @@ const DialogActions = withStyles((theme: Theme) => ({
 interface Props {
   open: boolean;
   close: () => void;
+  data: any;
 }
 /**
  *OrderTable Functional Component
  * @param props
  * @returns
  */
-const OrderTable: React.FC<Props> = ({ open, close }) => {
+const OrderTable: React.FC<Props> = ({ open, close, data }) => {
+  console.log({ data });
   return (
     <SimpleDialog
       open={open}
@@ -66,67 +73,97 @@ const OrderTable: React.FC<Props> = ({ open, close }) => {
     >
       <DialogContent>
         <div className="popup-container ordered-table">
-          <div className="popup-content">
+        <div className="popup-content">
             <div className={`popup-title`}>
               <p>
-                {popupHeader?.title}, <label>{popupHeader?.sub}</label>{" "}
+                {popupHeader?.title}, <label>{data?.order_id}</label>{" "}
               </p>
             </div>
           </div>
-          <table className="table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>INTENDED QTY</th>
-                <th>ORDERED QTY</th>
-                <th>TOTAL COST</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  Total <span>16</span>
-                </td>
-                <td>-</td>
-                <td>-</td>
-              </tr>
-            </tfoot>
-          </table>
+          <div className="wrapper-progressBar">
+            <ul className="progressBar">
+              <li className="active">
+                <div className="content">
+                  <img
+                    src={advisorImg }
+                    alt=""
+                  />
+
+                  <p>Advisor ID & Name</p>
+                </div>
+              </li>
+              <li className="active">
+                <div className="content">
+                  <img
+                    src={retailerImg }
+                    alt=""
+                  />
+                  <p>Retailer ID & Name</p>
+                </div>
+              </li>
+              <li>
+                <div className="content">
+                  <img
+                    src={farmerImg }
+                    alt=""
+                  />
+                  <p>Farmer ID & Name</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          
+          {data?.products_ordered?.length > 0 ? (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>INTENDED QTY</th>
+                  <th>ORDERED QTY</th>
+                  <th>TOTAL COST</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.products_ordered.map((value: any, index: number) => {
+                  return (
+                    <tr key={index}>
+                      <th scope="row">{index + 1}</th>
+                      <td>{value.productsku}</td>
+                      <td>{value.type}</td>
+                      <td>{value.intendedqty}</td>
+                      <td>{value.orderedqty}</td>
+                      <td>{value.price}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    Total <span>16</span>
+                  </td>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>
+              </tfoot>
+            </table>
+          ) : (
+            <div className="col-12 card mt-4">
+              <div className="card-body ">
+                <div className="text-red py-4 text-center">No Data Found</div>
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={close}  className="popup-btn close-btn">
+        <Button autoFocus onClick={close} className="popup-btn close-btn">
           Close
         </Button>
       </DialogActions>

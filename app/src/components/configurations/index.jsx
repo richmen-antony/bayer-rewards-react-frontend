@@ -10,7 +10,7 @@ import { RoleHierarchy } from './components/RoleHierarchy';                     
 import { TnTFlow } from './components/TnTFlow';                                 // Step 4
 import { ScanPointsAndAllocation } from './components/ScanPointsAndAllocation'; // Step 5
 import { Anticounterfeit } from './components/Anticounterfeit';                 // Step 6  
-import ConfigureFeature from './feature/ConfigureFeature'
+import ConfigureFeature from './feature/ConfigureFeature';
 import DevConfiguration from './dev';
 
 import cluster_json from '../../utility/lib/cluster.json';

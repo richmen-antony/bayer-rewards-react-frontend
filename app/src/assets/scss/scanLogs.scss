@@ -319,7 +319,7 @@
           border: 0;
           padding: 15px 10px;
           vertical-align: middle;
-          font-size: 14px;
+          font-size: 16px;
           font-weight: 500;
           font-family: "Open Sans", sans-serif;
         
@@ -376,7 +376,7 @@
   display: flex;
   justify-content: space-between;
   img{
-    width: 350px;
+    width: 300px;
     height: 300px;
   }
   .popup-content{
@@ -441,7 +441,7 @@
       tr{
         th{
           color:#777777;
-          font-size: 14px;
+          font-size: 16px;
           font-family: 'Open Sans';
         }
       }
@@ -477,3 +477,139 @@
   // box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16) ;
  
 }
+.icon-test {
+  text-align: center;
+  width: 50px;
+  background: lightgray;
+  border-radius: 50%;
+  border: 2px solid grey;
+}
+
+.icon-test > i {
+margin: 33% auto;
+}
+
+.dotted:after {
+  content:"";
+  position: absolute;
+  // z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  height: 100%;
+  height: inherit;
+  border-left: 2px dotted lightgrey;
+}
+
+.dotted {
+  position: relative;
+  margin: 10px auto;
+  width: 50px;
+}
+.wrapper-progressBar {
+  width: 100%
+}
+
+.progressBar {
+  position: relative;
+
+  display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0;
+}
+
+.progressBar li {
+  width: 80px;
+  list-style-type: none;
+  &::after{
+    content: '';
+    position: absolute;
+    left: 80px;
+    right: 0;
+    border-bottom: 3px dashed #000;
+    top: 40px;
+    width: 33.3%;
+  }
+  &:nth-child(2){
+    &:after{
+
+      left: calc(33.3% + 160px);
+    }
+  }
+  &.active{
+    &::after{
+      border-color: red;
+    }
+  }
+  &:last-child{
+    &:after{
+      display: none;
+    }
+  }
+  .content{
+    text-align: center;
+ 
+
+    img{
+      height: 80px;
+      max-width: 100%;
+      margin-bottom: 15px;
+    }
+  }
+}
+
+
+
+
+
+
+
+@media only screen and (max-width: 1400px) {
+  .scanlog-table {
+    table {
+      thead {
+        tr {
+          
+          th {
+            padding: 15px 5px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: "Open Sans", sans-serif;
+          
+          }
+        }
+      }
+      tbody{
+        tr{
+        td{
+          font-size: 14px;
+          font-family: "Open Sans";
+          .status{
+          
+            border-radius: 20px;
+            padding: 5px;
+              i{
+              margin-right: 5px;
+            }
+          }
+          
+        }
+        }
+      }
+    }
+  }
+  .ordered-table{
+    table{
+      thead{
+        tr{
+          th{
+            font-size: 14px;
+            font-family: 'Open Sans';
+          }
+        }
+      }
+    }
+  }
+
+ }

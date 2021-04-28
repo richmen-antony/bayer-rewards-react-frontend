@@ -10,7 +10,7 @@ import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import CancelIcon from "../../../assets/images/cancel.svg"
+import CancelIcon from "../../../assets/images/cancel-1.svg"
 
 
 type Props = {

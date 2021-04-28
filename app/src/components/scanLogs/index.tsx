@@ -537,25 +537,11 @@ class ScanLogs extends Component<Props, States> {
                 </AntTabs>
 
                 <div className="filterSide text-center">
-                  <div>
-                    <i
-                      className="fa fa-info-circle"
-                      id="Tooltip"
-                      aria-hidden="true"
-                    ></i>
-                    <Tooltip
-                      placement="right"
-                      isOpen={this.state.tooltipOpen}
-                      target="Tooltip"
-                      toggle={() => this.toggle()}
-                    >
-                      {tooltipItem}
-                    </Tooltip>
-                  </div>
+                  
                   <div className="searchInputRow advisor-sales">
                     <i className="fa fa-search icon"></i>
                     <input
-                      placeholder="Search..[Min 3 chars]"
+                      placeholder="Search..(min 3 chars)"
                       className="input-field"
                       type="text"
                       onChange={this.handleSearch}
