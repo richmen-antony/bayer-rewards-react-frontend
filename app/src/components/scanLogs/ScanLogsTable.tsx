@@ -13,6 +13,7 @@ import Button from "@material-ui/core/Button";
 import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
+import maxImg from "../../assets/images/maximize.svg"
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -170,6 +171,7 @@ class ScanLogsTable extends Component<Props, States> {
                         </td>
                         <td>
                           {moment(value.lastupdateddate).format("DD-MM-YYYY")}
+                          <img  className="max-image" src={maxImg} />
                         </td>
                       </tr>
                     );

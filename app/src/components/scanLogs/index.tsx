@@ -111,9 +111,7 @@ const useStyles = (theme: Theme) => ({
     padding: "0px",
     marginTop: "5px",
   },
-  demo1: {
-    backgroundColor: theme.palette.background.paper,
-  },
+  
 });
 const AntTab = withStyles((theme: Theme) =>
   createStyles({
@@ -524,7 +522,7 @@ class ScanLogs extends Component<Props, States> {
         {isLoader && <Loader />}
         <div>
           <div className={classes?.root}>
-            <div className={classes?.demo1}>
+            <div>
               <div className="tabs">
                 <AntTabs
                   value={this.state.value}
@@ -562,7 +560,7 @@ class ScanLogs extends Component<Props, States> {
                       <DropdownMenu right>
                         <div className="p-3">
                           <label className="font-weight-bold">
-                            Distributor / Retailer
+                            Retailer
                           </label>
                           <i
                             className="fa fa-filter boxed float-right"
@@ -585,8 +583,32 @@ class ScanLogs extends Component<Props, States> {
                               <option>Retailer</option>
                             </select>
                           </div>
-
-                          <label className="font-weight-bold">Scan Logs</label>
+                         
+                          <label className="font-weight-bold">
+                            Farmer
+                          </label>
+                          <i
+                            className="fa fa-filter boxed float-right"
+                            aria-hidden="true"
+                            onClick={this.toggleFilter}
+                          ></i>
+                          <div
+                            className="form-group"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <select
+                              className="form-control filterDropdown"
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "type", "")
+                              }
+                              value={selectedFilters.type}
+                            >
+                              <option>All</option>
+                              <option>Farmer Name</option>
+                              <option>Farmer Name3</option>
+                            </select>
+                          </div>
+                          {/* <label className="font-weight-bold">Scan Logs</label>
                           <div className="pt-1">
                             {this.state.scanType.map((item) => (
                               <span className="mr-2">
@@ -605,7 +627,7 @@ class ScanLogs extends Component<Props, States> {
                                 </Button>
                               </span>
                             ))}
-                          </div>
+                          </div> */}
 
                           <label className="font-weight-bold pt-2">
                             Product Group

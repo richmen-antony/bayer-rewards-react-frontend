@@ -15,6 +15,8 @@ import advisorImg from "../../assets/images/advisor.svg"
 import farmerImg from "../../assets/images/farmer.svg"
 import retailerImg from "../../assets/images/retailer.svg"
 
+
+
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -83,6 +85,11 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           <div className="wrapper-progressBar">
             <ul className="progressBar">
               <li className="active">
+                <div className="line-cnt">
+                  <p>Ordered date</p>
+                  <label>24 Dec, 2020</label>
+
+                </div>
                 <div className="content">
                   <img
                     src={advisorImg }
@@ -90,15 +97,22 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   />
 
                   <p>Advisor ID & Name</p>
+                  <span>256341 - Charles Manor</span>
                 </div>
               </li>
               <li className="active">
+              <div className="line-cnt-expiry-date">
+                  <p>Expiry Date</p>
+                  <label>24 Dec, 2020</label>
+
+                </div>
                 <div className="content">
                   <img
                     src={retailerImg }
                     alt=""
                   />
                   <p>Retailer ID & Name</p>
+                  <span>GCHPU - Maria Joseph</span>
                 </div>
               </li>
               <li>
@@ -108,6 +122,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                     alt=""
                   />
                   <p>Farmer ID & Name</p>
+                  <span>125685 - Gbuzue David</span>
                 </div>
               </li>
             </ul>
