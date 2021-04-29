@@ -66,6 +66,9 @@
   border-radius: 20px;
   position: relative;
   padding: 25px 55px 25px 20px;
+  min-width: 200px;
+  width: 80%;
+  
   h3 {
     font-size: 20px;
     color: #10384f;
@@ -192,14 +195,74 @@
   border-color: #28a745 !important;
   background-color: #28a745;
 }
+.card.dev{
+  margin: 20px 30px;
+
+}
+.card-header{
+  background-color: inherit;
+  border-radius: 10px !important;
+  border: 1px solid #70707052;  
+  padding: 0 1rem;
+ .title{
+   color:#000000;
+   font-size: 20px;
+   font-weight: 600;
+   font-family: "Open Sans";
+ }
+ .base-url{
+  color:#0A0A0A;
+   span{
+  
+     font-family: italic;
+     font-size: 16px;
+   }
+ }
+}
+
+.total-parms{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  .params{
+    background-color: #6E6D6D;
+    padding: 5px 15px;
+    border-radius: 20px;
+    text-align: center;
+    label{
+      color:#FFFFFF;
+      font-size: 16px;
+    }
+  }
+}
+
+.checkbox-tick-icon{
+  width: 20px;
+  height: 20px;
+}
 
 @media only screen and (max-width: 1440px) {
+
+  .card-body.configure {
+    border-radius: 15px;
+    margin: 20px;
+    height: 490px;
+  }
+  .config-table td .text {
+    font-size: 14px;
+  }
+
   .config-header {
+    min-height: 80px;
+    border-radius: 15px;
+    padding: 10px;
+    min-width: 160px;
+    width: 60%;
     h3 {
-      font-size: 17px;
+      font-size: 14px;
     }
     p {
-      font-size: 15px;
+      font-size: 12px;
     }
     img {
       width: 16px;
@@ -219,5 +282,32 @@
       font-size: 18px;
       font-weight: 400;
     }
+  }
+
+
+  .card.dev{
+    margin: 20px 30px;
+  
+  }
+  .card-header{
+    padding: 0 1rem;
+   .title{
+     font-size: 18px;
+     font-weight: 600;
+     font-family: "Open Sans";
+   }
+   .base-url{
+     span{
+       font-size: 14px;
+     }
+   }
+  }
+
+  .pencilEditImg{
+    width: 15px;
+    height: 15px;
+  }
+  .total-parms .params label {
+    font-size: 14px;
   }
 }

@@ -318,22 +318,18 @@ class Configurations extends Component {
                 </div>
               </TabPanel>
               <TabPanel tabId="two">
-                <br />
-                <br />
-                <div className="buttons-container">
-                  <ConfigureFeature />
+              <ConfigureFeature />
+                {/* <div className="buttons-container">
                   <button style={btnStyle} onClick={() => this.handleReset()}>Reset <i class="fa fa-redo-alt" aria-hidden="true"></i></button>
                   <button style={btnNextSubmit}>Apply <i class="fa fa-check" aria-hidden="true"></i></button>
-                </div>
+                </div> */}
               </TabPanel>
               <TabPanel tabId="three">
-                <div className="buttons-container">
-                  <br />
-                  <br />
-                  <DevConfiguration />
+              <DevConfiguration />
+                {/* <div className="buttons-container">
                   <button style={btnStyle} onClick={() => this.handleReset()}>Reset <i class="fa fa-redo-alt" aria-hidden="true"></i></button>
                   <button style={btnNextSubmit}>Apply <i class="fa fa-check" aria-hidden="true"></i></button>
-                </div>
+                </div> */}
               </TabPanel>
             </div>
           </section>
