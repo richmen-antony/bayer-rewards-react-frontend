@@ -13,6 +13,11 @@ import { Anticounterfeit } from './components/Anticounterfeit';                 
 import ConfigureFeature from './feature/ConfigureFeature';
 import DevConfiguration from './dev';
 
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+
 import cluster_json from '../../utility/lib/cluster.json';
 
 class Configurations extends Component {
@@ -22,14 +27,22 @@ class Configurations extends Component {
       currentStep: 1,
       isActive: false,
       setData: [],
-      setSelectedRegion: '',
-      setSelectedCluster: '',
+      setSelectedRegion: 'EMEA',
+      setSelectedCluster: 'Africa',
       selectedCountryDetails: [],
       selectedLocationHierarchyDetails: [],
       selectedRoleHierarchyDetails: [],
       selectedTnTFlowDetails: [],
       selectedScanPointsAndAllocationDetails: [],
-      selectedAnticounterfeitDetails: []
+      selectedAnticounterfeitDetails: [],
+
+      region: '',
+      cluster: '',
+      country: '',
+      countrycode: '',
+      currency: '',
+      currencyname: ''
+
     };
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
     this.handleDropdownChangeRegion = this.handleDropdownChangeRegion.bind(this);
@@ -43,8 +56,10 @@ class Configurations extends Component {
     this.setState({ setSelectedCluster: event.target.value });
   }
 
-  handleClick(clickType) {
+  handleClick(clickType, e) {
+
     const { currentStep } = this.state;
+
     let newStep = currentStep;
     clickType === "next" ? newStep++ : newStep--;
 
@@ -83,6 +98,11 @@ class Configurations extends Component {
   componentWillMount() {
     const setData = cluster_json;
     this.setState({ setData: setData });
+
+    console.log("setSelectedCluster", this.state.setSelectedCluster);
+    if (this.state.setSelectedCluster) {
+      this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -141,14 +161,17 @@ class Configurations extends Component {
   // }
 
   _getCurrentStep = () => {
+
     const {
       currentStep,
       selectedCountryDetails,
+      selectedCluster,
       selectedLocationHierarchyDetails,
       selectedRoleHierarchyDetails,
       selectedTnTFlowDetails,
       selectedScanPointsAndAllocationDetails,
-      selectedAnticounterfeitDetails
+      selectedAnticounterfeitDetails,
+      values
     } = this.state;
 
     switch (currentStep) {
@@ -156,6 +179,7 @@ class Configurations extends Component {
         return (
           <CountrySetup
             selectedCountryDetails={selectedCountryDetails}
+            values={values}
             onChangeActiveStep={currentStep => this.setState({ currentStep })} />
         )
       case 2:
@@ -203,6 +227,10 @@ class Configurations extends Component {
   render() {
     const { currentStep } = this.state;
 
+    const { region, cluster, country, countrycode, currency, currencyname } = this.state;
+    const values = { region, cluster, country, countrycode, currency, currencyname };
+
+
     const dpstyle = {
       width: 185,
       height: 35
@@ -228,7 +256,7 @@ class Configurations extends Component {
     if (currentStep === stepsArray.length) {
       button = <button style={btnNextSubmit} onClick={() => this.handleClick("next")}>Submit <i class="fa fa-check" aria-hidden="true"></i></button>;
     } else {
-      button = <button style={btnNextSubmit} onClick={() => this.handleClick("next")}>Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>;
+      button = <button style={btnNextSubmit} onClick={(e) => this.handleClick("next", e)}>Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>;
     }
 
 
@@ -246,7 +274,6 @@ class Configurations extends Component {
     });
     const clusterUnique = this.getUnique(filterClusterDropdown, 'cluster');
 
-
     return (
       <div className='card-container'>
         <TabProvider defaultTab="one">
@@ -259,14 +286,14 @@ class Configurations extends Component {
 
             <div className="wrapper">
               <TabPanel tabId="one">
-                {currentStep == 1 &&
+                {currentStep == 1 ? (
                   <div className="col-md-10">
                     <div className="container">
                       <div className="row rm-group">
                         <div className="col-sm-3">
                           <div><label className="font-weight-bold pt-4">Region</label></div>
                           <div>
-                            <select style={dpstyle} id="dropdown" value={this.state.setSelectedRegion} onChange={(event) => this.handleDropdownChangeRegion(event)}>
+                            <select style={dpstyle} id="dropdown" value={this.state.setSelectedRegion} defaultValue={values.region} onChange={(event) => this.handleDropdownChangeRegion(event)}>
                               {regionUnique.length > 0 ? (
                                 regionUnique.map(({ region }) => (
                                   <option value={region} key={region}>
@@ -283,7 +310,7 @@ class Configurations extends Component {
                         </div>
                         <div className="col-sm-3">
                           <div><label className="font-weight-bold pt-4">Cluster</label></div>
-                          <div>   <select style={dpstyle} id="dropdown" value={this.state.setSelectedCluster} onChange={(event) => this.handleDropdownChange(event)}>
+                          <div>   <select style={dpstyle} id="dropdown" value={this.state.setSelectedCluster} defaultValue={values.culster} onChange={(event) => this.handleDropdownChange(event)}>
                             {clusterUnique.length > 0 ? (
                               clusterUnique.map(({ cluster }) => (
                                 <option value={cluster} key={cluster}>
@@ -296,6 +323,30 @@ class Configurations extends Component {
                                 </option>
                               )}
                           </select></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) :
+
+                  <div className="col-md-10">
+                    <div className="container">
+                      <div className="row rm-group">
+                        <div className="col-sm-3">
+                          <div><label className="font-weight-bold pt-4"></label></div>
+                          <div className="breadcrums sub-title">
+                            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                              <Link color="inherit" href="/" >
+                                {this.state.setSelectedRegion}
+                              </Link>
+                              <Link color="inherit" href="/" >
+                                {this.state.setSelectedCluster}
+                              </Link>
+                              <Typography color="textPrimary">Malawi</Typography>
+                            </Breadcrumbs>
+                            {/* <p>{"EMEA >  Africa  >Malawi"}</p> */}
+                          </div>
+
                         </div>
                       </div>
                     </div>

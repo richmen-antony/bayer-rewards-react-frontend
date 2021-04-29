@@ -93,7 +93,7 @@ class ScanPointsAndAllocation extends React.Component {
       <div className="col-md-10">
         <div className="container">
           <div className="row">
-            <div className="col-xs-12  column" style={tableScrollStyle}>
+            <div className="col-xs-12 column" style={tableScrollStyle}>
               <table className="table" id="tab_logic">
                 <thead style={tableStyle} >
                   <tr>
