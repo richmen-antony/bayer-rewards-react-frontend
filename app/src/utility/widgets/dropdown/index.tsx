@@ -17,6 +17,7 @@ export interface DropdownProps {
     name: any;
     isPlaceholder?: boolean;
     isLabel?: boolean;
+    isDisabled?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -74,7 +75,9 @@ const useStyles = makeStyles((theme: Theme) =>
  *   handleChange={this.handleChange}
  *   value={this.state.selectedValue}
  *   isPlaceholder   // With placeholder
- *   isLabel  />    // with Label
+ *   isLabel         // with Label
+ *   isDisabled      // for disable dropdwon
+ *   />    
  */
 
 export const Dropdown = ({
@@ -87,6 +90,7 @@ export const Dropdown = ({
     name,
     isPlaceholder,
     isLabel,
+    isDisabled,
     ...props
   }: DropdownProps) => {
   const classes = useStyles();
@@ -103,6 +107,7 @@ export const Dropdown = ({
             value={value}
             onChange={handleChange}
             displayEmpty = {isPlaceholder ? true : false}
+            disabled = {isDisabled ? true : false}
             >
             {isPlaceholder && <MenuItem value="" disabled>{label}</MenuItem>}
             {options && options.map((person: any) => (

@@ -5,6 +5,11 @@ import leftArrow from "../../assets/icons/left_arrow.svg";
 import CustomCard from "../../container/components/card";
 import "../../assets/scss/rsmDashboard.scss";
 import { getLocalStorageData, clearLocalStorageData } from '../../utility/base/localStore';
+import { apiURL } from "../../utility/base/utils/config";
+import {
+    invokeGetAuthService,
+    invokeGetService,
+  } from "../../utility/base/service";
 
 type Props={
     location?: any;
@@ -34,28 +39,18 @@ class Dashboard extends Component<Props, States>{
         this.setState({
             userRole: userData.role
         });
-        this.getScanLogsCount();
-        this.getUsersCount();
+        this.getDashboardDetails();
     }
-    getScanLogsCount = () => {
-        // const { scanLogCount } = apiURL;
-        // this.setState({ isLoader: true });
-        // invokeGetAuthService(scanLogCount).then((response) => {
-        //   this.setState({
-        //     scanLogCount: response,
-        //   });
-        // });
-        this.setState({scanLogCount : 254});
-    }
-    getUsersCount = () => {
-        // const { usersCount } = apiURL;
-        // this.setState({ isLoader: true });
-        // invokeGetAuthService(usersCount).then((response) => {
-        //   this.setState({
-        //     usersCount: response,
-        //   });
-        // });
-        this.setState({usersCount : 32});
+    getDashboardDetails =()=>{
+        const { rsmDashboard } = apiURL;
+        this.setState({ isLoader: true });
+        invokeGetAuthService(rsmDashboard).then((response) => {
+            let res = Object.keys(response.body).length !== 0 ? response.body :'';
+            this.setState({
+                usersCount: res.usercount,
+                scanLogCount: res.scanlogscount
+            });
+        });
     }
 
     cardClick = () => {

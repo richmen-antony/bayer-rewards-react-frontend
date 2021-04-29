@@ -45,3 +45,32 @@
     justify-content: flex-end;
     align-items: center;
 }
+tbody {
+    tr {
+      td {
+        font-size: 14px;
+        font-family: "Open Sans";
+        .status {
+          display: flex;
+          align-items: center;
+          border-radius: 30px;
+          padding: 10px;
+          i {
+            margin-right: 5px;
+          }
+        }
+        .status.active {
+          color: #1ccead;
+          background-color: #e3f8f4;
+        }
+        .status.inactive {
+          color: #ff6397;
+          background-color: #ffecf2;
+        }
+        .max-image {
+          margin-left: 60px;
+          cursor: pointer;
+        }
+      }
+    }
+  }

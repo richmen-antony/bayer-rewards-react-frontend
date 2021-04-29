@@ -104,7 +104,8 @@ type States = {
   isAsc: boolean;
   isRendered: boolean;
   pageNo: number;
-  allUsersList: Array<any>;
+  allChannelPartners: Array<any>;
+  allThirdParty: Array<any>,
   actions: Array<any>;
   dropDownValue: string;
   scanType: Array<any>;
@@ -258,50 +259,8 @@ class UserList extends Component<Props, States> {
       dropdownOpenFilter: false,
       accordionView: false,
       accordionId: "",
-      allUsersList: [
-        {
-            'id' : 1,
-            'username' : 'vidhya',
-            'mobile': '9898789878',
-            'accName' : 'Choke Mangtol',
-            'ownerName': 'Aaron finch',
-            'state': 'tamilnadu',
-            "district": 'demo',
-            'lastUpdated': 'Angel Mathew',
-            'subdistrict': 'aaa',
-            'expirydate': '20/08/2021',
-            'activeStatus' : false,
-            'registeredUser' : false
-        },
-        {
-            'id' : 2,
-            'username' : 'demo',
-            'mobile': '7898789878',
-            'accName' : 'Mono seeds',
-            'ownerName': 'Chris Harrish',
-            'state': 'bangalore',
-            "district": 'demo1',
-            "lastUpdated": 'Angel Mathew',
-            'subdistrict': 'bbb',
-            'expirydate': '05/08/2021',
-            'activeStatus' : false,
-            'registeredUser' : true
-        },
-        {
-          'id' : 3,
-          'username' : 'aaa',
-          'mobile': '8987898789',
-          'accName' : 'Safe Crop',
-          'ownerName': 'kanteyeni',
-          'state': 'bangalore',
-          "district": 'demo1',
-          "lastUpdated": 'Angel Mathew',
-          'subdistrict': 'bbb',
-          'expirydate': '05/08/2021',
-          'activeStatus' : true,
-          'registeredUser' : true
-        }
-    ],
+    allChannelPartners : [],
+    allThirdParty : [],
     dialogOpen: false,
     changeLogOpen: false,
     isActivateUser: false,
@@ -311,16 +270,82 @@ class UserList extends Component<Props, States> {
     };
     this.timeOut = 0;
   }
-  //   componentDidMount() {
-  //     this.getScanLogs();
-  //     let data: any = getLocalStorageData("userData");
-  //     let userData = JSON.parse(data);
+  componentDidMount() {
+    this.getChannelPartnersList();
+    this.getThirdPartysList();
+    // let data: any = getLocalStorageData("userData");
+    // let userData = JSON.parse(data);
 
-  //     this.setState({
-  //       userRole: userData.role,
-  //     });
-  //     this.getProductCategory();
-  //   }
+    // this.setState({
+    //   userRole: userData.role,
+    // });
+  }
+
+  getChannelPartnersList = () => {
+    const { channelPartnersList } = apiURL;
+    this.setState({ isLoader: true });
+    const data = {
+      page: this.state.pageNo,
+      searchtext: this.state.searchText,
+      rowsperpage: this.state.rowsPerPage,
+      usertype: 'CHANNEL PARTNER'
+      // role: this.state.selectedFilters.type,
+      // scantype: this.state.selectedFilters.scanType,
+      // productcategory: this.state.selectedFilters.productCategory,
+      // scanstatus: this.state.selectedFilters.status,
+      // isfiltered: this.state.isFiltered,
+      // startdate: this.state.selectedFilters.startDate,
+      // enddate: this.state.selectedFilters.endDate,
+
+    };
+    invokeGetAuthService(channelPartnersList, data)
+      .then((response) => {
+        this.setState({
+          isLoader: false,
+          allChannelPartners:
+            Object.keys(response.body).length !== 0 ? response.body.rows : [],
+        });
+        const total = response.body.totalrows;
+        this.setState({ totalData: Number(total) });
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
+  }
+
+  getThirdPartysList = () => {
+    const { channelPartnersList } = apiURL;
+    this.setState({ isLoader: true });
+    const data = {
+      page: this.state.pageNo,
+      searchtext: this.state.searchText,
+      rowsperpage: this.state.rowsPerPage,
+      usertype: 'THIRD PARTY'
+      // role: this.state.selectedFilters.type,
+      // scantype: this.state.selectedFilters.scanType,
+      // productcategory: this.state.selectedFilters.productCategory,
+      // scanstatus: this.state.selectedFilters.status,
+      // isfiltered: this.state.isFiltered,
+      // startdate: this.state.selectedFilters.startDate,
+      // enddate: this.state.selectedFilters.endDate,
+
+    };
+    invokeGetAuthService(channelPartnersList, data)
+      .then((response) => {
+        this.setState({
+          isLoader: false,
+          allThirdParty:
+            Object.keys(response.body).length !== 0 ? response.body.rows : [],
+        });
+        const total = response.body.rows.count();
+        this.setState({ totalData: total });
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
+  }
 
   downloadExcelFile = () => {
     let tableId: any = document.getElementById("tableData")?.id;
@@ -375,38 +400,6 @@ class UserList extends Component<Props, States> {
     this.export_table_to_csv(html, "table.csv");
   };
 
-//   getScanLogs = () => {
-//     const { scanLogs } = apiURL;
-//     this.setState({ isLoader: true });
-//     const data = {
-//       page: this.state.pageNo,
-//       searchtext: this.state.searchText,
-//       rowsperpage: this.state.rowsPerPage,
-//       role: this.state.selectedFilters.type,
-//       scantype: this.state.selectedFilters.scanType,
-//       productcategory: this.state.selectedFilters.productCategory,
-//       scanstatus: this.state.selectedFilters.status,
-//       isfiltered: this.state.isFiltered,
-//       startdate: this.state.selectedFilters.startDate,
-//       enddate: this.state.selectedFilters.endDate,
-//     };
-
-//     invokeGetAuthService(scanLogs, data)
-//       .then((response) => {
-//         this.setState({
-//           isLoader: false,
-//           allUsersList:
-//             Object.keys(response.body).length !== 0 ? response.body.rows : [],
-//         });
-//         const total = response.body.totalrows;
-//         this.setState({ totalData: Number(total) });
-//       })
-//       .catch((error) => {
-//         this.setState({ isLoader: false });
-//         console.log(error, "error");
-//       });
-//   };
-
 //   getProductCategory = () => {
 //     const { productCategory } = apiURL;
 //     this.setState({ isLoader: true });
@@ -429,9 +422,10 @@ class UserList extends Component<Props, States> {
     this.setState({ isRendered: true,accordionView : ! this.state.accordionView,accordionId:data.productlabelid });
   };
 
-  onSort(name: string, data: any, isAsc: boolean) {
+  onSort = (name: string, data: any, isAsc: boolean) => {
     let response = sortBy(name, data);
-    this.setState({ allUsersList: response, isAsc: !isAsc });
+    console.log('vvvvvv', isAsc);
+    this.setState({ allChannelPartners: response, isAsc: !isAsc });
   }
 
   toggleFilter = () => {
@@ -495,50 +489,51 @@ class UserList extends Component<Props, States> {
     }, 0);
   };
 
-//   handleSearch = (e: any) => {
-//     let searchText = e.target.value;
-//     this.setState({ searchText: searchText });
-//     if (this.timeOut) {
-//       clearTimeout(this.timeOut);
-//     }
-//     if (searchText.length >= 3 || searchText.length == 0) {
-//       this.timeOut = setTimeout(() => {
-//         this.getScanLogs();
-//       }, 1000);
-//     }
-//   };
+  handleSearch = (e: any) => {
+    // alert('hi');
+    let searchText = e.target.value;
+    this.setState({ searchText: searchText });
+    if (this.timeOut) {
+      clearTimeout(this.timeOut);
+    }
+    if (searchText.length >= 3 || searchText.length == 0) {
+      this.timeOut = setTimeout(() => {
+        this.getChannelPartnersList();
+      }, 1000);
+    }
+  };
 //   applyFilter = () => {
 //     this.setState({ isFiltered: true });
 //     this.timeOut = setTimeout(() => {
 //       this.getScanLogs();
 //     }, 0);
 //   };
-//   previous = (pageNo: any) => {
-//     this.setState({ pageNo: pageNo -1 })
-//     setTimeout(()=>{
-//         this.getScanLogs();
-//     },0);
+  previous = (pageNo: any) => {
+    this.setState({ pageNo: pageNo -1 })
+    setTimeout(()=>{
+        this.getChannelPartnersList();
+    },0);
     
-// }
-// next = (pageNo: any) => {
-//   this.setState({ pageNo: pageNo + 1 })
-//     setTimeout(()=>{
-//         this.getScanLogs();
-//     },0);
-// }
-// pageNumberClick = (number: any) => {
-//     this.setState({pageNo: number});
-//     setTimeout(()=>{
-//       this.getScanLogs();
-//     },0);
-//   }
+}
+next = (pageNo: any) => {
+  this.setState({ pageNo: pageNo + 1 })
+    setTimeout(()=>{
+        this.getChannelPartnersList();
+    },0);
+}
+pageNumberClick = (number: any) => {
+    this.setState({pageNo: number});
+    setTimeout(()=>{
+      this.getChannelPartnersList();
+    },0);
+  }
 
-// backForward = () => {
-//     this.setState({startIndex: this.state.startIndex - 3, endIndex: this.state.endIndex - 1})
-// }
-// fastForward = () => {
-//     this.setState({startIndex: this.state.endIndex + 1, endIndex: this.state.endIndex + 3})
-// }
+backForward = () => {
+    this.setState({startIndex: this.state.startIndex - 3, endIndex: this.state.endIndex - 1})
+}
+fastForward = () => {
+    this.setState({startIndex: this.state.endIndex + 1, endIndex: this.state.endIndex + 3})
+}
 
 
   handleDialogClose = () => {
@@ -556,7 +551,7 @@ class UserList extends Component<Props, States> {
   render() {
     const {
       isAsc,
-      allUsersList,
+      allChannelPartners,
       dropdownOpenFilter,
       selectedFilters,
       isLoader,
@@ -572,11 +567,8 @@ class UserList extends Component<Props, States> {
       isEditUser
     } = this.state;
 
-    const pageNumbers = [];
-    const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
-    for (let i = 1; i <= pageData; i++) {
-      pageNumbers.push(i);
-    }
+    console.log('totalData', totalData);
+
     // const tooltipItem = () => {
     //   return (
     //     <div>
@@ -642,7 +634,7 @@ class UserList extends Component<Props, States> {
                 </div> }
                 <div>
                     {/* <img src={downloadIcon} width="17" alt="filter" /> */}
-                    <button className="btn btn-primary downloadBtn" onClick={this.download}>
+                    <button className="btn btn-primary" onClick={this.download}>
                         <i className="fa fa-download mr-2"></i>{" "}
                         <span>Download</span>
                     </button>
@@ -650,6 +642,12 @@ class UserList extends Component<Props, States> {
             </div>
           </div>
           {!changeLogOpen && (
+            <div className='' style={{padding: '5px',
+            backgroundColor: '#ffffff',
+            backgroundClip: 'border-box',
+            border: '1px solid #ffffff',
+            borderRadius:'.25rem'
+            }}>
           <div className="row align-items-center">
             <div className="col-sm-6">
               <div className="searchInputRow">
@@ -658,7 +656,7 @@ class UserList extends Component<Props, States> {
                     placeholder="Search..[Min 3 chars]"
                     className="input-field"
                     type="text"
-                    // onChange='{this.handleSearch}'
+                    onChange={this.handleSearch}
                     value={searchText}
                   />
               </div>
@@ -825,6 +823,7 @@ class UserList extends Component<Props, States> {
               }
               </div>
             </div>
+          </div>
           </div> 
           )}
           <div className='test'>
@@ -832,20 +831,24 @@ class UserList extends Component<Props, States> {
               <>
                 <TabPanel value={this.state.value} index={0}>
                   <ChannelPartners 
-                      allUsersList={allUsersList}
+                      allChannelPartners={allChannelPartners}
                       isAsc={isAsc}
-                      onSort={this.onSort} />
-              </TabPanel>
+                      onSort={this.onSort}
+                      state={this.state}
+                      previous={this.previous}
+                      next={this.next}
+                      pageNumberClick={this.pageNumberClick} />
+                </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                   <ThirdPartyUsers 
-                    allUsersList={allUsersList}
+                    allThirdParty={this.state.allThirdParty}
                     isAsc={isAsc}
                     onSort={this.onSort} />
                 </TabPanel>
               </>
               ) : (
                 <ChangeLogs 
-                  allUsersList={allUsersList}
+                allChannelPartners={allChannelPartners}
                   isAsc={isAsc}
                   onSort={this.onSort} />
               )
