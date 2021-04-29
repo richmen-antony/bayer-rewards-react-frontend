@@ -125,7 +125,7 @@ const ConfigureFeature: React.FC = (props) => {
   }
   return (
     <div>
-      <div className="title mt-2">
+      <div className="configure-title mt-2">
         <div className="breadcrums sub-title">
         <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
         <Link color="inherit" href="/" onClick={handleClick}>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PencilEditImg from "../../../assets/images/pencil.svg";
 import CheckBoxImg from "../../../assets/images/check-1.svg";
 import UnCheckImg from "../../../assets/images/unchecked.svg";
-
+import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 
 const systemList = [
   {
@@ -15,11 +15,6 @@ const systemList = [
     id: "2",
     baseUrl: "https://redemptionurl.com/api",
   },
-  {
-    title: "Location Details",
-    id: "3",
-    baseUrl: "https://redemptionurl.com/api",
-  },
 ];
 const tableData = [
   {
@@ -29,7 +24,7 @@ const tableData = [
     parmas: ["userId", "tokenId", "pageNo"],
     createdBy: "Jas don",
     lastModifedAt: "24/12/2021 16:43:20",
-    lastMidifiedBy: "Arun",
+    lastMidifiedBy: "Arun Kumar",
     isActive: true,
   },
   {
@@ -39,7 +34,7 @@ const tableData = [
     parmas: ["userId", "tokenId", "pageNo"],
     createdBy: "Jas don",
     lastModifedAt: "24/12/2021 16:43:20",
-    lastMidifiedBy: "Arun",
+    lastMidifiedBy: "Arun Kumar",
     isActive: true,
   },
   {
@@ -49,7 +44,7 @@ const tableData = [
     parmas: ["userId", "tokenId"],
     createdBy: "Jas don",
     lastModifedAt: "24/12/2021 16:43:20",
-    lastMidifiedBy: "Arun",
+    lastMidifiedBy: "Arun Kumar",
     isActive: false,
   },
 ];
@@ -78,6 +73,20 @@ const DevConfiguration: React.FC = (props) => {
           <i className="fa fa-plus" aria-hidden="true"></i> Add New System
         </button>
       </div>
+      {/* <div className="add-system-input">
+        <p>Points Redemption</p>
+
+        <div className="searchInputRow baseurl ">
+          <input
+            placeholder="eg. https://redemptionurl.com/api"
+            className="input-field"
+            type="text"
+            // onChange={this.handleSearch}
+            // value={searchText}
+          />
+        </div>
+        <div> test</div>
+      </div> */}
       <div id="accordion">
         {systemList &&
           systemList.map((list, index) => {
@@ -88,9 +97,8 @@ const DevConfiguration: React.FC = (props) => {
                   id="headingOne"
                   onClick={() => handleButton(list.id)}
                 >
-                  <h5 className="mb-0">
-                    <p className="title">{list.title}</p>
-                  </h5>
+                  <p className="title">{list.title}</p>
+
                   <div className="base-url">
                     <span>Base URL</span> {list.baseUrl}
                   </div>
@@ -148,15 +156,26 @@ const DevConfiguration: React.FC = (props) => {
 
                                 {value.parmas.values()}
                               </td>
-                              <td>{value.createdBy}</td>
+                              <td>
+                                <p className="createdBy-text">
+                                  {value.createdBy}
+                                </p>
+                                <p className="createdBy-sub-text">GCHPU</p>
+                              </td>
                               <td>{value.lastModifedAt}</td>
                               <td>{value.lastMidifiedBy}</td>
                               <td>
-                                   {value.isActive?
-                                   <img className="checkbox-tick-icon" src ={CheckBoxImg} /> :
-                                   <img src={UnCheckImg} className="checkbox-tick-icon"/>
-                                   }
-                                  
+                                {value.isActive ? (
+                                  <img
+                                    className="checkbox-tick-icon"
+                                    src={CheckBoxImg}
+                                  />
+                                ) : (
+                                  <img
+                                    src={UnCheckImg}
+                                    className="checkbox-tick-icon"
+                                  />
+                                )}
                               </td>
                               <td>
                                 <img
@@ -169,6 +188,9 @@ const DevConfiguration: React.FC = (props) => {
                         })}
                       </tbody>
                     </table>
+                    <div className="add-plus-icon">
+                      <img src={AddIcon} />
+                    </div>
                   </div>
                 </div>
               </div>
