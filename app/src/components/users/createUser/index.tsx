@@ -549,24 +549,24 @@ class CreateUser extends Component<any, any>{
                             value={list.value}
                             isPlaceholder
                             isDisabled = { (this.state.currentStep === 3 && this.state.accInfo) ? true : false} />
-                            { list.error && <span className="error">{list.error}</span> }
                             </div>
+                            
                             {index === 0 && 
                             <>
                              { currentStep == 2 ?
                             <div className="col-sm-3">
-                                <Input type="number" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                <Input type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
                                 {postalCodeErr && <span className="error">{ postalCodeErr } </span>}
   
                             </div>  : 
                             <div className="col-sm-3">
-                                <Input type="number" className="form-control" name="postalCodeTax" placeHolder="Postal Code" onChange={(e: any)=>this.handlePersonalChange(e)} disabled = {this.state.accInfo ? true : false} value={this.state.accInfo ? userData.postalCode : userData.postalCodeTax} />
+                                <Input type="text" className="form-control" name="postalCodeTax" placeHolder="Postal Code" onChange={(e: any)=>this.handlePersonalChange(e)} disabled = {this.state.accInfo ? true : false} value={this.state.accInfo ? userData.postalCode : userData.postalCodeTax} />
                                 {postalCodeTaxErr && <span className="error">{ postalCodeTaxErr } </span>}
                             </div>}
                             </>
                             }
                         </div>
-                        
+                        { list.error && <span className="error">{list.error}</span> }
                        
                     </div>
                 </>
@@ -641,7 +641,7 @@ class CreateUser extends Component<any, any>{
                                     {ownerNameErr && <span className="error">{ ownerNameErr } </span>}
                                 </div>
                                 <div className="col-sm-3">
-                                    <Input type="number" className="form-control" name="phone" placeHolder="Mobile Number" value={userData.phone} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    <Input type="text" className="form-control" name="phone" placeHolder="Mobile Number" value={userData.phone} onChange={(e: any)=>this.handlePersonalChange(e)} />
                                     {phoneErr && <span className="error">{ phoneErr } </span>}
                                 </div>
                                 <div className="col-sm-3">
