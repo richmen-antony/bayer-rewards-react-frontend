@@ -1,0 +1,141 @@
+{
+    "id": 101,
+    "name": "India",
+    "iso3": "IND",
+    "iso2": "IN",
+    "phone_code": "91",
+    "capital": "New Delhi",
+    "currency": "INR",
+    "currency_symbol": "₹",
+    "tld": ".in",
+    "native": "भारत",
+    "subregion": "Southern Asia",
+    "region": [
+        {
+            "id": 4023,
+            "name": "Andaman and Nicobar Islands",
+            "state_code": "AN",
+            "district": [
+                {
+                    "id": 57837,
+                    "name": "Bamboo Flat",
+                    "village" : [
+                        {
+                            "id": 1,
+                            "name": "village1"
+                        },
+                        {
+                            "id": 2,
+                            "name": "village2"
+                        }
+                    ]
+                },
+                {
+                    "id": 133213,
+                    "name": "Nicobar",
+                    "village" : [
+                        {
+                            "id": 3,
+                            "name": "village3"
+                        },
+                        {
+                            "id": 4,
+                            "name": "village4"
+                        }
+                    ]
+                },
+                {
+                    "id": 133482,
+                    "name": "Port Blair",
+                    "village" : [
+                        {
+                            "id": 5,
+                            "name": "village5"
+                        },
+                        {
+                            "id": 6,
+                            "name": "village6"
+                        }
+                    ]
+                },
+                {
+                    "id": 134006,
+                    "name": "South Andaman",
+                    "village" : [
+                        {
+                            "id": 7,
+                            "name": "village7"
+                        },
+                        {
+                            "id": 8,
+                            "name": "village8"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 4017,
+            "name": "Andhra Pradesh",
+            "state_code": "AP",
+            "district": [
+                {
+                    "id": 57593,
+                    "name": "Addanki",
+                    "village" : [
+                        {
+                            "id": 9,
+                            "name": "village9"
+                        },
+                        {
+                            "id": 10,
+                            "name": "village10"
+                        }
+                    ]
+                },
+                {
+                    "id": 134452,
+                    "name": "Adoni",
+                    "village" : [
+                        {
+                            "id": 11,
+                            "name": "village11"
+                        },
+                        {
+                            "id": 12,
+                            "name": "village12"
+                        }
+                    ]
+                },
+                {
+                    "id": 57620,
+                    "name": "Akasahebpet",
+                    "village" : [
+                        {
+                            "id": 13,
+                            "name": "village13"
+                        },
+                        {
+                            "id": 14,
+                            "name": "village14"
+                        }
+                    ]
+                },
+                {
+                    "id": 57623,
+                    "name": "Akividu",
+                    "village" : [
+                        {
+                            "id": 15,
+                            "name": "village15"
+                        },
+                        {
+                            "id": 16,
+                            "name": "village16"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

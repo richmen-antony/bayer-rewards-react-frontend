@@ -85,7 +85,7 @@ class ScanLogsTable extends Component<Props, States> {
     e.stopPropagation();
     this.setState<never>({
       [key]: true,
-    });
+  });
     
   };
   handleCloseProductPopup = () => {

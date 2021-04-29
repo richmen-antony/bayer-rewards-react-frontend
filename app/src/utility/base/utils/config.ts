@@ -5,6 +5,8 @@ export const configApp = {
 export const apiURL = {
     login: "user/login",
     scanLogs: "user/getScanTransactionbyRegionSearch",
-    productCategory: "user/getproductcategory"
-
+    productCategory: "user/getproductcategory",
+    rsmDashboard: "getrsmdashboarduser/",
+    channelPartnersList: "user/getchannelpartnerlist",
+    retailerCreation: "user/retailercreation?isMobile=false"
 }

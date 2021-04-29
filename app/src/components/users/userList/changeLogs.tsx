@@ -51,7 +51,7 @@ type Props = {
     history?: any;
     // classes?: any;
     onSort : Function;
-    allUsersList : any;
+    allChannelPartners : any;
     isAsc: Boolean;
 }
 type States = {
@@ -76,21 +76,21 @@ class ChangeLogs extends Component<Props, States> {
 
 
     render() {
-        const {allUsersList, isAsc, onSort } = this.props;
+        const {allChannelPartners, isAsc, onSort } = this.props;
         return (
             <>
-             {allUsersList.length > 0 ?   
+             {allChannelPartners.length > 0 ?   
                 <div className="table-responsive">
                 <table className="table" id="tableData">
                     <thead>
                     <tr>
                         <th>User Name
                             <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() =>
-                                onSort('username', allUsersList, isAsc)}></i>
+                                onSort('username', allChannelPartners, isAsc)}></i>
                         </th>
                         <th>Field</th>
                         <th>Old Value
-                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('role', allUsersList, isAsc)}></i>
+                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('role', allChannelPartners, isAsc)}></i>
                         </th>
                         <th>New Value</th>
                         <th>Modified Date</th>
@@ -98,7 +98,7 @@ class ChangeLogs extends Component<Props, States> {
                     </tr>
                     </thead>
                     <tbody>
-                    { allUsersList.map((list: any ,i: number) => 
+                    { allChannelPartners.map((list: any ,i: number) => 
                         <AUX key={i}>
                             <tr style={list.activeStatus ? {borderLeft: '5px solid #89D329'} : {borderLeft: '5px solid #FF4848' }}>
                                 <td >{list.username}</td>

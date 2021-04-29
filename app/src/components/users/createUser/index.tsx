@@ -8,9 +8,16 @@ import { toastSuccess } from '../../../utility/widgets/toaster';
 import { setLocalStorageData } from '../../../utility/base/localStore';
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import CustomSwitch from '../../../container/components/switch';
+import CountryJson from '../../../utility/lib/country.json';
+import { apiURL } from "../../../utility/base/utils/config";
+import {
+  invokeGetAuthService,
+  invokeGetService,
+  invokePostService
+} from "../../../utility/base/service";
 
 const options = [
-    { value: "salesagent", text: "Area Sales Agent" },
+    // { value: "salesagent", text: "Area Sales Agent" },
     { value: "distributor", text: "Distributor" },
     { value: "retailer", text: "Retailer" },
 ];
@@ -26,10 +33,13 @@ class CreateUser extends Component<any, any>{
         this.state = {
             geographicFields : [],
             dynamicFields : [],
+            withHolding : [],
             countryList : [],
             hierarchyList : [],
             isRendered: false,
-
+            geographicalValues: [],
+            withHoldingValues:[],
+            success: false,
             selectedValue : '',
             currentStep: 1,
             fromDateErr: '',
@@ -41,6 +51,8 @@ class CreateUser extends Component<any, any>{
             phoneErr:'',
             emailErr:'',
             postalCodeErr: '',
+            postalCodeTaxErr: '',
+            taxIdErr : '',
             countryErr:'',
             stateErr: '',
             districtErr: '',
@@ -49,7 +61,7 @@ class CreateUser extends Component<any, any>{
             stepsArray : [
                 "Personal Information",
                 "Geographical Mapping",
-                "User Mapping"
+                "With-Holding tax"
             ],
             userData : {
                 'fromDate' : new Date().toISOString().substr(0, 10),
@@ -62,27 +74,44 @@ class CreateUser extends Component<any, any>{
                 'phone'  : '',
                 'email' : '',
                 'postalCode':'',
-                'country': '',
-                'state':'',
-                'district':'',
-                'subDistrict': '',
-                'village':''
+                'postalCodeTax': '',
+                'address' : '',
+                'addressTax' : '',
+                'taxId':''
             },
+            accInfo : true,
             allUserDatas : [],
+            regionList : []
         }
     }
 
     componentDidMount() {
+     
+        // this.getRegion();
+
         ///API to get country and language settings
-        
         this.getCountryList();
         this.getGeographicFields();
         this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
         setTimeout(() => {
             this.getDynamicOptionFields();
         },0);
+    }
 
-
+    getRegion() {
+        // let newData = [];
+        // newData.push(CountryJson);
+        let regions: any = [];
+        let regionObj:any = {};
+        console.log('regionList', CountryJson);
+        // let new = newData[region];
+        CountryJson.region.map((list: any,i: number) => {
+                regionObj['value'] = list.id;
+                regionObj['text'] = list.name;
+                regions.push({...regionObj});
+        });
+        this.setState({regionList : regions});
+        console.log('regionList', regions);
     }
 
     getCountryList() {
@@ -98,7 +127,7 @@ class CreateUser extends Component<any, any>{
             }
 
         // let stateResponse = [{}];
-        let nextHierarchyResponse = [{text: 'Tamilnadu', value: 'TAMIL'}, {text: 'Bangalore', value: 'BANG'}];
+        let nextHierarchyResponse = [{text: 'Tamilnadu', value: 'Tamil nadu'}, {text: 'Bangalore', value: 'Bangalore'}];
         this.setState({hierarchyList: nextHierarchyResponse});
    }
    getGeographicFields() {
@@ -108,7 +137,7 @@ class CreateUser extends Component<any, any>{
         // }).catch((err: any) => {
         // })
 
-        let res = ['country', 'Region', 'district', 'village'];
+        let res = ['Country', 'Region', 'District', 'EPA', 'Village'];
         setTimeout(() => {
             this.setState({ geographicFields : res});
         },0)
@@ -119,55 +148,88 @@ class CreateUser extends Component<any, any>{
             setFormArray.push({
                 name: list,
                 placeHolder: true,
-                value: list === 'country' ?  getStoreData.country : '',
-                options: list === 'country' ?  this.state.countryList : (i==1) ?  this.state.hierarchyList : '',
+                value: list === 'Country' ?  getStoreData.country : '',
+                options: list === 'Country' ?  this.state.countryList : (i==1) ?  this.state.hierarchyList : '',
                 error: ''
             });
         })
         this.setState({dynamicFields: setFormArray});
    }
-   getOptionLists = (type: any, value: any, index: any) => {
-       let nextHierarchyName = this.state.dynamicFields[index+1]['name'];
-       console.log('nextLevel', nextHierarchyName);
-       //API to get options
-       //params 
+
+   getOptionLists = (e: any, index: any) => {
+        // let nextHierarchyName = '';
+        // if ( index !==  this.state.dynamicFields.length-1) {
+        //     nextHierarchyName = this.state.dynamicFields[index+1]['name'];
+        // }
+    
+    //API to get options
+    //params 
         // if ( index !==  this.state.dynamicFields.length-1) {
         //     const data = { 
-        //         type: type,  // region, 
-        //         id: value,
+        //         type: e.target.name,  // region, 
+        //         id: e.target.name,
         //         nextHierarchy: nextHierarchyName
         //     }
         // }
         // let res = [{}];
-        let stateResponse = [{text: 'Tamilnadu', value: 'TAMIL'}, {text: 'Bangalore', value: 'BANG'}];
-        let districtResponse = [{text: 'vellore', value: 'VEL'}, { text: 'chennai', value: 'CHE'}];
-        let villageResponse = [{text: 'demo', value: 'DEM'}, { text: 'demo1', value: 'DEM1'}];
+        let regionResponse = [{text: 'Tamilnadu', value: 'Tamil Nadu'}, {text: 'Bangalore', value: 'Bangalore'}];
+        let districtResponse = [{text: 'vellore', value: 'vellore'}, { text: 'chennai', value: 'Chennai'}];
+        let epaResponse = [{text: 'Epa1', value: 'epa1'}, { text: 'Epa2', value: 'epa2'}];
+        let villageResponse = [{text: 'demo', value: 'DEM0'}, { text: 'demo1', value: 'DEM01'}];
 
-        this.state.dynamicFields.map((list: any) => {
-            if(list.name === nextHierarchyName){
-                list.options = stateResponse; 
-            }
-            // } else if(list.name === 'district'){
-            //     list.options = districtResponse; 
-            // } else if ( list.name === 'village'){
-            //     list.options = villageResponse; 
-            // }
-        })
+        if ( this.state.currentStep == 2) {
+            this.state.dynamicFields.map((list: any) => {
+                // if(list.name === nextHierarchyName){
+                //     list.options = stateResponse; 
+                // }
+                if(list.name === 'Region'){
+                    list.options = this.state.hierarchyList; 
+                    // let district = CountryJson.region.filter((list: any)=>  value === list.id );
+                    // list.options = '';
+                    
+                    // let disOptions = district[0].district.map((res) => {
+                    //     res['value'] = res.id;
+                    //     res['value'] = res.name;
+                    // });
+
+                } else if(list.name === 'District'){
+                    list.options = districtResponse; 
+                } else if ( list.name === 'EPA'){
+                    list.options = epaResponse; 
+                }else if ( list.name === 'Village'){
+                    list.options = villageResponse; 
+                }
+            })
+        } else if (this.state.currentStep == 3) {
+            this.state.withHolding.map((list: any) => {
+                if(list.name === 'Region'){
+                    list.options = this.state.hierarchyList; 
+                } else if(list.name === 'District'){
+                    list.options = districtResponse; 
+                } else if ( list.name === 'EPA'){
+                    list.options = epaResponse; 
+                }else if ( list.name === 'Village'){
+                    list.options = villageResponse; 
+                }
+            })
+        }
     }
 
     handleClick(clickType: any) {
         let formValid=true, geographicFormValid=true;
         if (clickType === "personalNext"){
             formValid = this.checkValidation();
-        } else if (clickType === "createUser") {
-            // formValid = this.geographicValidation();
-            geographicFormValid = this.geographicValidation();
-            formValid = false;
+        } else if (clickType === "geographicNext") {
+            formValid = this.geographicValidation();
+            if(formValid) {
+                if(this.state.accInfo){
+                    this.setState({ withHolding: this.state.dynamicFields});
+                }
+               
+            }
+        } else if (clickType === "createUser"){
+            formValid = this.geographicValidation();
         }
-        // }else if (clickType === "createUser"){
-        //     geographicFormValid = this.geographicValidation();
-        //     formValid = false;
-        // }
         const { currentStep } = this.state;
         let newStep = currentStep;
         if  (clickType == "personalNext" || clickType == "geographicNext") {
@@ -184,38 +246,126 @@ class CreateUser extends Component<any, any>{
             }
         }
         if (clickType === "createUser"){
-            if (geographicFormValid) {
-                this.setState({
-                    allUserDatas: [...this.state.allUserDatas, this.state.userData]
+            alert('hello');
+            if (formValid) {
+                alert('hi')
+                let geoValues ={};
+                this.state.dynamicFields.map((list: any, i:number)=>{
+                    let newPropsGeo = {
+                        [list.name] : list.value
+                    };
+                   return Object.assign(geoValues, newPropsGeo);
                 });
-                // setLocalStorageData('userData', this.state.allUserDatas);
-                toastSuccess('User Created Successfully');
-                this.props.history.push('/userList');
+                
+                this.state.geographicalValues.push(geoValues);
+
+                this.setState({geographicalValues : this.state.geographicalValues});
+
+
+                let withValues ={};
+                this.state.withHolding.map((list: any, i:number)=>{
+                    let newPropsTax = {
+                        [list.name] : list.value
+                    };
+                   return Object.assign(withValues, newPropsTax);
+                });
+                this.state.withHoldingValues.push(withValues);
+
+                // this.setState({
+                //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
+                // });
+                this.submitUserDatas();
+                
+                // if(this.state.success){
+                //     toastSuccess('User Created Successfully');
+                //     this.props.history.push('/userList');
+                // }
             } else {
                 alert('fail');
             }
         }
     }
-    // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //         setState({ ...state, [event.target.name]: event.target.checked });
-    //       };
+    submitUserDatas = () => {
+        const { retailerCreation } = apiURL;
+        this.setState({ isLoader: true });
+        let personalData = this.state.userData;
+        let geoData = this.state.geographicalValues;
+        let taxData = this.state.withHoldingValues;
+        const data = {
+            "username":  personalData['ownerName'],
+            "firstname" : personalData['ownerName'],
+            "lastname" : personalData['ownerName'],
+            "accountname" : personalData['ownerName'],
+            "ownername" : personalData['ownerName'],
+            "mobilenumber" : personalData['phone'],
+            "email" : personalData['email'],
+            "address" : personalData['address'],
+            "postalcode" : personalData['postalCode'],
+            "region" : geoData[0]['Region'],
+            "district" : geoData[0]['District'],
+            "epa" : geoData[0]['EPA'],
+            "village" : geoData[0]['Village'],
+            "taxid" : personalData['taxId'],
+            "whtownername" : personalData['ownerName'],
+            "whtaccountname" : personalData['ownerName'],
+            "whtaddress" : personalData['addressTax'],
+            "whtpostalcode" : this.state.accInfo ? personalData['postalCode']: personalData['postalCodeTax'],
+            "whtregion" : taxData[0]['Region'],
+            "whtdistrict" : taxData[0]['District'],
+            "whtepa" : taxData[0]['EPA'],
+            "whtvillage" : taxData[0]['Village'],
+        };
+        invokePostService(retailerCreation, data)
+          .then((response: any) => {
+            this.setState({
+              isLoader: false,
+            });
+                toastSuccess('User Created Successfully');
+                this.props.history.push('/userList');
+            
+          })
+          .catch((error: any) => {
+            this.setState({ isLoader: false });
+            console.log(error, "error");
+          });
+    }
     handlePersonalChange = (e: any) => {
         let val = this.state.userData;
-        val[e.target.name] = e.target.value;
         if (e.target.name === 'activateUser') {
-            val[e.target.name] = e.target.checked;
+            val[e.target.name] = e.target.checked
         }
-        if (e.target.name === 'userType') {
-            let steps = this.state.stepsArray;
-            this.setState({stepsArray : steps });
-            if(e.target.value !== 'salesagent' ) {
-                steps.splice(2,1,'With-Holding Tax');
-                this.setState({stepsArray : steps });
+        else if(e.target.name === 'accInfo') {
+            if(!e.target.checked) {
+                let setFormArray: any = [];
+                this.state.geographicFields.map((list: any, i: number) => {
+                    setFormArray.push({
+                        name: list,
+                        placeHolder: true,
+                        value: list === 'Country' ?  getStoreData.country : '',
+                        options: list === 'Country' ?  this.state.countryList : (i==1) ?  this.state.hierarchyList : '',
+                        error: ''
+                    });
+                })
+                this.setState({ withHolding : setFormArray});
             } else {
-                steps.splice(2,1,'User Mappings');
-                this.setState({stepsArray : steps});
+                this.setState({ accInfo: e.target.checked});
+                this.setState({ withHolding : this.state.dynamicFields});
             }
+            this.setState({ accInfo : e.target.checked});
+        } else {
+            val[e.target.name] = e.target.value;
         }
+        // if (e.target.name === 'userType') {
+        //     let steps = this.state.stepsArray;
+        //     this.setState({stepsArray : steps });
+        //     if(e.target.value !== 'salesagent' ) {
+        //         steps.splice(2,1,'With-Holding Tax');
+        //         this.setState({stepsArray : steps });
+        //     } else {
+        //         steps.splice(2,1,'User Mappings');
+        //         this.setState({stepsArray : steps});
+        //     }
+        // }
         let dateVal =this.dateValidation(e);
         if ( dateVal ) {
             this.setState({ userData : val});
@@ -301,70 +451,77 @@ class CreateUser extends Component<any, any>{
     }
 
     geographicValidation = () => {
-        let geographicFormValid = true;
         let userData = this.state.userData;
-        let errMsg ='';
-
-        this.state.geographicFields.map((location: any) => {
-            let locationLower = location.toLowerCase();
-            let userDatas = userData+'.'+locationLower;
-            errMsg = locationLower+'Err';
-            alert(userDatas);
-            if ( userDatas === '' || userDatas === null){
-                alert('hi');
-                this.setState({ errMsg : 'Please enter the'+ locationLower });
+        let currentStep = this.state.currentStep;
+        let geographicFormValid = true;
+        if (userData.postalCode === "" || userData.postalCode=== null) {
+            this.setState({ postalCodeErr: 'Please enter Postal Code' });
+            geographicFormValid = false;
+        } else {
+            this.setState({ postalCodeErr : '' });
+        }
+        if (currentStep == 3) {
+            if (userData.taxId === "" || userData.taxId=== null) {
+                this.setState({ taxIdErr: 'Please enter Tax Id' });
                 geographicFormValid = false;
             } else {
-                this.setState({ errMsg : '' });
+                this.setState({ taxIdErr : '' });
             }
+         }
+        let fields = (currentStep == 2) ? this.state.dynamicFields : this.state.withHolding;
+        fields.map((list: any)=>{
+            if ( list.value === '') {
+                list.error = 'Please enter the ' +list.name;
+                geographicFormValid = false;
+            } else {
+                list.error = '';
+            }
+            this.setState({isRendered : true});
         })
-
-        // if (userData.country === "" || userData.country === null) {
-        //     this.setState({ countryErr : 'Please enter the Country' });
-        //     geographicFormValid = false;
-        // } else {
-        //     this.setState({ countryErr : '' });
-        // }
-        // if (userData.state === "" || userData.state === null) {
-        //     this.setState({ stateErr : 'Please enter the State' });
-        //     geographicFormValid = false;
-        // } else {
-        //     this.setState({ stateErr : '' });
-        // }
-        // if (userData.district === "" || userData.district === null) {
-        //     this.setState({ districtErr : 'Please enter the District' });
-        //     geographicFormValid = false;
-        // } else {
-        //     this.setState({ districtErr : '' });
-        // }
-        // if (userData.subDistrict === "" || userData.subDistrict === null) {
-        //     this.setState({ subDistrictErr : 'Please enter the Sub District' });
-        //     geographicFormValid = false;
-        // } else {
-        //     this.setState({ subDistrictErr : '' });
-        // }
-        // if (userData.village === "" || userData.village === null) {
-        //     this.setState({ villageErr : 'Please enter the village' });
-        //     geographicFormValid = false;
-        // } else {
-        //     this.setState({ villageErr : '' });
-        // }
         return geographicFormValid;
     }
 
     reset =() => {
-        this.setState({ 
-            userData : {
-                fromDate: '',
-                toDate: '',
-                userName: '',
-                accName: '',
-                userType:'',
-                ownerName:'',
-                email:'',
-                phone:''
-            }
-        });
+        let currentStep = this.state.currentStep;
+        if ( currentStep  === 1) {
+            this.setState({ 
+                userData : {
+                    fromDate: '',
+                    toDate: '',
+                    userName: '',
+                    accName: '',
+                    userType:'',
+                    ownerName:'',
+                    email:'',
+                    phone:''
+                }
+            });
+        } else if (currentStep  === 2){
+            let data: any = this.state.dynamicFields;
+            data.map((list: any) => {
+                list.value = '';
+            });
+ 
+            this.setState({
+                dynamicFields: data,
+                userData : {
+                    postalCode : '',
+                    address: ''
+                }
+            })
+        }  else if (currentStep  === 3) {
+            let data: any = this.state.withHolding;
+            data.map((list: any) => {
+                list.value = '';
+            });
+            this.setState({
+            
+                userData : {
+                    postalCodeTax : '',
+                    addressTax: ''
+                },
+            })
+        }
     }
 
     testingChange = (e: any,data: any) => {
@@ -372,50 +529,54 @@ class CreateUser extends Component<any, any>{
     }
 
     render(){
-        const { currentStep,userData, fromDateErr, toDateErr, userNameErr,accNameErr, userTypeErr,ownerNameErr,phoneErr,emailErr,countryErr,stateErr,districtErr,subDistrictErr,villageErr,geographicFields, country,state,district,subdistrict,village, stepsArray} = this.state;
-        console.log('steps', this.state.stepsArray);
+        const { currentStep,userData, fromDateErr, toDateErr, userNameErr,accNameErr, userTypeErr,ownerNameErr,phoneErr,emailErr,countryErr,stateErr,districtErr,subDistrictErr,postalCodeErr,villageErr,taxIdErr,postalCodeTaxErr,geographicFields, country,state,district,subdistrict,village, stepsArray} = this.state;
 
-        // const locationList = geographicFields?.map((location: any, index:number) => {
-        //     let locationLower = location.toLowerCase();
-        //     let value = userData+'.'+locationLower;
-        //     return (
-        //         <>
-        //             {(index != 0) &&
-        //                 <div className={index === 0 ? 'col-sm-12' : 'col-sm-3'}>
-        //                 <Dropdown
-        //                 name={locationLower}
-        //                 label={locationLower}  
-        //                 options={state}
-        //                 handleChange={this.handlePersonalChange}
-        //                 value={value}
-        //                 isPlaceholder />
-        //                 {locationLower+'Err' && <span className="error">{ locationLower+'Err' } </span>}
-        //             </div>
-        //             }
-        //         </>
-        //     );
-        // });
-console.log('===>',this.state.dynamicFields)
-        const locationList = this.state.dynamicFields?.map((list: any, index: number) => {
+        // console.log('allUserDatas', this.state.allUserDatas);
+        // console.log('allUserDatas', this.state.dynamicFields);
+
+        const fields = (currentStep == 2) ? this.state.dynamicFields : this.state.withHolding;
+        const locationList = fields?.map((list: any, index: number) => {
             return (
                 <>
                     <div className={index === 0 ? 'col-sm-12 country' : 'col-sm-3'}>
-                        <Dropdown
-                        name={list.name}
-                        label={list.name}
-                        options={list.options}
-                        handleChange={(list: any) => {
-                            list.value = list.value;
-                            this.setState({isRendered : true});
-                            this.getOptionLists(list.name, list.value, index);
-                        }}
-                        value={list.value}
-                        isPlaceholder />
+                        <div className='row'>
+                            <div className="col-sm-3">
+                            <Dropdown
+                            name={list.name}
+                            label={list.name}
+                            options={list.options}
+                            handleChange={(e: any) => {
+                                list.value = e.target.value;
+                                this.setState({isRendered : true});
+                                this.getOptionLists(e, index);
+                            }}
+                            value={list.value}
+                            isPlaceholder
+                            isDisabled = { (this.state.currentStep === 3 && this.state.accInfo) ? true : false} />
+                            </div>
+                            
+                            {index === 0 && 
+                            <>
+                             { currentStep == 2 ?
+                            <div className="col-sm-3">
+                                <Input type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                {postalCodeErr && <span className="error">{ postalCodeErr } </span>}
+  
+                            </div>  : 
+                            <div className="col-sm-3">
+                                <Input type="text" className="form-control" name="postalCodeTax" placeHolder="Postal Code" onChange={(e: any)=>this.handlePersonalChange(e)} disabled = {this.state.accInfo ? true : false} value={this.state.accInfo ? userData.postalCode : userData.postalCodeTax} />
+                                {postalCodeTaxErr && <span className="error">{ postalCodeTaxErr } </span>}
+                            </div>}
+                            </>
+                            }
+                        </div>
                         { list.error && <span className="error">{list.error}</span> }
+                       
                     </div>
                 </>
             )
         });
+    
         let nextButton;
         if ( currentStep === 1) {
             nextButton = <button className='btn buttonColor buttonStyle' onClick={()=>this.handleClick('personalNext')}>Next</button>
@@ -484,7 +645,7 @@ console.log('===>',this.state.dynamicFields)
                                     {ownerNameErr && <span className="error">{ ownerNameErr } </span>}
                                 </div>
                                 <div className="col-sm-3">
-                                    <Input type="number" className="form-control" name="phone" placeHolder="Mobile Number" value={userData.phone} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    <Input type="text" className="form-control" name="phone" placeHolder="Mobile Number" value={userData.phone} onChange={(e: any)=>this.handlePersonalChange(e)} />
                                     {phoneErr && <span className="error">{ phoneErr } </span>}
                                 </div>
                                 <div className="col-sm-3">
@@ -499,28 +660,36 @@ console.log('===>',this.state.dynamicFields)
                             {currentStep == 3 &&
                             <div className="row age form-group">
                                 <div className="col-sm-3">
-                                <Input type="text" className="form-control" name="postalCode" placeHolder="Tax Id" value={userData.taxId} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    <Input type="text" className="form-control" name="taxId" placeHolder="Tax Id" value={userData.taxId} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                    {taxIdErr && <span className="error">{ taxIdErr } </span>}
                                 </div>
-                                <div className="col-sm-3"> 
-                                    <CustomSwitch checked={userData.accInfo} onChange={(e: any)=>this.handlePersonalChange(e)} name="accInfo" />
+                                <div className="col-sm-3">
+                                    <label className="pt-4">Same as Account Info</label> 
+                                    <CustomSwitch checked={this.state.accInfo} onChange={(e: any)=>this.handlePersonalChange(e)} name="accInfo" />
                                 </div>
                             </div>}
-                            {currentStep == 2 &&
+                            {(currentStep == 2 || currentStep == 3) &&
                             (<>
                                 <div className="row age form-group">
                                     {locationList}
                                 </div>
-                                <div className="row age" style={{marginBottom: '14px'}}>
-                                    <div className="col-sm-3">
-                                        <Input type="number" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                        {/* {postalCodeErr && <span className="error">{ postalCodeErr } </span>} */}
-                                    </div>
-                                </div>
-                            {/* <div className="row age" style={{marginBottom: '14px'}}>
-                               <textarea rows:number='5' cols:number='20' />
-                            </div>  */}
-                            </>
+                                </>
                             )}
+                            {currentStep == 2 && (
+                                <>
+                                <div className="row age" style={{marginBottom: '14px',marginLeft: '0px'}}>
+                                    <textarea name='address' rows={4} cols={40} placeholder='Address' value={userData.address} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                </div> 
+                                </>)
+                            }
+                            {currentStep == 3 && (
+                                <>
+                            
+                                <div className="row age" style={{marginBottom: '14px',marginLeft: '0px'}}>
+                                    <textarea name='addressTax' rows={4} cols={40} placeholder='Address' value={userData.addressTax} onChange={(e: any)=>this.handlePersonalChange(e)} />
+                                </div> 
+                                </>)
+                            }
                         </div>
                     </div>
                     <div className="submit">
