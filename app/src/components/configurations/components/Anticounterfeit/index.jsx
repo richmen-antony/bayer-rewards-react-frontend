@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const tableStyle = {
   border: "none",
   textAlign: "center",
-  width: 200,
+  width: 230,
   height: 35,
 };
 

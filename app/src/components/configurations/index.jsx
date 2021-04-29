@@ -259,46 +259,48 @@ class Configurations extends Component {
 
             <div className="wrapper">
               <TabPanel tabId="one">
-                <div className="col-md-10">
-                  <div className="container">
-                    <div className="row rm-group">
-                      <div className="col-sm-3">
-                        <div><label className="font-weight-bold pt-4">Region</label></div>
-                        <div>
-                          <select style={dpstyle} id="dropdown" value={this.state.setSelectedRegion} onChange={(event) => this.handleDropdownChangeRegion(event)}>
-                            {regionUnique.length > 0 ? (
-                              regionUnique.map(({ region }) => (
-                                <option value={region} key={region}>
-                                  {region}
+                {currentStep == 1 &&
+                  <div className="col-md-10">
+                    <div className="container">
+                      <div className="row rm-group">
+                        <div className="col-sm-3">
+                          <div><label className="font-weight-bold pt-4">Region</label></div>
+                          <div>
+                            <select style={dpstyle} id="dropdown" value={this.state.setSelectedRegion} onChange={(event) => this.handleDropdownChangeRegion(event)}>
+                              {regionUnique.length > 0 ? (
+                                regionUnique.map(({ region }) => (
+                                  <option value={region} key={region}>
+                                    {region}
+                                  </option>
+                                ))
+                              ) : (
+                                  <option value="" key="">
+                                    No Region found
+                                </option>
+                                )}
+                            </select>
+                          </div>
+                        </div>
+                        <div className="col-sm-3">
+                          <div><label className="font-weight-bold pt-4">Cluster</label></div>
+                          <div>   <select style={dpstyle} id="dropdown" value={this.state.setSelectedCluster} onChange={(event) => this.handleDropdownChange(event)}>
+                            {clusterUnique.length > 0 ? (
+                              clusterUnique.map(({ cluster }) => (
+                                <option value={cluster} key={cluster}>
+                                  {cluster}
                                 </option>
                               ))
                             ) : (
                                 <option value="" key="">
-                                  No Region found
+                                  No Cluster found
                                 </option>
                               )}
-                          </select>
+                          </select></div>
                         </div>
-                      </div>
-                      <div className="col-sm-3">
-                        <div><label className="font-weight-bold pt-4">Cluster</label></div>
-                        <div>   <select style={dpstyle} id="dropdown" value={this.state.setSelectedCluster} onChange={(event) => this.handleDropdownChange(event)}>
-                          {clusterUnique.length > 0 ? (
-                            clusterUnique.map(({ cluster }) => (
-                              <option value={cluster} key={cluster}>
-                                {cluster}
-                              </option>
-                            ))
-                          ) : (
-                              <option value="" key="">
-                                No Cluster found
-                                </option>
-                            )}
-                        </select></div>
                       </div>
                     </div>
                   </div>
-                </div>
+                }
 
                 <div className="stepper-container-horizontal">
                   <Stepper
@@ -320,8 +322,8 @@ class Configurations extends Component {
                 <br />
                 <div className="buttons-container">
                   <ConfigureFeature />
-                  <button class="btn">Reset <i class='fas fa-redo-alt'></i></button>
-                  <button class="btn">Apply <i class="fa fa-check" aria-hidden="true"></i></button>
+                  <button style={btnStyle} onClick={() => this.handleReset()}>Reset <i class="fa fa-redo-alt" aria-hidden="true"></i></button>
+                  <button style={btnNextSubmit}>Apply <i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
               </TabPanel>
               <TabPanel tabId="three">
@@ -329,8 +331,8 @@ class Configurations extends Component {
                   <br />
                   <br />
                   <DevConfiguration />
-                  <button class="btn">Reset <i class='fas fa-redo-alt'></i></button>
-                  <button class="btn">Apply <i class="fa fa-check" aria-hidden="true"></i></button>
+                  <button style={btnStyle} onClick={() => this.handleReset()}>Reset <i class="fa fa-redo-alt" aria-hidden="true"></i></button>
+                  <button style={btnNextSubmit}>Apply <i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
               </TabPanel>
             </div>
