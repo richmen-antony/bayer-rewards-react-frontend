@@ -90,7 +90,7 @@ export function invokeGetAuthService(path,formData) {
     const config = {
       method: 'GET',
       params: {
-        // region: 'R1',
+        region: 'R1',
         ...formData
       },
       headers: {

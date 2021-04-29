@@ -648,9 +648,10 @@ fastForward = () => {
             border: '1px solid #ffffff',
             borderRadius:'.25rem'
             }}>
+              
           <div className="row align-items-center">
             <div className="col-sm-6">
-              <div className="searchInputRow">
+              <div className="searchInputRow advisor-sales">
                   <i className="fa fa-search icon"></i>
                   <input
                     placeholder="Search..[Min 3 chars]"

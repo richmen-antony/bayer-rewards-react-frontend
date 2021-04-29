@@ -152,14 +152,13 @@ class ChannelPartners extends Component<Props, States> {
                 <tbody>
                 { allChannelPartners.map((list:any, i:number) => 
                     <AUX key={i}>
-                        <tr 
-                        style={{borderLeft: `${list.status == 'Active' ? '5px solid red' : '5px solid green'}`}} >
+                        <tr style={list.status === 'Active' ? {borderLeft: '5px solid #89D329'} : {borderLeft: '5px solid #FF4848' }} >
                             <td >{list.username}</td>
-                            <td>{list.mobile}  </td>
-                            <td>{list.accName}  </td>
+                            <td>{list.mobilenumber}  </td>
+                            <td>{list.accountname}  </td>
                             <td>{list.ownerName}  </td>
                             <td>{list.district}  </td>
-                            <td>{list.subdistrict}  </td>
+                            <td>{list.epa}  </td>
                             <td>
                               {list.status== 'Not activated' &&
                                 <span onClick={(event) =>{this.showPopup(event, "deActivatePopup")}} 
@@ -179,8 +178,8 @@ class ChannelPartners extends Component<Props, States> {
                                     Inactive
                                 </span>}
                             </td>
-                            <td>{list.lastUpdated}</td>
-                            <td>{moment(list.expiryDate).format('DD-MM-YYYY')}  </td>
+                            <td>{list.lastupdatedby}</td>
+                            <td>{moment(list.expirydate).format('DD-MM-YYYY')}  </td>
                             <td><img style={{ marginRight: '8px'}} src={Edit} width="17" /></td>
                         </tr>
                     </AUX>

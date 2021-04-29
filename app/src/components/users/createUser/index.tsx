@@ -510,6 +510,10 @@ class CreateUser extends Component<any, any>{
                 }
             })
         }  else if (currentStep  === 3) {
+            let data: any = this.state.withHolding;
+            data.map((list: any) => {
+                list.value = '';
+            });
             this.setState({
             
                 userData : {

@@ -75,3 +75,29 @@ tbody {
       }
     }
   }
+  .searchInputRow.advisor-sales {
+    margin-right: 40px;
+  
+    .input-field {
+      padding: 10px;
+      padding-left: 35px;
+    }
+    i {
+      position: absolute;
+    }
+    .icon {
+      padding: 13px;
+      color: #8e8e8e;
+    }
+  
+    input {
+      width: 250px;
+      height: 40px;
+      background: #ffffff;
+      border: 1px solid #7c7c7c4a;
+      border-radius: 5px;
+    }
+    input:focus {
+      border-color: $appSecondary !important;
+    }
+  }
