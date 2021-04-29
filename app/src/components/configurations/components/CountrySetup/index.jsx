@@ -90,14 +90,15 @@ export const CountrySetup = (props) => {
           <div className="col-sm-3">
             <div><label className="font-weight-bold pt-4">Currency Code</label></div>
             <div>
-              <select style={dpstyle} id="dropdown" onChange={(event) => handleDropdownChangeCurrency(event)}>
+              {/* <select style={dpstyle} id="dropdown" onChange={(event) => handleDropdownChangeCurrency(event)} disabled>
                 {countryCurrency.length > 0 ? (
                   countryCurrency.map(({ currency }) => (<option value={currency} key={currency}>{currency}</option>))
                 ) : (
                     <option value="" key="">No currency found</option>
                   )}
-              </select>
+              </select> */}
 
+              <Input style={dpstyle} type="text" className="form-control" name="Currency" readOnly value={countryCurrency.map(({ currency }) => (currency))} />
 
               {/* <select style={dpstyle} id="dropdown" className="form-control">
                   <option>---select---</option>
@@ -129,84 +130,6 @@ export const CountrySetup = (props) => {
     </div>
   )
 };
-
-// class CountrySetup extends Component {
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       selectedCountryDetails: [],
-//     };
-//   }
-
-//   componentDidMount() {
-//     this.init();
-//   }
-
-//   init = async () => {
-//     await this._retrieveCountryDetails();
-//   }
-
-//   _retrieveCountryDetails = async () => {
-//     try {
-//       this.setState({ selectedCountryDetails });
-//     } catch (error) {
-//       console.log('error', error);
-//     }
-//   }
-
-//   render() {
-//     const { selectedPrestations } = this.props;
-
-//     return (
-//       <>
-//       <div className="col-md-10">
-//       <div className="container">
-//         <div className="row effectiveDate fo  rm-group">
-//           <div className="col-sm-3">
-//             <div><label className="font-weight-bold pt-4">Country</label></div>
-//             <div>   <select style={dpstyle} id="dropdown">
-//               <option value="N/A">N/A</option>
-//               <option value="1">1</option>
-//               <option value="2">2</option>
-//               <option value="3">3</option>
-//               <option value="4">4</option>
-//             </select></div>
-//           </div>
-//           <div className="col-sm-3">
-//             <div><label className="font-weight-bold pt-4">Country Code</label></div>
-//             <div>   <select style={dpstyle} id="dropdown">
-//               <option value="N/A">N/A</option>
-//               <option value="1">1</option>
-//               <option value="2">2</option>
-//               <option value="3">3</option>
-//               <option value="4">4</option>
-//             </select></div>
-//           </div>
-//           <div className="col-sm-3">
-//             <div><label className="font-weight-bold pt-4">Currency Code</label></div>
-//             <div>   <select style={dpstyle} id="dropdown">
-//               <option value="N/A">N/A</option>
-//               <option value="1">1</option>
-//               <option value="2">2</option>
-//               <option value="3">3</option>
-//               <option value="4">4</option>
-//             </select></div>
-//           </div>
-
-//           <div className="col-sm-3">
-//             <div><label className="font-weight-bold pt-4">Currency</label></div>
-//             <div>
-//               <Input  style={dpstyle} type="text" className="form-control" name="Currency" />
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//     </>
-//     );
-//   }
-// };
 
 CountrySetup.propTypes = {
   selectedPrestations: PropTypes.array,
