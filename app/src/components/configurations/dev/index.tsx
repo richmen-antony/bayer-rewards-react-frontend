@@ -3,6 +3,7 @@ import PencilEditImg from "../../../assets/images/pencil.svg";
 import CheckBoxImg from "../../../assets/images/check-1.svg";
 import UnCheckImg from "../../../assets/images/unchecked.svg";
 import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
+import AddService from "./AddService";
 
 const systemList = [
   {
@@ -56,6 +57,7 @@ const tableData = [
 const DevConfiguration: React.FC = (props) => {
   const [accordion, setAccordion] = useState(false);
   const [accordionId, setAccordionId] = useState("");
+  const [show, setPopup] = useState(false);
 
   const handleButton = (id: string) => {
     setAccordion(!accordion);
@@ -65,6 +67,10 @@ const DevConfiguration: React.FC = (props) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // setState({ ...state, [event.target.name]: event.target.checked });
   };
+  const showPopup=()=>{
+    setPopup(true)
+  }
+  const handleClosePopup =()=> {setPopup(false)}
   return (
     <div className="dev-container card">
       <div className="dev-header">
@@ -77,6 +83,7 @@ const DevConfiguration: React.FC = (props) => {
         <p>Points Redemption</p>
 
         <div className="searchInputRow baseurl ">
+          <label>Base URL</label>
           <input
             placeholder="eg. https://redemptionurl.com/api"
             className="input-field"
@@ -85,8 +92,9 @@ const DevConfiguration: React.FC = (props) => {
             // value={searchText}
           />
         </div>
-        <div> test</div>
+        <div> <i className="fas fa-check"></i></div>
       </div> */}
+     
       <div id="accordion">
         {systemList &&
           systemList.map((list, index) => {
@@ -188,7 +196,7 @@ const DevConfiguration: React.FC = (props) => {
                         })}
                       </tbody>
                     </table>
-                    <div className="add-plus-icon">
+                    <div className="add-plus-icon" onClick={showPopup}>
                       <img src={AddIcon} />
                     </div>
                   </div>
@@ -197,6 +205,7 @@ const DevConfiguration: React.FC = (props) => {
             );
           })}
       </div>
+      {show &&<AddService  open={show} close={handleClosePopup} data={[]}/>}
     </div>
   );
 };
