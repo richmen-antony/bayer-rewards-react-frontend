@@ -197,35 +197,6 @@ tbody tr {
 }
 
 tbody { height: 400px; overflow-y: scroll }
-// tbody {
-//     tr {
-//       td {
-//         font-size: 14px;
-//         font-family: "Open Sans";
-//         .status {
-//           display: flex;
-//           align-items: center;
-//           border-radius: 30px;
-//           padding: 10px;
-//           i {
-//             margin-right: 5px;
-//           }
-//         }
-//         .status.active {
-//           color: #1ccead;
-//           background-color: #e3f8f4;
-//         }
-//         .status.inactive {
-//           color: #ff6397;
-//           background-color: #ffecf2;
-//         }
-//         .max-image {
-//           margin-left: 60px;
-//           cursor: pointer;
-//         }
-//       }
-//     }
-//   }
   .searchInputRow.advisor-sales {
     margin-right: 40px;
   
@@ -252,3 +223,92 @@ tbody { height: 400px; overflow-y: scroll }
       border-color: $appSecondary !important;
     }
   }
+
+  /* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+//   background: #f1f1f1;
+//   border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $appSecondary;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $appSecondary; 
+}
+
+.searchInputRow {
+  margin-right: 3%;
+  
+  width: 40%;
+     
+  .input-field {
+      width: 100%;
+      padding: 10px;
+      padding-left: 35px;
+  }
+  i {
+      position: absolute;
+  }
+  .icon {
+      padding: 13px;
+      color: #8E8E8E;
+  }
+  
+  input {
+      outline: 0 !important;
+      border-width: 0 0 2px !important;
+      border-color: #dee2e6 !important;
+      border-radius: 0 !important;
+      height: 36px;
+      width: 100%;
+    }
+  input:focus {
+      border-color: $appSecondary !important;
+  }
+}
+
+.filterRow {
+  margin-right: 3%;
+  .dropdown .btn-secondary {
+      color: #fff;
+      background-color: #FFFFFF;
+      border-color: #dce4ea;
+      padding: 5px !important;
+  }
+  .dropdown .btn-secondary.focus, .btn-secondary:focus {
+      color: #fff;
+      background-color: #f3f7fa !important;
+      border-color: #f3f7fa !important;
+      box-shadow: none !important;
+  }
+  .dropdown-menu{
+      //width: 365px;
+      top: -30px !important;
+      left: 5px !important;
+  }
+  .form-group .filterDropdown {
+      margin-bottom: 0;
+  }   
+}
+
+.filterSide {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+}
+.downloadBtn {
+  // width: calc(100vh - 280px) !important;
+  width: 165px;
+  background-color: $primary;
+}

@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
-import "../../../assets/scss/scanLogs.scss";
+// import "../../../assets/scss/scanLogs.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
   invokeGetAuthService,

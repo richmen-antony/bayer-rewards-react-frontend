@@ -10,7 +10,7 @@ import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import { Pagination } from "../../../utility/widgets/pagination";
 import SimpleDialog from "../../../container/components/dialog";
-import '../../../assets/scss/users.scss';
+// import '../../../assets/scss/users.scss';
 import moment from 'moment';
 import Edit from "../../../assets/images/edit.svg";
 import NotActivated from "../../../assets/images/not_activated.svg";
