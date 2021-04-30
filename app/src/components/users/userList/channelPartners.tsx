@@ -133,20 +133,20 @@ class ChannelPartners extends Component<Props, States> {
             <table className="table" id="tableData">
                 <thead>
                 <tr>
-                    <th>User Name
-                    <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('username', allChannelPartners, isAsc)}></i>
-                    </th>
-                    <th>Mobile</th>
-                    <th>Account Name
-                    <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('role', allChannelPartners, isAsc)}></i>
-                    </th>
-                    <th>Owner Name</th>
-                    <th>District</th>
-                    <th>EPA</th>
-                    <th>Status</th>
-                    <th>Last Updated By</th>
-                    <th>Expiry Date</th>
-                    <th>Action</th>
+                  <th>User Name
+                    <i className={`fa ${isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('username', allChannelPartners, isAsc)}></i>
+                  </th>
+                  <th>Mobile</th>
+                  <th>Account Name
+                    <i className={`fa ${isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('accountname', allChannelPartners, isAsc)}></i>
+                  </th>
+                  <th>Owner Name</th>
+                  <th>District</th>
+                  <th>EPA</th>
+                  <th>Status</th>
+                  <th>Last Updated By</th>
+                  <th>Expiry Date</th>
+                  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>

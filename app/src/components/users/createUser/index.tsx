@@ -18,8 +18,8 @@ import {
 
 const options = [
     // { value: "salesagent", text: "Area Sales Agent" },
-    { value: "distributor", text: "Distributor" },
     { value: "retailer", text: "Retailer" },
+    { value: "distributor", text: "Distributor" },
 ];
 
 const getStoreData = {
@@ -127,10 +127,10 @@ class CreateUser extends Component<any, any>{
             }
 
         // let stateResponse = [{}];
-        let nextHierarchyResponse = [{text: 'Tamilnadu', value: 'Tamil nadu'}, {text: 'Bangalore', value: 'Bangalore'}];
-        this.setState({hierarchyList: nextHierarchyResponse});
-   }
-   getGeographicFields() {
+        let nextHierarchyResponse = [{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
+        this.setState({ hierarchyList: nextHierarchyResponse });
+    }
+    getGeographicFields() {
         //service call to get dynamic fields
         // servicesVersion().then((res: any) => {
         //     let res = ['country', 'state', 'district', 'village'];
@@ -172,10 +172,10 @@ class CreateUser extends Component<any, any>{
         //     }
         // }
         // let res = [{}];
-        let regionResponse = [{text: 'Tamilnadu', value: 'Tamil Nadu'}, {text: 'Bangalore', value: 'Bangalore'}];
-        let districtResponse = [{text: 'vellore', value: 'vellore'}, { text: 'chennai', value: 'Chennai'}];
-        let epaResponse = [{text: 'Epa1', value: 'epa1'}, { text: 'Epa2', value: 'epa2'}];
-        let villageResponse = [{text: 'demo', value: 'DEM0'}, { text: 'demo1', value: 'DEM01'}];
+        let regionResponse = [{ text: 'Central', value: 'central' }, { text: 'Bangalore', value: 'Bangalore' }];
+        let districtResponse = [{ text: 'Balaka', value: 'Balaka' }, { text: 'Blantyre', value: 'Blantyre' }];
+        let epaResponse = [{ text: 'EPA1', value: 'epa1' }, { text: 'EPA2', value: 'epa2' }];
+        let villageResponse = [{ text: 'Village1', value: 'Village1' }, { text: 'Village2', value: 'Village2' }];
 
         if ( this.state.currentStep == 2) {
             this.state.dynamicFields.map((list: any) => {
@@ -528,8 +528,13 @@ class CreateUser extends Component<any, any>{
         data.value = e.target.value;
     }
 
-    render(){
-        const { currentStep,userData, fromDateErr, toDateErr, userNameErr,accNameErr, userTypeErr,ownerNameErr,phoneErr,emailErr,countryErr,stateErr,districtErr,subDistrictErr,postalCodeErr,villageErr,taxIdErr,postalCodeTaxErr,geographicFields, country,state,district,subdistrict,village, stepsArray} = this.state;
+    render() {
+        const dpstyle = {
+            width: 220,
+            height: 40
+        };
+
+        const { currentStep, userData, fromDateErr, toDateErr, userNameErr, accNameErr, userTypeErr, ownerNameErr, phoneErr, emailErr, countryErr, stateErr, districtErr, subDistrictErr, postalCodeErr, villageErr, taxIdErr, postalCodeTaxErr, geographicFields, country, state, district, subdistrict, village, stepsArray } = this.state;
 
         // console.log('allUserDatas', this.state.allUserDatas);
         // console.log('allUserDatas', this.state.dynamicFields);
@@ -554,20 +559,20 @@ class CreateUser extends Component<any, any>{
                             isPlaceholder
                             isDisabled = { (this.state.currentStep === 3 && this.state.accInfo) ? true : false} />
                             </div>
-                            
-                            {index === 0 && 
-                            <>
-                             { currentStep == 2 ?
-                            <div className="col-sm-3">
-                                <Input type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                {postalCodeErr && <span className="error">{ postalCodeErr } </span>}
-  
-                            </div>  : 
-                            <div className="col-sm-3">
-                                <Input type="text" className="form-control" name="postalCodeTax" placeHolder="Postal Code" onChange={(e: any)=>this.handlePersonalChange(e)} disabled = {this.state.accInfo ? true : false} value={this.state.accInfo ? userData.postalCode : userData.postalCodeTax} />
-                                {postalCodeTaxErr && <span className="error">{ postalCodeTaxErr } </span>}
-                            </div>}
-                            </>
+
+                            {index === 0 &&
+                                <>
+                                    {currentStep == 2 ?
+                                        <div className="col-sm-3">
+                                            <Input style={dpstyle} type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            {postalCodeErr && <span className="error">{postalCodeErr} </span>}
+
+                                        </div> :
+                                        <div className="col-sm-3">
+                                            <Input style={dpstyle} type="text" className="form-control" name="postalCodeTax" placeHolder="Postal Code" onChange={(e: any) => this.handlePersonalChange(e)} disabled={this.state.accInfo ? true : false} value={this.state.accInfo ? userData.postalCode : userData.postalCodeTax} />
+                                            {postalCodeTaxErr && <span className="error">{postalCodeTaxErr} </span>}
+                                        </div>}
+                                </>
                             }
                         </div>
                         { list.error && <span className="error">{list.error}</span> }
@@ -612,45 +617,42 @@ class CreateUser extends Component<any, any>{
                                     <input type="date" name="toDate" className="form-control" onChange={(e)=>this.handlePersonalChange(e)}  value={userData.toDate} />
                                     {toDateErr && <span className="error">{ toDateErr } </span>}
                                 </div>
-                                <div className="col-sm-3">
-                                <label className="pt-4">isActive?</label>
-                                    <CustomSwitch checked={userData.activateUser} onChange={(e: any)=>this.handlePersonalChange(e)} name="activateUser" />
-                                </div>
-                        </div>
-                       
-                        <div className="personal">
-                            <div className="row age form-group">
-                                <div className="col-sm-3">
-                                    <Dropdown
-                                    name="userType" 
-                                    label="User Type"
-                                    options={options}
-                                    handleChange={this.handlePersonalChange}
-                                    value={userData.userType}
-                                    isPlaceholder />
-                                    {userTypeErr && <span className="error">{ userTypeErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="userName" placeHolder="User Name" value={userData.userName} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                    {userNameErr && <span className="error">{ userNameErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="accName" placeHolder="Account name" value={userData.accName} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                    {accNameErr && <span className="error">{ accNameErr } </span>}
-                                </div>
-                            </div>
-                            <div className="row age form-group">
-                                <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="ownerName" placeHolder="Owner Name" value={userData.ownerName} onChange={this.handlePersonalChange} />
-                                    {ownerNameErr && <span className="error">{ ownerNameErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="phone" placeHolder="Mobile Number" value={userData.phone} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                    {phoneErr && <span className="error">{ phoneErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <Input type="text" className="form-control" name="email" placeHolder="EMail" value={userData.email} onChange={(e: any)=>this.handlePersonalChange(e)} />
-                                    {emailErr && <span className="error">{ emailErr } </span>}
+
+                                <div className="personal">
+                                    <div className="row age form-group">
+                                        <div className="col-sm-3">
+                                            <Dropdown
+                                                name="userType"
+                                                label="User Type"
+                                                options={options}
+                                                handleChange={this.handlePersonalChange}
+                                                value={userData.userType}
+                                                isPlaceholder />
+                                            {userTypeErr && <span className="error">{userTypeErr} </span>}
+                                        </div>
+                                        <div className="col-sm-3">
+                                            <Input type="text" className="form-control" name="userName" placeHolder="First Name" value={userData.userName} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            {userNameErr && <span className="error">{userNameErr} </span>}
+                                        </div>
+                                        <div className="col-sm-3">
+                                            <Input type="text" className="form-control" name="accName" placeHolder="Last name" value={userData.accName} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            {accNameErr && <span className="error">{accNameErr} </span>}
+                                        </div>
+                                    </div>
+                                    <div className="row age form-group">
+                                        <div className="col-sm-3">
+                                            <Input type="text" className="form-control" name="ownerName" placeHolder="Account Name" value={userData.ownerName} onChange={this.handlePersonalChange} />
+                                            {ownerNameErr && <span className="error">{ownerNameErr} </span>}
+                                        </div>
+                                        <div className="col-sm-3">
+                                            <Input type="text" className="form-control" name="phone" placeHolder="Mobile Number" value={userData.phone} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            {phoneErr && <span className="error">{phoneErr} </span>}
+                                        </div>
+                                        <div className="col-sm-3">
+                                            <Input type="text" className="form-control" name="email" placeHolder="Email" value={userData.email} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            {emailErr && <span className="error">{emailErr} </span>}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
