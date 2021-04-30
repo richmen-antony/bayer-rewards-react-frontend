@@ -177,6 +177,7 @@ tbody tr {
     display: flex;
     align-items: center;
     border-radius: 30px;
+    min-width: 100px;
     padding: 10px;
     i {
       margin-right: 5px;
@@ -189,6 +190,10 @@ tbody tr {
   .status.inactive {
     color: #ff6397;
     background-color: #ffecf2;
+  }
+  .status.notActivated {
+    color: #FF9D00;
+    background-color: #FFE6BE;
   }
   .max-image {
     margin-left: 60px;

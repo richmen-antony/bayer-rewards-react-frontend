@@ -885,7 +885,8 @@ handlePaginationChange = (e: any) => {
                       previous={this.previous}
                       next={this.next}
                       pageNumberClick={this.pageNumberClick}
-                      handlePaginationChange={this.handlePaginationChange} />
+                      handlePaginationChange={this.handlePaginationChange} 
+                      callAPI ={this.getChannelPartnersList}/>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                   <ThirdPartyUsers 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useDebugValue } from "react";
 import { Tooltip } from "reactstrap";
 // import Button from '@material-ui/core/Button';
 import MuiDialogContent from "@material-ui/core/DialogContent";
@@ -17,6 +17,13 @@ import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
 import "../../../assets/scss/users.scss";
+import { apiURL } from "../../../utility/base/utils/config";
+import {
+    invokeGetService,
+    invokePostAuthService
+} from "../../../utility/base/service";
+import { toastSuccess } from '../../../utility/widgets/toaster';
+import { getLocalStorageData } from "../../../utility/base/localStore";
 
 type Props = {
   location?: any;
@@ -30,6 +37,7 @@ type Props = {
   next: any;
   pageNumberClick: any;
   handlePaginationChange: any;
+  callAPI:any
 };
 type States = {
   isActivateUser: boolean;
@@ -38,6 +46,8 @@ type States = {
   dialogOpen: boolean;
   isLoader: boolean;
   deActivatePopup: boolean;
+  fields:Object,
+  status:String
 };
 
 const dialogStyles = {
@@ -78,6 +88,9 @@ class ChannelPartners extends Component<Props, States> {
       isEditUser: false,
       isLoader: false,
       deActivatePopup: false,
+      fields:{},
+      status:""
+     
     };
   }
 
@@ -93,9 +106,45 @@ class ChannelPartners extends Component<Props, States> {
   };
 
   changeStatus= ()=>{
+    const { deactivateChannelPartner,activateChannelPartner } = apiURL;
+    if(this.state.fields){
+      let condUrl
+      if(this.state.status ==="Not Activated" ||this.state.status ==="In Active"){
+        condUrl=activateChannelPartner
+      }else{
+        condUrl=deactivateChannelPartner
+      }
+ 
+      invokePostAuthService(condUrl, this.state.fields)
+      .then((response: any) => {
+        console.log("called",response);
+          this.setState({
+              isLoader: false,
+          });
+          toastSuccess('User Status Changed Successfully');
+          this.handleClosePopup()
+          this.props.callAPI()
+  
+      })
+      .catch((error: any) => {
+          this.setState({ isLoader: false });
+          console.log(error, "error");
+      });
+    }
+    
 
   }
- getCurrentUserData =()=>{
+ getCurrentUserData =(data:any)=>{
+   console.log({data});
+  let passData ={...data};
+  let loggedUser =  getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')|| '{}') : ""
+  let obj:any={}
+  obj.lastupdatedby =loggedUser.role;
+  obj.lastupdateddate ="2021-04-30";
+  obj.username=data.username;
+  this.setState({fields:obj,status:data.status})
+
+  
    
  }
   render() {
@@ -207,7 +256,23 @@ class ChannelPartners extends Component<Props, States> {
                       <td>{list.district} </td>
                       <td>{list.epa} </td>
                       <td>
-                        {list.status == "Not activated" && (
+                          <span
+                            onClick={(event) => {
+                              this.showPopup(event, "deActivatePopup");
+                              this.getCurrentUserData(list)
+                            }}
+                            className={`status ${
+                              list.status==="Active" ?"active" :list.status==="In Active"?"inactive" :"notActivated" 
+                            }`} 
+                          >
+                            <img
+                              style={{ marginRight: "8px" }}
+                              src={list.status==="Active" ?Check :list.status==="In Active"? Cancel :NotActivated }
+                              width="17"
+                            />
+                          {list.status}
+                          </span>
+                        {/* {list.status == "Not activated" && (
                           <span
                             onClick={(event) => {
                               this.showPopup(event, "deActivatePopup");
@@ -254,7 +319,7 @@ class ChannelPartners extends Component<Props, States> {
                             />
                             Inactive
                           </span>
-                        )}
+                        )} */}
                       </td>
                       <td>{list.lastupdatedby}</td>
                       <td>{moment(list.expirydate).format("DD-MM-YYYY")} </td>

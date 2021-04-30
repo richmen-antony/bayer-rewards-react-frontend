@@ -8,5 +8,9 @@ export const apiURL = {
     productCategory: "user/getproductcategory",
     rsmDashboard: "getrsmdashboarduser/",
     channelPartnersList: "user/getchannelpartnerlist",
-    retailerCreation: "user/retailercreation?isMobile=false"
+    retailerCreation: "user/retailercreation?isMobile=false",
+    deactivateChannelPartner:"user/deactivatechannelpartner",
+    activateChannelPartner:"user/activatechannelpartner",
+
+
 }

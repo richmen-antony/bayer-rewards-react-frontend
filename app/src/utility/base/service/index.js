@@ -35,11 +35,14 @@ export function invokePostService(path,reqObj)  {
 };
 
 //Post method with auth
-export function invokePostAuthService(path,reqObj,accessToken)  {
+export function invokePostAuthService(path,reqObj)  {
+ let token =  getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')) : "" 
+ console.log({token})
   return new Promise(function (resolve, reject) {      
     let headers = {
       'Content-Type': 'application/json', 
-      // 'Authorization' : accessToken
+        'x-access-token': token.accessToken
+      
     };
     const apiEndPoint = configApp.env;
     const config = {
