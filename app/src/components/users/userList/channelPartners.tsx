@@ -194,7 +194,6 @@ class ChannelPartners extends Component<Props, States> {
                 <Pagination
                   totalData={totalData}
                   rowsPerPage={rowsPerPage}
-                  gotoPage={gotoPage}
                   previous={this.props.previous}
                   next={this.props.next}
                   pageNumberClick={this.props.pageNumberClick}

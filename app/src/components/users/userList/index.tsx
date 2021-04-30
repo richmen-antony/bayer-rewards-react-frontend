@@ -542,9 +542,15 @@ handlePaginationChange = (e: any) => {
   if (e.target.name === 'perpage') {
       value = e.target.value;
       this.setState({ rowsPerPage : value});
+      setTimeout(()=>{
+        this.getChannelPartnersList();
+      },0);
   } else if (e.target.name === 'gotopage') {
       value = e.target.value;
-      this.setState({ gotoPage : value});
+      this.setState({ pageNo : value});
+      setTimeout(()=>{
+        this.getChannelPartnersList();
+      },0);
   }
 }
 
