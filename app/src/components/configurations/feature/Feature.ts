@@ -8,16 +8,16 @@
  */
 const headerData = {
   mobile: [
-    { title: "Level 1", subTitle: "Dealer" },
-    { title: "Level 2", subTitle: "Sub Dealer" },
-    { title: "Field Sales", subTitle: "" },
-    { title: "Field Sales Manager", subTitle: "" },
+    { title: "Level 1", subTitle: "Retailer" },
+    { title: "Level 2", subTitle: "Distributor" },
+    { title: "RSM", subTitle: "" },
+    { title: "CSM", subTitle: "" },
   ],
   web: [
-    { title: "Field Sales", subTitle: "" },
-    { title: "Field Sales Manager", subTitle: "" },
-    { title: "Country-Admin", subTitle: "Dealer" },
-    { title: "Country-Dev", subTitle: "Sub Dealer" },
+    { title: "RSM", subTitle: "" },
+    { title: "CSM", subTitle: "" },
+    { title: "Country-Admin", subTitle: "Retailer" },
+    { title: "Country-Dev", subTitle: "Distributor" },
   ],
 };
 

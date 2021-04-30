@@ -83,9 +83,9 @@ class TopBar extends Component<Props,States> {
                     <ul className="navbar-right d-flex list-inline float-right mb-0">
                        
                         <li className="dropdown notification-list">
-                            <Dropdown isOpen={dropdownOpenNotification} toggle={this.toggleNotofication}>
+                            {/* <Dropdown isOpen={dropdownOpenNotification} toggle={this.toggleNotofication}>
                                 <DropdownToggle className="nav-link dropdown-toggle testflag arrow-none waves-effect" tag="a">
-                                    {/* <i className="mdi mdi-bell-outline noti-icon"></i> */}
+                                  
                                     <img src={bell} alt="User" width="20" />
                                     <span className="badge badge-pill badge-danger noti-icon-badge">1</span>
                                 </DropdownToggle>
@@ -99,7 +99,7 @@ class TopBar extends Component<Props,States> {
                                         </Link>
                                     </DropdownItem>
                                 </DropdownMenu>
-                            </Dropdown>
+                            </Dropdown> */}
 
                         </li>
 

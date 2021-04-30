@@ -79,7 +79,7 @@ const DevConfiguration: React.FC = (props) => {
           <i className="fa fa-plus" aria-hidden="true"></i> Add New System
         </button>
       </div>
-      <div className="add-system-input">
+      {/* <div className="add-system-input">
         <p>Points Redemption</p>
 
         <div className="searchInputRow baseurl ">
@@ -93,7 +93,7 @@ const DevConfiguration: React.FC = (props) => {
           />
         </div>
         <div> <i className="fas fa-check"></i></div>
-      </div>
+      </div> */}
      
       <div id="accordion">
         {systemList &&

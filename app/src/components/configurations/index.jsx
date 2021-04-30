@@ -334,7 +334,7 @@ class Configurations extends Component {
                       <div className="row rm-group">
                         <div className="col-sm-3">
                           <div><label className="font-weight-bold pt-4"></label></div>
-                          <div className="breadcrums sub-title">
+                          <div className="breadcrums sub-title" style={{width: '220px'}}>
                             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
                               <Link color="inherit" href="/" >
                                 {this.state.setSelectedRegion}

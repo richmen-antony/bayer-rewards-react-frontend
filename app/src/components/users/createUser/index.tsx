@@ -57,6 +57,8 @@ class CreateUser extends Component<any, any>{
             stateErr: '',
             districtErr: '',
             subDistrictErr: '',
+            firstNameErr: '',
+            lastNameErr: '',
             villageErr: '',
             stepsArray: [
                 "Personal Information",
@@ -71,6 +73,8 @@ class CreateUser extends Component<any, any>{
                 'userName': '',
                 'accName': '',
                 'ownerName': '',
+                'firstName' : '',
+                'lastName' : '',
                 'phone': '',
                 'email': '',
                 'postalCode': '',
@@ -86,9 +90,7 @@ class CreateUser extends Component<any, any>{
     }
 
     componentDidMount() {
-
-        // this.getRegion();
-
+        this.setState({ isRendered: true });
         ///API to get country and language settings
         this.getCountryList();
         this.getGeographicFields();
@@ -246,9 +248,7 @@ class CreateUser extends Component<any, any>{
             }
         }
         if (clickType === "createUser") {
-            alert('hello');
             if (formValid) {
-                alert('hi')
                 let geoValues = {};
                 this.state.dynamicFields.map((list: any, i: number) => {
                     let newPropsGeo = {
@@ -293,8 +293,8 @@ class CreateUser extends Component<any, any>{
         let taxData = this.state.withHoldingValues;
         const data = {
             "username": personalData['ownerName'],
-            "firstname": personalData['ownerName'],
-            "lastname": personalData['ownerName'],
+            "firstname": personalData['firstName'],
+            "lastname": personalData['lastName'],
             "accountname": personalData['ownerName'],
             "ownername": personalData['ownerName'],
             "mobilenumber": personalData['phone'],
@@ -417,17 +417,17 @@ class CreateUser extends Component<any, any>{
         } else {
             this.setState({ userTypeErr: '' });
         }
-        if (userData.userName === "" || userData.userName === null) {
-            this.setState({ userNameErr: 'Please enter the user Name' });
+        if (userData.firstName === "" || userData.firstName === null) {
+            this.setState({ firstNameErr: 'Please enter the First Name' });
             formValid = false;
         } else {
-            this.setState({ userNameErr: '' });
+            this.setState({ firstNameErr: '' });
         }
-        if (userData.accName === "" || userData.accName === null) {
-            this.setState({ accNameErr: 'Please enter the Account Name' });
+        if (userData.lastName === "" || userData.lastName === null) {
+            this.setState({ lastNameErr: 'Please enter the Last Name' });
             formValid = false;
         } else {
-            this.setState({ accNameErr: '' });
+            this.setState({ lastNameErr: '' });
         }
         if (userData.ownerName === "" || userData.ownerName === null) {
             this.setState({ ownerNameErr: 'Please enter the Owner name' });
@@ -489,6 +489,8 @@ class CreateUser extends Component<any, any>{
                     fromDate: '',
                     toDate: '',
                     userName: '',
+                    firstName: '',
+                    lastName : '',
                     accName: '',
                     userType: '',
                     ownerName: '',
@@ -534,7 +536,7 @@ class CreateUser extends Component<any, any>{
             height: "40px"
         };
 
-        const { currentStep, userData, fromDateErr, toDateErr, userNameErr, accNameErr, userTypeErr, ownerNameErr, phoneErr, emailErr, countryErr, stateErr, districtErr, subDistrictErr, postalCodeErr, villageErr, taxIdErr, postalCodeTaxErr, geographicFields, country, state, district, subdistrict, village, stepsArray } = this.state;
+        const { currentStep, userData, fromDateErr, toDateErr, userNameErr, accNameErr, userTypeErr, ownerNameErr, phoneErr, emailErr, countryErr, stateErr, districtErr, subDistrictErr, postalCodeErr, villageErr, taxIdErr, postalCodeTaxErr,firstNameErr,lastNameErr, geographicFields, country, state, district, subdistrict, village, stepsArray } = this.state;
 
         // console.log('allUserDatas', this.state.allUserDatas);
         // console.log('allUserDatas', this.state.dynamicFields);
@@ -638,12 +640,12 @@ class CreateUser extends Component<any, any>{
                                             {userTypeErr && <span className="error">{userTypeErr} </span>}
                                         </div>
                                         <div className="col-sm-3">
-                                            <Input type="text" className="form-control" name="userName" placeHolder="First Name" value={userData.userName} onChange={(e: any) => this.handlePersonalChange(e)} />
-                                            {userNameErr && <span className="error">{userNameErr} </span>}
+                                            <Input type="text" className="form-control" name="firstName" placeHolder="First Name" value={userData.firstName} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            {firstNameErr && <span className="error">{firstNameErr} </span>}
                                         </div>
                                         <div className="col-sm-3">
-                                            <Input type="text" className="form-control" name="accName" placeHolder="Last name" value={userData.accName} onChange={(e: any) => this.handlePersonalChange(e)} />
-                                            {accNameErr && <span className="error">{accNameErr} </span>}
+                                            <Input type="text" className="form-control" name="lastName" placeHolder="Last name" value={userData.lastName} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            {lastNameErr && <span className="error">{lastNameErr} </span>}
                                         </div>
                                     </div>
                                     <div className="row age form-group">
