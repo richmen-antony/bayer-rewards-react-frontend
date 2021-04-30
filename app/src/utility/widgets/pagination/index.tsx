@@ -2,14 +2,17 @@ import React , {Component, Fragment } from 'react';
 
 import AUX from '../../../hoc/Aux_';
 import '../../../assets/scss/pagination.scss';
+import { Input } from '../../../utility/widgets/input';
 
 type Props = {
     pageNo: number;
     totalData: number;
     rowsPerPage: number;
+    gotoPage: number;
     previous: Function;
     next: Function;
     pageNumberClick: Function;
+    handlePaginationChange: Function;
 }
 type States = {
     startIndex: number,
@@ -33,9 +36,9 @@ class Pagination extends Component<Props,States>{
     }
 
     render(){
-        const {pageNo, previous, next, pageNumberClick} = this.props;
+        const {pageNo, previous, next, pageNumberClick,handlePaginationChange,rowsPerPage,totalData,gotoPage} = this.props;
         const pageNumbers = [];
-        const pageData = Math.ceil(this.props.totalData / this.props.rowsPerPage);
+        const pageData = Math.ceil(totalData / rowsPerPage);
         for (let i = 1; i <= pageData ; i++) {
             pageNumbers.push(i);
         }
@@ -53,40 +56,74 @@ class Pagination extends Component<Props,States>{
             );
         });
         return(
-            <div className="paginationNumber">
-                <div>
-                    <a href="#" className="" onClick={()=>previous(pageNo)} style={{ pointerEvents : pageNo == 1 ? 'none' : 'auto'}}>Prev</a>
-                </div>
-     
-                <div style={{ pointerEvents : this.state.startIndex != 1 ? 'auto' : 'none'}}>
-                    <i className="fa fa-fast-backward" onClick={()=>this.fastBackward()}></i>
-                </div>
-                {pageNumbers.length > 1 &&
-                <div>
-                    <a href="#" className={pageNo == 1 ? "active" : ''} onClick={()=>pageNumberClick(1)}>1</a>
-                </div> }
-                
-                {this.state.startIndex != 1 ? 
-                <div>
-                    <i className="" onClick={()=>this.fastBackward()}>...</i>
-                </div> : ''}
-                <div>
-                    {renderPageNumbers}
-                </div>
-                {(pageData != this.state.endIndex) && (pageData > 5) && 
-                <div>
-                    <i className="" onClick={()=>this.fastForward()}>...</i>
-                </div> }
-                {pageNumbers.length > 1 && <div>
-                    <a href="#" className={pageNo == pageData ? "active" : ''} onClick={()=>pageNumberClick(pageData)}>{pageData}</a>
-                </div> }
-                <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
-                    <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
-                </div>
-                <div>
-                    <a href="#" onClick={()=>next(pageNo)} style={{ pointerEvents: pageNo == pageData ? 'none' : 'auto'}}>Next</a>
+            <div className='container'>
+                <div className='row'>
+                    <div className='col-sm-6' style={{display: 'flex'}}>
+                        <div className='col-sm-3'>
+                            Total Sales: 121
+                        </div>
+                        <div className='col-sm-3'>
+                            <div style={{display: 'flex', fontSize: '11px'}}>
+                                <span>Rows Per Page</span>
+                                <span style={{width: '45px'}}><Input type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={rowsPerPage} onChange={(e: any)=>handlePaginationChange(e)} /></span>
+                            </div>
+                        </div>
+                        <div className='col-sm-3'>
+                        <div style={{display: 'flex', fontSize: '11px',width: '43px'}}>
+                            <span>Go to Page</span>
+                            <span style={{width: '45px'}}><Input type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={gotoPage} onChange={(e: any)=>handlePaginationChange(e)} /></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='col-sm-6'>
+                    <div className="paginationNumber">
+                        <div>
+                            <a href="#" className="" onClick={()=>previous(pageNo)} style={{ pointerEvents : pageNo == 1 ? 'none' : 'auto'}}>
+                            <i className="fa fa-backward"></i>
+                            </a>
+                        </div>
+            
+                        {/* <div style={{ pointerEvents : this.state.startIndex != 1 ? 'auto' : 'none'}}>
+                            <i className="fa fa-fast-backward" onClick={()=>this.fastBackward()}></i>
+                        </div> */}
+                        {pageNumbers.length > 1 &&
+                        <div>
+                            <a href="#" className={pageNo == 1 ? "active" : ''} onClick={()=>pageNumberClick(1)}>1</a>
+                        </div> }
+                        
+                        {this.state.startIndex != 1 ? 
+                        <div>
+                            <i className="" onClick={()=>this.fastBackward()}>...</i>
+                        </div> : ''}
+                        <div>
+                            {renderPageNumbers}
+                        </div>
+                        {(pageData != this.state.endIndex) && (pageData > 5) && 
+                        <div>
+                            <i className="" onClick={()=>this.fastForward()}>...</i>
+                        </div> }
+                        {pageNumbers.length > 1 && <div className={pageNo == pageData ? "active" : ''} onClick={()=>pageNumberClick(pageData)}>
+                            {pageData}
+                        </div> }
+                        {/* <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
+                            <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
+                        </div> */}
+                        <div>
+                            <a href="#" onClick={()=>next(pageNo)} style={{ pointerEvents: pageNo == pageData ? 'none' : 'auto'}}>
+                                <i className="fa fa-forward"></i>
+                            </a>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
+
+
+
+
+
+
+
         );
     }
 }

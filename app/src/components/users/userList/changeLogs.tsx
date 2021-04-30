@@ -86,11 +86,11 @@ class ChangeLogs extends Component<Props, States> {
                     <tr>
                         <th>User Name
                             <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() =>
-                                onSort('username', allChannelPartners, isAsc)}></i>
+                                onSort('accountname', allChannelPartners, isAsc)}></i>
                         </th>
                         <th>Field</th>
                         <th>Old Value
-                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('role', allChannelPartners, isAsc)}></i>
+                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('ownername', allChannelPartners, isAsc)}></i>
                         </th>
                         <th>New Value</th>
                         <th>Modified Date</th>
@@ -102,11 +102,11 @@ class ChangeLogs extends Component<Props, States> {
                         <AUX key={i}>
                             <tr style={list.activeStatus ? {borderLeft: '5px solid #89D329'} : {borderLeft: '5px solid #FF4848' }}>
                                 <td >{list.username}</td>
-                                <td>{list.mobile}  </td>
-                                <td>{list.role}  </td>
-                                <td>{list.state}  </td>
+                                <td>{list.mobilenumber}  </td>
+                                <td>{list.ownername}  </td>
+                                <td>{list.accountname}  </td>
                                 <td>{list.district}  </td>
-                                <td>{list.subdistrict}  </td>
+                                <td>{list.epa}  </td>
                             </tr>
                         </AUX>
                     )}

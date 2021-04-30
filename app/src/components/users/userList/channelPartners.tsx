@@ -29,6 +29,7 @@ type Props = {
     previous: any;
     next: any;
     pageNumberClick: any;
+    handlePaginationChange: any;
 }
 type States = {
     isActivateUser: boolean;
@@ -90,7 +91,6 @@ class ChannelPartners extends Component<Props, States> {
         });
     };
 
-
     render() {
         const {allChannelPartners, isAsc, onSort} = this.props;
         const {
@@ -98,6 +98,7 @@ class ChannelPartners extends Component<Props, States> {
             pageNo,
             totalData,
             rowsPerPage,
+            gotoPage,
             showProductPopup,
           } = this.props.state;
         return (
@@ -109,7 +110,10 @@ class ChannelPartners extends Component<Props, States> {
             dialogStyles={dialogStyles}>
             <DialogContent>
               <div className="popup-container popup-retailer">
-                  <label>Are You Sure you want to change account to Inactive?</label>
+                  <div>Demo User, Retailer</div>
+                  <div>
+                    <label>Are You Sure you want to change account to Inactive?</label>
+                </div>
               </div>
             </DialogContent>
             <DialogActions>
@@ -138,7 +142,7 @@ class ChannelPartners extends Component<Props, States> {
                     </th>
                     <th>Mobile</th>
                     <th>Account Name
-                    <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('role', allChannelPartners, isAsc)}></i>
+                    <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('ownername', allChannelPartners, isAsc)}></i>
                     </th>
                     <th>Owner Name</th>
                     <th>District</th>
@@ -156,7 +160,7 @@ class ChannelPartners extends Component<Props, States> {
                             <td >{list.username}</td>
                             <td>{list.mobilenumber}  </td>
                             <td>{list.accountname}  </td>
-                            <td>{list.ownerName}  </td>
+                            <td>{list.ownername}  </td>
                             <td>{list.district}  </td>
                             <td>{list.epa}  </td>
                             <td>
@@ -190,10 +194,12 @@ class ChannelPartners extends Component<Props, States> {
                 <Pagination
                   totalData={totalData}
                   rowsPerPage={rowsPerPage}
+                  gotoPage={gotoPage}
                   previous={this.props.previous}
                   next={this.props.next}
                   pageNumberClick={this.props.pageNumberClick}
-                  pageNo={pageNo} />
+                  pageNo={pageNo}
+                  handlePaginationChange={this.props.handlePaginationChange} />
               </div>
         </div> : (
             this.state.isLoader ? <Loaders /> : 

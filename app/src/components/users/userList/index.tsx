@@ -116,6 +116,7 @@ type States = {
   dateErrMsg: string;
   searchText: string;
   rowsPerPage: number;
+  gotoPage: number;
   totalData: number;
   isFiltered: boolean;
   userRole: string;
@@ -250,6 +251,7 @@ class UserList extends Component<Props, States> {
       dateErrMsg: "",
       searchText: "",
       rowsPerPage: 15,
+      gotoPage: 1,
       totalData: 0,
       isFiltered: false,
       userRole: "",
@@ -533,6 +535,17 @@ backForward = () => {
 }
 fastForward = () => {
     this.setState({startIndex: this.state.endIndex + 1, endIndex: this.state.endIndex + 3})
+}
+
+handlePaginationChange = (e: any) => {
+  let value = 0;
+  if (e.target.name === 'perpage') {
+      value = e.target.value;
+      this.setState({ rowsPerPage : value});
+  } else if (e.target.name === 'gotopage') {
+      value = e.target.value;
+      this.setState({ gotoPage : value});
+  }
 }
 
 
@@ -838,7 +851,8 @@ fastForward = () => {
                       state={this.state}
                       previous={this.previous}
                       next={this.next}
-                      pageNumberClick={this.pageNumberClick} />
+                      pageNumberClick={this.pageNumberClick}
+                      handlePaginationChange={this.handlePaginationChange} />
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                   <ThirdPartyUsers 

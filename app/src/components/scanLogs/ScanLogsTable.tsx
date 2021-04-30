@@ -180,14 +180,14 @@ class ScanLogsTable extends Component<Props, States> {
               </table>
 
               <div>
-                <Pagination
+                {/* <Pagination
                   totalData={totalData}
                   rowsPerPage={rowsPerPage}
                   previous={this.props.previous}
                   next={this.props.next}
                   pageNumberClick={this.props.pageNumberClick}
                   pageNo={pageNo}
-                />
+                /> */}
               </div>
             </div>
           ) : isLoader ? (
