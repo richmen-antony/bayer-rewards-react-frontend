@@ -544,13 +544,13 @@ handlePaginationChange = (e: any) => {
       this.setState({ rowsPerPage : value});
       setTimeout(()=>{
         this.getChannelPartnersList();
-      },0);
+      },2000);
   } else if (e.target.name === 'gotopage') {
       value = e.target.value;
       this.setState({ pageNo : value});
       setTimeout(()=>{
         this.getChannelPartnersList();
-      },0);
+      },2000);
   }
 }
 

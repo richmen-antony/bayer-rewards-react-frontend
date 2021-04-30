@@ -31,7 +31,7 @@ class Dashboard extends Component<Props, States>{
         this.state={
             userRole : "",
             scanLogCount : 0,
-            usersCount : 0,
+            usersCount : 121,
             isLoader: false
         }
     }
