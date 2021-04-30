@@ -590,8 +590,10 @@ class CreateUser extends Component<any, any>{
         } else {
             nextButton = <button className='btn buttonColor createBtn' onClick={()=>this.handleClick('createUser')}>Create User</button>
         }
-      
-        return(
+        const togglePosition = {
+            top: 20
+        }
+        return (
             <div>
                 <div className="stepper-container-horizontal">
                     <Stepper
@@ -602,20 +604,25 @@ class CreateUser extends Component<any, any>{
                     />
                 </div>
                 <div className="col-md-10">
-                    <label className="font-weight-bold pt-4">{stepsArray[currentStep-1]}</label>
+                    <label className="font-weight-bold pt-4">{stepsArray[currentStep - 1]}</label>
                     <div className="container">
-                    {currentStep == 1 && (
-                        <>
-                        <div className="row effectiveDate form-group">
-                                <div className="col-sm-3">
-                                    <label className="font-weight-bold pt-4">Effective From</label>
-                                    <input type="date" name="fromDate" className="form-control" onChange={(e)=>this.handlePersonalChange(e)} value={userData.fromDate} />
-                                    {fromDateErr && <span className="error">{ fromDateErr } </span>}
-                                </div>
-                                <div className="col-sm-3">
-                                    <label className="font-weight-bold pt-4">Effective To</label>
-                                    <input type="date" name="toDate" className="form-control" onChange={(e)=>this.handlePersonalChange(e)}  value={userData.toDate} />
-                                    {toDateErr && <span className="error">{ toDateErr } </span>}
+                        {currentStep == 1 && (
+                            <>
+                                <div className="row effectiveDate form-group">
+                                    <div className="col-sm-3">
+                                        <label className="font-weight-bold pt-4">Effective From</label>
+                                        <input type="date" name="fromDate" className="form-control" onChange={(e) => this.handlePersonalChange(e)} value={userData.fromDate} />
+                                        {fromDateErr && <span className="error">{fromDateErr} </span>}
+                                    </div>
+                                    <div className="col-sm-3">
+                                        <label className="font-weight-bold pt-4">Effective To</label>
+                                        <input type="date" name="toDate" className="form-control" onChange={(e) => this.handlePersonalChange(e)} value={userData.toDate} />
+                                        {toDateErr && <span className="error">{toDateErr} </span>}
+                                    </div>
+                                    <div className="col-sm-3" style={togglePosition}>
+                                        <label className="pt-4">isActive?</label>
+                                        <CustomSwitch checked={userData.activateUser} onChange={(e: any) => this.handlePersonalChange(e)} name="activateUser" />
+                                    </div>
                                 </div>
 
                                 <div className="personal">
