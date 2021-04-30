@@ -10,8 +10,8 @@ import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import { Pagination } from "../../../utility/widgets/pagination";
 import SimpleDialog from "../../../container/components/dialog";
-import "../../../assets/scss/users.scss";
-import moment from "moment";
+// import '../../../assets/scss/users.scss';
+import moment from 'moment';
 import Edit from "../../../assets/images/edit.svg";
 import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
@@ -274,7 +274,6 @@ class ChannelPartners extends Component<Props, States> {
               <Pagination
                 totalData={totalData}
                 rowsPerPage={rowsPerPage}
-                gotoPage={gotoPage}
                 previous={this.props.previous}
                 next={this.props.next}
                 pageNumberClick={this.props.pageNumberClick}

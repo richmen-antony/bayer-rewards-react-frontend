@@ -21,7 +21,7 @@ import Box from "@material-ui/core/Box";
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
-import "../../../assets/scss/scanLogs.scss";
+// import "../../../assets/scss/scanLogs.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
   invokeGetAuthService,
@@ -542,9 +542,15 @@ handlePaginationChange = (e: any) => {
   if (e.target.name === 'perpage') {
       value = e.target.value;
       this.setState({ rowsPerPage : value});
+      setTimeout(()=>{
+        this.getChannelPartnersList();
+      },2000);
   } else if (e.target.name === 'gotopage') {
       value = e.target.value;
-      this.setState({ gotoPage : value});
+      this.setState({ pageNo : value});
+      setTimeout(()=>{
+        this.getChannelPartnersList();
+      },2000);
   }
 }
 
@@ -611,6 +617,29 @@ handlePaginationChange = (e: any) => {
       );
     }
     const { classes } = this.props;
+    const btn = {
+      background: "#1F445A 0% 0% no-repeat",
+      borderRadius: "100px",
+      opacity: 1,
+      textalign: "left",
+      font: "normal normal normal 16px/22px Open Sans",
+      color: "#FFFFFF",
+      width: 100,
+      height: 35,
+      margin: "15px"
+    }
+
+    const btnD = {
+      background: "#FFFFFF 0% 0% no-repeat",
+      borderRadius: "100px",
+      opacity: 1,
+      textalign: "left",
+      font: "normal normal normal 16px/22px Open Sans",
+      color: "#000000",
+      width: 100,
+      height: 35,
+      margin: "5px"
+    }
 
     return (
       <AUX>
@@ -661,41 +690,45 @@ handlePaginationChange = (e: any) => {
             border: '1px solid #ffffff',
             borderRadius:'.25rem'
             }}>
-              
-          <div className="row align-items-center">
-            <div className="col-sm-6">
-              <div className="searchInputRow advisor-sales">
-                  <i className="fa fa-search icon"></i>
-                  <input
-                    placeholder="Search..[Min 3 chars]"
-                    className="input-field"
-                    type="text"
-                    onChange={this.handleSearch}
-                    value={searchText}
-                  />
-              </div>
-            </div>
-            <div className="col-sm-6 leftAlign">
-              <div className="col-sm-3">
-                <label className="font-weight-bold">Partner Type</label>
-              </div>
-              <div className="col-sm-3">
-              {!changeLogOpen && 
-                (
-                <div className="filterRow">
-                <Dropdown
-                  isOpen={dropdownOpenFilter}
-                  toggle={this.toggleFilter}
-                >
-                  <DropdownToggle>
-                    {!dropdownOpenFilter && (
-                      <img src={filterIcon} width="17" alt="filter" />
-                    )}
-                  </DropdownToggle>
-                  <DropdownMenu right>
-                    <div className="p-3">
-                      <label className="font-weight-bold">
-                        Distributor / Retailer
+
+              <div className="row align-items-center">
+                <div className="col-sm-6">
+                  <div className="searchInputRow advisor-sales">
+                    <i className="fa fa-search icon"></i>
+                    <input
+                      placeholder="Search..[Min 3 chars]"
+                      className="input-field"
+                      type="text"
+                      onChange={this.handleSearch}
+                      value={searchText}
+                    />
+                  </div>
+                </div>
+                <div className="col-sm-6 leftAlign">
+                  <div>
+                    <label className="font-weight-bold">Partner Type</label>
+                    < button type="button" style={btn} >Retailer</button>
+                  </div>
+                  <div>
+                    < button type="button" style={btnD}>Distributor</button>
+                  </div>
+                  <div className="col-sm-3">
+                    {!changeLogOpen &&
+                      (
+                        <div className="filterRow">
+                          <Dropdown
+                            isOpen={dropdownOpenFilter}
+                            toggle={this.toggleFilter}
+                          >
+                            <DropdownToggle>
+                              {!dropdownOpenFilter && (
+                                <img src={filterIcon} width="17" alt="filter" />
+                              )}
+                            </DropdownToggle>
+                            <DropdownMenu right>
+                              <div className="p-3">
+                                <label className="font-weight-bold">
+                                  Distributor / Retailer
                       </label>
                       <i
                         className="fa fa-filter boxed float-right"
