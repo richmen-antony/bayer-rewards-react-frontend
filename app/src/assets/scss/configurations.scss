@@ -176,7 +176,9 @@
 // dev configuration
 
 .dev-container.card {
-  margin-top: 5px
+  margin-top: 5px;
+  height: 420px;
+  overflow: auto;
 }
 .dev-header {
   display: flex;
