@@ -530,8 +530,8 @@ class CreateUser extends Component<any, any>{
 
     render() {
         const dpstyle = {
-            width: 220,
-            height: 40
+            width: "220px",
+            height: "40px"
         };
 
         const { currentStep, userData, fromDateErr, toDateErr, userNameErr, accNameErr, userTypeErr, ownerNameErr, phoneErr, emailErr, countryErr, stateErr, districtErr, subDistrictErr, postalCodeErr, villageErr, taxIdErr, postalCodeTaxErr, geographicFields, country, state, district, subdistrict, village, stepsArray } = this.state;
@@ -564,12 +564,12 @@ class CreateUser extends Component<any, any>{
                                 <>
                                     {currentStep == 2 ?
                                         <div className="col-sm-3">
-                                            <Input style={dpstyle} type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any) => this.handlePersonalChange(e)} />
+                                            <Input  type="text" className="form-control" name="postalCode" placeHolder="Postal Code" value={userData.postalCode} onChange={(e: any) => this.handlePersonalChange(e)} />
                                             {postalCodeErr && <span className="error">{postalCodeErr} </span>}
 
                                         </div> :
                                         <div className="col-sm-3">
-                                            <Input style={dpstyle} type="text" className="form-control" name="postalCodeTax" placeHolder="Postal Code" onChange={(e: any) => this.handlePersonalChange(e)} disabled={this.state.accInfo ? true : false} value={this.state.accInfo ? userData.postalCode : userData.postalCodeTax} />
+                                            <Input  type="text" className="form-control" name="postalCodeTax" placeHolder="Postal Code" onChange={(e: any) => this.handlePersonalChange(e)} disabled={this.state.accInfo ? true : false} value={this.state.accInfo ? userData.postalCode : userData.postalCodeTax} />
                                             {postalCodeTaxErr && <span className="error">{postalCodeTaxErr} </span>}
                                         </div>}
                                 </>
@@ -591,7 +591,7 @@ class CreateUser extends Component<any, any>{
             nextButton = <button className='btn buttonColor createBtn' onClick={() => this.handleClick('createUser')}>Create User</button>
         }
         const togglePosition = { top: 20 }
-        const sub_div = { position: "absolute", bottom: 100, marginLeft: 350 }
+        const sub_div = { position: "absolute", bottom: "100px", marginLeft: "350px" }
 
         return (
             <div>
@@ -701,7 +701,7 @@ class CreateUser extends Component<any, any>{
                     </div>
                 </div>
 
-                <div className="submit" style={sub_div}>
+                <div className="submit" style={{position: "absolute", bottom: "100px", marginLeft: "350px"}}>
                     <div className="">
                         {(currentStep !== 1) &&
                             <button className="btn btn-outline-secondary buttonStyle" style={{ marginRight: '30px' }} onClick={() => this.handleClick('back')}>Back</button>}
