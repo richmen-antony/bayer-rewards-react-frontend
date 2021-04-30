@@ -314,7 +314,10 @@ class CreateUser extends Component<any, any>{
             "whtdistrict": taxData[0]['District'],
             "whtepa": taxData[0]['EPA'],
             "whtvillage": taxData[0]['Village'],
+            "status": this.state.activateUser ?'Active' : 'In Active',
+            "expiryDate": personalData['toDate']
         };
+        console.log('all', data);
         invokePostService(retailerCreation, data)
             .then((response: any) => {
                 this.setState({
