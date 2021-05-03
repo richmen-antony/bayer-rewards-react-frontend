@@ -11,7 +11,7 @@ import { sortBy } from "../../../utility/base/utils/tableSort";
 import { Pagination } from "../../../utility/widgets/pagination";
 import SimpleDialog from "../../../container/components/dialog";
 // import '../../../assets/scss/users.scss';
-import moment from 'moment';
+import moment from "moment";
 import Edit from "../../../assets/images/edit.svg";
 import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
@@ -19,11 +19,12 @@ import Cancel from "../../../assets/images/cancel.svg";
 import "../../../assets/scss/users.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
-    invokeGetService,
-    invokePostAuthService
+  invokeGetService,
+  invokePostAuthService,
 } from "../../../utility/base/service";
-import { toastSuccess } from '../../../utility/widgets/toaster';
+import { toastSuccess } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
+import { withRouter,RouteComponentProps  } from "react-router-dom";
 
 type Props = {
   location?: any;
@@ -37,7 +38,10 @@ type Props = {
   next: any;
   pageNumberClick: any;
   handlePaginationChange: any;
-  callAPI:any
+  callAPI: any;
+  match?: any;
+  staticContext?: any;
+  
 };
 type States = {
   isActivateUser: boolean;
@@ -46,8 +50,8 @@ type States = {
   dialogOpen: boolean;
   isLoader: boolean;
   deActivatePopup: boolean;
-  fields:Object,
-  status:String
+  fields: Object;
+  status: String;
 };
 
 const dialogStyles = {
@@ -78,7 +82,7 @@ const DialogActions = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogActions);
 
-class ChannelPartners extends Component<Props, States> {
+class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -88,9 +92,8 @@ class ChannelPartners extends Component<Props, States> {
       isEditUser: false,
       isLoader: false,
       deActivatePopup: false,
-      fields:{},
-      status:""
-     
+      fields: {},
+      status: "",
     };
   }
 
@@ -105,48 +108,62 @@ class ChannelPartners extends Component<Props, States> {
     });
   };
 
-  changeStatus= ()=>{
-    const { deactivateChannelPartner,activateChannelPartner } = apiURL;
-    if(this.state.fields){
-      let condUrl
-      if(this.state.status ==="Not Activated" ||this.state.status ==="In Active"){
-        condUrl=activateChannelPartner
-      }else{
-        condUrl=deactivateChannelPartner
+  changeStatus = () => {
+    const { deactivateChannelPartner, activateChannelPartner } = apiURL;
+    const { username,status }: any = this.state.fields;
+    if(status==="Not Activated"){
+      // redirect add user page
+      this.props.history.push({
+      pathname: '/createUser',
+      state: { userFields: this.state.fields }}); 
+
+    }else {
+      let condUrl;
+      if (
+       status === "Not Activated" ||
+       status === "Inactive"
+      ) {
+        condUrl = activateChannelPartner;
+      } else {
+        condUrl = deactivateChannelPartner;
       }
- 
-      invokePostAuthService(condUrl, this.state.fields)
-      .then((response: any) => {
-        console.log("called",response);
+     
+      let loggedUser = getLocalStorageData("userData")
+        ? JSON.parse(getLocalStorageData("userData") || "{}")
+        : "";
+      let obj: any = {};
+      obj.lastupdatedby = loggedUser.role;
+      obj.lastupdateddate = "2021-04-30";
+      obj.username = username;
+     
+      invokePostAuthService(condUrl, obj)
+        .then((response: any) => {
           this.setState({
-              isLoader: false,
+            isLoader: false,
           });
-          toastSuccess('User Status Changed Successfully');
-          this.handleClosePopup()
-          this.props.callAPI()
-  
-      })
-      .catch((error: any) => {
+          toastSuccess("User Status Changed Successfully");
+          this.handleClosePopup();
+         
+          this.props.callAPI();
+        })
+        .catch((error: any) => {
           this.setState({ isLoader: false });
           console.log(error, "error");
-      });
+        });
     }
-    
+  };
+  getCurrentUserData = (data: any) => {
+    let passData = { ...data };
+    this.setState({ fields: passData, status: data.status });
+  };
 
+  replaceAll(str: any, mapObj: any) {
+    var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
+
+    return str.replace(re, function (matched: any) {
+      return mapObj[matched.toLowerCase()];
+    });
   }
- getCurrentUserData =(data:any)=>{
-   console.log({data});
-  let passData ={...data};
-  let loggedUser =  getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')|| '{}') : ""
-  let obj:any={}
-  obj.lastupdatedby =loggedUser.role;
-  obj.lastupdateddate ="2021-04-30";
-  obj.username=data.username;
-  this.setState({fields:obj,status:data.status})
-
-  
-   
- }
   render() {
     const { allChannelPartners, isAsc, onSort } = this.props;
     const {
@@ -157,6 +174,7 @@ class ChannelPartners extends Component<Props, States> {
       gotoPage,
       showProductPopup,
     } = this.props.state;
+    const { fields }: any = this.state;
     return (
       <>
         {this.state.deActivatePopup ? (
@@ -170,14 +188,41 @@ class ChannelPartners extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {"Demo User"}, <label>{"Retailer"}</label>{" "}
+                      {fields?.username || ""}, <label>{"Retailer"}</label>{" "}
                     </p>
                   </div>
                 </div>
 
-                <div style={{textAlign:"center"}}>
+                <div style={{ textAlign: "center" }}>
                   <label>
-                    Are You Sure you want to change account to Inactive?
+                    {fields.status === "Active" ||
+                    fields.status === "Inactive" ? (
+                      <span>
+                        Are you sure you want to change &nbsp;
+                        <strong>
+                          {fields.ownername} - {fields.accountname}
+                        </strong>
+                        &nbsp; account to
+                        {fields.status === "Active" ? (
+                          <span> Inactive </span>
+                        ) : (
+                          <span> active</span>
+                        )}
+                        ?
+                      </span>
+                    ) : (
+                      fields.status === "Not Activated" ? 
+                      <span>
+                        Would you like to validate & approve&nbsp;
+                        <strong>
+                          {fields.ownername} - {fields.accountname}
+                        </strong>
+                        &nbsp;account to use Bayer Rewards mobile application?
+                        
+                      </span>
+                      :""
+
+                    )}
                   </label>
                 </div>
               </div>
@@ -195,7 +240,8 @@ class ChannelPartners extends Component<Props, States> {
                 className="popup-btn filter-scan"
                 autoFocus
               >
-                Change
+                {fields.status ==="Active" || fields.status==="Inactive" ?  "Change" : fields.status === "Not Activated" ?"Validate & Approve" :"" }
+               
               </Button>
             </DialogActions>
           </SimpleDialog>
@@ -256,70 +302,36 @@ class ChannelPartners extends Component<Props, States> {
                       <td>{list.district} </td>
                       <td>{list.epa} </td>
                       <td>
-                          <span
-                            onClick={(event) => {
-                              this.showPopup(event, "deActivatePopup");
-                              this.getCurrentUserData(list)
-                            }}
-                            className={`status ${
-                              list.status==="Active" ?"active" :list.status==="In Active"?"inactive" :"notActivated" 
-                            }`} 
-                          >
-                            <img
-                              style={{ marginRight: "8px" }}
-                              src={list.status==="Active" ?Check :list.status==="In Active"? Cancel :NotActivated }
-                              width="17"
-                            />
+                        <span
+                          onClick={(event) => {
+                            this.showPopup(event, "deActivatePopup");
+                            this.getCurrentUserData(list);
+                          }}
+                          className={`status ${
+                            list.status === "Active"
+                              ? "active"
+                              : list.status === "Inactive"
+                              ? "inactive"
+                              : list.status === "Not Activated"
+                              ? "notActivated"
+                              : ""
+                          }`}
+                        >
+                          <img
+                            style={{ marginRight: "8px" }}
+                            src={
+                              list.status === "Active"
+                                ? Check
+                                : list.status === "Inactive"
+                                ? Cancel
+                                : list.status === "Not Activated"
+                                ? NotActivated
+                                : ""
+                            }
+                            width="17"
+                          />
                           {list.status}
-                          </span>
-                        {/* {list.status == "Not activated" && (
-                          <span
-                            onClick={(event) => {
-                              this.showPopup(event, "deActivatePopup");
-                            }}
-                            className={`status ${
-                              list.status === "Active" ? "active" : "inactive"
-                            }`}
-                          >
-                            <img
-                              style={{ marginRight: "8px" }}
-                              src={NotActivated}
-                              width="17"
-                            />
-                            Not Activated
-                          </span>
-                        )}
-                        {list.status == "inActive" && (
-                          <span
-                            className={`status ${
-                              list.status === "Active" ? "inactive" : "active"
-                            }`}
-                          >
-                            <img
-                              style={{ marginRight: "8px" }}
-                              src={Check}
-                              width="17"
-                            />
-                            Active
-                          </span>
-                        )}
-                        {list.status == "Active" && (
-                          <span
-                            onClick={(event) => {
-                              this.showPopup(event, "deActivatePopup");
-                            }}
-                            className={`status ${
-                              list.status === "Active" ? "inactive" : "active"
-                            }`}
-                          >
-                            <img
-                              style={{ marginRight: "8px" }}
-                              src={Cancel}
-                              width="17"
-                            />
-                            Inactive
-                          </span>
-                        )} */}
+                        </span>
                       </td>
                       <td>{list.lastupdatedby}</td>
                       <td>{moment(list.expirydate).format("DD-MM-YYYY")} </td>
@@ -361,4 +373,4 @@ class ChannelPartners extends Component<Props, States> {
   }
 }
 
-export default ChannelPartners;
+export default withRouter(ChannelPartners);

@@ -126,6 +126,7 @@
 //     }
 //   }
 // }
+.table-responsive{
 table {
   display: flex;
   flex-flow: column;
@@ -229,6 +230,7 @@ tbody { height: 400px; overflow-y: scroll }
     }
   }
 
+}
   /* width */
 ::-webkit-scrollbar {
   width: 4px;
@@ -316,4 +318,9 @@ tbody { height: 400px; overflow-y: scroll }
   // width: calc(100vh - 280px) !important;
   width: 165px;
   background-color: $primary;
+}
+
+.btn-decline{
+  background-color: #E24C4B;
+  color:#ffffff
 }
