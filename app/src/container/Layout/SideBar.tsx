@@ -11,6 +11,7 @@ import coachIcon from '../../assets/icons/coach_walker_icon.svg';
 import helpCenterIcon from '../../assets/icons/help_icon.svg';
 import logoutIcon from '../../assets/icons/logout_icon.svg';
 import lLogo from '../../assets/icons/large_logo_holder.svg';
+import leftArrow from '../../assets/icons/left_arrow.svg';
 import { setLocalStorageData, getLocalStorageData, clearLocalStorageData } from '../../utility/base/localStore';
 import Cookies from 'js-cookie';
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -102,17 +103,19 @@ class Sidebar extends Component<Props, States> {
                                         </Link>
                                     </li>
 
-                                    <li className="d-flex">
-                                        <span className={activeTab === 'configurations' ? 'waves-effect active':'waves-effect'}></span>
-                                        <Link  to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
-                                            <img src={userListIcon} alt="User" width="16" /> <span> Configurations </span>
-                                        </Link>
-                                    </li>
+                                    
 
                                     <li className="d-flex">
                                         <span className={activeTab === 'userList' ? 'waves-effect active':'waves-effect'}></span>
                                         <Link  to="/userList" className={activeTab === 'userList' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('userList')}>
                                             <img src={userListIcon} alt="User" width="16" /> <span> User List </span>
+                                        </Link>
+                                    </li>
+
+                                    <li className="d-flex">
+                                        <span className={activeTab === 'configurations' ? 'waves-effect active':'waves-effect'}></span>
+                                        <Link  to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active':'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
+                                            <img src={pointLogsIcon} alt="User" width="16" /> <span> Configurations </span>
                                         </Link>
                                     </li>
                                     </> )}

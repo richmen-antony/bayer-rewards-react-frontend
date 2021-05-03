@@ -109,7 +109,7 @@ class ChannelPartners extends Component<Props, States> {
     const { deactivateChannelPartner,activateChannelPartner } = apiURL;
     if(this.state.fields){
       let condUrl
-      if(this.state.status ==="Not Activated" ||this.state.status ==="In Active"){
+      if(this.state.status ==="Not Activated" ||this.state.status ==="Inactive"){
         condUrl=activateChannelPartner
       }else{
         condUrl=deactivateChannelPartner
@@ -262,12 +262,12 @@ class ChannelPartners extends Component<Props, States> {
                               this.getCurrentUserData(list)
                             }}
                             className={`status ${
-                              list.status==="Active" ?"active" :list.status==="In Active"?"inactive" :"notActivated" 
+                              list.status==="Active" ?"active" :list.status==="Inactive"?"inactive" :"notActivated" 
                             }`} 
                           >
                             <img
                               style={{ marginRight: "8px" }}
-                              src={list.status==="Active" ?Check :list.status==="In Active"? Cancel :NotActivated }
+                              src={list.status==="Active" ?Check :list.status==="Inactive"? Cancel :NotActivated }
                               width="17"
                             />
                           {list.status}
