@@ -66,22 +66,24 @@ class CreateUser extends Component<any, any> {
         "With-Holding tax",
       ],
       userData: {
-        fromDate: new Date().toISOString().substr(0, 10),
-        toDate: new Date().toISOString().substr(0, 10),
+        fromdate: new Date().toISOString().substr(0, 10),
+        expiryDate: new Date().toISOString().substr(0, 10),
         activateUser: true,
-        userType: options[0].value,
-        userName: "",
-        accName: "",
-        ownerName: "",
-        firstName: "",
-        lastName: "",
-        phone: "",
+        usertype: options[0].value,
+        username: "",
+        firstname: "",
+        lastname: "",
+        accountname: "",
+        ownername: "",
+        mobilenumber: "",
         email: "",
-        postalCode: "",
-        postalCodeTax: "",
         address: "",
-        addressTax: "",
-        taxId: "",
+        postalcode: "",
+        taxid: "",
+        whtownername: "",
+        whtaccountname: "",
+        whtaddress: '',
+        whtpostalcode: "",
       },
       accInfo: true,
       allUserDatas: [],
@@ -102,6 +104,7 @@ class CreateUser extends Component<any, any> {
 
     if (this.props.location?.state) {
       const { userFields } = this.props.location.state;
+      console.log('new', userFields);
       this.setState({ userData: userFields }, () => {
         // console.log("userData", this.state.userData);
       });
@@ -323,46 +326,46 @@ class CreateUser extends Component<any, any> {
     let geoData = this.state.geographicalValues;
     let taxData = this.state.withHoldingValues;
     const data = {
-      username: personalData["ownerName"],
-      firstname: personalData["firstName"],
-      lastname: personalData["lastName"],
-      accountname: personalData["ownerName"],
-      ownername: personalData["ownerName"],
-      mobilenumber: personalData["phone"],
+      username: personalData["ownername"],
+      firstname: personalData["firstname"],
+      lastname: personalData["lastname"],
+      accountname: personalData["ownername"],
+      ownername: personalData["ownername"],
+      mobilenumber: personalData["mobilenumber"],
       email: personalData["email"],
       address: personalData["address"],
-      postalcode: personalData["postalCode"],
+      postalcode: personalData["postalcode"],
       region: geoData[0]["Region"],
       district: geoData[0]["District"],
       epa: geoData[0]["EPA"],
       village: geoData[0]["Village"],
-      taxid: personalData["taxId"],
-      whtownername: personalData["ownerName"],
-      whtaccountname: personalData["ownerName"],
-      whtaddress: personalData["addressTax"],
+      taxid: personalData["taxid"],
+      whtownername: personalData["ownername"],
+      whtaccountname: personalData["ownername"],
+      whtaddress: personalData["whtaddress"],
       whtpostalcode: this.state.accInfo
-        ? personalData["postalCode"]
-        : personalData["postalCodeTax"],
+        ? personalData["postalcode"]
+        : personalData["whtpostalcode"],
       whtregion: taxData[0]["Region"],
       whtdistrict: taxData[0]["District"],
       whtepa: taxData[0]["EPA"],
       whtvillage: taxData[0]["Village"],
       status: this.state.activateUser ? "Active" : "In Active",
-      expiryDate: personalData["toDate"],
+      expiryDate: personalData["expiryDate"],
     };
     console.log("all", data);
-    invokePostService(retailerCreation, data)
-      .then((response: any) => {
-        this.setState({
-          isLoader: false,
-        });
-        toastSuccess("User Created Successfully");
-        this.props.history.push("/userList");
-      })
-      .catch((error: any) => {
-        this.setState({ isLoader: false });
-        console.log(error, "error");
-      });
+    // invokePostService(retailerCreation, data)
+    //   .then((response: any) => {
+    //     this.setState({
+    //       isLoader: false,
+    //     });
+    //     toastSuccess("User Created Successfully");
+    //     this.props.history.push("/userList");
+    //   })
+    //   .catch((error: any) => {
+    //     this.setState({ isLoader: false });
+    //     console.log(error, "error");
+    //   });
   };
   handlePersonalChange = (e: any) => {
     let val = this.state.userData;
@@ -414,24 +417,24 @@ class CreateUser extends Component<any, any> {
   dateValidation = (e: any) => {
     let dateValid = true;
     let usersState = this.state.userData;
-    if (e.target.name === "fromDate") {
+    if (e.target.name === "fromdate") {
       if (e.target.value < new Date().toISOString().substr(0, 10)) {
         this.setState({
           fromDateErr: "From Date should be greater than todays date",
         });
         dateValid = false;
-      } else if (e.target.value > usersState.toDate) {
+      } else if (e.target.value > usersState.expiryDate) {
         this.setState({
           fromDateErr: "From Date should be lesser than To date",
         });
         dateValid = false;
-      } else if (e.target.value < usersState.toDate) {
+      } else if (e.target.value < usersState.expiryDate) {
         this.setState({ toDateErr: "", fromDateErr: "" });
       } else {
         this.setState({ fromDateErr: "" });
       }
     }
-    if (e.target.name === "toDate") {
+    if (e.target.name === "expiryDate") {
       if (e.target.value < new Date().toISOString().substr(0, 10)) {
         this.setState({
           toDateErr: "To Date should be greater than todays date",
@@ -454,31 +457,31 @@ class CreateUser extends Component<any, any> {
   checkValidation = () => {
     let formValid = true;
     let userData = this.state.userData;
-    if (userData.userType === "" || userData.userType === null) {
+    if (userData.usertype === "" || userData.usertype === null) {
       this.setState({ userTypeErr: "Please enter the User type" });
       formValid = false;
     } else {
       this.setState({ userTypeErr: "" });
     }
-    if (userData.firstName === "" || userData.firstName === null) {
+    if (userData.firstname === "" || userData.firstname === null) {
       this.setState({ firstNameErr: "Please enter the First Name" });
       formValid = false;
     } else {
       this.setState({ firstNameErr: "" });
     }
-    if (userData.lastName === "" || userData.lastName === null) {
+    if (userData.lastname === "" || userData.lastname === null) {
       this.setState({ lastNameErr: "Please enter the Last Name" });
       formValid = false;
     } else {
       this.setState({ lastNameErr: "" });
     }
-    if (userData.ownerName === "" || userData.ownerName === null) {
+    if (userData.ownername === "" || userData.ownername === null) {
       this.setState({ ownerNameErr: "Please enter the Owner name" });
       formValid = false;
     } else {
       this.setState({ ownerNameErr: "" });
     }
-    if (userData.phone === "" || userData.phone === null) {
+    if (userData.mobilenumber === "" || userData.mobilenumber === null) {
       this.setState({ phoneErr: "Please enter the phone" });
       formValid = false;
     } else {
@@ -497,14 +500,14 @@ class CreateUser extends Component<any, any> {
     let userData = this.state.userData;
     let currentStep = this.state.currentStep;
     let geographicFormValid = true;
-    if (userData.postalCode === "" || userData.postalCode === null) {
+    if (userData.postalcode === "" || userData.postalcode === null) {
       this.setState({ postalCodeErr: "Please enter Postal Code" });
       geographicFormValid = false;
     } else {
       this.setState({ postalCodeErr: "" });
     }
     if (currentStep == 3) {
-      if (userData.taxId === "" || userData.taxId === null) {
+      if (userData.taxid === "" || userData.taxid === null) {
         this.setState({ taxIdErr: "Please enter Tax Id" });
         geographicFormValid = false;
       } else {
@@ -530,16 +533,14 @@ class CreateUser extends Component<any, any> {
     if (currentStep === 1) {
       this.setState({
         userData: {
-          fromDate: "",
-          toDate: "",
-          userName: "",
-          firstName: "",
-          lastName: "",
-          accName: "",
+          username: "",
+          firstname: "",
+          lastname: "",
+          accountname: "",
           userType: "",
-          ownerName: "",
+          ownername: "",
           email: "",
-          phone: "",
+          mobilenumber: "",
         },
       });
     } else if (currentStep === 2) {
@@ -551,7 +552,7 @@ class CreateUser extends Component<any, any> {
       this.setState({
         dynamicFields: data,
         userData: {
-          postalCode: "",
+          postalcode: "",
           address: "",
         },
       });
@@ -562,8 +563,8 @@ class CreateUser extends Component<any, any> {
       });
       this.setState({
         userData: {
-          postalCodeTax: "",
-          addressTax: "",
+          whtpostalcode: "",
+          whtaddress: "",
         },
       });
     }
@@ -618,8 +619,6 @@ class CreateUser extends Component<any, any> {
       return (
         <>
           <div className={index === 0 ? "col-sm-12 country" : "col-sm-3"}>
-            <div className="row">
-              <div className="col-sm-3">
                 <Dropdown
                   name={list.name}
                   label={list.name}
@@ -637,47 +636,6 @@ class CreateUser extends Component<any, any> {
                       : false
                   }
                 />
-              </div>
-
-              {index === 0 && (
-                <>
-                  {currentStep == 2 ? (
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="postalCode"
-                        placeHolder="Postal Code"
-                        value={userData.postalCode}
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                      />
-                      {postalCodeErr && (
-                        <span className="error">{postalCodeErr} </span>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="postalCodeTax"
-                        placeHolder="Postal Code"
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={this.state.accInfo ? true : false}
-                        value={
-                          this.state.accInfo
-                            ? userData.postalCode
-                            : userData.postalCodeTax
-                        }
-                      />
-                      {postalCodeTaxErr && (
-                        <span className="error">{postalCodeTaxErr} </span>
-                      )}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
             {list.error && <span className="error">{list.error}</span>}
           </div>
         </>
@@ -716,7 +674,7 @@ class CreateUser extends Component<any, any> {
     const togglePosition = { top: 20 };
     const sub_div = {
       position: "absolute",
-      bottom: "100px",
+      bottom: "35px",
       marginLeft: "350px",
     };
 
@@ -744,10 +702,10 @@ class CreateUser extends Component<any, any> {
                     </label>
                     <input
                       type="date"
-                      name="fromDate"
+                      name="fromdate"
                       className="form-control"
                       onChange={(e) => this.handlePersonalChange(e)}
-                      value={userData.fromDate}
+                      value={userData.fromdate}
                     />
                     {fromDateErr && (
                       <span className="error">{fromDateErr} </span>
@@ -759,10 +717,10 @@ class CreateUser extends Component<any, any> {
                     </label>
                     <input
                       type="date"
-                      name="toDate"
+                      name="expiryDate"
                       className="form-control"
                       onChange={(e) => this.handlePersonalChange(e)}
-                      value={userData.toDate}
+                      value={userData.expiryDate}
                     />
                     {toDateErr && <span className="error">{toDateErr} </span>}
                   </div>
@@ -777,14 +735,14 @@ class CreateUser extends Component<any, any> {
                 </div>
 
                 <div className="personal">
-                  <div className="row age form-group">
+                  <div className="row fieldAlign form-group">
                     <div className="col-sm-3">
                       <Dropdown
-                        name="userType"
+                        name="usertype"
                         label="User Type"
                         options={options}
                         handleChange={this.handlePersonalChange}
-                        value={userData.userType}
+                        value={userData.usertype}
                         isPlaceholder
                       />
                       {userTypeErr && (
@@ -795,9 +753,9 @@ class CreateUser extends Component<any, any> {
                       <Input
                         type="text"
                         className="form-control"
-                        name="firstName"
+                        name="firstname"
                         placeHolder="First Name"
-                        value={userData.firstName}
+                        value={userData.firstname}
                         onChange={(e: any) => this.handlePersonalChange(e)}
                       />
                       {firstNameErr && (
@@ -808,9 +766,9 @@ class CreateUser extends Component<any, any> {
                       <Input
                         type="text"
                         className="form-control"
-                        name="lastName"
+                        name="lastname"
                         placeHolder="Last name"
-                        value={userData.lastName}
+                        value={userData.lastname}
                         onChange={(e: any) => this.handlePersonalChange(e)}
                       />
                       {lastNameErr && (
@@ -818,14 +776,14 @@ class CreateUser extends Component<any, any> {
                       )}
                     </div>
                   </div>
-                  <div className="row age form-group">
+                  <div className="row fieldAlign form-group">
                     <div className="col-sm-3">
                       <Input
                         type="text"
                         className="form-control"
-                        name="ownerName"
+                        name="ownername"
                         placeHolder="Account Name"
-                        value={userData.ownerName}
+                        value={userData.ownername}
                         onChange={this.handlePersonalChange}
                       />
                       {ownerNameErr && (
@@ -836,9 +794,9 @@ class CreateUser extends Component<any, any> {
                       <Input
                         type="text"
                         className="form-control"
-                        name="phone"
+                        name="mobilenumber"
                         placeHolder="Mobile Number"
-                        value={userData.phone}
+                        value={userData.mobilenumber}
                         onChange={(e: any) => this.handlePersonalChange(e)}
                       />
                       {phoneErr && <span className="error">{phoneErr} </span>}
@@ -861,14 +819,14 @@ class CreateUser extends Component<any, any> {
 
             <div className="geographical">
               {currentStep == 3 && (
-                <div className="row age form-group">
+                <div className="row fieldAlign form-group">
                   <div className="col-sm-3">
                     <Input
                       type="text"
                       className="form-control"
-                      name="taxId"
+                      name="taxid"
                       placeHolder="Tax Id"
-                      value={userData.taxId}
+                      value={userData.taxid}
                       onChange={(e: any) => this.handlePersonalChange(e)}
                     />
                     {taxIdErr && <span className="error">{taxIdErr} </span>}
@@ -885,13 +843,49 @@ class CreateUser extends Component<any, any> {
               )}
               {(currentStep == 2 || currentStep == 3) && (
                 <>
-                  <div className="row age form-group">{locationList}</div>
+                  <div className="row fieldAlign form-group">{locationList}</div>
                 </>
               )}
+               <div className="row fieldAlign form-group">
+                {currentStep == 2 &&
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="postalcode"
+                        placeHolder="Postal Code"
+                        value={userData.postalcode}
+                        onChange={(e: any) => this.handlePersonalChange(e)}
+                      />
+                      {postalCodeErr && (
+                        <span className="error">{postalCodeErr} </span>
+                      )}
+                    </div>  }
+                    {currentStep == 3 &&
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="whtpostalcode"
+                        placeHolder="Postal Code"
+                        onChange={(e: any) => this.handlePersonalChange(e)}
+                        disabled={this.state.accInfo ? true : false}
+                        value={
+                          this.state.accInfo
+                            ? userData.postalcode
+                            : userData.whtpostalcode
+                        }
+                      />
+                      {postalCodeTaxErr && (
+                        <span className="error">{postalCodeTaxErr} </span>
+                      )}
+                    </div>}
+                  
+                  </div>
               {currentStep == 2 && (
                 <>
                   <div
-                    className="row age"
+                    className="row fieldAlign"
                     style={{ marginBottom: "14px", marginLeft: "0px" }}
                   >
                     <textarea
@@ -908,15 +902,15 @@ class CreateUser extends Component<any, any> {
               {currentStep == 3 && (
                 <>
                   <div
-                    className="row age"
+                    className="row fieldAlign"
                     style={{ marginBottom: "14px", marginLeft: "0px" }}
                   >
                     <textarea
-                      name="addressTax"
+                      name="whtaddress"
                       rows={4}
                       cols={40}
                       placeholder="Address"
-                      value={userData.addressTax}
+                      value={userData.whtaddress}
                       onChange={(e: any) => this.handlePersonalChange(e)}
                     />
                   </div>
@@ -928,7 +922,7 @@ class CreateUser extends Component<any, any> {
 
         <div
           className="submit"
-          style={{ position: "absolute", bottom: "100px", marginLeft: "350px" }}
+          style={{ position: "absolute", bottom: "32px", marginLeft: "350px" }}
         >
           <div className="">
             {currentStep !== 1 && (
