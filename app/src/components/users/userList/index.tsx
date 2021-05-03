@@ -4,7 +4,9 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownMenu,
+  DropdownItem
 } from "reactstrap";
+import CustomDropdown from '../../../utility/widgets/dropdown';
 import { Tooltip } from "reactstrap";
 // import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -132,6 +134,11 @@ type States = {
   isdeActivateUser: boolean;
   isEditUser: boolean;
   value: number;
+  userStatus: Array<any>;
+  geographicFields: Array<any>;
+  dynamicFields: Array<any>;
+  countryList: Array<any>;
+  hierarchyList: Array<any>;
 };
 
 const AntTabs = withStyles({
@@ -268,13 +275,26 @@ class UserList extends Component<Props, States> {
     isActivateUser: false,
     isdeActivateUser: false,
     isEditUser: false,
-    value : 0
+    value : 0,
+    userStatus : ['All', 'Active', 'Inactive','Not Activated'],
+    geographicFields: [],
+    dynamicFields: [],
+    countryList: [],
+    hierarchyList: [],
     };
     this.timeOut = 0;
   }
   componentDidMount() {
     this.getChannelPartnersList();
     this.getThirdPartysList();
+    ///API to get country and language settings
+    this.getCountryList();
+    this.getGeographicFields();
+    this.getNextHierarchy('MALAWI', this.state.geographicFields[1]);
+    setTimeout(() => {
+        this.getDynamicOptionFields();
+    }, 0);
+
     // let data: any = getLocalStorageData("userData");
     // let userData = JSON.parse(data);
 
@@ -348,6 +368,62 @@ class UserList extends Component<Props, States> {
         console.log(error, "error");
       });
   }
+
+getCountryList() {
+  //service call
+  let res = [{ value: 'IND', text: 'INDIA' }, { value: 'MAL', text: 'Malawi' }];
+  this.setState({ countryList: res });
+}
+getNextHierarchy(country: any, nextLevel: any) {
+  //API to get state options for initial set since mal is default option in country
+  const data = {
+      type: country,
+      id: nextLevel
+  }
+
+  let nextHierarchyResponse = [{text: 'All', value: 'All'},{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
+  this.setState({ hierarchyList: nextHierarchyResponse });
+}
+getGeographicFields() {
+  let res = ['Country', 'Region', 'District', 'EPA', 'Village'];
+  setTimeout(() => {
+      this.setState({ geographicFields: res });
+  }, 0)
+}
+getDynamicOptionFields() {
+  let setFormArray: any = [];
+  this.state.geographicFields.map((list: any, i: number) => {
+      setFormArray.push({
+          name: list,
+          placeHolder: true,
+          value: list === 'Country' ? 'MALAWI' : '',
+          options: list === 'Country' ? this.state.countryList : (i == 1) ? this.state.hierarchyList : '',
+          error: ''
+      });
+  })
+  this.setState({ dynamicFields: setFormArray });
+}
+
+getOptionLists = (e: any, index: any) => {
+  e.stopPropagation();
+  let regionResponse = [{ text: 'Central', value: 'central' }, { text: 'Bangalore', value: 'Bangalore' }];
+  let districtResponse = [{ text: 'Balaka', value: 'Balaka' }, { text: 'Blantyre', value: 'Blantyre' }];
+  let epaResponse = [{ text: 'EPA1', value: 'epa1' }, { text: 'EPA2', value: 'epa2' }];
+  let villageResponse = [{ text: 'Village1', value: 'Village1' }, { text: 'Village2', value: 'Village2' }];
+
+      this.state.dynamicFields.map((list: any) => {
+          if (list.name === 'Region') {
+              list.options = this.state.hierarchyList;
+          } else if (list.name === 'District') {
+              list.options = districtResponse;
+          } else if (list.name === 'EPA') {
+              list.options = epaResponse;
+          } else if (list.name === 'Village') {
+              list.options = villageResponse;
+          }
+      })
+}
+
 
   downloadExcelFile = () => {
     let tableId: any = document.getElementById("tableData")?.id;
@@ -430,7 +506,7 @@ class UserList extends Component<Props, States> {
     this.setState({ allChannelPartners: response, isAsc: !isAsc });
   }
 
-  toggleFilter = () => {
+  toggleFilter = (e: any) => {
     this.setState((prevState) => ({
       dropdownOpenFilter: !prevState.dropdownOpenFilter,
     }));
@@ -641,6 +717,34 @@ handlePaginationChange = (e: any) => {
       margin: "5px"
     }
 
+    const locationList = this.state.dynamicFields ?.map((list: any, index: number) => {
+      return (
+          <>
+              <div className='col-sm-12 country'>
+                {index !== 0 && 
+                  <div className='row'>
+                    {(list.name !== 'Village') &&
+                          <CustomDropdown
+                              name={list.name}
+                              label={list.name}
+                              options={list.options}
+                              handleChange={(e: any, index: number) => {
+                                e.stopPropagation();
+                                list.value = e.target.value;
+                                this.setState({ isRendered: true });
+                                this.getOptionLists(e, index);
+                              }}
+                              value={list.value}
+                              isPlaceholder />
+                            }
+                  </div>
+                  }
+                  {/* {list.error && <span className="error">{list.error}</span>} */}
+              </div>
+          </>
+      )
+  });
+
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -720,151 +824,141 @@ handlePaginationChange = (e: any) => {
                             isOpen={dropdownOpenFilter}
                             toggle={this.toggleFilter}
                           >
-                            <DropdownToggle>
+                            <DropdownToggle onClick={(e) => e.stopPropagation()}>
                               {!dropdownOpenFilter && (
                                 <img src={filterIcon} width="17" alt="filter" />
                               )}
                             </DropdownToggle>
                             <DropdownMenu right>
+                            
                               <div className="p-3">
-                                <label className="font-weight-bold">
-                                  Distributor / Retailer
-                      </label>
-                      <i
-                        className="fa fa-filter boxed float-right"
-                        aria-hidden="true"
-                        onClick={this.toggleFilter}
-                      ></i>
-                      <div
-                        className="form-group"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <select
-                          className="form-control filterDropdown"
-                          onChange={(e) =>
-                            this.handleFilterChange(e, "type", "")
-                          }
-                          value={selectedFilters.type}
-                        >
-                          <option>All</option>
-                          <option>Distributor</option>
-                          <option>Retailer</option>
-                        </select>
-                      </div>
+                              <DropdownItem>
+                                <i
+                                  className="fa fa-filter boxed float-right"
+                                  aria-hidden="true"
+                                  onClick={this.toggleFilter}
+                                ></i>
+                                </DropdownItem> 
+                                {/* <div className="form-group" onClick={(e) => e.stopPropagation()}>
+                                  <select className="form-control filterDropdown"
+                                    onChange={(e) => this.handleFilterChange(e, "type", "")}
+                                    value={selectedFilters.type}>
+                                      <option>All</option>
+                                      <option>Distributor</option>
+                                      <option>Retailer</option>
+                                  </select>
+                                </div> */}
+                            
+                            <DropdownItem onClick={(e) => e.stopPropagation()}>
+                                <label className="font-weight-bold">Status</label>
+                                <div className="pt-1">
+                                  {this.state.userStatus.map((item) => (
+                                    <span className="mr-2">
+                                      <Button
+                                        color={
+                                          selectedFilters.scanType === item
+                                            ? "btn activeColor rounded-pill"
+                                            : "btn rounded-pill boxColor"
+                                        } size="sm"
+                                        onClick={(e) =>
+                                          this.handleFilterChange(e, "scanType", item)
+                                        }>{item}</Button>
+                                    </span>
+                                  ))}
+                                </div>
+                              </DropdownItem>
+                                <div className="form-group">
+                                  {locationList}
+                                </div>
 
-                      <label className="font-weight-bold">Scan Logs</label>
-                      <div className="pt-1">
-                        {this.state.scanType.map((item) => (
-                          <span className="mr-2">
-                            <Button
-                              color={
-                                selectedFilters.scanType === item
-                                  ? "btn activeColor rounded-pill"
-                                  : "btn rounded-pill boxColor"
-                              }
-                              size="sm"
-                              onClick={(e) =>
-                                this.handleFilterChange(e, "scanType", item)
-                              }
-                            >
-                              {item}
-                            </Button>
-                          </span>
-                        ))}
-                      </div>
+                                {/* <label className="font-weight-bold pt-2">
+                                  Product Group
+                                </label>
+                                <div className="pt-1">
+                                  {this.state.productCategories.map((item, i) => (
+                                    <span className="mr-2 chipLabel" key={i}>
+                                      <Button
+                                        color={
+                                          selectedFilters.productCategory === item
+                                            ? "btn activeColor rounded-pill"
+                                            : "btn rounded-pill boxColor"
+                                        } size="sm"
+                                        onClick={(e) =>
+                                          this.handleFilterChange(
+                                            e,
+                                            "productCategory",
+                                            item
+                                          )
+                                        }> {item}</Button>
+                                    </span>
+                                  ))}
+                                </div>
 
-                      <label className="font-weight-bold pt-2">
-                        Product Group
-                      </label>
-                      <div className="pt-1">
-                        {this.state.productCategories.map((item, i) => (
-                          <span className="mr-2 chipLabel" key={i}>
-                            <Button
-                              color={
-                                selectedFilters.productCategory === item
-                                  ? "btn activeColor rounded-pill"
-                                  : "btn rounded-pill boxColor"
-                              }
-                              size="sm"
-                              onClick={(e) =>
-                                this.handleFilterChange(
-                                  e,
-                                  "productCategory",
-                                  item
-                                )
-                              }
-                            >
-                              {item}
-                            </Button>
-                          </span>
-                        ))}
-                      </div>
+                                <label className="font-weight-bold pt-2">Status</label>
+                                <div className="pt-1">
+                                  {this.state.status.map((item) => (
+                                    <span className="mr-2">
+                                      <Button
+                                        color={
+                                          selectedFilters.status === item
+                                            ? "btn activeColor rounded-pill"
+                                            : "btn rounded-pill boxColor"
+                                        }
+                                        size="sm"
+                                        onClick={(e) =>
+                                          this.handleFilterChange(e, "status", item)
+                                        }
+                                      >
+                                        {item}
+                                      </Button>
+                                    </span>
+                                  ))}
+                                </div> */}
 
-                      <label className="font-weight-bold pt-2">Status</label>
-                      <div className="pt-1">
-                        {this.state.status.map((item) => (
-                          <span className="mr-2">
-                            <Button
-                              color={
-                                selectedFilters.status === item
-                                  ? "btn activeColor rounded-pill"
-                                  : "btn rounded-pill boxColor"
-                              }
-                              size="sm"
-                              onClick={(e) =>
-                                this.handleFilterChange(e, "status", item)
-                              }
-                            >
-                              {item}
-                            </Button>
-                          </span>
-                        ))}
-                      </div>
+                                <label className="font-weight-bold pt-2">
+                                  Date Range
+                                </label>
+                                <div className="d-flex">
+                                  <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.startDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(e, "startDate", "")
+                                    }
+                                  />
+                                  <div className="p-2">-</div>
+                                  <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.endDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(e, "endDate", "")
+                                    }
+                                  />
+                                </div>
 
-                      <label className="font-weight-bold pt-2">
-                        Date Range
-                      </label>
-                      <div className="d-flex">
-                        <input
-                          type="date"
-                          className="form-control"
-                          value={selectedFilters.startDate}
-                          onChange={(e) =>
-                            this.handleFilterChange(e, "startDate", "")
-                          }
-                        />
-                        <div className="p-2">-</div>
-                        <input
-                          type="date"
-                          className="form-control"
-                          value={selectedFilters.endDate}
-                          onChange={(e) =>
-                            this.handleFilterChange(e, "endDate", "")
-                          }
-                        />
-                      </div>
-
-                      <div className="filterFooter pt-4">
-                        <Button
-                          color="btn rounded-pill boxColor"
-                          size="md"
-                          onClick={(e) => this.resetFilter(e)}
-                        >
-                          Reset All
-                        </Button>
-                        <Button
-                          color="btn rounded-pill boxColor applybtn"
-                          size="md"
-                          // onClick={() => this.applyFilter()}
-                        >
-                          Apply
-                        </Button>
-                      </div>
-                      {dateErrMsg && (
-                        <span className="error">{dateErrMsg} </span>
-                      )}
-                    </div>
-                  </DropdownMenu>
+                                <div className="filterFooter pt-4">
+                                  <Button
+                                    color="btn rounded-pill boxColor"
+                                    size="md"
+                                    onClick={(e) => this.resetFilter(e)}
+                                  >
+                                    Reset All
+                                  </Button>
+                                  <Button
+                                    color="btn rounded-pill boxColor applybtn"
+                                    size="md"
+                                    // onClick={() => this.applyFilter()}
+                                  >
+                                    Apply
+                                  </Button>
+                                </div>
+                                {dateErrMsg && (
+                                  <span className="error">{dateErrMsg} </span>
+                                )}
+                              </div>
+                            </DropdownMenu>
                 </Dropdown>
               </div> ) 
               }

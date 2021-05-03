@@ -308,12 +308,78 @@ tbody { height: 400px; overflow-y: scroll }
   }   
 }
 
+// For Filter Start
+
 .filterSide {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-
 }
+.filterRow {
+  margin-right: 3%;
+  .dropdown .btn-secondary {
+      color: #fff;
+      background-color: #FFFFFF;
+      border-color: #dce4ea;
+      padding: 5px !important;
+  }
+  .dropdown .btn-secondary.focus, .btn-secondary:focus {
+      color: #fff;
+      background-color: #f3f7fa !important;
+      border-color: #f3f7fa !important;
+      box-shadow: none !important;
+  }
+  .dropdown-menu{
+      //width: 365px;
+      top: -30px !important;
+      left: 5px !important;
+  }
+  .form-group .filterDropdown {
+      margin-bottom: 0;
+  }   
+}
+.chip {
+  display: inline-block;
+  padding: 0 25px;
+  height: 35px;
+  font-size: 16px;
+  line-height: 35px;
+  border-radius: 25px;
+  background-color: blue;
+  min-width: 100px;
+}
+
+.filter-text {
+    font-size: 11px;;
+}
+
+.filter-item-mar {
+    margin-top:5px
+}
+
+.filterFooter {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.activeColor {
+  background-color: $appSecondary;
+  color: $white;
+}
+.activeColor:hover {
+  background-color: $secondary;
+  color: $white;
+}
+.boxColor {
+  border-color: lightgrey;
+}
+.applybtn {
+  background-color: #89D329;
+}
+
+// Filter end
+
 .downloadBtn {
   // width: calc(100vh - 280px) !important;
   width: 165px;

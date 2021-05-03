@@ -54,12 +54,15 @@ class Pagination extends Component<Props,States>{
                 </>
             );
         });
+        console.log('startIndex', this.state.startIndex)
+        console.log('endIndex', this.state.endIndex)
+        console.log('pageData', pageData)
         return(
             <div className='container'>
                 <div className='row'>
                     <div className='col-sm-6' style={{display: 'flex',justifyContent: 'flex-start', fontSize: '12px'}}>
                         <div className='col-sm-3'>
-                            Total Sales: 121
+                            Total Sales: {totalData}
                         </div>
                         <div className='col-sm-3'>
                             <div style={{display: 'flex'}}>
