@@ -1,20 +1,15 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-} from "reactstrap";
+import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import { Tooltip } from "reactstrap";
 // import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
+import Dialog from "@material-ui/core/Dialog";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import Typography from "@material-ui/core/Typography";
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
@@ -36,93 +31,114 @@ import {
 import CustomTable from "../../../container/grid/CustomTable";
 import { Pagination } from "../../../utility/widgets/pagination";
 import SimpleDialog from "../../../container/components/dialog";
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-import '../../../assets/scss/users.scss';
-import moment from 'moment';
+import {
+  createStyles,
+  Theme,
+  withStyles,
+  WithStyles,
+} from "@material-ui/core/styles";
+import "../../../assets/scss/users.scss";
+import moment from "moment";
 import { downloadExcel, downloadCsvFile } from "../../../utility/helper";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
-import { Input } from '../../../utility/widgets/input';
+import { Input } from "../../../utility/widgets/input";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 
 type Props = {
-    location?: any;
-    history?: any;
-    // classes?: any;
-    onSort : Function;
-    allChannelPartners : any;
-    isAsc: Boolean;
-}
+  location?: any;
+  history?: any;
+  // classes?: any;
+  onSort: Function;
+  allChannelPartners: any;
+  isAsc: Boolean;
+};
 type States = {
-    isActivateUser: boolean;
-    isdeActivateUser: boolean;
-    isEditUser: boolean;
-    dialogOpen: boolean;
-    isLoader: boolean;
-}
+  isActivateUser: boolean;
+  isdeActivateUser: boolean;
+  isEditUser: boolean;
+  dialogOpen: boolean;
+  isLoader: boolean;
+};
 
 class ChangeLogs extends Component<Props, States> {
-    constructor(props: any) {
-      super(props);
-      this.state={
-        dialogOpen: false,
-        isActivateUser: false,
-        isdeActivateUser: false,
-        isEditUser: false,
-        isLoader: false
-      }
-    }
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      dialogOpen: false,
+      isActivateUser: false,
+      isdeActivateUser: false,
+      isEditUser: false,
+      isLoader: false,
+    };
+  }
 
-
-    render() {
-        const {allChannelPartners, isAsc, onSort } = this.props;
-        return (
-            <>
-             {allChannelPartners.length > 0 ?   
-                <div className="table-responsive">
-                <table className="table" id="tableData">
-                    <thead>
+  render() {
+    const { allChannelPartners, isAsc, onSort } = this.props;
+    return (
+      <>
+        {allChannelPartners.length > 0 ? (
+          <div className="table-responsive">
+            <table className="table" id="tableData">
+              <thead>
+                <tr>
+                  <th>
+                    User Name
+                    <i
+                      className={`fa ${
+                        isAsc ? "fa-angle-down" : "fa-angle-up"
+                      } ml-3`}
+                      onClick={() =>
+                        onSort("accountname", allChannelPartners, isAsc)
+                      }
+                    ></i>
+                  </th>
+                  <th>Field</th>
+                  <th>
+                    Old Value
+                    <i
+                      className={`fa ${
+                        isAsc ? "fa-angle-down" : "fa-angle-up"
+                      } ml-3`}
+                      onClick={() =>
+                        onSort("ownername", allChannelPartners, isAsc)
+                      }
+                    ></i>
+                  </th>
+                  <th>New Value</th>
+                  <th>Modified Date</th>
+                  <th>Modified Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allChannelPartners.map((list: any, i: number) => (
+                  <AUX key={i}>
                     <tr>
-                        <th>User Name
-                            <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() =>
-                                onSort('accountname', allChannelPartners, isAsc)}></i>
-                        </th>
-                        <th>Field</th>
-                        <th>Old Value
-                        <i className={`fa ${ isAsc ? 'fa-angle-down' : 'fa-angle-up'} ml-3`} onClick={() => onSort('ownername', allChannelPartners, isAsc)}></i>
-                        </th>
-                        <th>New Value</th>
-                        <th>Modified Date</th>
-                        <th>Modified Time</th>
+                      <td>{list.username}</td>
+                      <td>{list.mobilenumber} </td>
+                      <td>{list.ownername} </td>
+                      <td>{list.accountname} </td>
+                      <td>{list.district} </td>
+                      <td>{list.epa} </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    { allChannelPartners.map((list: any ,i: number) => 
-                        <AUX key={i}>
-                            <tr style={list.activeStatus ? {borderLeft: '5px solid #89D329'} : {borderLeft: '5px solid #FF4848' }}>
-                                <td >{list.username}</td>
-                                <td>{list.mobilenumber}  </td>
-                                <td>{list.ownername}  </td>
-                                <td>{list.accountname}  </td>
-                                <td>{list.district}  </td>
-                                <td>{list.epa}  </td>
-                            </tr>
-                        </AUX>
-                    )}
-                    </tbody>
-                </table>
-            </div> : (
-                this.state.isLoader ? <Loaders /> : 
-                <div className="col-12 card mt-4">
-                    <div className="card-body ">
-                        <div className="text-red py-4 text-center">No Data Found</div>
-                    </div>
-                </div> )
-            }
-         </>
-        );
-    }
+                  </AUX>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : this.state.isLoader ? (
+          <Loaders />
+        ) : (
+          <div className="col-12 card mt-4">
+            <div className="card-body ">
+              <div className="text-red py-4 text-center">No Data Found</div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
 }
 
 export default ChangeLogs;

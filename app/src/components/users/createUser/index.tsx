@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
-// import { TabProvider, Tab, TabPanel, TabList } from 'react-web-tabs';
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
-import { toastSuccess } from "../../../utility/widgets/toaster";
-import { setLocalStorageData } from "../../../utility/base/localStore";
-import filterIcon from "../../assets/icons/filter_icon.svg";
 import CustomSwitch from "../../../container/components/switch";
 import CountryJson from "../../../utility/lib/country.json";
 import { apiURL } from "../../../utility/base/utils/config";
@@ -69,7 +65,7 @@ class CreateUser extends Component<any, any> {
         fromdate: new Date().toISOString().substr(0, 10),
         expiryDate: new Date().toISOString().substr(0, 10),
         activateUser: true,
-        usertype: options[0].value,
+        usertypename: options[0].value,
         username: "",
         firstname: "",
         lastname: "",
@@ -84,6 +80,7 @@ class CreateUser extends Component<any, any> {
         whtaccountname: "",
         whtaddress: '',
         whtpostalcode: "",
+        region:""
       },
       accInfo: true,
       allUserDatas: [],
@@ -329,7 +326,7 @@ class CreateUser extends Component<any, any> {
       username: personalData["ownername"],
       firstname: personalData["firstname"],
       lastname: personalData["lastname"],
-      accountname: personalData["ownername"],
+      accountname: personalData["accountname"],
       ownername: personalData["ownername"],
       mobilenumber: personalData["mobilenumber"],
       email: personalData["email"],
@@ -457,7 +454,7 @@ class CreateUser extends Component<any, any> {
   checkValidation = () => {
     let formValid = true;
     let userData = this.state.userData;
-    if (userData.usertype === "" || userData.usertype === null) {
+    if (userData.usertypename === "" || userData.usertypename === null) {
       this.setState({ userTypeErr: "Please enter the User type" });
       formValid = false;
     } else {
@@ -475,12 +472,12 @@ class CreateUser extends Component<any, any> {
     } else {
       this.setState({ lastNameErr: "" });
     }
-    if (userData.ownername === "" || userData.ownername === null) {
-      this.setState({ ownerNameErr: "Please enter the Owner name" });
-      formValid = false;
-    } else {
-      this.setState({ ownerNameErr: "" });
-    }
+    // if (userData.ownername === "" || userData.ownername === null) {
+    //   this.setState({ ownerNameErr: "Please enter the Owner name" });
+    //   formValid = false;
+    // } else {
+    //   this.setState({ ownerNameErr: "" });
+    // }
     if (userData.mobilenumber === "" || userData.mobilenumber === null) {
       this.setState({ phoneErr: "Please enter the phone" });
       formValid = false;
@@ -492,6 +489,12 @@ class CreateUser extends Component<any, any> {
       formValid = false;
     } else {
       this.setState({ emailErr: "" });
+    }
+    if (userData.accountname === "" || userData.accountname === null) {
+      this.setState({ accountnameErr: "Please enter the Account Name" });
+      formValid = false;
+    } else {
+      this.setState({ accountnameErr: "" });
     }
     return formValid;
   };
@@ -616,6 +619,7 @@ class CreateUser extends Component<any, any> {
     const fields =
       currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
     const locationList = fields?.map((list: any, index: number) => {
+      console.log({list})
       return (
         <>
           <div className={index === 0 ? "col-sm-12 country" : "col-sm-3"}>
@@ -738,11 +742,11 @@ class CreateUser extends Component<any, any> {
                   <div className="row fieldAlign form-group">
                     <div className="col-sm-3">
                       <Dropdown
-                        name="usertype"
+                        name="usertypename"
                         label="User Type"
                         options={options}
                         handleChange={this.handlePersonalChange}
-                        value={userData.usertype}
+                        value={userData.usertypename}
                         isPlaceholder
                       />
                       {userTypeErr && (
@@ -781,13 +785,13 @@ class CreateUser extends Component<any, any> {
                       <Input
                         type="text"
                         className="form-control"
-                        name="ownername"
+                        name="accountname"
                         placeHolder="Account Name"
-                        value={userData.ownername}
+                        value={userData.accountname}
                         onChange={this.handlePersonalChange}
                       />
-                      {ownerNameErr && (
-                        <span className="error">{ownerNameErr} </span>
+                      {accNameErr && (
+                        <span className="error">{accNameErr} </span>
                       )}
                     </div>
                     <div className="col-sm-3">

@@ -7,7 +7,7 @@ export const apiURL = {
     scanLogs: "user/getScanTransactionbyRegionSearch",
     productCategory: "user/getproductcategory",
     rsmDashboard: "getrsmdashboarduser/",
-    channelPartnersList: "user/getchannelpartnerlist",
+    channelPartnersList: "user/getuserlist",
     retailerCreation: "user/retailercreation?isMobile=false",
     deactivateChannelPartner:"user/deactivatechannelpartner",
     activateChannelPartner:"user/activatechannelpartner",
