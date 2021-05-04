@@ -832,6 +832,7 @@ class UserList extends Component<Props, States> {
             <div className="col-sm-6 leftAlign">
               {!changeLogOpen && (
                 <div>
+                  
                   <button
                     className="form-control changeLogs"
                     onClick={() => this.handleChangeLog()}
@@ -841,8 +842,22 @@ class UserList extends Component<Props, States> {
                   </button>
                 </div>
               )}
+               {changeLogOpen &&
+                <div className="searchInputRow advisor-sales">
+                    <i className="fa fa-search icon"></i>
+                    <input
+                      placeholder="Search user (min 3 letters)"
+                      className="input-field"
+                      type="text"
+                      onChange={this.handleSearch}
+                      value={searchText}
+                    />
+                  </div>
+                 }
               <div>
                 {/* <img src={downloadIcon} width="17" alt="filter" /> */}
+               
+                
                 <button className="btn btn-primary" onClick={this.download}>
                   <i className="fa fa-download mr-2"></i> <span>Download</span>
                 </button>
@@ -881,7 +896,7 @@ class UserList extends Component<Props, States> {
                       Distributor
                     </button>
                   </div>
-                  <div className="col-sm-3">
+                  <div className="" style={{marginLeft:'50px'}}>
                     {!changeLogOpen && (
                       <div className="filterRow">
                         <Dropdown

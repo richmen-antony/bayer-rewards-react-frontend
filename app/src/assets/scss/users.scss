@@ -142,7 +142,6 @@ thead tr {
   width: 100%;
   display: table;
   table-layout: fixed;
-  border: 1px solid #dee2e6;
   border-radius: 8px;
   margin-top: 10px;
   background-color: $appSecondary;
@@ -198,6 +197,8 @@ tbody tr {
   .status.notActivated {
     color: #FF9D00;
     background-color: #FFE6BE;
+    min-width: 125px;
+    padding: 10px 0px 10px 5px;
   }
   .max-image {
     margin-left: 60px;
@@ -349,6 +350,7 @@ tbody { height: 400px; overflow-y: scroll }
   .input-field {
     padding: 10px;
     padding-left: 35px;
+    outline: none;
   }
   i {
     position: absolute;
@@ -366,6 +368,7 @@ tbody { height: 400px; overflow-y: scroll }
     border-radius: 5px;
   }
   input:focus {
-    border-color: transparent;
+  
+    box-shadow: none;
   }
 }
