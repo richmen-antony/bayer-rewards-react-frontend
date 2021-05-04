@@ -25,6 +25,9 @@ import {
 import { toastSuccess } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { withRouter,RouteComponentProps  } from "react-router-dom";
+import { Input } from "../../../utility/widgets/input";
+import CustomDropdown from '../../../utility/widgets/dropdown';
+import CustomSwitch from "../../../container/components/switch";
 
 type Props = {
   location?: any;
@@ -50,8 +53,14 @@ type States = {
   dialogOpen: boolean;
   isLoader: boolean;
   deActivatePopup: boolean;
+  editPopup: boolean;
   fields: Object;
   status: String;
+  geographicFields: Array<any>,
+  dynamicFields: Array<any>,
+  countryList: Array<any>,
+  hierarchyList: Array<any>,
+  isRendered: boolean
 };
 
 const dialogStyles = {
@@ -62,6 +71,15 @@ const dialogStyles = {
     boxShadow: "none",
   },
 };
+const editdialogStyles = {
+  paperWidthSm: {
+    width: "500px",
+    maxWidth: "600px",
+    background: "transparent",
+    boxShadow: "none",
+  },
+};
+
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -92,21 +110,97 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       isEditUser: false,
       isLoader: false,
       deActivatePopup: false,
+      editPopup: false,
       fields: {},
       status: "",
+      geographicFields: [],
+      dynamicFields: [],
+      countryList: [],
+      hierarchyList: [],
+      isRendered: false
     };
+  }
+  componentDidMount(){
+    //API to get country and language settings
+    this.getCountryList();
+    this.getGeographicFields();
+    this.getNextHierarchy('MALAWI', this.state.geographicFields[1]);
+    setTimeout(() => {
+        this.getDynamicOptionFields();
+    }, 0);
+  }
+
+  getCountryList() {
+    //service call
+    let res = [{ value: 'IND', text: 'INDIA' }, { value: 'MAL', text: 'Malawi' }];
+    this.setState({ countryList: res });
+  }
+  getNextHierarchy(country: any, nextLevel: any) {
+    //API to get state options for initial set since mal is default option in country
+    const data = {
+        type: country,
+        id: nextLevel
+    }
+  
+    let nextHierarchyResponse = [{text: 'All', value: 'All'},{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
+    this.setState({ hierarchyList: nextHierarchyResponse });
+  }
+  getGeographicFields() {
+    let res = ['Country', 'Region', 'District', 'EPA', 'Village'];
+    setTimeout(() => {
+        this.setState({ geographicFields: res });
+    }, 0)
+  }
+  getDynamicOptionFields() {
+    let setFormArray: any = [];
+    this.state.geographicFields.map((list: any, i: number) => {
+        setFormArray.push({
+            name: list,
+            placeHolder: true,
+            value: list === 'Country' ? 'MALAWI' : '',
+            options: list === 'Country' ? this.state.countryList : (i == 1) ? this.state.hierarchyList : '',
+            error: ''
+        });
+    })
+    this.setState({ dynamicFields: setFormArray });
+  }
+  
+  getOptionLists = (e: any, index: any) => {
+    e.stopPropagation();
+    let regionResponse = [{ text: 'Central', value: 'central' }, { text: 'Bangalore', value: 'Bangalore' }];
+    let districtResponse = [{ text: 'Balaka', value: 'Balaka' }, { text: 'Blantyre', value: 'Blantyre' }];
+    let epaResponse = [{ text: 'EPA1', value: 'epa1' }, { text: 'EPA2', value: 'epa2' }];
+    let villageResponse = [{ text: 'Village1', value: 'Village1' }, { text: 'Village2', value: 'Village2' }];
+  
+        this.state.dynamicFields.map((list: any) => {
+            if (list.name === 'Region') {
+                list.options = this.state.hierarchyList;
+            } else if (list.name === 'District') {
+                list.options = districtResponse;
+            } else if (list.name === 'EPA') {
+                list.options = epaResponse;
+            } else if (list.name === 'Village') {
+                list.options = villageResponse;
+            }
+        })
   }
 
   handleClosePopup = () => {
-    this.setState({ deActivatePopup: false });
+    this.setState({ deActivatePopup: false, editPopup: false });
   };
 
   showPopup = (e: any, key: keyof States) => {
+    alert('hi')
     e.stopPropagation();
     this.setState<never>({
       [key]: true,
     });
   };
+
+  editPopup = (e: any) => {
+    e.stopPropagation();
+    this.setState({editPopup : true});
+  }
 
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
@@ -164,6 +258,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       return mapObj[matched.toLowerCase()];
     });
   }
+
   render() {
     const { allChannelPartners, isAsc, onSort } = this.props;
     const {
@@ -172,17 +267,46 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       totalData,
       rowsPerPage,
       gotoPage,
-      showProductPopup,
+      showProductPopup
     } = this.props.state;
     const { fields }: any = this.state;
+
+    const locationList = this.state.dynamicFields ?.map((list: any, index: number) => {
+      
+      return (
+          <>
+           {index !== 0 && 
+           <div style={{marginTop: '-15px'}}>
+              <label className="font-weight-bold pt-4" style={{marginLeft : (index == 2 || index == 4) ? '30px' : '15px'}}>{list.name}</label>
+              <div className='col-sm-6' style={{marginLeft : (index == 2 || index == 4) ? '15px' : '0px'}}>
+                <CustomDropdown
+                    name={list.name}
+                    label={list.name}
+                    options={list.options}
+                    handleChange={(e: any, index: number) => {
+                      e.stopPropagation();
+                      list.value = e.target.value;
+                      this.setState({ isRendered: true });
+                      this.getOptionLists(e, index);
+                    }}
+                    value={list.value}
+                    isPlaceholder />
+                  {/* {list.error && <span className="error">{list.error}</span>} */}
+              </div>
+              {index == 2 ? <br /> : ''}
+              </div>
+              }
+          </>
+      )
+  });
+
     return (
       <>
         {this.state.deActivatePopup ? (
           <SimpleDialog
             open={this.state.deActivatePopup}
             onClose={this.handleClosePopup}
-            dialogStyles={dialogStyles}
-          >
+            dialogStyles={dialogStyles}>
             <DialogContent>
               <div className="popup-container">
                 <div className="popup-content">
@@ -192,7 +316,6 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                     </p>
                   </div>
                 </div>
-
                 <div style={{ textAlign: "center" }}>
                   <label>
                     {fields.status === "Active" ||
@@ -242,6 +365,153 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
               >
                 {fields.status ==="Active" || fields.status==="Inactive" ?  "Change" : fields.status === "Not Activated" ?"Validate & Approve" :"" }
                
+              </Button>
+            </DialogActions>
+          </SimpleDialog>
+        ) : (
+          ""
+        )}
+        {this.state.editPopup ? (
+          <SimpleDialog
+            open={this.state.editPopup}
+            onClose={this.handleClosePopup}
+            dialogStyles={dialogStyles}>
+            <DialogContent>
+              <div className="popup-container">
+                <div className="popup-content">
+                  <div className={`popup-title`}>
+                    <p>
+                      {fields?.username || ""}, <label>{"Retailer"}</label>{" "}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                    <div className='col-sm-12' style={{display: 'flex'}}>
+                        <div className='col-sm-6'>
+                          <label className="font-weight-bold pt-4">Account Name</label>
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="ownername"
+                            placeHolder="Account Name"
+                            value={fields.ownername}
+                            // onChange={this.handlePersonalChange}
+                          />
+                          {/* {ownerNameErr && (
+                            <span className="error">{ownerNameErr} </span>
+                          )} */}
+                    
+                        </div>
+                      <div className='col-sm-6 editFilterText'>
+                      <label className="font-weight-bold pt-4">Owner Name</label>
+                      <Input
+                            type="text"
+                            className="form-control"
+                            name="ownername"
+                            placeHolder="Account Name"
+                            value={fields.ownername}
+                            // onChange={this.handlePersonalChange}
+                          />
+                          {/* {ownerNameErr && (
+                            <span className="error">{ownerNameErr} </span>
+                          )} */}
+                      </div>
+                    </div>
+                    <div className="row" style={{marginLeft: '15px'}}>
+                        {locationList}
+                    </div>
+                    <div className='col-sm-12' style={{display: 'flex'}}>
+                      <div className='col-sm-6'>
+                        <label className="font-weight-bold pt-4">Postal Code</label>
+                        <Input
+                            type="text"
+                            className="form-control"
+                            name="postalcode"
+                            placeHolder="Postal Code"
+                            value={fields.postalcode}
+                            // onChange={(e: any) => this.handlePersonalChange(e)}
+                          />
+                          {/* {postalCodeErr && (
+                            <span className="error">{postalCodeErr} </span>
+                          )} */}
+                        </div>
+                        <div className='col-sm-6 editFilterText'>
+                        <label className="font-weight-bold pt-4">Phone Number</label>
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="mobilenumber"
+                            placeHolder="Mobile Number"
+                            value={fields.mobilenumber}
+                            // onChange={(e: any) => this.handlePersonalChange(e)}
+                          />
+                          {/* {phoneErr && <span className="error">{phoneErr} </span>} */}
+                        </div>
+                    </div>
+                    <div className='col-sm-12' style={{display: 'flex'}}>
+                      <div className='col-sm-6'>
+                        <label className="font-weight-bold pt-4">EMail</label>
+                        <Input
+                          type="text"
+                          className="form-control"
+                          name="email"
+                          placeHolder="Email"
+                          value={fields.email}
+                          // onChange={(e: any) => this.handlePersonalChange(e)}
+                        />
+                        {/* {emailErr && <span className="error">{emailErr} </span>} */}
+                        </div>
+                        <div className='col-sm-6 editFilterText'>
+                          <label className="font-weight-bold pt-4">Expiry Date</label>
+                          <input
+                            type="date"
+                            name="expiryDate"
+                            className="form-control"
+                            // onChange={(e) => this.handlePersonalChange(e)}
+                            value={fields.expiryDate}
+                          />
+                          {/* {toDateErr && <span className="error">{toDateErr} </span>} */}
+                        </div>
+                    </div>
+                    <div className='col-sm-12' style={{display: 'flex'}}>
+                      <div className='col-sm-6'>
+                        
+                        <label className="font-weight-bold pt-4">Address</label>
+                          <textarea
+                            name="address"
+                            rows={2}
+                            cols={28}
+                            placeholder="Address"
+                            value={fields.address}
+                            // onChange={(e: any) => this.handlePersonalChange(e)}
+                          />
+                        </div>
+                        <div className='col-sm-6'>
+                        <label className="font-weight-bold pt-4">isActive?</label>
+                        <CustomSwitch
+                          checked={fields.status}
+                          // onChange={(e: any) => this.handlePersonalChange(e)}
+                          name="activateUser"
+                        />
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                onClick={this.handleClosePopup}
+                className="popup-btn close-btn"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={this.changeStatus}
+                className="popup-btn filter-scan"
+                autoFocus
+              >
+                Update
               </Button>
             </DialogActions>
           </SimpleDialog>
@@ -340,6 +610,10 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           style={{ marginRight: "8px" }}
                           src={Edit}
                           width="17"
+                          onClick={(event) => {
+                            this.editPopup(event);
+                            this.getCurrentUserData(list);
+                          }}
                         />
                       </td>
                     </tr>
