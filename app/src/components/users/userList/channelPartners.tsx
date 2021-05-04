@@ -609,7 +609,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                         <img
                           style={{ marginRight: "8px" }}
                           src={Edit}
-                          width="17"
+                          width="20"
                           onClick={(event) => {
                             this.editPopup(event);
                             this.getCurrentUserData(list);

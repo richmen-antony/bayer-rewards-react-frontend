@@ -60,20 +60,20 @@ class Pagination extends Component<Props,States>{
         return(
             <div className='container'>
                 <div className='row'>
-                    <div className='col-sm-6' style={{display: 'flex',justifyContent: 'flex-start', fontSize: '12px'}}>
+                    <div className='col-sm-6' style={{display: 'flex',justifyContent: 'flex-start', fontSize: '13px',alignItems: "center"}}>
                         <div className='col-sm-3'>
                             Total Sales: {totalData}
                         </div>
-                        <div className='col-sm-3'>
-                            <div style={{display: 'flex'}}>
-                                <span>Rows Per Page</span>
-                                <span style={{width: '70px'}}><Input type="text" className="form-control" name="perpage" value={rowsPerPage} onChange={(e: any)=>handlePaginationChange(e)} /></span>
+                        <div className='col-sm-5'>
+                            <div style={{display: 'flex',alignItems: "center"}}>
+                                <span style={{marginRight: "10px"}}>Rows Per Page</span>
+                                <span style={{width: '25%'}}><Input type="text" className="form-control" name="perpage" value={rowsPerPage} onChange={(e: any)=>handlePaginationChange(e)} /></span>
                             </div>
                         </div>
-                        <div className='col-sm-3'>
-                        <div style={{display: 'flex'}}>
-                            <span>Go to Page</span>
-                            <span style={{width: '52px'}}><Input type="text" className="form-control" name="gotopage" value={pageNo} onChange={(e: any)=>handlePaginationChange(e)} /></span>
+                        <div className='col-sm-4'>
+                        <div style={{display: 'flex',alignItems: "center"}}>
+                            <span style={{marginRight: "10px"}}>Go to Page</span>
+                            <span style={{width: '25%'}}><Input type="text" className="form-control" name="gotopage" value={pageNo} onChange={(e: any)=>handlePaginationChange(e)} /></span>
                             </div>
                         </div>
                     </div>
