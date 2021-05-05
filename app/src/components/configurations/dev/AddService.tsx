@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SimpleDialog from "../../../container/components/dialog";
+import AdminPopup from "../../../container/components/dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -60,7 +60,7 @@ interface Props {
  */
 const AddService: React.FC<Props> = ({ open, close, data }) => {
   return (
-    <SimpleDialog
+    <AdminPopup
       open={open}
       onClose={close}
       dialogStyles={dialogStyles}
@@ -86,11 +86,11 @@ const AddService: React.FC<Props> = ({ open, close, data }) => {
                   />
                 </div>
                 <div className="form-group col-md-6">
-                <label htmlFor="inputState">State</label>
-      <select id="inputState" className="form-control">
-        <option selected>Choose...</option>
-        <option>...</option>
-      </select>
+                  <label htmlFor="inputState">State</label>
+                  <select id="inputState" className="form-control">
+                    <option selected>Choose...</option>
+                    <option>...</option>
+                  </select>
                 </div>
               </div>
               <div className="form-group">
@@ -112,30 +112,34 @@ const AddService: React.FC<Props> = ({ open, close, data }) => {
                 />
               </div>
               <div className="form-group">
-    <div className="form-check">
-      <input className="form-check-input" type="checkbox" id="gridCheck"/>
-      <label className="form-check-label" htmlFor="gridCheck">
-      Is Active?
-      </label>
-    </div>
-  </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="gridCheck"
+                  />
+                  <label className="form-check-label" htmlFor="gridCheck">
+                    Is Active?
+                  </label>
+                </div>
+              </div>
             </form>
           </div>
-        </div>
-      </DialogContent>
-      <DialogActions>
-        <Button autoFocus onClick={close} className="popup-btn close-btn">
+          <DialogActions>
+        <Button autoFocus onClick={close} className="admin-popup-btn close-btn">
           Cancel
         </Button>
         <Button
           // onClick={this.handleClosePopup}
-          className="popup-btn filter-scan"
+          className="admin-popup-btn filter-scan"
           autoFocus
         >
           Add Service
         </Button>
       </DialogActions>
-    </SimpleDialog>
+        </div>
+      </DialogContent>
+    </AdminPopup>
   );
 };
 

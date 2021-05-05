@@ -9,7 +9,7 @@ import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import { Pagination } from "../../../utility/widgets/pagination";
-import SimpleDialog from "../../../container/components/dialog";
+import AdminPopup from "../../../container/components/dialog/AdminPopup";
 // import '../../../assets/scss/users.scss';
 import moment from "moment";
 import Edit from "../../../assets/images/edit.svg";
@@ -303,7 +303,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     return (
       <>
         {this.state.deActivatePopup ? (
-          <SimpleDialog
+          <AdminPopup
             open={this.state.deActivatePopup}
             onClose={this.handleClosePopup}
             dialogStyles={dialogStyles}>
@@ -348,31 +348,33 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                     )}
                   </label>
                 </div>
-              </div>
-            </DialogContent>
-            <DialogActions>
+                <DialogActions>
               <Button
                 autoFocus
                 onClick={this.handleClosePopup}
-                className="popup-btn close-btn"
+                className="admin-popup-btn close-btn"
               >
                 Cancel
               </Button>
               <Button
                 onClick={this.changeStatus}
-                className="popup-btn filter-scan"
+                className="admin-popup-btn filter-scan"
                 autoFocus
               >
                 {fields.status ==="Active" || fields.status==="Inactive" ?  "Change" : fields.status === "Not Activated" ?"Validate & Approve" :"" }
                
               </Button>
             </DialogActions>
-          </SimpleDialog>
+              </div>
+             
+            </DialogContent>
+            
+          </AdminPopup>
         ) : (
           ""
         )}
         {this.state.editPopup ? (
-          <SimpleDialog
+          <AdminPopup
             open={this.state.editPopup}
             onClose={this.handleClosePopup}
             dialogStyles={dialogStyles}>
@@ -514,7 +516,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 Update
               </Button>
             </DialogActions>
-          </SimpleDialog>
+          </AdminPopup>
         ) : (
           ""
         )}
