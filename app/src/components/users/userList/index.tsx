@@ -142,6 +142,7 @@ type States = {
   dynamicFields: Array<any>;
   countryList: Array<any>;
   hierarchyList: Array<any>;
+
 };
 
 const AntTabs = withStyles({
@@ -284,6 +285,7 @@ class UserList extends Component<Props, States> {
       dynamicFields: [],
       countryList: [],
       hierarchyList: [],
+      
     };
     this.timeOut = 0;
   }
@@ -309,7 +311,7 @@ class UserList extends Component<Props, States> {
   getChannelPartnersList = () => {
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
-    const data = {
+    let data = {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
@@ -322,6 +324,17 @@ class UserList extends Component<Props, States> {
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
     };
+    let {status}:any= this.state.selectedFilters;
+    if(this.state.isFiltered){
+      console.log("ca")
+
+      let filter={
+        status :status,
+        isFiltered : this.state.isFiltered,
+      }
+      data={...data,...filter}
+    }
+    console.log({data})
     invokeGetAuthService(channelPartnersList, data)
       .then((response) => {
         this.setState({
@@ -341,7 +354,7 @@ class UserList extends Component<Props, States> {
   getThirdPartysList = () => {
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
-    const data = {
+    let data = {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
@@ -354,6 +367,7 @@ class UserList extends Component<Props, States> {
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
     };
+    
     invokeGetAuthService(channelPartnersList, data)
       .then((response) => {
         this.setState({
@@ -574,8 +588,11 @@ class UserList extends Component<Props, States> {
       val[name] = item;
       flag = true;
     }
+    console.log({val,flag})
     if (flag) {
-      this.setState({ selectedFilters: val });
+      this.setState({ selectedFilters: val },()=>{
+        console.log("status",this.state.selectedFilters)
+      });
     }
   };
 
@@ -610,12 +627,15 @@ class UserList extends Component<Props, States> {
       }, 1000);
     }
   };
-  //   applyFilter = () => {
-  //     this.setState({ isFiltered: true });
-  //     this.timeOut = setTimeout(() => {
-  //       this.getScanLogs();
-  //     }, 0);
-  //   };
+    applyFilter = () => {
+      this.setState({ isFiltered: true },()=>{
+        this.getChannelPartnersList();
+      });
+      
+      // this.timeOut = setTimeout(() => {
+      //   this.getScanLogs();
+      // }, 0);
+    };
   previous = (pageNo: any) => {
     this.setState({ pageNo: pageNo - 1 });
     setTimeout(() => {
@@ -781,6 +801,7 @@ class UserList extends Component<Props, States> {
                       }}
                       value={list.value}
                       isPlaceholder
+                      isNative={true}
                     />
                   )}
                 </div>
@@ -917,16 +938,6 @@ class UserList extends Component<Props, States> {
                                   onClick={this.toggleFilter}
                                 ></i>
                               </DropdownItem>
-                              {/* <div className="form-group" onClick={(e) => e.stopPropagation()}>
-                                  <select className="form-control filterDropdown"
-                                    onChange={(e) => this.handleFilterChange(e, "type", "")}
-                                    value={selectedFilters.type}>
-                                      <option>All</option>
-                                      <option>Distributor</option>
-                                      <option>Retailer</option>
-                                  </select>
-                                </div> */}
-
                               <DropdownItem
                                 onClick={(e) => e.stopPropagation()}
                               >
@@ -938,7 +949,7 @@ class UserList extends Component<Props, States> {
                                     <span className="mr-2">
                                       <Button
                                         color={
-                                          selectedFilters.scanType === item
+                                          selectedFilters.status === item
                                             ? "btn activeColor rounded-pill"
                                             : "btn rounded-pill boxColor"
                                         }
@@ -946,7 +957,7 @@ class UserList extends Component<Props, States> {
                                         onClick={(e) =>
                                           this.handleFilterChange(
                                             e,
-                                            "scanType",
+                                            "status",
                                             item
                                           )
                                         }
@@ -958,51 +969,6 @@ class UserList extends Component<Props, States> {
                                 </div>
                               </DropdownItem>
                               <div className="form-group">{locationList}</div>
-
-                              {/* <label className="font-weight-bold pt-2">
-                                  Product Group
-                                </label>
-                                <div className="pt-1">
-                                  {this.state.productCategories.map((item, i) => (
-                                    <span className="mr-2 chipLabel" key={i}>
-                                      <Button
-                                        color={
-                                          selectedFilters.productCategory === item
-                                            ? "btn activeColor rounded-pill"
-                                            : "btn rounded-pill boxColor"
-                                        } size="sm"
-                                        onClick={(e) =>
-                                          this.handleFilterChange(
-                                            e,
-                                            "productCategory",
-                                            item
-                                          )
-                                        }> {item}</Button>
-                                    </span>
-                                  ))}
-                                </div>
-
-                                <label className="font-weight-bold pt-2">Status</label>
-                                <div className="pt-1">
-                                  {this.state.status.map((item) => (
-                                    <span className="mr-2">
-                                      <Button
-                                        color={
-                                          selectedFilters.status === item
-                                            ? "btn activeColor rounded-pill"
-                                            : "btn rounded-pill boxColor"
-                                        }
-                                        size="sm"
-                                        onClick={(e) =>
-                                          this.handleFilterChange(e, "status", item)
-                                        }
-                                      >
-                                        {item}
-                                      </Button>
-                                    </span>
-                                  ))}
-                                </div> */}
-
                               <label className="font-weight-bold pt-2">
                                 Date Range
                               </label>
@@ -1026,18 +992,17 @@ class UserList extends Component<Props, States> {
                                 />
                               </div>
 
-                              <div className="filterFooter pt-4">
+                              <div className="filterFooter pt-3">
                                 <Button
-                                  color="btn rounded-pill boxColor"
-                                  size="md"
+                                  color="btn rounded-pill boxColor reset-btn"
                                   onClick={(e) => this.resetFilter(e)}
+                                  
                                 >
                                   Reset All
                                 </Button>
                                 <Button
                                   color="btn rounded-pill boxColor applybtn"
-                                  size="md"
-                                  // onClick={() => this.applyFilter()}
+                                  onClick={this.applyFilter}
                                 >
                                   Apply
                                 </Button>

@@ -39,7 +39,7 @@
     color: 'grey'
 }
 .country {
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 .leftAlign {
     display: flex;
@@ -321,9 +321,15 @@ tbody { height: 400px; overflow-y: scroll }
 }
 .boxColor {
   border-color: lightgrey;
+  
+ 
+}
+.reset-btn{
+  min-width: 100px;
 }
 .applybtn {
-  background-color: #89D329;
+  background-color: #7EB343;
+  min-width: 100px;
 }
 
 // Filter end
@@ -371,4 +377,13 @@ tbody { height: 400px; overflow-y: scroll }
   
     box-shadow: none;
   }
+}
+
+
+.dropdown-menu.dropdown-menu-right.show{
+  transform: translate3d(-400px, 8px, 0px) !important;
+  transition-duration: .3s;
+  transition-timing-function: ease-out;
+ 
+
 }

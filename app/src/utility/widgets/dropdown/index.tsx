@@ -18,6 +18,7 @@ export interface DropdownProps {
     isPlaceholder?: boolean;
     isLabel?: boolean;
     isDisabled?: boolean;
+    isNative?:boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -91,6 +92,7 @@ export const Dropdown = ({
     isPlaceholder,
     isLabel,
     isDisabled,
+    isNative,
     ...props
   }: DropdownProps) => {
   const classes = useStyles();
@@ -108,12 +110,21 @@ export const Dropdown = ({
             onChange={handleChange}
             displayEmpty = {isPlaceholder ? true : false}
             disabled = {isDisabled ? true : false}
+            native={isNative ?true: false}
             >
-            {isPlaceholder && <MenuItem value="" disabled>{label}</MenuItem>}
+            {isPlaceholder && !isNative ?<MenuItem value="" disabled>{label}</MenuItem> :
+            <option value="" disabled>{label}</option>
+            }
             {options && options.map((person: any) => (
+                !isNative ?
                 <MenuItem key={person.value} value={person.value}>
                         {person.text}
                     </MenuItem>
+                    :
+                    <option key={person.value} value={person.value}>
+                    {person.text}
+                </option>
+
                 ))}
             </Select>
         </FormControl>
