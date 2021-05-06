@@ -88,6 +88,7 @@ export default class Stepper extends Component {
 
   render() {
     const { direction, stepColor } = this.props;
+  
     const { steps } = this.state;
     const stepsJSX = steps.map((step, index) => {
       return (
@@ -107,7 +108,7 @@ export default class Stepper extends Component {
             {step.description}
           </div>
           {index !== steps.length - 1 && (
-            <div className={`divider-line divider-line-${steps.length}`} />
+            <div className={`divider-line divider-line-${steps.length} ${step.completed&&"completed-stage"}`} />
           )}
         </div>
       );
