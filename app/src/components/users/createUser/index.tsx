@@ -1,8 +1,12 @@
 import React, { Component } from "react";
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
+// import { TabProvider, Tab, TabPanel, TabList } from 'react-web-tabs';
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
+import { toastSuccess } from "../../../utility/widgets/toaster";
+import { setLocalStorageData } from "../../../utility/base/localStore";
+import filterIcon from "../../assets/icons/filter_icon.svg";
 import CustomSwitch from "../../../container/components/switch";
 import CountryJson from "../../../utility/lib/country.json";
 import { apiURL } from "../../../utility/base/utils/config";
@@ -10,12 +14,14 @@ import {
   invokeGetAuthService,
   invokeGetService,
   invokePostService,
+  invokePostAuthService
 } from "../../../utility/base/service";
+import moment from "moment";
 
 const options = [
   // { value: "salesagent", text: "Area Sales Agent" },
-  { value: "retailer", text: "Retailer" },
-  { value: "distributor", text: "Distributor" },
+  { value: "Retailer", text: "Retailer" },
+  { value: "Distributor", text: "Distributor" },
 ];
 
 const getStoreData = {
@@ -40,7 +46,7 @@ class CreateUser extends Component<any, any> {
       currentStep: 1,
       fromDateErr: "",
       toDateErr: "",
-      userTypeErr: "",
+      roleErr: "",
       userNameErr: "",
       accNameErr: "",
       ownerNameErr: "",
@@ -63,9 +69,10 @@ class CreateUser extends Component<any, any> {
       ],
       userData: {
         fromdate: new Date().toISOString().substr(0, 10),
-        expiryDate: new Date().toISOString().substr(0, 10),
+        expirydate: new Date().toISOString().substr(0, 10),
         activateUser: true,
-        usertypename: options[0].value,
+        isDeclineUser: '',
+        role: options[0].value,
         username: "",
         firstname: "",
         lastname: "",
@@ -80,11 +87,10 @@ class CreateUser extends Component<any, any> {
         whtaccountname: "",
         whtaddress: '',
         whtpostalcode: "",
-        region:""
       },
       accInfo: true,
-      allUserDatas: [],
       regionList: [],
+      isValidatePage: false
     };
   }
 
@@ -95,17 +101,25 @@ class CreateUser extends Component<any, any> {
     this.getCountryList();
     this.getGeographicFields();
     this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
-    setTimeout(() => {
-      this.getDynamicOptionFields();
-    }, 0);
 
     if (this.props.location?.state) {
       const { userFields } = this.props.location.state;
-      console.log('new', userFields);
-      this.setState({ userData: userFields }, () => {
-        // console.log("userData", this.state.userData);
+      userFields['activateUser'] = true;
+      userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
+      userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
+      this.setState({ userData: userFields, isValidatePage : true }, () => {
+        console.log("userData", this.state.userData);
       });
-    }
+
+        //Validate User
+        setTimeout(() => {
+          this.getDynamicOptionFields(userFields);
+        }, 0);
+      } else {
+        setTimeout(() => {
+          this.getDynamicOptionFields('');
+        }, 0);
+      }
   }
 
   getRegion() {
@@ -121,7 +135,6 @@ class CreateUser extends Component<any, any> {
       regions.push({ ...regionObj });
     });
     this.setState({ regionList: regions });
-    console.log("regionList", regions);
   }
 
   getCountryList() {
@@ -155,103 +168,179 @@ class CreateUser extends Component<any, any> {
     // }).catch((err: any) => {
     // })
 
-    let res = ["Country", "Region", "District", "EPA", "Village"];
+    let res = ["country", "region", "district", "epa", "village"];
     setTimeout(() => {
       this.setState({ geographicFields: res });
     }, 0);
   }
-  getDynamicOptionFields() {
+  getDynamicOptionFields(data: any) {
+  if(data){
     let setFormArray: any = [];
     this.state.geographicFields.map((list: any, i: number) => {
-      setFormArray.push({
-        name: list,
-        placeHolder: true,
-        value: list === "Country" ? getStoreData.country : "",
-        options:
-          list === "Country"
-            ? this.state.countryList
-            : i == 1
-            ? this.state.hierarchyList
-            : "",
-        error: "",
-      });
+      let result = [];
+      let region = "";
+      let district = "";
+      let epa = "";
+      let village = "";
+      if('region' in data){
+        result = this.getOptionLists('auto',list, data.region , i);
+        region = data.region;
+      }
+      if('district' in data){
+        result = this.getOptionLists('auto',list, data.district , i);
+        district = data.district;
+      } 
+      if('epa' in data){
+        result = this.getOptionLists('auto',list, data.epa , i)
+        epa = data.epa;
+      }
+      if('village' in data){
+        result = this.getOptionLists('auto',list, data.village , i);
+        village = data.village;
+      }
+        setFormArray.push({
+          name: list,
+          placeHolder: true,
+          value: list === "country" ? getStoreData.country : list === 'region' ? region : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
+          options:
+            list === "country"
+              ? this.state.countryList
+              : result,
+          error: "",
+        });
+    });
+    this.setState({ dynamicFields: setFormArray });
+  } else {
+    let setFormArray: any = [];
+    this.state.geographicFields.map((list: any, i: number) => {
+        setFormArray.push({
+          name: list,
+          placeHolder: true,
+          value: list === "country" ? getStoreData.country : '',
+          options:
+            list === "country"
+              ? this.state.countryList
+              : list === 'region' ? this.state.hierarchyList : '',
+          error: "",
+        });
     });
     this.setState({ dynamicFields: setFormArray });
   }
+}
 
-  getOptionLists = (e: any, index: any) => {
-    // let nextHierarchyName = '';
-    // if ( index !==  this.state.dynamicFields.length-1) {
-    //     nextHierarchyName = this.state.dynamicFields[index+1]['name'];
-    // }
-
-    //API to get options
-    //params
-    // if ( index !==  this.state.dynamicFields.length-1) {
-    //     const data = {
-    //         type: e.target.name,  // region,
-    //         id: e.target.name,
-    //         nextHierarchy: nextHierarchyName
-    //     }
-    // }
-    // let res = [{}];
-    let regionResponse = [
-      { text: "Central", value: "central" },
-      { text: "Bangalore", value: "Bangalore" },
-    ];
-    let districtResponse = [
-      { text: "Balaka", value: "Balaka" },
-      { text: "Blantyre", value: "Blantyre" },
-    ];
-    let epaResponse = [
-      { text: "EPA1", value: "epa1" },
-      { text: "EPA2", value: "epa2" },
-    ];
-    let villageResponse = [
-      { text: "Village1", value: "Village1" },
-      { text: "Village2", value: "Village2" },
-    ];
-
-    if (this.state.currentStep == 2) {
-      this.state.dynamicFields.map((list: any) => {
-        // if(list.name === nextHierarchyName){
-        //     list.options = stateResponse;
-        // }
-        if (list.name === "Region") {
-          list.options = this.state.hierarchyList;
-          // let district = CountryJson.region.filter((list: any)=>  value === list.id );
-          // list.options = '';
-
-          // let disOptions = district[0].district.map((res) => {
-          //     res['value'] = res.id;
-          //     res['value'] = res.name;
-          // });
-        } else if (list.name === "District") {
-          list.options = districtResponse;
-        } else if (list.name === "EPA") {
-          list.options = epaResponse;
-        } else if (list.name === "Village") {
-          list.options = villageResponse;
+  getOptionLists = (cron: any, type: any, e: any, index: any) => {
+    console.log('newtype', type,':::::', e);
+    if(cron === 'auto'){
+      let options: any = [];
+      if(type === 'region'){
+          options = [
+            { text: "Central", value: "Central" },
+            { text: "Northern", value: "Northern" },
+            { text: "Western", value: "Western" },
+            { text: "Eastern", value: "Eastern" },
+          ];
+        } else if(type === 'district'){
+            options = [
+              { text: "Balaka", value: "Balaka" },
+              { text: "Blantyre", value: "Blantyre" }, 
+            ];
+        } else if(type === 'epa'){
+            options = [
+              { text: "EPA1", value: "EPA1" },
+              { text: "EPA2", value: "EPA2" },
+            ];
+        } else if(type === 'village'){
+            options = [
+              { text: "Village1", value: "Village1" },
+              { text: "Village2", value: "Village2" },
+            ];
         }
-      });
-    } else if (this.state.currentStep == 3) {
-      this.state.withHolding.map((list: any) => {
-        if (list.name === "Region") {
-          list.options = this.state.hierarchyList;
-        } else if (list.name === "District") {
-          list.options = districtResponse;
-        } else if (list.name === "EPA") {
-          list.options = epaResponse;
-        } else if (list.name === "Village") {
-          list.options = villageResponse;
+      return options;
+    } else {
+      let dynamicFieldVal = this.state.dynamicFields;
+      let withHoldingVal = this.state.withHolding; 
+      if(type === 'region') {
+        let district = [
+          { text: "Balaka", value: "Balaka" },
+          { text: "Blantyre", value: "Blantyre" }, 
+        ];
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = district;
+          dynamicFieldVal[index].value = e;
+          this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index+1].options = district;
+          withHoldingVal[index].value = e;
+          this.setState({withHolding: withHoldingVal});
         }
-      });
+     } else if(type === 'district') {
+        let epa = [
+          { text: "EPA1", value: "EPA1" },
+          { text: "EPA2", value: "EPA2" }, 
+        ];
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = epa;
+          dynamicFieldVal[index].value = e;
+          this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index+1].options = epa;
+          withHoldingVal[index].value = e;
+          this.setState({withHolding: withHoldingVal});
+        }
+      } else if(type === 'epa') {
+        let village = [
+          { text: "Village1", value: "Village1" },
+          { text: "Village2", value: "Village2" },
+        ];
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = village;
+          dynamicFieldVal[index].value = e;
+          this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index+1].options = village;
+          withHoldingVal[index].value = e;
+          this.setState({withHolding: withHoldingVal});
+        }
+      } else if(type === 'village') {
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index].value = e;
+          this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index].value = e;
+          this.setState({withHolding: withHoldingVal});
+        }
+      }
     }
+    // let districtResponse = [
+    //   { text: "Balaka", value: "Balaka" },
+    //   { text: "Blantyre", value: "Blantyre" },
+    // ];
+    // let epaResponse = [
+    //   { text: "EPA1", value: "epa1" },
+    //   { text: "EPA2", value: "epa2" },
+    // ];
+    // let villageResponse = [
+    //   { text: "Village1", value: "Village1" },
+    //   { text: "Village2", value: "Village2" },
+    // ];
+
+    // if (this.state.currentStep == 3) {
+    //   this.state.withHolding.map((list: any) => {
+    //     if (list.name === "region") {
+    //       list.options = this.state.hierarchyList;
+    //     } else if (list.name === "district") {
+    //       list.options = districtResponse;
+    //     } else if (list.name === "epa") {
+    //       list.options = epaResponse;
+    //     } else if (list.name === "village") {
+    //       list.options = villageResponse;
+    //     }
+    //   });
+    // }
   };
 
   handleClick(clickType: any) {
-    let formValid = true,
-      geographicFormValid = true;
+    let formValid = true;
     if (clickType === "personalNext") {
       formValid = this.checkValidation();
     } else if (clickType === "geographicNext") {
@@ -281,88 +370,84 @@ class CreateUser extends Component<any, any> {
     }
     if (clickType === "createUser") {
       if (formValid) {
-        let geoValues = {};
-        this.state.dynamicFields.map((list: any, i: number) => {
-          let newPropsGeo = {
-            [list.name]: list.value,
-          };
-          return Object.assign(geoValues, newPropsGeo);
-        });
-
-        this.state.geographicalValues.push(geoValues);
-
-        this.setState({ geographicalValues: this.state.geographicalValues });
-
-        let withValues = {};
-        this.state.withHolding.map((list: any, i: number) => {
-          let newPropsTax = {
-            [list.name]: list.value,
-          };
-          return Object.assign(withValues, newPropsTax);
-        });
-        this.state.withHoldingValues.push(withValues);
-
         // this.setState({
         //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
         // });
         this.submitUserDatas();
-
-        // if(this.state.success){
-        //     toastSuccess('User Created Successfully');
-        //     this.props.history.push('/userList');
-        // }
       } else {
         alert("fail");
       }
     }
   }
   submitUserDatas = () => {
-    const { retailerCreation } = apiURL;
+    const { retailerCreation, updateUser} = apiURL;
+    let stepper2: any = {};
+    this.state.dynamicFields.map((list: any, i: number) => {
+      stepper2[list.name] = list.value;
+    });
+    let stepper3: any = {};
+    this.state.withHolding.map((list: any, i: number) => {
+      stepper3[list.name] = list.value;
+    });
     this.setState({ isLoader: true });
     let personalData = this.state.userData;
-    let geoData = this.state.geographicalValues;
-    let taxData = this.state.withHoldingValues;
     const data = {
-      username: personalData["ownername"],
+      effectivefrom: personalData["fromdate"],
+      expirydate: personalData["expirydate"],
+      username: personalData["accountname"],
       firstname: personalData["firstname"],
       lastname: personalData["lastname"],
       accountname: personalData["accountname"],
-      ownername: personalData["ownername"],
+      ownername: personalData["accountname"],
       mobilenumber: personalData["mobilenumber"],
       email: personalData["email"],
       address: personalData["address"],
       postalcode: personalData["postalcode"],
-      region: geoData[0]["Region"],
-      district: geoData[0]["District"],
-      epa: geoData[0]["EPA"],
-      village: geoData[0]["Village"],
+      usertype : (personalData["role"] == 'Area Sales Agent') ? 'THIRD PARTY' : 'CHANNEL PARTNER',
+      role: personalData["role"],
+      region: stepper2["region"],
+      district: stepper2["district"],
+      epa: stepper2["epa"],
+      village: stepper2["village"],
       taxid: personalData["taxid"],
-      whtownername: personalData["ownername"],
-      whtaccountname: personalData["ownername"],
+      whtownername: personalData["accountname"],
+      whtaccountname: personalData["accountname"],
       whtaddress: personalData["whtaddress"],
       whtpostalcode: this.state.accInfo
         ? personalData["postalcode"]
         : personalData["whtpostalcode"],
-      whtregion: taxData[0]["Region"],
-      whtdistrict: taxData[0]["District"],
-      whtepa: taxData[0]["EPA"],
-      whtvillage: taxData[0]["Village"],
-      status: this.state.activateUser ? "Active" : "In Active",
-      expiryDate: personalData["expiryDate"],
+      whtregion: stepper3["region"],
+      whtdistrict: stepper3["district"],
+      whtepa: stepper3["epa"],
+      whtvillage: stepper3["village"],
+      status: personalData['isDeclineUser'] ? 'Declined' : personalData["activateUser"] ? "Active" : "Inactive",
     };
     console.log("all", data);
-    // invokePostService(retailerCreation, data)
-    //   .then((response: any) => {
-    //     this.setState({
-    //       isLoader: false,
-    //     });
-    //     toastSuccess("User Created Successfully");
-    //     this.props.history.push("/userList");
-    //   })
-    //   .catch((error: any) => {
-    //     this.setState({ isLoader: false });
-    //     console.log(error, "error");
-    //   });
+    const url = this.state.isValidatePage ? updateUser : retailerCreation;
+    const service = this.state.isValidatePage ? invokePostAuthService : invokePostService;
+
+    service(url, data)
+      .then((response: any) => {
+        this.setState({
+          isLoader: false,
+        });
+        let msg='';
+        if (this.state.isValidatePage){
+          if (personalData['isDeclineUser']) {
+            msg = 'User Declined Successfully';
+          } else {
+            msg = 'User Validated Successfully';
+          }
+        }else {
+          msg = 'User Created Successfully';
+        }
+        toastSuccess(msg);
+        this.props.history.push("/userList");
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
   };
   handlePersonalChange = (e: any) => {
     let val = this.state.userData;
@@ -375,9 +460,9 @@ class CreateUser extends Component<any, any> {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "Country" ? getStoreData.country : "",
+            value: list === "country" ? getStoreData.country : "",
             options:
-              list === "Country"
+              list === "country"
                 ? this.state.countryList
                 : i == 1
                 ? this.state.hierarchyList
@@ -394,7 +479,7 @@ class CreateUser extends Component<any, any> {
     } else {
       val[e.target.name] = e.target.value;
     }
-    // if (e.target.name === 'userType') {
+    // if (e.target.name === 'role') {
     //     let steps = this.state.stepsArray;
     //     this.setState({stepsArray : steps });
     //     if(e.target.value !== 'salesagent' ) {
@@ -420,29 +505,29 @@ class CreateUser extends Component<any, any> {
           fromDateErr: "From Date should be greater than todays date",
         });
         dateValid = false;
-      } else if (e.target.value > usersState.expiryDate) {
+      } else if (e.target.value > usersState.expirydate) {
         this.setState({
           fromDateErr: "From Date should be lesser than To date",
         });
         dateValid = false;
-      } else if (e.target.value < usersState.expiryDate) {
+      } else if (e.target.value < usersState.expirydate) {
         this.setState({ toDateErr: "", fromDateErr: "" });
       } else {
         this.setState({ fromDateErr: "" });
       }
     }
-    if (e.target.name === "expiryDate") {
+    if (e.target.name === "expirydate") {
       if (e.target.value < new Date().toISOString().substr(0, 10)) {
         this.setState({
           toDateErr: "To Date should be greater than todays date",
         });
         dateValid = false;
-      } else if (e.target.value < usersState.fromDate) {
+      } else if (e.target.value < usersState.fromdate) {
         this.setState({
           toDateErr: "To Date should be greater than From date",
         });
         dateValid = false;
-      } else if (e.target.value > usersState.fromDate) {
+      } else if (e.target.value > usersState.fromdate) {
         this.setState({ fromDateErr: "", toDateErr: "" });
       } else {
         this.setState({ toDateErr: "" });
@@ -454,11 +539,11 @@ class CreateUser extends Component<any, any> {
   checkValidation = () => {
     let formValid = true;
     let userData = this.state.userData;
-    if (userData.usertypename === "" || userData.usertypename === null) {
-      this.setState({ userTypeErr: "Please enter the User type" });
+    if (userData.role === "" || userData.role === null) {
+      this.setState({ roleErr: "Please enter the User type" });
       formValid = false;
     } else {
-      this.setState({ userTypeErr: "" });
+      this.setState({ roleErr: "" });
     }
     if (userData.firstname === "" || userData.firstname === null) {
       this.setState({ firstNameErr: "Please enter the First Name" });
@@ -472,12 +557,12 @@ class CreateUser extends Component<any, any> {
     } else {
       this.setState({ lastNameErr: "" });
     }
-    // if (userData.ownername === "" || userData.ownername === null) {
-    //   this.setState({ ownerNameErr: "Please enter the Owner name" });
-    //   formValid = false;
-    // } else {
-    //   this.setState({ ownerNameErr: "" });
-    // }
+    if (userData.accountname === "" || userData.accountname === null) {
+      this.setState({ accountNameErr: "Please enter the Owner name" });
+      formValid = false;
+    } else {
+      this.setState({ accountNameErr: "" });
+    }
     if (userData.mobilenumber === "" || userData.mobilenumber === null) {
       this.setState({ phoneErr: "Please enter the phone" });
       formValid = false;
@@ -489,12 +574,6 @@ class CreateUser extends Component<any, any> {
       formValid = false;
     } else {
       this.setState({ emailErr: "" });
-    }
-    if (userData.accountname === "" || userData.accountname === null) {
-      this.setState({ accountnameErr: "Please enter the Account Name" });
-      formValid = false;
-    } else {
-      this.setState({ accountnameErr: "" });
     }
     return formValid;
   };
@@ -540,7 +619,7 @@ class CreateUser extends Component<any, any> {
           firstname: "",
           lastname: "",
           accountname: "",
-          userType: "",
+          role: "",
           ownername: "",
           email: "",
           mobilenumber: "",
@@ -577,6 +656,13 @@ class CreateUser extends Component<any, any> {
     data.value = e.target.value;
   };
 
+  declineUser = () => {
+    let userData = this.state.userData;
+    userData['isDeclineUser'] = true;
+    this.setState({ userData : userData});
+    this.submitUserDatas();
+  }
+
   render() {
     const dpstyle = {
       width: "220px",
@@ -590,7 +676,7 @@ class CreateUser extends Component<any, any> {
       toDateErr,
       userNameErr,
       accNameErr,
-      userTypeErr,
+      roleErr,
       ownerNameErr,
       phoneErr,
       emailErr,
@@ -611,6 +697,7 @@ class CreateUser extends Component<any, any> {
       subdistrict,
       village,
       stepsArray,
+      isValidatePage
     } = this.state;
 
     // console.log('allUserDatas', this.state.allUserDatas);
@@ -619,7 +706,6 @@ class CreateUser extends Component<any, any> {
     const fields =
       currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
     const locationList = fields?.map((list: any, index: number) => {
-      console.log({list})
       return (
         <>
           <div className={index === 0 ? "col-sm-12 country" : "col-sm-3"}>
@@ -630,12 +716,12 @@ class CreateUser extends Component<any, any> {
                   handleChange={(e: any) => {
                     list.value = e.target.value;
                     this.setState({ isRendered: true });
-                    this.getOptionLists(e, index);
+                    this.getOptionLists('manual',list.name, e.target.value, index);
                   }}
                   value={list.value}
                   isPlaceholder
                   isDisabled={
-                    this.state.currentStep === 3 && this.state.accInfo
+                    (this.state.currentStep === 3 && this.state.accInfo) || isValidatePage
                       ? true
                       : false
                   }
@@ -721,10 +807,10 @@ class CreateUser extends Component<any, any> {
                     </label>
                     <input
                       type="date"
-                      name="expiryDate"
+                      name="expirydate"
                       className="form-control"
                       onChange={(e) => this.handlePersonalChange(e)}
-                      value={userData.expiryDate}
+                      value={userData.expirydate}
                     />
                     {toDateErr && <span className="error">{toDateErr} </span>}
                   </div>
@@ -742,15 +828,16 @@ class CreateUser extends Component<any, any> {
                   <div className="row fieldAlign form-group">
                     <div className="col-sm-3">
                       <Dropdown
-                        name="usertypename"
+                        name="role"
                         label="User Type"
                         options={options}
                         handleChange={this.handlePersonalChange}
-                        value={userData.usertypename}
+                        value={userData.role}
                         isPlaceholder
+                        isDisabled = {isValidatePage ? true : false} 
                       />
-                      {userTypeErr && (
-                        <span className="error">{userTypeErr} </span>
+                      {roleErr && (
+                        <span className="error">{roleErr} </span>
                       )}
                     </div>
                     <div className="col-sm-3">
@@ -761,6 +848,7 @@ class CreateUser extends Component<any, any> {
                         placeHolder="First Name"
                         value={userData.firstname}
                         onChange={(e: any) => this.handlePersonalChange(e)}
+                        disabled={isValidatePage ? true : false}
                       />
                       {firstNameErr && (
                         <span className="error">{firstNameErr} </span>
@@ -774,6 +862,7 @@ class CreateUser extends Component<any, any> {
                         placeHolder="Last name"
                         value={userData.lastname}
                         onChange={(e: any) => this.handlePersonalChange(e)}
+                        disabled={isValidatePage ? true : false}
                       />
                       {lastNameErr && (
                         <span className="error">{lastNameErr} </span>
@@ -789,6 +878,7 @@ class CreateUser extends Component<any, any> {
                         placeHolder="Account Name"
                         value={userData.accountname}
                         onChange={this.handlePersonalChange}
+                        disabled={isValidatePage ? true : false}
                       />
                       {accNameErr && (
                         <span className="error">{accNameErr} </span>
@@ -802,6 +892,7 @@ class CreateUser extends Component<any, any> {
                         placeHolder="Mobile Number"
                         value={userData.mobilenumber}
                         onChange={(e: any) => this.handlePersonalChange(e)}
+                        disabled={isValidatePage ? true : false}
                       />
                       {phoneErr && <span className="error">{phoneErr} </span>}
                     </div>
@@ -813,6 +904,7 @@ class CreateUser extends Component<any, any> {
                         placeHolder="Email"
                         value={userData.email}
                         onChange={(e: any) => this.handlePersonalChange(e)}
+                        disabled={isValidatePage ? true : false}
                       />
                       {emailErr && <span className="error">{emailErr} </span>}
                     </div>
@@ -832,6 +924,7 @@ class CreateUser extends Component<any, any> {
                       placeHolder="Tax Id"
                       value={userData.taxid}
                       onChange={(e: any) => this.handlePersonalChange(e)}
+                      disabled={isValidatePage ? true : false}
                     />
                     {taxIdErr && <span className="error">{taxIdErr} </span>}
                   </div>
@@ -860,6 +953,7 @@ class CreateUser extends Component<any, any> {
                         placeHolder="Postal Code"
                         value={userData.postalcode}
                         onChange={(e: any) => this.handlePersonalChange(e)}
+                        disabled={isValidatePage ? true : false}
                       />
                       {postalCodeErr && (
                         <span className="error">{postalCodeErr} </span>
@@ -873,7 +967,7 @@ class CreateUser extends Component<any, any> {
                         name="whtpostalcode"
                         placeHolder="Postal Code"
                         onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={this.state.accInfo ? true : false}
+                        disabled={this.state.accInfo || isValidatePage ? true : false}
                         value={
                           this.state.accInfo
                             ? userData.postalcode
@@ -899,6 +993,7 @@ class CreateUser extends Component<any, any> {
                       placeholder="Address"
                       value={userData.address}
                       onChange={(e: any) => this.handlePersonalChange(e)}
+                      disabled={isValidatePage ? true : false}
                     />
                   </div>
                 </>
@@ -916,6 +1011,7 @@ class CreateUser extends Component<any, any> {
                       placeholder="Address"
                       value={userData.whtaddress}
                       onChange={(e: any) => this.handlePersonalChange(e)}
+                      disabled={isValidatePage ? true : false}
                     />
                   </div>
                 </>
@@ -949,7 +1045,7 @@ class CreateUser extends Component<any, any> {
             {this.props.location?.state&&currentStep===3 &&
              <button
              className="btn btn-decline buttonStyle"
-             onClick={() => this.reset()}
+             onClick={() => this.declineUser()}
            >
              Decline
            </button>
