@@ -55,7 +55,7 @@ type States = {
   isLoader: boolean;
   deActivatePopup: boolean;
   editPopup: boolean;
-  fields: Object;
+  userData: any;
   status: String;
   geographicFields: Array<any>;
   dynamicFields: Array<any>;
@@ -63,8 +63,13 @@ type States = {
   hierarchyList: Array<any>;
   isRendered: boolean;
   userRole: String;
-  fromDateErr: String;
   toDateErr: String;
+  activateUser: any;
+  accountNameErr: String;
+  phoneErr: String;
+  emailErr: String;
+  postalCodeErr: String;
+  isValidateSuccess: Boolean;
 };
 
 const dialogStyles = {
@@ -115,7 +120,6 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       isLoader: false,
       deActivatePopup: false,
       editPopup: false,
-      fields: {},
       status: "",
       geographicFields: [],
       dynamicFields: [],
@@ -123,8 +127,34 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       hierarchyList: [],
       isRendered: false,
       userRole: '',
-      fromDateErr: '',
-      toDateErr: ''
+      toDateErr: '',
+      activateUser: true,
+      accountNameErr: '',
+      phoneErr: '',
+      emailErr: '',
+      postalCodeErr: '',
+      isValidateSuccess: false,
+      userData: {
+        // fromdate: new Date().toISOString().substr(0, 10),
+        // expirydate: new Date().toISOString().substr(0, 10),
+        // activateUser: true,
+        // isDeclineUser: '',
+        // role: options[0].value,
+        // username: "",
+        // firstname: "",
+        // lastname: "",
+        // accountname: "",
+        // ownername: "",
+        // mobilenumber: "",
+        // email: "",
+        // address: "",
+        // postalcode: "",
+        // taxid: "",
+        // whtownername: "",
+        // whtaccountname: "",
+        // whtaddress: '',
+        // whtpostalcode: "",
+      },
     };
   }
   componentDidMount(){
@@ -273,6 +303,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
         ];
           dynamicFieldVal[index+1].options = village;
           dynamicFieldVal[index].value = e;
+          console.log('yazhu', e);
           this.setState({dynamicFields: dynamicFieldVal});
       } else if(type === 'village') {
           dynamicFieldVal[index].value = e;
@@ -297,104 +328,135 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     this.setState({editPopup : true});
     this.getCurrentUserData(list);
     setTimeout(() => {
-      this.getDynamicOptionFields(this.state.fields);
+      this.getDynamicOptionFields(this.state.userData);
     }, 0);
   }
+
   handlePersonalChange = (e: any) => {
-    // let name = e.target.name;
-    // let val = this.state.fields;
-    // if(val){
-    //   if (e.target.name === "activateUser") {
-    //     val[e.target.name] = e.target.checked;
-    //   }  else {
-    //     val[e.target.name] = e.target.value;
-    //   }
-    //   let dateVal = this.dateValidation(e);
-    //   if (dateVal) {
-    //     this.setState({ fields: val });
-    //   }
-    // }
+    alert('hi')
+    let val = this.state.userData;
+    if(val){
+      if (e.target.name === "activateUser") {
+          this.setState({ activateUser : !this.state.activateUser},()=>{
+            val['status'] = this.state.activateUser ? 'Active' : 'Inactive'
+          });
+      } else {
+        val[e.target.name] = e.target.value;
+      }
+      this.setState({ userData: val,  isRendered: true });
+      let dateValid = this.dateValidation(e);
+      let formValid = this.checkValidation()
+      if (dateValid && formValid) {
+        this.setState({ isValidateSuccess : true});
+      } else {
+        this.setState({ isValidateSuccess : false});
+      }
+    }
   };
 
-  // dateValidation = (e: any) => {
-  //   let dateValid = true;
-  //   let usersState = this.state.fields;
-  //   if (e.target.name === "fromdate") {
-  //     if (e.target.value < new Date().toISOString().substr(0, 10)) {
-  //       this.setState({
-  //         fromDateErr: "From Date should be greater than todays date",
-  //       });
-  //       dateValid = false;
-  //     } else if (e.target.value > usersState.expirydate) {
-  //       this.setState({
-  //         fromDateErr: "From Date should be lesser than To date",
-  //       });
-  //       dateValid = false;
-  //     } else if (e.target.value < usersState.expirydate) {
-  //       this.setState({ toDateErr: "", fromDateErr: "" });
-  //     } else {
-  //       this.setState({ fromDateErr: "" });
-  //     }
-  //   }
-  //   if (e.target.name === "expirydate") {
-  //     if (e.target.value < new Date().toISOString().substr(0, 10)) {
-  //       this.setState({
-  //         toDateErr: "To Date should be greater than todays date",
-  //       });
-  //       dateValid = false;
-  //     } else if (e.target.value < usersState.fromDate) {
-  //       this.setState({
-  //         toDateErr: "To Date should be greater than From date",
-  //       });
-  //       dateValid = false;
-  //     } else if (e.target.value > usersState.fromDate) {
-  //       this.setState({ fromDateErr: "", toDateErr: "" });
-  //     } else {
-  //       this.setState({ toDateErr: "" });
-  //     }
-  //   }
-  //   return dateValid;
-  // };
+  dateValidation = (e: any) => {
+    this.setState({ isValidateSuccess : false});
+    let dateValid = true;
+    let usersState = this.state.userData;
+    if (e.target.name === "expirydate") {
+      if (e.target.value < new Date().toISOString().substr(0, 10)) {
+        this.setState({
+          toDateErr: "To Date should be greater than todays date",
+        });
+        dateValid = false;
+      } else {
+        this.setState({ toDateErr: "" });
+      }
+    }
+    return dateValid;
+  };
+
+  checkValidation = () => {
+    this.setState({ isValidateSuccess : false});
+    let formValid = true;
+    let userData = this.state.userData;
+
+    if (userData.accountname === "" || userData.accountname === null) {
+      this.setState({ accountNameErr: "Please enter the Owner name" });
+      formValid = false;
+    } else {
+      this.setState({ accountNameErr: "" });
+    }
+    if (userData.mobilenumber === "" || userData.mobilenumber === null) {
+      this.setState({ phoneErr: "Please enter the phone" });
+      formValid = false;
+    } else {
+      this.setState({ phoneErr: "" });
+    }
+    if (userData.email === "" || userData.email === null) {
+      alert('hi');
+      this.setState({ emailErr: "Please enter the Email" });
+      formValid = false;
+    } else {
+      this.setState({ emailErr: "" });
+    }
+    if (userData.postalcode === "" || userData.postalcode === null) {
+      this.setState({ postalCodeErr: "Please enter Postal Code" });
+      formValid = false;
+    } else {
+      this.setState({ postalCodeErr: "" });
+    }
+    this.state.dynamicFields .map((list: any) => {
+        if (list.value === "") {
+          list.error = "Please enter the " + list.name;
+          formValid = false;
+        } else {
+          list.error = "";
+        }
+        this.setState({ isRendered: true });
+    });
+    return formValid;
+  };
+
 
   submitUpdateUser = () => {
     const { updateUser } = apiURL;
-    const { username,status }: any = this.state.fields;
+    const { username,status }: any = this.state.userData;
 
-    let obj: any = {};
-    obj.lastupdatedby = this.state.userRole;
-    obj.lastupdateddate = "2021-04-30";
-    obj.username = username;
+    // let obj: any = {};
+    // obj.lastupdatedby = this.state.userRole;
+    // obj.lastupdateddate = "2021-04-30";
+    // obj.username = username;
+    // let data = {...obj, this.state.userData}
+    
+    let data = this.state.userData;
+    console.log('sarvesh', data);
 
-    // let data = {...obj, this.state.fields}
-  
-    invokePostAuthService(updateUser, obj)
-      .then((response: any) => {
-        this.setState({
-          isLoader: false,
+    if (this.state.isValidateSuccess) {
+        invokePostAuthService(updateUser, data)
+        .then((response: any) => {
+          this.setState({
+            isLoader: false,
+          });
+          toastSuccess("User Updated Successfully");
+          this.handleClosePopup();
+          this.props.callAPI();
+        })
+        .catch((error: any) => {
+          this.setState({ isLoader: false });
+          console.log(error, "error");
         });
-        toastSuccess("User Updated Successfully");
-        this.handleClosePopup();
-        this.props.callAPI();
-      })
-      .catch((error: any) => {
-        this.setState({ isLoader: false });
-        console.log(error, "error");
-      });
+    }
   }
 
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
-    const { username,status }: any = this.state.fields;
-    if(status==="Not Activated"){
+    const { username,status }: any = this.state.userData;
+    if(status==="Active"){
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
-      state: { userFields: this.state.fields }}); 
+      state: { userFields: this.state.userData }}); 
 
     }else {
       let condUrl;
       if (
-       status === "Not Activated" ||
+       status === "Active" ||
        status === "Inactive"
       ) {
         condUrl = activateChannelPartner;
@@ -425,14 +487,13 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   };
   getCurrentUserData = (data: any) => {
     let passData = { ...data };
-    passData['fromdate'] = moment(passData.effectivefrom).format("YYYY-MM-DD");
-    passData['expirydate'] = moment(passData.expirydate).format("YYYY-MM-DD");
-    this.setState({ fields: passData, status: data.status });
+    passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
+    let activeStatus = (passData.status === 'Inactive' || passData.status === 'Declined') ? false : true;
+    this.setState({ userData: passData, status: data.status, activateUser: activeStatus });
   };
 
   replaceAll(str: any, mapObj: any) {
     var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
-
     return str.replace(re, function (matched: any) {
       return mapObj[matched.toLowerCase()];
     });
@@ -446,16 +507,24 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       totalData,
       rowsPerPage,
       gotoPage,
-      showProductPopup
+      showProductPopup,
+      toDateErr,
+      accountNameErr,
+      ownerNameErr,
+      postalCodeErr,
+      phoneErr,
+      emailErr
     } = this.props.state;
-    const { fields }: any = this.state;
+    const { userData }: any = this.state;
+    console.log('dyno', this.state.userData );
 
     const locationList = this.state.dynamicFields ?.map((list: any, index: number) => {
+      let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
       return (
           <>
            {index !== 0 && 
            <div style={{marginTop: '-15px'}}>
-              <label className="font-weight-bold pt-4" style={{marginLeft : (index == 2 || index == 4) ? '30px' : '15px'}}>{list.name}</label>
+              <label className="font-weight-bold pt-4" style={{marginLeft : (index == 2 || index == 4) ? '30px' : '15px'}}>{nameCapitalized}</label>
               <div className='col-sm-6' style={{marginLeft : (index == 2 || index == 4) ? '15px' : '0px'}}>
                 <CustomDropdown
                     name={list.name}
@@ -469,7 +538,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                     value={list.value}
                     isPlaceholder
                   />
-                  {/* {list.error && <span className="error">{list.error}</span>} */}
+                  {list.error && <span className="error">{list.error}</span>}
               </div>
               </div>
               }
@@ -489,21 +558,21 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {fields?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {userData?.username || ""}, <label>{"Retailer"}</label>{" "}
                     </p>
                   </div>
                 </div>
                 <div style={{ textAlign: "center" }}>
                   <label>
-                    {fields.status === "Active" ||
-                    fields.status === "Inactive" ? (
+                    {userData.status === "Active" ||
+                    userData.status === "Inactive" ? (
                       <span>
                         Are you sure you want to change &nbsp;
                         <strong>
-                          {fields.ownername} - {fields.accountname}
+                          {userData.ownername} - {userData.accountname}
                         </strong>
                         &nbsp; account to
-                        {fields.status === "Active" ? (
+                        {userData.status === "Active" ? (
                           <span> Inactive </span>
                         ) : (
                           <span> active</span>
@@ -511,11 +580,11 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                         ?
                       </span>
                     ) : (
-                      fields.status === "Not Activated" ? 
+                      userData.status === "Not Activated" ? 
                       <span>
                         Would you like to validate & approve&nbsp;
                         <strong>
-                          {fields.ownername} - {fields.accountname}
+                          {userData.ownername} - {userData.accountname}
                         </strong>
                         &nbsp;account to use Bayer Rewards mobile application?
                         
@@ -538,7 +607,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 className="admin-popup-btn filter-scan"
                 autoFocus
               >
-                {fields.status ==="Active" || fields.status==="Inactive" ?  "Change" : fields.status === "Not Activated" ?"Validate & Approve" :"" }
+                {userData.status ==="Active" || userData.status==="Inactive" ?  "Change" : userData.status === "Not Activated" ?"Validate & Approve" :"" }
                
               </Button>
             </DialogActions>
@@ -560,7 +629,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {fields?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {userData?.username || ""}, <label>{"Retailer"}</label>{" "}
                     </p>
                   </div>
                 </div>
@@ -571,14 +640,14 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           <Input
                             type="text"
                             className="form-control"
-                            name="ownername"
+                            name="accountname"
                             placeHolder="Account Name"
-                            value={fields.accountname}
+                            value={userData.accountname}
                             onChange={(e: any) => this.handlePersonalChange(e)}
                           />
-                          {/* {ownerNameErr && (
-                            <span className="error">{ownerNameErr} </span>
-                          )} */}
+                          {accountNameErr && (
+                            <span className="error">{accountNameErr} </span>
+                          )}
                     
                         </div>
                       <div className='col-sm-6 editFilterText'>
@@ -587,13 +656,13 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             type="text"
                             className="form-control"
                             name="ownername"
-                            placeHolder="Account Name"
-                            value={fields.accountname}
+                            placeHolder="Owner Name"
+                            value={userData.ownername}
                             onChange={(e: any) => this.handlePersonalChange(e)}
                           />
-                          {/* {ownerNameErr && (
+                          {ownerNameErr && (
                             <span className="error">{ownerNameErr} </span>
-                          )} */}
+                          )}
                       </div>
                     </div>
                     <div className="row" style={{marginLeft: '15px'}}>
@@ -607,12 +676,12 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             className="form-control"
                             name="postalcode"
                             placeHolder="Postal Code"
-                            value={fields.postalcode}
+                            value={userData.postalcode}
                             onChange={(e: any) => this.handlePersonalChange(e)}
                           />
-                          {/* {postalCodeErr && (
+                          {postalCodeErr && (
                             <span className="error">{postalCodeErr} </span>
-                          )} */}
+                          )}
                         </div>
                         <div className='col-sm-6 editFilterText'>
                         <label className="font-weight-bold pt-4">Phone Number</label>
@@ -621,10 +690,10 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             className="form-control"
                             name="mobilenumber"
                             placeHolder="Mobile Number"
-                            value={fields.mobilenumber}
+                            value={userData.mobilenumber}
                             onChange={(e: any) => this.handlePersonalChange(e)}
                           />
-                          {/* {phoneErr && <span className="error">{phoneErr} </span>} */}
+                          {phoneErr && <span className="error">{phoneErr} </span>}
                         </div>
                     </div>
                     <div className='col-sm-12' style={{display: 'flex'}}>
@@ -635,10 +704,10 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           className="form-control"
                           name="email"
                           placeHolder="Email"
-                          value={fields.email}
+                          value={userData.email}
                           onChange={(e: any) => this.handlePersonalChange(e)}
                         />
-                        {/* {emailErr && <span className="error">{emailErr} </span>} */}
+                        {emailErr && <span className="error">{emailErr} </span>}
                         </div>
                         <div className='col-sm-6 editFilterText'>
                           <label className="font-weight-bold pt-4">Expiry Date</label>
@@ -647,10 +716,11 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             name="expirydate"
                             className="form-control"
                             onChange={(e: any) => this.handlePersonalChange(e)}
-                            value={fields.expirydate}
+                            value={userData.expirydate}
                           />
-                          {/* {toDateErr && <span className="error">{toDateErr} </span>} */}
+                          {toDateErr && <span className="error">{toDateErr} </span>}
                         </div>
+                        
                     </div>
                     <div className='col-sm-12' style={{display: 'flex'}}>
                       <div className='col-sm-6'>
@@ -661,38 +731,45 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             rows={2}
                             cols={28}
                             placeholder="Address"
-                            value={fields.address}
+                            value={userData.address}
                             onChange={(e: any) => this.handlePersonalChange(e)}
                           />
                         </div>
                         <div className='col-sm-6'>
                         <label className="font-weight-bold pt-4">isActive?</label>
                         <CustomSwitch
-                          checked={fields.status}
+                          checked={this.state.activateUser}
                           onChange={(e: any) => this.handlePersonalChange(e)}
                           name="activateUser"
                         />
+                        {/* <div className="col-sm-6">
+                            <label className="font-weight-bold pt-4">isActive?
+                                <input type="checkbox" defaultChecked={this.state.activateUser} onClick={(e: any) => {this.setState({activateUser: e.target.checked})}} />
+                                <span className="checkmark"></span>
+                            </label>
+                        </div> */}
+
                         </div>
                     </div>
                 </div>
-              </div>
-            </DialogContent>
-            <DialogActions>
+              <DialogActions>
               <Button
                 autoFocus
                 onClick={this.handleClosePopup}
-                className="popup-btn close-btn"
+                className="admin-popup-btn close-btn"
               >
                 Cancel
               </Button>
               <Button
-                onClick={this.changeStatus}
-                className="popup-btn filter-scan"
+                onClick={this.submitUpdateUser}
+                className="admin-popup-btn filter-scan"
                 autoFocus
               >
                 Update
               </Button>
             </DialogActions>
+            </div>
+            </DialogContent>
           </AdminPopup>
         ) : (
           ""
