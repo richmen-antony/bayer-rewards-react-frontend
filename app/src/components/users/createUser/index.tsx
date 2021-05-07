@@ -394,7 +394,7 @@ class CreateUser extends Component<any, any> {
     const data = {
       effectivefrom: personalData["fromdate"],
       expirydate: personalData["expirydate"],
-      username: personalData["accountname"],
+      username: personalData["username"],
       firstname: personalData["firstname"],
       lastname: personalData["lastname"],
       accountname: personalData["accountname"],
@@ -403,7 +403,7 @@ class CreateUser extends Component<any, any> {
       email: personalData["email"],
       address: personalData["address"],
       postalcode: personalData["postalcode"],
-      usertype : (personalData["role"] == 'Area Sales Agent') ? 'THIRD PARTY' : 'CHANNEL PARTNER',
+      usertypename : (personalData["role"] == 'Area Sales Agent') ? 'THIRD PARTY' : 'CHANNEL PARTNER',
       role: personalData["role"],
       region: stepper2["region"],
       district: stepper2["district"],
@@ -573,11 +573,16 @@ class CreateUser extends Component<any, any> {
       this.setState({ emailErr: "Please enter the Email" });
       formValid = false;
     } else {
-      this.setState({ emailErr: "" });
+      let emailValid = this.validateEmail(userData.email);
+      if(!emailValid){
+        formValid = false;
+      } else {
+        this.setState({ emailErr: "" });
+      }
     }
     return formValid;
   };
-
+  
   geographicValidation = () => {
     let userData = this.state.userData;
     let currentStep = this.state.currentStep;
@@ -609,6 +614,26 @@ class CreateUser extends Component<any, any> {
     });
     return geographicFormValid;
   };
+
+  // validateEmail = (emailField: any) => {
+  //   var reg = ^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$;
+  //   if (reg.test(emailField.value) == false) 
+  //   {
+  //     this.setState({ emailErr: "Please enter the Valid Email" });
+  //       return false;
+  //   }
+  //   return true;
+  // }
+  validateEmail = (emailField: any) => {
+
+    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField))
+      {
+        return (true)
+      }
+      this.setState({ emailErr: "Please enter the Valid Email" });
+        return (false)
+
+  }
 
   reset = () => {
     let currentStep = this.state.currentStep;
