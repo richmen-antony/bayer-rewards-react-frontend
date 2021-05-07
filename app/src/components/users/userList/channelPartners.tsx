@@ -564,7 +564,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                     </p>
                   </div>
                 </div>
-                <div style={{ textAlign: "center" }}>
+                <div style={{ textAlign: "left" }}>
                   <label>
                     {userData.status === "Active" ||
                     userData.status === "Inactive" ? (

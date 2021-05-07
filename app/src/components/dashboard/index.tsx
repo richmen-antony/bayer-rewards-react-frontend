@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 import AUX from "../../hoc/Aux_";
-import user from "../../assets/icons/add_user_icon.svg";
-import listuser from "../../assets/icons/list_user_icon.svg";
+import user from "../../assets/images/add-user.svg";
+import listuser from "../../assets/images/user-list.svg";
 // import leftArrow from "../../assets/icons/left_arrow.svg";
 import CustomCard from "../../container/components/card";
 import "../../assets/scss/rsmDashboard.scss";

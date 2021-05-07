@@ -59,7 +59,7 @@ export const CustomCard= ({ border, background, icon, children, cardClick }: Sty
       <Card className={classes.root} variant="outlined">
         <CardContent>
             <div className={classes.iconStyle}>
-              <img src={icon} width="30" alt=""/>
+              <img src={icon} width="45" alt=""/>
             </div>
         </CardContent>
         <CardActions>
