@@ -1,0 +1,15 @@
+
+.native-select{
+    label{
+        font-weight: 600;
+        font-size: 14px;
+        color: #303030;
+    }
+    select{
+        width: 100%;
+        padding: 5px;
+        border:none;
+        border-bottom: 1px solid lightgray;
+        outline: none;
+    }
+}

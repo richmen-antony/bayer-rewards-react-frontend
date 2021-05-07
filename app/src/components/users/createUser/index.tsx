@@ -769,13 +769,13 @@ class CreateUser extends Component<any, any> {
     };
 
     return (
-      <div>
+      <div className="card card-main">
         <div className="stepper-container-horizontal">
           <Stepper
             direction="horizontal"
             currentStepNumber={currentStep - 1}
             steps={stepsArray}
-            stepColor="#555555"
+            stepColor="#4CD964"
           />
         </div>
         <div className="col-md-10">

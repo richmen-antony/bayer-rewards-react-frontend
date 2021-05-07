@@ -34,6 +34,8 @@ const styles = (theme: Theme) =>
       position: "static",
       display: "block",
       marginLeft: "auto",
+      padding: 0,
+      marginRight:"15px"
     },
   });
 

@@ -20,11 +20,14 @@ export interface StyleProps {
       border: ({ border }) => border ? border : 'grey',
       width: '250px',
       height: '250px',
-      borderRadius: '20px'
+      borderRadius: '20px',
+      display: "flex",
+     flexDirection: "column",
+    justifyContent: "space-between",
     },
     action: {
       fontSize: 14,
-      marginTop: '95px',
+     
       marginLeft: '16px'
   },
   iconStyle : {
@@ -52,7 +55,7 @@ export const CustomCard= ({ border, background, icon, children, cardClick }: Sty
   const classes = useStyles({ border, background });
 
   return (
-    <div onClick={cardClick} style={{ cursor : cardClick ? 'pointer' : 'auto'}}>
+    <div onClick={cardClick} style={{ cursor : cardClick ? 'pointer' : 'auto'}} className="card-dashboard-flex">
       <Card className={classes.root} variant="outlined">
         <CardContent>
             <div className={classes.iconStyle}>

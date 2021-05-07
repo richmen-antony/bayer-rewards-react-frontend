@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-import CustomDropdown from "../../../utility/widgets/dropdown";
+import NativeDropdown from "../../../utility/widgets/dropdown/NativeSelect";
 import { Tooltip } from "reactstrap";
 // import Button from '@material-ui/core/Button';
 import Dialog from "@material-ui/core/Dialog";
@@ -66,9 +66,9 @@ const dialogStyles = {
   },
 };
 type SelectedFiltersTypes = {
-  type: string;
-  scanType: string;
-  productCategory: string;
+  region: string;
+  epa: string;
+  district: string;
   status: string;
   startDate: any;
   endDate: any;
@@ -142,7 +142,6 @@ type States = {
   dynamicFields: Array<any>;
   countryList: Array<any>;
   hierarchyList: Array<any>;
-
 };
 
 const AntTabs = withStyles({
@@ -252,9 +251,9 @@ class UserList extends Component<Props, States> {
       status: ["All", "Valid", "Invalid"],
       list: ["All", "Distributor", "Retailer"],
       selectedFilters: {
-        type: "All",
-        scanType: "All",
-        productCategory: "All",
+        region: "All",
+        epa: "All",
+        district: "All",
         status: "All",
         startDate: backdate.toISOString().substr(0, 10),
         endDate: new Date().toISOString().substr(0, 10),
@@ -285,7 +284,6 @@ class UserList extends Component<Props, States> {
       dynamicFields: [],
       countryList: [],
       hierarchyList: [],
-      
     };
     this.timeOut = 0;
   }
@@ -324,17 +322,30 @@ class UserList extends Component<Props, States> {
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
     };
-    let {status}:any= this.state.selectedFilters;
-    if(this.state.isFiltered){
-      console.log("ca")
+    let {
+      status,
+      startDate,
+      endDate,
+      region,
+      epa,
+      district,
+    }: any = this.state.selectedFilters;
 
-      let filter={
-        status :status,
-        isFiltered : this.state.isFiltered,
-      }
-      data={...data,...filter}
+    if (this.state.isFiltered) {
+      console.log("ca");
+
+      let filter = {
+        isfiltered: this.state.isFiltered,
+        status: status,
+        effectivefrom: startDate,
+        expirydate: endDate,
+        region,
+        epa,
+        district,
+      };
+      data = { ...data, ...filter };
     }
-    console.log({data})
+    console.log({ data });
     invokeGetAuthService(channelPartnersList, data)
       .then((response) => {
         this.setState({
@@ -367,7 +378,7 @@ class UserList extends Component<Props, States> {
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
     };
-    
+
     invokeGetAuthService(channelPartnersList, data)
       .then((response) => {
         this.setState({
@@ -420,7 +431,7 @@ class UserList extends Component<Props, States> {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value: list === "Country" ? "MALAWI" : "",
+        value: list === "Country" ? "MALAWI" : "ALL",
         options:
           list === "Country"
             ? this.state.countryList
@@ -436,18 +447,22 @@ class UserList extends Component<Props, States> {
   getOptionLists = (e: any, index: any) => {
     e.stopPropagation();
     let regionResponse = [
+      { text: "All", value: "All" },
       { text: "Central", value: "central" },
       { text: "Bangalore", value: "Bangalore" },
     ];
     let districtResponse = [
+      { text: "All", value: "All" },
       { text: "Balaka", value: "Balaka" },
       { text: "Blantyre", value: "Blantyre" },
     ];
     let epaResponse = [
+      { text: "All", value: "All" },
       { text: "EPA1", value: "epa1" },
       { text: "EPA2", value: "epa2" },
     ];
     let villageResponse = [
+      { text: "All", value: "All" },
       { text: "Village1", value: "Village1" },
       { text: "Village2", value: "Village2" },
     ];
@@ -588,27 +603,32 @@ class UserList extends Component<Props, States> {
       val[name] = item;
       flag = true;
     }
-    console.log({val,flag})
+    console.log({ val, flag });
     if (flag) {
-      this.setState({ selectedFilters: val },()=>{
-        console.log("status",this.state.selectedFilters)
+      this.setState({ selectedFilters: val }, () => {
+        console.log("status", this.state.selectedFilters);
       });
     }
   };
 
   resetFilter = (e: any) => {
     e.stopPropagation();
-    this.setState({
-      selectedFilters: {
-        type: "All",
-        scanType: "All",
-        productCategory: "All",
-        status: "All",
-        startDate: new Date().toISOString().substr(0, 10),
-        endDate: new Date().toISOString().substr(0, 10),
+    this.setState(
+      {
+        selectedFilters: {
+          region: "All",
+          epa: "All",
+          district: "All",
+          status: "All",
+          startDate: new Date().toISOString().substr(0, 10),
+          endDate: new Date().toISOString().substr(0, 10),
+        },
+        isFiltered: false,
       },
-      isFiltered: false,
-    });
+      () => {
+        console.log("testi", this.state.selectedFilters);
+      }
+    );
     setTimeout(() => {
       //   this.getScanLogs();
     }, 0);
@@ -627,15 +647,15 @@ class UserList extends Component<Props, States> {
       }, 1000);
     }
   };
-    applyFilter = () => {
-      this.setState({ isFiltered: true },()=>{
-        this.getChannelPartnersList();
-      });
-      
-      // this.timeOut = setTimeout(() => {
-      //   this.getScanLogs();
-      // }, 0);
-    };
+  applyFilter = () => {
+    this.setState({ isFiltered: true }, () => {
+      this.getChannelPartnersList();
+    });
+
+    // this.timeOut = setTimeout(() => {
+    //   this.getScanLogs();
+    // }, 0);
+  };
   previous = (pageNo: any) => {
     this.setState({ pageNo: pageNo - 1 });
     setTimeout(() => {
@@ -699,6 +719,16 @@ class UserList extends Component<Props, States> {
   handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     this.setState({ value: newValue });
     // setValue(newValue);
+  };
+
+  handleUpdateDropdown = (value: string, label: any) => {
+    console.log({ value, label });
+    this.setState({
+      selectedFilters: {
+        ...this.state.selectedFilters,
+        [label.toLocaleLowerCase()]: value,
+      },
+    });
   };
 
   render() {
@@ -785,11 +815,11 @@ class UserList extends Component<Props, States> {
       (list: any, index: number) => {
         return (
           <>
-            <div className="col-sm-12 country">
+            <div className="country">
               {index !== 0 && (
-                <div className="row">
+                <div>
                   {list.name !== "Village" && (
-                    <CustomDropdown
+                    <NativeDropdown
                       name={list.name}
                       label={list.name}
                       options={list.options}
@@ -798,10 +828,12 @@ class UserList extends Component<Props, States> {
                         list.value = e.target.value;
                         this.setState({ isRendered: true });
                         this.getOptionLists(e, index);
+                        this.handleUpdateDropdown(e.target.value, list.name);
                       }}
                       value={list.value}
                       isPlaceholder
-                      isNative={true}
+                      
+                     
                     />
                   )}
                 </div>
@@ -853,7 +885,6 @@ class UserList extends Component<Props, States> {
             <div className="col-sm-6 leftAlign">
               {!changeLogOpen && (
                 <div>
-                  
                   <button
                     className="form-control changeLogs"
                     onClick={() => this.handleChangeLog()}
@@ -863,22 +894,21 @@ class UserList extends Component<Props, States> {
                   </button>
                 </div>
               )}
-               {changeLogOpen &&
+              {changeLogOpen && (
                 <div className="searchInputRow advisor-sales">
-                    <i className="fa fa-search icon"></i>
-                    <input
-                      placeholder="Search user (min 3 letters)"
-                      className="input-field"
-                      type="text"
-                      onChange={this.handleSearch}
-                      value={searchText}
-                    />
-                  </div>
-                 }
+                  <i className="fa fa-search icon"></i>
+                  <input
+                    placeholder="Search user (min 3 letters)"
+                    className="input-field"
+                    type="text"
+                    onChange={this.handleSearch}
+                    value={searchText}
+                  />
+                </div>
+              )}
               <div>
                 {/* <img src={downloadIcon} width="17" alt="filter" /> */}
-               
-                
+
                 <button className="btn btn-primary" onClick={this.download}>
                   <i className="fa fa-download mr-2"></i> <span>Download</span>
                 </button>
@@ -917,7 +947,7 @@ class UserList extends Component<Props, States> {
                       Distributor
                     </button>
                   </div>
-                  <div className="" style={{marginLeft:'50px'}}>
+                  <div className="" style={{ marginLeft: "50px" }}>
                     {!changeLogOpen && (
                       <div className="filterRow">
                         <Dropdown
@@ -938,9 +968,7 @@ class UserList extends Component<Props, States> {
                                   onClick={this.toggleFilter}
                                 ></i>
                               </DropdownItem>
-                              <DropdownItem
-                                onClick={(e) => e.stopPropagation()}
-                              >
+                              <div onClick={(e) => e.stopPropagation()}>
                                 <label className="font-weight-bold">
                                   Status
                                 </label>
@@ -967,36 +995,43 @@ class UserList extends Component<Props, States> {
                                     </span>
                                   ))}
                                 </div>
-                              </DropdownItem>
+                              </div>
                               <div className="form-group">{locationList}</div>
                               <label className="font-weight-bold pt-2">
                                 Date Range
                               </label>
                               <div className="d-flex">
-                                <input
-                                  type="date"
-                                  className="form-control"
-                                  value={selectedFilters.startDate}
-                                  onChange={(e) =>
-                                    this.handleFilterChange(e, "startDate", "")
-                                  }
-                                />
+                                <div className="user-filter-date-picker">
+                                  <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.startDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(
+                                        e,
+                                        "startDate",
+                                        ""
+                                      )
+                                    }
+                                  />
+                                </div>
                                 <div className="p-2">-</div>
-                                <input
-                                  type="date"
-                                  className="form-control"
-                                  value={selectedFilters.endDate}
-                                  onChange={(e) =>
-                                    this.handleFilterChange(e, "endDate", "")
-                                  }
-                                />
+                                <div className="user-filter-date-picker">
+                                  <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.endDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(e, "endDate", "")
+                                    }
+                                  />
+                                </div>
                               </div>
 
                               <div className="filterFooter pt-3">
                                 <Button
                                   color="btn rounded-pill boxColor reset-btn"
                                   onClick={(e) => this.resetFilter(e)}
-                                  
                                 >
                                   Reset All
                                 </Button>
