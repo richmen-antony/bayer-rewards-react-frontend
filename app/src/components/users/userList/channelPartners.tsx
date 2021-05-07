@@ -447,7 +447,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
     const { username,status }: any = this.state.userData;
-    if(status==="Active"){
+    if(status==="Not Activated"){
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
