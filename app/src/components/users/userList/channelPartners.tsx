@@ -62,7 +62,7 @@ type States = {
   countryList: Array<any>;
   hierarchyList: Array<any>;
   isRendered: boolean;
-  userRole: String;
+  userName: String;
   toDateErr: String;
   activateUser: any;
   accountNameErr: String;
@@ -80,14 +80,11 @@ const dialogStyles = {
     boxShadow: "none",
   },
 };
-const editdialogStyles = {
-  paperWidthSm: {
-    width: "500px",
-    maxWidth: "600px",
-    background: "transparent",
-    boxShadow: "none",
-  },
+const getStoreData = {
+  country: "MAL",
+  Language: "EN-US",
 };
+
 
 
 const DialogContent = withStyles((theme: Theme) => ({
@@ -128,7 +125,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       countryList: [],
       hierarchyList: [],
       isRendered: false,
-      userRole: '',
+      userName: '',
       toDateErr: '',
       activateUser: true,
       accountNameErr: '',
@@ -166,7 +163,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     this.getNextHierarchy('MALAWI', this.state.geographicFields[1]);
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-    this.setState({ userRole: userData.role});
+    this.setState({ userName: userData.username});
   }
 
   getCountryList() {
@@ -181,7 +178,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
         id: nextLevel
     }
   
-    let nextHierarchyResponse = [{text: 'All', value: 'All'},{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
+    let nextHierarchyResponse = [{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
     this.setState({ hierarchyList: nextHierarchyResponse });
   }
   getGeographicFields() {
@@ -191,8 +188,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     }, 0)
   }
   getDynamicOptionFields(data: any) {
-    console.log('datasss', data);
-    if( data){
+    if(data){
       let setFormArray: any = [];
       this.state.geographicFields.map((list: any, i: number) => {
         let result = [];
@@ -219,7 +215,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "country" ? 'Malawi' : list === 'region' ? region : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
+            value: list === "country" ? getStoreData.country : list === 'region' ? region : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
             options:
               list === "country"
                 ? this.state.countryList
@@ -228,91 +224,84 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
           });
       });
       this.setState({ dynamicFields: setFormArray });
+    } else {
+      let setFormArray: any = [];
+      this.state.geographicFields.map((list: any, i: number) => {
+          setFormArray.push({
+            name: list,
+            placeHolder: true,
+            value: list === "country" ? getStoreData.country : '',
+            options:
+              list === "country"
+                ? this.state.countryList
+                : list === 'region' ? this.state.hierarchyList : '',
+            error: "",
+          });
+      });
+      this.setState({ dynamicFields: setFormArray });
     }
   }
   
-  // getOptionLists = (e: any, index: any) => {
-  //   e.stopPropagation();
-  //   let regionResponse = [{ text: 'Central', value: 'central' }, { text: 'Bangalore', value: 'Bangalore' }];
-  //   let districtResponse = [{ text: 'Balaka', value: 'Balaka' }, { text: 'Blantyre', value: 'Blantyre' }];
-  //   let epaResponse = [{ text: 'EPA1', value: 'epa1' }, { text: 'EPA2', value: 'epa2' }];
-  //   let villageResponse = [{ text: 'Village1', value: 'Village1' }, { text: 'Village2', value: 'Village2' }];
-  
-  //       this.state.dynamicFields.map((list: any) => {
-  //           if (list.name === 'Region') {
-  //               list.options = this.state.hierarchyList;
-  //           } else if (list.name === 'District') {
-  //               list.options = districtResponse;
-  //           } else if (list.name === 'EPA') {
-  //               list.options = epaResponse;
-  //           } else if (list.name === 'Village') {
-  //               list.options = villageResponse;
-  //           }
-  //       })
-  // }
-
-  getOptionLists = (cron: any, type: any, e: any, index: any) => {
-    console.log('newtype', type,':::::', e);
-    if(cron === 'auto'){
-      let options: any = [];
-      if(type === 'region'){
-          options = [
-            { text: "Central", value: "Central" },
-            { text: "Northern", value: "Northern" },
-            { text: "Western", value: "Western" },
-            { text: "Eastern", value: "Eastern" },
+    getOptionLists = (cron: any, type: any, e: any, index: any) => {
+      console.log('newtype', type,':::::', e);
+      if(cron === 'auto'){
+        let options: any = [];
+        if(type === 'region'){
+            options = [
+              { text: "Central", value: "Central" },
+              { text: "Northern", value: "Northern" },
+              { text: "Western", value: "Western" },
+              { text: "Eastern", value: "Eastern" },
+            ];
+          } else if(type === 'district'){
+              options = [
+                { text: "Balaka", value: "Balaka" },
+                { text: "Blantyre", value: "Blantyre" }, 
+              ];
+          } else if(type === 'epa'){
+              options = [
+                { text: "EPA1", value: "EPA1" },
+                { text: "EPA2", value: "EPA2" },
+              ];
+          } else if(type === 'village'){
+              options = [
+                { text: "Village1", value: "Village1" },
+                { text: "Village2", value: "Village2" },
+              ];
+          }
+        return options;
+      } else {
+        let dynamicFieldVal = this.state.dynamicFields;
+        if(type === 'region') {
+          let district = [
+            { text: "Balaka", value: "Balaka" },
+            { text: "Blantyre", value: "Blantyre" }, 
           ];
-        } else if(type === 'district'){
-            options = [
-              { text: "Balaka", value: "Balaka" },
-              { text: "Blantyre", value: "Blantyre" }, 
-            ];
-        } else if(type === 'epa'){
-            options = [
-              { text: "EPA1", value: "EPA1" },
-              { text: "EPA2", value: "EPA2" },
-            ];
-        } else if(type === 'village'){
-            options = [
-              { text: "Village1", value: "Village1" },
-              { text: "Village2", value: "Village2" },
-            ];
-        }
-      return options;
-    } else {
-      let dynamicFieldVal = this.state.dynamicFields;
-      if(type === 'region') {
-        let district = [
-          { text: "Balaka", value: "Balaka" },
-          { text: "Blantyre", value: "Blantyre" }, 
-        ];
           dynamicFieldVal[index+1].options = district;
           dynamicFieldVal[index].value = e;
           this.setState({dynamicFields: dynamicFieldVal});
-
-     } else if(type === 'district') {
-        let epa = [
-          { text: "EPA1", value: "EPA1" },
-          { text: "EPA2", value: "EPA2" }, 
-        ];
+       } else if(type === 'district') {
+          let epa = [
+            { text: "EPA1", value: "EPA1" },
+            { text: "EPA2", value: "EPA2" }, 
+          ];
           dynamicFieldVal[index+1].options = epa;
           dynamicFieldVal[index].value = e;
           this.setState({dynamicFields: dynamicFieldVal});
-      } else if(type === 'epa') {
-        let village = [
-          { text: "Village1", value: "Village1" },
-          { text: "Village2", value: "Village2" },
-        ];
+        } else if(type === 'epa') {
+          let village = [
+            { text: "Village1", value: "Village1" },
+            { text: "Village2", value: "Village2" },
+          ];
           dynamicFieldVal[index+1].options = village;
           dynamicFieldVal[index].value = e;
-          console.log('yazhu', e);
           this.setState({dynamicFields: dynamicFieldVal});
-      } else if(type === 'village') {
+        } else if(type === 'village') {
           dynamicFieldVal[index].value = e;
           this.setState({dynamicFields: dynamicFieldVal});
+        }
       }
-    }
-  }
+    };
 
   handleClosePopup = () => {
     this.setState({ deActivatePopup: false, editPopup: false });
@@ -327,8 +316,10 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
 
   editPopup = (e: any, list: any) => {
     e.stopPropagation();
-    this.setState({editPopup : true});
-    this.getCurrentUserData(list);
+    this.setState({editPopup : true},()=> {
+      this.getCurrentUserData(list);
+    });
+
     setTimeout(() => {
       this.getDynamicOptionFields(this.state.userData);
     }, 0);
@@ -420,13 +411,10 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     const { updateUser } = apiURL;
     const { username,status }: any = this.state.userData;
 
-    // let obj: any = {};
-    // obj.lastupdatedby = this.state.userRole;
-    // obj.lastupdateddate = "2021-04-30";
-    // obj.username = username;
-    // let data = {...obj, this.state.userData}
+    let obj: any = {};
+    obj.isEdit = true;
+    let data = {...obj, ...this.state.userData}
     
-    let data = this.state.userData;
     console.log('sarvesh', data);
 
     if (this.state.isValidateSuccess) {
@@ -449,7 +437,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
     const { username,status }: any = this.state.userData;
-    if(status==="Not Activated"){
+    if(status==="Active"){
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
@@ -467,7 +455,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       }
      
       let obj: any = {};
-      obj.lastupdatedby = this.state.userRole;
+      obj.lastupdatedby = this.state.userName;
       obj.lastupdateddate = "2021-04-30";
       obj.username = username;
      
@@ -490,6 +478,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   getCurrentUserData = (data: any) => {
     let passData = { ...data };
     passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
+    passData['lastupdatedby'] = this.state.userName;
+    passData['lastupdateddate'] = new Date();
     let activeStatus = (passData.status === 'Inactive' || passData.status === 'Declined') ? false : true;
     this.setState({ userData: passData, status: data.status, activateUser: activeStatus });
   };

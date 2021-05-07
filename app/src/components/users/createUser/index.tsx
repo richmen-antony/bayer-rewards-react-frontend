@@ -17,6 +17,8 @@ import {
   invokePostAuthService
 } from "../../../utility/base/service";
 import moment from "moment";
+import { getLocalStorageData } from "../../../utility/base/localStore";
+import { isConstructorDeclaration } from "typescript";
 
 const options = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -90,11 +92,19 @@ class CreateUser extends Component<any, any> {
       },
       accInfo: true,
       regionList: [],
-      isValidatePage: false
+      isValidatePage: false,
+      userName: ''
     };
   }
 
   componentDidMount() {
+    // let data: any = getLocalStorageData("userData");
+   
+    // let userDetails = JSON.parse(data);
+    // this.setState({ userName: userDetails.username},()=>{
+    //   console.log("userData", this.state.userData);
+    // });
+
     console.log("data", this.props.location.state);
     this.setState({ isRendered: true });
     ///API to get country and language settings
@@ -103,10 +113,18 @@ class CreateUser extends Component<any, any> {
     this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
 
     if (this.props.location?.state) {
+      let data: any = getLocalStorageData("userData");
+      let userDetails = JSON.parse(data);
       const { userFields } = this.props.location.state;
       userFields['activateUser'] = true;
       userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
       userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
+      this.setState({ userName: userDetails.username},()=>{
+        userFields['lastupdatedby'] = this.state.userName;
+      });
+      userFields['isEdit'] = false;
+      userFields['lastupdateddate'] = new Date().toISOString().substr(0, 10);
+
       this.setState({ userData: userFields, isValidatePage : true }, () => {
         console.log("userData", this.state.userData);
       });
@@ -391,7 +409,7 @@ class CreateUser extends Component<any, any> {
     });
     this.setState({ isLoader: true });
     let personalData = this.state.userData;
-    const data = {
+    const createDatas = {
       effectivefrom: personalData["fromdate"],
       expirydate: personalData["expirydate"],
       username: personalData["username"],
@@ -422,6 +440,12 @@ class CreateUser extends Component<any, any> {
       whtvillage: stepper3["village"],
       status: personalData['isDeclineUser'] ? 'Declined' : personalData["activateUser"] ? "Active" : "Inactive",
     };
+    const updateDatas = { 
+      isEdit : false,
+      lastupdatedby : personalData['lastupdatedby'],
+      lastupdateddate : personalData['lastupdateddate'],
+    }
+    const data  = { ...createDatas, ...updateDatas };
     console.log("all", data);
     const url = this.state.isValidatePage ? updateUser : retailerCreation;
     const service = this.state.isValidatePage ? invokePostAuthService : invokePostService;
@@ -731,12 +755,13 @@ class CreateUser extends Component<any, any> {
     const fields =
       currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
     const locationList = fields?.map((list: any, index: number) => {
+      let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
       return (
         <>
           <div className={index === 0 ? "col-sm-12 country" : "col-sm-3"}>
                 <Dropdown
                   name={list.name}
-                  label={list.name}
+                  label={nameCapitalized}
                   options={list.options}
                   handleChange={(e: any) => {
                     list.value = e.target.value;
@@ -746,7 +771,7 @@ class CreateUser extends Component<any, any> {
                   value={list.value}
                   isPlaceholder
                   isDisabled={
-                    (this.state.currentStep === 3 && this.state.accInfo) || isValidatePage
+                    (this.state.currentStep === 3 && this.state.accInfo) || (isValidatePage) || (list.name=='country')
                       ? true
                       : false
                   }

@@ -74,6 +74,9 @@ type SelectedFiltersTypes = {
   endDate: any;
   [key: string]: string;
 };
+type PartnerTypes = {
+  type : String;
+}
 type Props = {
   location?: any;
   history?: any;
@@ -142,6 +145,7 @@ type States = {
   dynamicFields: Array<any>;
   countryList: Array<any>;
   hierarchyList: Array<any>;
+  partnerType: PartnerTypes;
 };
 
 const AntTabs = withStyles({
@@ -258,6 +262,9 @@ class UserList extends Component<Props, States> {
         startDate: backdate.toISOString().substr(0, 10),
         endDate: new Date().toISOString().substr(0, 10),
       },
+      partnerType: {
+        type : 'All',
+      },
       dateErrMsg: "",
       searchText: "",
       rowsPerPage: 15,
@@ -314,7 +321,7 @@ class UserList extends Component<Props, States> {
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       usertype: "CHANNEL PARTNER",
-      // role: this.state.selectedFilters.type,
+      role: this.state.partnerType.type === 'Distributor' ? 'Distributor' : 'Retailer'
       // scantype: this.state.selectedFilters.scanType,
       // productcategory: this.state.selectedFilters.productCategory,
       // scanstatus: this.state.selectedFilters.status,
@@ -610,6 +617,16 @@ class UserList extends Component<Props, States> {
       });
     }
   };
+
+  handlePartnerChange = (name: String) => {
+    this.setState({ 
+      partnerType : {
+        type : name
+      }
+    },()=>{
+      this.getChannelPartnersList();
+    });
+  }
 
   resetFilter = (e: any) => {
     e.stopPropagation();
@@ -934,18 +951,24 @@ class UserList extends Component<Props, States> {
                   </div>
                 </div>
                 <div className="col-sm-6 leftAlign">
-                  <div>
-                    <label style={{ color: "#363636", fontSize: " 14px" }}>
+                  <div className='partner'>
+                    <label className="font-weight-bold pt-4" style={{ color: "#363636", fontSize: " 14px" }}>
                       Partner Type
                     </label>
-                    <button type="button" style={btn}>
-                      Retailer
-                    </button>
-                  </div>
-                  <div>
-                    <button type="button" style={btnD}>
-                      Distributor
-                    </button>
+                    <div className='partnerType'>
+                      {this.state.actions.map((item) => (
+                          <span className="mr-2">
+                            <Button color={this.state.partnerType.type === item
+                                  ? "btn activeColor rounded-pill"
+                                  : "btn rounded-pill boxColor"
+                              }
+                              size="md"
+                              onClick={()=>this.handlePartnerChange(item)}>
+                              {item}
+                            </Button>
+                          </span>
+                      ))}
+                    </div>
                   </div>
                   <div className="" style={{ marginLeft: "50px" }}>
                     {!changeLogOpen && (
