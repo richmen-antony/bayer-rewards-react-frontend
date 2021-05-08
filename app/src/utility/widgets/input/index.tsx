@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Input(props: any) {
-  let { className, name,type, disabled, value, placeHolder, maxLength, onChange, ...restProps } = props;
+  let { className, name, type, disabled, value, placeHolder, maxLength, onChange, ...restProps } = props;
   console.log("value-->", value);
   return (
     <div className="">
-      <input name={name} disabled={disabled} type={type} maxLength={maxLength} className={className}
-        value={value} onChange={props.onChange} {...restProps} placeholder={placeHolder}/>
+      <input style={{ width: "215px", height: "40px" }} name={name} disabled={disabled} type={type} maxLength={maxLength} className={className}
+        value={value} onChange={props.onChange} {...restProps} placeholder={placeHolder} />
     </div>
   );
 }

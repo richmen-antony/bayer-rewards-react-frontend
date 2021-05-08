@@ -65,15 +65,15 @@ class Pagination extends Component<Props,States>{
                             Total Sales: {totalData}
                         </div>
                         <div className='col-sm-5'>
-                            <div style={{display: 'flex',alignItems: "center"}}>
-                                <span style={{marginRight: "10px"}}>Rows Per Page</span>
-                                <span style={{width: '25%'}}><Input type="text" className="form-control" name="perpage" value={rowsPerPage} onChange={(e: any)=>handlePaginationChange(e)} /></span>
+                            <div style={{ display: 'flex', alignItems: "center" }}>
+                                <span style={{ marginRight: "10px" }}>Rows Per Page</span>
+                                <span style={{ width: '25%' }}><input style={{ width: '100%' }} type="text" className="form-control" name="perpage" value={rowsPerPage} onChange={(e: any) => handlePaginationChange(e)} /></span>
                             </div>
                         </div>
                         <div className='col-sm-4'>
-                        <div style={{display: 'flex',alignItems: "center"}}>
-                            <span style={{marginRight: "10px"}}>Go to Page</span>
-                            <span style={{width: '25%'}}><Input type="text" className="form-control" name="gotopage" value={pageNo} onChange={(e: any)=>handlePaginationChange(e)} /></span>
+                            <div style={{ display: 'flex', alignItems: "center" }}>
+                                <span style={{ marginRight: "10px" }}>Go to Page</span>
+                                <span style={{ width: '25%' }}><input style={{ width: '100%' }} type="text" className="form-control" name="gotopage" value={pageNo} onChange={(e: any) => handlePaginationChange(e)} /></span>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,11 @@
+<svg id="barcode" xmlns="http://www.w3.org/2000/svg" width="80" height="61.172" viewBox="0 0 80 61.172">
+  <path id="Path_2800" data-name="Path 2800" d="M120.5,361.5h4.687v4.687H120.5Z" transform="translate(-101.672 -314.43)" fill="#ff9424"/>
+  <path id="Path_2801" data-name="Path 2801" d="M4.687,64.937H14.1V60.25H0v14.1H4.687Z" transform="translate(0 -60.25)" fill="#ff9424"/>
+  <path id="Path_2802" data-name="Path 2802" d="M421.75,60.25v4.687h9.414v9.414h4.687V60.25Z" transform="translate(-355.851 -60.25)" fill="#ff9424"/>
+  <path id="Path_2803" data-name="Path 2803" d="M4.687,361.5H0v14.1H14.1v-4.688H4.687Z" transform="translate(0 -314.43)" fill="#ff9424"/>
+  <path id="Path_2804" data-name="Path 2804" d="M431.164,370.914H421.75V375.6h14.1V361.5h-4.687Z" transform="translate(-355.851 -314.43)" fill="#ff9424"/>
+  <path id="Path_2805" data-name="Path 2805" d="M180.75,361.5h4.687v4.687H180.75Z" transform="translate(-152.508 -314.43)" fill="#ff9424"/>
+  <path id="Path_2806" data-name="Path 2806" d="M301.25,361.5h4.688v4.687H301.25Z" transform="translate(-254.18 -314.43)" fill="#ff9424"/>
+  <path id="Path_2807" data-name="Path 2807" d="M421.75,361.5h4.688v4.687H421.75Z" transform="translate(-355.851 -314.43)" fill="#ff9424"/>
+  <path id="Path_2808" data-name="Path 2808" d="M91.229,144.016v9.414h4.688v-9.414h4.723v-4.687H95.916V120.5H91.229v18.828H86.5V120.5H81.815v18.828H77.088V120.5H72.4v18.828H67.674V120.5H62.986v18.828H58.26V120.5H53.572v18.828H48.846V120.5H44.158v18.828H39.432V120.5H34.744v18.828H30.021v4.688h4.723v18.828h4.688V144.016h4.727v9.414h4.687v-9.414h4.727v9.414H58.26v-9.414h4.727v18.828h4.687V144.016H72.4v9.414h4.688v-9.414h4.727v18.828H86.5V144.016Z" transform="translate(-25.33 -111.086)" fill="#ff9424"/>
+</svg>

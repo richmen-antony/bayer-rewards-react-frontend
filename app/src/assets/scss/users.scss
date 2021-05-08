@@ -146,12 +146,12 @@ thead tr {
   margin-top: 10px;
   background-color: $appSecondary;
   color: $white;
-
+  height: 55px;
 }
+
 .table th {
   border: none !important;
   vertical-align: middle;
- 
 }
 
 tbody {
@@ -170,12 +170,13 @@ tbody tr {
   margin-top: 10px;
   background-color: #FFFFFF;
   // border-left: 5px solid #45d329;
+  height: 75px;
 }
 
 .table td {
   border: none !important;
   height: 50px;
-  vertical-align: center;
+  vertical-align: middle;
   .status {
     display: flex;
     align-items: center;
@@ -398,4 +399,14 @@ tbody { height: 400px; overflow-y: scroll }
 .partner {
   display: flex;
   align-items: flex-end;
+}
+
+.add-plus-icon {
+  position: absolute;
+  right: 3px;
+  bottom: 30px;
+  img{
+  width: 50px;
+  height: 50px;
+  }
 }

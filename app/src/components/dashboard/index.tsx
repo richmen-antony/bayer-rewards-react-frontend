@@ -1,15 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import AUX from "../../hoc/Aux_";
-import user from "../../assets/images/add-user.svg";
-import listuser from "../../assets/images/user-list.svg";
+import adduser from "../../assets/icons/add-user.svg";
+import userlist from "../../assets/images/user-list.png";
 // import leftArrow from "../../assets/icons/left_arrow.svg";
 import CustomCard from "../../container/components/card";
 import "../../assets/scss/rsmDashboard.scss";
-import {
-  getLocalStorageData,
-  clearLocalStorageData,
-} from "../../utility/base/localStore";
+import { getLocalStorageData, clearLocalStorageData } from '../../utility/base/localStore';
 import { apiURL } from "../../utility/base/utils/config";
 import {
   invokeGetAuthService,
@@ -19,14 +16,14 @@ import {
 type Props = {
   location?: any;
   history?: any;
-};
+}
 
 type States = {
   scanLogCount: number;
   usersCount: number;
   isLoader: boolean;
   userRole: any;
-};
+}
 
 class Dashboard extends Component<Props, States> {
   constructor(props: any) {
@@ -76,7 +73,7 @@ class Dashboard extends Component<Props, States> {
             <>
               <div style={{ marginRight: "16px" }} >
                 <CustomCard
-                  icon={user}
+                  icon={adduser}
                   border="1px solid #FFA343"
                   background="#FFF4E7"
                   cardClick={() => this.cardClick()}
@@ -90,7 +87,7 @@ class Dashboard extends Component<Props, States> {
               </div>
               <div>
                 <CustomCard
-                  icon={listuser}
+                  icon={userlist}
                   border="1px solid #206BDD"
                   background="#DFE8FA"
                 >
@@ -102,34 +99,34 @@ class Dashboard extends Component<Props, States> {
               </div>
             </>
           ) : (
-            <div className="dashboard">
-              <div   style={{ marginRight: "30px" }}>
-                <CustomCard
-                  icon={user}
-                  border="1px solid #FFA343"
-                  background="#FFF4E7"
-                  cardClick={() => this.cardCreateUserClick()}
-                >
-                  <div style={{ fontSize: "18px", marginTop: "15px" }}>
-                    Create New User
+              <div className="dashboard">
+                <div style={{ marginRight: "30px" }}>
+                  <CustomCard
+                    icon={adduser}
+                    border="1px solid #FFA343"
+                    background="#FFF4E7"
+                    cardClick={() => this.cardCreateUserClick()}
+                  >
+                    <div style={{ fontSize: "18px", marginTop: "15px" }}>
+                      Create New User
                   </div>
-                </CustomCard>
+                  </CustomCard>
+                </div>
+                <div>
+                  <CustomCard
+                    icon={userlist}
+                    border="1px solid #206BDD"
+                    background="#DFE8FA"
+                    cardClick={() => this.totalUserClick()}
+                  >
+                    <div style={{ fontSize: "24px" }}>
+                      {this.state.usersCount}
+                    </div>
+                    <div style={{ fontSize: "18px", marginTop: "15px" }}>Total Users</div>
+                  </CustomCard>
+                </div>
               </div>
-              <div>
-                <CustomCard
-                  icon={listuser}
-                  border="1px solid #206BDD"
-                  background="#DFE8FA"
-                  cardClick={() => this.totalUserClick()}
-                >
-                  <div style={{ fontSize: "24px" }}>
-                    {this.state.usersCount}
-                  </div>
-                  <div style={{ fontSize: "18px" ,marginTop: "15px"}}>Total Users</div>
-                </CustomCard>
-              </div>
-            </div>
-          )}
+            )}
         </div>
       </AUX>
     );

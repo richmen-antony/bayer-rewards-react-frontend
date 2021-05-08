@@ -16,6 +16,7 @@ import Edit from "../../../assets/images/edit.svg";
 import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
+import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import "../../../assets/scss/users.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
@@ -109,6 +110,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 class ChannelPartners extends Component<Props&RouteComponentProps, States> {
+  tableCellIndex : any;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -155,6 +157,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
         // whtpostalcode: "",
       },
     };
+    this.generateHeader = this.generateHeader.bind(this);
   }
   componentDidMount(){
     //API to get country and language settings
@@ -242,6 +245,61 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     }
   }
   
+  handleSort(e:any,columnname: string, allChannelPartners : any, isAsc : Boolean){
+    this.tableCellIndex = e.currentTarget.cellIndex;
+    this.props.onSort(columnname, allChannelPartners, isAsc)
+  }
+
+  createUserClick = () => {
+    this.props.history.push('./createUser');
+  }
+  
+  generateHeader(allChannelPartners : any, isAsc : Boolean) {
+    let staticColumn : number = 3
+    let res = [];
+    res.push(<th style={{width : '120px'}} onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
+    {this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+    res.push(<th style={{width : '110px'}} onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'Mobile #'}
+    {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+    res.push(<th style={{width : '150px'}}  onClick={e => this.handleSort(e, "accountname", allChannelPartners, isAsc)}>{'Account Name'}
+    {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+    res.push(<th style={{width : '140px'}} onClick={e => this.handleSort(e, "ownername", allChannelPartners, isAsc)}>{'Owner Name'}
+    {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+
+    for (var i = 1; i < this.state.geographicFields.length; i++) {
+      let columnname : string = ""
+      columnname = this.state.geographicFields[i]
+      res.push(<th style={{width : '98px'}} onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{this.state.geographicFields[i]}
+      {this.tableCellIndex === i + staticColumn ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+      </th>)
+    }
+
+    let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
+    res.push(<th style={{width : '130px'}} onClick={e => this.handleSort(e, "status", allChannelPartners, isAsc)}>{'Status'}
+    {this.tableCellIndex === nextIndex + 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+
+    res.push(<th style={{width : '10px'}} onClick={e => this.handleSort(e, "created", allChannelPartners, isAsc)}>
+    {this.tableCellIndex === nextIndex + 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+
+    res.push(<th style={{width : '100px'}} onClick={e => this.handleSort(e, "LastUpdatedBy", allChannelPartners, isAsc)}>{'Last Updated By'}
+    {this.tableCellIndex === nextIndex + 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+
+    res.push(<th style={{width : '100px'}} onClick={e => this.handleSort(e, "expirydate", allChannelPartners, isAsc)}>{'Expiry Date'}
+    {this.tableCellIndex === nextIndex + 4 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    </th>)
+
+    res.push(<th style={{width : '50px'}}></th>)
+
+    return res;
+  }
+
     getOptionLists = (cron: any, type: any, e: any, index: any) => {
       console.log('newtype', type,':::::', e);
       if(cron === 'auto'){
@@ -771,55 +829,26 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
             <table className="table" id="tableData">
               <thead>
                 <tr>
-                  <th>
-                    User Name
-                    <i
-                      className={`fa ${
-                        isAsc ? "fa-angle-down" : "fa-angle-up"
-                      } ml-3`}
-                      onClick={() =>
-                        onSort("username", allChannelPartners, isAsc)
-                      }
-                    ></i>
-                  </th>
-                  <th>Mobile</th>
-                  <th>
-                    Account Name
-                    <i
-                      className={`fa ${
-                        isAsc ? "fa-angle-down" : "fa-angle-up"
-                      } ml-3`}
-                      onClick={() =>
-                        onSort("ownername", allChannelPartners, isAsc)
-                      }
-                    ></i>
-                  </th>
-                  <th>Owner Name</th>
-                  <th>District</th>
-                  <th>EPA</th>
-                  <th>Status</th>
-                  <th>Last Updated By</th>
-                  <th>Expiry Date</th>
-                  <th>Action</th>
+                  {this.generateHeader(allChannelPartners, isAsc)}
                 </tr>
               </thead>
               <tbody>
                 {allChannelPartners.map((list: any, i: number) => (
                   <AUX key={i}>
-                    <tr
+                    <tr 
                       style={
-                        list.status === "Active"
-                          ? { borderLeft: "5px solid #89D329" }
-                          : { borderLeft: "5px solid #FF4848" }
+                        list.status === "Active" ? { borderLeft: "8px solid #89D329" } : { borderLeft: "8px solid #FF4848" }
                       }
-                    >
-                      <td>{list.username}</td>
-                      <td>{list.mobilenumber} </td>
-                      <td>{list.accountname} </td>
-                      <td>{list.ownername} </td>
-                      <td>{list.district} </td>
-                      <td>{list.epa} </td>
-                      <td>
+                     >
+                      <td style={{width : '120px'}}>{list.username}</td>
+                      <td style={{width : '110px'}}>{list.mobilenumber} </td>
+                      <td style={{width : '150px'}}>{list.accountname} </td>
+                      <td style={{width : '140px'}}>{list.ownername} </td>
+                      <td style={{width : '98px'}}>{list.region} </td>
+                      <td style={{width : '98px'}}>{list.district} </td>
+                      <td style={{width : '98px'}}>{list.epa} </td>
+                      <td style={{width : '98px'}}>{list.village} </td>
+                      <td style={{width : '130px'}}>
                         <span
                           onClick={(event) => {
                             this.showPopup(event, "deActivatePopup");
@@ -851,9 +880,19 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           {list.status}
                         </span>
                       </td>
-                      <td>{list.lastupdatedby}</td>
-                      <td>{moment(list.expirydate).format("DD-MM-YYYY")} </td>
-                      <td>
+                      <td style={{width : '10px'}}>
+                      <img
+                          style={{ marginRight: "8px" }}
+                          src={Edit}
+                          width="20"
+                        />
+                      </td>
+                      <td style={{width : '100px'}}>
+                        {list.lastupdatedby}
+                        <p>{moment(list.lastupdateddate).format("DD-MM-YYYY")} </p>
+                      </td>
+                      <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td>
+                      <td style={{width : '50px'}}>
                         <img
                           style={{ marginRight: "8px" }}
                           src={Edit}
@@ -868,6 +907,9 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 ))}
               </tbody>
             </table>
+            <div className="add-plus-icon"  onClick={() => this.createUserClick()}>
+              <img src={AddIcon} />
+            </div>
             <div>
               <Pagination
                 totalData={totalData}
@@ -889,6 +931,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
             </div>
           </div>
         )}
+        
       </>
     );
   }

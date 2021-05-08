@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <filter id="Path_9238" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="left_page" transform="translate(9 6)">
+    <g transform="matrix(1, 0, 0, 1, -9, -6)" filter="url(#Path_9238)">
+      <g id="Path_9238-2" data-name="Path 9238" transform="translate(9 6)" fill="#fff">
+        <path d="M 25 29.75 L 5 29.75 C 2.380840063095093 29.75 0.25 27.61915969848633 0.25 25 L 0.25 7.025149822235107 L 0.25 5 C 0.25 2.380840063095093 2.380840063095093 0.25 5 0.25 L 25 0.25 C 27.61915969848633 0.25 29.75 2.380840063095093 29.75 5 L 29.75 25 C 29.75 27.61915969848633 27.61915969848633 29.75 25 29.75 Z" stroke="none"/>
+        <path d="M 5 0.5 C 2.51869010925293 0.5 0.5 2.51869010925293 0.5 5 L 0.5 7.025150299072266 L 0.5 25 C 0.5 27.48130989074707 2.51869010925293 29.5 5 29.5 L 25 29.5 C 27.48130989074707 29.5 29.5 27.48130989074707 29.5 25 L 29.5 5 C 29.5 2.51869010925293 27.48130989074707 0.5 25 0.5 L 5 0.5 M 5 0 L 25 0 C 27.76141929626465 0 30 2.238580703735352 30 5 L 30 25 C 30 27.76141929626465 27.76141929626465 30 25 30 L 5 30 C 2.238580703735352 30 0 27.76141929626465 0 25 L 0 7.025150299072266 L 0 5 C 0 2.238580703735352 2.238580703735352 0 5 0 Z" stroke="none" fill="#bfbfbf"/>
+      </g>
+    </g>
+    <path id="right" d="M7.293.707a1,1,0,0,1,1.414,0l4.078,4.078,1.508,1.508A1,1,0,0,1,13.586,8H2.414a1,1,0,0,1-.707-1.707Z" transform="translate(11 23) rotate(-90)" fill="#10374e"/>
+  </g>
+</svg>

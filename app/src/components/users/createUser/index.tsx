@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
-// import { TabProvider, Tab, TabPanel, TabList } from 'react-web-tabs';
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
 import { toastSuccess } from "../../../utility/widgets/toaster";
@@ -99,7 +98,7 @@ class CreateUser extends Component<any, any> {
 
   componentDidMount() {
     // let data: any = getLocalStorageData("userData");
-   
+
     // let userDetails = JSON.parse(data);
     // this.setState({ userName: userDetails.username},()=>{
     //   console.log("userData", this.state.userData);
@@ -841,6 +840,7 @@ class CreateUser extends Component<any, any> {
                       Effective From
                     </label>
                     <input
+                      style={{ width: "215px", height: "40px" }}
                       type="date"
                       name="fromdate"
                       className="form-control"
@@ -856,6 +856,7 @@ class CreateUser extends Component<any, any> {
                       Effective To
                     </label>
                     <input
+                    style={{ width: "215px", height: "40px" }}
                       type="date"
                       name="expirydate"
                       className="form-control"
