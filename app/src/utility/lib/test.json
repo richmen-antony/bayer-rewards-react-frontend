@@ -1,0 +1,248 @@
+[
+    {
+        "continent": "EMEA",
+        "cluster": "Africa",
+        "isoCode": "MW",
+        "name": "Malawi",
+        "currency": "MWK",
+        "currencyDesc": "Malawian Kwacha",
+        "regions": [
+            {
+                "regionName": "central",
+                "district": [
+                    {
+                        "districtName": "Balaka",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "districtName": "Blantyre",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "EPA1"
+                                    },
+                                    {
+                                        "villageName": "EPA2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "regionName": "Northern",
+                "district": [
+                    {
+                        "districtName": "Chitipa",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "districtName": "Karonga",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "EPA1"
+                                    },
+                                    {
+                                        "villageName": "EPA2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "regionName": "Western",
+                "district": [
+                    {
+                        "districtName": "Thyolo",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "districtName": "Zomba",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "EPA1"
+                                    },
+                                    {
+                                        "villageName": "EPA2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "regionName": "Eastern",
+                "district": [
+                    {
+                        "districtName": "Mzuzu",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "districtName": "Nkhata",
+                        "epa": [
+                            {
+                                "epaName": "EPA1",
+                                "village": [
+                                    {
+                                        "villageName": "Village1"
+                                    },
+                                    {
+                                        "villageName": "Village2"
+                                    }
+                                ]
+                            },
+                            {
+                                "epaName": "EPA2",
+                                "village": [
+                                    {
+                                        "villageName": "EPA1"
+                                    },
+                                    {
+                                        "villageName": "EPA2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

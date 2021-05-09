@@ -1,0 +1,114 @@
+[
+    {
+        "continent": "EMEA",
+        "cluster": "Africa",
+        "isoCode": "MW",
+        "name": "Malawi",
+        "currency": "MWK",
+        "currencyDesc": "Malawian Kwacha",
+        "regions": [
+            {
+                "central": [
+                    {
+                        "Blantyre": [
+                            {
+                                "BlantyreEPA": [
+                                    {
+                                        "BlantyreVillage": [
+                                            {
+                                                "Village1": "Village1",
+                                                "Village2": "Village2"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "Balaka": [
+                            {
+                                "BalakaEPA": [
+                                    {
+                                        "BalakaVillage": [
+                                            {
+                                                "Village1": "Village1",
+                                                "Village2": "Village2"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Northern": [
+                    {
+                        "Blantyre": [
+                            {
+                                "BlantyreEPA": [
+                                    {
+                                        "BlantyreVillage": [
+                                            {
+                                                "Village1": "Village1",
+                                                "Village2": "Village2"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "Balaka": [
+                            {
+                                "BalakaEPA": [
+                                    {
+                                        "BalakaVillage": [
+                                            {
+                                                "Village1": "Village1",
+                                                "Village2": "Village2"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Western": [
+                    {
+                        "Blantyre": [
+                            {
+                                "BlantyreEPA": [
+                                    {
+                                        "BlantyreVillage": [
+                                            {
+                                                "Village1": "Village1",
+                                                "Village2": "Village2"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "Balaka": [
+                            {
+                                "BalakaEPA": [
+                                    {
+                                        "BalakaVillage": [
+                                            {
+                                                "Village1": "Village1",
+                                                "Village2": "Village2"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+        ]
+    }
+]

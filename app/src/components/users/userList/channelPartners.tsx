@@ -279,21 +279,13 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     }
 
     let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
-    res.push(<th style={{width : '130px'}} onClick={e => this.handleSort(e, "status", allChannelPartners, isAsc)}>{'Status'}
-    {this.tableCellIndex === nextIndex + 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-    </th>)
+    res.push(<th style={{width : '130px'}}>{'Status'}</th>)
 
-    res.push(<th style={{width : '10px'}} onClick={e => this.handleSort(e, "created", allChannelPartners, isAsc)}>
-    {this.tableCellIndex === nextIndex + 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-    </th>)
+    res.push(<th style={{width : '10px'}}></th>)
 
-    res.push(<th style={{width : '100px'}} onClick={e => this.handleSort(e, "LastUpdatedBy", allChannelPartners, isAsc)}>{'Last Updated By'}
-    {this.tableCellIndex === nextIndex + 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-    </th>)
+    res.push(<th style={{width : '100px'}}>{'Last Updated By'}</th>)
 
-    res.push(<th style={{width : '100px'}} onClick={e => this.handleSort(e, "expirydate", allChannelPartners, isAsc)}>{'Expiry Date'}
-    {this.tableCellIndex === nextIndex + 4 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-    </th>)
+    res.push(<th style={{width : '100px'}}>{'Expiry Date'}</th>)
 
     res.push(<th style={{width : '50px'}}></th>)
 
