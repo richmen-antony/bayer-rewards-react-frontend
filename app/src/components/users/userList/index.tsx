@@ -114,7 +114,6 @@ type States = {
   pageNo: number;
   allChannelPartners: Array<any>;
   allThirdParty: Array<any>;
-  actions: Array<any>;
   dropDownValue: string;
   scanType: Array<any>;
   productCategories: Array<any>;
@@ -248,7 +247,6 @@ class UserList extends Component<Props, States> {
       isAsc: true,
       isRendered: false,
       pageNo: 1,
-      actions: ["All", "Distributor", "Retailer"],
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
       productCategories: [],
@@ -263,7 +261,7 @@ class UserList extends Component<Props, States> {
         endDate: new Date().toISOString().substr(0, 10),
       },
       partnerType: {
-        type : 'All',
+        type : 'ALL',
       },
       dateErrMsg: "",
       searchText: "",
@@ -321,7 +319,7 @@ class UserList extends Component<Props, States> {
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       usertype: "CHANNEL PARTNER",
-      role: this.state.partnerType.type === 'Distributor' ? 'Distributor' : 'Retailer'
+      partnertype: this.state.partnerType.type === 'Distributor' ? 'Distributor' : this.state.partnerType.type === 'All' ? 'ALL' : 'Retailer'
       // scantype: this.state.selectedFilters.scanType,
       // productcategory: this.state.selectedFilters.productCategory,
       // scanstatus: this.state.selectedFilters.status,
@@ -956,7 +954,7 @@ class UserList extends Component<Props, States> {
                       Partner Type
                     </label>
                     <div className='partnerType'>
-                      {this.state.actions.map((item) => (
+                      {this.state.list.map((item) => (
                           <span className="mr-2">
                             <Button color={this.state.partnerType.type === item
                                   ? "btn activeColor rounded-pill"
