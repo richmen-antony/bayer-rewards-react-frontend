@@ -608,7 +608,7 @@ class UserList extends Component<Props, States> {
       val[name] = item;
       flag = true;
     }
-    console.log({ val, flag });
+    // console.log({ val, flag });
     if (flag) {
       this.setState({ selectedFilters: val }, () => {
         console.log("status", this.state.selectedFilters);
@@ -737,7 +737,6 @@ class UserList extends Component<Props, States> {
   };
 
   handleUpdateDropdown = (value: string, label: any) => {
-    console.log({ value, label });
     this.setState({
       selectedFilters: {
         ...this.state.selectedFilters,

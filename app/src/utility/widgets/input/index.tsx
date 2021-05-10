@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 function Input(props: any) {
   let { className, name, type, disabled, value, placeHolder, maxLength, onChange, ...restProps } = props;
-  console.log("value-->", value);
   return (
     <div className="">
       <input style={{ width: "215px", height: "40px" }} name={name} disabled={disabled} type={type} maxLength={maxLength} className={className}

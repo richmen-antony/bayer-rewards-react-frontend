@@ -4,20 +4,19 @@ import {
   Theme,
   withStyles,
   WithStyles,
+  makeStyles,
 } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
 import CancelIcon from "../../../assets/images/cancel-1.svg";
 
 type Props = {
-  open: Boolean;
+  open: boolean;
   onClose: Function;
   children: any;
-  dialogStyles?: any;
   header?: any;
+  maxWidth: any;
 };
 
 const styles = (theme: Theme) =>
@@ -27,15 +26,11 @@ const styles = (theme: Theme) =>
       padding: 0,
     },
     closeButton: {
-      // position: "absolute",
-      // right: theme.spacing(1),
-      // top: theme.spacing(1),
-      // color: theme.palette.grey[500],
       position: "static",
       display: "block",
       marginLeft: "auto",
       padding: 0,
-      marginRight:"15px"
+      marginRight: "15px",
     },
   });
 
@@ -66,47 +61,44 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
 export interface DialogProps {
   children: React.ReactNode;
   onClose: () => void;
-  open: Boolean;
+  open: boolean;
   classes: any;
   dialogStyles?: any;
   header?: any;
 }
-
+export interface StyleProps {
+  maxWidth?: string;
+}
+const DialogStyles = makeStyles<Theme, StyleProps>((theme) => ({
+  paperWidthSm: {
+    maxWidth: ({ maxWidth }) => (maxWidth ? maxWidth : "600px"),
+    background: "transparent",
+    boxShadow: "none",
+  },
+}));
 export default function AdminPopup({
   onClose,
   open,
   children,
-  dialogStyles,
   header,
+  maxWidth,
 }: Props) {
-  const CusDialog = withStyles(dialogStyles)((props: DialogProps) => {
-    const { children, classes, onClose, header, ...other } = props;
-    return (
-      <Dialog
-        classes={{ paper: classes.paperWidthSm }}
-        onClose={() => onClose()}
-        aria-labelledby="customized-dialog-title"
-        open={true}
-        fullWidth
-      >
-        <DialogTitle
-          id="customized-dialog-title"
-          onClose={() => onClose()}
-          header={header}
-          style={classes}
-        ></DialogTitle>
-        {children}
-      </Dialog>
-    );
-  });
-
+  const classes = DialogStyles({ maxWidth });
   return (
-    <CusDialog
+    <Dialog
+      classes={{ paper: classes.paperWidthSm }}
       onClose={() => onClose()}
+      aria-labelledby="customized-dialog-title"
       open={open}
-      children={children}
-      dialogStyles={dialogStyles}
-      header={header}
-    />
+      fullWidth
+    >
+      <DialogTitle
+        id="customized-dialog-title"
+        onClose={() => onClose()}
+        header={header}
+        style={classes}
+      ></DialogTitle>
+      {children}
+    </Dialog>
   );
 }
