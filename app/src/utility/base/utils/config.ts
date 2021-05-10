@@ -11,5 +11,6 @@ export const apiURL = {
     retailerCreation: "user/retailercreation?isMobile=false",
     deactivateChannelPartner:"user/deactivatechannelpartner",
     activateChannelPartner:"user/activatechannelpartner",
-    updateUser: "user/updateuser"
+    updateUser: "user/updateuser",
+    adminUserCount: "user/getadmindashboard"
 }

@@ -251,7 +251,7 @@ class UserList extends Component<Props, States> {
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
       productCategories: [],
       status: ["All", "Valid", "Invalid"],
-      list: ["All", "Distributor", "Retailer"],
+      list: ["ALL", "Distributor", "Retailer"],
       selectedFilters: {
         region: "All",
         epa: "All",
@@ -337,8 +337,6 @@ class UserList extends Component<Props, States> {
     }: any = this.state.selectedFilters;
 
     if (this.state.isFiltered) {
-      console.log("ca");
-
       let filter = {
         isfiltered: this.state.isFiltered,
         status: status,
@@ -350,7 +348,6 @@ class UserList extends Component<Props, States> {
       };
       data = { ...data, ...filter };
     }
-    console.log({ data });
     invokeGetAuthService(channelPartnersList, data)
       .then((response) => {
         this.setState({
@@ -566,7 +563,6 @@ class UserList extends Component<Props, States> {
 
   onSort = (name: string, data: any, isAsc: boolean) => {
     let response = sortBy(name, data);
-    console.log("vvvvvv", isAsc);
     this.setState({ allChannelPartners: response, isAsc: !isAsc });
   };
 
@@ -608,7 +604,6 @@ class UserList extends Component<Props, States> {
       val[name] = item;
       flag = true;
     }
-    console.log({ val, flag });
     if (flag) {
       this.setState({ selectedFilters: val }, () => {
         console.log("status", this.state.selectedFilters);
@@ -737,7 +732,6 @@ class UserList extends Component<Props, States> {
   };
 
   handleUpdateDropdown = (value: string, label: any) => {
-    console.log({ value, label });
     this.setState({
       selectedFilters: {
         ...this.state.selectedFilters,
@@ -765,42 +759,6 @@ class UserList extends Component<Props, States> {
       isEditUser,
     } = this.state;
 
-    console.log("totalData", totalData);
-
-    // const tooltipItem = () => {
-    //   return (
-    //     <div>
-    //       <h7>Searchable Columns are</h7>
-    //       <ul style={{ listStyle: "none", paddingRight: "35px" }}>
-    //         <li>Label ID</li>
-    //         <li>Customer Name</li>
-    //         <li>Product</li>
-    //         <li>Scan Type</li>
-    //       </ul>
-    //     </div>
-    //   );
-    // };
-
-    const editForm = () => {
-      return (
-        <div>
-          <form className="form-horizontal">
-            <div className="form-group">
-              <label>Account Name</label>
-              <Input
-                type="text"
-                className="form-control"
-                name="accName"
-                placeHolder="Enter username"
-                value=""
-                onChange=""
-              />
-              {/* {usernameError && <span className="error">{ usernameError } </span>} */}
-            </div>
-          </form>
-        </div>
-      );
-    };
     const { classes } = this.props;
     const btn = {
       background: "#1F445A 0% 0% no-repeat",

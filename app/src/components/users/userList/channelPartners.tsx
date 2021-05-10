@@ -134,28 +134,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       phoneErr: '',
       emailErr: '',
       postalCodeErr: '',
-      isValidateSuccess: false,
-      userData: {
-        // fromdate: new Date().toISOString().substr(0, 10),
-        // expirydate: new Date().toISOString().substr(0, 10),
-        // activateUser: true,
-        // isDeclineUser: '',
-        // role: options[0].value,
-        // username: "",
-        // firstname: "",
-        // lastname: "",
-        // accountname: "",
-        // ownername: "",
-        // mobilenumber: "",
-        // email: "",
-        // address: "",
-        // postalcode: "",
-        // taxid: "",
-        // whtownername: "",
-        // whtaccountname: "",
-        // whtaddress: '',
-        // whtpostalcode: "",
-      },
+      isValidateSuccess: true,
+      userData: {},
     };
     this.generateHeader = this.generateHeader.bind(this);
   }
@@ -281,21 +261,20 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     }
 
     let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
-    res.push(<th style={{width : '130px'}}>{'Status'}</th>)
+    res.push(<th style={{width : '100px'}}>{'Status'}</th>)
 
     res.push(<th style={{width : '10px'}}></th>)
 
     res.push(<th style={{width : '100px'}}>{'Last Updated By'}</th>)
 
-    res.push(<th style={{width : '100px'}}>{'Expiry Date'}</th>)
+    // res.push(<th style={{width : '100px'}}>{'Expiry Date'}</th>)
 
     res.push(<th style={{width : '50px'}}></th>)
 
     return res;
   }
 
-    getOptionLists = (cron: any, type: any, e: any, index: any) => {
-      console.log('newtype', type,':::::', e);
+    getOptionLists = (cron: any, type: any, value: any, index: any) => {
       if(cron === 'auto'){
         let options: any = [];
         if(type === 'region'){
@@ -324,13 +303,16 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
         return options;
       } else {
         let dynamicFieldVal = this.state.dynamicFields;
+        let userData = this.state.userData
         if(type === 'region') {
           let district = [
             { text: "Balaka", value: "Balaka" },
             { text: "Blantyre", value: "Blantyre" }, 
           ];
           dynamicFieldVal[index+1].options = district;
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
+          userData['region'] = value;
+          this.setState({ userData : userData });
           this.setState({dynamicFields: dynamicFieldVal});
        } else if(type === 'district') {
           let epa = [
@@ -338,7 +320,9 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
             { text: "EPA2", value: "EPA2" }, 
           ];
           dynamicFieldVal[index+1].options = epa;
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
+          userData['district'] = value;
+          this.setState({ userData : userData });
           this.setState({dynamicFields: dynamicFieldVal});
         } else if(type === 'epa') {
           let village = [
@@ -346,10 +330,14 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
             { text: "Village2", value: "Village2" },
           ];
           dynamicFieldVal[index+1].options = village;
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
+          userData['epa'] = value;
+          this.setState({ userData : userData });
           this.setState({dynamicFields: dynamicFieldVal});
         } else if(type === 'village') {
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
+          userData['village'] = value;
+          this.setState({ userData : userData });
           this.setState({dynamicFields: dynamicFieldVal});
         }
       }
@@ -378,7 +366,6 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   }
 
   handlePersonalChange = (e: any) => {
-    alert('hi')
     let val = this.state.userData;
     if(val){
       if (e.target.name === "activateUser") {
@@ -464,11 +451,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     const { username,status }: any = this.state.userData;
 
     let obj: any = {};
-    obj.isEdit = true;
+    obj.isedit = true;
     let data = {...obj, ...this.state.userData}
-    
-    console.log('sarvesh', data);
-
     if (this.state.isValidateSuccess) {
         invokePostAuthService(updateUser, data)
         .then((response: any) => {
@@ -543,6 +527,44 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     });
   }
 
+  validateEmail = (e: any) => {
+    let emailField = e.target.value;
+    this.setState({ emailErr: "" });
+    let valid = true;
+    if ( emailField === "" || emailField === null ) {
+      this.setState({ emailErr: "Please enter the Email" });
+      valid = false;
+    } else {
+      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+        this.setState({ emailErr: "" });
+        valid = true;
+      } else {
+        this.setState({ emailErr: "Please enter the Valid Email" });
+        valid = false;
+      }
+    }
+    return valid;
+  }
+
+  isNumberKey = (evt: any) => {
+    this.setState({ phoneErr: "" });
+    let isValid = true;
+    if ( !evt.target.value ) {
+      this.setState({ phoneErr: "Please enter Mobile number" });
+      isValid = false;
+    } else {
+      let pattern = new RegExp(/^[0-9\b]+$/);
+      if ( !pattern.test(evt.target.value) ){
+        this.setState({ phoneErr: "Please enter Number Format" });
+        isValid = false;
+      } else{
+          this.setState({ phoneErr: "" });
+          isValid = true;
+      }
+    }
+    return isValid;
+  }
+
   render() {
     const { allChannelPartners, isAsc, onSort } = this.props;
     const {
@@ -560,7 +582,6 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       emailErr
     } = this.props.state;
     const { userData }: any = this.state;
-    console.log('dyno', this.state.userData );
 
     const locationList = this.state.dynamicFields ?.map((list: any, index: number) => {
       let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
@@ -572,7 +593,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
               <div className='col-sm-6' style={{marginLeft : (index == 2 || index == 4) ? '15px' : '0px'}}>
                 <CustomDropdown
                     name={list.name}
-                    label={list.name}
+                    label={nameCapitalized}
                     options={list.options}
                     handleChange={(e: any) => {
                       list.value = e.target.value;
@@ -736,6 +757,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             placeHolder="Mobile Number"
                             value={userData.mobilenumber}
                             onChange={(e: any) => this.handlePersonalChange(e)}
+                            onKeyUp={(e: any)=>this.isNumberKey(e)}
                           />
                           {phoneErr && <span className="error">{phoneErr} </span>}
                         </div>
@@ -750,6 +772,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           placeHolder="Email"
                           value={userData.email}
                           onChange={(e: any) => this.handlePersonalChange(e)}
+                          onKeyUp={(e: any)=>this.validateEmail(e)}
                         />
                         {emailErr && <span className="error">{emailErr} </span>}
                         </div>
@@ -874,18 +897,18 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           {list.status}
                         </span>
                       </td>
-                      <td style={{width : '10px'}}>
+                      {/* <td style={{width : '10px'}}>
                       <img
                           style={{ marginRight: "8px" }}
                           src={Edit}
                           width="20"
                         />
-                      </td>
+                      </td> */}
                       <td style={{width : '100px'}}>
                         {list.lastupdatedby}
-                        <p>{moment(list.lastupdateddate).format("DD-MM-YYYY")} </p>
+                        <p>{list.lastupdatedby} </p>
                       </td>
-                      <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td>
+                      {/* <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td> */}
                       <td style={{width : '50px'}}>
                         <img
                           style={{ marginRight: "8px" }}

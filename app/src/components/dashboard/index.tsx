@@ -23,6 +23,7 @@ type States = {
   usersCount: number;
   isLoader: boolean;
   userRole: any;
+  adminUsersCount: number;
 }
 
 class Dashboard extends Component<Props, States> {
@@ -33,6 +34,7 @@ class Dashboard extends Component<Props, States> {
       scanLogCount: 0,
       usersCount: 121,
       isLoader: false,
+      adminUsersCount: 0
     };
   }
   componentDidMount() {
@@ -42,6 +44,7 @@ class Dashboard extends Component<Props, States> {
       userRole: userData.role,
     });
     this.getDashboardDetails();
+    this.getAdminDashboardDetails();
   }
   getDashboardDetails = () => {
     const { rsmDashboard } = apiURL;
@@ -54,6 +57,23 @@ class Dashboard extends Component<Props, States> {
       });
     });
   };
+  getAdminDashboardDetails = () => {
+    const { adminUserCount } = apiURL;
+    invokeGetAuthService(adminUserCount)
+      .then((response: any) => {
+        let res = Object.keys(response.body).length !== 0 ? response.body : "";
+        this.setState({
+          isLoader: false,
+        });
+        this.setState({
+          adminUsersCount: res.usercount
+        });
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
+    }
 
   cardClick = () => {
     this.props.history.push("./scanlogs");
@@ -120,7 +140,7 @@ class Dashboard extends Component<Props, States> {
                     cardClick={() => this.totalUserClick()}
                   >
                     <div style={{ fontSize: "24px" }}>
-                      {this.state.usersCount}
+                      {this.state.adminUsersCount}
                     </div>
                     <div style={{ fontSize: "18px", marginTop: "15px" }}>Total Users</div>
                   </CustomCard>
