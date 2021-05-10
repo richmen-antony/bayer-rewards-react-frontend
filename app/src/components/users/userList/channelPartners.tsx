@@ -829,7 +829,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                   <AUX key={i}>
                     <tr 
                       style={
-                        list.status === "Active" ? { borderLeft: "8px solid #89D329" } : { borderLeft: "8px solid #FF4848" }
+                        list.status === "Active" ? { height: '22%', borderLeft: "8px solid #89D329" } : { height: '22%', borderLeft: "8px solid #FF4848" }
                       }
                      >
                       <td style={{width : '120px'}}>{list.username}</td>
