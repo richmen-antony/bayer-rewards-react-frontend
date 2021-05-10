@@ -258,7 +258,9 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     let staticColumn : number = 3
     let res = [];
     res.push(<th style={{width : '120px'}} onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
-    {this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+    {
+      this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+    }
     </th>)
     res.push(<th style={{width : '110px'}} onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'Mobile #'}
     {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
