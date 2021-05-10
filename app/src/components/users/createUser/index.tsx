@@ -18,6 +18,7 @@ import {
 import moment from "moment";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { isConstructorDeclaration } from "typescript";
+import { LiveTvRounded } from "@material-ui/icons";
 
 const options = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -121,7 +122,7 @@ class CreateUser extends Component<any, any> {
       this.setState({ userName: userDetails.username},()=>{
         userFields['lastupdatedby'] = this.state.userName;
       });
-      userFields['isEdit'] = false;
+      userFields['isedit'] = false;
       userFields['lastupdateddate'] = new Date().toISOString().substr(0, 10);
 
       this.setState({ userData: userFields, isValidatePage : true }, () => {
@@ -356,10 +357,10 @@ class CreateUser extends Component<any, any> {
     // }
   };
 
-  handleClick(clickType: any) {
+  handleClick(clickType: any, e: any) {
     let formValid = true;
     if (clickType === "personalNext") {
-      formValid = this.checkValidation();
+      formValid = this.checkValidation(e);
     } else if (clickType === "geographicNext") {
       formValid = this.geographicValidation();
       if (formValid) {
@@ -440,7 +441,7 @@ class CreateUser extends Component<any, any> {
       status: personalData['isDeclineUser'] ? 'Declined' : personalData["activateUser"] ? "Active" : "Inactive",
     };
     const updateDatas = { 
-      isEdit : false,
+      isedit : false,
       lastupdatedby : personalData['lastupdatedby'],
       lastupdateddate : personalData['lastupdateddate'],
     }
@@ -559,7 +560,7 @@ class CreateUser extends Component<any, any> {
     return dateValid;
   };
 
-  checkValidation = () => {
+  checkValidation = (e: any) => {
     let formValid = true;
     let userData = this.state.userData;
     if (userData.role === "" || userData.role === null) {
@@ -590,18 +591,24 @@ class CreateUser extends Component<any, any> {
       this.setState({ phoneErr: "Please enter the phone" });
       formValid = false;
     } else {
-      this.setState({ phoneErr: "" });
+      // let isNumber = this.isNumberKey(e);
+      // if( isNumber ) {
+      //   this.setState({ phoneErr: "Please enter Number" });
+      //   formValid = false;
+      // } else {
+        this.setState({ phoneErr: "" });
+      // }
     }
-    if (userData.email === "" || userData.lastName === null) {
+    if (userData.email === "" || userData.email === null) {
       this.setState({ emailErr: "Please enter the Email" });
       formValid = false;
     } else {
-      let emailValid = this.validateEmail(userData.email);
-      if(!emailValid){
-        formValid = false;
-      } else {
+      // let emailValid = this.validateEmail(userData.email);
+      // if(!emailValid){
+      //   formValid = false;
+      // } else {
         this.setState({ emailErr: "" });
-      }
+      // }
     }
     return formValid;
   };
@@ -638,24 +645,42 @@ class CreateUser extends Component<any, any> {
     return geographicFormValid;
   };
 
-  // validateEmail = (emailField: any) => {
-  //   var reg = ^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$;
-  //   if (reg.test(emailField.value) == false) 
-  //   {
-  //     this.setState({ emailErr: "Please enter the Valid Email" });
-  //       return false;
-  //   }
-  //   return true;
-  // }
-  validateEmail = (emailField: any) => {
-
-    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField))
-      {
-        return (true)
+  validateEmail = (e: any) => {
+    let emailField = e.target.value;
+    this.setState({ emailErr: "" });
+    let valid = true;
+    if ( emailField === "" || emailField === null ) {
+      this.setState({ emailErr: "Please enter the Email" });
+      valid = false;
+    } else {
+      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+        this.setState({ emailErr: "" });
+        valid = true;
+      } else {
+        this.setState({ emailErr: "Please enter the Valid Email" });
+        valid = false;
       }
-      this.setState({ emailErr: "Please enter the Valid Email" });
-        return (false)
+    }
+    return valid;
+  }
 
+  isNumberKey = (evt: any) => {
+    this.setState({ phoneErr: "" });
+    let isValid = true;
+    if ( !evt.target.value ) {
+      this.setState({ phoneErr: "Please enter Mobile number" });
+      isValid = false;
+    } else {
+      let pattern = new RegExp(/^[0-9\b]+$/);
+      if ( !pattern.test(evt.target.value) ){
+        this.setState({ phoneErr: "Please enter Number Format" });
+        isValid = false;
+      } else{
+          this.setState({ phoneErr: "" });
+          isValid = true;
+      }
+    }
+    return isValid;
   }
 
   reset = () => {
@@ -786,7 +811,7 @@ class CreateUser extends Component<any, any> {
       nextButton = (
         <button
           className="btn buttonColor buttonStyle"
-          onClick={() => this.handleClick("personalNext")}
+          onClick={(e) => this.handleClick("personalNext", e)}
         >
           Next
         </button>
@@ -795,7 +820,7 @@ class CreateUser extends Component<any, any> {
       nextButton = (
         <button
           className="btn buttonColor buttonStyle"
-          onClick={() => this.handleClick("geographicNext")}
+          onClick={(e) => this.handleClick("geographicNext", e)}
         >
           Next
         </button>
@@ -804,7 +829,7 @@ class CreateUser extends Component<any, any> {
       nextButton = (
         <button
           className="btn buttonColor createBtn"
-          onClick={() => this.handleClick("createUser")}
+          onClick={(e) => this.handleClick("createUser", e)}
         >
           {!this.props.location?.state ? "Create User" : "Approve"}
         </button>
@@ -944,6 +969,7 @@ class CreateUser extends Component<any, any> {
                         value={userData.mobilenumber}
                         onChange={(e: any) => this.handlePersonalChange(e)}
                         disabled={isValidatePage ? true : false}
+                        onKeyUp={(e: any)=>this.isNumberKey(e)}
                       />
                       {phoneErr && <span className="error">{phoneErr} </span>}
                     </div>
@@ -956,6 +982,7 @@ class CreateUser extends Component<any, any> {
                         value={userData.email}
                         onChange={(e: any) => this.handlePersonalChange(e)}
                         disabled={isValidatePage ? true : false}
+                        onKeyUp={(e: any)=>this.validateEmail(e)}
                       />
                       {emailErr && <span className="error">{emailErr} </span>}
                     </div>
@@ -1080,7 +1107,7 @@ class CreateUser extends Component<any, any> {
               <button
                 className="btn btn-outline-secondary buttonStyle"
                 style={{ marginRight: "30px" }}
-                onClick={() => this.handleClick("back")}
+                onClick={(e) => this.handleClick("back", e)}
               >
                 Back
               </button>
