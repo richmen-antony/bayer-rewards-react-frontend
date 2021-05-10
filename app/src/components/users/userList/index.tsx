@@ -919,6 +919,7 @@ class UserList extends Component<Props, States> {
                     onChange={this.handleSearch}
                     value={searchText}
                   />
+                  <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Account Name and Owner Name"></i>
                 </div>
               )}
               <div>
@@ -946,6 +947,7 @@ class UserList extends Component<Props, States> {
                       onChange={this.handleSearch}
                       value={searchText}
                     />
+                    <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Account Name and Owner Name"></i>
                   </div>
                 </div>
                 <div className="col-sm-6 leftAlign">
