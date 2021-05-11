@@ -14,7 +14,7 @@ export const CountrySetup = (props) => {
   const [countryCurrency, setcountryCurrency] = useState([]);
   const [currencyDesc, setcurrencyDesc] = useState('');
 
-  const countryDetails = selectedCountryDetails ? selectedCountryDetails : [];
+  const countryDetails = selectedCountryDetails.length > 0 ? selectedCountryDetails : [];
 
   const _onChangeActiveStep = nextActiveStep => {
     const { onChangeActiveStep } = props;

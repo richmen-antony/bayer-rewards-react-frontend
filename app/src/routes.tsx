@@ -29,6 +29,13 @@ const  UserList = lazy(() =>
     .then(({ UserList }) => ({ default: UserList }))
 );
 
+const Devconfigurations = lazy(() =>
+  import('./components/devconfig/index')
+  // import('./components/devconfig')
+  //   .then(({ Devconfigurations }) => ({ default: Devconfigurations }))
+);
+
+
 class MyApp extends Component<any, any> {
   constructor(props: any){
     super(props)
@@ -53,6 +60,7 @@ class MyApp extends Component<any, any> {
                       </Route>
                       <Route path={`/dashboard`} component={Dashboard} />
                       <Route path={`/configurations`} component={Configurations} />
+                      <Route path={`/devconfig`} component={Devconfigurations} />
                       <Route path={`/scanLogs`} component={ScanLogs} />
                       <Route path={`/createUser`} component={CreateUser} />
                       <Route path={`/userList`} component={UserList} />

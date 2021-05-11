@@ -1,0 +1,71 @@
+.buttons-container {
+    text-align: center;
+    padding-right: 10%;
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+    button {
+      margin: 0 2rem;
+      min-width: 150px;
+      padding: 5px;
+      background-color: #006cf8;
+      color: white;
+      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+      border: 0.5px solid rgba(0, 108, 248, 1);
+      border-radius: 10px;
+    }
+    .reset {
+      color: #000000;
+      background: #ffffff;
+    }
+  }
+
+.tableStyle {
+    border:none !important;
+    text-align: center;
+    vertical-align: middle !important;
+    width: 185px;
+    height: 35px;
+}
+
+.tableHeaderStyle {
+    border: none !important;
+    text-align: Left;
+    vertical-align: middle !important;
+    width: 185px;
+};
+
+.tablebtnStyle {
+    border: none !important;
+    width: 35px;
+    height: 35px;
+};
+
+.dpstyle {
+    width: 185px;
+    height: 35px;
+};
+
+.btnStyleAdd {
+    background: #89D329 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    opacity: 1;
+    width: 45px;
+    height: 45px;
+    border-radius: 25px;
+    align-content: center;
+}
+
+.btnStyleRemove {
+    background: #C1C1C1 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    opacity: 1;
+    width: 45px;
+    height: 45px;
+    border-radius: 25px;
+}
+
+.tableScrollStyle {
+    max-height: 280px;
+    overflow-Y: auto;
+}
