@@ -51,7 +51,6 @@ type Props = {
 type States = {
   isActivateUser: boolean;
   isdeActivateUser: boolean;
-  isEditUser: boolean;
   dialogOpen: boolean;
   isLoader: boolean;
   deActivatePopup: boolean;
@@ -110,7 +109,6 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       dialogOpen: false,
       isActivateUser: false,
       isdeActivateUser: false,
-      isEditUser: false,
       isLoader: false,
       deActivatePopup: false,
       editPopup: false,
@@ -154,7 +152,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
         id: nextLevel
     }
   
-    let nextHierarchyResponse = [{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
+    let nextHierarchyResponse = [{ text: 'Central', value: 'Central' },{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
     this.setState({ hierarchyList: nextHierarchyResponse });
   }
   getGeographicFields() {
@@ -443,11 +441,15 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     const { updateUser } = apiURL;
     const { username,status }: any = this.state.userData;
 
-    let obj: any = {};
-    obj.isedit = true;
-    let data = {...obj, ...this.state.userData}
+    const userDetails = {
+      isedit : true,
+      lastupdatedby : this.state.userName,
+      lastupdateddate : new Date().toISOString().substr(0, 10)
+    }
+
+    let data = {...this.state.userData}
     if (this.state.isValidateSuccess) {
-        invokePostAuthService(updateUser, data)
+        invokePostAuthService(updateUser, data, userDetails)
         .then((response: any) => {
           this.setState({
             isLoader: false,
@@ -507,8 +509,6 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   getCurrentUserData = (data: any) => {
     let passData = { ...data };
     passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
-    passData['lastupdatedby'] = this.state.userName;
-    passData['lastupdateddate'] = new Date();
     let activeStatus = (passData.status === 'Inactive' || passData.status === 'Declined') ? false : true;
     this.setState({ userData: passData, status: data.status, activateUser: activeStatus });
   };
@@ -897,7 +897,6 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                       </td> */}
                       <td style={{width : '100px'}}>
                         {list.lastupdatedby}
-                        <p>{list.lastupdatedby} </p>
                       </td>
                       {/* <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td> */}
                       <td style={{width : '50px'}}>
