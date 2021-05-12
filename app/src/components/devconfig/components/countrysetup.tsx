@@ -69,7 +69,6 @@ export const CountrySetup = (props: ICountryProps) => {
 
 
     const _retriveCountryCode = (countryValue: any) => {
-
         const countryName: any = countryDetails.filter(function (result: any) {
             return result.name === countryValue;
         });

@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect, MouseEvent, KeyboardEvent } from "react";
-import "../../assets/scss/configurations.scss";
+// import "../../assets/scss/configurations.scss";
+import "../devconfig/devconfig.scss";
 import Stepper from "../../container/components/stepper/Stepper";
 
 import { FormSteps } from '../../utility/constant';
@@ -253,13 +254,6 @@ class Devconfigurations extends React.Component<IDevConfigProps, MyComponentStat
     }
   }
 
-  getCluterOfRegion = (Cluster: any) => {
-    var regions = cluster_json.filter((value) => {
-      return value.cluster === Cluster;
-    });
-    return regions
-  }
-
   _retrieveSelectedContryofCluster = async (setSelectedCluster: any) => {
     try {
       console.log("setSelectedCluster ", setSelectedCluster);
@@ -407,7 +401,7 @@ class Devconfigurations extends React.Component<IDevConfigProps, MyComponentStat
     const btnNextSubmit = {
       background: '#89D329 0% 0% no-repeat padding-box',
       boxshadow: '0px 1px 3px #0000004D',
-      borderRadius: 10,
+      // borderRadius: 10,
       opacity: 1,
       color: "white",
       width: 185, height: 35,
