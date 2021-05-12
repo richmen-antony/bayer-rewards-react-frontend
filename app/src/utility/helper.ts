@@ -80,9 +80,9 @@ function objectValues<T extends {}>(obj: T) {
 
 
   export const DownloadCsv = (data:any,fileName:string)=>{
-    if(!data || data.length){
-      toastWarning("No data available !")
-    }
+    if(!data || !data.length){
+      toastWarning("No data available !");
+    }else{
     const rows= data;
     const separator = ',';
     const keys = Object.keys(rows[0]);
@@ -119,6 +119,6 @@ function objectValues<T extends {}>(obj: T) {
       }
     }
   
-
+  }
 
   }

@@ -458,7 +458,7 @@ class UserList extends Component<Props, States> {
     invokeGetAuthService(downloadUserList, data)
       .then((response) => {
         const data = response?.body?.rows;
-        DownloadCsv(data,"user.csv")
+        DownloadCsv(data,"user.csv");
         
       })
       .catch((error) => {
