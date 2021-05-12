@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, MouseEvent, KeyboardEvent } from "react";
-// import "../../assets/scss/configurations.scss";
-import "../devconfig/devconfig.scss";
+import "../../assets/scss/configurations.scss";
+// import "../devconfig/devconfig.scss"
 import Stepper from "../../container/components/stepper/Stepper";
 
 import { FormSteps } from '../../utility/constant';

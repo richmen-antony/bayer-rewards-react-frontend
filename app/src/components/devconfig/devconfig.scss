@@ -69,3 +69,18 @@
     max-height: 280px;
     overflow-Y: auto;
 }
+
+.btnStyle {
+    width: 185; height: 35;
+    background: "#FFFFFF 0% 0% no-repeat";
+    box-shadow: "0px 1px 3px #0000004D";
+    border: "0.5px solid #006CF8";
+    opacity: 1; color: "black";
+  }
+  .btnNextSubmit {
+    background: '#89D329 0% 0% no-repeat padding-box';
+    box-shadow: '0px 1px 3px #0000004D';
+    opacity: 1;
+    color: "white";
+    width: 185; height: 35;
+  }
