@@ -118,7 +118,7 @@ export const CountrySetup = (props: ICountryProps) => {
                     <div className="col-sm-3">
                         <div><label className="font-weight-bold pt-4">Currency</label></div>
                         <div>
-                            <Input type="text" className="form-control dpstyle" name="Currency" value={currencyDesc} disabled />
+                            <input type="text" className="form-control dpstyle" name="Currency" value={currencyDesc} disabled />
                         </div>
                     </div>
 
