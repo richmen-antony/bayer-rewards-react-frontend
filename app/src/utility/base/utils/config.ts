@@ -12,5 +12,6 @@ export const apiURL = {
     deactivateChannelPartner:"user/deactivatechannelpartner",
     activateChannelPartner:"user/activatechannelpartner",
     updateUser: "user/updateuser",
-    adminUserCount: "user/getadmindashboard"
+    adminUserCount: "user/getadmindashboard",
+    downloadUserList:"user/downloaduserlist"
 }

@@ -7,64 +7,29 @@ import {
   DropdownItem,
 } from "reactstrap";
 import NativeDropdown from "../../../utility/widgets/dropdown/NativeSelect";
-import { Tooltip } from "reactstrap";
-// import Button from '@material-ui/core/Button';
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import AUX from "../../../hoc/Aux_";
-import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
-// import "../../../assets/scss/scanLogs.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
-  invokeGetAuthService,
-  invokeGetService,
+  invokeGetAuthService
 } from "../../../utility/base/service";
 import filterIcon from "../../../assets/icons/filter_icon.svg";
-import downloadIcon from "../../../assets/icons/download_icon.svg";
-import cross from "../../../assets/icons/cross.svg";
 import Loader from "../../../utility/widgets/loader";
-import {
-  setLocalStorageData,
-  getLocalStorageData,
-  clearLocalStorageData,
-} from "../../../utility/base/localStore";
-import CustomTable from "../../../container/grid/CustomTable";
-import { Pagination } from "../../../utility/widgets/pagination";
-import SimpleDialog from "../../../container/components/dialog";
 import {
   createStyles,
   Theme,
-  withStyles,
-  WithStyles,
+  withStyles
 } from "@material-ui/core/styles";
 import "../../../assets/scss/users.scss";
-import moment from "moment";
-import { downloadExcel, downloadCsvFile } from "../../../utility/helper";
+import {DownloadCsv} from "../../../utility/helper";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
-import { Input } from "../../../utility/widgets/input";
 import ChannelPartners from "./channelPartners";
 import ThirdPartyUsers from "./thirdPartyUsers";
 import ChangeLogs from "./changeLogs";
 
-const popupHeader = {
-  title: "Maria Joseph",
-  sub: "Retailer",
-};
-const dialogStyles = {
-  paperWidthSm: {
-    maxWidth: "600px",
-  },
-};
 type SelectedFiltersTypes = {
   region: string;
   epa: string;
@@ -82,30 +47,7 @@ type Props = {
   history?: any;
   classes?: any;
 };
-const DialogTitle = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-}))(MuiDialogTitle);
 
-const DialogContent = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
 
 type States = {
   selectIndex: string;
@@ -482,57 +424,49 @@ class UserList extends Component<Props, States> {
     });
   };
 
-  downloadExcelFile = () => {
-    let tableId: any = document.getElementById("tableData")?.id;
-    downloadExcel(tableId, "scanlogs");
-  };
 
-  download_csv = (csv: any, filename: string) => {
-    var csvFile;
-    var downloadLink;
-
-    // CSV FILE
-    csvFile = new Blob([csv], { type: "text/csv" });
-
-    // Download link
-    downloadLink = document.createElement("a");
-
-    // File name
-    downloadLink.download = filename;
-
-    // We have to create a link to the file
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-
-    // Make sure that the link is not displayed
-    downloadLink.style.display = "none";
-
-    // Add the link to your DOM
-    document.body.appendChild(downloadLink);
-
-    // Lanzamos
-    downloadLink.click();
-  };
-
-  export_table_to_csv = (html: any, filename: string) => {
-    var csv = [];
-    var rows = document.querySelectorAll("table tr");
-
-    for (var i = 0; i < rows.length; i++) {
-      var row = [],
-        cols: any = rows[i].querySelectorAll("td, th");
-
-      for (var j = 0; j < cols.length; j++) row.push(cols[j].innerText);
-
-      csv.push(row.join(","));
-    }
-
-    // Download CSV
-    downloadCsvFile(csv.join("\n"), filename);
-  };
 
   download = () => {
-    let html: any = document.querySelector("table")?.outerHTML;
-    this.export_table_to_csv(html, "table.csv");
+    const { downloadUserList } = apiURL;
+    
+    let data = {
+      searchtext: this.state.searchText,
+      usertype: "CHANNEL PARTNER",
+      partnertype:'Retailer' 
+    };
+    let {
+      status,
+      startDate,
+      endDate,
+      region,
+      epa,
+      district,
+    }: any = this.state.selectedFilters;
+
+    
+      let filter = {
+        isfiltered:true,
+        status: status,
+        effectivefrom: startDate,
+        expirydate: endDate,
+        region,
+        epa,
+        district,
+      };
+      data = { ...data, ...filter };
+    
+    invokeGetAuthService(downloadUserList, data)
+      .then((response) => {
+        const data = response?.body?.rows;
+        DownloadCsv(data,"user.csv")
+        
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
+        
+  
   };
 
   //   getProductCategory = () => {

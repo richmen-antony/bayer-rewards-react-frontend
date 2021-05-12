@@ -1,3 +1,5 @@
+import { toastWarning } from "./widgets/toaster";
+
 /**
  * Download excel file 
  * @param tableId 
@@ -74,4 +76,49 @@ function objectValues<T extends {}>(obj: T) {
   
   function objectKeys<T extends {}>(obj: T) {
     return Object.keys(obj).map((objKey) => objKey as keyof T);
+  }
+
+
+  export const DownloadCsv = (data:any,fileName:string)=>{
+    if(!data || data.length){
+      toastWarning("No data available !")
+    }
+    const rows= data;
+    const separator = ',';
+    const keys = Object.keys(rows[0]);
+    const csvContent =
+      keys.join(separator) +
+      '\n' +
+      rows.map((row:any) => {
+        return keys.map(k => {
+          let cell = row[k] === null || row[k] === undefined ? '' : row[k];
+          cell = cell instanceof Date
+            ? cell.toLocaleString()
+            : cell.toString().replace(/"/g, '""');
+          if (cell.search(/("|,|\n)/g) >= 0) {
+            cell = `"${cell}"`;
+          }
+          return cell;
+        }).join(separator);
+      }).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+      navigator.msSaveBlob(blob, fileName);
+    } else {
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        // Browsers that support HTML5 download attribute
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', fileName);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  
+
+
   }

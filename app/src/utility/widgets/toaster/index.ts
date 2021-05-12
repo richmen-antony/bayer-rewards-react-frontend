@@ -12,3 +12,9 @@ export const toastSuccess = (msg: any) => toast.success(msg, {
     autoClose: 3000,
     hideProgressBar: true
 });
+
+export const toastWarning = (msg: any) => toast.warning(msg, {
+    position: toast.POSITION.TOP_CENTER,
+    autoClose: 3000,
+    hideProgressBar: true
+});
