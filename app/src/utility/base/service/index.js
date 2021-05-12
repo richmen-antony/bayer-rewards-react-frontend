@@ -5,7 +5,7 @@ import { getLocalStorageData } from '../../base/localStore';
 
 
 //Post method without auth
-export function invokePostService(path,reqObj)  {
+export function invokePostService(path,reqObj,params)  {
   return new Promise(function (resolve, reject) {      
     let headers = {
       'Content-Type': 'application/json', 
@@ -16,6 +16,7 @@ export function invokePostService(path,reqObj)  {
     const config = {
       method: 'POST',
       data: reqObj,
+      params: params,
       headers
     };
     axios.create({
@@ -35,7 +36,7 @@ export function invokePostService(path,reqObj)  {
 };
 
 //Post method with auth
-export function invokePostAuthService(path,reqObj)  {
+export function invokePostAuthService(path,reqObj,params)  {
  let token =  getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')) : "" 
  console.log({token})
   return new Promise(function (resolve, reject) {      
@@ -48,7 +49,8 @@ export function invokePostAuthService(path,reqObj)  {
     const config = {
       method: 'POST',
       headers,
-      data: reqObj
+      data: reqObj,
+      params: params
     };
     axios.create({
       baseURL: apiEndPoint+path
