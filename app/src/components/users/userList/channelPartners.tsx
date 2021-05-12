@@ -567,14 +567,15 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       rowsPerPage,
       gotoPage,
       showProductPopup,
+     
+    } = this.props.state;
+    const { userData, 
       toDateErr,
       accountNameErr,
       ownerNameErr,
       postalCodeErr,
       phoneErr,
-      emailErr
-    } = this.props.state;
-    const { userData }: any = this.state;
+      emailErr }: any = this.state;
 
     const locationList = this.state.dynamicFields ?.map((list: any, index: number) => {
       let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
