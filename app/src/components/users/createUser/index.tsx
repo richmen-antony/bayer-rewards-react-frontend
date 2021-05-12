@@ -34,6 +34,8 @@ const getStoreData = {
 class CreateUser extends Component<any, any> {
   constructor(props: any) {
     super(props);
+    let oneYearFromNow = new Date();
+    let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     this.state = {
       geographicFields: [],
       dynamicFields: [],
@@ -71,7 +73,7 @@ class CreateUser extends Component<any, any> {
       ],
       userData: {
         fromdate: new Date().toISOString().substr(0, 10),
-        expirydate: new Date().toISOString().substr(0, 10),
+        expirydate: moment(oneYear).format("YYYY-MM-DD"),
         activateUser: true,
         isDeclineUser: '',
         role: options[0].value,
@@ -145,7 +147,6 @@ class CreateUser extends Component<any, any> {
     // newData.push(CountryJson);
     let regions: any = [];
     let regionObj: any = {};
-    console.log("regionList", CountryJson);
     // let new = newData[region];
     CountryJson.region.map((list: any, i: number) => {
       regionObj["value"] = list.id;
@@ -164,7 +165,7 @@ class CreateUser extends Component<any, any> {
     this.setState({ countryList: res });
   }
   getNextHierarchy(country: any, nextLevel: any) {
-    //API to get state options for initial set since mal is default option in country
+    //API to get region options for initial set since mal is default option in country
     const data = {
       type: country,
       id: nextLevel,
@@ -409,7 +410,7 @@ class CreateUser extends Component<any, any> {
     });
     this.setState({ isLoader: true });
     let personalData = this.state.userData;
-    const createDatas = {
+    const data = {
       effectivefrom: personalData["fromdate"],
       expirydate: personalData["expirydate"],
       username: personalData["username"],
@@ -428,8 +429,8 @@ class CreateUser extends Component<any, any> {
       epa: stepper2["epa"],
       village: stepper2["village"],
       taxid: personalData["taxid"],
-      whtownername: personalData["accountname"],
-      whtaccountname: personalData["accountname"],
+      whtownername: personalData["whtownername"],
+      whtaccountname: personalData["whtaccountname"],
       whtaddress: personalData["whtaddress"],
       whtpostalcode: this.state.accInfo
         ? personalData["postalcode"]
@@ -440,17 +441,16 @@ class CreateUser extends Component<any, any> {
       whtvillage: stepper3["village"],
       status: personalData['isDeclineUser'] ? 'Declined' : personalData["activateUser"] ? "Active" : "Inactive",
     };
-    const updateDatas = { 
+    const userDetails = this.state.isValidatePage ? { 
       isedit : false,
       lastupdatedby : personalData['lastupdatedby'],
       lastupdateddate : personalData['lastupdateddate'],
-    }
-    const data  = { ...createDatas, ...updateDatas };
+    } : ''
     console.log("all", data);
     const url = this.state.isValidatePage ? updateUser : retailerCreation;
     const service = this.state.isValidatePage ? invokePostAuthService : invokePostService;
 
-    service(url, data)
+    service(url, data, userDetails)
       .then((response: any) => {
         this.setState({
           isLoader: false,
@@ -773,16 +773,13 @@ class CreateUser extends Component<any, any> {
       isValidatePage
     } = this.state;
 
-    // console.log('allUserDatas', this.state.allUserDatas);
-    // console.log('allUserDatas', this.state.dynamicFields);
-
     const fields =
       currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
       return (
         <>
-          <div className={index === 0 ? "col-sm-12 country" : "col-sm-3"}>
+          <div className= "col-sm-3 country">
                 <Dropdown
                   name={list.name}
                   label={nameCapitalized}
@@ -993,89 +990,120 @@ class CreateUser extends Component<any, any> {
 
             <div className="geographical">
               {currentStep == 3 && (
-                <div className="row fieldAlign form-group">
-                  <div className="col-sm-3">
-                    <Input
-                      type="text"
-                      className="form-control"
-                      name="taxid"
-                      placeHolder="Tax Id"
-                      value={userData.taxid}
-                      onChange={(e: any) => this.handlePersonalChange(e)}
-                      disabled={isValidatePage ? true : false}
-                    />
-                    {taxIdErr && <span className="error">{taxIdErr} </span>}
-                  </div>
-                  <div className="col-sm-3">
-                    <label className="pt-4">Same as Account Info</label>
-                    <CustomSwitch
-                      checked={this.state.accInfo}
-                      onChange={(e: any) => this.handlePersonalChange(e)}
-                      name="accInfo"
-                    />
-                  </div>
-                </div>
-              )}
-              {(currentStep == 2 || currentStep == 3) && (
                 <>
-                  <div className="row fieldAlign form-group">{locationList}</div>
-                </>
-              )}
-               <div className="row fieldAlign form-group">
-                {currentStep == 2 &&
+                  <div className="row fieldAlign form-group">
                     <div className="col-sm-3">
                       <Input
                         type="text"
                         className="form-control"
-                        name="postalcode"
-                        placeHolder="Postal Code"
-                        value={userData.postalcode}
+                        name="taxid"
+                        placeHolder="Tax Id"
+                        value={userData.taxid}
                         onChange={(e: any) => this.handlePersonalChange(e)}
                         disabled={isValidatePage ? true : false}
                       />
-                      {postalCodeErr && (
-                        <span className="error">{postalCodeErr} </span>
-                      )}
-                    </div>  }
-                    {currentStep == 3 &&
+                      {taxIdErr && <span className="error">{taxIdErr} </span>}
+                    </div>
                     <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="whtpostalcode"
-                        placeHolder="Postal Code"
+                      <label className="pt-4">Same as Account Info</label>
+                      <CustomSwitch
+                        checked={this.state.accInfo}
                         onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={this.state.accInfo || isValidatePage ? true : false}
-                        value={
-                          this.state.accInfo
-                            ? userData.postalcode
-                            : userData.whtpostalcode
-                        }
+                        name="accInfo"
+                        disabled={isValidatePage ? true : false}
                       />
-                      {postalCodeTaxErr && (
-                        <span className="error">{postalCodeTaxErr} </span>
-                      )}
-                    </div>}
-                  
+                    </div>
                   </div>
-              {currentStep == 2 && (
+                  <div className="row fieldAlign form-group">
+                      {/* <div className="col-sm-3" style={{marginTop: '-32px'}}>
+                        <Input
+                          type="text"
+                          className="form-control"
+                          name="whtownername"
+                          placeHolder="Owner Name"
+                          value={userData.whtownername}
+                          onChange={(e: any) => this.handlePersonalChange(e)}
+                          disabled={
+                            (this.state.currentStep === 3 && this.state.accInfo) || (isValidatePage)
+                              ? true
+                              : false
+                          }
+                        />
+                        {taxIdErr && <span className="error">{taxIdErr} </span>}
+                      </div>
+                      <div className="col-sm-3" style={{marginTop: '-32px'}}>
+                        <Input
+                          type="text"
+                          className="form-control"
+                          name="whtaccountname"
+                          placeHolder="Account Name"
+                          value={userData.whtaccountname}
+                          onChange={(e: any) => this.handlePersonalChange(e)}
+                          disabled={
+                            (this.state.currentStep === 3 && this.state.accInfo) || (isValidatePage)
+                              ? true
+                              : false
+                          }
+                        />
+                        {taxIdErr && <span className="error">{taxIdErr} </span>}
+                      </div> */}
+                      {locationList}
+                      <div className="col-sm-3" style={{marginTop: '-35px', marginLeft: '-15px'}}>
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="whtpostalcode"
+                            placeHolder="Postal Code"
+                            onChange={(e: any) => this.handlePersonalChange(e)}
+                            disabled={this.state.accInfo || isValidatePage ? true : false}
+                            value={
+                              this.state.accInfo
+                                ? userData.postalcode
+                                : userData.whtpostalcode
+                            }
+                          />
+                          {postalCodeTaxErr && (
+                            <span className="error">{postalCodeTaxErr} </span>
+                          )}
+                      </div>
+                  </div>
+                  </>
+              )}
+              {(currentStep == 2 ) && (
                 <>
-                  <div
-                    className="row fieldAlign"
-                    style={{ marginBottom: "14px", marginLeft: "0px" }}
-                  >
-                    <textarea
-                      name="address"
-                      rows={4}
-                      cols={40}
-                      placeholder="Address"
-                      value={userData.address}
+                <div className="row fieldAlign form-group">
+                  {locationList}
+                  <div className="col-sm-3" style={{ marginTop: '-32px'}}>
+                    <Input
+                      type="text"
+                      className="form-control"
+                      name="postalcode" 
+                      placeHolder="Postal Code"
+                      value={userData.postalcode}
                       onChange={(e: any) => this.handlePersonalChange(e)}
                       disabled={isValidatePage ? true : false}
                     />
+                    {postalCodeErr && (
+                      <span className="error">{postalCodeErr} </span>
+                    )}
                   </div>
-                </>
-              )}
+                </div>
+
+                <div
+                  className="row fieldAlign"
+                  style={{ marginBottom: "14px", marginLeft: "0px" }}
+                >
+                  <textarea
+                    name="address"
+                    rows={4}
+                    cols={40}
+                    placeholder="Address"
+                    value={userData.address}
+                    onChange={(e: any) => this.handlePersonalChange(e)}
+                    disabled={isValidatePage ? true : false}
+                  />
+                </div>
+                </> )}
               {currentStep == 3 && (
                 <>
                   <div

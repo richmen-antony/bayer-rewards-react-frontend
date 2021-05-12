@@ -12,13 +12,10 @@ import helpCenterIcon from "../../assets/icons/help_icon.svg";
 import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
 import leftArrow from "../../assets/icons/left_arrow.svg";
-import {
-  setLocalStorageData,
-  getLocalStorageData,
-  clearLocalStorageData,
-} from "../../utility/base/localStore";
-import Cookies from "js-cookie";
-import { Scrollbars } from "react-custom-scrollbars";
+import country from '../../assets/images/country.svg';
+import { setLocalStorageData, getLocalStorageData, clearLocalStorageData } from '../../utility/base/localStore';
+import Cookies from 'js-cookie';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 type Props = {
   history?: any;
@@ -113,6 +110,15 @@ class Sidebar extends Component<Props, States> {
                   {this.state.userRole === "ADMIN" && (
                     <>
                       <li className="menu-title">MANAGEMENT</li>
+                      
+                                      <li className="d-flex">
+                    <span className={activeTab === 'devconfig' ? 'waves-effect active' : 'waves-effect'}></span>
+                    <Link to="/devconfig" className={activeTab === 'devconfig' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('devconfig')}>
+                        <img src={country} alt="User" width="16" /> <span> Dev Config </span>
+                    </Link>
+                </li>
+
+                      
                       <li className="d-flex">
                         <span
                           className={
@@ -146,23 +152,13 @@ class Sidebar extends Component<Props, States> {
                           <span> User List </span>
                         </Link>
                       </li>
+                                            {/* <li className="d-flex">
+                                                <span className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'}></span>
+                                                <Link to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
+                                                    <img src={pointLogsIcon} alt="User" width="16" /> <span> Configurations </span>
+                                                </Link>
+                                            </li> */}
 
-                      <li className="d-flex">
-                        <span
-                          className={
-                            window.location.pathname.indexOf('configurations') > -1
-                              ? "waves-effect active"
-                              : "waves-effect"
-                          }
-                        ></span>
-                        <Link
-                          to="/configurations"
-                          onClick={() => this.setActiveTab("configurations")}
-                        >
-                          <img src={pointLogsIcon} alt="User" width="16" />{" "}
-                          <span> Configurations </span>
-                        </Link>
-                      </li>
                     </>
                   )}
 

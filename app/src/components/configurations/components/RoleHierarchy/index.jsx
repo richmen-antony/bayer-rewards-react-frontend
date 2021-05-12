@@ -62,41 +62,15 @@ class RoleHierarchy extends React.Component {
       color: "white", background: "#89D329 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     }
 
     const btnStyleRemove = {
       color: "white", background: "#C1C1C1 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     }
-
-    // const btnStyleAdd = {
-    //   background: "#89D329 0% 0% no-repeat padding-box",
-    //   boxshadow: " 0px 3px 6px #00000029",
-    //   opacity: 1,
-    //   width: "35px",
-    //   height: "35px",
-    //   borderradius: "50%",
-    //   fontSize: "17px",
-    //   fontweight: "bold",
-    //   textalign: "center",
-    //   color: "white"
-    // };
-
-    // const btnStyleRemove = {
-    //   background: "#C1C1C1 0% 0% no-repeat padding-box",
-    //   boxshadow: " 0px 3px 6px #00000029",
-    //   opacity: 1,
-    //   width: "35px",
-    //   height: "35px",
-    //   borderradius: "50%",
-    //   fontSize: "17px",
-    //   fontweight: "bold",
-    //   textalign: "center",
-    //   color: "white"
-    // };
 
     return (
       <div className="col-md-10">

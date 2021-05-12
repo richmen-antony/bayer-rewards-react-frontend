@@ -364,7 +364,7 @@ class UserList extends Component<Props, States> {
     this.setState({ hierarchyList: nextHierarchyResponse });
   }
   getGeographicFields() {
-    let res = ["Country", "Region", "District", "EPA", "Village"];
+    let res = ["country", "region", "district", "epa", "village"];
     setTimeout(() => {
       this.setState({ geographicFields: res });
     }, 0);
@@ -375,9 +375,9 @@ class UserList extends Component<Props, States> {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value: list === "Country" ? "MALAWI" : "ALL",
+        value: list === "country" ? "MALAWI" : "All",
         options:
-          list === "Country"
+          list === "country"
             ? this.state.countryList
             : i == 1
             ? this.state.hierarchyList
@@ -412,13 +412,13 @@ class UserList extends Component<Props, States> {
     ];
 
     this.state.dynamicFields.map((list: any) => {
-      if (list.name === "Region") {
+      if (list.name === "region") {
         list.options = this.state.hierarchyList;
-      } else if (list.name === "District") {
+      } else if (list.name === "district") {
         list.options = districtResponse;
-      } else if (list.name === "EPA") {
+      } else if (list.name === "epa") {
         list.options = epaResponse;
-      } else if (list.name === "Village") {
+      } else if (list.name === "village") {
         list.options = villageResponse;
       }
     });
@@ -720,15 +720,16 @@ class UserList extends Component<Props, States> {
 
     const locationList = this.state.dynamicFields?.map(
       (list: any, index: number) => {
+        let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
         return (
           <>
             <div className="country">
               {index !== 0 && (
                 <div>
-                  {list.name !== "Village" && (
+                  {list.name !== "village" && (
                     <NativeDropdown
                       name={list.name}
-                      label={list.name}
+                      label={nameCapitalized}
                       options={list.options}
                       handleChange={(e: any, index: number) => {
                         e.stopPropagation();
@@ -738,9 +739,6 @@ class UserList extends Component<Props, States> {
                         this.handleUpdateDropdown(e.target.value, list.name);
                       }}
                       value={list.value}
-                      isPlaceholder
-                      
-                     
                     />
                   )}
                 </div>
