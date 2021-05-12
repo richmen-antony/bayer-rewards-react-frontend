@@ -796,7 +796,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             onChange={(e: any) => this.handlePersonalChange(e)}
                           />
                         </div>
-                        <div className='col-sm-6'>
+                        <div className='col-sm-6 editFilterText' style={{display:"flex",flexDirection:"column"}}>
                         <label className="font-weight-bold pt-4">isActive?</label>
                         <CustomSwitch
                           checked={this.state.activateUser}
