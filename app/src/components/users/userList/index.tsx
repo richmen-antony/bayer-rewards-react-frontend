@@ -253,7 +253,7 @@ class UserList extends Component<Props, States> {
     // });
   }
 
-  getChannelPartnersList = () => {
+  getChannelPartnersList = (condIf?:string) => {
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
     let data = {
@@ -262,12 +262,6 @@ class UserList extends Component<Props, States> {
       rowsperpage: this.state.rowsPerPage,
       usertype: "CHANNEL PARTNER",
       partnertype: this.state.partnerType.type === 'Distributor' ? 'Distributor' : this.state.partnerType.type === 'All' ? 'ALL' : 'Retailer'
-      // scantype: this.state.selectedFilters.scanType,
-      // productcategory: this.state.selectedFilters.productCategory,
-      // scanstatus: this.state.selectedFilters.status,
-      // isfiltered: this.state.isFiltered,
-      // startdate: this.state.selectedFilters.startDate,
-      // enddate: this.state.selectedFilters.endDate,
     };
     let {
       status,
@@ -593,7 +587,7 @@ class UserList extends Component<Props, States> {
   };
   applyFilter = () => {
     this.setState({ isFiltered: true }, () => {
-      this.getChannelPartnersList();
+      this.getChannelPartnersList("filter");
     });
 
     // this.timeOut = setTimeout(() => {

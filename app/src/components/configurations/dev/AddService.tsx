@@ -63,7 +63,7 @@ const AddService: React.FC<Props> = ({ open, close, data }) => {
     <AdminPopup
       open={open}
       onClose={close}
-      dialogStyles={dialogStyles}
+      maxWidth={"600px"}
       header={popupHeader}
     >
       <DialogContent>

@@ -14,6 +14,7 @@ import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
 import maxImg from "../../assets/images/maximize.svg"
+import CalenderIcon from "../../assets/icons/calendar.svg"
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -97,15 +98,21 @@ class ScanLogsTable extends Component<Props, States> {
     })
 
   }
+  handleUpdateRetailer (value:any){
+    this.setState({
+      retailerPopupData:value
+    })
+  }
   render() {
+    const {retailerPopupData,showProductPopup}= this.state;
     const {
       isLoader,
       pageNo,
       totalData,
       rowsPerPage,
-      showProductPopup,
     } = this.props.state;
     const { data } = this.props;
+    console.log({retailerPopupData});
 
     return (
       <AUX>
@@ -146,9 +153,11 @@ class ScanLogsTable extends Component<Props, States> {
                               {value.sellername}
                               <img
                                 className="retailer-icon"
-                                onClick={(event) =>
-                                  this.showPopup(event, "showPopup")
+                                onClick={(event) =>{
+                                  this.showPopup(event, "showPopup");
+                                  this.handleUpdateRetailer(value);
                                 }
+                              }
                                 src={ExpandWindowImg}
                               ></img>
                             </p>
@@ -204,8 +213,8 @@ class ScanLogsTable extends Component<Props, States> {
           <SimpleDialog
             open={this.state.showPopup}
             onClose={this.handleClosePopup}
-            dialogStyles={dialogStyles}
             header={popupHeader}
+            maxWidth= {"800px"}
           >
             <DialogContent>
               <div className="popup-container popup-retailer">
@@ -215,41 +224,45 @@ class ScanLogsTable extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {popupHeader?.title}, <label>{popupHeader?.sub}</label>{" "}
+                      {retailerPopupData.sellername}, <label>{popupHeader?.sub}</label>{" "}
                     </p>
                   </div>
                   <div className="popup-content-row">
                     <div className="content-list">
                       <label>UserName</label>
-                      <p>GCHPU</p>
+                      <p>{retailerPopupData.username}</p>
                     </div>
                     <div className="content-list">
                       <label>Account Name</label>
-                      <p>Choke Mongkol Seeds</p>
+                      <p>{retailerPopupData.accountname}</p>
                     </div>
                     <div className="content-list">
                       <label>Phone Number</label>
-                      <p>+265 0987654321</p>
+                      <p>{retailerPopupData.mobilenumber}</p>
                     </div>
                     <div className="content-list">
                       <label>Region</label>
-                      <p>Central Region</p>
+                      <p>{retailerPopupData.region}</p>
                     </div>
                     <div className="content-list">
                       <label>District</label>
-                      <p>Kasunga</p>
+                      <p>{retailerPopupData.district}</p>
                     </div>
                     <div className="content-list">
                       <label>EPA</label>
-                      <p>Chikwawa</p>
+                      <p>{retailerPopupData.epa}</p>
                     </div>
                     <div className="content-list">
                       <label>Postal Code</label>
-                      <p>600091</p>
+                      <p>{retailerPopupData.postalcode}</p>
                     </div>
                     <div className="content-list">
                       <label>Account expiry date</label>
-                      <p>24 Dec, 2021</p>
+                      <div style={{minWidth:"130px"}}> 
+                      
+                      <p> <img src={CalenderIcon} style={{paddingRight:"5px"}} />{retailerPopupData.expirydate&&moment(retailerPopupData.expirydate).format("Do MMMM, YYYY")}</p>
+                      </div>
+                      
                     </div>
                   </div>
                 </div>
@@ -272,7 +285,7 @@ class ScanLogsTable extends Component<Props, States> {
           ""
         )}
 
-        {this.state.showProductPopup ? (
+        {showProductPopup ? (
           <OrderTable
             open={showProductPopup}
             close={this.handleCloseProductPopup}

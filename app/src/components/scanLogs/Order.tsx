@@ -21,24 +21,7 @@ const popupHeader = {
   title: "Order ID",
   sub: "1538",
 };
-const dialogStyles = {
-  paperWidthSm: {
-    maxWidth: "800px",
-    background: "transparent",
-    boxShadow: "none",
-  },
-};
-const DialogTitle = withStyles((theme: Theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-}))(MuiDialogTitle);
+
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -65,12 +48,11 @@ interface Props {
  * @returns
  */
 const OrderTable: React.FC<Props> = ({ open, close, data }) => {
-  console.log({ data });
   return (
     <SimpleDialog
       open={open}
       onClose={close}
-      dialogStyles={dialogStyles}
+      maxWidth={"800px"}
       header={popupHeader}
     >
       <DialogContent>
@@ -161,7 +143,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   <td></td>
                   <td></td>
                   <td>
-                    Total <span>16</span>
+                    Total <span>10</span>
                   </td>
                   <td>-</td>
                   <td>-</td>
