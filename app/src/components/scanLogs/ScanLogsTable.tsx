@@ -17,6 +17,7 @@ import maxImg from "../../assets/images/maximize.svg"
 import CalenderIcon from "../../assets/icons/calendar.svg"
 import ActiveIcon from "../../assets/images/check.svg";
 
+
 const popupHeader = {
   title: "Maria Joseph",
   sub: "Retailer",

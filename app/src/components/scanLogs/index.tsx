@@ -19,7 +19,11 @@ import {
 } from "../../utility/base/localStore";
 import { Pagination } from "../../utility/widgets/pagination";
 
-import { downloadExcel, downloadCsvFile } from "../../utility/helper";
+import {
+  downloadExcel,
+  downloadCsvFile,
+  DownloadCsv,
+} from "../../utility/helper";
 // import SimpleTabs from "../../../container/Layout/Tabs";
 import "react-web-tabs/dist/react-web-tabs.css";
 
@@ -35,6 +39,7 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import ScanLogsTable from "./ScanLogsTable";
+import Download from "../../assets/icons/download.svg";
 
 type SelectedFiltersTypes = {
   type: string;
@@ -111,7 +116,6 @@ const useStyles = (theme: Theme) => ({
     padding: "0px",
     marginTop: "5px",
   },
-  
 });
 const AntTab = withStyles((theme: Theme) =>
   createStyles({
@@ -294,8 +298,27 @@ class ScanLogs extends Component<Props, States> {
   };
 
   download = () => {
-    let html: any = document.querySelector("table")?.outerHTML;
-    this.export_table_to_csv(html, "table.csv");
+    const { downloadScanlogs } = apiURL;
+    const data = {
+      page: this.state.pageNo,
+      searchtext: this.state.searchText,
+      rowsperpage: this.state.rowsPerPage,
+      role: this.state.selectedFilters.type,
+      isfiltered: this.state.isFiltered,
+      region: "R1",
+      ordereddatefrom: "2020-04-20",
+      ordereddateto: "2022-04-21",
+      status: "ALL",
+      retailer: "ALL",
+      farmer: "ALL",
+    };
+
+    invokeGetAuthService(downloadScanlogs, data)
+      .then((response) => {
+        const data = response?.body?.rows;
+        DownloadCsv(data, "scanlogs.csv");
+      })
+      .catch((error) => {});
   };
 
   getScanLogs = () => {
@@ -486,13 +509,13 @@ class ScanLogs extends Component<Props, States> {
       value = e.target.value;
       this.setState({ rowsPerPage: value });
       setTimeout(() => {
-         this.getScanLogs();
+        this.getScanLogs();
       }, 2000);
     } else if (e.target.name === "gotopage") {
       value = e.target.value;
       this.setState({ pageNo: value });
       setTimeout(() => {
-         this.getScanLogs();
+        this.getScanLogs();
       }, 2000);
     }
   };
@@ -551,7 +574,6 @@ class ScanLogs extends Component<Props, States> {
                 </AntTabs>
 
                 <div className="filterSide text-center">
-                  
                   <div className="searchInputRow advisor-sales">
                     <i className="fa fa-search icon"></i>
                     <input
@@ -575,9 +597,7 @@ class ScanLogs extends Component<Props, States> {
                       </DropdownToggle>
                       <DropdownMenu right>
                         <div className="p-3">
-                          <label className="font-weight-bold">
-                            Retailer
-                          </label>
+                          <label className="font-weight-bold">Retailer</label>
                           <i
                             className="fa fa-filter boxed float-right"
                             aria-hidden="true"
@@ -599,10 +619,8 @@ class ScanLogs extends Component<Props, States> {
                               <option>Retailer</option>
                             </select>
                           </div>
-                         
-                          <label className="font-weight-bold">
-                            Farmer
-                          </label>
+
+                          <label className="font-weight-bold">Farmer</label>
                           <i
                             className="fa fa-filter boxed float-right"
                             aria-hidden="true"
@@ -744,11 +762,8 @@ class ScanLogs extends Component<Props, States> {
                     </Dropdown>
                   </div>
                   <div>
-                    <button
-                      className="btn btn-primary downloadBtn"
-                      onClick={this.download}
-                    >
-                      <i className="fa fa-download"></i>
+                    <button className="btn btn-primary" onClick={this.download}>
+                      <img src={Download} width="17" />
                     </button>
                   </div>
                 </div>
