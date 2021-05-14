@@ -31,7 +31,7 @@ import right_arrow from "../../assets/icons/left-arrow.svg";
 import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
 
-import "../../assets/scss/responsive.scss";
+
 
 export interface IFormValue {
   id: string;
