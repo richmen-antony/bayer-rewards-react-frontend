@@ -119,8 +119,12 @@ class CreateUser extends Component<any, any> {
       let userDetails = JSON.parse(data);
       const { userFields } = this.props.location.state;
       userFields['activateUser'] = true;
-      userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
-      userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
+      // userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
+      // userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
+      let from = '2021-10-10';
+      let to = '2021-12-05';
+      userFields['fromdate'] = moment(from).format("YYYY-MM-DD");
+      userFields['expirydate']= moment(to).format("YYYY-MM-DD");
       this.setState({ userName: userDetails.username},()=>{
         userFields['lastupdatedby'] = this.state.userName;
       });

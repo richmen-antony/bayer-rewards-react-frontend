@@ -474,7 +474,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
     const { username,status }: any = this.state.userData;
      this.setState({ isLoader: true });
-    if(status==="Active"){
+    if(status==="Not Activated"){
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
@@ -482,12 +482,9 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
 
     }else {
       let condUrl;
-      if (
-       status === "Active" ||
-       status === "Inactive"
-      ) {
+      if (status === "Inactive") {
         condUrl = activateChannelPartner;
-      } else {
+      } else if( status === "Active" ) {
         condUrl = deactivateChannelPartner;
       }
      
@@ -914,7 +911,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                       {/* <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td> */}
                       <td style={{width : '50px'}}>
                         <img
-                          className="edit"
+                          className={list.status == 'Declined' ? "disabledEdit" : "edit"}
                           src={list.status == 'Declined' ? EditDisabled : Edit}
                           width="20"
                           onClick={(event) => {

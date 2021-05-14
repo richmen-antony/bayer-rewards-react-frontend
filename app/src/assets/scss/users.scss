@@ -183,7 +183,6 @@ tbody tr {
     border-radius: 30px;
     min-width: 100px;
     padding: 10px;
-    cursor: pointer;
     i {
       margin-right: 5px;
     }
@@ -191,21 +190,23 @@ tbody tr {
   .status.active {
     color: #1ccead;
     background-color: #e3f8f4;
+    cursor: pointer;
   }
   .status.inactive {
     color: #ff6397;
     background-color: #ffecf2;
+    cursor: pointer;
   }
   .status.notActivated {
     color: #FF9D00;
     background-color: #FFE6BE;
     min-width: 125px;
     padding: 10px 0px 10px 5px;
+    cursor: pointer;
   }
   .status.declined {
     color: #ec0c0c;
     background-color: #f8cbcb;
-
   }
   .max-image {
     margin-left: 60px;
@@ -215,9 +216,12 @@ tbody tr {
     margin-right: 8px;
     cursor: pointer; 
   }
+  .disabledEdit {
+    margin-right: 8px;
+  }
 }
 
-tbody { height: 400px; overflow-y: scroll }
+tbody { height: 400px; overflow-y: scroll}
  
 
 }
