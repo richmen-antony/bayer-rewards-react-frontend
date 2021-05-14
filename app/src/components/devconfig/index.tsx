@@ -1,14 +1,16 @@
-import React, { Component, useState, useEffect, MouseEvent, KeyboardEvent } from "react";
+import React from "react";
 import "../../assets/scss/configurations.scss";
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 // import "../devconfig/devconfig.scss"
 import Stepper from "../../container/components/stepper/Stepper";
 
 import { FormSteps } from '../../utility/constant';
 import { CountrySetup } from './components/countrysetup';
-import { LocationHierarchy } from './components/LocationHierarchy';
-import { RoleHierarchy } from './components/RoleHierarchy';                  // Step 1 
-import { TnTFlow } from './components/TnTFlow';
-import { ScanPointsAndAllocation } from './components/ScanPointsAndAllocation';
+import LocationHierarchy from './components/LocationHierarchy';
+import RoleHierarchy from './components/RoleHierarchy';                  // Step 1 
+import TnTFlow from './components/TnTFlow';
+import ScanPointsAndAllocation from './components/ScanPointsAndAllocation';
 import { Anticounterfeit } from './components/Anticounterfeit';
 
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -19,19 +21,17 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import cluster_json from '../../utility/lib/cluster.json';
 
 import AUX from "../../hoc/Aux_";
-import { makeStyles, withStyles, Theme, createStyles, WithStyles, } from "@material-ui/core/styles";
+import { withStyles, Theme, createStyles, WithStyles, } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 
 import left_arrow from "../../assets/icons/left_arrow.svg";
-import right_arrow from "../../assets/icons/right_arrow.svg";
+import right_arrow from "../../assets/icons/left-arrow.svg";
 import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
 
-interface MyComponentProps extends WithStyles<typeof useStyles> {
-  selectedCountryDetails: Array<string>;
-}
+
 
 export interface IFormValue {
   id: string;
@@ -41,6 +41,10 @@ interface IDevConfigProps {
   locationhierarchy: IFormValue[];
   selectedLocationHierarchy?: IFormValue[];
   classes: any;
+  loacationinputList: any;
+  roleinputList: any;
+  tntflowinputList: any;
+  scanpointsandallocationinputList: any;
 }
 
 type MyComponentState = {
@@ -248,7 +252,6 @@ class Devconfigurations extends React.Component<IDevConfigProps, MyComponentStat
       window.scrollTo(0, 0);
     }
     console.log("setSelectedCluster", this.state.setSelectedCluster);
-    console.log("selectedLocationHierarchyDetails", this.state.selectedLocationHierarchyDetails)
     if (this.state.setSelectedCluster) {
       this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
     }
@@ -320,41 +323,25 @@ class Devconfigurations extends React.Component<IDevConfigProps, MyComponentStat
         )
       case 2:
         return (
-          <LocationHierarchy
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            setLocation={(data) => this.setState({ selectedLocationHierarchyDetails: data })}
-          />
+          <LocationHierarchy />
         )
       case 3:
         return (
-          <RoleHierarchy
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            setRole={(data) => this.setState({ selectedLocationHierarchyDetails: data })}
-          />
+          <RoleHierarchy />
         )
       case 4:
         return (
-          <TnTFlow
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            setTnT={(data) => this.setState({ selectedTnTFlowDetails: data })}
-          />
+          <TnTFlow />
         )
       case 5:
         return (
-          <ScanPointsAndAllocation
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            setScanPointsAndAllocation={(data) => this.setState({ selectedScanPointsAndAllocationDetails: data })}
-          />
+          <ScanPointsAndAllocation />
         )
       case 6:
         return (
           <Anticounterfeit
-            prevStep={this.prevStep}
-            setAnticounterfeit={(data) => this.setState({ selectedAnticounterfeitDetails: data })}
+          prevStep={this.prevStep}
+          setAnticounterfeit={(data) => this.setState({ selectedAnticounterfeitDetails: data })}
           />
         )
       default:
@@ -511,14 +498,14 @@ class Devconfigurations extends React.Component<IDevConfigProps, MyComponentStat
                   direction="horizontal"
                   currentStepNumber={currentStep - 1}
                   steps={stepsArray}
-                  stepColor="#4CD964"
+                  stepColor="#5A5A5A"
                 />
               </div>
               {this._getCurrentStep()}
               <div className="col-md-12 buttons-container">
                 {this.state.isActive && <button style={btnStyle} onClick={() => this.handleClick()}><img src={left_arrow} /> Back</button>}
                 <button style={btnStyle} onClick={() => this.handleReset()}>Reset <img src={reset} /></button>
-                {button}
+                <button style={btnNextSubmit} onClick={() => this.handleClick("next")}>{currentStep === stepsArray.length ? 'Submit' : 'Next'} {currentStep === stepsArray.length ? <img src={check} /> : <img src={right_arrow} />} </button>
               </div>
 
             </TabPanel>
@@ -544,4 +531,14 @@ const stepsArray = [
   "Anti-counterfeit"
 ];
 
-export default withStyles(useStyles)(Devconfigurations);
+const mapStateToProps = ({ devconfig: { location, role, tntflow,scanpointsandallocation } }: any) => {
+  return {
+    loacationinputList: location.inputList,
+    roleinputList: role.inputList,
+    tntflowinputList: tntflow.inputList,
+    scanpointsandallocationinputList: scanpointsandallocation.inputList
+  }
+}
+
+const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);
+export default rootComponent as React.ComponentType;

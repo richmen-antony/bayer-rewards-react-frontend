@@ -2,25 +2,17 @@ import React, { useState, useEffect } from 'react';
 import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
-
+import { connect } from 'react-redux'
+import { addTnTFlowInputList } from '../../../redux/actions';
 
 interface ITnTProps {
-    nextStep: () => void;
-    prevStep: () => void;
-    setTnT: (data: any) => void;
+    tntflow: any;
+    setInputList: (data: any) => void;
 }
 
 export const TnTFlow = (props: ITnTProps) => {
-    const { setTnT } = props;
-    const [inputList, setInputList] = useState([{ code: "", position: "" }]);
+    const { tntflow : { inputList }, setInputList} = props;
     const [valSelected, setValSelected] = useState('NA');
-
-    useEffect(() => {
-        return () => {
-            setTnT(inputList)
-        }
-    }, []);
-
 
     // handle input change
     const handleInputChange = (e: any, index: any) => {
@@ -70,7 +62,7 @@ export const TnTFlow = (props: ITnTProps) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {inputList.map((item, idx) => (
+                                {inputList.map((item:any, idx:number) => (
                                     <tr id="addr0" key={idx}>
                                         <td className="tableStyle" >{idx}</td>
                                         <td className="tableHeaderStyle">
@@ -108,3 +100,15 @@ export const TnTFlow = (props: ITnTProps) => {
         </div>
     );
 };
+
+const mapStateToProps = ( { devconfig : { tntflow }}: any ) => {
+    return {
+        tntflow
+    }
+}
+
+const mapDispatchToProps = {
+    setInputList : addTnTFlowInputList
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(TnTFlow)
