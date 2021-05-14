@@ -13,6 +13,7 @@ import AdminPopup from "../../../container/components/dialog/AdminPopup";
 // import '../../../assets/scss/users.scss';
 import moment from "moment";
 import Edit from "../../../assets/images/edit.svg";
+import EditDisabled from "../../../assets/icons/edit_disabled.svg";
 import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
@@ -30,6 +31,7 @@ import { Input } from "../../../utility/widgets/input";
 import CustomDropdown from '../../../utility/widgets/dropdown';
 import CustomSwitch from "../../../container/components/switch";
 import { List } from "@material-ui/core";
+import { AnyCnameRecord } from "node:dns";
 
 type Props = {
   location?: any;
@@ -468,6 +470,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
     const { username,status }: any = this.state.userData;
+     this.setState({ isLoader: true });
     if(status==="Active"){
       // redirect add user page
       this.props.history.push({
@@ -859,7 +862,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                       <td style={{width : '98px'}}>{list.village} </td>
                       <td style={{width : '130px'}}>
                         <span
-                          onClick={(event) => {
+                          onClick={(event: any) => {
+                            list.status == 'Declined' ? event.preventDefault() : 
                             this.showPopup(event, "deActivatePopup");
                             this.getCurrentUserData(list);
                           }}
@@ -870,6 +874,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                               ? "inactive"
                               : list.status === "Not Activated"
                               ? "notActivated"
+                              : list.status === "Declined"
+                              ? "declined"
                               : ""
                           }`}
                         >
@@ -881,6 +887,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                                 : list.status === "Inactive"
                                 ? Cancel
                                 : list.status === "Not Activated"
+                                ? NotActivated
+                                : list.status === "Declined"
                                 ? NotActivated
                                 : ""
                             }
@@ -896,17 +904,19 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           width="20"
                         />
                       </td> */}
-                      <td style={{width : '100px'}}>
+                      <td style={{width : '85px'}}>
                         {list.lastupdatedby}
                       </td>
                       {/* <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td> */}
                       <td style={{width : '50px'}}>
                         <img
-                          style={{ marginRight: "8px" }}
-                          src={Edit}
+                          className="edit"
+                          src={list.status == 'Declined' ? EditDisabled : Edit}
                           width="20"
                           onClick={(event) => {
-                            this.editPopup(event, list);
+                            list.status == 'Declined' 
+                            ? event.preventDefault() 
+                            : this.editPopup(event, list);
                           }}
                         />
                       </td>

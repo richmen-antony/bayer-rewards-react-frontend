@@ -1,126 +1,187 @@
 import React, { Component } from "react";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import { Tooltip } from "reactstrap";
-// import Button from '@material-ui/core/Button';
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
-// import "../../../assets/scss/scanLogs.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
   invokeGetAuthService,
   invokeGetService,
 } from "../../../utility/base/service";
-import filterIcon from "../../../assets/icons/filter_icon.svg";
-import downloadIcon from "../../../assets/icons/download_icon.svg";
-import cross from "../../../assets/icons/cross.svg";
-import Loader from "../../../utility/widgets/loader";
-import {
-  setLocalStorageData,
-  getLocalStorageData,
-  clearLocalStorageData,
-} from "../../../utility/base/localStore";
-import CustomTable from "../../../container/grid/CustomTable";
-import { Pagination } from "../../../utility/widgets/pagination";
-import SimpleDialog from "../../../container/components/dialog";
-import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles,
-} from "@material-ui/core/styles";
 import "../../../assets/scss/users.scss";
 import moment from "moment";
-import { downloadExcel, downloadCsvFile } from "../../../utility/helper";
+import SearchIcon from "../../../assets/icons/search_icon.svg";
+import NoImage from "../../../assets/images/no_image.svg";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
-import { Input } from "../../../utility/widgets/input";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
+import Download from "../../../assets/icons/download.svg";
 
 type Props = {
   location?: any;
   history?: any;
-  // classes?: any;
-  onSort: Function;
-  allChannelPartners: any;
-  isAsc: Boolean;
+  backToUsersList: Function;
 };
 type States = {
-  isActivateUser: boolean;
-  isdeActivateUser: boolean;
-  isEditUser: boolean;
-  dialogOpen: boolean;
   isLoader: boolean;
+  allChangeLogs: Array<any>;
+  searchText: any;
+  rowsPerPage: Number;
+  pageNo: Number;
+  isAsc: Boolean;
 };
 
 class ChangeLogs extends Component<Props, States> {
+  tableCellIndex : any;
+  timeOut: any;
   constructor(props: any) {
     super(props);
     this.state = {
-      dialogOpen: false,
-      isActivateUser: false,
-      isdeActivateUser: false,
-      isEditUser: false,
       isLoader: false,
+      allChangeLogs: [],
+      searchText: "",
+      rowsPerPage: 15,
+      pageNo: 1,
+      isAsc: true,
     };
+    this.timeOut = 0;
+  }
+
+  componentDidMount(){
+    this.getChangeLogs();
+  }
+
+  getChangeLogs =()=>{
+      const { changeLogs } = apiURL;
+       this.setState({ isLoader: true });
+      let data = {
+        page: this.state.pageNo,
+        searchtext: this.state.searchText,
+        rowsperpage: this.state.rowsPerPage,
+      }
+
+      invokeGetAuthService(changeLogs, data)
+      .then((response: any) => {
+        this.setState({
+          isLoader: false,
+          allChangeLogs:
+          Object.keys(response.body).length !== 0 ? response.body : [],
+        });
+
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
+  }
+  handleSearch = (e: any) => {
+    // alert('hi')
+    let searchText = e.target.value;
+    this.setState({ searchText: searchText });
+    console.log('text', this.state.searchText)
+    if (this.timeOut) {
+      clearTimeout(this.timeOut);
+    }
+    if (searchText.length >= 3 || searchText.length == 0) {
+      this.timeOut = setTimeout(() => {
+        this.getChangeLogs();
+      }, 1000);
+    }
+  };
+  onSort = (name: string, data: any, isAsc: Boolean) => {
+    let response = sortBy(name, data);
+    this.setState({ allChangeLogs: response, isAsc: !isAsc });
+  };
+
+  handleSort(e:any,columnname: string, allChangeLogs : any, isAsc : Boolean){
+    this.tableCellIndex = e.currentTarget.cellIndex;
+    this.onSort(columnname, allChangeLogs, isAsc)
   }
 
   render() {
-    const { allChannelPartners, isAsc, onSort } = this.props;
+    const { backToUsersList } = this.props;
+    const { allChangeLogs, searchText, isLoader, isAsc} = this.state;
+
     return (
-      <>
-        {allChannelPartners.length > 0 ? (
+      <AUX>
+          {isLoader && <Loaders />}
+        <div
+          className="container-fluid card"
+          style={{ backgroundColor: "#f8f8fa" }}
+        >
+          <div className="row align-items-center user-tab">
+            <div className="col-sm-6">
+            <span>
+                  <img
+                    style={{ marginRight: "8px" }}
+                    src={leftArrow}
+                    width="17"
+                    alt="leftArrow"
+                    onClick={()=>backToUsersList()}
+                  />
+                  CHANGE LOGS
+                </span>
+            
+            </div>
+            <div className="col-sm-6 leftAlign">
+                <div className="searchInputRow advisor-sales">
+                   <i className="icon"><img src={SearchIcon} width="17" alt={NoImage} /> </i>
+                  <input
+                    placeholder="Search Logs (min 3 letters)"
+                    className="input-field"
+                    type="text"
+                    onChange={this.handleSearch}
+                    value={searchText}
+                  />
+                  {/* <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Account Name and Owner Name"></i> */}
+                </div>
+              <div>
+                <button className="btn btn-primary">
+                <img src={Download} width="17" alt={NoImage} /> <span>Download</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        {allChangeLogs.length > 0 ? (
           <div className="table-responsive">
             <table className="table" id="tableData">
               <thead>
                 <tr>
-                  <th>
+                  <th onClick={e => this.handleSort(e, "username", allChangeLogs, isAsc)}>
                     User Name
-                    <i
-                      className={`fa ${
-                        isAsc ? "fa-angle-down" : "fa-angle-up"
-                      } ml-3`}
-                      onClick={() =>
-                        onSort("accountname", allChannelPartners, isAsc)
-                      }
-                    ></i>
+                    {
+                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                    }
                   </th>
-                  <th>Field</th>
-                  <th>
+                  <th onClick={e => this.handleSort(e, "field", allChangeLogs, isAsc)}>Field
+                  {
+                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                    }</th>
+                  <th onClick={e => this.handleSort(e, "oldvalue", allChangeLogs, isAsc)}>
                     Old Value
-                    <i
-                      className={`fa ${
-                        isAsc ? "fa-angle-down" : "fa-angle-up"
-                      } ml-3`}
-                      onClick={() =>
-                        onSort("ownername", allChannelPartners, isAsc)
-                      }
-                    ></i>
+                    {
+                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                    }
                   </th>
-                  <th>New Value</th>
+                  <th onClick={e => this.handleSort(e, "newvalue", allChangeLogs, isAsc)}>New Value
+                  {
+                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                    }
+                  </th>
                   <th>Modified Date</th>
                   <th>Modified Time</th>
                 </tr>
               </thead>
               <tbody>
-                {allChannelPartners.map((list: any, i: number) => (
+                {allChangeLogs.map((list: any, i: number) => (
                   <AUX key={i}>
                     <tr>
-                      <td>{list.username}</td>
-                      <td>{list.mobilenumber} </td>
-                      <td>{list.ownername} </td>
-                      <td>{list.accountname} </td>
-                      <td>{list.district} </td>
-                      <td>{list.epa} </td>
+                      <td>{list.lastmodifiedby}</td>
+                      <td>{list.field} </td>
+                      <td>{list.oldvalue} </td>
+                      <td>{list.newvalue} </td>
+                      <td>{moment(list.modifieddate).format("YYYY-MM-DD")}</td>
+                      <td>{null}</td>
                     </tr>
                   </AUX>
                 ))}
@@ -129,14 +190,15 @@ class ChangeLogs extends Component<Props, States> {
           </div>
         ) : this.state.isLoader ? (
           <Loaders />
-        ) : (
-          <div className="col-12 card mt-4">
-            <div className="card-body ">
-              <div className="text-red py-4 text-center">No Data Found</div>
+          ) : (
+            <div className="col-12 card mt-4">
+              <div className="card-body ">
+                <div className="text-red py-4 text-center">No Data Found</div>
+              </div>
             </div>
-          </div>
-        )}
-      </>
+          )}
+        </div>
+      </AUX>
     );
   }
 }

@@ -183,6 +183,7 @@ tbody tr {
     border-radius: 30px;
     min-width: 100px;
     padding: 10px;
+    cursor: pointer;
     i {
       margin-right: 5px;
     }
@@ -201,9 +202,18 @@ tbody tr {
     min-width: 125px;
     padding: 10px 0px 10px 5px;
   }
+  .status.declined {
+    color: #ec0c0c;
+    background-color: #f8cbcb;
+
+  }
   .max-image {
     margin-left: 60px;
     cursor: pointer;
+  }
+  .edit {
+    margin-right: 8px;
+    cursor: pointer; 
   }
 }
 
@@ -363,8 +373,7 @@ tbody { height: 400px; overflow-y: scroll }
     position: absolute;
   }
   .icon {
-    padding: 13px;
-    color: #8e8e8e;
+    padding: 8px;
   }
 
   input {

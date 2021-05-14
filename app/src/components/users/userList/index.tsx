@@ -17,6 +17,10 @@ import {
   invokeGetAuthService
 } from "../../../utility/base/service";
 import filterIcon from "../../../assets/icons/filter_icon.svg";
+import Download from "../../../assets/icons/download.svg";
+import cross from "../../../assets/icons/cross.svg";
+import SearchIcon from "../../../assets/icons/search_icon.svg";
+import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
 import {
   createStyles,
@@ -26,6 +30,8 @@ import {
 import "../../../assets/scss/users.scss";
 import {DownloadCsv} from "../../../utility/helper";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
+import { Input } from "../../../utility/widgets/input";
+import Logs from "../../../assets/icons/logs.svg";
 import ChannelPartners from "./channelPartners";
 import ThirdPartyUsers from "./thirdPartyUsers";
 import ChangeLogs from "./changeLogs";
@@ -57,7 +63,6 @@ type States = {
   allChannelPartners: Array<any>;
   allThirdParty: Array<any>;
   dropDownValue: string;
-  scanType: Array<any>;
   productCategories: Array<any>;
   status: Array<any>;
   list: Array<any>;
@@ -190,10 +195,9 @@ class UserList extends Component<Props, States> {
       isRendered: false,
       pageNo: 1,
       dropDownValue: "Select action",
-      scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
       productCategories: [],
       status: ["All", "Valid", "Invalid"],
-      list: ["ALL", "Distributor", "Retailer"],
+      list: ["Distributor", "Retailer"],
       selectedFilters: {
         region: "All",
         epa: "All",
@@ -203,7 +207,7 @@ class UserList extends Component<Props, States> {
         endDate: new Date().toISOString().substr(0, 10),
       },
       partnerType: {
-        type : 'ALL',
+        type : 'Retailer',
       },
       dateErrMsg: "",
       searchText: "",
@@ -308,13 +312,6 @@ class UserList extends Component<Props, States> {
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       usertype: "THIRD PARTY",
-      // role: this.state.selectedFilters.type,
-      // scantype: this.state.selectedFilters.scanType,
-      // productcategory: this.state.selectedFilters.productCategory,
-      // scanstatus: this.state.selectedFilters.status,
-      // isfiltered: this.state.isFiltered,
-      // startdate: this.state.selectedFilters.startDate,
-      // enddate: this.state.selectedFilters.endDate,
     };
 
     invokeGetAuthService(channelPartnersList, data)
@@ -667,6 +664,9 @@ class UserList extends Component<Props, States> {
       },
     });
   };
+  backToUsersList = () => {
+    this.setState({ changeLogOpen: false});
+  }
 
   render() {
     const {
@@ -753,7 +753,7 @@ class UserList extends Component<Props, States> {
         >
           <div className="row align-items-center user-tab">
             <div className="col-sm-6">
-              {!changeLogOpen ? (
+              {!changeLogOpen && (
                 <div className={classes?.root}>
                   <div className={classes?.demo1}>
                     <div className="tabs">
@@ -767,52 +767,28 @@ class UserList extends Component<Props, States> {
                       </AntTabs>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <span>
-                  <img
-                    style={{ marginRight: "8px" }}
-                    src={leftArrow}
-                    width="17"
-                    alt="leftArrow"
-                    onClick={() => this.setState({ changeLogOpen: false })}
-                  />
-                  CHANGE LOGS
-                </span>
-              )}
+                </div>)}
             </div>
             <div className="col-sm-6 leftAlign">
               {!changeLogOpen && (
+                <>
                 <div>
                   <button
                     className="form-control changeLogs"
                     onClick={() => this.handleChangeLog()}
                   >
-                    <i className="fa fa-history mr-2"></i>{" "}
+                      <img src={Logs} alt={NoImage} />{" "}
                     <span>Change Logs</span>
                   </button>
                 </div>
-              )}
-              {changeLogOpen && (
-                <div className="searchInputRow advisor-sales">
-                  <i className="fa fa-search icon"></i>
-                  <input
-                    placeholder="Search user (min 3 letters)"
-                    className="input-field"
-                    type="text"
-                    onChange={this.handleSearch}
-                    value={searchText}
-                  />
-                  <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Account Name and Owner Name"></i>
-                </div>
-              )}
+              
               <div>
-                {/* <img src={downloadIcon} width="17" alt="filter" /> */}
-
                 <button className="btn btn-primary" onClick={this.download}>
-                  <i className="fa fa-download mr-2"></i> <span>Download</span>
+                <img src={Download} width="17" alt={NoImage} />  <span>Download</span>
                 </button>
               </div>
+              </>
+              )}
             </div>
           </div>
           {!changeLogOpen && (
@@ -823,7 +799,7 @@ class UserList extends Component<Props, States> {
               >
                 <div className="col-sm-6">
                   <div className="searchInputRow advisor-sales">
-                    <i className="fa fa-search icon"></i>
+                    <i className="icon"><img src={SearchIcon} width="17" alt={NoImage} /> </i>
                     <input
                       placeholder="Search user (min 3 letters)"
                       className="input-field"
@@ -863,7 +839,7 @@ class UserList extends Component<Props, States> {
                         >
                           <DropdownToggle onClick={(e) => e.stopPropagation()}>
                             {!dropdownOpenFilter && (
-                              <img src={filterIcon} width="17" alt="filter" />
+                              <img src={filterIcon} width="17" alt={NoImage} />
                             )}
                           </DropdownToggle>
                           <DropdownMenu right>
@@ -987,11 +963,7 @@ class UserList extends Component<Props, States> {
                 </TabPanel>
               </>
             ) : (
-              <ChangeLogs
-                allChannelPartners={allChannelPartners}
-                isAsc={isAsc}
-                onSort={this.onSort}
-              />
+              <ChangeLogs backToUsersList={this.backToUsersList} />
             )}
           </div>
         </div>
