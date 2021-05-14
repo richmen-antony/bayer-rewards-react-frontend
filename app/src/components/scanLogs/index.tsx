@@ -39,6 +39,7 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import ScanLogsTable from "./ScanLogsTable";
+import NoImage from "../../assets/images/no_image.svg";
 import Download from "../../assets/icons/download.svg";
 
 type SelectedFiltersTypes = {
@@ -763,7 +764,7 @@ class ScanLogs extends Component<Props, States> {
                   </div>
                   <div>
                     <button className="btn btn-primary" onClick={this.download}>
-                      <img src={Download} width="17" />
+                      <img src={Download} width="17" alt={NoImage} />
                     </button>
                   </div>
                 </div>

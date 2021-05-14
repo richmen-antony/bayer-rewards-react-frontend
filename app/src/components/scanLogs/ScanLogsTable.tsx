@@ -16,7 +16,7 @@ import ExpandWindowImg from "../../assets/images/expand-window.svg";
 import maxImg from "../../assets/images/maximize.svg"
 import CalenderIcon from "../../assets/icons/calendar.svg"
 import ActiveIcon from "../../assets/images/check.svg";
-
+import { sortBy } from "../../utility/base/utils/tableSort";
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -70,14 +70,18 @@ type States = {
   showPopup: boolean;
   showProductPopup: boolean;
   [key: string]: any;
+  isAsc: Boolean;
 };
 
 class ScanLogsTable extends Component<Props, States> {
+  tableCellIndex : any;
+
   constructor(props: any) {
     super(props);
     this.state = {
       showPopup: false,
       showProductPopup: false,
+      isAsc: true,
     };
   }
 
@@ -106,8 +110,19 @@ class ScanLogsTable extends Component<Props, States> {
       retailerPopupData:value
     })
   }
+
+  onSort = (name: string, datas: any, isAsc: Boolean) => {
+    let response = sortBy(name, datas);
+    this.setState({ data: response, isAsc: !isAsc });
+  };
+
+  handleSort(e:any,columnname: string, data : any, isAsc : Boolean){
+    this.tableCellIndex = e.currentTarget.cellIndex;
+    this.onSort(columnname, data, isAsc)
+  }
+
   render() {
-    const {retailerPopupData,showProductPopup}= this.state;
+    const {retailerPopupData,showProductPopup, isAsc}= this.state;
     const {
       isLoader,
       pageNo,
@@ -126,7 +141,12 @@ class ScanLogsTable extends Component<Props, States> {
               <table className="table">
                 <thead>
                   <tr>
-                    <th>ORDER ID</th>
+                  <th onClick={e => this.handleSort(e, "order_id", data, isAsc)}>
+                    ORDER ID
+                    {/* {
+                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                    } */}
+                  </th>
                     <th>RETAILER NAME/ID</th>
                     <th>PRODUCT SOLD</th>
                     <th>ORDERED QTY</th>
