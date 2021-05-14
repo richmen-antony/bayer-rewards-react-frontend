@@ -1,33 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
-
+import { addRoleDpList, addRoleInputList } from '../../../redux/actions';
 export interface IFormValue {
     id: string;
     label: string;
 }
 
 interface IRoleProps {
-    nextStep: () => void;
-    prevStep: () => void;
-    setRole: (data: any) => void;
+    // nextStep: () => void;
+    // prevStep: () => void;
+    role: any;
+    setDpList: (data: any) => void;
+    setInputList: (data: any) => void;
 }
 
 
 export const RoleHierarchy = (props: IRoleProps) => {
-    const { setRole } = props;
-
-    const [dpList, setDpList] = useState([{ rolecode: "", role: "", roletype: "", parentrole: { id: 0, value: "NA" } }]);
-    const [inputList, setInputList] = useState([{ rolecode: "", role: "", roletype: "", parentrole: { id: 0, value: "NA" } }]);
+    const { role: { dpList, inputList }, setDpList, setInputList } = props;
     const [valSelected, setValSelected] = useState('NA');
-
-    useEffect(() => {
-        return () => {
-            setRole(inputList)
-        }
-    }, []);
-
 
     // handle input change
     const handleInputChange = (e: any, index: any) => {
@@ -88,7 +81,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {inputList.map((item, idx) => (
+                                {inputList.map((item: any, idx: number) => (
                                     <tr id="addr0" key={idx}>
                                         <td className="tableStyle" >{idx}</td>
                                         <td className="tableHeaderStyle">
@@ -124,7 +117,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                                             <select className="dpstyle" name="parentrole" id="dropdown" value={item.parentrole.value} onChange={(event) => handleDropdownChange(event, idx)}>
                                                 <option value="" key="">NA</option>
                                                 {idx > 0 && dpList.length > 0 && (
-                                                    dpList.map(({ rolecode }, index) => (
+                                                    dpList.map(({ rolecode }: any, index: number) => (
                                                         index < idx && <option value={rolecode} key={rolecode}>
                                                             {rolecode}
                                                         </option>
@@ -151,3 +144,16 @@ export const RoleHierarchy = (props: IRoleProps) => {
         </div>
     );
 };
+
+const mapStateToProps = ({ devconfig: { role } }: any) => {
+    return {
+        role
+    }
+}
+
+const mapDispatchToProps = {
+    setDpList: addRoleDpList,
+    setInputList: addRoleInputList
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RoleHierarchy)

@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux'
 import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
-
+import { addLocationDpList, addLocationInputList } from '../../../redux/actions';
 export interface IFormValue {
     id: string;
     label: string;
 }
 
 interface ILocationProps {
-    nextStep: () => void;
-    prevStep: () => void;
-    setLocation: (data: any) => void;
+    location: any;
+    setDpList: (data: any) => void;
+    setInputList: (data: any) => void;
 }
 
 export interface IDropdownValue {
@@ -24,17 +25,11 @@ interface IParentLoaction {
     parentlocation: IDropdownValue[];
 }
 
-export const LocationHierarchy = (props: ILocationProps) => {
-    const { setLocation } = props;
-    const [dpList, setDpList] = useState([{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]);
-    const [inputList, setInputList] = useState([{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]);
+const LocationHierarchy = (props: ILocationProps) => {
+    const { location: { dpList, inputList }, setDpList, setInputList } = props;
+    // const [dpList, setDpList] = useState([{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]);
+    // const [inputList, setInputList] = useState([{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]);
     const [valSelected, setValSelected] = useState('NA');
-
-    useEffect(() => {
-        return () => {
-            setLocation(inputList)
-        }
-    }, []);
 
 
     // handle input change
@@ -96,7 +91,7 @@ export const LocationHierarchy = (props: ILocationProps) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {inputList.map((item, idx) => (
+                                {inputList.map((item: any, idx: number) => (
                                     <tr id="addr0" key={idx}>
                                         <td className="tableStyle">{idx}</td>
                                         <td className="tableHeaderStyle">
@@ -113,7 +108,7 @@ export const LocationHierarchy = (props: ILocationProps) => {
                                             <select defaultValue="NA" name="parentlocation" data-id={idx} className="dpstyle" id="dropdown" value={item.parentlocation.value} onChange={(event) => handleDropdownChange(event, idx)}>
                                                 <option value="NA" key="NA">NA</option>
                                                 {idx > 0 && dpList.length > 0 && (
-                                                    dpList.map(({ locationhierarchy }, index) => (
+                                                    dpList.map(({ locationhierarchy }: any, index: number) => (
                                                         index < idx && <option value={locationhierarchy} key={locationhierarchy}>
                                                             {locationhierarchy}
                                                         </option>
@@ -139,3 +134,16 @@ export const LocationHierarchy = (props: ILocationProps) => {
         </div>
     );
 };
+
+const mapStateToProps = ({ devconfig: { location } }: any) => {
+    return {
+        location
+    }
+}
+
+const mapDispatchToProps = {
+    setDpList: addLocationDpList,
+    setInputList: addLocationInputList
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LocationHierarchy)

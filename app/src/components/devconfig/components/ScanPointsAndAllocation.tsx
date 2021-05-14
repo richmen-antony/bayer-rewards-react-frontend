@@ -2,23 +2,17 @@ import React, { useState, useEffect } from 'react';
 import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
+import { connect } from 'react-redux';
+import { addScanpointsAndAllocationInputList } from '../../../redux/actions';
 
 interface IScanPointsAndAllocationProps {
-    nextStep: () => void;
-    prevStep: () => void;
-    setScanPointsAndAllocation: (data: any) => void;
+    scanpointsandallocation: any;
+    setInputList: (data: any) => void;
 }
 
 export const ScanPointsAndAllocation = (props: IScanPointsAndAllocationProps) => {
-    const { setScanPointsAndAllocation } = props;
-    const [inputList, setInputList] = useState([{ position: { id: 0, value: "NA" }, scannedby: { id: 0, value: "NA" }, scannedtype: { id: 0, value: "NA" }, packaginglevel: { id: 0, value: "NA" }, pointsallocated: { id: 0, value: "NA" } }]);
+    const { scanpointsandallocation : { inputList },  setInputList} = props;
     const [valSelected, setValSelected] = useState('NA');
-
-    useEffect(() => {
-        return () => {
-            setScanPointsAndAllocation(inputList)
-        }
-    }, []);
 
 
     // handle input change
@@ -102,7 +96,7 @@ export const ScanPointsAndAllocation = (props: IScanPointsAndAllocationProps) =>
                                 </tr>
                             </thead>
                             <tbody>
-                                {inputList.map((item, idx) => (
+                                {inputList.map((item:any, idx:number) => (
                                     <tr id="addr0" key={idx}>
                                         <td className="tableHeaderStyle">
                                             <select className="dpstyle" id="dropdown" name="position" value={item.position.value} onChange={(event) => handleDropdownPostionChange(event, idx)}>
@@ -190,3 +184,15 @@ export const ScanPointsAndAllocation = (props: IScanPointsAndAllocationProps) =>
         </div>
     );
 };
+
+const mapStateToProps = ( { devconfig : { scanpointsandallocation }}: any ) => {
+    return {
+        scanpointsandallocation
+    }
+}
+
+const mapDispatchToProps = {
+    setInputList : addScanpointsAndAllocationInputList
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(ScanPointsAndAllocation)

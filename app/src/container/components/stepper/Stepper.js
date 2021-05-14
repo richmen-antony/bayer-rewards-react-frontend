@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import "../../../assets/scss/Stepper.scss";
+import tick_icon from "../../../assets/icons/tick_icon.svg";
 
 export default class Stepper extends Component {
   constructor() {
@@ -88,18 +89,18 @@ export default class Stepper extends Component {
 
   render() {
     const { direction, stepColor } = this.props;
-  
+
     const { steps } = this.state;
     const stepsJSX = steps.map((step, index) => {
       return (
-      <div className="step-wrapper" key={index}>
+        <div className="step-wrapper" key={index}>
           <div
             className={`step-number ${
               step.selected ? "step-number-selected" : "step-number-disabled"
-            }`}
+              }`}
             style={{ background: `${step.selected ? stepColor : "none"}` }}
           >
-            {step.completed ? <span>&#10003;</span> : index + 1}
+            {step.completed ? <img src={tick_icon} alt="tick-icon" class="logo-img" /> : index + 1}
           </div>
           <div
             className={`step-description ${step.highlighted &&
@@ -108,7 +109,7 @@ export default class Stepper extends Component {
             {step.description}
           </div>
           {index !== steps.length - 1 && (
-            <div className={`divider-line divider-line-${steps.length} ${step.completed&&"completed-stage"}`} />
+            <div className={`divider-line divider-line-${steps.length} ${step.completed && "completed-stage"}`} />
           )}
         </div>
       );

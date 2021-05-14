@@ -56,7 +56,10 @@
     }
 }
 
-
+.logo-img {
+    vertical-align: text-top;
+    filter: invert(100%);
+}
 
 .step-number-selected {
     // background: purple;
@@ -76,5 +79,5 @@
 
 
 .completed-stage{
-    background-color: #4CD964 !important;
+    background-color: gray !important;
 }
