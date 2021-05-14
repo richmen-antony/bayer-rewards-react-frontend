@@ -132,7 +132,7 @@ class ChangeLogs extends Component<Props, States> {
                     onChange={this.handleSearch}
                     value={searchText}
                   />
-                  {/* <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Account Name and Owner Name"></i> */}
+                  <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Field, Old Value and New Value"></i>
                 </div>
               <div>
                 <button className="btn btn-primary">
