@@ -12,6 +12,7 @@ import {
   invokeGetAuthService,
   invokeGetService,
 } from "../../utility/base/service";
+import BarCodeIcon from "../../assets/icons/barcode.svg";
 
 type Props = {
   location?: any;
@@ -90,10 +91,10 @@ class Dashboard extends Component<Props, States> {
       <AUX>
         <div className="card card-main">
           {this.state.userRole === "RSM" ? (
-            <>
-              <div style={{ marginRight: "16px" }} >
+            <div className="dashboard">
+              <div style={{ marginRight: "30px" }} >
                 <CustomCard
-                  icon={adduser}
+                  icon={BarCodeIcon}
                   border="1px solid #FFA343"
                   background="#FFF4E7"
                   cardClick={() => this.cardClick()}
@@ -103,7 +104,7 @@ class Dashboard extends Component<Props, States> {
                   </div>
                   <div style={{ fontSize: "18px" }}>Scan Logs</div>
                 </CustomCard>
-                locatlocalStorage
+                
               </div>
               <div>
                 <CustomCard
@@ -117,7 +118,7 @@ class Dashboard extends Component<Props, States> {
                   <div style={{ fontSize: "18px" }}>Total Users</div>
                 </CustomCard>
               </div>
-            </>
+              </div>
           ) : (
               <div className="dashboard">
                 <div style={{ marginRight: "30px" }}>

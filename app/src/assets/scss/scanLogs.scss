@@ -30,6 +30,7 @@
     background: #ffffff;
     border: 1px solid #7c7c7c4a;
     border-radius: 5px;
+    outline: none;
   }
   input:focus {
     border-color: $appSecondary !important;
@@ -511,7 +512,7 @@
   }
   &.active {
     &::after {
-      border-color: red;
+      border-color: #89D329;
     }
   }
   &:last-child {
