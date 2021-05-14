@@ -11,17 +11,15 @@ import {
 } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 
-import advisorImg from "../../assets/images/advisor.svg"
-import farmerImg from "../../assets/images/farmer.svg"
-import retailerImg from "../../assets/images/retailer.svg"
-
-
+import advisorImg from "../../assets/images/advisor.svg";
+import farmerImg from "../../assets/images/farmer.svg";
+import retailerImg from "../../assets/images/retailer.svg";
+import moment from "moment";
 
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
 };
-
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -57,7 +55,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
     >
       <DialogContent>
         <div className="popup-container ordered-table">
-        <div className="popup-content">
+          <div className="popup-content">
             <div className={`popup-title`}>
               <p>
                 {popupHeader?.title}, <label>{data?.order_id}</label>{" "}
@@ -69,48 +67,42 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               <li className="active">
                 <div className="line-cnt">
                   <p>Ordered date</p>
-                  <label>24 Dec, 2020</label>
-
+                  <label>
+                    {data.ordereddate &&
+                      moment(data.ordereddate).format("Do MMM, YYYY")}
+                  </label>
                 </div>
                 <div className="content">
-                  <img
-                    src={advisorImg }
-                    alt=""
-                  />
+                  <img src={advisorImg} alt="" />
 
                   <p>Advisor ID & Name</p>
-                  <span>256341 - Charles Manor</span>
+                  <span>{data.advisorid} - {data.advisorname}</span>
                 </div>
               </li>
               <li className="active">
-              <div className="line-cnt-expiry-date">
+                <div className="line-cnt-expiry-date">
                   <p>Expiry Date</p>
-                  <label>24 Dec, 2020</label>
-
+                  <label>
+                    {data.orderexpirydate &&
+                      moment(data.orderexpirydate).format("Do MMM, YYYY")}
+                  </label>
                 </div>
                 <div className="content">
-                  <img
-                    src={retailerImg }
-                    alt=""
-                  />
+                  <img src={retailerImg} alt="" />
                   <p>Retailer ID & Name</p>
-                  <span>GCHPU - Maria Joseph</span>
+                  <span>{data.retailerid} - {data.sellername}</span>
                 </div>
               </li>
               <li>
                 <div className="content">
-                  <img
-                    src={farmerImg }
-                    alt=""
-                  />
+                  <img src={farmerImg} alt="" />
                   <p>Farmer ID & Name</p>
-                  <span>125685 - Gbuzue David</span>
+                  <span>{data.farmerid} - {data.farmername}</span>
                 </div>
               </li>
             </ul>
           </div>
 
-          
           {data?.products_ordered?.length > 0 ? (
             <table className="table">
               <thead>

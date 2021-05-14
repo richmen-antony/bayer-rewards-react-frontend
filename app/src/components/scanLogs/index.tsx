@@ -480,6 +480,22 @@ class ScanLogs extends Component<Props, States> {
       endIndex: this.state.endIndex + 3,
     });
   };
+  handlePaginationChange = (e: any) => {
+    let value = 0;
+    if (e.target.name === "perpage") {
+      value = e.target.value;
+      this.setState({ rowsPerPage: value });
+      setTimeout(() => {
+         this.getScanLogs();
+      }, 2000);
+    } else if (e.target.name === "gotopage") {
+      value = e.target.value;
+      this.setState({ pageNo: value });
+      setTimeout(() => {
+         this.getScanLogs();
+      }, 2000);
+    }
+  };
 
   render() {
     const {
@@ -747,6 +763,7 @@ class ScanLogs extends Component<Props, States> {
                 previous={this.previous}
                 next={this.next}
                 pageNumberClick={this.pageNumberClick}
+                handlePaginationChange={this.handlePaginationChange}
               />
             </TabPanel>
             <TabPanel value={this.state.value} index={1} classes={classes}>

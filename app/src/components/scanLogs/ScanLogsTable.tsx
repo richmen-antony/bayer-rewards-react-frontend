@@ -15,6 +15,7 @@ import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
 import maxImg from "../../assets/images/maximize.svg"
 import CalenderIcon from "../../assets/icons/calendar.svg"
+import ActiveIcon from "../../assets/images/check.svg";
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -61,6 +62,7 @@ type Props = {
   previous: any;
   next: any;
   pageNumberClick: any;
+  handlePaginationChange:any
 };
 
 type States = {
@@ -174,7 +176,8 @@ class ScanLogsTable extends Component<Props, States> {
                         </td>
                         <td>
                           <span className={`status ${value.status ==="Fulfilled" ? "active":"inactive"}`}>
-                            <i className="fas fa-clock"></i>
+                          {value.status ==="Fulfilled" ? <img src={ActiveIcon} style={{ marginRight: "8px" }}  width="17"/> :
+                            <i className="fas fa-clock"></i>}
                             {value.status}
                           </span>
                         </td>
@@ -189,14 +192,15 @@ class ScanLogsTable extends Component<Props, States> {
               </table>
 
               <div>
-                {/* <Pagination
+                <Pagination
                   totalData={totalData}
                   rowsPerPage={rowsPerPage}
                   previous={this.props.previous}
                   next={this.props.next}
                   pageNumberClick={this.props.pageNumberClick}
                   pageNo={pageNo}
-                /> */}
+                  handlePaginationChange={this.props.handlePaginationChange}
+                />
               </div>
             </div>
           ) : isLoader ? (
