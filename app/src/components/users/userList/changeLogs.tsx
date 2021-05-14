@@ -136,7 +136,7 @@ class ChangeLogs extends Component<Props, States> {
                 </div>
               <div>
                 <button className="btn btn-primary">
-                <img src={Download} width="17" alt={NoImage} /> <span>Download</span>
+                <img src={Download} width="17" alt={NoImage} /> 
                 </button>
               </div>
             </div>
@@ -155,17 +155,19 @@ class ChangeLogs extends Component<Props, States> {
                   </th>
                   <th onClick={e => this.handleSort(e, "field", allChangeLogs, isAsc)}>Field
                   {
-                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
-                    }</th>
+                      this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null 
+                  }
+                    
+                  </th>
                   <th onClick={e => this.handleSort(e, "oldvalue", allChangeLogs, isAsc)}>
                     Old Value
                     {
-                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                      this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null 
                     }
                   </th>
                   <th onClick={e => this.handleSort(e, "newvalue", allChangeLogs, isAsc)}>New Value
                   {
-                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                      this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null 
                     }
                   </th>
                   <th>Modified Date</th>
