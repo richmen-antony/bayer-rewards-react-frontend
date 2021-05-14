@@ -14,5 +14,6 @@ export const apiURL = {
     updateUser: "user/updateuser",
     adminUserCount: "user/getadmindashboard",
     downloadUserList:"user/downloaduserlist",
-    changeLogs: "user/getchangelogs"
+    changeLogs: "user/getchangelogs",
+    downloadScanlogs:"user/downloadscantransactionlist",
 }
