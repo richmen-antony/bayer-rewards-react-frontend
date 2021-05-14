@@ -18,6 +18,8 @@ import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
 import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
+import AddBtn from "../../../assets/icons/add_btn.svg";
+import NoImage from "../../../assets/images/no_image.svg";
 import "../../../assets/scss/users.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
@@ -247,8 +249,9 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
 
     for (var i = 1; i < this.state.geographicFields.length; i++) {
       let columnname : string = ""
-      columnname = this.state.geographicFields[i]
-      res.push(<th style={{width : '98px'}} onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{this.state.geographicFields[i]}
+      columnname = this.state.geographicFields[i];
+      columnname = columnname.charAt(0).toUpperCase() + columnname.slice(1)
+      res.push(<th style={{width : '98px'}} onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{columnname}
       {this.tableCellIndex === i + staticColumn ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
       </th>)
     }
@@ -926,7 +929,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
               </tbody>
             </table>
             <div className="add-plus-icon"  onClick={() => this.createUserClick()}>
-              <img src={AddIcon} />
+              <img src={AddBtn} alt={NoImage} />
             </div>
             <div>
               <Pagination
