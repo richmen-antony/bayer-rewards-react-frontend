@@ -4,8 +4,10 @@ import AUX from '../../../hoc/Aux_';
 import '../../../assets/scss/pagination.scss';
 import { Input } from '../../../utility/widgets/input';
 import NoImage from "../../../assets/images/no_image.svg";
-import LeftPage from "../../../assets/icons/left_page.svg";
-import RightPage from "../../../assets/icons/right_page.svg";
+import LeftArrow from "../../../assets/icons/left_page.svg";
+import RightArrow from "../../../assets/icons/right_page.svg";
+import LeftArrowDisabled from "../../../assets/icons/left_page_disabled.svg";
+import RightArrowDisabled from "../../../assets/icons/right_page_disabled.svg";
 
 type Props = {
     pageNo: number;
@@ -59,6 +61,7 @@ class Pagination extends Component<Props,States>{
         });
         console.log('startIndex', this.state.startIndex)
         console.log('endIndex', this.state.endIndex)
+        console.log('pagenumber', pageNo)
         console.log('pageData', pageData)
         return(
             <div className='col-sm-12'>
@@ -89,7 +92,7 @@ class Pagination extends Component<Props,States>{
                     <div className="paginationNumber">
                         <div style={{marginTop: '8px'}}>
                             <a href="#" className="" onClick={()=>previous(pageNo)} style={{ pointerEvents : pageNo == 1 ? 'none' : 'auto'}}>
-                           <img src={LeftPage} alt={NoImage} />
+                           <img src={pageNo == 1 ? LeftArrowDisabled : LeftArrow} alt={NoImage} />
                             </a>
                         </div>
             
@@ -112,15 +115,16 @@ class Pagination extends Component<Props,States>{
                         <div>
                             <i className="" onClick={()=>this.fastForward()}>...</i>
                         </div> }
-                        {pageNumbers.length > 1 && <div className={pageNo == pageData ? "active" : ''} onClick={()=>pageNumberClick(pageData)}>
-                            {pageData}
-                        </div> }
+                        {pageNumbers.length > 1 && (<div>
+                        <a href="#" className={pageNo == pageData ? "active" : ''} onClick={()=>pageNumberClick(pageData)}>{pageData}</a>
+                            
+                        </div>) }
                         {/* <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
                             <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
                         </div> */}
                         <div style={{marginTop: '8px'}}>
                             <a href="#" onClick={()=>next(pageNo)} style={{ pointerEvents: pageNo == pageData ? 'none' : 'auto'}}>
-                            <img src={RightPage} alt={NoImage} />
+                            <img src={pageNo == pageData ? RightArrowDisabled : RightArrow} alt={NoImage} />
                             </a>
                         </div>
                     </div>
