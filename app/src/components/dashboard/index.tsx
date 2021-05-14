@@ -33,7 +33,7 @@ class Dashboard extends Component<Props, States> {
     this.state = {
       userRole: "",
       scanLogCount: 0,
-      usersCount: 121,
+      usersCount: 0,
       isLoader: false,
       adminUsersCount: 0
     };
@@ -44,13 +44,16 @@ class Dashboard extends Component<Props, States> {
     this.setState({
       userRole: userData.role,
     });
-    this.getDashboardDetails();
+    this.getrsmDashboardDetails();
     this.getAdminDashboardDetails();
   }
-  getDashboardDetails = () => {
+  getrsmDashboardDetails = () => {
     const { rsmDashboard } = apiURL;
+    const data = {
+      region: 'R1'
+    }
     this.setState({ isLoader: true });
-    invokeGetAuthService(rsmDashboard).then((response) => {
+    invokeGetAuthService(rsmDashboard, data).then((response) => {
       let res = Object.keys(response.body).length !== 0 ? response.body : "";
       this.setState({
         usersCount: res.usercount,

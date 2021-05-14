@@ -312,6 +312,7 @@ class ScanLogs extends Component<Props, States> {
       isfiltered: this.state.isFiltered,
       startdate: this.state.selectedFilters.startDate,
       enddate: this.state.selectedFilters.endDate,
+      region: 'R1'
     };
 
     invokeGetAuthService(scanLogs, data)

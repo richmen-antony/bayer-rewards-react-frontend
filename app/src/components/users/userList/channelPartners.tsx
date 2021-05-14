@@ -839,7 +839,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
         ) : (
           ""
         )}
-        {allChannelPartners.length > 0 ? (
+        {/* {allChannelPartners.length > 0 ? ( */}
           <div className="table-responsive">
             <table className="table" id="tableData">
               <thead>
@@ -848,7 +848,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 </tr>
               </thead>
               <tbody>
-                {allChannelPartners.map((list: any, i: number) => (
+              {allChannelPartners.length > 0 ? 
+                allChannelPartners.map((list: any, i: number) => (
                   <AUX key={i}>
                     <tr 
                       style={
@@ -924,13 +925,21 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                         />
                       </td>
                     </tr>
-                  </AUX>
-                ))}
+                  </AUX> 
+                ))
+                : <>
+                <div className="col-12 card mt-4">
+                  <div className="card-body ">
+                    <div className="text-red py-4 text-center">No Data Found</div>
+                  </div>
+                </div></>
+                }
               </tbody>
             </table>
             <div className="add-plus-icon"  onClick={() => this.createUserClick()}>
               <img src={AddBtn} alt={NoImage} />
             </div>
+            {allChannelPartners.length > 0 && 
             <div>
               <Pagination
                 totalData={totalData}
@@ -942,16 +951,8 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 handlePaginationChange={this.props.handlePaginationChange}
               />
             </div>
+            }
           </div>
-        ) : this.state.isLoader ? (
-          <Loaders />
-        ) : (
-          <div className="col-12 card mt-4">
-            <div className="card-body ">
-              <div className="text-red py-4 text-center">No Data Found</div>
-            </div>
-          </div>
-        )}
         
       </>
     );
