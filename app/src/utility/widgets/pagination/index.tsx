@@ -67,19 +67,24 @@ class Pagination extends Component<Props,States>{
                         <div className='col-sm-3 pl-0'>
                             Total Sales: {totalData}
                         </div>
+                        
+                    
                         <div className='col-sm-5'>
                             <div style={{ display: 'flex', alignItems: "center" }}>
                                 <span style={{ marginRight: "10px" }}>Rows Per Page</span>
                                 <span style={{ width: '25%' }}><input style={{ width: '100%' }} type="text" className="form-control" name="perpage" value={rowsPerPage} onChange={(e: any) => handlePaginationChange(e)} /></span>
                             </div>
                         </div>
+                        {pageNumbers.length != 1 && (
                         <div className='col-sm-4'>
                             <div style={{ display: 'flex', alignItems: "center" }}>
                                 <span style={{ marginRight: "10px" }}>Go to Page</span>
                                 <span style={{ width: '25%' }}><input style={{ width: '100%' }} type="text" className="form-control" name="gotopage" value={pageNo} onChange={(e: any) => handlePaginationChange(e)} /></span>
                             </div>
-                        </div>
+                        </div> 
+                        )}
                     </div>
+                    {pageNumbers.length != 1 && (
                     <div className='col-sm-6' style={{ display: 'flex',justifyContent: 'flex-end',paddingRight: '55px'}}>
                     <div className="paginationNumber">
                         <div style={{marginTop: '8px'}}>
@@ -119,7 +124,7 @@ class Pagination extends Component<Props,States>{
                             </a>
                         </div>
                     </div>
-                    </div>
+                    </div>)}
                 </div>
             </div>
         );
