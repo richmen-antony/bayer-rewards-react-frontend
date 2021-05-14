@@ -850,7 +850,7 @@ class CreateUser extends Component<any, any> {
             direction="horizontal"
             currentStepNumber={currentStep - 1}
             steps={stepsArray}
-            stepColor="#4CD964"
+            stepColor="#5A5A5A"
           />
         </div>
         <div className="col-md-10">
