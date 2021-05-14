@@ -3,6 +3,9 @@ import React , {Component, Fragment } from 'react';
 import AUX from '../../../hoc/Aux_';
 import '../../../assets/scss/pagination.scss';
 import { Input } from '../../../utility/widgets/input';
+import NoImage from "../../../assets/images/no_image.svg";
+import LeftPage from "../../../assets/icons/left_page.svg";
+import RightPage from "../../../assets/icons/right_page.svg";
 
 type Props = {
     pageNo: number;
@@ -77,11 +80,11 @@ class Pagination extends Component<Props,States>{
                             </div>
                         </div>
                     </div>
-                    <div className='col-sm-6' style={{ display: 'flex',justifyContent: 'flex-end'}}>
+                    <div className='col-sm-6' style={{ display: 'flex',justifyContent: 'flex-end',paddingRight: '55px'}}>
                     <div className="paginationNumber">
-                        <div>
+                        <div style={{marginTop: '8px'}}>
                             <a href="#" className="" onClick={()=>previous(pageNo)} style={{ pointerEvents : pageNo == 1 ? 'none' : 'auto'}}>
-                            <i className="fa fa-backward"></i>
+                           <img src={LeftPage} alt={NoImage} />
                             </a>
                         </div>
             
@@ -110,9 +113,9 @@ class Pagination extends Component<Props,States>{
                         {/* <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
                             <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
                         </div> */}
-                        <div>
+                        <div style={{marginTop: '8px'}}>
                             <a href="#" onClick={()=>next(pageNo)} style={{ pointerEvents: pageNo == pageData ? 'none' : 'auto'}}>
-                                <i className="fa fa-forward"></i>
+                            <img src={RightPage} alt={NoImage} />
                             </a>
                         </div>
                     </div>

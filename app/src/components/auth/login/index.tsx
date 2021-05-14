@@ -76,7 +76,8 @@ class Login extends Component<Props, States>{
         let formValid = this.checkValidation();
         const data = {
             "username": this.state.username,
-            "password": this.state.password
+            "password": this.state.password,
+            "region": 'R1'
         }
         const {login } = apiURL;
         if(formValid){
@@ -113,8 +114,6 @@ class Login extends Component<Props, States>{
         }
         return formValid;
     }
-    
-    
 
 render(){
     const { username, password, usernameError, passwordError, isRemember, isPwdView, isLoader, validErrorMsg } = this.state;
@@ -126,25 +125,23 @@ render(){
                                         <img src={rewardsLogo} width="140" alt="Content2" />
                                     </div>
                                     <form className="form-horizontal" >
-
                                         <div className="form-group">
                                             <label>Username</label>
-                                            <Input type="text" className={!usernameError ? "form-control" : "form-control invalid"} name="username" placeHolder="Enter username" value={username}
-                                                onChange={this.handleChange} />
+                                            <input type="text" className={!usernameError ? "form-control" : "form-control invalid loginStyle"} name="username" placeholder="Enter username" value={username} onChange={this.handleChange} style={{height: '40px' }} />
                                             {usernameError && <span className="error">{ usernameError } </span>}
+                                            {/* <Input type="text" className={!usernameError ? "form-control" : "form-control invalid loginStyle"} name="username" placeHolder="Enter username" value={username} onChange={this.handleChange} />
+                                            {usernameError && <span className="error">{ usernameError } </span>} */}
                                         </div>
-
                                         <div className="form-group">
                                             <label>Password</label>
                                             <div className="withIcon">
-                                                <Input type={isPwdView ? "text" : "password"} className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeHolder="Enter password" value={password}
-                                                    onChange={this.handleChange} />
+                                                <input type={isPwdView ? "text" : "password"} className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeholder="Enter password" value={password} onChange={this.handleChange} style={{height: '40px' }} />
+                                                {/* <Input type={isPwdView ? "text" : "password"} className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeHolder="Enter password" value={password}
+                                                    onChange={this.handleChange} /> */}
                                                 <i className={ isPwdView ? "fa fa-eye-slash" : "fa fa-eye"} onClick={() => {this.setState({isPwdView: !isPwdView})}}></i>
                                             </div>
                                             {passwordError && <span className="error">{ passwordError } </span>}
                                         </div>
-
-                                        
                                         <div className="form-group row m-t-20">
                                             <div className="col-sm-12">
                                                 <label className="container">Remember me
