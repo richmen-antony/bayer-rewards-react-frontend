@@ -41,5 +41,5 @@ export const addScanpointsAndAllocationInputList = (data: any) => ({
 
 export const addAnticounterfeit = (data: any) => ({
     payload: data,
-    type: DEV_CONFIG_SCANPOINTS_ALLOCATION_ADD_INPUTLIST,
+    type: DEV_CONFIG_ANTI_COUNTERFEIT,
 });
