@@ -9,7 +9,7 @@ import SimpleDialog from "../../container/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
+import MaterialUIButton from "@material-ui/core/Button";
 import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
@@ -17,6 +17,21 @@ import maxImg from "../../assets/images/maximize.svg"
 import CalenderIcon from "../../assets/icons/calendar.svg"
 import ActiveIcon from "../../assets/images/check.svg";
 import { sortBy } from "../../utility/base/utils/tableSort";
+import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
+import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
+import filterIcon from "../../assets/icons/filter_icon.svg";
+import Download from "../../assets/icons/download.svg";
+import {
+  downloadExcel,
+  downloadCsvFile,
+  DownloadCsv,
+} from "../../utility/helper";
+import { apiURL } from "../../utility/base/utils/config";
+import {
+  invokeGetAuthService,
+  invokeGetService,
+} from "../../utility/base/service";
+
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -58,12 +73,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 type Props = {
-  data: any[];
-  state: any;
-  previous: any;
-  next: any;
-  pageNumberClick: any;
-  handlePaginationChange:any
+  
 };
 
 type States = {
@@ -75,16 +85,97 @@ type States = {
 
 class ScanLogsTable extends Component<Props, States> {
   tableCellIndex : any;
-
+  timeOut: any;
   constructor(props: any) {
     super(props);
+    var today = new Date();
+    var month, day, year;
+    var year: any = today.getFullYear();
+    var month: any = today.getMonth();
+    var date = today.getDate();
+    if (month - 6 <= 0) year = today.getFullYear();
+    var backdate = new Date(year, month - 6, date);
     this.state = {
       showPopup: false,
       showProductPopup: false,
       isAsc: true,
+      selectIndex: "",
+      isRendered: false,
+      pageNo: 1,
+      allScanLogs: [],
+      actions: ["All", "Distributor", "Retailer"],
+      dropDownValue: "Select action",
+      scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
+      productCategories: [],
+      status: ["All", "Fulfilled", "Expired","Duplicate"],
+      list: ["All", "Distributor", "Retailer"],
+      selectedFilters: {
+        type: "All",
+        scanType: "All",
+        productCategory: "All",
+        status: "All",
+        startDate: backdate.toISOString().substr(0, 10),
+        endDate: new Date().toISOString().substr(0, 10),
+      },
+      dateErrMsg: "",
+      searchText: "",
+      rowsPerPage: 15,
+      totalData: 0,
+      isFiltered: false,
+      userRole: "",
+      tooltipOpen: false,
+      startIndex: 1,
+      endIndex: 3,
+      isLoader: false,
+      dropdownOpenFilter: false,
+      accordionView: false,
+      accordionId: "",
+      value: 0,
     };
+    this.timeOut = 0;
   }
+  componentDidMount() {
+    this.getScanLogs();
+    // let data: any = getLocalStorageData("userData");
+    // let userData = JSON.parse(data);
 
+    // this.setState({
+    //   userRole: userData.role,
+    // });
+   
+  }
+  getScanLogs = () => {
+    const { scanLogs } = apiURL;
+    this.setState({ isLoader: true });
+    const data = {
+      page: this.state.pageNo,
+      searchtext: this.state.searchText,
+      rowsperpage: this.state.rowsPerPage,
+      role: this.state.selectedFilters.type,
+      scantype: this.state.selectedFilters.scanType,
+      productcategory: this.state.selectedFilters.productCategory,
+      scanstatus: this.state.selectedFilters.status,
+      isfiltered: this.state.isFiltered,
+      startdate: this.state.selectedFilters.startDate,
+      enddate: this.state.selectedFilters.endDate,
+      region: 'R1'
+    };
+
+    invokeGetAuthService(scanLogs, data)
+      .then((response) => {
+        this.setState({
+          isLoader: false,
+          allScanLogs:
+            Object.keys(response.body).length !== 0 ? response.body.rows : [],
+        });
+        const total = response.body.totalrows;
+        this.setState({ totalData: Number(total) });
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
+  };
   handleClosePopup = () => {
     this.setState({ showPopup: false });
   };
@@ -110,7 +201,18 @@ class ScanLogsTable extends Component<Props, States> {
       retailerPopupData:value
     })
   }
-
+  handleSearch = (e: any) => {
+    let searchText = e.target.value;
+    this.setState({ searchText: searchText });
+    if (this.timeOut) {
+      clearTimeout(this.timeOut);
+    }
+    if (searchText.length >= 3 || searchText.length == 0) {
+      this.timeOut = setTimeout(() => {
+        this.getScanLogs();
+      }, 1000);
+    }
+  };
   onSort = (name: string, datas: any, isAsc: Boolean) => {
     let response = sortBy(name, datas);
     this.setState({ data: response, isAsc: !isAsc });
@@ -120,28 +222,366 @@ class ScanLogsTable extends Component<Props, States> {
     this.tableCellIndex = e.currentTarget.cellIndex;
     this.onSort(columnname, data, isAsc)
   }
+  toggleFilter = () => {
+    this.setState((prevState) => ({
+      dropdownOpenFilter: !prevState.dropdownOpenFilter,
+    }));
+  }
+
+  handleFilterChange = (e: any, name: string, item: any) => {
+    e.stopPropagation();
+    let val = this.state.selectedFilters;
+    let flag = false;
+    // this.state.dateErrMsg = '';
+    if (name === "type") {
+      val[name] = e.target.value;
+      flag = true;
+    } else if (name === "startDate") {
+      if (e.target.value <= val.endDate) {
+        val[name] = e.target.value;
+        flag = true;
+      } else {
+        this.setState({
+          dateErrMsg: "Start date should be lesser than End Date",
+        });
+      }
+    } else if (name === "endDate") {
+      if (e.target.value >= new Date().toISOString().substr(0, 10)) {
+        this.setState({
+          dateErrMsg: "End Date should not be greater than todays date",
+        });
+      } else if (e.target.value <= val.startDate) {
+        this.setState({
+          dateErrMsg: "End Date should be greater than Start Date",
+        });
+      } else {
+        val[name] = e.target.value;
+        flag = true;
+      }
+    } else {
+      val[name] = item;
+      flag = true;
+    }
+    if (flag) {
+      this.setState({ selectedFilters: val });
+    }
+  };
+
+  resetFilter = (e: any) => {
+    e.stopPropagation();
+    this.setState({
+      selectedFilters: {
+        type: "All",
+        scanType: "All",
+        productCategory: "All",
+        status: "All",
+        startDate: new Date().toISOString().substr(0, 10),
+        endDate: new Date().toISOString().substr(0, 10),
+      },
+      isFiltered: false,
+    });
+    setTimeout(() => {
+      //this.getScanLogs();
+    }, 0);
+  };
+
+  applyFilter = () => {
+    this.setState({ isFiltered: true });
+    this.timeOut = setTimeout(() => {
+      // this.getScanLogs();
+    }, 0);
+  };
+  previous = (pageNo: any) => {
+    console.log("pageno", this.state.pageNo);
+    // this.setState(prevState => ({
+    //     pageNo: prevState.pageNo-1
+    // }),()=>{
+    // });
+    this.setState({ pageNo: pageNo - 1 });
+    setTimeout(() => {
+      // this.getScanLogs();
+    }, 0);
+  };
+  next = (pageNo: any) => {
+    this.setState({ pageNo: pageNo + 1 });
+    setTimeout(() => {
+      // this.getScanLogs();
+    }, 0);
+  };
+  pageNumberClick = (number: any) => {
+    this.setState({ pageNo: number });
+    setTimeout(() => {
+      // this.getScanLogs();
+    }, 0);
+  };
+
+  toggle = () => {
+    this.setState({ tooltipOpen: !this.state.tooltipOpen });
+  };
+  backForward = () => {
+    this.setState({
+      startIndex: this.state.startIndex - 3,
+      endIndex: this.state.endIndex - 1,
+    });
+  };
+  fastForward = () => {
+    this.setState({
+      startIndex: this.state.endIndex + 1,
+      endIndex: this.state.endIndex + 3,
+    });
+  };
+  handlePaginationChange = (e: any) => {
+    let value = 0;
+    if (e.target.name === "perpage") {
+      value = e.target.value;
+      this.setState({ rowsPerPage: value });
+      setTimeout(() => {
+        //this.getScanLogs();
+      }, 2000);
+    } else if (e.target.name === "gotopage") {
+      value = e.target.value;
+      this.setState({ pageNo: value });
+      setTimeout(() => {
+        //this.getScanLogs();
+      }, 2000);
+    }
+  };
+  download = () => {
+    const { downloadScanlogs } = apiURL;
+    const data = {
+      page: this.state.pageNo,
+      searchtext: this.state.searchText,
+      rowsperpage: this.state.rowsPerPage,
+      role: this.state.selectedFilters.type,
+      isfiltered: this.state.isFiltered,
+      region: "R1",
+      ordereddatefrom: "2020-04-20",
+      ordereddateto: "2022-04-21",
+      status: "ALL",
+      retailer: "ALL",
+      farmer: "ALL",
+    };
+
+    invokeGetAuthService(downloadScanlogs, data)
+      .then((response) => {
+        const data = response?.body?.rows;
+        DownloadCsv(data, "scanlogs.csv");
+      })
+      .catch((error) => {});
+  };
 
   render() {
-    const {retailerPopupData,showProductPopup, isAsc}= this.state;
-    const {
+    const {retailerPopupData,showProductPopup, isAsc,allScanLogs,
+      dropdownOpenFilter,
+      selectedFilters,
       isLoader,
+      dateErrMsg,
+      searchText,
       pageNo,
+      userRole,
       totalData,
-      rowsPerPage,
-    } = this.props.state;
-    const { data } = this.props;
+      rowsPerPage}= this.state;
+    
     console.log({retailerPopupData});
+    const pageNumbers = [];
+    const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
+    for (let i = 1; i <= pageData; i++) {
+      pageNumbers.push(i);
+    }
 
     return (
       <AUX>
         {isLoader && <Loader />}
         <div>
-          {data.length > 0 ? (
+          {allScanLogs.length > 0 ? (
+            <div>
             <div className="scanlog-table">
+              <div className="advisor-filter">
+              <div className="filter-left-side">
+                  <div className="searchInputRow advisor-sales" >
+                    <i className="fa fa-search icon"></i>
+                    <input
+                      placeholder="Search..(min 3 chars)"
+                      className="input-field"
+                      type="text"
+                      onChange={this.handleSearch}
+                      value={searchText}
+                    />
+                  </div>
+                <div className="filter-right-side">
+                  <div className="filterRow">
+                    <Dropdown
+                      isOpen={dropdownOpenFilter}
+                      toggle={this.toggleFilter}
+                    >
+                      <DropdownToggle>
+                        {!dropdownOpenFilter && (
+                          <img src={filterIcon} width="17" alt="filter" />
+                        )}
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        <div className="p-3">
+                          <i
+                            className="fa fa-filter boxed float-right"
+                            aria-hidden="true"
+                            onClick={this.toggleFilter}
+                          ></i>
+                          <div
+                            className="form-group"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {/* <select
+                              className="form-control filterDropdown"
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "type", "")
+                              }
+                              value={selectedFilters.type}
+                            >
+                              <option>All</option>
+                              <option>Distributor</option>
+                              <option>Retailer</option>
+                            </select> */}
+                            <NativeDropdown  name="type" value={selectedFilters.type} label={"Retailer"}
+                            options={[{text:"ALL",value:"ALl"},{text:"Retailer Name",value:"Retailer Name"}]}
+                            />
+                          </div>
+
+                       
+                          
+                          <div
+                            className="form-group"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            {/* <select
+                              className="form-control filterDropdown"
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "type", "")
+                              }
+                              value={selectedFilters.type}
+                            >
+                              <option>All</option>
+                              <option>Farmer Name</option>
+                              <option>Farmer Name3</option>
+                            </select> */}
+                             <NativeDropdown  name="type" value={selectedFilters.type} label={"Farmer"}
+                            options={[{text:"ALL",value:"ALl"},{text:"Farmer Name",value:"Farmer Name"}]}
+                            />
+                          </div>
+                         
+
+                          <label className="font-weight-bold pt-2">
+                            Product Group
+                          </label>
+                          <div className="pt-1">
+                            {this.state.productCategories.map((item:any, i:number) => (
+                              <span className="mr-2 chipLabel" key={i}>
+                                <Button
+                                  color={
+                                    selectedFilters.productCategory === item
+                                      ? "btn activeColor rounded-pill"
+                                      : "btn rounded-pill boxColor"
+                                  }
+                                  size="sm"
+                                  onClick={(e) =>
+                                    this.handleFilterChange(
+                                      e,
+                                      "productCategory",
+                                      item
+                                    )
+                                  }
+                                >
+                                  {item}
+                                </Button>
+                              </span>
+                            ))}
+                          </div>
+
+                          <label className="font-weight-bold pt-2">
+                            Status
+                          </label>
+                          <div className="pt-1">
+                            {this.state.status.map((item:any) => (
+                              <span className="mr-2">
+                                <Button
+                                  color={
+                                    selectedFilters.status === item
+                                      ? "btn activeColor rounded-pill"
+                                      : "btn rounded-pill boxColor"
+                                  }
+                                  size="sm"
+                                  onClick={(e) =>
+                                    this.handleFilterChange(e, "status", item)
+                                  }
+                                >
+                                  {item}
+                                </Button>
+                              </span>
+                            ))}
+                          </div>
+
+                          {/* <div className="" onClick={(e)=>e.stopPropagation()}> */}
+                          <label className="font-weight-bold pt-2">
+                          Ordered Date
+                          </label>
+                          <div className="d-flex">
+                          <div className="user-filter-date-picker">
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={selectedFilters.startDate}
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "startDate", "")
+                              }
+                            />
+                            </div>
+                            <div className="p-2">-</div>
+                            <div className="user-filter-date-picker">
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={selectedFilters.endDate}
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "endDate", "")
+                              }
+                            />
+                          </div>
+                          </div>
+                          {/* </div> */}
+
+                          <div className="filterFooter pt-3">
+                            <Button
+                              color="btn rounded-pill boxColor reset-btn"
+                             
+                              onClick={(e) => this.resetFilter(e)}
+                            >
+                              Reset All
+                            </Button>
+                            <Button
+                               color="btn rounded-pill boxColor applybtn"
+                              onClick={() => this.applyFilter()}
+                            >
+                              Apply
+                            </Button>
+                          </div>
+                          {dateErrMsg && (
+                            <span className="error">{dateErrMsg} </span>
+                          )}
+                        </div>
+                      </DropdownMenu>
+                    </Dropdown>
+                  </div>
+                  <div>
+                    <button className="btn btn-primary" onClick={this.download}>
+                      <img src={Download} width="17" alt={NoImage} />
+                    </button>
+                  </div>
+                  </div>
+                </div>
+                </div>
               <table className="table">
                 <thead>
                   <tr>
-                  <th onClick={e => this.handleSort(e, "order_id", data, isAsc)}>
+                  <th onClick={e => this.handleSort(e, "order_id", allScanLogs, isAsc)}>
                     ORDER ID
                     {/* {
                       this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
@@ -159,7 +599,7 @@ class ScanLogsTable extends Component<Props, States> {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((value, i) => {
+                  {allScanLogs.map((value:any, i:number) => {
                     return (
                       <tr
                         onClick={(event) =>{
@@ -212,18 +652,20 @@ class ScanLogsTable extends Component<Props, States> {
                 </tbody>
               </table>
 
-              <div>
-                <Pagination
-                  totalData={totalData}
-                  rowsPerPage={rowsPerPage}
-                  previous={this.props.previous}
-                  next={this.props.next}
-                  pageNumberClick={this.props.pageNumberClick}
-                  pageNo={pageNo}
-                  handlePaginationChange={this.props.handlePaginationChange}
-                />
-              </div>
+              
             </div>
+            <div>
+            <Pagination
+              totalData={totalData}
+              rowsPerPage={rowsPerPage}
+              previous={this.previous}
+              next={this.next}
+              pageNumberClick={this.pageNumberClick}
+              pageNo={pageNo}
+              handlePaginationChange={this.handlePaginationChange}
+            />
+          </div>
+          </div>
           ) : isLoader ? (
             <Loaders />
           ) : (
@@ -294,16 +736,16 @@ class ScanLogsTable extends Component<Props, States> {
               </div>
             </DialogContent>
             <DialogActions>
-              <Button autoFocus onClick={this.handleClosePopup} className="popup-btn close-btn" >
+              <MaterialUIButton autoFocus onClick={this.handleClosePopup} className="popup-btn close-btn" >
                 Close
-              </Button>
-              <Button
+              </MaterialUIButton>
+              <MaterialUIButton
                 onClick={this.handleClosePopup}
                 className="popup-btn filter-scan"
                 autoFocus
               >
                 Filter Scans
-              </Button>
+              </MaterialUIButton>
             </DialogActions>
           </SimpleDialog>
         ) : (

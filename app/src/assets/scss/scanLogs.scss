@@ -303,11 +303,10 @@
   width: 200px;
 }
 .scanlog-table {
-  table {
-    background: #ffffff;
+  background: #ffffff;
     border: 1px solid #a0a0a047;
     border-radius: 10px !important;
-
+  table {
     thead {
       tr {
         background: #ffffff;
@@ -576,6 +575,23 @@
   }
 }
 
+
+.advisor-filter{
+  background-color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border-radius: 10px;
+  .filter-left-side{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-right-side{
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
 @media only screen and (max-width: 1400px) {
   .scanlog-table {
     table {
