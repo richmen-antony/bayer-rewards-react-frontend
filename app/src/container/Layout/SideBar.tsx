@@ -24,6 +24,10 @@ type States = {
   activeTab: any;
   userRole: any;
 };
+interface IProps {
+  style : any;
+}
+
 class Sidebar extends Component<Props, States> {
   constructor(props: any) {
     super(props);
@@ -74,7 +78,7 @@ class Sidebar extends Component<Props, States> {
               autoHideTimeout={1000}
               autoHideDuration={200}
               thumbMinSize={10}
-              renderThumbVertical={({ style, ...props }) => (
+              renderThumbVertical={({ style, ...props }: IProps) => (
                 <div
                   {...props}
                   style={{

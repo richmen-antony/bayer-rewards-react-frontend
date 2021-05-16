@@ -106,7 +106,7 @@ const DialogActions = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogActions);
 
-class ChannelPartners extends Component<Props&RouteComponentProps, States> {
+class ChannelPartners extends Component<Props, States> {
   tableCellIndex : any;
   constructor(props: any) {
     super(props);
@@ -227,7 +227,9 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   }
 
   createUserClick = () => {
-    this.props.history.push('./createUser');
+    const { history } = this.props;
+    if(history) history.push('./createUser');
+    // this.props.history.push('./createUser');
   }
   
   generateHeader(allChannelPartners : any, isAsc : Boolean) {
@@ -471,7 +473,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
     const { username,status }: any = this.state.userData;
      this.setState({ isLoader: true });
-    if(status==="Active"){
+    if(status==="Not Activated"){
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
