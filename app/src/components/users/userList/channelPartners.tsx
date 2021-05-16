@@ -34,6 +34,7 @@ import CustomDropdown from '../../../utility/widgets/dropdown';
 import CustomSwitch from "../../../container/components/switch";
 import { List } from "@material-ui/core";
 import { AnyCnameRecord } from "node:dns";
+import Table from 'react-bootstrap/Table'
 
 type Props = {
   location?: any;
@@ -105,7 +106,7 @@ const DialogActions = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogActions);
 
-class ChannelPartners extends Component<Props&RouteComponentProps, States> {
+class ChannelPartners extends Component<Props, States> {
   tableCellIndex : any;
   constructor(props: any) {
     super(props);
@@ -226,24 +227,26 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
   }
 
   createUserClick = () => {
-    this.props.history.push('./createUser');
+    const { history } = this.props;
+    if(history) history.push('./createUser');
+    // this.props.history.push('./createUser');
   }
   
   generateHeader(allChannelPartners : any, isAsc : Boolean) {
     let staticColumn : number = 3
     let res = [];
-    res.push(<th style={{width : '120px'}} onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
+    res.push(<th onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
     {
       this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
     }
     </th>)
-    res.push(<th style={{width : '110px'}} onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'Mobile #'}
+    res.push(<th onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'Mobile #'}
     {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
-    res.push(<th style={{width : '150px'}}  onClick={e => this.handleSort(e, "accountname", allChannelPartners, isAsc)}>{'Account Name'}
+    res.push(<th onClick={e => this.handleSort(e, "accountname", allChannelPartners, isAsc)}>{'Account Name'}
     {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
-    res.push(<th style={{width : '140px'}} onClick={e => this.handleSort(e, "ownername", allChannelPartners, isAsc)}>{'Owner Name'}
+    res.push(<th onClick={e => this.handleSort(e, "ownername", allChannelPartners, isAsc)}>{'Owner Name'}
     {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
 
@@ -251,21 +254,17 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
       let columnname : string = ""
       columnname = this.state.geographicFields[i];
       columnname = columnname.charAt(0).toUpperCase() + columnname.slice(1)
-      res.push(<th style={{width : '98px'}} onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{columnname}
+      res.push(<th onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{columnname}
       {this.tableCellIndex === i + staticColumn ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
       </th>)
     }
 
     let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
-    res.push(<th style={{width : '100px'}}>{'Status'}</th>)
+    res.push(<th>{'Status'}</th>)
 
-    res.push(<th style={{width : '10px'}}></th>)
+    res.push(<th>{'Last Updated By'}</th>)
 
-    res.push(<th style={{width : '100px'}}>{'Last Updated By'}</th>)
-
-    // res.push(<th style={{width : '100px'}}>{'Expiry Date'}</th>)
-
-    res.push(<th style={{width : '50px'}}></th>)
+    res.push(<th></th>)
 
     return res;
   }
@@ -482,9 +481,12 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
 
     }else {
       let condUrl;
-      if (status === "Inactive") {
+      if (
+       status === "Active" ||
+       status === "Inactive"
+      ) {
         condUrl = activateChannelPartner;
-      } else if( status === "Active" ) {
+      } else {
         condUrl = deactivateChannelPartner;
       }
      
@@ -837,8 +839,9 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
           ""
         )}
         {/* {allChannelPartners.length > 0 ? ( */}
-          <div className="table-responsive">
-            <table className="table" id="tableData">
+          <div className="table-responsive userlist-table">
+            {/* <table className="table" id="tableData"> */}
+            <Table responsive>
               <thead>
                 <tr>
                   {this.generateHeader(allChannelPartners, isAsc)}
@@ -850,18 +853,18 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                   <AUX key={i}>
                     <tr 
                       style={
-                        list.status === "Active" ? { height: '22%', borderLeft: "8px solid #89D329" } : { height: '22%', borderLeft: "8px solid #FF4848" }
+                        list.status === "Active" ? { borderLeft: "8px solid #89D329" } : { borderLeft: "8px solid #FF4848" }
                       }
                      >
-                      <td style={{width : '120px'}}>{list.username}</td>
-                      <td style={{width : '110px'}}>{list.mobilenumber} </td>
-                      <td style={{width : '150px'}}>{list.accountname} </td>
-                      <td style={{width : '140px'}}>{list.ownername} </td>
-                      <td style={{width : '98px'}}>{list.region} </td>
-                      <td style={{width : '98px'}}>{list.district} </td>
-                      <td style={{width : '98px'}}>{list.epa} </td>
-                      <td style={{width : '98px'}}>{list.village} </td>
-                      <td style={{width : '130px'}}>
+                      <td>{list.username}</td>
+                      <td>{list.mobilenumber} </td>
+                      <td style={{textAlign: 'left'}}>{list.accountname} </td>
+                      <td style={{textAlign: 'left'}}>{list.ownername} </td>
+                      <td>{list.region} </td>
+                      <td>{list.district} </td>
+                      <td>{list.epa} </td>
+                      <td>{list.village} </td>
+                      <td>
                         <span
                           onClick={(event: any) => {
                             list.status == 'Declined' ? event.preventDefault() : 
@@ -905,13 +908,14 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                           width="20"
                         />
                       </td> */}
-                      <td style={{width : '85px'}}>
+                      <td>
                         {list.lastupdatedby}
                       </td>
                       {/* <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td> */}
-                      <td style={{width : '50px'}}>
-                        <img
-                          className={list.status == 'Declined' ? "disabledEdit" : "edit"}
+                      <td>
+                          <td>
+                          <img
+                          className="edit"
                           src={list.status == 'Declined' ? EditDisabled : Edit}
                           width="20"
                           onClick={(event) => {
@@ -920,6 +924,20 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                             : this.editPopup(event, list);
                           }}
                         />
+                          </td>
+                          <td>
+                          <img
+                          className="edit"
+                          src={list.status == 'Declined' ? EditDisabled : Edit}
+                          width="20"
+                          onClick={(event) => {
+                            list.status == 'Declined' 
+                            ? event.preventDefault() 
+                            : this.editPopup(event, list);
+                          }}
+                        />
+
+                          </td>
                       </td>
                     </tr>
                   </AUX> 
@@ -932,7 +950,7 @@ class ChannelPartners extends Component<Props&RouteComponentProps, States> {
                 </div></>
                 }
               </tbody>
-            </table>
+            </Table>
             <div className="add-plus-icon"  onClick={() => this.createUserClick()}>
               <img src={AddBtn} alt={NoImage} />
             </div>

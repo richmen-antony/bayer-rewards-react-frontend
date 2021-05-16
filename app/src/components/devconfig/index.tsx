@@ -540,5 +540,7 @@ const mapStateToProps = ({ devconfig: { location, role, tntflow,scanpointsandall
   }
 }
 
-const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);
-export default rootComponent as React.ComponentType;
+// const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);
+// export default rootComponent as React.ComponentType;
+
+export default connect(mapStateToProps)((withStyles(useStyles)(Devconfigurations)));
