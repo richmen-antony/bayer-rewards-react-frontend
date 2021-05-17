@@ -216,13 +216,14 @@ class ScanLogsTable extends Component<Props, States> {
   };
   onSort = (name: string, datas: any, isAsc: Boolean) => {
     let response = sortBy(name, datas);
-    this.setState({ data: response, isAsc: !isAsc });
+    this.setState({ allScanLogs: response, isAsc: !isAsc });
   };
 
   handleSort(e:any,columnname: string, data : any, isAsc : Boolean){
     this.tableCellIndex = e.currentTarget.cellIndex;
     this.onSort(columnname, data, isAsc)
   }
+
   toggleFilter = () => {
     this.setState((prevState) => ({
       dropdownOpenFilter: !prevState.dropdownOpenFilter,
@@ -547,34 +548,7 @@ class ScanLogsTable extends Component<Props, States> {
                             />
                           </div>
                           </div>
-                          <label className="font-weight-bold pt-2">
-                          Last Updated Date
-                          </label>
-                          <div className="d-flex">
-                          <div className="user-filter-date-picker">
-                            <input
-                              type="date"
-                              className="form-control"
-                              value={selectedFilters.startDate}
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "startDate", "")
-                              }
-                            />
-                            </div>
-                            <div className="p-2">-</div>
-                            <div className="user-filter-date-picker">
-                            <input
-                              type="date"
-                              className="form-control"
-                              value={selectedFilters.endDate}
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "endDate", "")
-                              }
-                            />
-                          </div>
-                          </div>
-                          
-                          
+                          {/* </div> */}
 
                           <div className="filterFooter pt-3">
                             <Button
@@ -609,21 +583,38 @@ class ScanLogsTable extends Component<Props, States> {
               <table className="table">
                 <thead>
                   <tr>
-                  <th onClick={e => this.handleSort(e, "order_id", allScanLogs, isAsc)}>
-                    ORDER ID
-                    {/* {
-                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
-                    } */}
-                  </th>
-                    <th>RETAILER NAME/ID</th>
-                    <th>PRODUCT SOLD</th>
-                    <th>ORDERED QTY</th>
-                    <th>TOTAL COST</th>
-                    <th>FARMER NAME/ID</th>
-                    <th>FARMER #</th>
-                    <th>ORDERED DATE</th>
-                    <th>STATUS</th>
-                    <th>LAST UPDATED DATE</th>
+                    <th onClick={e => this.handleSort(e, "order_id", allScanLogs, isAsc)}>ORDER ID
+                      {
+                        this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+                      }
+                    </th>
+                    <th onClick={e => this.handleSort(e, "sellername", allScanLogs, isAsc)}>RETAILER NAME/ID
+                      {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}  
+                    </th>
+                    <th onClick={e => this.handleSort(e, "sellername", allScanLogs, isAsc)}>PRODUCT SOLD
+                    {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
+                    <th onClick={e => this.handleSort(e, "orderedquantity", allScanLogs, isAsc)}>ORDERED QTY
+                    {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
+                    <th onClick={e => this.handleSort(e, "totalcost", allScanLogs, isAsc)}>TOTAL COST
+                    {this.tableCellIndex === 4 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
+                    <th onClick={e => this.handleSort(e, "farmername", allScanLogs, isAsc)}>FARMER NAME/ID
+                    {this.tableCellIndex === 5 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
+                    <th onClick={e => this.handleSort(e, "farmerphone", allScanLogs, isAsc)}>FARMER #
+                    {this.tableCellIndex === 6 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
+                    <th onClick={e => this.handleSort(e, "ordereddate", allScanLogs, isAsc)}>ORDERED DATE
+                    {this.tableCellIndex === 7 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
+                    <th onClick={e => this.handleSort(e, "status", allScanLogs, isAsc)}>STATUS
+                    {this.tableCellIndex === 8 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
+                    <th onClick={e => this.handleSort(e, "lastupdateddate", allScanLogs, isAsc)}>LAST UPDATED DATE
+                    {this.tableCellIndex === 9 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
