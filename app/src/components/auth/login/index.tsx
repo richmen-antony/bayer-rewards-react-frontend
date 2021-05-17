@@ -114,6 +114,12 @@ class Login extends Component<Props, States>{
         }
         return formValid;
     }
+    
+    handleKeyPress = (event:any) => {
+        if(event.key === 'Enter'){
+            this.login()
+        }
+    }
 
 render(){
     const { username, password, usernameError, passwordError, isRemember, isPwdView, isLoader, validErrorMsg } = this.state;
@@ -135,7 +141,7 @@ render(){
                                         <div className="form-group">
                                             <label>Password</label>
                                             <div className="withIcon">
-                                                <input type={isPwdView ? "text" : "password"} className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeholder="Enter password" value={password} onChange={this.handleChange} style={{height: '40px' }} />
+                                                <input type={isPwdView ? "text" : "password"} onKeyPress={this.handleKeyPress}  className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeholder="Enter password" value={password} onChange={this.handleChange} style={{height: '40px' }} />
                                                 {/* <Input type={isPwdView ? "text" : "password"} className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeHolder="Enter password" value={password}
                                                     onChange={this.handleChange} /> */}
                                                 <i className={ isPwdView ? "fa fa-eye-slash" : "fa fa-eye"} onClick={() => {this.setState({isPwdView: !isPwdView})}}></i>
