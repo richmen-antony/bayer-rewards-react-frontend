@@ -1,0 +1,21 @@
+.inner-table {
+  width: 100%;
+  td {
+    &.title {
+      text-align: left;
+      border-right: 0;
+      p {
+        color: #646464;
+      }
+    }
+    &:last-child{
+    border-right: 0;
+    }
+    border-right: 1px solid #dee2e6;
+    text-align: center;
+    border-top: 0;
+    .sub-val {
+      margin: 0;
+    }
+  }
+}

@@ -33,6 +33,7 @@ import {
 } from "../../utility/base/service";
 
 
+
 const popupHeader = {
   title: "Maria Joseph",
   sub: "Retailer",
@@ -519,7 +520,7 @@ class ScanLogsTable extends Component<Props, States> {
                             ))}
                           </div>
 
-                          {/* <div className="" onClick={(e)=>e.stopPropagation()}> */}
+                         
                           <label className="font-weight-bold pt-2">
                           Ordered Date
                           </label>
@@ -546,7 +547,34 @@ class ScanLogsTable extends Component<Props, States> {
                             />
                           </div>
                           </div>
-                          {/* </div> */}
+                          <label className="font-weight-bold pt-2">
+                          Last Updated Date
+                          </label>
+                          <div className="d-flex">
+                          <div className="user-filter-date-picker">
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={selectedFilters.startDate}
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "startDate", "")
+                              }
+                            />
+                            </div>
+                            <div className="p-2">-</div>
+                            <div className="user-filter-date-picker">
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={selectedFilters.endDate}
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "endDate", "")
+                              }
+                            />
+                          </div>
+                          </div>
+                          
+                          
 
                           <div className="filterFooter pt-3">
                             <Button

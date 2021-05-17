@@ -291,7 +291,7 @@ class ScanLogs extends Component<Props, States> {
             <TabPanel value={this.state.value} index={0} classes={classes}>
               <ScanLogsTable/>
             </TabPanel>
-            <TabPanel value={this.state.value} index={1} classes={classes}>
+            <TabPanel value={this.state.value} index={1} classes={classes} >
               Item Two
             </TabPanel>
             <TabPanel value={this.state.value} index={2} classes={classes}>
