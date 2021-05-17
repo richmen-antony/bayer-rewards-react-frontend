@@ -31,6 +31,7 @@ import {
   invokeGetAuthService,
   invokeGetService,
 } from "../../utility/base/service";
+import ExpiredIcon from "../../assets/icons/expired.svg";
 
 
 
@@ -666,7 +667,7 @@ class ScanLogsTable extends Component<Props, States> {
                         <td>
                           <span className={`status ${value.status ==="Fulfilled" ? "active":"inactive"}`}>
                           {value.status ==="Fulfilled" ? <img src={ActiveIcon} style={{ marginRight: "8px" }}  width="17"/> :
-                            <i className="fas fa-clock"></i>}
+                            <img src={ExpiredIcon} width="17" />}
                             {value.status}
                           </span>
                         </td>

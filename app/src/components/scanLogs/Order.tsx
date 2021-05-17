@@ -67,7 +67,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
             <ul className="progressBar">
               <li className="active">
                 <div className="line-cnt">
-                  <p>Ordered date</p>
+                  <p>Ordered Date</p>
                   <label>
                     {data.ordereddate &&
                       moment(data.ordereddate).format("Do MMM, YYYY")}
