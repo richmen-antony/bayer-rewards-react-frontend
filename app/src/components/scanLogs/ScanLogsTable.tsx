@@ -396,7 +396,7 @@ class ScanLogsTable extends Component<Props, States> {
       <AUX>
         {isLoader && <Loader />}
         <div>
-          {allScanLogs.length > 0 ? (
+          
             <div>
             <div className="scanlog-table">
               <div className="advisor-filter">
@@ -549,6 +549,32 @@ class ScanLogsTable extends Component<Props, States> {
                             />
                           </div>
                           </div>
+                          <label className="font-weight-bold pt-2">
+                         Last Updated Date
+                          </label>
+                          <div className="d-flex">
+                          <div className="user-filter-date-picker">
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={selectedFilters.startDate}
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "startDate", "")
+                              }
+                            />
+                            </div>
+                            <div className="p-2">-</div>
+                            <div className="user-filter-date-picker">
+                            <input
+                              type="date"
+                              className="form-control"
+                              value={selectedFilters.endDate}
+                              onChange={(e) =>
+                                this.handleFilterChange(e, "endDate", "")
+                              }
+                            />
+                          </div>
+                          </div>
                           {/* </div> */}
 
                           <div className="filterFooter pt-3">
@@ -619,7 +645,7 @@ class ScanLogsTable extends Component<Props, States> {
                   </tr>
                 </thead>
                 <tbody>
-                  {allScanLogs.map((value:any, i:number) => {
+                  {allScanLogs.length > 0 ? allScanLogs.map((value:any, i:number) => {
                     return (
                       <tr
                         onClick={(event) =>{
@@ -668,7 +694,12 @@ class ScanLogsTable extends Component<Props, States> {
                         </td>
                       </tr>
                     );
-                  })}
+                  }) :
+                  isLoader ?
+                  <Loaders />:
+                  <tr>
+                    <td colSpan={10} className="no-records">No records found</td>
+                    </tr>}
                 </tbody>
               </table>
 
@@ -686,15 +717,6 @@ class ScanLogsTable extends Component<Props, States> {
             />
           </div>
           </div>
-          ) : isLoader ? (
-            <Loaders />
-          ) : (
-            <div className="col-12 card mt-4">
-              <div className="card-body ">
-                <div className="text-red py-4 text-center">No Data Found</div>
-              </div>
-            </div>
-          )}
         </div>
         {this.state.showPopup ? (
           <SimpleDialog
