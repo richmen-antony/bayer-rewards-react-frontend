@@ -678,3 +678,48 @@
     }
   }
 }
+
+@media screen and (min-width: 1080px) and (max-width: 1920px) {
+  /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
+  .scanlog-table {
+    table {
+      thead {
+        tr {
+          th {
+            padding: 15px 5px;
+            font-size: 14px;
+            font-weight: 500;
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-size: 14px;
+            font-family: "Open Sans";
+            vertical-align: middle;
+            text-align: left;
+            .status {
+              border-radius: 20px;
+              padding: 5px;
+              i {
+                margin-right: 5px;
+              }
+            }
+            .max-image {
+              margin-left: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}

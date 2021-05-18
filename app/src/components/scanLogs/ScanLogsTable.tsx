@@ -32,8 +32,36 @@ import {
   invokeGetService,
 } from "../../utility/base/service";
 import ExpiredIcon from "../../assets/icons/expired.svg";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
+interface IProps {
+  onChange?: any;
+  placeholder?: any;
+  value?: any;
+  id?: any;
+  onClick?: any;
+  // any other props that come into the component
+}
 
+const Input = ({ onChange, placeholder, value, id, onClick }: IProps) => (
+  <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+    <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+    <input
+      style={{
+        border: "none",
+        width: "120px",
+        height: "31px",
+        outline: "none",
+      }}
+      onChange={onChange}
+      placeholder={placeholder}
+      value={value}
+      id={id}
+      onClick={onClick}
+    />
+  </div>
+);
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -132,7 +160,8 @@ class ScanLogsTable extends Component<Props, States> {
       dropdownOpenFilter: false,
       accordionView: false,
       accordionId: "",
-      value: 0,
+      // value: 0,
+      value: moment(),
     };
     this.timeOut = 0;
   }
@@ -144,7 +173,6 @@ class ScanLogsTable extends Component<Props, States> {
     // this.setState({
     //   userRole: userData.role,
     // });
-   
   }
   getScanLogs = () => {
     const { scanLogs } = apiURL;
@@ -466,244 +494,411 @@ class ScanLogsTable extends Component<Props, States> {
                               <option>Farmer Name</option>
                               <option>Farmer Name3</option>
                             </select> */}
-                             <NativeDropdown  name="type" value={selectedFilters.type} label={"Farmer"}
-                            options={[{text:"ALL",value:"ALl"},{text:"Farmer Name",value:"Farmer Name"}]}
-                            />
-                          </div>
-                         
+                                <NativeDropdown
+                                  name="type"
+                                  value={selectedFilters.type}
+                                  label={"Farmer"}
+                                  options={[
+                                    { text: "ALL", value: "ALl" },
+                                    {
+                                      text: "Farmer Name",
+                                      value: "Farmer Name",
+                                    },
+                                  ]}
+                                />
+                              </div>
 
-                          <label className="font-weight-bold pt-2">
-                            Product Group
-                          </label>
-                          <div className="pt-1">
-                            {this.state.productCategories.map((item:any, i:number) => (
-                              <span className="mr-2 chipLabel" key={i}>
+                              <label className="font-weight-bold pt-2">
+                                Product Group
+                              </label>
+                              <div className="pt-1">
+                                {this.state.productCategories.map(
+                                  (item: any, i: number) => (
+                                    <span className="mr-2 chipLabel" key={i}>
+                                      <Button
+                                        color={
+                                          selectedFilters.productCategory ===
+                                          item
+                                            ? "btn activeColor rounded-pill"
+                                            : "btn rounded-pill boxColor"
+                                        }
+                                        size="sm"
+                                        onClick={(e) =>
+                                          this.handleFilterChange(
+                                            e,
+                                            "productCategory",
+                                            item
+                                          )
+                                        }
+                                      >
+                                        {item}
+                                      </Button>
+                                    </span>
+                                  )
+                                )}
+                              </div>
+
+                              <label className="font-weight-bold pt-2">
+                                Status
+                              </label>
+                              <div className="pt-1">
+                                {this.state.status.map((item: any) => (
+                                  <span className="mr-2">
+                                    <Button
+                                      color={
+                                        selectedFilters.status === item
+                                          ? "btn activeColor rounded-pill"
+                                          : "btn rounded-pill boxColor"
+                                      }
+                                      size="sm"
+                                      onClick={(e) =>
+                                        this.handleFilterChange(
+                                          e,
+                                          "status",
+                                          item
+                                        )
+                                      }
+                                    >
+                                      {item}
+                                    </Button>
+                                  </span>
+                                ))}
+                              </div>
+
+                              <label className="font-weight-bold pt-2">
+                                Ordered Date
+                              </label>
+                              <div className="d-flex">
+                                <div className="user-filter-date-picker">
+                                  {/* <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.startDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(
+                                        e,
+                                        "startDate",
+                                        ""
+                                      )
+                                    }
+                                  /> */}
+
+                                  <DatePicker
+                                    value={selectedFilters.startDate}
+                                    dateFormat="dd-MM-yyyy"
+                                    customInput={<Input />}
+                                    selected={this.state.date}
+                                    onChange={(date: any) =>
+                                      this.setState({ date })
+                                    }
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    dropdownMode="select"
+                                  />
+                                </div>
+                                <div className="p-2">-</div>
+                                <div className="user-filter-date-picker">
+                                  {/* <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.endDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(e, "endDate", "")
+                                    }
+                                  /> */}
+
+                                  <DatePicker
+                                    value={selectedFilters.endDate}
+                                    dateFormat="dd-MM-yyyy"
+                                    customInput={<Input />}
+                                    selected={this.state.endDate}
+                                    onChange={(date: any) =>
+                                      this.setState({ date })
+                                    }
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    dropdownMode="select"
+                                  />
+                                </div>
+                              </div>
+                              {/* </div> */}
+
+                              <div className="filterFooter pt-3">
                                 <Button
-                                  color={
-                                    selectedFilters.productCategory === item
-                                      ? "btn activeColor rounded-pill"
-                                      : "btn rounded-pill boxColor"
-                                  }
-                                  size="sm"
-                                  onClick={(e) =>
-                                    this.handleFilterChange(
-                                      e,
-                                      "productCategory",
-                                      item
-                                    )
-                                  }
+                                  color="btn rounded-pill boxColor reset-btn"
+                                  onClick={(e) => this.resetFilter(e)}
                                 >
-                                  {item}
+                                  Reset All
                                 </Button>
-                              </span>
-                            ))}
-                          </div>
-
-                          <label className="font-weight-bold pt-2">
-                            Status
-                          </label>
-                          <div className="pt-1">
-                            {this.state.status.map((item:any) => (
-                              <span className="mr-2">
                                 <Button
-                                  color={
-                                    selectedFilters.status === item
-                                      ? "btn activeColor rounded-pill"
-                                      : "btn rounded-pill boxColor"
-                                  }
-                                  size="sm"
-                                  onClick={(e) =>
-                                    this.handleFilterChange(e, "status", item)
-                                  }
+                                  color="btn rounded-pill boxColor applybtn"
+                                  onClick={() => this.applyFilter()}
                                 >
-                                  {item}
+                                  Apply
                                 </Button>
-                              </span>
-                            ))}
-                          </div>
-
-                         
-                          <label className="font-weight-bold pt-2">
-                          Ordered Date
-                          </label>
-                          <div className="d-flex">
-                          <div className="user-filter-date-picker">
-                            <input
-                              type="date"
-                              className="form-control"
-                              value={selectedFilters.startDate}
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "startDate", "")
-                              }
-                            />
+                              </div>
+                              {dateErrMsg && (
+                                <span className="error">{dateErrMsg} </span>
+                              )}
                             </div>
-                            <div className="p-2">-</div>
-                            <div className="user-filter-date-picker">
-                            <input
-                              type="date"
-                              className="form-control"
-                              value={selectedFilters.endDate}
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "endDate", "")
-                              }
-                            />
-                          </div>
-                          </div>
-                          <label className="font-weight-bold pt-2">
-                         Last Updated Date
-                          </label>
-                          <div className="d-flex">
-                          <div className="user-filter-date-picker">
-                            <input
-                              type="date"
-                              className="form-control"
-                              value={selectedFilters.startDate}
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "startDate", "")
-                              }
-                            />
-                            </div>
-                            <div className="p-2">-</div>
-                            <div className="user-filter-date-picker">
-                            <input
-                              type="date"
-                              className="form-control"
-                              value={selectedFilters.endDate}
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "endDate", "")
-                              }
-                            />
-                          </div>
-                          </div>
-                          {/* </div> */}
-
-                          <div className="filterFooter pt-3">
-                            <Button
-                              color="btn rounded-pill boxColor reset-btn"
-                             
-                              onClick={(e) => this.resetFilter(e)}
-                            >
-                              Reset All
-                            </Button>
-                            <Button
-                               color="btn rounded-pill boxColor applybtn"
-                              onClick={() => this.applyFilter()}
-                            >
-                              Apply
-                            </Button>
-                          </div>
-                          {dateErrMsg && (
-                            <span className="error">{dateErrMsg} </span>
-                          )}
-                        </div>
-                      </DropdownMenu>
-                    </Dropdown>
-                  </div>
-                  <div>
-                    <button className="btn btn-primary" onClick={this.download}>
-                      <img src={Download} width="17" alt={NoImage} />
-                    </button>
-                  </div>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
+                      <div>
+                        <button
+                          className="btn btn-primary"
+                          onClick={this.download}
+                        >
+                          <img src={Download} width="17" alt={NoImage} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                </div>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th onClick={e => this.handleSort(e, "order_id", allScanLogs, isAsc)}>ORDER ID
-                      {
-                        this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
-                      }
-                    </th>
-                    <th onClick={e => this.handleSort(e, "sellername", allScanLogs, isAsc)}>RETAILER NAME/ID
-                      {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}  
-                    </th>
-                    <th onClick={e => this.handleSort(e, "sellername", allScanLogs, isAsc)}>PRODUCT SOLD
-                    {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                    <th onClick={e => this.handleSort(e, "orderedquantity", allScanLogs, isAsc)}>ORDERED QTY
-                    {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                    <th onClick={e => this.handleSort(e, "totalcost", allScanLogs, isAsc)}>TOTAL COST
-                    {this.tableCellIndex === 4 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                    <th onClick={e => this.handleSort(e, "farmername", allScanLogs, isAsc)}>FARMER NAME/ID
-                    {this.tableCellIndex === 5 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                    <th onClick={e => this.handleSort(e, "farmerphone", allScanLogs, isAsc)}>FARMER #
-                    {this.tableCellIndex === 6 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                    <th onClick={e => this.handleSort(e, "ordereddate", allScanLogs, isAsc)}>ORDERED DATE
-                    {this.tableCellIndex === 7 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                    <th onClick={e => this.handleSort(e, "status", allScanLogs, isAsc)}>STATUS
-                    {this.tableCellIndex === 8 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                    <th onClick={e => this.handleSort(e, "lastupdateddate", allScanLogs, isAsc)}>LAST UPDATED DATE
-                    {this.tableCellIndex === 9 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allScanLogs.length > 0 ? allScanLogs.map((value:any, i:number) => {
-                    return (
-                      <tr
-                        onClick={(event) =>{
-                          this.showPopup(event, "showProductPopup");
-                          this.updateOrderData(value)
-                        }
-                        
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th
+                        style={{ width: "8%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "order_id", allScanLogs, isAsc)
                         }
                       >
-                        <td>{value.order_id}</td>
-                        <td>
-                          <div className="retailer-id">
-                            <p>
-                              {value.sellername}
-                              <img
-                                className="retailer-icon"
-                                onClick={(event) =>{
-                                  this.showPopup(event, "showPopup");
-                                  this.handleUpdateRetailer(value);
-                                }
-                              }
-                                src={ExpandWindowImg}
-                              ></img>
-                            </p>
-                            <label>DHCIP</label>
-                          </div>
-                        </td>
-                        <td>{value.products_ordered?.length || 0}</td>
-                        <td>{value.orderedquantity}</td>
-                        <td>{value.totalcost}</td>
-                        <td>{value.farmername}</td>
-                        <td>{value.farmerphone}</td>
-                        <td>
-                          {moment(value.ordereddate).format("DD-MM-YYYY")}
-                        </td>
-                        <td>
-                          <span className={`status ${value.status ==="Fulfilled" ? "active":"inactive"}`}>
-                          {value.status ==="Fulfilled" ? <img src={ActiveIcon} style={{ marginRight: "8px" }}  width="17"/> :
-                            <img src={ExpiredIcon} width="17" />}
-                            {value.status}
-                          </span>
-                        </td>
-                        <td>
-                          {moment(value.lastupdateddate).format("DD-MM-YYYY")}
-                          <img  className="max-image" src={maxImg} />
-                        </td>
-                      </tr>
-                    );
-                  }) :
-                  isLoader ?
-                  <Loaders />:
-                  <tr>
-                    <td colSpan={10} className="no-records">No records found</td>
-                    </tr>}
-                </tbody>
-              </table>
-
-              
+                        ORDER ID
+                        {this.tableCellIndex !== undefined ? (
+                          this.tableCellIndex === 0 ? (
+                            <i
+                              className={`fas ${
+                                isAsc ? "fa-sort-down" : "fa-sort-up"
+                              } ml-2`}
+                            ></i>
+                          ) : null
+                        ) : (
+                          <i className={"fas fa-sort-up ml-2"}></i>
+                        )}
+                      </th>
+                      <th
+                        style={{ width: "12%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "sellername", allScanLogs, isAsc)
+                        }
+                      >
+                        RETAILER NAME/ID
+                        {this.tableCellIndex === 1 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "11%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "sellername", allScanLogs, isAsc)
+                        }
+                      >
+                        PRODUCT SOLD
+                        {this.tableCellIndex === 2 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "10%" }}
+                        onClick={(e) =>
+                          this.handleSort(
+                            e,
+                            "orderedquantity",
+                            allScanLogs,
+                            isAsc
+                          )
+                        }
+                      >
+                        ORDERED QTY
+                        {this.tableCellIndex === 3 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "9%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "totalcost", allScanLogs, isAsc)
+                        }
+                      >
+                        TOTAL COST
+                        {this.tableCellIndex === 4 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "12%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "farmername", allScanLogs, isAsc)
+                        }
+                      >
+                        FARMER NAME/ID
+                        {this.tableCellIndex === 5 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "8%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "farmerphone", allScanLogs, isAsc)
+                        }
+                      >
+                        FARMER #
+                        {this.tableCellIndex === 6 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "11%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "ordereddate", allScanLogs, isAsc)
+                        }
+                      >
+                        ORDERED DATE
+                        {this.tableCellIndex === 7 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "8%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "status", allScanLogs, isAsc)
+                        }
+                      >
+                        STATUS
+                        {this.tableCellIndex === 8 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "13%" }}
+                        onClick={(e) =>
+                          this.handleSort(
+                            e,
+                            "lastupdateddate",
+                            allScanLogs,
+                            isAsc
+                          )
+                        }
+                      >
+                        LAST UPDATED DATE
+                        {this.tableCellIndex === 9 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allScanLogs.map((value: any, i: number) => {
+                      return (
+                        <tr
+                          onClick={(event) => {
+                            this.showPopup(event, "showProductPopup");
+                            this.updateOrderData(value);
+                          }}
+                        >
+                          <td>{value.order_id}</td>
+                          <td>
+                            <div className="retailer-id">
+                              <p>
+                                {value.sellername}
+                                <img
+                                  className="retailer-icon"
+                                  onClick={(event) => {
+                                    this.showPopup(event, "showPopup");
+                                    this.handleUpdateRetailer(value);
+                                  }}
+                                  src={ExpandWindowImg}
+                                ></img>
+                              </p>
+                              <label>DHCIP</label>
+                            </div>
+                          </td>
+                          <td>{value.products_ordered?.length || 0}</td>
+                          <td>{value.orderedquantity}</td>
+                          <td>{value.totalcost}</td>
+                          <td>{value.farmername}</td>
+                          <td>{value.farmerphone}</td>
+                          <td>
+                            {moment(value.ordereddate).format("DD-MM-YYYY")}
+                          </td>
+                          <td>
+                            <span
+                              className={`status ${
+                                value.status === "Fulfilled"
+                                  ? "active"
+                                  : "inactive"
+                              }`}
+                            >
+                              {value.status === "Fulfilled" ? (
+                                <img
+                                  src={ActiveIcon}
+                                  style={{ marginRight: "8px" }}
+                                  width="17"
+                                />
+                              ) : (
+                                <i className="fas fa-clock"></i>
+                              )}
+                              {value.status}
+                            </span>
+                          </td>
+                          <td>
+                            {moment(value.lastupdateddate).format("DD-MM-YYYY")}
+                            <img className="max-image" src={maxImg} />
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <Pagination
+                  totalData={totalData}
+                  rowsPerPage={rowsPerPage}
+                  previous={this.previous}
+                  next={this.next}
+                  pageNumberClick={this.pageNumberClick}
+                  pageNo={pageNo}
+                  handlePaginationChange={this.handlePaginationChange}
+                />
+              </div>
             </div>
             <div>
             <Pagination
