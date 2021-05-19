@@ -13,8 +13,8 @@ import MaterialUIButton from "@material-ui/core/Button";
 import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
-import maxImg from "../../assets/images/maximize.svg"
-import CalenderIcon from "../../assets/icons/calendar.svg"
+import maxImg from "../../assets/images/maximize.svg";
+import CalenderIcon from "../../assets/icons/calendar.svg";
 import ActiveIcon from "../../assets/images/check.svg";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
@@ -826,66 +826,74 @@ class ScanLogsTable extends Component<Props, States> {
                   </tr>
                 </thead>
                 <tbody>
-                  {allScanLogs.map((value: any, i: number) => {
-                    return (
-                      <tr
-                        onClick={(event) => {
-                          this.showPopup(event, "showProductPopup");
-                          this.updateOrderData(value);
-                        }}
-                      >
-                        <td>{value.order_id}</td>
-                        <td>
-                          <div className="retailer-id">
-                            <p>
-                              {value.sellername}
-                              <img
-                                className="retailer-icon"
-                                onClick={(event) => {
-                                  this.showPopup(event, "showPopup");
-                                  this.handleUpdateRetailer(value);
-                                }}
-                                src={ExpandWindowImg}
-                              ></img>
-                            </p>
-                            <label>DHCIP</label>
-                          </div>
-                        </td>
-                        <td>{value.products_ordered?.length || 0}</td>
-                        <td>{value.orderedquantity}</td>
-                        <td>{value.totalcost}</td>
-                        <td>{value.farmername}</td>
-                        <td>{value.farmerphone}</td>
-                        <td>
-                          {moment(value.ordereddate).format("DD-MM-YYYY")}
-                        </td>
-                        <td>
-                          <span
-                            className={`status ${
-                              value.status === "Fulfilled"
-                                ? "active"
-                                : "inactive"
-                            }`}
-                          >
-                            {value.status === "Fulfilled" ? (
-                              <img
-                                src={ActiveIcon}
-                                style={{ marginRight: "8px" }}
-                                width="17"
-                              />
-                            ) : (
-                              <i className="fas fa-clock"></i>
-                            )}
-                            {value.status}
-                          </span>
-                        </td>
-                        <td>
-                          {moment(value.lastupdateddate).format("DD-MM-YYYY")}
-                          <img className="max-image" src={maxImg} />
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {allScanLogs.length > 0 ? (
+                    allScanLogs.map((value: any, i: number) => {
+                      return (
+                        <tr
+                          onClick={(event) => {
+                            this.showPopup(event, "showProductPopup");
+                            this.updateOrderData(value);
+                          }}
+                        >
+                          <td>{value.order_id}</td>
+                          <td>
+                            <div className="retailer-id">
+                              <p>
+                                {value.sellername}
+                                <img
+                                  className="retailer-icon"
+                                  onClick={(event) => {
+                                    this.showPopup(event, "showPopup");
+                                    this.handleUpdateRetailer(value);
+                                  }}
+                                  src={ExpandWindowImg}
+                                ></img>
+                              </p>
+                              <label>DHCIP</label>
+                            </div>
+                          </td>
+                          <td>{value.products_ordered?.length || 0}</td>
+                          <td>{value.orderedquantity}</td>
+                          <td>{value.totalcost}</td>
+                          <td>{value.farmername}</td>
+                          <td>{value.farmerphone}</td>
+                          <td>
+                            {moment(value.ordereddate).format("DD-MM-YYYY")}
+                          </td>
+                          <td>
+                            <span
+                              className={`status ${
+                                value.status === "Fulfilled"
+                                  ? "active"
+                                  : "inactive"
+                              }`}
+                            >
+                              {value.status === "Fulfilled" ? (
+                                <img
+                                  src={ActiveIcon}
+                                  style={{ marginRight: "8px" }}
+                                  width="17"
+                                />
+                              ) : (
+                                <i className="fas fa-clock"></i>
+                              )}
+                              {value.status}
+                            </span>
+                          </td>
+                          <td>
+                            {moment(value.lastupdateddate).format("DD-MM-YYYY")}
+                            <img className="max-image" src={maxImg} />
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : isLoader ? (
+                    <Loaders />
+                  ) : (
+                    <tr >
+                      <td colSpan={10} className="no-records">No records found</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
