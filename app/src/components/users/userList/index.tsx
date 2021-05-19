@@ -830,7 +830,7 @@ class UserList extends Component<Props, States> {
                       ))}
                     </div>
                   </div>
-                  <div className="" style={{ marginLeft: "50px" }}>
+                  <div className="" style={{ marginLeft: "50px", marginTop: '16px'}}>
                     {!changeLogOpen && (
                       <div className="filterRow">
                         <Dropdown
