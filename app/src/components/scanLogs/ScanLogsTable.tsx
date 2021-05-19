@@ -913,6 +913,7 @@ class ScanLogsTable extends Component<Props, States> {
               pageNumberClick={this.pageNumberClick}
               pageNo={pageNo}
               handlePaginationChange={this.handlePaginationChange}
+              data={allScanLogs}
             />
           </div>
         </div>

@@ -953,7 +953,7 @@ class ChannelPartners extends Component<Props, States> {
             <div className="add-plus-icon"  onClick={() => this.createUserClick()}>
               <img src={AddBtn} alt={NoImage} />
             </div>
-            {allChannelPartners.length > 0 && 
+
             <div>
               <Pagination
                 totalData={totalData}
@@ -963,9 +963,10 @@ class ChannelPartners extends Component<Props, States> {
                 pageNumberClick={this.props.pageNumberClick}
                 pageNo={pageNo}
                 handlePaginationChange={this.props.handlePaginationChange}
+                data = {allChannelPartners}
               />
             </div>
-            }
+            
           </div>
         
       </>
