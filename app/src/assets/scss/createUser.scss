@@ -1,0 +1,35 @@
+@import "./variables.scss";
+
+.personalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+/* ----React phone input starts -----*/
+  .flagInput .App {
+    font-family: 'appRegular' !important;;
+    text-align: center;
+  }
+  .flagInput .form-control {
+    height: 40px !important;
+    width: 215px !important;
+  }
+//   .flagInput .react-tel-input {
+//     margin-top: 10px !important;
+//     margin-left: 10px !important;
+//   }
+.react-tel-input .country-list {
+    width: 215px !important;
+    max-height : 151px !important;
+}
+.react-tel-input .selected-flag {
+    width: 43px !important;
+    .arrow {
+        left: 27px !important;
+    }
+}
+.flagInput .country {
+    margin-bottom: 4px;
+}
+/*-----------React flag ends------------*/

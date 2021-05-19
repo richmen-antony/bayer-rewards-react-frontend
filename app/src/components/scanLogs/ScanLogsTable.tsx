@@ -32,8 +32,8 @@ import {
   invokeGetService,
 } from "../../utility/base/service";
 import ExpiredIcon from "../../assets/icons/expired.svg";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
 
 interface IProps {
   onChange?: any;
@@ -571,7 +571,7 @@ class ScanLogsTable extends Component<Props, States> {
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
-                                {/* <input
+                                <input
                                     type="date"
                                     className="form-control"
                                     value={selectedFilters.startDate}
@@ -582,9 +582,9 @@ class ScanLogsTable extends Component<Props, States> {
                                         ""
                                       )
                                     }
-                                  /> */}
+                                  />
 
-                                <DatePicker
+                                {/* <DatePicker
                                   value={selectedFilters.startDate}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
@@ -595,20 +595,20 @@ class ScanLogsTable extends Component<Props, States> {
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
-                                />
+                                /> */}
                               </div>
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
-                                {/* <input
+                                <input
                                     type="date"
                                     className="form-control"
                                     value={selectedFilters.endDate}
                                     onChange={(e) =>
                                       this.handleFilterChange(e, "endDate", "")
                                     }
-                                  /> */}
+                                  />
 
-                                <DatePicker
+                                {/* <DatePicker
                                   value={selectedFilters.endDate}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
@@ -619,7 +619,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
-                                />
+                                /> */}
                               </div>
                             </div>
                             {/* </div> */}
