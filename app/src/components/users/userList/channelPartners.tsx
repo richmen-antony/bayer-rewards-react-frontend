@@ -20,6 +20,7 @@ import Cancel from "../../../assets/images/cancel.svg";
 import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import NoImage from "../../../assets/images/no_image.svg";
+import blackmockup from "../../../assets/icons/black-mockup.svg";
 import "../../../assets/scss/users.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
@@ -925,17 +926,7 @@ class ChannelPartners extends Component<Props, States> {
                         />
                           </td>
                           <td>
-                          <img
-                          className="edit"
-                          src={list.status == 'Declined' ? EditDisabled : Edit}
-                          width="20"
-                          onClick={(event) => {
-                            list.status == 'Declined' 
-                            ? event.preventDefault() 
-                            : this.editPopup(event, list);
-                          }}
-                        />
-
+                          <img src={blackmockup} width="20" height="25" />
                           </td>
                       </td>
                     </tr>
