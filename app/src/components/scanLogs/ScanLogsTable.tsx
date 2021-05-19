@@ -852,8 +852,12 @@ class ScanLogsTable extends Component<Props, States> {
                               <label>DHCIP</label>
                             </div>
                           </td>
-                          <td>{value.products_ordered?.length || 0}</td>
-                          <td>{value.orderedquantity}</td>
+                          <td style={{ textAlign: "center" }}>
+                            {value.products_ordered?.length || 0}
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            {value.orderedquantity}
+                          </td>
                           <td>{value.totalcost}</td>
                           <td>{value.farmername}</td>
                           <td>{value.farmerphone}</td>
@@ -880,7 +884,7 @@ class ScanLogsTable extends Component<Props, States> {
                               {value.status}
                             </span>
                           </td>
-                          <td>
+                          <td style={{ textAlign: "center" }}>
                             {moment(value.lastupdateddate).format("DD-MM-YYYY")}
                             <img className="max-image" src={maxImg} />
                           </td>
@@ -890,8 +894,10 @@ class ScanLogsTable extends Component<Props, States> {
                   ) : isLoader ? (
                     <Loaders />
                   ) : (
-                    <tr >
-                      <td colSpan={10} className="no-records">No records found</td>
+                    <tr>
+                      <td colSpan={10} className="no-records">
+                        No records found
+                      </td>
                     </tr>
                   )}
                 </tbody>
