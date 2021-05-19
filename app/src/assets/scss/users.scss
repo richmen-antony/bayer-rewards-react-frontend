@@ -98,6 +98,7 @@
   }
 
   .table td {
+    padding: 0px !important;
     border: none !important;
     // height: 50px !important;
     vertical-align: middle;
@@ -116,11 +117,11 @@
 
     .status.active {
       color: #1ccead;
-      background-color: #e3f8f4;
+      background-color: #E3F8F4
     }
     .status.inactive {
       color: #ff6397;
-      background-color: #ffecf2;
+      background-color: #FFD9E5;
     }
     .status.notActivated {
       color: #ff9d00;
@@ -130,7 +131,7 @@
     }
     .status.declined {
       color: #ec0c0c;
-      background-color: #f8cbcb;
+      background-color: #FFB1B1;
     }
     .max-image {
       margin-left: 60px;
@@ -351,7 +352,7 @@
         tr {
           th {
             padding: 15px 5px;
-            font-size: 0.7rem;
+            font-size: 13px;
             font-weight: 600;
           }
         }
@@ -359,9 +360,9 @@
       tbody {
         tr {
           height: 5rem !important;
-          line-height: 14px;
+          line-height: 20px;
           td {
-            font-size: 12px;
+            font-size: 14px;
             .status {
               border-radius: 20px;
               padding: 5px;

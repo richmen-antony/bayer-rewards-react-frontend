@@ -19,6 +19,7 @@ import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
 import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
+import PhoneIcon from "../../../assets/icons/black-mockup.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import blackmockup from "../../../assets/icons/black-mockup.svg";
 import "../../../assets/scss/users.scss";
@@ -854,7 +855,7 @@ class ChannelPartners extends Component<Props, States> {
                   <AUX key={i}>
                     <tr 
                       style={
-                        list.status === "Active" ? { borderLeft: "8px solid #89D329" } : { borderLeft: "8px solid #FF4848" }
+                        list.status === "Active" ? { borderLeft: "8px solid #89D329" } : list.status === "Inactive" ? { borderLeft: "8px solid #FF6397" } : list.status === "Not Activated" ? { borderLeft: "8px solid #FFB43C" } : { borderLeft: "8px solid #FF0000" }
                       }
                      >
                       <td>{list.username}</td>
