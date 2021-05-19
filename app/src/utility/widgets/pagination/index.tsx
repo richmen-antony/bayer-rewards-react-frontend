@@ -17,11 +17,28 @@ type Props = {
     next: Function;
     pageNumberClick: Function;
     handlePaginationChange: Function;
+    data: any;
 }
 type States = {
     startIndex: number,
     endIndex: number,
-}
+} 
+
+/* Pagination Reusable Component
+*  Example
+*
+*  import { Pagination } from "../../../utility/widgets/pagination";
+*  <Pagination
+*   totalData={totalData}
+*   rowsPerPage={rowsPerPage}
+*   previous={this.props.previous}
+*   next={this.props.next}
+*   pageNumberClick={this.props.pageNumberClick}
+*   pageNo={pageNo}
+*   handlePaginationChange={this.props.handlePaginationChange}
+*   data = {allChannelPartners}
+*   />
+*/
 
 class Pagination extends Component<Props,States>{
     constructor(props:any){
@@ -40,13 +57,13 @@ class Pagination extends Component<Props,States>{
     }
 
     render(){
-        const {pageNo, previous, next, pageNumberClick,handlePaginationChange,rowsPerPage,totalData} = this.props;
+        const {pageNo, previous, next, pageNumberClick,handlePaginationChange,rowsPerPage,totalData, data} = this.props;
         const pageNumbers = [];
         const pageData = Math.ceil(totalData / rowsPerPage);
         for (let i = 1; i <= pageData ; i++) {
             pageNumbers.push(i);
         }
-        console.log('pageNumbers',pageNumbers);
+        console.log('pageNumbers',totalData);
         const renderPageNumbers = pageNumbers?.map((number,index) => {
             return (
                 <>
@@ -59,11 +76,9 @@ class Pagination extends Component<Props,States>{
                 </>
             );
         });
-        console.log('startIndex', this.state.startIndex)
-        console.log('endIndex', this.state.endIndex)
-        console.log('pagenumber', pageNo)
-        console.log('pageData', pageData)
         return(
+            <>
+            {data.length > 0 && (
             <div className='col-sm-12'>
                 <div className='row'>
                     <div className='col-sm-6' style={{display: 'flex',justifyContent: 'flex-start', fontSize: '13px',alignItems: "center",padding: "0"}}>
@@ -78,16 +93,14 @@ class Pagination extends Component<Props,States>{
                                 <span style={{ width: '25%' }}><input style={{ width: '100%' }} type="text" className="form-control" name="perpage" value={rowsPerPage} onChange={(e: any) => handlePaginationChange(e)} /></span>
                             </div>
                         </div>
-                        {pageNumbers.length != 1 && (
+
                         <div className='col-sm-4'>
                             <div style={{ display: 'flex', alignItems: "center" }}>
                                 <span style={{ marginRight: "10px" }}>Go to Page</span>
                                 <span style={{ width: '25%' }}><input style={{ width: '100%' }} type="text" className="form-control" name="gotopage" value={pageNo} onChange={(e: any) => handlePaginationChange(e)} /></span>
                             </div>
-                        </div> 
-                        )}
+                        </div>
                     </div>
-                    {pageNumbers.length != 1 && (
                     <div className='col-sm-6' style={{ display: 'flex',justifyContent: 'flex-end',paddingRight: '55px'}}>
                     <div className="paginationNumber">
                         <div style={{marginTop: '8px'}}>
@@ -95,14 +108,9 @@ class Pagination extends Component<Props,States>{
                            <img src={pageNo == 1 ? LeftArrowDisabled : LeftArrow} alt={NoImage} />
                             </a>
                         </div>
-            
-                        {/* <div style={{ pointerEvents : this.state.startIndex != 1 ? 'auto' : 'none'}}>
-                            <i className="fa fa-fast-backward" onClick={()=>this.fastBackward()}></i>
-                        </div> */}
-                        {pageNumbers.length > 1 &&
-                        <div>
+                         <div>
                             <a href="#" className={pageNo == 1 ? "active" : ''} onClick={()=>pageNumberClick(1)}>1</a>
-                        </div> }
+                        </div> 
                         
                         {this.state.startIndex != 1 ? 
                         <div>
@@ -111,7 +119,7 @@ class Pagination extends Component<Props,States>{
                         <div>
                             {renderPageNumbers}
                         </div>
-                        {(pageData != this.state.endIndex) && (pageData > 5) && 
+                        {(pageData != this.state.endIndex+1) && (pageData > 5) &&
                         <div>
                             <i className="" onClick={()=>this.fastForward()}>...</i>
                         </div> }
@@ -128,9 +136,10 @@ class Pagination extends Component<Props,States>{
                             </a>
                         </div>
                     </div>
-                    </div>)}
+                    </div>
                 </div>
-            </div>
+            </div>)}
+            </>
         );
     }
 }

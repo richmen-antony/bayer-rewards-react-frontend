@@ -276,7 +276,7 @@ class CreateUser extends Component<any, any> {
             { text: "Western", value: "Western" },
             { text: "Eastern", value: "Eastern" },
           ];
-        } else if(type === 'district'){
+        } else if(type === 'add'){
           options = [
             { text: "Add1", value: "Add1"},
             { text: "Add2", value: "Add2"},
