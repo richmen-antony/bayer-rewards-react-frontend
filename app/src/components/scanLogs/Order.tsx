@@ -57,9 +57,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
       <DialogContent>
         <div className="popup-container ordered-table">
           <div className="popup-content">
-            <div className={`popup-title`}>
+            <div className={`popup-title order`}>
               <p>
-                {popupHeader?.title}, <label>{data?.order_id}</label>{" "}
+                {popupHeader?.title} <label>{data?.order_id}</label>{" "}
               </p>
             </div>
           </div>

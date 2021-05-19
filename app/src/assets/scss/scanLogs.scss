@@ -307,6 +307,10 @@
     border: 1px solid #a0a0a047;
     border-radius: 10px !important;
   table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
     thead {
       tr {
         background: #ffffff;
@@ -388,7 +392,7 @@
 
     p {
       color: #000000;
-      font-size: 18px;
+      font-size: 16px;
       label {
         font-size: 14px;
       }
@@ -423,13 +427,23 @@
 
   p {
     color: #000000;
-    font-size: 18px;
+    font-size: 14px;
     label {
       font-size: 14px;
     }
   }
 }
-
+.popup-title.order {
+  p {
+    font-size: 14px;
+    color:#777777;
+    label {
+      font-size: 14px;
+      color: #000000;
+      font-weight: 600;
+    }
+  }
+}
 
 
 .ordered-table {
@@ -441,7 +455,7 @@
       tr {
         th {
           color: #777777;
-          font-size: 16px;
+          font-size: 14px;
           font-family: "Open Sans";
         }
       }
@@ -535,7 +549,7 @@
     }
     span{
       color:#000000;
-      font-size: 18px;
+      font-size: 16px;
     }
   }
 }
@@ -554,7 +568,7 @@
     margin: 0;
     margin-top: 12px;
     color:#000000;
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -572,7 +586,7 @@
     margin: 0;
     margin-top: 12px;
     color:#000000;
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -634,7 +648,7 @@
       thead {
         tr {
           th {
-            font-size: 14px;
+            font-size: 12px;
             font-family: "Open Sans";
           }
         }
@@ -721,9 +735,3 @@
 }
 
 
-table {
-  table-layout: fixed;
-  border-collapse: collapse;
-  border-spacing: 0;
-  width: 100%;
-}

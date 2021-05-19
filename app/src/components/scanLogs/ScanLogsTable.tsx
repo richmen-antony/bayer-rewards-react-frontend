@@ -937,7 +937,7 @@ class ScanLogsTable extends Component<Props, States> {
                   </div>
                   <div className="popup-content-row">
                     <div className="content-list">
-                      <label>UserName</label>
+                      <label>Username</label>
                       <p>{retailerPopupData.username}</p>
                     </div>
                     <div className="content-list">
