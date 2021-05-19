@@ -102,12 +102,19 @@ class Dashboard extends Component<Props, States> {
                   background="#FFF4E7"
                   cardClick={() => this.cardClick()}
                 >
-                  <div style={{ fontSize: "24px" }}>
+                  <div style={{ fontSize: "18px", fontWeight: "bold" }}>
                     {this.state.scanLogCount}
                   </div>
-                  <div style={{ fontSize: "18px" }}>Scan Logs</div>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      marginTop: "5px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Scan Logs
+                  </div>
                 </CustomCard>
-                
               </div>
               <div>
                 <CustomCard
@@ -115,42 +122,64 @@ class Dashboard extends Component<Props, States> {
                   border="1px solid #206BDD"
                   background="#DFE8FA"
                 >
-                  <div style={{ fontSize: "24px" }}>
+                  <div style={{ fontSize: "18px", fontWeight: "bold" }}>
                     {this.state.usersCount}
                   </div>
-                  <div style={{ fontSize: "18px" }}>Total Users</div>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      marginTop: "5px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Total Users
+                  </div>
                 </CustomCard>
               </div>
-              </div>
+            </div>
           ) : (
-              <div className="dashboard">
-                <div style={{ marginRight: "30px" }}>
-                  <CustomCard
-                    icon={adduser}
-                    border="1px solid #FFA343"
-                    background="#FFF4E7"
-                    cardClick={() => this.cardCreateUserClick()}
+            <div className="dashboard">
+              <div style={{ marginRight: "30px" }}>
+                <CustomCard
+                  icon={adduser}
+                  border="1px solid #FFA343"
+                  background="#FFF4E7"
+                  cardClick={() => this.cardCreateUserClick()}
+                >
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      marginTop: "5px",
+                      fontWeight: 600,
+                    }}
                   >
-                    <div style={{ fontSize: "18px", marginTop: "15px" }}>
-                      Create New User
+                    Create New User
                   </div>
-                  </CustomCard>
-                </div>
-                <div>
-                  <CustomCard
-                    icon={userlist}
-                    border="1px solid #206BDD"
-                    background="#DFE8FA"
-                    cardClick={() => this.totalUserClick()}
-                  >
-                    <div style={{ fontSize: "24px" }}>
-                      {this.state.adminUsersCount}
-                    </div>
-                    <div style={{ fontSize: "18px", marginTop: "15px" }}>Total Users</div>
-                  </CustomCard>
-                </div>
+                </CustomCard>
               </div>
-            )}
+              <div>
+                <CustomCard
+                  icon={userlist}
+                  border="1px solid #206BDD"
+                  background="#DFE8FA"
+                  cardClick={() => this.totalUserClick()}
+                >
+                  <div style={{ fontSize: "18px", fontWeight: "bold" }}>
+                    {this.state.adminUsersCount}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      marginTop: "5px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Total Users
+                  </div>
+                </CustomCard>
+              </div>
+            </div>
+          )}
         </div>
       </AUX>
     );
