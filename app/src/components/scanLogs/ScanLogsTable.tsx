@@ -660,7 +660,7 @@ class ScanLogsTable extends Component<Props, States> {
                 <thead>
                   <tr>
                     <th
-                      style={{ width: "8%" }}
+                      style={{ width: "10%" }}
                       onClick={(e) =>
                         this.handleSort(e, "order_id", allScanLogs, isAsc)
                       }
@@ -679,7 +679,7 @@ class ScanLogsTable extends Component<Props, States> {
                       )}
                     </th>
                     <th
-                      style={{ width: "12%" }}
+                      style={{ width: "16%" }}
                       onClick={(e) =>
                         this.handleSort(e, "sellername", allScanLogs, isAsc)
                       }
@@ -694,7 +694,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "11%" }}
+                      style={{ width: "14%" }}
                       onClick={(e) =>
                         this.handleSort(e, "sellername", allScanLogs, isAsc)
                       }
@@ -709,7 +709,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "10%" }}
+                      style={{ width: "13%" }}
                       onClick={(e) =>
                         this.handleSort(
                           e,
@@ -729,7 +729,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "9%" }}
+                      style={{ width: "12%" }}
                       onClick={(e) =>
                         this.handleSort(e, "totalcost", allScanLogs, isAsc)
                       }
@@ -744,7 +744,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "12%" }}
+                      style={{ width: "16%" }}
                       onClick={(e) =>
                         this.handleSort(e, "farmername", allScanLogs, isAsc)
                       }
@@ -759,7 +759,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "8%" }}
+                      style={{ width: "11%" }}
                       onClick={(e) =>
                         this.handleSort(e, "farmerphone", allScanLogs, isAsc)
                       }
@@ -774,7 +774,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "11%" }}
+                      style={{ width: "15%" }}
                       onClick={(e) =>
                         this.handleSort(e, "ordereddate", allScanLogs, isAsc)
                       }
@@ -789,7 +789,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "8%" }}
+                      style={{ width: "10%" }}
                       onClick={(e) =>
                         this.handleSort(e, "status", allScanLogs, isAsc)
                       }
@@ -804,7 +804,7 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "13%" }}
+                      style={{ width: "20%" }}
                       onClick={(e) =>
                         this.handleSort(
                           e,

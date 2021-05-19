@@ -600,17 +600,19 @@
         tr {
           th {
             padding: 15px 5px;
-            font-size: 14px;
-            font-weight: 500;
-            font-family: "Open Sans", sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            // font-family: "Open Sans", sans-serif;
           }
         }
       }
       tbody {
         tr {
           td {
-            font-size: 14px;
+            font-size: 13px;
             font-family: "Open Sans";
+            vertical-align: middle;
+            text-align: left;
             .status {
               border-radius: 20px;
               padding: 5px;
@@ -679,7 +681,7 @@
   }
 }
 
-@media screen and (min-width: 1080px) and (max-width: 1920px) {
+@media only screen and (min-width: 1440px) and (max-width: 1920px) {
   /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
   .scanlog-table {
     table {
@@ -688,7 +690,7 @@
           th {
             padding: 15px 5px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
           }
         }
       }

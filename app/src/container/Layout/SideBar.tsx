@@ -237,8 +237,7 @@ class Sidebar extends Component<Props, States> {
                       <span> Help center </span>
                     </Link>
                   </li>
-
-                  <li className="d-flex" style={{ paddingTop: '90px'}}>
+                  <li className="d-flex" style={{ paddingTop: '80px'}}>
                     <span
                       className={
                         window.location.pathname.indexOf('landing') > -1
