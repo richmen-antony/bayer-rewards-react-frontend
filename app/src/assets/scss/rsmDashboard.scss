@@ -1,15 +1,26 @@
-
-.actionCount{
-    font-size: '24px'
+.actionCount {
+  font-size: "24px";
 }
 .actionName {
-    font-size: '18px'
+  font-size: "18px";
 }
 .cardStyle {
-    margin-right : '16px'
+  margin-right: "16px";
 }
 
-.dashboard{
-    display: flex;
-    margin: 30px;
+.dashboard {
+  display: flex;
+  margin: 30px;
+}
+
+@media only screen and (max-width: 1400px) {
+  .card-main {
+    height: 82vh;
+  }
+}
+
+@media only screen and (max-width: 1920px) {
+  .card-main {
+    height: 84vh;
+  }
 }
