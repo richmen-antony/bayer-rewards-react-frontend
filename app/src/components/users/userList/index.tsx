@@ -197,7 +197,7 @@ class UserList extends Component<Props, States> {
       dropDownValue: "Select action",
       productCategories: [],
       status: ["All", "Valid", "Invalid"],
-      list: ["Distributor", "Retailer"],
+      list: [ "Retailer", "Distributor"],
       selectedFilters: {
         region: "All",
         epa: "All",
