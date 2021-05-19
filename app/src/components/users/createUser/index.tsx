@@ -267,7 +267,6 @@ class CreateUser extends Component<any, any> {
 }
 
   getOptionLists = (cron: any, type: any, e: any, index: any) => {
-    console.log('newtype', type,':::::', e);
     if(cron === 'auto'){
       let options: any = [];
       if(type === 'region'){
