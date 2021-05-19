@@ -18,8 +18,8 @@ export interface StyleProps {
     root: {
       background: ({ background }) => background ? background : 'black',
       border: ({ border }) => border ? border : 'grey',
-      width: '250px',
-      height: '250px',
+      width: '225px',
+      height: '225px',
       borderRadius: '20px',
       display: "flex",
      flexDirection: "column",
@@ -31,8 +31,8 @@ export interface StyleProps {
       marginLeft: '16px'
   },
   iconStyle : {
-      marginLeft: '173px',
-      marginTop: '20px'
+      marginLeft: '140px',
+      marginTop: '10px'
   }
  }));
 

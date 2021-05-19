@@ -10,7 +10,7 @@ import retailerImg from "../../assets/images/retailer.svg";
 import moment from "moment";
 import "../../assets/scss/order.scss";
 import _ from "lodash";
-
+import CornImg from "../../assets/icons/corn_products.svg";
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -127,7 +127,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   return (
                     <>
                       <tr key={index} onClick={() => handleExpand(value)}>
-                        <th scope="row">{index + 1}</th>
+                        <th scope="row">{<img src={CornImg}/>}</th>
                         <td>{value.productsku}</td>
                         <td>{value.type || 0}</td>
                         <td>{value.intendedqty}</td>
