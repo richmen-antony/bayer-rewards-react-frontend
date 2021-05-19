@@ -629,7 +629,7 @@ class ChannelPartners extends Component<Props, States> {
                 <div style={{ textAlign: "left" }}>
                   <label>
                     {userData.status === "Active" ||
-                    userData.status === "Inactive" ? (
+                    userData.status === "Inactive" || userData.status === "Declined"  ? (
                       <span>
                         Are you sure you want to change &nbsp;
                         <strong>
@@ -638,9 +638,9 @@ class ChannelPartners extends Component<Props, States> {
                         &nbsp; account to
                         {userData.status === "Active" ? (
                           <span> Inactive </span>
-                        ) : (
+                        ) : userData.status === "Inactive" || userData.status === "Declined" ? (
                           <span> active</span>
-                        )}
+                        ) : ''}
                         ?
                       </span>
                     ) : (
@@ -671,7 +671,7 @@ class ChannelPartners extends Component<Props, States> {
                 className="admin-popup-btn filter-scan"
                 autoFocus
               >
-                {userData.status ==="Active" || userData.status==="Inactive" ?  "Change" : userData.status === "Not Activated" ?"Validate & Approve" :"" }
+                {userData.status ==="Active" || userData.status==="Inactive" || userData.status==="Declined" ?  "Change" : userData.status === "Not Activated" ?"Validate & Approve" :"" }
                
               </Button>
             </DialogActions>
@@ -867,7 +867,6 @@ class ChannelPartners extends Component<Props, States> {
                       <td>
                         <span
                           onClick={(event: any) => {
-                            list.status == 'Declined' ? event.preventDefault() : 
                             this.showPopup(event, "deActivatePopup");
                             this.getCurrentUserData(list);
                           }}

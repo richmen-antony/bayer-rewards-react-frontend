@@ -3,6 +3,7 @@ import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
+import "../../../assets/scss/createUser.scss";
 import { toastSuccess } from "../../../utility/widgets/toaster";
 import { setLocalStorageData } from "../../../utility/base/localStore";
 import filterIcon from "../../assets/icons/filter_icon.svg";
@@ -19,6 +20,12 @@ import moment from "moment";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { isConstructorDeclaration } from "typescript";
 import { LiveTvRounded } from "@material-ui/icons";
+import Table from 'react-bootstrap/Table';
+import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
+import AddBtn from "../../../assets/icons/add_btn.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const options = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -37,6 +44,8 @@ class CreateUser extends Component<any, any> {
     let oneYearFromNow = new Date();
     let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     this.state = {
+      rows: [{}],
+      dpList: [{}],
       geographicFields: [],
       dynamicFields: [],
       withHolding: [],
@@ -68,7 +77,8 @@ class CreateUser extends Component<any, any> {
       villageErr: "",
       stepsArray: [
         "Personal Information",
-        "Geographical Mapping",
+        "Shipping Details",
+        "Geo-Hierarchy information",
         "With-Holding tax",
       ],
       userData: {
@@ -92,6 +102,7 @@ class CreateUser extends Component<any, any> {
         whtaddress: '',
         whtpostalcode: "",
       },
+      phone: '',
       accInfo: true,
       regionList: [],
       isValidatePage: false,
@@ -191,7 +202,7 @@ class CreateUser extends Component<any, any> {
     // }).catch((err: any) => {
     // })
 
-    let res = ["country", "region", "district", "epa", "village"];
+    let res = ["country", "region", "add", "district", "epa", "village"];
     setTimeout(() => {
       this.setState({ geographicFields: res });
     }, 0);
@@ -202,12 +213,17 @@ class CreateUser extends Component<any, any> {
     this.state.geographicFields.map((list: any, i: number) => {
       let result = [];
       let region = "";
+      let add = "";
       let district = "";
       let epa = "";
       let village = "";
       if('region' in data){
         result = this.getOptionLists('auto',list, data.region , i);
         region = data.region;
+      }
+      if('add' in data){
+        result = this.getOptionLists('auto',list, data.region , i);
+        add = data.region;
       }
       if('district' in data){
         result = this.getOptionLists('auto',list, data.district , i);
@@ -224,7 +240,7 @@ class CreateUser extends Component<any, any> {
         setFormArray.push({
           name: list,
           placeHolder: true,
-          value: list === "country" ? getStoreData.country : list === 'region' ? region : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
+          value: list === "country" ? getStoreData.country : list === 'region' ? region : list === 'add' ? add : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
           options:
             list === "country"
               ? this.state.countryList
@@ -263,6 +279,11 @@ class CreateUser extends Component<any, any> {
             { text: "Eastern", value: "Eastern" },
           ];
         } else if(type === 'district'){
+          options = [
+            { text: "Add1", value: "Add1"},
+            { text: "Add2", value: "Add2"},
+          ];
+        }else if(type === 'district'){
             options = [
               { text: "Balaka", value: "Balaka" },
               { text: "Blantyre", value: "Blantyre" }, 
@@ -287,79 +308,38 @@ class CreateUser extends Component<any, any> {
           { text: "Balaka", value: "Balaka" },
           { text: "Blantyre", value: "Blantyre" }, 
         ];
-        if ( this.state.currentStep == 2){
           dynamicFieldVal[index+1].options = district;
           dynamicFieldVal[index].value = e;
           this.setState({dynamicFields: dynamicFieldVal});
-        } else if ( this.state.currentStep == 3) {
-          withHoldingVal[index+1].options = district;
-          withHoldingVal[index].value = e;
-          this.setState({withHolding: withHoldingVal});
-        }
-     } else if(type === 'district') {
+    } else if (type === 'add'){
+      let epa = [
+        { text: "Add1", value: "Add1" },
+        { text: "Add2", value: "Add2" }, 
+      ];
+        dynamicFieldVal[index+1].options = epa;
+        dynamicFieldVal[index].value = e;
+        this.setState({dynamicFields: dynamicFieldVal});
+     }else if(type === 'district') {
         let epa = [
           { text: "EPA1", value: "EPA1" },
           { text: "EPA2", value: "EPA2" }, 
         ];
-        if ( this.state.currentStep == 2){
           dynamicFieldVal[index+1].options = epa;
           dynamicFieldVal[index].value = e;
           this.setState({dynamicFields: dynamicFieldVal});
-        } else if ( this.state.currentStep == 3) {
-          withHoldingVal[index+1].options = epa;
-          withHoldingVal[index].value = e;
-          this.setState({withHolding: withHoldingVal});
-        }
       } else if(type === 'epa') {
         let village = [
           { text: "Village1", value: "Village1" },
           { text: "Village2", value: "Village2" },
         ];
-        if ( this.state.currentStep == 2){
           dynamicFieldVal[index+1].options = village;
           dynamicFieldVal[index].value = e;
           this.setState({dynamicFields: dynamicFieldVal});
-        } else if ( this.state.currentStep == 3) {
-          withHoldingVal[index+1].options = village;
-          withHoldingVal[index].value = e;
-          this.setState({withHolding: withHoldingVal});
-        }
       } else if(type === 'village') {
-        if ( this.state.currentStep == 2){
           dynamicFieldVal[index].value = e;
           this.setState({dynamicFields: dynamicFieldVal});
-        } else if ( this.state.currentStep == 3) {
-          withHoldingVal[index].value = e;
-          this.setState({withHolding: withHoldingVal});
-        }
       }
     }
-    // let districtResponse = [
-    //   { text: "Balaka", value: "Balaka" },
-    //   { text: "Blantyre", value: "Blantyre" },
-    // ];
-    // let epaResponse = [
-    //   { text: "EPA1", value: "epa1" },
-    //   { text: "EPA2", value: "epa2" },
-    // ];
-    // let villageResponse = [
-    //   { text: "Village1", value: "Village1" },
-    //   { text: "Village2", value: "Village2" },
-    // ];
-
-    // if (this.state.currentStep == 3) {
-    //   this.state.withHolding.map((list: any) => {
-    //     if (list.name === "region") {
-    //       list.options = this.state.hierarchyList;
-    //     } else if (list.name === "district") {
-    //       list.options = districtResponse;
-    //     } else if (list.name === "epa") {
-    //       list.options = epaResponse;
-    //     } else if (list.name === "village") {
-    //       list.options = villageResponse;
-    //     }
-    //   });
-    // }
   };
 
   handleClick(clickType: any, e: any) {
@@ -378,11 +358,12 @@ class CreateUser extends Component<any, any> {
     }
     const { currentStep } = this.state;
     let newStep = currentStep;
-    if (clickType == "personalNext" || clickType == "geographicNext") {
+    if (clickType == "personalNext" || clickType == "shippingNext" || clickType == "geographicNext") {
       newStep = newStep + 1;
     } else {
       newStep = newStep - 1;
     }
+    formValid = true;
 
     if (newStep > 0 && newStep <= this.state.stepsArray.length) {
       if (formValid) {
@@ -627,7 +608,7 @@ class CreateUser extends Component<any, any> {
     } else {
       this.setState({ postalCodeErr: "" });
     }
-    if (currentStep == 3) {
+    if (currentStep == 4) {
       if (userData.taxid === "" || userData.taxid === null) {
         this.setState({ taxIdErr: "Please enter Tax Id" });
         geographicFormValid = false;
@@ -729,16 +710,51 @@ class CreateUser extends Component<any, any> {
     }
   };
 
-  testingChange = (e: any, data: any) => {
-    data.value = e.target.value;
-  };
-
   declineUser = () => {
     let userData = this.state.userData;
     userData['isDeclineUser'] = true;
     this.setState({ userData : userData});
     this.submitUserDatas();
   }
+
+  handleAddRow = () => {
+    const item = {
+      firstName: "",
+      roleccode: "",
+      role: "",
+      rolectype: "",
+      parentrole: ""
+    };
+
+    this.setState({
+      rows: [...this.state.rows, item],
+      dpList: [...this.state.rows, item],
+    });
+
+    console.log(this.state.rows);
+    console.log(this.state.dpList);
+  };
+
+  handleRemoveSpecificRow = (idx: any) => () => {
+    const rows = [...this.state.rows]
+    rows.splice(idx, 1)
+    this.setState({ rows })
+
+    const dpList = [...this.state.dpList]
+    dpList.splice(idx, 1)
+    this.setState({ dpList })
+  }
+  handlePhoneChange = (value: any) => {
+    console.log(value);
+    this.setState({ phone: value }, () => {
+      console.log(this.state.phone);
+    });
+  };
+
+  // //phone without dial code
+  // handleOnChange(value, data, event, formattedValue) {
+  //   this.setState({ rawPhone: value.slice(data.dialCode.length) })
+  // }
 
   render() {
     const dpstyle = {
@@ -777,13 +793,21 @@ class CreateUser extends Component<any, any> {
       isValidatePage
     } = this.state;
 
-    const fields =
-      currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
-    const locationList = fields?.map((list: any, index: number) => {
+    const btnStyleRemove = {
+      color: "white", background: "#C1C1C1 0% 0% no-repeat padding-box",
+      boxshadow: " 0px 3px 6px #00000029", opacity: 1,
+      fontSize: "17px", fontweight: "bold", textalign: "center",
+      width: 35, height: 35, borderRadius: 20
+    }
+    const tableScrollStyle = { maxHeight: "280px", overflowY: "auto", overflowX: "hidden" };
+
+    // const fields =
+    //   currentStep == 3 ? this.state.dynamicFields : this.state.withHolding;
+    const locationList = this.state.dynamicFields?.map((list: any, index: number) => {
       let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
       return (
         <>
-          <div className= "col-sm-3 country">
+          <div className= "col-sm-4 country">
                 <Dropdown
                   name={list.name}
                   label={nameCapitalized}
@@ -796,7 +820,7 @@ class CreateUser extends Component<any, any> {
                   value={list.value}
                   isPlaceholder
                   isDisabled={
-                    (this.state.currentStep === 3 && this.state.accInfo) || (isValidatePage) || (list.name=='country')
+                    (this.state.currentStep === 4 && this.state.accInfo) || (isValidatePage) || (list.name=='country')
                       ? true
                       : false
                   }
@@ -818,6 +842,15 @@ class CreateUser extends Component<any, any> {
         </button>
       );
     } else if (currentStep === 2) {
+      nextButton = (
+        <button
+          className="btn buttonColor buttonStyle"
+          onClick={(e) => this.handleClick("shippingNext", e)}
+        >
+          Next
+        </button>
+      );
+    } else if (currentStep === 3) {
       nextButton = (
         <button
           className="btn buttonColor buttonStyle"
@@ -854,56 +887,16 @@ class CreateUser extends Component<any, any> {
           />
         </div>
         <div className="col-md-10">
-          <label className="font-weight-bold pt-4">
+          <label className="font-weight-bold" style={{fontSize: '20px', color: '#10384F', marginTop: currentStep ==1 ? '0px' : '28px'}}>
             {stepsArray[currentStep - 1]}
           </label>
           <div className="container">
             {currentStep == 1 && (
               <>
-                <div className="row effectiveDate form-group">
-                  <div className="col-sm-3">
-                    <label className="font-weight-bold pt-4">
-                      Effective From
-                    </label>
-                    <input
-                      style={{ width: "215px", height: "40px" }}
-                      type="date"
-                      name="fromdate"
-                      className="form-control"
-                      onChange={(e) => this.handlePersonalChange(e)}
-                      value={userData.fromdate}
-                    />
-                    {fromDateErr && (
-                      <span className="error">{fromDateErr} </span>
-                    )}
-                  </div>
-                  <div className="col-sm-3">
-                    <label className="font-weight-bold pt-4">
-                      Effective To
-                    </label>
-                    <input
-                    style={{ width: "215px", height: "40px" }}
-                      type="date"
-                      name="expirydate"
-                      className="form-control"
-                      onChange={(e) => this.handlePersonalChange(e)}
-                      value={userData.expirydate}
-                    />
-                    {toDateErr && <span className="error">{toDateErr} </span>}
-                  </div>
-                  <div className="col-sm-3" style={togglePosition}>
-                    <label className="pt-4">isActive?</label>
-                    <CustomSwitch
-                      checked={userData.activateUser}
-                      onChange={(e: any) => this.handlePersonalChange(e)}
-                      name="activateUser"
-                    />
-                  </div>
-                </div>
-
                 <div className="personal">
-                  <div className="row fieldAlign form-group">
-                    <div className="col-sm-3">
+                  <>
+                  <div className="row form-group" style={{ display: 'flex', alignItems: 'center', marginTop: '8px'}}>
+                    <div className="col-sm-12">
                       <Dropdown
                         name="role"
                         label="User Type"
@@ -917,83 +910,273 @@ class CreateUser extends Component<any, any> {
                         <span className="error">{roleErr} </span>
                       )}
                     </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="firstname"
-                        placeHolder="First Name"
-                        value={userData.firstname}
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={isValidatePage ? true : false}
-                      />
-                      {firstNameErr && (
-                        <span className="error">{firstNameErr} </span>
-                      )}
-                    </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="lastname"
-                        placeHolder="Last name"
-                        value={userData.lastname}
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={isValidatePage ? true : false}
-                      />
-                      {lastNameErr && (
-                        <span className="error">{lastNameErr} </span>
-                      )}
-                    </div>
                   </div>
-                  <div className="row fieldAlign form-group">
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="accountname"
-                        placeHolder="Account Name"
-                        value={userData.accountname}
-                        onChange={this.handlePersonalChange}
-                        disabled={isValidatePage ? true : false}
-                      />
-                      {accNameErr && (
-                        <span className="error">{accNameErr} </span>
-                      )}
-                    </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="mobilenumber"
-                        placeHolder="Mobile Number"
-                        value={userData.mobilenumber}
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={isValidatePage ? true : false}
-                        onKeyUp={(e: any)=>this.isNumberKey(e)}
-                      />
-                      {phoneErr && <span className="error">{phoneErr} </span>}
-                    </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="email"
-                        placeHolder="Email"
-                        value={userData.email}
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={isValidatePage ? true : false}
-                        onKeyUp={(e: any)=>this.validateEmail(e)}
-                      />
-                      {emailErr && <span className="error">{emailErr} </span>}
-                    </div>
+                  <div style={{ width:'124%', maxHeight: "325px", overflowY: "auto", overflowX: "hidden"}}>
+                  {/* <Table borderless> */}
+                    <table className="table table-borderless">
+                    <thead>
+                        <tr>
+                          <th>Type</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Mobile Number</th>
+                          <th>Email</th>
+                          <th>isActive?</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td className="font-weight-bold">Owner</td>
+                          <td>
+                            <Input
+                              type="text"
+                              className="form-control"
+                              name="firstname"
+                              placeHolder="Eg: Keanu"
+                              value={userData.firstname}
+                              onChange={(e: any) => this.handlePersonalChange(e)}
+                              disabled={isValidatePage ? true : false}
+                            />
+                            {firstNameErr && (
+                              <span className="error">{firstNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="lastname"
+                            placeHolder="Eg: Reeves"
+                            value={userData.lastname}
+                            onChange={(e: any) => this.handlePersonalChange(e)}
+                            disabled={isValidatePage ? true : false}
+                            />
+                            {lastNameErr && (
+                              <span className="error">{lastNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                          <div  style={{display: 'flex'}}>
+                            <div className='flagInput'>
+                              <PhoneInput
+                                placeholder="Mobile Number"
+                                inputProps={{
+                                  name: "phone",
+                                  required: true
+                                }}
+                                country={'in'}
+                                value={this.state.phone}
+                                onChange={this.handlePhoneChange}
+                                autoFormat
+                              />
+                            </div>
+                              {/* <div>
+                              <Input
+                              type="text"
+                              className="form-control"
+                              name="mobilenumber"
+                              placeHolder="Mobile Number"
+                              value={userData.mobilenumber}
+                              onChange={(e: any) => this.handlePersonalChange(e)}
+                              disabled={isValidatePage ? true : false}
+                              onKeyUp={(e: any)=>this.isNumberKey(e)}
+                              width="155px"
+                              />
+                              </div> */}
+                            </div>
+                            {phoneErr && <span className="error">{phoneErr} </span>}
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="email"
+                            placeHolder="Eg: abc@mail.com"
+                            value={userData.email}
+                            onChange={(e: any) => this.handlePersonalChange(e)}
+                            disabled={isValidatePage ? true : false}
+                            onKeyUp={(e: any)=>this.validateEmail(e)}
+                          />
+                          {emailErr && <span className="error">{emailErr} </span>}
+                          </td>
+                          <td>
+                              <CustomSwitch
+                                checked={userData.activateUser}
+                                onChange={(e: any) => this.handlePersonalChange(e)}
+                                name="activateUser"
+                              />
+                          </td>
+                        </tr>
+                        {this.state.rows.map((item: any, idx: number) => (
+                        <tr>
+                          {idx === 0 ? <td className="font-weight-bold">Staff</td> : <td></td>}
+                          <td>
+                            <Input
+                              type="text"
+                              className="form-control"
+                              name="firstname"
+                              placeHolder="First Name"
+                              value={userData.firstname}
+                              onChange={(e: any) => this.handlePersonalChange(e)}
+                              disabled={isValidatePage ? true : false}
+                            />
+                            {firstNameErr && (
+                              <span className="error">{firstNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="lastname"
+                            placeHolder="Last name"
+                            value={userData.lastname}
+                            onChange={(e: any) => this.handlePersonalChange(e)}
+                            disabled={isValidatePage ? true : false}
+                            />
+                            {lastNameErr && (
+                              <span className="error">{lastNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                          <div className='flagInput'>
+                              <PhoneInput
+                                placeholder="Mobile Number"
+                                inputProps={{
+                                  name: "phone",
+                                  required: true
+                                }}
+                                country={'in'}
+                                value={this.state.phone}
+                                onChange={this.handlePhoneChange}
+                                autoFormat
+                              />
+                            </div>
+                              {/* <Input
+                              type="text"
+                              className="form-control"
+                              name="mobilenumber"
+                              placeHolder="Mobile Number"
+                              value={userData.mobilenumber}
+                              onChange={(e: any) => this.handlePersonalChange(e)}
+                              disabled={isValidatePage ? true : false}
+                              onKeyUp={(e: any)=>this.isNumberKey(e)}
+                              /> */}
+                            {phoneErr && <span className="error">{phoneErr} </span>}
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="email"
+                            placeHolder="Email"
+                            value={userData.email}
+                            onChange={(e: any) => this.handlePersonalChange(e)}
+                            disabled={isValidatePage ? true : false}
+                            onKeyUp={(e: any)=>this.validateEmail(e)}
+                          />
+                          {emailErr && <span className="error">{emailErr} </span>}
+                          </td>
+                          <td style={{ display: 'flex', alignItems: 'center'}}>
+                            <div>
+                              <CustomSwitch
+                                checked={userData.activateUser}
+                                onChange={(e: any) => this.handlePersonalChange(e)}
+                                name="activateUser"
+                              />
+                              </div>
+                              <div>
+                          {idx === this.state.rows.length - 1 ?
+                            <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={this.handleAddRow} /> 
+                            :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx)} /> }
+
+                            </div>
+                          </td>
+                            
+                        </tr> ))}
+                        </tbody>
+                    </table>
                   </div>
+                  </>
                 </div>
               </>
             )}
 
-            <div className="geographical">
-              {currentStep == 3 && (
+            <div className="shipping">
+              {(currentStep == 2 ) && (
+                <>
+                <div className="row fieldAlign form-group">
+                  <div className="col-md-12">
+                  <Input
+                      type="text"
+                      className="form-control"
+                      name="shippingCountry" 
+                      placeHolder="Country"
+                      value='Malawi'
+                      disabled={isValidatePage ? true : false}
+                    />
+                  </div>
+                </div>
+                <div className="row fieldAlign form-group">
+                  <div className="col-md-3">
+                    <Input
+                      type="text"
+                      className="form-control"
+                      name="shippingCountry" 
+                      placeHolder="Street"
+                      value=''
+                      disabled={isValidatePage ? true : false}
+                    />
+                  </div>
+                  <div className="col-md-3">
+                      <Dropdown
+                        name="city"
+                        label="City"
+                        options={options}
+                        handleChange={this.handlePersonalChange}
+                        value=''
+                        isPlaceholder
+                        isDisabled = {isValidatePage ? true : false} 
+                      />
+                  </div>
+                  <div className="col-md-3">
+                      <Dropdown
+                        name="state"
+                        label="State"
+                        options={options}
+                        handleChange={this.handlePersonalChange}
+                        value=''
+                        isPlaceholder
+                        isDisabled = {isValidatePage ? true : false} 
+                      />
+                  </div>
+                  <div className="col-md-3">
+                    <Input
+                      type="text"
+                      className="form-control"
+                      name="postalcode" 
+                      placeHolder="Postal Code"
+                      value={userData.postalcode}
+                      onChange={(e: any) => this.handlePersonalChange(e)}
+                      disabled={isValidatePage ? true : false}
+                    />
+                  {postalCodeErr && (
+                      <span className="error">{postalCodeErr} </span>
+                    )}
+                  </div>
+                </div>
+               </>
+              )}
+            </div>
+            <div className="geographicLocation" style={{ width: '80%'}}>
+              {(currentStep == 3 ) && (
+                  <div className="row fieldAlign form-group">
+                    {locationList}
+                  </div>
+              )}
+            </div>
+            <div>
+              {currentStep == 4 && (
                 <>
                   <div className="row fieldAlign form-group">
                     <div className="col-sm-3">
@@ -1009,7 +1192,21 @@ class CreateUser extends Component<any, any> {
                       {taxIdErr && <span className="error">{taxIdErr} </span>}
                     </div>
                     <div className="col-sm-3">
-                      <label className="pt-4">Same as Account Info</label>
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="accountname"
+                        placeHolder="Account Name"
+                        value={userData.accountname}
+                        onChange={this.handlePersonalChange}
+                        disabled={isValidatePage ? true : false}
+                      />
+                      {accNameErr && (
+                        <span className="error">{accNameErr} </span>
+                      )}
+                    </div>
+                    <div className="col-sm-3">
+                      <label className="font-weight-bold">Same as Personal Info</label>
                       <CustomSwitch
                         checked={this.state.accInfo}
                         onChange={(e: any) => this.handlePersonalChange(e)}
@@ -1019,112 +1216,80 @@ class CreateUser extends Component<any, any> {
                     </div>
                   </div>
                   <div className="row fieldAlign form-group">
-                      {/* <div className="col-sm-3" style={{marginTop: '-32px'}}>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="whtownername"
-                          placeHolder="Owner Name"
-                          value={userData.whtownername}
-                          onChange={(e: any) => this.handlePersonalChange(e)}
-                          disabled={
-                            (this.state.currentStep === 3 && this.state.accInfo) || (isValidatePage)
-                              ? true
-                              : false
-                          }
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="whtcountry" 
+                        placeHolder="Country"
+                        value='Malawi'
+                        disabled={isValidatePage ? true : false}
+                      />
+                    </div>
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="ownername" 
+                        placeHolder="Owner Name"
+                        value=''
+                        disabled={isValidatePage ? true : false}
+                      />
+                    </div>
+                  </div>
+                  <div className="row fieldAlign form-group">
+                    <div className="col-md-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="whtcountry" 
+                        placeHolder="Street"
+                        value=''
+                        disabled={this.state.accInfo || isValidatePage ? true : false}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                        <Dropdown
+                          name="whtcity"
+                          label="City"
+                          options={options}
+                          handleChange={this.handlePersonalChange}
+                          value=''
+                          isPlaceholder
+                          isDisabled={this.state.accInfo || isValidatePage ? true : false}
                         />
-                        {taxIdErr && <span className="error">{taxIdErr} </span>}
-                      </div>
-                      <div className="col-sm-3" style={{marginTop: '-32px'}}>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="whtaccountname"
-                          placeHolder="Account Name"
-                          value={userData.whtaccountname}
-                          onChange={(e: any) => this.handlePersonalChange(e)}
-                          disabled={
-                            (this.state.currentStep === 3 && this.state.accInfo) || (isValidatePage)
-                              ? true
-                              : false
-                          }
+                    </div>
+                    <div className="col-md-3">
+                        <Dropdown
+                          name="whtstate"
+                          label="State"
+                          options={options}
+                          handleChange={this.handlePersonalChange}
+                          value=''
+                          isPlaceholder
+                          isDisabled={this.state.accInfo || isValidatePage ? true : false}
                         />
-                        {taxIdErr && <span className="error">{taxIdErr} </span>}
-                      </div> */}
-                      {locationList}
-                      <div className="col-sm-3" style={{marginTop: '-35px', marginLeft: '-15px'}}>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            name="whtpostalcode"
-                            placeHolder="Postal Code"
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                            disabled={this.state.accInfo || isValidatePage ? true : false}
-                            value={
-                              this.state.accInfo
-                                ? userData.postalcode
-                                : userData.whtpostalcode
-                            }
-                          />
-                          {postalCodeTaxErr && (
-                            <span className="error">{postalCodeTaxErr} </span>
-                          )}
-                      </div>
+                    </div>
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="whtpostalcode"
+                        placeHolder="Postal Code"
+                        onChange={(e: any) => this.handlePersonalChange(e)}
+                        disabled={this.state.accInfo || isValidatePage ? true : false}
+                        value={
+                          this.state.accInfo
+                            ? userData.postalcode
+                            : userData.whtpostalcode
+                        }
+                      />
+                      {postalCodeTaxErr && (
+                        <span className="error">{postalCodeTaxErr} </span>
+                      )}
+                    </div>
                   </div>
                   </>
-              )}
-              {(currentStep == 2 ) && (
-                <>
-                <div className="row fieldAlign form-group">
-                  {locationList}
-                  <div className="col-sm-3" style={{ marginTop: '-32px'}}>
-                    <Input
-                      type="text"
-                      className="form-control"
-                      name="postalcode" 
-                      placeHolder="Postal Code"
-                      value={userData.postalcode}
-                      onChange={(e: any) => this.handlePersonalChange(e)}
-                      disabled={isValidatePage ? true : false}
-                    />
-                    {postalCodeErr && (
-                      <span className="error">{postalCodeErr} </span>
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  className="row fieldAlign"
-                  style={{ marginBottom: "14px", marginLeft: "0px" }}
-                >
-                  <textarea
-                    name="address"
-                    rows={4}
-                    cols={40}
-                    placeholder="Address"
-                    value={userData.address}
-                    onChange={(e: any) => this.handlePersonalChange(e)}
-                    disabled={isValidatePage ? true : false}
-                  />
-                </div>
-                </> )}
-              {currentStep == 3 && (
-                <>
-                  <div
-                    className="row fieldAlign"
-                    style={{ marginBottom: "14px", marginLeft: "0px" }}
-                  >
-                    <textarea
-                      name="whtaddress"
-                      rows={4}
-                      cols={40}
-                      placeholder="Address"
-                      value={userData.whtaddress}
-                      onChange={(e: any) => this.handlePersonalChange(e)}
-                      disabled={isValidatePage ? true : false}
-                    />
-                  </div>
-                </>
               )}
             </div>
           </div>
@@ -1132,7 +1297,7 @@ class CreateUser extends Component<any, any> {
 
         <div
           className="submit"
-          style={{ position: "absolute", bottom: "32px", marginLeft: "350px" }}
+          style={{ position: "absolute", bottom: "32px", marginLeft: currentStep == 1 ? "510px" : "350px" }}
         >
           <div className="">
             {currentStep !== 1 && (
@@ -1152,7 +1317,7 @@ class CreateUser extends Component<any, any> {
               Reset
             </button>
             }
-            {this.props.location?.state&&currentStep===3 &&
+            {this.props.location?.state && currentStep===4 &&
              <button
              className="btn btn-decline buttonStyle"
              onClick={() => this.declineUser()}
