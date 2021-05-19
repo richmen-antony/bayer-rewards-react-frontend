@@ -118,7 +118,6 @@ class CreateUser extends Component<any, any> {
     //   console.log("userData", this.state.userData);
     // });
 
-    console.log("data", this.props.location.state);
     this.setState({ isRendered: true });
     ///API to get country and language settings
     this.getCountryList();
