@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import '../../../assets/scss/login.scss';
 import { Input } from '../../../utility/widgets/input';
 import { apiURL } from '../../../utility/base/utils/config';
-import { invokePostService } from '../../../utility/base/service';
+import { invokePostService, invokeAkanaDemoService } from '../../../utility/base/service';
 import { setLocalStorageData } from '../../../utility/base/localStore';
 import { toastError } from '../../../utility/widgets/toaster';
 import Loaders from '../../../utility/widgets/loader';
@@ -73,6 +73,7 @@ class Login extends Component<Props, States>{
         }
     }
     login = () => {
+        this.getAkanaService();
         let formValid = this.checkValidation();
         const data = {
             "username": this.state.username,
@@ -97,6 +98,17 @@ class Login extends Component<Props, States>{
             });
         }
         
+    }
+    getAkanaService = () => {
+        this.setState({isLoader: true});
+        invokeAkanaDemoService().then((response: any) => {
+          this.setState({
+            isLoader: false,
+          });
+        })
+        .catch((error: any) => {
+          console.log(error, "error");
+        });
     }
     checkValidation = () => {
         let formValid = true;

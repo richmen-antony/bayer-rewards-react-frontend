@@ -19,13 +19,14 @@ import {
 import moment from "moment";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { isConstructorDeclaration } from "typescript";
-import { LiveTvRounded } from "@material-ui/icons";
+import { FormatColorResetRounded, LiveTvRounded } from "@material-ui/icons";
 import Table from 'react-bootstrap/Table';
 import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import { keys } from "@material-ui/core/styles/createBreakpoints";
 
 const options = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -44,8 +45,8 @@ class CreateUser extends Component<any, any> {
     let oneYearFromNow = new Date();
     let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     this.state = {
-      rows: [{}],
-      dpList: [{}],
+      staffRows: [{}],
+      ownerRows: [{}],
       geographicFields: [],
       dynamicFields: [],
       withHolding: [],
@@ -106,7 +107,8 @@ class CreateUser extends Component<any, any> {
       accInfo: true,
       regionList: [],
       isValidatePage: false,
-      userName: ''
+      userName: '',
+      isStaff: false
     };
   }
 
@@ -456,52 +458,52 @@ class CreateUser extends Component<any, any> {
         console.log(error, "error");
       });
   };
-  handlePersonalChange = (e: any) => {
-    let val = this.state.userData;
-    if (e.target.name === "activateUser") {
-      val[e.target.name] = e.target.checked;
-    } else if (e.target.name === "accInfo") {
-      if (!e.target.checked) {
-        let setFormArray: any = [];
-        this.state.geographicFields.map((list: any, i: number) => {
-          setFormArray.push({
-            name: list,
-            placeHolder: true,
-            value: list === "country" ? getStoreData.country : "",
-            options:
-              list === "country"
-                ? this.state.countryList
-                : i == 1
-                ? this.state.hierarchyList
-                : "",
-            error: "",
-          });
-        });
-        this.setState({ withHolding: setFormArray });
-      } else {
-        this.setState({ accInfo: e.target.checked });
-        this.setState({ withHolding: this.state.dynamicFields });
-      }
-      this.setState({ accInfo: e.target.checked });
-    } else {
-      val[e.target.name] = e.target.value;
-    }
-    // if (e.target.name === 'role') {
-    //     let steps = this.state.stepsArray;
-    //     this.setState({stepsArray : steps });
-    //     if(e.target.value !== 'salesagent' ) {
-    //         steps.splice(2,1,'With-Holding Tax');
-    //         this.setState({stepsArray : steps });
-    //     } else {
-    //         steps.splice(2,1,'User Mappings');
-    //         this.setState({stepsArray : steps});
-    //     }
-    // }
-    let dateVal = this.dateValidation(e);
-    if (dateVal) {
-      this.setState({ userData: val });
-    }
-  };
+  // handlePersonalChange = (e: any) => {
+  //   let val = this.state.userData;
+  //   if (e.target.name === "activateUser") {
+  //     val[e.target.name] = e.target.checked;
+  //   } else if (e.target.name === "accInfo") {
+  //     if (!e.target.checked) {
+  //       let setFormArray: any = [];
+  //       this.state.geographicFields.map((list: any, i: number) => {
+  //         setFormArray.push({
+  //           name: list,
+  //           placeHolder: true,
+  //           value: list === "country" ? getStoreData.country : "",
+  //           options:
+  //             list === "country"
+  //               ? this.state.countryList
+  //               : i == 1
+  //               ? this.state.hierarchyList
+  //               : "",
+  //           error: "",
+  //         });
+  //       });
+  //       this.setState({ withHolding: setFormArray });
+  //     } else {
+  //       this.setState({ accInfo: e.target.checked });
+  //       this.setState({ withHolding: this.state.dynamicFields });
+  //     }
+  //     this.setState({ accInfo: e.target.checked });
+  //   } else {
+  //     val[e.target.name] = e.target.value;
+  //   }
+  //   // if (e.target.name === 'role') {
+  //   //     let steps = this.state.stepsArray;
+  //   //     this.setState({stepsArray : steps });
+  //   //     if(e.target.value !== 'salesagent' ) {
+  //   //         steps.splice(2,1,'With-Holding Tax');
+  //   //         this.setState({stepsArray : steps });
+  //   //     } else {
+  //   //         steps.splice(2,1,'User Mappings');
+  //   //         this.setState({stepsArray : steps});
+  //   //     }
+  //   // }
+  //   let dateVal = this.dateValidation(e);
+  //   if (dateVal) {
+  //     this.setState({ userData: val });
+  //   }
+  // };
 
   dateValidation = (e: any) => {
     let dateValid = true;
@@ -715,32 +717,91 @@ class CreateUser extends Component<any, any> {
     this.submitUserDatas();
   }
 
-  handleAddRow = () => {
-    const item = {
-      firstName: "",
-      roleccode: "",
-      role: "",
-      rolectype: "",
-      parentrole: ""
-    };
-
-    this.setState({
-      rows: [...this.state.rows, item],
-      dpList: [...this.state.rows, item],
-    });
-
-    console.log(this.state.rows);
-    console.log(this.state.dpList);
+  handlePersonalChange = (e: any) => {
+    let val = this.state.userData;
+    if (e.target.name === "activateUser") {
+      val[e.target.name] = e.target.checked;
+    } else if (e.target.name === "accInfo") {
+      if (!e.target.checked) {
+        let setFormArray: any = [];
+        this.state.geographicFields.map((list: any, i: number) => {
+          setFormArray.push({
+            name: list,
+            placeHolder: true,
+            value: list === "country" ? getStoreData.country : "",
+            options:
+              list === "country"
+                ? this.state.countryList
+                : i == 1
+                ? this.state.hierarchyList
+                : "",
+            error: "",
+          });
+        });
+        this.setState({ withHolding: setFormArray });
+      } else {
+        this.setState({ accInfo: e.target.checked });
+        this.setState({ withHolding: this.state.dynamicFields });
+      }
+      this.setState({ accInfo: e.target.checked });
+    } else {
+      val[e.target.name] = e.target.value;
+    }
+    let dateVal = this.dateValidation(e);
+    if (dateVal) {
+      this.setState({ userData: val });
+    }
   };
 
-  handleRemoveSpecificRow = (idx: any) => () => {
-    const rows = [...this.state.rows]
-    rows.splice(idx, 1)
-    this.setState({ rows })
+  handleChange = (idx: any, e: any , key: any) => {
 
-    const dpList = [...this.state.dpList]
-    dpList.splice(idx, 1)
-    this.setState({ dpList })
+    const ownerRows = [...this.state.ownerRows];
+    const staffRows = [...this.state.staffRows];
+    if( key === 'phone') {
+      // ownerRows[idx] = {
+      //   ['mobilenumber']: value
+      // };
+      // staffRows[idx] = {
+      //   ['mobilenumber']: value
+      // };
+    } else {
+      const { name, value } = e.target;
+      ownerRows[idx] = {
+        [name]: value
+      };
+      staffRows[idx] = {
+        [name]: value
+      };
+    }
+    this.setState({ ownerRows });
+    this.setState({ staffRows });
+  };
+
+  handleAddRow = (type: string) => {
+    const item = {
+      firstname: "",
+      lastname: "",
+      mobilenumber: "",
+      email: "",
+    };
+
+    if ( type === 'owner'){
+      this.setState({ ownerRows: [...this.state.ownerRows, item] });
+    } else {
+      this.setState({ staffRows: [...this.state.staffRows, item] });
+    }
+  };
+
+  handleRemoveSpecificRow = (idx: any, type: string) => () => {
+    if (type === 'owner') {
+      const ownerRows = [...this.state.ownerRows]
+      ownerRows.splice(idx, 1)
+      this.setState({ ownerRows })
+    } else {
+      const staffRows = [...this.state.staffRows]
+      staffRows.splice(idx, 1)
+      this.setState({ staffRows })
+    }
   }
   handlePhoneChange = (value: any) => {
     console.log(value);
@@ -755,6 +816,8 @@ class CreateUser extends Component<any, any> {
   // }
 
   render() {
+    // console.log(this.state.staffRows);
+    console.log('ownerRows', this.state.ownerRows);
     const dpstyle = {
       width: "220px",
       height: "40px",
@@ -788,7 +851,8 @@ class CreateUser extends Component<any, any> {
       subdistrict,
       village,
       stepsArray,
-      isValidatePage
+      isValidatePage,
+      isStaff
     } = this.state;
 
     const btnStyleRemove = {
@@ -885,7 +949,7 @@ class CreateUser extends Component<any, any> {
           />
         </div>
         <div className="col-md-10">
-          <label className="font-weight-bold" style={{fontSize: '20px', color: '#10384F', marginTop: currentStep ==1 ? '0px' : '28px'}}>
+          <label className="font-weight-bold" style={{fontSize: '17px', color: '#10384F', marginTop: currentStep ==1 ? '0px' : '28px'}}>
             {stepsArray[currentStep - 1]}
           </label>
           <div className="container">
@@ -894,7 +958,7 @@ class CreateUser extends Component<any, any> {
                 <div className="personal">
                   <>
                   <div className="row form-group" style={{ display: 'flex', alignItems: 'center', marginTop: '8px'}}>
-                    <div className="col-sm-12">
+                    <div className="col-sm-3">
                       <Dropdown
                         name="role"
                         label="User Type"
@@ -908,8 +972,15 @@ class CreateUser extends Component<any, any> {
                         <span className="error">{roleErr} </span>
                       )}
                     </div>
+                    <div className="col-sm-3">
+                        <label className="font-weight-bold">Has store staff?
+                            <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.setState({isStaff: e.target.checked})}} />
+                            <span className="checkmark"></span>
+                        </label>
+                    </div>
                   </div>
-                  <div style={{ width:'124%', maxHeight: "325px", overflowY: "auto", overflowX: "hidden"}}>
+                  <div  style={{ width:'124%', maxHeight: "280px", overflowY: "auto", overflowX: "hidden"}}>
+                  <div>
                   {/* <Table borderless> */}
                     <table className="table table-borderless">
                     <thead>
@@ -923,16 +994,17 @@ class CreateUser extends Component<any, any> {
                         </tr>
                       </thead>
                       <tbody>
+                      {this.state.ownerRows.map((item: any, idx: number) => (
                         <tr>
-                          <td className="font-weight-bold">Owner</td>
+                          {idx === 0 ? <td className="font-weight-bold">Owner</td> : <td></td>}
                           <td>
                             <Input
                               type="text"
                               className="form-control"
                               name="firstname"
                               placeHolder="Eg: Keanu"
-                              value={userData.firstname}
-                              onChange={(e: any) => this.handlePersonalChange(e)}
+                              value={this.state.ownerRows[idx].firstname}
+                              onChange={(e: any)=>this.handleChange(idx, e, '')}
                               disabled={isValidatePage ? true : false}
                             />
                             {firstNameErr && (
@@ -945,8 +1017,8 @@ class CreateUser extends Component<any, any> {
                             className="form-control"
                             name="lastname"
                             placeHolder="Eg: Reeves"
-                            value={userData.lastname}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
+                            value={this.state.ownerRows[idx].lastname}
+                            onChange={(e: any)=>this.handleChange(idx, e, '')}
                             disabled={isValidatePage ? true : false}
                             />
                             {lastNameErr && (
@@ -959,13 +1031,16 @@ class CreateUser extends Component<any, any> {
                               <PhoneInput
                                 placeholder="Mobile Number"
                                 inputProps={{
-                                  name: "phone",
+                                  name: "mobilenumber",
                                   required: true
                                 }}
-                                country={'in'}
-                                value={this.state.phone}
-                                onChange={this.handlePhoneChange}
+                                country={'mw'}
+                                value={this.state.ownerRows[idx].mobilenumber}
+                                onChange={(e)=>this.handleChange(idx, e, 'phone')}
+                                onlyCountries={['mw']}
                                 autoFormat
+                                disableDropdown
+                                disableCountryCode
                               />
                             </div>
                               {/* <div>
@@ -990,31 +1065,48 @@ class CreateUser extends Component<any, any> {
                             className="form-control"
                             name="email"
                             placeHolder="Eg: abc@mail.com"
-                            value={userData.email}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
+                            value={this.state.ownerRows[idx].email}
+                            onChange={(e: any)=>this.handleChange(idx, e, '')}
                             disabled={isValidatePage ? true : false}
                             onKeyUp={(e: any)=>this.validateEmail(e)}
                           />
                           {emailErr && <span className="error">{emailErr} </span>}
                           </td>
-                          <td>
+                          <td style={{ display: 'flex', alignItems: 'center'}}>
+                            <div>
                               <CustomSwitch
                                 checked={userData.activateUser}
                                 onChange={(e: any) => this.handlePersonalChange(e)}
                                 name="activateUser"
                               />
+                              </div>
+                              <div>
+                                {idx === this.state.ownerRows.length - 1 ?
+                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
+                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
+                              </div>
                           </td>
-                        </tr>
-                        {this.state.rows.map((item: any, idx: number) => (
+                        </tr> ))}
+                        </tbody>
+                        </table>
+                        </div>
+                        <div style={{marginTop: '-10px'}}>
+                          {isStaff ? <hr/> : <></>}
+                        </div>
+                        <div>
+                        <table className="table table-borderless">
+                          <tbody>
+                        {isStaff &&
+                        this.state.staffRows.map((item: any, idx: number) => (
                         <tr>
-                          {idx === 0 ? <td className="font-weight-bold">Staff</td> : <td></td>}
+                          {idx === 0 ? <td className="font-weight-bold">Store Staffs</td> : <td></td>}
                           <td>
                             <Input
                               type="text"
                               className="form-control"
                               name="firstname"
-                              placeHolder="First Name"
-                              value={userData.firstname}
+                              placeHolder="Eg: Keanu"
+                              value={this.state.ownerRows[idx].firstname}
                               onChange={(e: any) => this.handlePersonalChange(e)}
                               disabled={isValidatePage ? true : false}
                             />
@@ -1027,8 +1119,8 @@ class CreateUser extends Component<any, any> {
                             type="text"
                             className="form-control"
                             name="lastname"
-                            placeHolder="Last name"
-                            value={userData.lastname}
+                            placeHolder="Eg: Reeves"
+                            value={this.state.ownerRows[idx].lastname}
                             onChange={(e: any) => this.handlePersonalChange(e)}
                             disabled={isValidatePage ? true : false}
                             />
@@ -1038,18 +1130,21 @@ class CreateUser extends Component<any, any> {
                           </td>
                           <td>
                           <div className='flagInput'>
-                              <PhoneInput
-                                placeholder="Mobile Number"
-                                inputProps={{
-                                  name: "phone",
-                                  required: true
-                                }}
-                                country={'in'}
-                                value={this.state.phone}
-                                onChange={this.handlePhoneChange}
-                                autoFormat
-                              />
-                            </div>
+                            <PhoneInput
+                              placeholder="Mobile Number"
+                              inputProps={{
+                                name: "mobilenumber",
+                                required: true
+                              }}
+                              country={'mw'}
+                              value={this.state.ownerRows[idx].mobilenumber}
+                              onChange={this.handlePhoneChange}
+                              onlyCountries={['mw']}
+                              autoFormat
+                              disableDropdown
+                              disableCountryCode
+                            />
+                          </div>
                               {/* <Input
                               type="text"
                               className="form-control"
@@ -1067,8 +1162,8 @@ class CreateUser extends Component<any, any> {
                             type="text"
                             className="form-control"
                             name="email"
-                            placeHolder="Email"
-                            value={userData.email}
+                            placeHolder="Eg.abc@mail.com"
+                            value={this.state.ownerRows[idx].email}
                             onChange={(e: any) => this.handlePersonalChange(e)}
                             disabled={isValidatePage ? true : false}
                             onKeyUp={(e: any)=>this.validateEmail(e)}
@@ -1084,16 +1179,15 @@ class CreateUser extends Component<any, any> {
                               />
                               </div>
                               <div>
-                          {idx === this.state.rows.length - 1 ?
-                            <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={this.handleAddRow} /> 
-                            :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx)} /> }
-
-                            </div>
+                                {idx === this.state.staffRows.length - 1 ?
+                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
+                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
+                              </div>
                           </td>
-                            
                         </tr> ))}
-                        </tbody>
+                      </tbody>
                     </table>
+                  </div>
                   </div>
                   </>
                 </div>
