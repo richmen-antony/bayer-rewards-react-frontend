@@ -19,6 +19,7 @@ const popupHeader = {
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(2),
+    overflow:"hidden"
   },
 }))(MuiDialogContent);
 
@@ -115,8 +116,8 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               <thead>
                 <tr>
                   <th></th>
-                  <th>Name</th>
-                  <th>Type</th>
+                  <th>NAME</th>
+                  <th>TYPE</th>
                   <th>INTENDED QTY</th>
                   <th>ORDERED QTY</th>
                   <th>TOTAL COST</th>
@@ -195,11 +196,6 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           )}
         </div>
       </DialogContent>
-      <DialogActions>
-        <Button autoFocus onClick={close} className="popup-btn close-btn">
-          Close
-        </Button>
-      </DialogActions>
     </SimpleDialog>
   );
 };
