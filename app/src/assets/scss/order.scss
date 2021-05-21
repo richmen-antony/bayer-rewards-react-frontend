@@ -1,11 +1,14 @@
 .inner-table {
   width: 100%;
   td {
+    padding-top: 0;
+    padding-bottom: 20px;
     &.title {
       text-align: left;
       border-right: 0;
       p {
         color: #646464;
+        margin: 0;
       }
     }
     &:last-child{
@@ -15,6 +18,9 @@
     text-align: center;
     border-top: 0;
     .sub-val {
+      margin: 0;
+    }
+    .qr-val{
       margin: 0;
     }
   }

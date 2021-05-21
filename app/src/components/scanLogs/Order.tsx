@@ -112,6 +112,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           </div>
 
           {data?.products_ordered?.length > 0 ? (
+            <div>
             <table className="table">
               <thead>
                 <tr>
@@ -140,7 +141,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       </tr>
                       {accordionView && value?.order_id === accordionId &&
                       <tr>
-                        <td colSpan={7}>
+                        <td colSpan={7} style={{padding:0,borderTop:0}}>
                           <table className="inner-table">
                             <tbody>
                               <tr>
@@ -149,19 +150,19 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   <p className="sub-val">Batch #</p>
                                 </td>
                                 <td>
-                                  <p>625823651452258</p>
+                                  <p className="qr-val">625823651452258</p>
                                   <p className="sub-val">125698</p>
                                 </td>
                                 <td>
-                                  <p>632581548902502</p>
+                                  <p  className="qr-val">632581548902502</p>
                                   <p className="sub-val">125698</p>
                                 </td>
                                 <td>
-                                  <p>6250258403665286</p>
+                                  <p  className="qr-val">6250258403665286</p>
                                   <p className="sub-val">504147</p>
                                 </td>
                                 <td>
-                                  <p>625823651452258</p>
+                                  <p className="qr-val"> 625823651452258</p>
                                   <p className="sub-val">304100</p>
                                 </td>
                               </tr>
@@ -187,6 +188,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                 </tr>
               </tfoot>
             </table>
+            </div>
           ) : (
             <div className="col-12 card mt-4">
               <div className="card-body ">

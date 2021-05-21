@@ -413,7 +413,6 @@ class ScanLogsTable extends Component<Props, States> {
       rowsPerPage,
     } = this.state;
 
-    console.log({ retailerPopupData });
     const pageNumbers = [];
     const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
     for (let i = 1; i <= pageData; i++) {
