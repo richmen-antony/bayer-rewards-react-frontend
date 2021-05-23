@@ -304,8 +304,8 @@
 }
 .scanlog-table {
   background: #ffffff;
-    border: 1px solid #a0a0a047;
-    border-radius: 10px !important;
+  border: 1px solid #a0a0a047;
+  border-radius: 10px !important;
   table {
     table-layout: fixed;
     border-collapse: collapse;
@@ -313,7 +313,7 @@
     width: 100%;
     thead {
       tr {
-        background: #1F445A;
+        background: #1f445a;
         box-shadow: 0px 3px 6px #00000029;
         border: 0.2px solid #cccccc;
         th {
@@ -436,7 +436,7 @@
 .popup-title.order {
   p {
     font-size: 14px;
-    color:#777777;
+    color: #777777;
     label {
       font-size: 14px;
       color: #000000;
@@ -445,24 +445,26 @@
   }
 }
 
-
 .ordered-table {
   table {
     thead {
-      background: rgba(255, 255, 255, 1);
+      background: #1f445a;
       box-shadow: 0px -3px 6px #00000029;
-      border: 1px solid rgba(206, 206, 206, 1);
       tr {
         th {
-          color: #777777;
+          color: #ffffff;
           font-size: 14px;
           font-family: "Open Sans";
+          position: sticky;
+          top: 0;
+          z-index: 1;
+          background-color: #1f445a;
+          border: 0;
         }
       }
     }
   }
 }
-
 
 .icon-test {
   text-align: center;
@@ -525,7 +527,7 @@
   }
   &.active {
     &::after {
-      border-color: #89D329;
+      border-color: #89d329;
     }
   }
   &:last-child {
@@ -542,13 +544,13 @@
       max-width: 100%;
       margin-bottom: 15px;
     }
-    p{
-    color: #777777;
-    font-size: 15px;
-    margin: 0;
+    p {
+      color: #777777;
+      font-size: 15px;
+      margin: 0;
     }
-    span{
-      color:#000000;
+    span {
+      color: #000000;
       font-size: 16px;
     }
   }
@@ -564,10 +566,10 @@
     color: #808080;
     font-size: 14px;
   }
-  label{
+  label {
     margin: 0;
     margin-top: 12px;
-    color:#000000;
+    color: #000000;
     font-size: 16px;
   }
 }
@@ -582,26 +584,24 @@
     color: #808080;
     font-size: 14px;
   }
-  label{
+  label {
     margin: 0;
     margin-top: 12px;
-    color:#000000;
+    color: #000000;
     font-size: 16px;
   }
 }
 
-
-.advisor-filter{
+.advisor-filter {
   background-color: rgb(255, 255, 255);
   padding: 10px 20px;
   border-radius: 10px;
-  .filter-left-side{
+  .filter-left-side {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  .filter-right-side{
-
+  .filter-right-side {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -631,7 +631,8 @@
             .status {
               border-radius: 20px;
               padding: 5px;
-              i,img {
+              i,
+              img {
                 margin-right: 5px;
               }
             }
@@ -660,17 +661,17 @@
     p {
       font-size: 12px;
     }
-    label{
+    label {
       font-size: 14px;
     }
   }
-  
+
   .line-cnt-expiry-date {
     right: 25%;
     p {
       font-size: 12px;
     }
-    label{
+    label {
       font-size: 14px;
     }
   }
@@ -684,12 +685,12 @@
       top: 40px;
       width: calc(33.3% - 35px);
     }
-    
+
     .content {
-      p{
-      font-size: 12px;
+      p {
+        font-size: 12px;
       }
-      span{
+      span {
         font-size: 14px;
       }
     }
@@ -733,5 +734,3 @@
     }
   }
 }
-
-

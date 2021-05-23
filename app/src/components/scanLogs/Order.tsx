@@ -112,7 +112,8 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           </div>
 
           {data?.products_ordered?.length > 0 ? (
-            <div>
+            <>
+            <div className="sub-order">
             <table className="table">
               <thead>
                 <tr>
@@ -122,6 +123,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   <th>INTENDED QTY</th>
                   <th>ORDERED QTY</th>
                   <th>TOTAL COST</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -175,20 +177,22 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   );
                 })}
               </tbody>
-              <tfoot>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td> Total</td>
-                  <td>
-                    <span>{_.sumBy(data.products_ordered,"intendedqty")}</span>
-                  </td>
-                  <td>{_.sumBy(data.products_ordered,"intendedqty")}</td>
-                  <td>{_.sumBy(data.products_ordered,(item :any)=> Number(item.price))}</td>
-                </tr>
-              </tfoot>
+             
             </table>
+            
             </div>
+            
+              <div className="sum-total">
+              
+                   <p style={{margin:0,width:"100px"}}>Total</p>
+                 
+                    <span style={{width:"124px"}}>{_.sumBy(data.products_ordered,"intendedqty")}</span>
+                  
+                  <span style={{width:"120px"}}>{_.sumBy(data.products_ordered,"intendedqty")}</span>
+                  <span style={{width:"55px"}}>{_.sumBy(data.products_ordered,(item :any)=> Number(item.price))}</span>
+                
+              </div>
+              </>
           ) : (
             <div className="col-12 card mt-4">
               <div className="card-body ">
@@ -196,6 +200,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               </div>
             </div>
           )}
+         
         </div>
       </DialogContent>
     </SimpleDialog>

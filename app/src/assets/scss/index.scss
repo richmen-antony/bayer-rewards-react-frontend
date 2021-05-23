@@ -695,7 +695,7 @@ label {
 .popup-container {
   background-color: #ffffff;
   border-radius: 10px;
-  padding: 20px 25px;
+  padding: 20px 0;
   .popup-title {
     text-align: center;
   
@@ -775,4 +775,9 @@ label {
 
 .no-records{
   text-align: center !important;
+}
+
+.sub-order{
+  height: 200px;
+  overflow: auto;
 }
