@@ -33,3 +33,19 @@
     margin-bottom: 4px;
 }
 /*-----------React flag ends------------*/
+
+.fieldsAlign {
+  margin-top: 32px
+}
+
+@media only screen and (max-width: 1400px) {
+  .card-main {
+    height: 82vh;
+  }
+}
+
+@media only screen and (max-width: 1920px) {
+  .card-main {
+    height: 81vh;
+  }
+}
