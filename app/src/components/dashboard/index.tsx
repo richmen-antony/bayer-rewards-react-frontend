@@ -102,15 +102,11 @@ class Dashboard extends Component<Props, States> {
                   background="#FFF4E7"
                   cardClick={() => this.cardClick()}
                 >
-                  <div style={{ fontSize: "18px", fontWeight: "bold" }}>
+                  <div className="count">
                     {this.state.scanLogCount}
                   </div>
                   <div
-                    style={{
-                      fontSize: "18px",
-                      marginTop: "5px",
-                      fontWeight: 600,
-                    }}
+                   className="title"
                   >
                     Scan Logs
                   </div>
@@ -122,15 +118,11 @@ class Dashboard extends Component<Props, States> {
                   border="1px solid #206BDD"
                   background="#DFE8FA"
                 >
-                  <div style={{ fontSize: "18px", fontWeight: "bold" }}>
+                  <div className="count">
                     {this.state.usersCount}
                   </div>
                   <div
-                    style={{
-                      fontSize: "18px",
-                      marginTop: "5px",
-                      fontWeight: 600,
-                    }}
+                   className="title"
                   >
                     Total Users
                   </div>
@@ -147,11 +139,7 @@ class Dashboard extends Component<Props, States> {
                   cardClick={() => this.cardCreateUserClick()}
                 >
                   <div
-                    style={{
-                      fontSize: "18px",
-                      marginTop: "5px",
-                      fontWeight: 600,
-                    }}
+                   className="title"
                   >
                     Create New User
                   </div>
@@ -164,15 +152,11 @@ class Dashboard extends Component<Props, States> {
                   background="#DFE8FA"
                   cardClick={() => this.totalUserClick()}
                 >
-                  <div style={{ fontSize: "18px", fontWeight: "bold" }}>
+                  <div className="count">
                     {this.state.adminUsersCount}
                   </div>
                   <div
-                    style={{
-                      fontSize: "18px",
-                      marginTop: "5px",
-                      fontWeight: 600,
-                    }}
+                   className="title"
                   >
                     Total Users
                   </div>
