@@ -33,4 +33,35 @@
   margin-right: 80px;
   color: #000000;
   font-weight: 600;
+  .total{
+    margin: 0;
+    width: 100px;
+  }
+  .intendedqty{
+    width: 132px;
+  }
+  .orderedqty{
+    width: 120px;
+  }
+  .price{
+    width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .sum-total{
+    .total{
+      margin: 0;
+      width: 100px;
+    }
+    .intendedqty{
+      width: 118px;
+    }
+    .orderedqty{
+      width: 113px;
+    }
+    .price{
+      width: 49px;
+    }
+  }
 }

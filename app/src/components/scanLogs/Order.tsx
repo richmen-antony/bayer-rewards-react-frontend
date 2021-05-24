@@ -133,10 +133,10 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                           <tr key={index} onClick={() => handleExpand(value)}>
                             <th scope="row">{<img src={CornImg} />}</th>
                             <td>{value.productsku}</td>
-                            <td>{value.type || 0}</td>
+                            <td>{value.type || "Seed-corn"}</td>
                             <td>{value.intendedqty}</td>
                             <td>{value.orderedqty}</td>
-                            <td>{value.price}</td>
+                            <td>{"MK " +value.price}</td>
                             <td>
                               <i
                                 className={`fas ${
@@ -197,17 +197,17 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               </div>
 
               <div className="sum-total">
-                <p style={{ margin: 0, width: "100px" }}>Total</p>
+                <p className="total" >Total</p>
 
-                <span style={{ width: "124px" }}>
+                <span  className="intendedqty">
                   {_.sumBy(data.products_ordered, "intendedqty")}
                 </span>
 
-                <span style={{ width: "120px" }}>
+                <span  className="orderedqty" >
                   {_.sumBy(data.products_ordered, "orderedqty")}
                 </span>
-                <span style={{ width: "55px" }}>
-                  {_.sumBy(data.products_ordered, (item: any) =>
+                <span  className="price">
+                  { "MK " +_.sumBy(data.products_ordered, (item: any) =>
                     Number(item.price)
                   )}
                 </span>
