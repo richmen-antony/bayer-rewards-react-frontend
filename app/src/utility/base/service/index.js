@@ -56,7 +56,7 @@ export function invokePostAuthService(path,reqObj,params)  {
       baseURL: apiEndPoint+path
     })(config)
       .then((response) => {
-        resolve(response)
+        resolve(response.data)
       })
       .catch((err) => {
         if(err.response){
