@@ -582,19 +582,6 @@ class ScanLogsTable extends Component<Props, States> {
                                       )
                                     }
                                   />
-
-                                {/* <DatePicker
-                                  value={selectedFilters.startDate}
-                                  dateFormat="dd-MM-yyyy"
-                                  customInput={<Input />}
-                                  selected={this.state.date}
-                                  onChange={(date: any) =>
-                                    this.setState({ date })
-                                  }
-                                  showMonthDropdown
-                                  showYearDropdown
-                                  dropdownMode="select"
-                                /> */}
                               </div>
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
@@ -606,22 +593,38 @@ class ScanLogsTable extends Component<Props, States> {
                                       this.handleFilterChange(e, "endDate", "")
                                     }
                                   />
-
-                                {/* <DatePicker
-                                  value={selectedFilters.endDate}
-                                  dateFormat="dd-MM-yyyy"
-                                  customInput={<Input />}
-                                  selected={this.state.endDate}
-                                  onChange={(date: any) =>
-                                    this.setState({ date })
-                                  }
-                                  showMonthDropdown
-                                  showYearDropdown
-                                  dropdownMode="select"
-                                /> */}
                               </div>
                             </div>
-                            {/* </div> */}
+                            <label className="font-weight-bold pt-2">
+                             Last Updated Date
+                            </label>
+                            <div className="d-flex">
+                              <div className="user-filter-date-picker">
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.startDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(
+                                        e,
+                                        "startDate",
+                                        ""
+                                      )
+                                    }
+                                  />
+                              </div>
+                              <div className="p-2">-</div>
+                              <div className="user-filter-date-picker">
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    value={selectedFilters.endDate}
+                                    onChange={(e) =>
+                                      this.handleFilterChange(e, "endDate", "")
+                                    }
+                                  />
+                              </div>
+                            </div>
 
                             <div className="filterFooter pt-3">
                               <Button

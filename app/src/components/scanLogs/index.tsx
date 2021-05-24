@@ -264,7 +264,6 @@ class ScanLogs extends Component<Props, States> {
       );
     };
     const { classes } = this.props;
-    console.log({ classes });
 
     return (
       <AUX>
@@ -279,8 +278,8 @@ class ScanLogs extends Component<Props, States> {
                   aria-label="ant example"
                 >
                   <AntTab label="Advisor Sales" />
-                  <AntTab label="Walk-In Sales" />
-                  <AntTab label="Send Goods" />
+                  {/* <AntTab label="Walk-In Sales"/>
+                  <AntTab label="Send Goods" /> */}
                 </AntTabs>
 
                 
