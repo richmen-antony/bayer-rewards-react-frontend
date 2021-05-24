@@ -35,7 +35,7 @@ import left_arrow from "../../assets/icons/left_arrow.svg";
 import right_arrow from "../../assets/icons/left-arrow.svg";
 import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
-
+import DevConfigurations from '../configurations/dev';
 export interface IFormValue {
   id: string;
   label: string;
@@ -578,7 +578,7 @@ class Devconfigurations extends React.Component<
               Item Two
             </TabPanel>
             <TabPanel value={this.state.value} index={2} classes={classes}>
-              Item Three
+             <DevConfigurations />
             </TabPanel>
           </div>
         </div>

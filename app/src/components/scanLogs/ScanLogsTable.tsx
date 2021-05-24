@@ -685,7 +685,7 @@ class ScanLogsTable extends Component<Props, States> {
                       > 
                         
                         <img src={Download} width="17" alt={NoImage} />
-                        <span style={{padding:"10px"}}>Download</span>
+                        <span style={{padding:"15px"}}>Download</span>
                        
                       </button>
                     </div>
@@ -885,7 +885,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   src={ExpandWindowImg}
                                 ></img>
                               </p>
-                              <label>DHCIP</label>
+                              <label>{value.retailerid}</label>
                             </div>
                           </td>
                           <td style={{ textAlign: "center" }}>

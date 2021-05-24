@@ -11,6 +11,8 @@ import moment from "moment";
 import "../../assets/scss/order.scss";
 import _ from "lodash";
 import CornImg from "../../assets/icons/corn_products.svg";
+import "../../assets/scss/configurations.scss";
+import RtArrow from "../../assets/icons/right_arrow.svg";
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -44,9 +46,14 @@ interface Props {
 const OrderTable: React.FC<Props> = ({ open, close, data }) => {
   const [accordionView, handleAccordion] = React.useState(false);
   const [accordionId, setAccordionId] = React.useState("");
+  const [accordion, setAccordion] = useState(false);
+
   const handleExpand = (value: any) => {
     handleAccordion(!accordionView);
     setAccordionId(value.order_id);
+  };
+  const handleButton = (id: string) => {
+    setAccordion(!accordion);
   };
   return (
     <SimpleDialog
@@ -136,7 +143,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>{value.type || "Seed-corn"}</td>
                             <td>{value.intendedqty}</td>
                             <td>{value.orderedqty}</td>
-                            <td>{"MK " +value.price}</td>
+                            <td>{"MK " + value.price}</td>
                             <td>
                               <i
                                 className={`fas ${
@@ -194,22 +201,79 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                     })}
                   </tbody>
                 </table>
+                <div id="accordion">
+                  <div className="card dev product-sold-popup">
+                    <div
+                      className="card-header"
+                      id="headingOne"
+                      onClick={() => handleButton("e")}
+                    >
+                      <span>{"Invalid Scans (3)"}</span>
+                      <img src={RtArrow} />
+                        <span>Expired Labels (2)</span> 
+                      <div>
+                        <span>Non Bayer Labels (2)</span>
+                      </div>
+                      <div className="expand-icon">
+                        <i
+                          className={`fa ${
+                            accordion ? "fas fa-caret-down" : "fas fa-caret-up"
+                          } `}
+                        ></i>
+                      </div>
+                    </div>
+
+                    <div
+                      id="collapseOne"
+                      className={`collapse ${accordion && "show"}`}
+                      aria-labelledby="headingOne"
+                      data-parent="#accordion"
+                    >
+                      <div className="card-body">
+                        <table className="inner-table">
+                          <tbody>
+                            <tr>
+                              <td className="title">
+                                <p>Label ID</p>
+                                <p className="sub-val">Reason</p>
+                              </td>
+                              <td>
+                                <p className="qr-val">625823651452258</p>
+                                <p className="sub-val">Non Bayer Products</p>
+                              </td>
+                              <td>
+                                <p className="qr-val">632581548902502</p>
+                                <p className="sub-val">Non Bayer Products</p>
+                              </td>
+                              <td>
+                                <p className="qr-val">6250258403665286</p>
+                                <p className="sub-val">Expired Label</p>
+                              </td>
+                              
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="sum-total">
-                <p className="total" >Total</p>
+                <p className="total">Total</p>
 
-                <span  className="intendedqty">
+                <span className="intendedqty">
                   {_.sumBy(data.products_ordered, "intendedqty")}
                 </span>
 
-                <span  className="orderedqty" >
+                <span className="orderedqty">
                   {_.sumBy(data.products_ordered, "orderedqty")}
                 </span>
-                <span  className="price">
-                  { "MK " +_.sumBy(data.products_ordered, (item: any) =>
-                    Number(item.price)
-                  )}
+                <span className="price">
+                  {"MK " +
+                    _.sumBy(data.products_ordered, (item: any) =>
+                      Number(item.price)
+                    )}
                 </span>
               </div>
             </>
