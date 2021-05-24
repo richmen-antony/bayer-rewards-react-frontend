@@ -571,58 +571,50 @@ class ScanLogsTable extends Component<Props, States> {
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
                                 <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.startDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(
-                                        e,
-                                        "startDate",
-                                        ""
-                                      )
-                                    }
-                                  />
+                                  type="date"
+                                  className="form-control"
+                                  value={selectedFilters.startDate}
+                                  onChange={(e) =>
+                                    this.handleFilterChange(e, "startDate", "")
+                                  }
+                                />
                               </div>
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
                                 <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.endDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(e, "endDate", "")
-                                    }
-                                  />
+                                  type="date"
+                                  className="form-control"
+                                  value={selectedFilters.endDate}
+                                  onChange={(e) =>
+                                    this.handleFilterChange(e, "endDate", "")
+                                  }
+                                />
                               </div>
                             </div>
                             <label className="font-weight-bold pt-2">
-                             Last Updated Date
+                              Last Updated Date
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
                                 <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.startDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(
-                                        e,
-                                        "startDate",
-                                        ""
-                                      )
-                                    }
-                                  />
+                                  type="date"
+                                  className="form-control"
+                                  value={selectedFilters.startDate}
+                                  onChange={(e) =>
+                                    this.handleFilterChange(e, "startDate", "")
+                                  }
+                                />
                               </div>
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
                                 <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.endDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(e, "endDate", "")
-                                    }
-                                  />
+                                  type="date"
+                                  className="form-control"
+                                  value={selectedFilters.endDate}
+                                  onChange={(e) =>
+                                    this.handleFilterChange(e, "endDate", "")
+                                  }
+                                />
                               </div>
                             </div>
 
@@ -860,8 +852,13 @@ class ScanLogsTable extends Component<Props, States> {
                           <td style={{ textAlign: "center" }}>
                             {value.orderedquantity}
                           </td>
-                          <td>{value.totalcost}</td>
-                          <td>{value.farmername}</td>
+                          <td>{"MK " +value.totalcost}</td>
+                          <td>
+                            <div className="farmer-id">
+                              <p>{value.farmername}</p>
+                              <label>{value.farmerid}</label>
+                            </div>
+                          </td>
                           <td>{value.farmerphone}</td>
                           <td>
                             {moment(value.ordereddate).format("DD-MM-YYYY")}
@@ -896,7 +893,7 @@ class ScanLogsTable extends Component<Props, States> {
                   ) : isLoader ? (
                     <Loaders />
                   ) : (
-                    <tr>
+                    <tr style={{height:"250px"}}>
                       <td colSpan={10} className="no-records">
                         No records found
                       </td>

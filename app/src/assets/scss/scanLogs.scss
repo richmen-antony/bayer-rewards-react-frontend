@@ -376,7 +376,19 @@
     font-size: 14px;
   }
 }
+.farmer-id{
+  p{
+    color: #242424;
+    font-size: 16px;
+    margin: 0;
+    line-height: normal;
+  }
+  label{
+    color: #717171;
+    font-size: 14px;
+  }
 
+}
 .popup-retailer {
   display: flex;
   justify-content: space-between;
@@ -696,6 +708,16 @@
         font-size: 14px;
       }
     }
+  }
+
+  .farmer-id{
+    p{
+    font-size: 14px;   
+    }
+    label{
+      font-size: 14px;
+    }
+  
   }
 }
 
