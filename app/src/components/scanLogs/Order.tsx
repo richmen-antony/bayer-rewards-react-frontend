@@ -19,7 +19,7 @@ const popupHeader = {
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(2),
-    overflow:"hidden"
+    overflow: "hidden",
   },
 }))(MuiDialogContent);
 
@@ -113,86 +113,106 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
 
           {data?.products_ordered?.length > 0 ? (
             <>
-            <div className="sub-order">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>NAME</th>
-                  <th>TYPE</th>
-                  <th>INTENDED QTY</th>
-                  <th>ORDERED QTY</th>
-                  <th>TOTAL COST</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.products_ordered.map((value: any, index: number) => {
-                  return (
-                    <>
-                      <tr key={index} onClick={() => handleExpand(value)}>
-                        <th scope="row">{<img src={CornImg}/>}</th>
-                        <td>{value.productsku}</td>
-                        <td>{value.type || 0}</td>
-                        <td>{value.intendedqty}</td>
-                        <td>{value.orderedqty}</td>
-                        <td>{value.price}</td>
-                        <td>
-                          <i className={`fas ${accordionView? "fa-sort-down" : "fa-sort-up"}` } />
-                        </td>
-                      </tr>
-                      {accordionView && value?.order_id === accordionId &&
-                      <tr>
-                        <td colSpan={7} style={{padding:0,borderTop:0}}>
-                          <table className="inner-table">
-                            <tbody>
-                              <tr>
-                                <td className="title">
-                                  <p>Label ID</p>
-                                  <p className="sub-val">Batch #</p>
-                                </td>
-                                <td>
-                                  <p className="qr-val">625823651452258</p>
-                                  <p className="sub-val">125698</p>
-                                </td>
-                                <td>
-                                  <p  className="qr-val">632581548902502</p>
-                                  <p className="sub-val">125698</p>
-                                </td>
-                                <td>
-                                  <p  className="qr-val">6250258403665286</p>
-                                  <p className="sub-val">504147</p>
-                                </td>
-                                <td>
-                                  <p className="qr-val"> 625823651452258</p>
-                                  <p className="sub-val">304100</p>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </td>
-                      </tr>
-                }
-                    </>
-                  );
-                })}
-              </tbody>
-             
-            </table>
-            
-            </div>
-            
-              <div className="sum-total">
-              
-                   <p style={{margin:0,width:"100px"}}>Total</p>
-                 
-                    <span style={{width:"124px"}}>{_.sumBy(data.products_ordered,"intendedqty")}</span>
-                  
-                  <span style={{width:"120px"}}>{_.sumBy(data.products_ordered,"intendedqty")}</span>
-                  <span style={{width:"55px"}}>{_.sumBy(data.products_ordered,(item :any)=> Number(item.price))}</span>
-                
+              <div className="sub-order">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>NAME</th>
+                      <th>TYPE</th>
+                      <th>INTENDED QTY</th>
+                      <th>ORDERED QTY</th>
+                      <th>TOTAL COST</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.products_ordered.map((value: any, index: number) => {
+                      return (
+                        <>
+                          <tr key={index} onClick={() => handleExpand(value)}>
+                            <th scope="row">{<img src={CornImg} />}</th>
+                            <td>{value.productsku}</td>
+                            <td>{value.type || 0}</td>
+                            <td>{value.intendedqty}</td>
+                            <td>{value.orderedqty}</td>
+                            <td>{value.price}</td>
+                            <td>
+                              <i
+                                className={`fas ${
+                                  accordionView ? "fa-sort-down" : "fa-sort-up"
+                                }`}
+                              />
+                            </td>
+                          </tr>
+                          {accordionView && value?.order_id === accordionId && (
+                            <tr>
+                              <td
+                                colSpan={7}
+                                style={{ padding: 0, borderTop: 0 }}
+                              >
+                                <table className="inner-table">
+                                  <tbody>
+                                    <tr>
+                                      <td className="title">
+                                        <p>Label ID</p>
+                                        <p className="sub-val">Batch #</p>
+                                      </td>
+                                      <td>
+                                        <p className="qr-val">
+                                          625823651452258
+                                        </p>
+                                        <p className="sub-val">125698</p>
+                                      </td>
+                                      <td>
+                                        <p className="qr-val">
+                                          632581548902502
+                                        </p>
+                                        <p className="sub-val">125698</p>
+                                      </td>
+                                      <td>
+                                        <p className="qr-val">
+                                          6250258403665286
+                                        </p>
+                                        <p className="sub-val">504147</p>
+                                      </td>
+                                      <td>
+                                        <p className="qr-val">
+                                          {" "}
+                                          625823651452258
+                                        </p>
+                                        <p className="sub-val">304100</p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          )}
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
-              </>
+
+              <div className="sum-total">
+                <p style={{ margin: 0, width: "100px" }}>Total</p>
+
+                <span style={{ width: "124px" }}>
+                  {_.sumBy(data.products_ordered, "intendedqty")}
+                </span>
+
+                <span style={{ width: "120px" }}>
+                  {_.sumBy(data.products_ordered, "orderedqty")}
+                </span>
+                <span style={{ width: "55px" }}>
+                  {_.sumBy(data.products_ordered, (item: any) =>
+                    Number(item.price)
+                  )}
+                </span>
+              </div>
+            </>
           ) : (
             <div className="col-12 card mt-4">
               <div className="card-body ">
@@ -200,7 +220,6 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               </div>
             </div>
           )}
-         
         </div>
       </DialogContent>
     </SimpleDialog>
