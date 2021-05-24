@@ -1,0 +1,30 @@
+.custom-input{
+    input{
+    outline: none;
+    border: none;
+    border-bottom: 1px solid grey;
+    }
+    input:hover{
+        border-bottom: 1px solid #FF3162 !important;
+       
+    }
+    input:active,input:focus{
+        border-bottom: 1px solid #00BCFF !important;
+
+    }
+    input:disabled{
+    
+        background-color: transparent;
+        border-color: #EBF0F2 !important;
+    }
+    .completed{
+        border-bottom: 1px solid #89D329 !important;
+    }
+    .error{
+        border-bottom: 1px solid #FF3162 !important;
+    
+    }
+    input:valid {
+        border-bottom: 1px solid #89D329 !important;
+      }
+}
