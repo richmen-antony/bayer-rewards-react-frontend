@@ -678,11 +678,15 @@ class ScanLogsTable extends Component<Props, States> {
                       </Dropdown>
                     </div>
                     <div>
+                   
                       <button
                         className="btn btn-primary"
                         onClick={this.download}
-                      >
+                      > 
+                        
                         <img src={Download} width="17" alt={NoImage} />
+                        <span style={{padding:"10px"}}>Download</span>
+                       
                       </button>
                     </div>
                   </div>
@@ -1024,18 +1028,11 @@ class ScanLogsTable extends Component<Props, States> {
             </DialogContent>
             <DialogActions>
               <MaterialUIButton
-                autoFocus
-                onClick={this.handleClosePopup}
-                className="popup-btn close-btn"
-              >
-                Close
-              </MaterialUIButton>
-              <MaterialUIButton
                 onClick={this.handleClosePopup}
                 className="popup-btn filter-scan"
                 autoFocus
               >
-                Filter Scans
+                Filter scans
               </MaterialUIButton>
             </DialogActions>
           </SimpleDialog>

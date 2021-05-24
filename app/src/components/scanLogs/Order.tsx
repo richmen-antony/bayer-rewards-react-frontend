@@ -60,7 +60,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
-                {popupHeader?.title} <label>{data?.order_id}</label>{" "}
+                ORDER ID <label>{data?.order_id}</label>{" "}
               </p>
             </div>
           </div>
@@ -68,7 +68,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
             <ul className="progressBar">
               <li className="active">
                 <div className="line-cnt">
-                  <p>Ordered Date</p>
+                  <p>Ordered date</p>
                   <label>
                     {data.ordereddate &&
                       moment(data.ordereddate).format("Do MMM, YYYY")}
@@ -85,7 +85,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               </li>
               <li className="active">
                 <div className="line-cnt-expiry-date">
-                  <p>Expiry Date</p>
+                  <p>Expiry date</p>
                   <label>
                     {data.orderexpirydate &&
                       moment(data.orderexpirydate).format("Do MMM, YYYY")}
