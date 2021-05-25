@@ -1300,10 +1300,10 @@ class CreateUser extends Component<any, any> {
                                 name="isActive"
                               />
                               </div>
-                              <div>
+                              <div  style={{visibility: 'hidden'}}>
                                 {((idx === userData.ownerRows.length - 1 ) && userData.ownerRows.length < 5) ?
-                                  <img style={{width: '50px', height: '50px', visibility:'hidden'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
-                                  :  <img style={{width: '50px', height: '50px',visibility:'hidden'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
+                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
+                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
                               </div>
                           </td>
                         </tr> ))}
@@ -1313,8 +1313,18 @@ class CreateUser extends Component<any, any> {
                         <div style={{marginTop: '-10px'}}>
                           {isStaff ? <hr/> : <></>}
                         </div>
-                        <div>
+                        <div style={{ marginRight: '13px'}}>
                         <table className="table table-borderless">
+                        <thead style={{display:'none'}}>
+                        <tr>
+                          <th>Type</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Mobile Number</th>
+                          <th>Email</th>
+                          <th>isActive?</th>
+                        </tr>
+                      </thead>
                           <tbody>
                         {isStaff &&
                         userData.staffRows?.map((item: any, idx: number) => (
@@ -1407,7 +1417,7 @@ class CreateUser extends Component<any, any> {
                               <div>
                                 {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 5) ?
                                   <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
-                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
+                                  :  <img style={{width: '50px', height: '50px',}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
                               </div>
                           </td>
                         </tr> ))}
