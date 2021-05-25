@@ -73,8 +73,7 @@ class Login extends Component<Props, States> {
       }
     }
   };
-  login = (e?: any) => {
-    // e.preventDefault();
+  login = () => {
     let formValid = this.checkValidation();
     const data = {
       username: this.state.username,

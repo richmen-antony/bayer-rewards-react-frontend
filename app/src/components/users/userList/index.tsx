@@ -763,7 +763,7 @@ class UserList extends Component<Props, States> {
                         aria-label="ant example"
                       >
                         <AntTab label="Channel Partners" />
-                        <AntTab label="Third Party Users" />
+                        {/* <AntTab label="Third Party Users" /> */}
                       </AntTabs>
                     </div>
                   </div>
