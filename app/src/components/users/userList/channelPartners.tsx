@@ -22,6 +22,7 @@ import AddBtn from "../../../assets/icons/add_btn.svg";
 import PhoneIcon from "../../../assets/icons/black-mockup.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import blackmockup from "../../../assets/icons/black-mockup.svg";
+import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import "../../../assets/scss/users.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
@@ -235,7 +236,7 @@ class ChannelPartners extends Component<Props, States> {
   }
   
   generateHeader(allChannelPartners : any, isAsc : Boolean) {
-    let staticColumn : number = 3
+    let staticColumn : number = 2
     let res = [];
     res.push(<th onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
     {
@@ -262,6 +263,7 @@ class ChannelPartners extends Component<Props, States> {
     }
 
     let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
+    res.push(<th>{'Staff Count'}</th>)
     res.push(<th>{'Status'}</th>)
 
     res.push(<th>{'Last Updated By'}</th>)
@@ -865,7 +867,21 @@ class ChannelPartners extends Component<Props, States> {
                       <td>{list.region} </td>
                       <td>{list.district} </td>
                       <td>{list.epa} </td>
-                      <td>{list.village} </td>
+                      <td>
+                      <div className="retailer-id">
+                        <p>
+                          {2}
+                          <img
+                            className="retailer-icon"
+                            // onClick={(event) => {
+                            //   this.showPopup(event, "showPopup");
+                            //   this.handleUpdateRetailer(value);
+                            // }}
+                            // src={ExpandWindowImg}
+                          ></img>
+                          </p>
+                        </div>
+                      </td>
                       <td>
                         <span
                           onClick={(event: any) => {
