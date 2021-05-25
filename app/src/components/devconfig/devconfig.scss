@@ -107,3 +107,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
+@media only screen and (max-width: 1440px) {
+  .card-height {
+    height: 82vh;
+  }
+}
+
+@media only screen and (max-width: 1920px) {
+  .card-height {
+    height: 84vh;
+  }
+}

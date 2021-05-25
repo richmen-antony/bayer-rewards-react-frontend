@@ -98,7 +98,7 @@
   }
 
   .table td {
-    padding: 0px !important;
+    padding: 7px !important;
     border: none !important;
     // height: 50px !important;
     vertical-align: middle;
@@ -372,12 +372,16 @@
 
 .cus-btn-user.reset{
     background-color: #ffffff ; 
-    border: 1px solid #10384F;
+    border: 1px solid #7aad40;
     color: #10384F;
 }
 @media only screen and (max-width: 1400px) {
+  .card-height {
+    height: 82vh;
+  }
   .userlist-table {
     table {
+      height: 380px;
       thead {
         tr {
           th {
@@ -389,7 +393,7 @@
       }
       tbody {
         tr {
-          height: 5rem !important;
+          height: 4rem !important;
           line-height: 20px;
           td {
             font-size: 14px;
@@ -410,4 +414,41 @@
   }
 }
 
-
+@media only screen and (max-width: 1920px) {
+  .card-height {
+    height: 84vh;
+  }
+  .userlist-table {
+    table {
+      height: 380px;
+      thead {
+        tr {
+          th {
+            padding: 15px 5px;
+            font-size: 13px;
+            font-weight: 600;
+          }
+        }
+      }
+      tbody {
+        tr {
+          height: 4rem !important;
+          line-height: 20px;
+          td {
+            font-size: 14px;
+            .status {
+              border-radius: 20px;
+              padding: 5px;
+              i {
+                margin-right: 5px;
+              }
+            }
+            .max-image {
+              margin-left: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

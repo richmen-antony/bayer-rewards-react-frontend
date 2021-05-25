@@ -431,7 +431,7 @@ class Devconfigurations extends React.Component<
     const { classes } = this.props;
     return (
       <AUX>
-        <div className="card-container">
+        <div className="card-container card-height">
           <div>
             <div className="tabs">
               <AntTabs
@@ -548,7 +548,7 @@ class Devconfigurations extends React.Component<
                   direction="horizontal"
                   currentStepNumber={currentStep - 1}
                   steps={stepsArray}
-                  stepColor="#5A5A5A"
+                  stepColor="#7DBB41"
                 />
               </div>
               {this._getCurrentStep()}

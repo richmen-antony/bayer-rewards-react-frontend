@@ -748,7 +748,7 @@ class UserList extends Component<Props, States> {
       <AUX>
         {isLoader && <Loader />}
         <div
-          className="container-fluid card"
+          className="container-fluid card card-height"
           style={{ backgroundColor: "#f8f8fa" }}
         >
           <div className="row align-items-center user-tab">

@@ -1261,7 +1261,7 @@ class CreateUser extends Component<any, any> {
             direction="horizontal"
             currentStepNumber={currentStep - 1}
             steps={stepsArray}
-            stepColor="#5A5A5A"
+            stepColor="#7DBB41"
           />
         </div>
         <div className="col-md-10">
@@ -1735,7 +1735,7 @@ class CreateUser extends Component<any, any> {
 
         <div
           className="submit"
-          style={{ position: "absolute", bottom: "0px", marginLeft: currentStep == 1 ? "510px" : "350px" }}
+          style={{ position: "absolute", bottom: "0px", marginLeft: currentStep == 1 ? "350px" : "275px" }}
         >
           <div className="">
             {currentStep !== 1 && (
