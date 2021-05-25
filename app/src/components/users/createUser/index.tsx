@@ -1302,8 +1302,8 @@ class CreateUser extends Component<any, any> {
                               </div>
                               <div>
                                 {((idx === userData.ownerRows.length - 1 ) && userData.ownerRows.length < 5) ?
-                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
-                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
+                                  <img style={{width: '50px', height: '50px', visibility:'hidden'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
+                                  :  <img style={{width: '50px', height: '50px',visibility:'hidden'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
                               </div>
                           </td>
                         </tr> ))}
