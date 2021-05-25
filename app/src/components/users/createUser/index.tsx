@@ -29,6 +29,8 @@ import 'react-phone-input-2/lib/style.css'
 import { keys } from "@material-ui/core/styles/createBreakpoints";
 import { StringDecoder } from "node:string_decoder";
 import { AnyARecord } from "node:dns";
+import ArrowIcon from "../../../assets/icons/dark bg.svg";
+import RtButton from "../../../assets/icons/right_btn.svg";
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -1082,39 +1084,52 @@ class CreateUser extends Component<any, any> {
     let nextButton;
     if (currentStep === 1) {
       nextButton = (
-        <button
-          className="btn buttonColor buttonStyle"
-          onClick={(e) => this.handleClick("personalNext", e)}
-        >
-          Next
-        </button>
+        // <button
+        //   className="btn buttonColor buttonStyle"
+        //   onClick={(e) => this.handleClick("personalNext", e)}
+        // >
+        //   Next
+        // </button>
+        <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("personalNext", e)}>
+      Next
+      <span>
+        <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
+      </span>
+    </button>
       );
     } else if (currentStep === 2) {
       nextButton = (
-        <button
-          className="btn buttonColor buttonStyle"
-          onClick={(e) => this.handleClick("shippingNext", e)}
-        >
-          Next
-        </button>
+   
+         <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("shippingNext", e)}>
+         Next
+         <span>
+           <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
+         </span>
+       </button>
       );
     } else if (currentStep === 3) {
       nextButton = (
-        <button
-          className="btn buttonColor buttonStyle"
-          onClick={(e) => this.handleClick("geographicNext", e)}
-        >
-          Next
-        </button>
+         <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("geographicNext", e)}>
+         Next
+         <span>
+           <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
+         </span>
+       </button>
       );
     } else {
       nextButton = (
-        <button
-          className="btn buttonColor createBtn"
-          onClick={(e) => this.handleClick("createUser", e)}
-        >
+        <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("createUser", e)}>
           {!this.props.location?.state ? "Create User" : "Approve"}
-        </button>
+         <span>
+           <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
+         </span>
+       </button>
+        // <button
+        //   className="btn buttonColor createBtn"
+        //   onClick={(e) => this.handleClick("createUser", e)}
+        // >
+        //   {!this.props.location?.state ? "Create User" : "Approve"}
+        // </button>
       );
     }
     const togglePosition = { top: 20 };
@@ -1610,7 +1625,7 @@ class CreateUser extends Component<any, any> {
           <div className="">
             {currentStep !== 1 && (
               <button
-                className="btn btn-outline-secondary buttonStyle"
+                className="cus-btn-user reset buttonStyle"
                 style={{ marginRight: "30px" }}
                 onClick={(e) => this.handleClick("back", e)}
               >
@@ -1619,7 +1634,7 @@ class CreateUser extends Component<any, any> {
             )}
              {!this.props.location?.state &&
             <button
-              className="btn btn-outline-secondary buttonStyle"
+              className="cus-btn-user reset buttonStyle"
               onClick={() => this.reset()}
             >
               Reset

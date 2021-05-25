@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import '../../../assets/scss/landing.scss';
 import { getLocalStorageData, clearLocalStorageData } from '../../../utility/base/localStore';
 import {Login} from '../login';
+import {CustomButton} from "../../../utility/widgets/button";
 
 import {
     Carousel,
@@ -94,10 +95,10 @@ render(){
                             </div>
                             <div className="col-4 col-sm-6 col-lg-4 headerRight">
 
-                                <h4 className="title">
-                                    Contact us
+                                {/* <h4 className="title">
+                                    Contact us */}
                                     {/* <div className={ isLogin ? "activeLine" : ""} > </div> */}
-                                </h4>
+                                {/* </h4> */}
                                 <h4 className="title" onClick={this.toLogin}>
                                     Sign in
                                     <div className={ isLogin ? "activeLine" : ""} > </div>
@@ -165,7 +166,8 @@ render(){
                                                 </div>
                                                 <div className="form-group row getStartedBtnRow" onClick={this.toLogin}>
                                                     <div className="col-sm-5 text-left">
-                                                        <button className="btn btn-secondary getStartedBtn form-control w-md waves-effect waves-light" type="button">Get started</button>
+                                                        {/* <button className="btn btn-secondary getStartedBtn form-control w-md waves-effect waves-light" type="button">Get started</button> */}
+                                                     <CustomButton label="Get Started" style={{borderRadius:"30px",backgroundColor:"#10384F",width:'100%',padding:"7px"}} />
                                                     </div>
                                                 </div>
                                             </>

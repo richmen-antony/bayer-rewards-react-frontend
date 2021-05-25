@@ -345,6 +345,36 @@
   transition-duration: 0.3s;
   transition-timing-function: ease-out;
 }
+
+.cus-btn-user{
+  color:#ffffff;
+  background-color: #7EB343;
+  width: 180px;
+  height:35px;
+  border-radius: 20px;
+  border :0;
+  margin-left: 30px;
+ 
+  span{
+    position: absolute;
+    right: -7px;
+    top: 0px;
+  }
+  .arrow-i{
+    position: relative;
+    left: 30px;
+  }
+  .layout{
+    width: 66%;
+    border-radius: 20px;
+  }
+}
+
+.cus-btn-user.reset{
+    background-color: #ffffff ; 
+    border: 1px solid #10384F;
+    color: #10384F;
+}
 @media only screen and (max-width: 1400px) {
   .userlist-table {
     table {

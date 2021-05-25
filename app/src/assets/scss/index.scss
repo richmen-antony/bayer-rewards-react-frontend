@@ -781,3 +781,19 @@ label {
   height: 200px;
   overflow: auto;
 }
+
+.cus-btn{
+  color:#ffffff;
+  span{
+    position: absolute;
+    right: 10px;
+    top: 5px;
+  }
+  .arrow-i{
+    position: relative;
+    left: 30px;
+  }
+  .layout{
+    width: 55%;
+  }
+}
