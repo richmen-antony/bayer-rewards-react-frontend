@@ -75,9 +75,9 @@ class Login extends Component<Props, States>{
     login = () => {
         let formValid = this.checkValidation();
         const data = {
-            "username": this.state.username,
-            "password": this.state.password,
-            "region": 'R1'
+            "userid": this.state.username,
+            "password": this.state.password
+            // "region": 'R1'
         }
         const {login } = apiURL;
         if(formValid){

@@ -5,7 +5,7 @@ import { getLocalStorageData } from '../../base/localStore';
 
 
 //Post method without auth
-export function invokePostService(path,reqObj,params)  {
+export function invokePostService(path,reqObj, params)  {
   return new Promise(function (resolve, reject) {      
     let headers = {
       'Content-Type': 'application/json', 
@@ -43,7 +43,6 @@ export function invokePostAuthService(path,reqObj,params)  {
     let headers = {
       'Content-Type': 'application/json', 
         'x-access-token': token.accessToken
-      
     };
     const apiEndPoint = configApp.env;
     const config = {

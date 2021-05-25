@@ -29,15 +29,17 @@ import 'react-phone-input-2/lib/style.css'
 import { keys } from "@material-ui/core/styles/createBreakpoints";
 import { StringDecoder } from "node:string_decoder";
 import { AnyARecord } from "node:dns";
+import { findAllByTestId } from "@testing-library/dom";
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
-  { value: "Retailer", text: "Retailer" },
-  { value: "Distributor", text: "Distributor" },
+  { value: "RETAILER", text: "Retailer" },
+  { value: "DISTRIBUTOR", text: "Distributor" },
 ];
 
 const getStoreData = {
-  country: "MAL",
+  country: "MALAWI",
+  countryCode: 'MW',
   Language: "EN-US",
 };
 
@@ -57,20 +59,6 @@ class CreateUser extends Component<any, any> {
     let oneYearFromNow = new Date();
     let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     this.state = {
-      staffRows: [{
-        firstname: "",
-        lastname: "",
-        mobilenumber: "",
-        email: "",
-        activateUser: true
-      }],
-      ownerRows: [{
-        firstname: "",
-        lastname: "",
-        mobilenumber: "",
-        email: "",
-        activateUser: true
-      }],
       userData : {
         countrycode: 'MW',
         locale: "English (Malawi)",
@@ -78,7 +66,7 @@ class CreateUser extends Component<any, any> {
         storewithmultiuser: false,
         iscreatedfrommobile: false,
         role: role[0].value,
-        shippingcountrycode: 'Malawi',
+        shippingcountrycode: getStoreData.country,
         shippingaddress: '',
         shippingcity: '',
         shippingstate:'',
@@ -86,30 +74,18 @@ class CreateUser extends Component<any, any> {
         taxid: '',
         accountname: '',
         ownername: '',
-        billingcountrycode: 'Malawi',
+        billingcountrycode: getStoreData.country,
         billingaddress: '',
         billingcity: '',
         billingstate:'',
         billingpostalcode: '',
-        staffRows: [{
-          firstname: "",
-          lastname: "",
-          mobilenumber: "",
-          email: "",
-          activateUser: true,
-          errObj: {
-            firstnameErr:'',
-            lastnameErr: "",
-            mobilenumberErr: "",
-            emailErr: "",
-          }
-        }],
+        staffRows: [],
         ownerRows: [{
           firstname: "",
           lastname: "",
           mobilenumber: "",
           email: "",
-          activateUser: true,
+          isActive: true,
           errObj: {
             firstnameErr:'',
             lastnameErr: "",
@@ -152,7 +128,7 @@ class CreateUser extends Component<any, any> {
       // userData: {
       //   fromdate: new Date().toISOString().substr(0, 10),
       //   expirydate: moment(oneYear).format("YYYY-MM-DD"),
-      //   activateUser: true,
+      //   isActive: true,
       //   isDeclineUser: '',
       //   role: options[0].value,
       //   username: "",
@@ -197,7 +173,7 @@ class CreateUser extends Component<any, any> {
       let data: any = getLocalStorageData("userData");
       let userDetails = JSON.parse(data);
       const { userFields } = this.props.location.state;
-      userFields['activateUser'] = true;
+      userFields['isActive'] = true;
       // userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
       // userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
       let from = '2021-10-10';
@@ -242,8 +218,8 @@ class CreateUser extends Component<any, any> {
   getCountryList() {
     //service call
     let res = [
-      { value: "IND", text: "INDIA" },
-      { value: "MAL", text: "Malawi" },
+      { value: "INDIA", text: "INDIA" },
+      { value: "MALAWI", text: "Malawi" },
     ];
     this.setState({ countryList: res });
   }
@@ -452,91 +428,140 @@ class CreateUser extends Component<any, any> {
   }
   submitUserDatas = () => {
     const { retailerCreation, updateUser} = apiURL;
-    let stepper2: any = {};
+    let geoFields: any = {};
     this.state.dynamicFields.map((list: any, i: number) => {
-      stepper2[list.name] = list.value;
+      geoFields[list.name] = list.value;
     });
-    let stepper3: any = {};
-    this.state.withHolding.map((list: any, i: number) => {
-      stepper3[list.name] = list.value;
-    });
-    this.setState({ isLoader: true });
-    let personalData = this.state.userData;
-    personalData.ownerdetails = this.state.ownerRows;
-    personalData.staffdetails = this.state.staffRows;
-    this.setState({ userData : personalData })
-    let userData = this.state.userData;
-   console.log('allDatas', userData );
-   const datat = {
-     
-   }
-    const data = {
-      effectivefrom: personalData["fromdate"],
-      expirydate: personalData["expirydate"],
-      username: personalData["username"],
-      firstname: personalData["firstname"],
-      lastname: personalData["lastname"],
-      accountname: personalData["accountname"],
-      ownername: personalData["accountname"],
-      mobilenumber: personalData["mobilenumber"],
-      email: personalData["email"],
-      address: personalData["address"],
-      postalcode: personalData["postalcode"],
-      usertypename : (personalData["role"] == 'Area Sales Agent') ? 'THIRD PARTY' : 'CHANNEL PARTNER',
-      role: personalData["role"],
-      region: stepper2["region"],
-      district: stepper2["district"],
-      epa: stepper2["epa"],
-      village: stepper2["village"],
-      taxid: personalData["taxid"],
-      whtownername: personalData["whtownername"],
-      whtaccountname: personalData["whtaccountname"],
-      whtaddress: personalData["whtaddress"],
-      whtpostalcode: this.state.accInfo
-        ? personalData["postalcode"]
-        : personalData["whtpostalcode"],
-      whtregion: stepper3["region"],
-      whtdistrict: stepper3["district"],
-      whtepa: stepper3["epa"],
-      whtvillage: stepper3["village"],
-      status: personalData['isDeclineUser'] ? 'Declined' : personalData["activateUser"] ? "Active" : "Inactive",
-    };
+    let newUserList= this.state.userData; 
+    if(this.state.isStaff) {
+      newUserList.staffRows.map((item:any, index:number) => {
+         delete item.errObj 
+      })
+      this.setState((prevState: any)=> ({
+        userData: {
+          ...prevState.userData,
+          staffRows: newUserList.staffRows
+        }
+      }))
+    }else {
+      newUserList.staffRows=[];
+      this.setState((prevState: any)=> ({
+        userData: {
+          ...prevState.userData,
+          staffRows: newUserList.staffRows
+        }
+      }))
+    }
 
-    const userDetails = this.state.isValidatePage ? { 
-      isedit : false,
-      lastupdatedby : personalData['lastupdatedby'],
-      lastupdateddate : personalData['lastupdateddate'],
-    } : ''
-    console.log("all", data);
+    
+
+    // let stepper3: any = {};
+    // this.state.withHolding.map((list: any, i: number) => {
+    //   stepper3[list.name] = list.value;
+    // });
+    this.setState({ isLoader: true });
+    let userData = this.state.userData;
+    console.log('allDatas', this.state.userData );
+    const data = {
+        "countrycode": getStoreData.countryCode,
+        "ownerfirstname": userData.ownerRows[0].firstname,
+        "ownerlastname": userData.ownerRows[0].lastname,
+        "ownerphonenumber": userData.ownerRows[0].mobilenumber,
+        // "owneremail":userData.ownerRows[0].email,
+        "locale": "English (Malawi)",
+        "usertype": (userData.role == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
+        "rolename": userData.role,
+        "accounttype":userData.role,
+        "userstatus": "ACTIVE",
+        "storewithmultiuser": this.state.isStaff ? true : false,
+        "iscreatedfrommobile": false,
+        "region": geoFields.region,
+        "add": geoFields.add,
+        "district": geoFields.district,
+        "epa": geoFields.epa,
+        "village": geoFields.village,
+        "shippingcountrycode": getStoreData.countryCode,
+        "shippingaddress": userData.shippingaddress,
+        "shippingcity": userData.shippingcity,
+        "shippingstate": userData.shippingstate,
+        "shippingpostalcode": userData.shippingpostalcode,
+        "accountname": userData.accountname,
+        "taxid": userData.taxid,
+        "ownername": userData.ownername,
+        "billingcountrycode": getStoreData.countryCode,
+        "billingaddress": this.state.accInfo ? userData.shippingaddress : userData.billingaddress,
+        "billingcity": this.state.accInfo ? userData.shippingcity : userData.billingcity,
+        "billingstate": this.state.accInfo ? userData.shippingstate : userData.billingstate,
+        "billingpostalcode": this.state.accInfo ? userData.shippingpostalcode : userData.billingpostalcode,
+        "staffdetails": [...this.state.userData.staffRows]
+    }
+    // const data = {
+    //   effectivefrom: personalData["fromdate"],
+    //   expirydate: personalData["expirydate"],
+    //   username: personalData["username"],
+    //   firstname: personalData["firstname"],
+    //   lastname: personalData["lastname"],
+    //   accountname: personalData["accountname"],
+    //   ownername: personalData["accountname"],
+    //   mobilenumber: personalData["mobilenumber"],
+    //   email: personalData["email"],
+    //   address: personalData["address"],
+    //   postalcode: personalData["postalcode"],
+    //   usertypename : (personalData["role"] == 'Area Sales Agent') ? 'THIRD PARTY' : 'CHANNEL PARTNER',
+    //   role: personalData["role"],
+    //   region: stepper2["region"],
+    //   district: stepper2["district"],
+    //   epa: stepper2["epa"],
+    //   village: stepper2["village"],
+    //   taxid: personalData["taxid"],
+    //   whtownername: personalData["whtownername"],
+    //   whtaccountname: personalData["whtaccountname"],
+    //   whtaddress: personalData["whtaddress"],
+    //   whtpostalcode: this.state.accInfo
+    //     ? personalData["postalcode"]
+    //     : personalData["whtpostalcode"],
+    //   whtregion: stepper3["region"],
+    //   whtdistrict: stepper3["district"],
+    //   whtepa: stepper3["epa"],
+    //   whtvillage: stepper3["village"],
+    //   status: personalData['isDeclineUser'] ? 'Declined' : personalData["isActive"] ? "Active" : "Inactive",
+    // };
+
+    // const userDetails = this.state.isValidatePage ? { 
+    //   isedit : false,
+    //   lastupdatedby : personalData['lastupdatedby'],
+    //   lastupdateddate : personalData['lastupdateddate'],
+    // } : ''
+    console.log("all@@@@s", data);
     const url = this.state.isValidatePage ? updateUser : retailerCreation;
     const service = this.state.isValidatePage ? invokePostAuthService : invokePostService;
 
-    // service(url, data, userDetails)
-    //   .then((response: any) => {
-    //     this.setState({
-    //       isLoader: false,
-    //     });
-    //     let msg='';
-    //     if (this.state.isValidatePage){
-    //       if (personalData['isDeclineUser']) {
-    //         msg = 'User Declined Successfully';
-    //       } else {
-    //         msg = 'User Validated Successfully';
-    //       }
-    //     }else {
-    //       msg = 'User Created Successfully';
-    //     }
-    //     toastSuccess(msg);
-    //     this.props.history.push("/userList");
-    //   })
-    //   .catch((error: any) => {
-    //     this.setState({ isLoader: false });
-    //     console.log(error, "error");
-    //   });
+    service(url, data)
+      .then((response: any) => {
+        this.setState({
+          isLoader: false,
+        });
+        let msg='';
+        if (this.state.isValidatePage){
+          if (userData.isDeclineUser) {
+            msg = 'User Declined Successfully';
+          } else {
+            msg = 'User Validated Successfully';
+          }
+        }else {
+          msg = 'User Created Successfully';
+        }
+        toastSuccess(msg);
+        this.props.history.push("/userList");
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
   };
   // handlePersonalChange = (e: any) => {
   //   let val = this.state.userData;
-  //   if (e.target.name === "activateUser") {
+  //   if (e.target.name === "isActive") {
   //     val[e.target.name] = e.target.checked;
   //   } else if (e.target.name === "accInfo") {
   //     if (!e.target.checked) {
@@ -687,29 +712,35 @@ class CreateUser extends Component<any, any> {
         this.setState({ isRendered: true });
       })
     } else {
+      let accInfo = this.state.accInfo;
       let taxid = userData.taxid  ? '' : "Please enter the tax id";
       let accountname = userData.accountname  ? '' : "Please enter account name";
       let ownername = userData.ownername  ? '' : "Please enter owner name";
       let billingcountrycode = userData.billingcountrycode  ? '' : "Please enter the Country";
 
-      let billingaddress = userData.billingaddress  ? '' : "Please enter the Street";
-      let billingcity = userData.billingcity  ? '' : "Please enter the City";
-      let billingstate = userData.billingstate  ? '' : "Please enter the State";
-      let billingpostalcode = userData.billingpostalcode  ? '' : "Please enter the Postal";
-
-      if (billingcountrycode != '' || billingaddress != '' || billingcity != '' || billingstate != '' || billingpostalcode != '' || taxid != '' || accountname != '' || ownername != '') {
-        formValid = false;
+      if(!accInfo){
+        let billingaddress = userData.billingaddress  ? '' : "Please enter the Street";
+        let billingcity = userData.billingcity  ? '' : "Please enter the City";
+        let billingstate = userData.billingstate  ? '' : "Please enter the State";
+        let billingpostalcode = userData.billingpostalcode  ? '' : "Please enter the Postal";
+  
+        if (billingcountrycode != '' || billingaddress != '' || billingcity != '' || billingstate != '' || billingpostalcode != '' || taxid != '' || accountname != '' || ownername != '') {
+          formValid = false;
+        }
+        this.setState({
+          taxidErr: taxid,
+          accountnameErr: accountname,
+          ownernameErr: ownername, 
+          billingcountrycodeErr: billingcountrycode, 
+          billingaddressErr: billingaddress,
+          billingcityErr: billingcity,
+          billingstateErr: billingstate,
+          billingpostalcodeErr: billingpostalcode
+        })
       }
-      this.setState({
-        taxidErr: taxid,
-        accountnameErr: accountname,
-        ownernameErr: ownername, 
-        billingcountrycodeErr: billingcountrycode, 
-        billingaddressErr: billingaddress,
-        billingcityErr: billingcity,
-        billingstateErr: billingstate,
-        billingpostalcodeErr: billingpostalcode
-      })
+      else {
+        formValid = true;
+      }
     }
     return formValid;
   }
@@ -793,24 +824,66 @@ class CreateUser extends Component<any, any> {
     return geographicFormValid;
   };
 
-  validateEmail = (e: any) => {
+  validateEmail = (e: any, idx: number,type:string) =>{
     let emailField = e.target.value;
-    this.setState({ emailErr: "" });
-    let valid = true;
-    if ( emailField === "" || emailField === null ) {
-      this.setState({ emailErr: "Please enter the Email" });
-      valid = false;
-    } else {
-      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-        this.setState({ emailErr: "" });
-        valid = true;
+    let userData = this.state.userData;
+    userData.ownerRows[idx].errObj['emailErr']='';
+    userData.staffRows[idx].errObj['emailErr']=''
+    if(type==='staff') {
+      if (!emailField) {
+        userData.staffRows[idx].errObj.emailErr = "Please enter the Email";
       } else {
-        this.setState({ emailErr: "Please enter the Valid Email" });
-        valid = false;
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+          userData.staffRows[idx].errObj.emailErr = "";
+        }else {
+          userData.staffRows[idx].errObj.emailErr = "Please enter a valid email";
+        }
+      }
+      this.setState((prevState: any)=> ({
+        userData: {
+          ...prevState.userData,
+          staffRows: userData.staffRows,
+        }
+      }))
+    }
+    if(type==='owner'){
+      if (!emailField) {
+        userData.ownerRows[idx].errObj.emailErr = "Please enter the Email";
+      } else {
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+          userData.ownerRows[idx].errObj.emailErr = "";
+        }else {
+          userData.ownerRows[idx].errObj.emailErr = "Please enter a valid email";
+        }
+        this.setState((prevState: any)=> ({
+          userData: {
+            ...prevState.userData,
+            ownerRows: userData.ownerRows,
+          }
+        }))
       }
     }
-    return valid;
   }
+
+
+  // validateEmail = (e: any) => {
+  //   let emailField = e.target.value;
+  //   this.setState({ emailErr: "" });
+  //   let valid = true;
+  //   if ( emailField === "" || emailField === null ) {
+  //     this.setState({ emailErr: "Please enter the Email" });
+  //     valid = false;
+  //   } else {
+  //     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+  //       this.setState({ emailErr: "" });
+  //       valid = true;
+  //     } else {
+  //       this.setState({ emailErr: "Please enter the Valid Email" });
+  //       valid = false;
+  //     }
+  //   }
+  //   return valid;
+  // }
 
   isNumberKey = (evt: any) => {
     this.setState({ phoneErr: "" });
@@ -831,47 +904,60 @@ class CreateUser extends Component<any, any> {
     return isValid;
   }
 
-  reset = () => {
+  reset =() => {
     let currentStep = this.state.currentStep;
+    let userData= this.state.userData; 
     if (currentStep === 1) {
-      this.setState({
+      userData.ownerRows.forEach((item:any, index:number) => {
+       item.firstname ='';
+       item.lastname ='';
+       item.mobilenumber ='';
+       item.email ='';
+      })
+      userData.staffRows.forEach((item:any, index:number) => {
+        item.firstname ='';
+        item.lastname ='';
+        item.mobilenumber ='';
+        item.email ='';
+       })
+      this.setState((prevState: any)=> ({
         userData: {
-          username: "",
-          firstname: "",
-          lastname: "",
-          accountname: "",
-          role: "",
-          ownername: "",
-          email: "",
-          mobilenumber: "",
-        },
-      });
-    } else if (currentStep === 2) {
+          ...prevState.userData,
+          ownerRows: userData.ownerRows,
+          staffRows: userData.staffRows,
+        }
+      }))
+    } else if ( currentStep === 2) {
+      this.setState((prevState: any)=> ({
+        userData: {
+          ...prevState.userData,
+          shippingaddress: '',
+          shippingcity: '',
+          shippingstate: '',
+          shippingpostalcode: '',
+        }
+      }))
+    }else if ( currentStep === 3) {
       let data: any = this.state.dynamicFields;
       data.map((list: any) => {
         list.value = "";
       });
-
-      this.setState({
-        dynamicFields: data,
+      this.setState({ dynamicFields: data})
+    } else {
+      this.setState((prevState: any)=> ({
         userData: {
-          postalcode: "",
-          address: "",
-        },
-      });
-    } else if (currentStep === 3) {
-      let data: any = this.state.withHolding;
-      data.map((list: any) => {
-        list.value = "";
-      });
-      this.setState({
-        userData: {
-          whtpostalcode: "",
-          whtaddress: "",
-        },
-      });
+          ...prevState.userData,
+          taxid:'',
+          ownername:'',
+          accountname:'',
+          billingaddress: '',
+          billingcity: '',
+          billingstate: '',
+          billingpostalcode: '',
+        }
+      }))
     }
-  };
+  }
 
   declineUser = () => {
     let userData = this.state.userData;
@@ -882,7 +968,7 @@ class CreateUser extends Component<any, any> {
 
   handlePersonalChange = (e: any) => {
     let val = this.state.userData;
-    if (e.target.name === "activateUser") {
+    if (e.target.name === "isActive") {
       val[e.target.name] = e.target.checked;
     } else if (e.target.name === "accInfo") {
       if (!e.target.checked) {
@@ -921,7 +1007,7 @@ class CreateUser extends Component<any, any> {
       let owners = this.state.userData.ownerRows;
       if( key === 'phone') {
         owners[idx]['mobilenumber'] = val;
-      } else if (e.target.name === "activateUser") {
+      } else if (e.target.name === "isActive") {
         owners[idx][e.target.name] = e.target.checked; 
       } else {
         let { name, value } = e.target;
@@ -937,7 +1023,7 @@ class CreateUser extends Component<any, any> {
       let staffs = this.state.userData.staffRows;
       if( key === 'phone') {
         staffs[idx]['mobilenumber'] = val;
-      } else if (e.target.name === "activateUser") {
+      } else if (e.target.name === "isActive") {
         staffs[idx][e.target.name] = e.target.checked; 
       } else {
         let { name, value } = e.target;
@@ -995,6 +1081,35 @@ class CreateUser extends Component<any, any> {
       this.setState({ userData: userObj })
     }
   }
+  enableStoreStaff = (e: any) => {
+    let isStaff = e.target.checked
+    let userData=this.state.userData;
+    if(isStaff) {
+      userData.staffRows.push({firstname: "",
+    lastname: "",
+    mobilenumber: "",
+    email: "",
+    isActive: true,
+    errObj: {
+      firstnameErr:'',
+      lastnameErr: "",
+      mobilenumberErr: "",
+      emailErr: "",
+    }})
+    
+    } else {
+      userData.staffRows =[];
+    }
+    this.setState((prevState:any)=>({
+      userData: {
+        ...prevState.userData,
+        staffRows: userData.staffRows
+      }
+    }));
+    this.setState({isStaff: isStaff});
+
+  }
+
   // handlePhoneChange = (value: any, idx: any, type: string) => {
   //   console.log('phonenum', value);
   //   if ( type === 'owner')
@@ -1157,7 +1272,7 @@ class CreateUser extends Component<any, any> {
                     </div>
                     <div className="col-sm-3">
                         <label className="font-weight-bold">Has store staff?
-                            <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.setState({isStaff: e.target.checked})}} />
+                            <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.enableStoreStaff(e)}} />
                             <span className="checkmark"></span>
                         </label>
                     </div>
@@ -1186,7 +1301,7 @@ class CreateUser extends Component<any, any> {
                               className="form-control"
                               name="firstname"
                               placeHolder="Eg: Keanu"
-                              value={userData.ownerRows[idx].firstname}
+                              value={item.firstname}
                               onChange={(e: any)=>this.handleChange(idx, e, '', 'owner', '')}
                               disabled={isValidatePage ? true : false}
                             />
@@ -1200,7 +1315,7 @@ class CreateUser extends Component<any, any> {
                             className="form-control"
                             name="lastname"
                             placeHolder="Eg: Reeves"
-                            value={userData.ownerRows[idx].lastname}
+                            value={item.lastname}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
                             disabled={isValidatePage ? true : false}
                             />
@@ -1218,7 +1333,7 @@ class CreateUser extends Component<any, any> {
                                   required: true
                                 }}
                                 country={'mw'}
-                                value={userData.ownerRows[idx].mobilenumber}
+                                value={item.mobilenumber}
                                 onChange={(value, e)=>this.handleChange(idx, e, 'phone','owner', value)}
                                 onlyCountries={['mw']}
                                 autoFormat
@@ -1237,10 +1352,10 @@ class CreateUser extends Component<any, any> {
                             className="form-control"
                             name="email"
                             placeHolder="Eg: abc@mail.com"
-                            value={userData.ownerRows[idx].email}
+                            value={item.email}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
                             disabled={isValidatePage ? true : false}
-                            onKeyUp={(e: any)=>this.validateEmail(e)}
+                            onKeyUp={(e: any)=>this.validateEmail(e, idx,'owner')}
                           />
                           {item.errObj.emailErr && (
                             <span className="error">{item.errObj.emailErr} </span>
@@ -1249,9 +1364,9 @@ class CreateUser extends Component<any, any> {
                           <td style={{ display: 'flex', alignItems: 'center'}}>
                             <div>
                               <CustomSwitch
-                                checked={userData.ownerRows[idx].activateUser}
+                                checked={item.isActive}
                                 onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
-                                name="activateUser"
+                                name="isActive"
                               />
                               </div>
                               <div>
@@ -1280,7 +1395,7 @@ class CreateUser extends Component<any, any> {
                               className="form-control"
                               name="firstname"
                               placeHolder="Eg: Keanu"
-                              value={userData.staffRows[idx].firstname}
+                              value={item.firstname}
                               onChange={(e: any)=>this.handleChange(idx, e, '', 'staff', '')}
                               disabled={isValidatePage ? true : false}
                             />
@@ -1294,7 +1409,7 @@ class CreateUser extends Component<any, any> {
                             className="form-control"
                             name="lastname"
                             placeHolder="Eg: Reeves"
-                            value={userData.staffRows[idx].lastname}
+                            value={item.lastname}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'staff', '')}
                             disabled={isValidatePage ? true : false}
                             />
@@ -1312,7 +1427,7 @@ class CreateUser extends Component<any, any> {
                                   required: true
                                 }}
                                 country={'mw'}
-                                value={userData.staffRows[idx].mobilenumber}
+                                value={item.mobilenumber}
                                 onChange={(value, e)=>this.handleChange(idx, e, 'phone','staff', value)}
                                 onlyCountries={['mw']}
                                 autoFormat
@@ -1341,10 +1456,10 @@ class CreateUser extends Component<any, any> {
                             className="form-control"
                             name="email"
                             placeHolder="Eg.abc@mail.com"
-                            value={userData.staffRows[idx].email}
+                            value={item.email}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
                             disabled={isValidatePage ? true : false}
-                            onKeyUp={(e: any)=>this.validateEmail(e)}
+                            onKeyUp={(e: any)=>this.validateEmail(e, idx,'staff')}
                           />
                           {item.errObj.emailErr && (
                             <span className="error">{item.errObj.emailErr} </span>
@@ -1353,9 +1468,9 @@ class CreateUser extends Component<any, any> {
                           <td style={{ display: 'flex', alignItems: 'center'}}>
                             <div>
                               <CustomSwitch
-                                checked={userData.staffRows[idx].activateUser}
+                                checked={item.isActive}
                                 onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
-                                name="activateUser"
+                                name="isActive"
                               />
                               </div>
                               <div>
@@ -1386,7 +1501,7 @@ class CreateUser extends Component<any, any> {
                       placeHolder="Country"
                       value={userData.shippingcountrycode}
                       onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                      disabled={isValidatePage ? true : false}
+                      disabled
                     />
                      {shippingcountrycodeErr && (
                             <span className="error">{shippingcountrycodeErr} </span>
@@ -1512,7 +1627,7 @@ class CreateUser extends Component<any, any> {
                         placeHolder="Country"
                         value={userData.billingcountrycode}
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        disabled={isValidatePage ? true : false}
+                        disabled
                       />
                       {billingcountrycodeErr && (
                         <span className="error">{billingcountrycodeErr} </span>

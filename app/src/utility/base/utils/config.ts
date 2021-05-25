@@ -1,6 +1,7 @@
 
 export const configApp = {
-    env: 'https://bayer-track-trace.herokuapp.com/api/'
+    env: 'https://bayer-track-trace.herokuapp.com/api/',
+    // env: 'https://bayer-reward-plus.herokuapp.com/api/'
 }
 export const apiURL = {
     login: "user/login",
@@ -8,7 +9,7 @@ export const apiURL = {
     productCategory: "user/getproductcategory",
     rsmDashboard: "user/getrsmdashboard/",
     channelPartnersList: "user/getuserlist",
-    retailerCreation: "user/retailercreation?isMobile=false",
+    retailerCreation: "user/createexternaluser",
     deactivateChannelPartner:"user/deactivatechannelpartner",
     activateChannelPartner:"user/activatechannelpartner",
     updateUser: "user/updateuser",
