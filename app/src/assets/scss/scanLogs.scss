@@ -623,6 +623,39 @@
     justify-content: space-between;
   }
 }
+
+
+.cus-btn-scanlog-filter{
+  color:#ffffff;
+  background-color: #7EB343;
+  width: 125px;
+  height:35px;
+  border-radius: 20px;
+  border :0;
+  box-shadow: 0px 3px 6px #C7C7C729;
+ 
+  span{
+    position: relative;
+    left:42px;
+    margin-left: -45px;
+  }
+  .arrow-i{
+    position: relative;
+    left: 30px;
+    width: 10%;
+  }
+  .layout{
+    width: 40%;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px
+  }
+}
+.cus-btn-scanlog-filter.reset{
+  background-color: #ffffff ; 
+  border: 1px solid #dee2e6;
+  color: #10384F;
+  
+}
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {
     font-size: 11px;
@@ -727,10 +760,10 @@
   }
 }
 
-@media only screen and (min-width: 1440px) and (max-width: 1920px) {
+@media only screen  and (min-width:1400px) and  (max-width: 1920px) {
   /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
   .dropdown-menu {
-    font-size: 13px;
+    font-size: 12px;
   } 
 
   .scanlog-table {

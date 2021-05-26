@@ -385,7 +385,8 @@
  
   span{
     position: relative;
-    left:17px;
+    left:38px;
+    margin-left: -45px;
   }
   .arrow-i{
     position: relative;
@@ -394,7 +395,8 @@
   }
   .layout{
     width: 40%;
-    border-radius: 20px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px
   }
 }
 .cus-btn-user-filter.reset{
@@ -409,7 +411,7 @@
   }
   .userlist-table {
     table {
-      height: 380px;
+      height: 360px;
       thead {
         tr {
           th {
@@ -442,7 +444,7 @@
   }
 }
 
-@media only screen and (max-width: 1920px) {
+@media only screen and(min-width:1400px) and (max-width: 1920px)  {
   .card-height {
     height: 84vh;
   }

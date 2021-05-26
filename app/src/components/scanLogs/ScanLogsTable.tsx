@@ -34,7 +34,8 @@ import {
 import ExpiredIcon from "../../assets/icons/expired.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import ArrowIcon from "../../assets/icons/tick.svg";
+import RtButton from "../../assets/icons/right_btn.svg";
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -608,12 +609,12 @@ class ScanLogsTable extends Component<Props, States> {
                                   /> */}
 
                                 <DatePicker
-                                  value={selectedFilters.endDate}
+                                  value={this.state.endDate || new Date()}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={this.state.endDate}
+                                  selected={this.state.endDate ||  new Date()}
                                   onChange={(date: any) =>
-                                    this.setState({ date })
+                                    this.setState({endDate: date })
                                   }
                                   showMonthDropdown
                                   showYearDropdown
@@ -657,18 +658,35 @@ class ScanLogsTable extends Component<Props, States> {
                             </div>
 
                             <div className="filterFooter pt-3">
-                              <Button
+                              {/* <Button
                                 color="btn rounded-pill boxColor reset-btn"
                                 onClick={(e) => this.resetFilter(e)}
                               >
                                 Reset All
-                              </Button>
-                              <Button
+                              </Button> */}
+                              <button
+                                  className="cus-btn-scanlog-filter reset"
+                                  onClick={(e) => this.resetFilter(e)}
+                                >
+                                   Reset All
+                                  
+                                </button>
+                              {/* <Button
                                 color="btn rounded-pill boxColor applybtn"
                                 onClick={() => this.applyFilter()}
                               >
                                 Apply
-                              </Button>
+                              </Button> */}
+                              <button
+                                  className="cus-btn-scanlog-filter"
+                                  onClick={this.applyFilter}
+                                >
+                                  Apply
+                                  <span>
+                                    <img src={ArrowIcon} className="arrow-i" />{" "}
+                                    <img src={RtButton} className="layout" />
+                                  </span>
+                                </button>
                             </div>
                             {dateErrMsg && (
                               <span className="error">{dateErrMsg} </span>
