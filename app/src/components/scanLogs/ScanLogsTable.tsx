@@ -147,7 +147,8 @@ class ScanLogsTable extends Component<Props, States> {
         ordereddate:new Date(),
         orderexpirydate:new Date(),
         lastupdateddate:new Date(),
-        expirydate:new Date()
+        expirydate:new Date(),
+        farmername:"All"
       },
       dateErrMsg: "",
       searchText: "",
@@ -407,9 +408,10 @@ class ScanLogsTable extends Component<Props, States> {
 
  }
 
- handleSelect=(value:any)=>{
-   console.log("called");
-   console.log({value})
+ handleSelect=(event:any,name:string)=>{
+   this.setState({
+    selectedFilters:{...this.state.selectedFilters,[name]:event.target.value}
+   })
  }
   render() {
     const {
@@ -489,6 +491,7 @@ class ScanLogsTable extends Component<Props, States> {
                                 name="type"
                                 value={selectedFilters.type}
                                 label={"Retailer"}
+                                handleChange={(e:any)=>this.handleSelect(e,"type")}
                                 options={[
                                   { text: "ALL", value: "ALl" },
                                   {
@@ -515,10 +518,10 @@ class ScanLogsTable extends Component<Props, States> {
                               <option>Farmer Name3</option>
                             </select> */}
                               <NativeDropdown
-                                name="type"
-                                value={selectedFilters.type}
+                                name="farmername"
+                                value={selectedFilters.farmername}
                                 label={"Farmer"}
-                                handleChange={this.handleSelect}
+                                handleChange={(e:any)=>this.handleSelect(e,"farmername")}
                                 options={[
                                   { text: "ALL", value: "ALl" },
                                   {
