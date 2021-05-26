@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { Input } from "../../../utility/widgets/input";
+import { setCountryCode } from "../../../redux/actions/devconfig/add";
 
 const dpstyle = {
   width: 185,
@@ -11,6 +13,8 @@ const dpstyle = {
 type ICountryProps = {
   setCountryDetails: (data: any) => void;
   selectedCountryDetails: cDetails[];
+  setCountryCode: (data: any) => void;
+  countryCode: any;
 };
 
 type State = {
@@ -28,8 +32,23 @@ interface cDetails {
   currencyDesc: string;
 }
 
-export const CountrySetup = (props: ICountryProps) => {
-  const { setCountryDetails, selectedCountryDetails } = props;
+const mapDispatchToProps = {
+  setCountryCode,
+};
+
+const mapStateToProps = ({ devconfig: { countryCode } }: any) => {
+  return {
+    countryCode,
+  };
+};
+
+const CountrySetupComp = (props: ICountryProps) => {
+  const {
+    setCountryDetails,
+    selectedCountryDetails,
+    countryCode,
+    setCountryCode,
+  } = props;
   const [countryISO, setCountryISO] = useState("");
   const [countryCurrency, setcountryCurrency] = useState([]);
   const [currencyDesc, setcurrencyDesc] = useState("");
@@ -38,6 +57,9 @@ export const CountrySetup = (props: ICountryProps) => {
     selectedCountryDetails.length > 0 ? selectedCountryDetails : [];
 
   useEffect(() => {
+    if (countryCode) {
+      _retriveCountryCode(countryCode);
+    }
     return () => {
       setCountryDetails(countryDetails);
     };
@@ -52,6 +74,7 @@ export const CountrySetup = (props: ICountryProps) => {
   };
 
   const handleDropdownChange = (event: any) => {
+    setCountryCode(event.target.value);
     _retriveCountryCode(event.target.value);
   };
 
@@ -89,9 +112,10 @@ export const CountrySetup = (props: ICountryProps) => {
             </div>
             <div>
               <select
-                className="dpstyle"
+                className="dpstyle selectoutline"
                 id="dropdown"
                 onChange={(event) => handleDropdownChange(event)}
+                value={countryCode}
               >
                 {countryDetails.length > 0 ? (
                   countryDetails.map(({ name }) => (
@@ -116,8 +140,8 @@ export const CountrySetup = (props: ICountryProps) => {
                 className="form-control dpstyle"
                 type="text"
                 name="Currency"
-                disabled
                 value={countryISO}
+                read-only
               />
             </div>
           </div>
@@ -131,7 +155,6 @@ export const CountrySetup = (props: ICountryProps) => {
                 type="text"
                 className="form-control dpstyle"
                 name="Currency"
-                disabled
                 value={countryCurrency.map(({ currency }) => currency)}
               />
             </div>
@@ -147,7 +170,6 @@ export const CountrySetup = (props: ICountryProps) => {
                 className="form-control dpstyle"
                 name="Currency"
                 value={currencyDesc}
-                disabled
               />
             </div>
           </div>
@@ -156,3 +178,8 @@ export const CountrySetup = (props: ICountryProps) => {
     </div>
   );
 };
+
+export const CountrySetup = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CountrySetupComp);
