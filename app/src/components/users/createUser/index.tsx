@@ -391,13 +391,10 @@ class CreateUser extends Component<any, any> {
     let formValid = true;
     if (clickType === "personalNext") {
       formValid = this.checkValidation();
-      formValid=true;
     } else if (clickType === "shippingNext") {
       formValid = this.checkValidation();
-      formValid=true;
     } else if (clickType === "geographicNext") {
       formValid = this.checkValidation();
-      formValid=true;
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
@@ -454,10 +451,7 @@ class CreateUser extends Component<any, any> {
         }
       }))
     }
-
-    
-
-    // let stepper3: any = {};
+   // let stepper3: any = {};
     // this.state.withHolding.map((list: any, i: number) => {
     //   stepper3[list.name] = list.value;
     // });
@@ -469,7 +463,7 @@ class CreateUser extends Component<any, any> {
         "ownerfirstname": userData.ownerRows[0].firstname,
         "ownerlastname": userData.ownerRows[0].lastname,
         "ownerphonenumber": userData.ownerRows[0].mobilenumber,
-        // "owneremail":userData.ownerRows[0].email,
+        "owneremail":userData.ownerRows[0].email,
         "locale": "English (Malawi)",
         "usertype": (userData.role == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
         "rolename": userData.role,
@@ -747,59 +741,6 @@ class CreateUser extends Component<any, any> {
     return formValid;
   }
 
-  checkValidationOld = (e: any) => {
-    let formValid = true;
-    let userData = this.state.userData;
-    if (userData.role === "" || userData.role === null) {
-      this.setState({ roleErr: "Please enter the User type" });
-      formValid = false;
-    } else {
-      this.setState({ roleErr: "" });
-    }
-    if (userData.firstname === "" || userData.firstname === null) {
-      this.setState({ firstNameErr: "Please enter the First Name" });
-      formValid = false;
-    } else {
-      this.setState({ firstNameErr: "" });
-    }
-    if (userData.lastname === "" || userData.lastname === null) {
-      this.setState({ lastNameErr: "Please enter the Last Name" });
-      formValid = false;
-    } else {
-      this.setState({ lastNameErr: "" });
-    }
-    if (userData.accountname === "" || userData.accountname === null) {
-      this.setState({ accountNameErr: "Please enter the Owner name" });
-      formValid = false;
-    } else {
-      this.setState({ accountNameErr: "" });
-    }
-    if (userData.mobilenumber === "" || userData.mobilenumber === null) {
-      this.setState({ phoneErr: "Please enter the phone" });
-      formValid = false;
-    } else {
-      // let isNumber = this.isNumberKey(e);
-      // if( isNumber ) {
-      //   this.setState({ phoneErr: "Please enter Number" });
-      //   formValid = false;
-      // } else {
-        this.setState({ phoneErr: "" });
-      // }
-    }
-    if (userData.email === "" || userData.email === null) {
-      this.setState({ emailErr: "Please enter the Email" });
-      formValid = false;
-    } else {
-      // let emailValid = this.validateEmail(userData.email);
-      // if(!emailValid){
-      //   formValid = false;
-      // } else {
-        this.setState({ emailErr: "" });
-      // }
-    }
-    return formValid;
-  };
-  
   geographicValidation = () => {
     let userData = this.state.userData;
     let currentStep = this.state.currentStep;
@@ -812,8 +753,6 @@ class CreateUser extends Component<any, any> {
         this.setState({ taxIdErr: "" });
       }
     }
-    // let fields =
-    //   currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
       this.state.dynamicFields.map((list: any) => {
       if (list.value === "") {
         list.error = "Please enter the " + list.name;
@@ -828,64 +767,41 @@ class CreateUser extends Component<any, any> {
 
   validateEmail = (e: any, idx: number,type:string) =>{
     let emailField = e.target.value;
-    let userData = this.state.userData;
-    userData.ownerRows[idx].errObj['emailErr']='';
-    userData.staffRows[idx].errObj['emailErr']=''
+    let ownerRows = [...this.state.userData.ownerRows];
+    let staffRows = [...this.state.userData.staffRows];
+    
     if(type==='staff') {
       if (!emailField) {
-        userData.staffRows[idx].errObj.emailErr = "Please enter the Email";
+        staffRows[idx].errObj.emailErr = "Please enter the Email";
       } else {
         if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-          userData.staffRows[idx].errObj.emailErr = "";
+          staffRows[idx].errObj.emailErr = "";
         }else {
-          userData.staffRows[idx].errObj.emailErr = "Please enter a valid email";
+          staffRows[idx].errObj.emailErr = "Please enter a valid email";
         }
       }
-      this.setState((prevState: any)=> ({
-        userData: {
-          ...prevState.userData,
-          staffRows: userData.staffRows,
-        }
-      }))
+
     }
     if(type==='owner'){
       if (!emailField) {
-        userData.ownerRows[idx].errObj.emailErr = "Please enter the Email";
+        ownerRows[idx].errObj.emailErr = "Please enter the Email";
       } else {
         if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-          userData.ownerRows[idx].errObj.emailErr = "";
+          ownerRows[idx].errObj.emailErr = "";
         }else {
-          userData.ownerRows[idx].errObj.emailErr = "Please enter a valid email";
+          ownerRows[idx].errObj.emailErr = "Please enter a valid email";
         }
-        this.setState((prevState: any)=> ({
-          userData: {
-            ...prevState.userData,
-            ownerRows: userData.ownerRows,
-          }
-        }))
       }
     }
+    this.setState((prevState: any)=> ({
+      userData: {
+        ...prevState.userData,
+        ownerRows: ownerRows,
+        staffRows: staffRows,
+      },
+      isRendered:true
+    }))
   }
-
-
-  // validateEmail = (e: any) => {
-  //   let emailField = e.target.value;
-  //   this.setState({ emailErr: "" });
-  //   let valid = true;
-  //   if ( emailField === "" || emailField === null ) {
-  //     this.setState({ emailErr: "Please enter the Email" });
-  //     valid = false;
-  //   } else {
-  //     if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-  //       this.setState({ emailErr: "" });
-  //       valid = true;
-  //     } else {
-  //       this.setState({ emailErr: "Please enter the Valid Email" });
-  //       valid = false;
-  //     }
-  //   }
-  //   return valid;
-  // }
 
   isNumberKey = (evt: any) => {
     this.setState({ phoneErr: "" });
@@ -1293,7 +1209,7 @@ class CreateUser extends Component<any, any> {
                     </div>
                   </div>
                   <div  style={{ width:'124%', maxHeight: "280px", overflowY: "auto", overflowX: "hidden"}}>
-                  <div>
+                  <div style={{ marginRight: '10px'}}>
                   {/* <Table borderless> */}
                     <table className="table table-borderless">
                     <thead>
@@ -1384,8 +1300,8 @@ class CreateUser extends Component<any, any> {
                                 name="isActive"
                               />
                               </div>
-                              <div>
-                                {idx === this.state.userData.ownerRows.length - 1 ?
+                              <div  style={{visibility: 'hidden'}}>
+                                {((idx === userData.ownerRows.length - 1 ) && userData.ownerRows.length < 5) ?
                                   <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
                                   :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
                               </div>
@@ -1397,8 +1313,18 @@ class CreateUser extends Component<any, any> {
                         <div style={{marginTop: '-10px'}}>
                           {isStaff ? <hr/> : <></>}
                         </div>
-                        <div>
+                        <div style={{ marginRight: '13px'}}>
                         <table className="table table-borderless">
+                        <thead style={{display:'none'}}>
+                        <tr>
+                          <th>Type</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Mobile Number</th>
+                          <th>Email</th>
+                          <th>isActive?</th>
+                        </tr>
+                      </thead>
                           <tbody>
                         {isStaff &&
                         userData.staffRows?.map((item: any, idx: number) => (
@@ -1489,9 +1415,9 @@ class CreateUser extends Component<any, any> {
                               />
                               </div>
                               <div>
-                                {idx === userData.staffRows.length - 1 ?
+                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 5) ?
                                   <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
-                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
+                                  :  <img style={{width: '50px', height: '50px',}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
                               </div>
                           </td>
                         </tr> ))}

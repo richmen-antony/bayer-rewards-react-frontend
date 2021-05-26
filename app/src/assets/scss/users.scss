@@ -153,11 +153,11 @@
   width: 4px;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  //   background: #f1f1f1;
-  //   border-radius: 10px;
-}
+// /* Track */
+// ::-webkit-scrollbar-track {
+//   //   background: #f1f1f1;
+//   //   border-radius: 10px;
+// }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
@@ -316,8 +316,6 @@
   }
 }
 
-
-
 .user-filter-date-picker {
   width: 150px;
 }
@@ -450,7 +448,7 @@
   }
   .userlist-table {
     table {
-      height: 380px;
+      height: 480px;
       thead {
         tr {
           th {
