@@ -1209,7 +1209,7 @@ class CreateUser extends Component<any, any> {
                     </div>
                   </div>
                   <div  style={{ width:'124%', maxHeight: "280px", overflowY: "auto", overflowX: "hidden"}}>
-                  <div>
+                  <div style={{ marginRight: '10px'}}>
                   {/* <Table borderless> */}
                     <table className="table table-borderless">
                     <thead>
