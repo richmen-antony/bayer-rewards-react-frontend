@@ -236,7 +236,7 @@ class ChannelPartners extends Component<Props, States> {
   }
   
   generateHeader(allChannelPartners : any, isAsc : Boolean) {
-    let staticColumn : number = 2
+    let staticColumn : number = 3
     let res = [];
     res.push(<th onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
     {
@@ -263,7 +263,7 @@ class ChannelPartners extends Component<Props, States> {
     }
 
     let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
-    res.push(<th>{'Staff Count'}</th>)
+    // res.push(<th>{'Staff Count'}</th>)
     res.push(<th>{'Status'}</th>)
 
     res.push(<th>{'Last Updated By'}</th>)
@@ -867,7 +867,7 @@ class ChannelPartners extends Component<Props, States> {
                       <td>{list.region} </td>
                       <td>{list.district} </td>
                       <td>{list.epa} </td>
-                      <td>
+                      {/* <td>
                       <div className="retailer-id">
                         <p>
                           {2}
@@ -881,7 +881,7 @@ class ChannelPartners extends Component<Props, States> {
                           ></img>
                           </p>
                         </div>
-                      </td>
+                      </td> */}
                       <td>
                         <span
                           onClick={(event: any) => {
