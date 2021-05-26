@@ -15,6 +15,7 @@ import SearchIcon from "../../../assets/icons/search_icon.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import Download from "../../../assets/icons/download.svg";
+import {SearchInput} from "../../../utility/widgets/input/search-input";
 
 type Props = {
   location?: any;
@@ -123,17 +124,13 @@ class ChangeLogs extends Component<Props, States> {
             
             </div>
             <div className="col-sm-6 leftAlign">
-                <div className="searchInputRow advisor-sales">
-                   <i className="icon"><img src={SearchIcon} width="17" alt={NoImage} /> </i>
-                  <input
-                    placeholder="Search Logs (min 3 letters)"
-                    className="input-field"
-                    type="text"
-                    onChange={this.handleSearch}
-                    value={searchText}
-                  />
-                  <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Field, Old Value and New Value"></i>
-                </div>
+                 <SearchInput 
+                      placeHolder="Search Logs (min 3 letters)"
+                      type="text"
+                      onChange={this.handleSearch}
+                      value={searchText} 
+                      tolltip="Search applicable for User Name, Field, Old Value and New Value"
+                      />
               <div>
                 <button className="btn btn-primary">
                 <img src={Download} width="17" alt={NoImage} /> 

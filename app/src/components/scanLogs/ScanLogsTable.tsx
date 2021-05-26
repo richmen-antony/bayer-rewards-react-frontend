@@ -36,6 +36,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
+import {SearchInput} from "../../utility/widgets/input/search-input";
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -444,16 +445,13 @@ class ScanLogsTable extends Component<Props, States> {
             <div className="scanlog-table">
               <div className="advisor-filter">
                 <div className="filter-left-side">
-                  <div className="searchInputRow advisor-sales">
-                    <i className="fa fa-search icon"></i>
-                    <input
-                      placeholder="Search..(min 3 chars)"
-                      className="input-field"
+                   <SearchInput 
+                      placeHolder="Search (min 3 letters)"
                       type="text"
                       onChange={this.handleSearch}
-                      value={searchText}
-                    />
-                  </div>
+                      value={searchText} 
+                      tolltip="Search applicable for Retailer Name, Farmer Name and New Value"
+                      />
                   <div className="filter-right-side">
                     <div className="filterRow">
                       <Dropdown

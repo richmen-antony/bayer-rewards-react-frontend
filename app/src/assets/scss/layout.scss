@@ -397,3 +397,31 @@
   align-items: center;
   justify-content: space-between;
 }
+
+
+.search-input{
+  input{
+    border: 1px solid #006CF8;
+    background-color: #ffffff;
+    outline: none;
+    width: 260px;
+    height: 40px;
+    padding-left: 15px
+  }
+  .search-i{
+    position: relative;
+    right: 30px;
+    filter: invert(100%);
+  }
+  .layout{
+    position: relative;
+    right: 71px;
+    height: 40px;
+    bottom: 1px;
+  }
+  i{
+    position: relative;
+    right: 60px;
+    bottom: 13px;
+  }
+}
