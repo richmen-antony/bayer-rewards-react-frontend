@@ -4,12 +4,18 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 // import "../devconfig/devconfig.scss"
 import Stepper from "../../container/components/stepper/Stepper";
+import { apiURL } from "../../utility/base/utils/config";
+import {
+  invokeGetAuthService,
+  invokeGetAuthServiceTemp,
+} from "../../utility/base/service";
 
 import { FormSteps } from "../../utility/constant";
 import { CountrySetup } from "./components/countrysetup";
 import LocationHierarchy from "./components/LocationHierarchy";
 import RoleHierarchy from "./components/RoleHierarchy"; // Step 1
 import TnTFlow from "./components/TnTFlow";
+import PackagingDefinition from "./components/PackagingDefinition";
 import ScanPointsAndAllocation from "./components/ScanPointsAndAllocation";
 import { Anticounterfeit } from "./components/Anticounterfeit";
 
@@ -17,6 +23,12 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import {
+  addLocationInputList,
+  addRoleInputList,
+  addTnTFlowInputList,
+  addPackagingDefinitionInputList,
+} from "../../redux/actions/devconfig/add";
 
 import cluster_json from "../../utility/lib/cluster.json";
 
@@ -35,7 +47,7 @@ import left_arrow from "../../assets/icons/left_arrow.svg";
 import right_arrow from "../../assets/icons/left-arrow.svg";
 import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
-import DevConfigurations from '../configurations/dev';
+
 export interface IFormValue {
   id: string;
   label: string;
@@ -47,7 +59,13 @@ interface IDevConfigProps {
   loacationinputList: any;
   roleinputList: any;
   tntflowinputList: any;
+  packagingdefinitionList: any;
   scanpointsandallocationinputList: any;
+
+  addLocationInputList: any;
+  addRoleInputList: any;
+  addTnTFlowInputList: any;
+  addPackagingDefinitionInputList: any;
 }
 
 type MyComponentState = {
@@ -60,9 +78,10 @@ type MyComponentState = {
   selectedLocationHierarchyDetails: Array<any>;
   selectedRoleHierarchyDetails: Array<any>;
   selectedTnTFlowDetails: Array<any>;
+  selectedPackagingDefinitionDetails: Array<any>;
   selectedScanPointsAndAllocationDetails: Array<any>;
   selectedAnticounterfeitDetails: Array<any>;
-
+  isLoader: boolean;
   region: string;
   cluster: string;
   country: string;
@@ -70,6 +89,7 @@ type MyComponentState = {
   currency: string;
   currencyname: string;
   value: number;
+  allTemplateDataByCountry: Array<any>;
 };
 
 const AntTabs = withStyles({
@@ -173,9 +193,10 @@ class Devconfigurations extends React.Component<
       selectedLocationHierarchyDetails: [],
       selectedRoleHierarchyDetails: [],
       selectedTnTFlowDetails: [],
+      selectedPackagingDefinitionDetails: [],
       selectedScanPointsAndAllocationDetails: [],
       selectedAnticounterfeitDetails: [],
-
+      isLoader: false,
       region: "",
       cluster: "",
       country: "",
@@ -183,6 +204,7 @@ class Devconfigurations extends React.Component<
       currency: "",
       currencyname: "",
       value: 0,
+      allTemplateDataByCountry: [],
     };
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
     this.handleDropdownChangeRegion =
@@ -200,6 +222,63 @@ class Devconfigurations extends React.Component<
   handleDropdownChange = (event: any) => {
     this.setState({ setSelectedCluster: event.target.value });
   };
+
+  // const validateField = (fieldName: string): boolean => {
+  //   let isValid = true;
+  //   if (
+  //     props.values[fieldName] &&
+  //     props.values[fieldName] !== '' &&
+  //     props.values[fieldName].toString().trim().length > 0
+  //   ) {
+  //     setValidation((preState) => ({ ...preState, [fieldName]: isValid }));
+  //     return true;
+  //   } else {
+  //     isValid = false;
+  //     setValidation((preState) => ({ ...preState, [fieldName]: isValid }));
+  //     return false;
+  //   }
+  // };
+
+  // inputValidation = (): boolean => {
+  //   let isValid = true;
+  //   const { currentStep } = this.state;
+
+  //   switch (currentStep) {
+  //     case 1:
+  //       return isValid;
+  //       break;
+  //     case 2:
+  //       return isValid;
+  //       break;
+  //     case 3:
+  //       return isValid;
+  //       break;
+  //     case 4:
+  //       return isValid;
+  //       break;
+  //     case 5:
+  //       return isValid;
+  //       break;
+  //     case 6:
+  //       return isValid;
+  //       break;
+  //     case 7:
+  //       return isValid;
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   //   isValid = validateField('firstName') && isValid;
+  //   //   isValid = validateField('lastName') && isValid;
+  //   //   isValid = validateField('phone') && isValid;
+  //   //   isValid = validateField('email') && isValid;
+  //   //   isValid = validateField('streetAddress') && isValid;
+  //   //   isValid = validateField('dateOfBirth') && isValid;
+  //   //   isValid = validateField('city') && isValid;
+  //   //   isValid = validateField('state') && isValid;
+  //   //   isValid = validateField('postcode') && isValid;
+  //   // return isValid;
+  // };
 
   handleClick(clickType?: any, e?: any) {
     const { currentStep } = this.state;
@@ -221,9 +300,11 @@ class Devconfigurations extends React.Component<
     }
 
     if (newStep > 0 && newStep <= stepsArray.length) {
+      // if (inputValidation()) {
       this.setState({
         currentStep: newStep,
       });
+      // }
     }
 
     if (newStep === stepsArray.length) {
@@ -240,11 +321,18 @@ class Devconfigurations extends React.Component<
     });
   }
 
+  componentDidMount() {
+    this.getTemplateByCountry();
+  }
+
   componentWillMount() {
     const setData = cluster_json;
     this.setState({ setData: setData });
 
-    console.log("setSelectedCluster", this.state.setSelectedCluster);
+    console.log(
+      "componentWillMount - setSelectedCluster",
+      this.state.setSelectedCluster
+    );
     if (this.state.setSelectedCluster) {
       this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
     }
@@ -254,7 +342,10 @@ class Devconfigurations extends React.Component<
     if (this.state.currentStep !== prevState.currentStep) {
       window.scrollTo(0, 0);
     }
-    console.log("setSelectedCluster", this.state.setSelectedCluster);
+    console.log(
+      "componentDidUpdate -setSelectedCluster",
+      this.state.setSelectedCluster
+    );
     if (this.state.setSelectedCluster) {
       this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
     }
@@ -278,34 +369,78 @@ class Devconfigurations extends React.Component<
     }
   };
 
-  // Proceed to next step
-  nextStep = (nextStep: FormSteps = null as any) => {
-    const { currentStep } = this.state;
+  getTemplateByCountry = () => {
+    const { getTemplateData } = apiURL;
+    this.setState({ isLoader: true });
+    let data = {
+      countryCode: "MW",
+    };
 
-    switch (currentStep) {
-      case FormSteps.LocationHierarchy:
-        this.goNextStep(nextStep);
-        break;
+    invokeGetAuthServiceTemp(getTemplateData, data)
+      .then((response: any) => {
+        // const location = response.body[0].locationhierarchy.map(
+        //   (locationhier: any, idx: any) => {
+        //     return {
+        //       locationhierarchy: locationhier.locationhiername,
+        //       parentlocation: {
+        //         id: locationhier.parentlocation,
+        //         value:
+        //           locationhier.parentlocation === 0
+        //             ? "NA"
+        //             : response.body[0].locationhierarchy[
+        //                 locationhier.parentlocation
+        //               ].locationhiername,
+        //       },
+        //     };
+        //   }
+        // );
+        // console.log(location);
+        let objCountryData = response.body[0];
+        this.props.addLocationInputList(objCountryData.locationhierarchy);
+        this.props.addRoleInputList(objCountryData.rolehierarchy);
+        this.props.addTnTFlowInputList(objCountryData.trackntraceflow);
+        this.props.addPackagingDefinitionInputList(
+          objCountryData.productpackagedefinition
+        );
 
-      default:
-    }
-  };
-
-  goNextStep = (nextStep: FormSteps = null as any) => {
-    const { currentStep } = this.state;
-    if (!nextStep)
-      this.setState({
-        currentStep: currentStep + 1,
+        this.setState({
+          isLoader: false,
+        });
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
       });
   };
 
-  // Go back to previous step
-  prevStep = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
+  // // Proceed to next step
+  // nextStep = (nextStep: FormSteps = null as any) => {
+  //   const { currentStep } = this.state;
+
+  //   switch (currentStep) {
+  //     case FormSteps.LocationHierarchy:
+  //       this.goNextStep(nextStep);
+  //       break;
+
+  //     default:
+  //   }
+  // };
+
+  // goNextStep = (nextStep: FormSteps = null as any) => {
+  //   const { currentStep } = this.state;
+  //   if (!nextStep)
+  //     this.setState({
+  //       currentStep: currentStep + 1,
+  //     });
+  // };
+
+  // // Go back to previous step
+  // prevStep = () => {
+  //   const { currentStep } = this.state;
+  //   this.setState({
+  //     currentStep: currentStep - 1,
+  //   });
+  // };
 
   _getCurrentStep = () => {
     const { currentStep, selectedCountryDetails } = this.state;
@@ -327,15 +462,11 @@ class Devconfigurations extends React.Component<
       case 4:
         return <TnTFlow />;
       case 5:
-        return <ScanPointsAndAllocation />;
+        return <PackagingDefinition />;
       case 6:
-        return (
-          <Anticounterfeit
-            setAnticounterfeit={(data) =>
-              this.setState({ selectedAnticounterfeitDetails: data })
-            }
-          />
-        );
+        return <ScanPointsAndAllocation />;
+      case 7:
+        return <Anticounterfeit />;
       default:
         break;
     }
@@ -372,11 +503,6 @@ class Devconfigurations extends React.Component<
       countrycode,
       currency,
       currencyname,
-    };
-
-    const dpstyle = {
-      width: 185,
-      height: 35,
     };
 
     const btnStyle = {
@@ -431,7 +557,7 @@ class Devconfigurations extends React.Component<
     const { classes } = this.props;
     return (
       <AUX>
-        <div className="card-container card-height">
+        <div className="card-container">
           <div>
             <div className="tabs">
               <AntTabs
@@ -458,7 +584,7 @@ class Devconfigurations extends React.Component<
                         </div>
                         <div>
                           <select
-                            style={dpstyle}
+                            className="dpstyle selectoutline"
                             id="dropdown"
                             value={this.state.setSelectedRegion}
                             defaultValue={values.region}
@@ -489,7 +615,7 @@ class Devconfigurations extends React.Component<
                         <div>
                           {" "}
                           <select
-                            style={dpstyle}
+                            className="dpstyle selectoutline"
                             id="dropdown"
                             value={this.state.setSelectedCluster}
                             defaultValue={values.cluster}
@@ -565,7 +691,7 @@ class Devconfigurations extends React.Component<
                   style={btnNextSubmit}
                   onClick={() => this.handleClick("next")}
                 >
-                  {currentStep === stepsArray.length ? "Submit" : "Next"}{" "}
+                  {currentStep === stepsArray.length ? "Apply" : "Next"}{" "}
                   {currentStep === stepsArray.length ? (
                     <img src={check} />
                   ) : (
@@ -574,12 +700,12 @@ class Devconfigurations extends React.Component<
                 </button>
               </div>
             </TabPanel>
-            <TabPanel value={this.state.value} index={1} classes={classes}>
+            {/* <TabPanel value={this.state.value} index={1} classes={classes}>
               Item Two
             </TabPanel>
             <TabPanel value={this.state.value} index={2} classes={classes}>
-             <DevConfigurations />
-            </TabPanel>
+              Item Three
+            </TabPanel> */}
           </div>
         </div>
       </AUX>
@@ -592,24 +718,40 @@ const stepsArray = [
   "Location Hierarchy",
   "Role Hierarchy",
   "T & T Flow",
+  "Packaging Definition",
   "Scan Points & Allocation",
   "Anti-counterfeit",
 ];
 
 const mapStateToProps = ({
-  devconfig: { location, role, tntflow, scanpointsandallocation },
+  devconfig: {
+    location,
+    role,
+    tntflow,
+    packagingdefinition,
+    scanpointsandallocation,
+  },
 }: any) => {
   return {
     loacationinputList: location.inputList,
     roleinputList: role.inputList,
     tntflowinputList: tntflow.inputList,
+    packagingdefinitionList: packagingdefinition.inputList,
     scanpointsandallocationinputList: scanpointsandallocation.inputList,
   };
+};
+
+const mapDispatchToProps = {
+  addLocationInputList,
+  addRoleInputList,
+  addTnTFlowInputList,
+  addPackagingDefinitionInputList,
 };
 
 // const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);
 // export default rootComponent as React.ComponentType;
 
-export default connect(mapStateToProps)(
-  withStyles(useStyles)(Devconfigurations)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(useStyles)(Devconfigurations));
