@@ -144,6 +144,10 @@ class ScanLogsTable extends Component<Props, States> {
         status: "All",
         startDate: backdate.toISOString().substr(0, 10),
         endDate: new Date().toISOString().substr(0, 10),
+        ordereddate:new Date(),
+        orderexpirydate:new Date(),
+        lastupdateddate:new Date(),
+        expirydate:new Date()
       },
       dateErrMsg: "",
       searchText: "",
@@ -396,7 +400,17 @@ class ScanLogsTable extends Component<Props, States> {
       })
       .catch((error) => {});
   };
+ handleDateChange =(date:any,name:string)=>{
+   this.setState({
+    selectedFilters:{...this.state.selectedFilters,[name]:date}
+   })
 
+ }
+
+ handleSelect=(value:any)=>{
+   console.log("called");
+   console.log({value})
+ }
   render() {
     const {
       retailerPopupData,
@@ -504,6 +518,7 @@ class ScanLogsTable extends Component<Props, States> {
                                 name="type"
                                 value={selectedFilters.type}
                                 label={"Farmer"}
+                                handleChange={this.handleSelect}
                                 options={[
                                   { text: "ALL", value: "ALl" },
                                   {
@@ -585,12 +600,12 @@ class ScanLogsTable extends Component<Props, States> {
                                   /> */}
 
                                 <DatePicker
-                                  value={selectedFilters.startDate}
+                                  value={selectedFilters.ordereddate}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={this.state.date}
+                                  selected={selectedFilters.ordereddate}
                                   onChange={(date: any) =>
-                                    this.setState({ date })
+                                    this.handleDateChange(date,"ordereddate")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
@@ -609,12 +624,12 @@ class ScanLogsTable extends Component<Props, States> {
                                   /> */}
 
                                 <DatePicker
-                                  value={this.state.endDate || new Date()}
+                                  value={selectedFilters.orderexpirydate}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={this.state.endDate ||  new Date()}
+                                  selected={selectedFilters.orderexpirydate}
                                   onChange={(date: any) =>
-                                    this.setState({endDate: date })
+                                    this.handleDateChange(date,"orderexpirydate")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
@@ -628,12 +643,12 @@ class ScanLogsTable extends Component<Props, States> {
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
                               <DatePicker
-                                  value={selectedFilters.startDate}
+                                  value={selectedFilters.lastupdateddate}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={this.state.date}
+                                  selected={selectedFilters.lastupdateddate}
                                   onChange={(date: any) =>
-                                    this.setState({ date })
+                                    this.handleDateChange(date,"lastupdateddate")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
@@ -643,12 +658,12 @@ class ScanLogsTable extends Component<Props, States> {
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
                               <DatePicker
-                                  value={selectedFilters.startDate}
+                                  value={selectedFilters.expirydate}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={this.state.date}
+                                  selected={selectedFilters.expirydate}
                                   onChange={(date: any) =>
-                                    this.setState({ date })
+                                    this.handleDateChange(date,"expirydate")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
