@@ -81,7 +81,7 @@ class LandingPage extends Component<any,any>{
     }
 
 render(){
-    console.log(this.props, 'this.props');
+    
     const { activeIndex, isLogin } = this.state;
     
     return(
