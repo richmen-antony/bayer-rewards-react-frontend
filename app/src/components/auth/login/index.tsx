@@ -43,10 +43,8 @@ class Login extends Component<Props, States> {
       isLoader: false,
       validErrorMsg: "",
     };
-    console.log(this.props, "propss");
   }
   handleChange = (e: any) => {
-    console.log(e.target.value, "teee");
     if (e.target.name === "username") {
       if (e.target.value === "" || e.target.value === null) {
         this.setState({
