@@ -703,7 +703,7 @@ class UserList extends Component<Props, States> {
           list.name.charAt(0).toUpperCase() + list.name.slice(1);
         return (
           <>
-            <div className="country">
+            <div className="country" style={{marginBottom:"5px"}}>
               {index !== 0 && (
                 <div>
                   {list.name !== "village" && (
