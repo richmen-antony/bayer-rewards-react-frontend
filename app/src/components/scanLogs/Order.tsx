@@ -144,6 +144,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>{value.intendedqty}</td>
                             <td>{value.orderedqty}</td>
                             <td>{"MK " + value.price}</td>
+                            {data.status === "Fulfilled" &&
                             <td>
                               <i
                                 className={`fas ${
@@ -151,8 +152,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 }`}
                               />
                             </td>
+                           }
                           </tr>
-                          {accordionView && value?.order_id === accordionId && (
+                          {accordionView && value?.order_id === accordionId && data.status === "Fulfilled"&& (
                             <tr>
                               <td
                                 colSpan={7}
@@ -201,6 +203,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                     })}
                   </tbody>
                 </table>
+               {data.status === "Fulfilled" &&
                 <div id="accordion">
                   <div className="card dev product-sold-popup">
                     <div
@@ -256,8 +259,12 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       </div>
                     </div>
                   </div>
+               
                 </div>
+                 }
+                
               </div>
+                        
 
               <div className="sum-total">
                 <p className="total">Total</p>

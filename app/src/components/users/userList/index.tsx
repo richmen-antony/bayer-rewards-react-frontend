@@ -13,28 +13,24 @@ import Box from "@material-ui/core/Box";
 import AUX from "../../../hoc/Aux_";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import { apiURL } from "../../../utility/base/utils/config";
-import {
-  invokeGetAuthService
-} from "../../../utility/base/service";
+import { invokeGetAuthService } from "../../../utility/base/service";
 import filterIcon from "../../../assets/icons/filter_icon.svg";
 import Download from "../../../assets/icons/download.svg";
 import cross from "../../../assets/icons/cross.svg";
 import SearchIcon from "../../../assets/icons/search_icon.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
-import {
-  createStyles,
-  Theme,
-  withStyles
-} from "@material-ui/core/styles";
+import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import "../../../assets/scss/users.scss";
-import {DownloadCsv} from "../../../utility/helper";
+import { DownloadCsv } from "../../../utility/helper";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import { Input } from "../../../utility/widgets/input";
 import Logs from "../../../assets/icons/logs.svg";
 import ChannelPartners from "./channelPartners";
 import ThirdPartyUsers from "./thirdPartyUsers";
 import ChangeLogs from "./changeLogs";
+import ArrowIcon from "../../../assets/icons/tick.svg";
+import RtButton from "../../../assets/icons/right_btn.svg";
 
 type SelectedFiltersTypes = {
   region: string;
@@ -46,14 +42,13 @@ type SelectedFiltersTypes = {
   [key: string]: string;
 };
 type PartnerTypes = {
-  type : String;
-}
+  type: String;
+};
 type Props = {
   location?: any;
   history?: any;
   classes?: any;
 };
-
 
 type States = {
   selectIndex: string;
@@ -197,7 +192,7 @@ class UserList extends Component<Props, States> {
       dropDownValue: "Select action",
       productCategories: [],
       status: ["All", "Valid", "Invalid"],
-      list: [ "Retailer", "Distributor"],
+      list: ["Retailer", "Distributor"],
       selectedFilters: {
         region: "All",
         epa: "All",
@@ -207,7 +202,7 @@ class UserList extends Component<Props, States> {
         endDate: new Date().toISOString().substr(0, 10),
       },
       partnerType: {
-        type : 'Retailer',
+        type: "Retailer",
       },
       dateErrMsg: "",
       searchText: "",
@@ -257,7 +252,7 @@ class UserList extends Component<Props, States> {
     // });
   }
 
-  getChannelPartnersList = (condIf?:string) => {
+  getChannelPartnersList = (condIf?: string) => {
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
     let data = {
@@ -265,16 +260,15 @@ class UserList extends Component<Props, States> {
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       usertype: "CHANNEL PARTNER",
-      partnertype: this.state.partnerType.type === 'Distributor' ? 'Distributor' : this.state.partnerType.type === 'All' ? 'ALL' : 'Retailer'
+      partnertype:
+        this.state.partnerType.type === "Distributor"
+          ? "Distributor"
+          : this.state.partnerType.type === "All"
+          ? "ALL"
+          : "Retailer",
     };
-    let {
-      status,
-      startDate,
-      endDate,
-      region,
-      epa,
-      district,
-    }: any = this.state.selectedFilters;
+    let { status, startDate, endDate, region, epa, district }: any =
+      this.state.selectedFilters;
 
     if (this.state.isFiltered) {
       let filter = {
@@ -415,49 +409,37 @@ class UserList extends Component<Props, States> {
     });
   };
 
-
-
   download = () => {
     const { downloadUserList } = apiURL;
-    
+
     let data = {
       searchtext: this.state.searchText,
       usertype: "CHANNEL PARTNER",
-      partnertype:'Retailer' 
+      partnertype: "Retailer",
     };
-    let {
-      status,
-      startDate,
-      endDate,
+    let { status, startDate, endDate, region, epa, district }: any =
+      this.state.selectedFilters;
+
+    let filter = {
+      isfiltered: true,
+      status: status,
+      effectivefrom: startDate,
+      expirydate: endDate,
       region,
       epa,
       district,
-    }: any = this.state.selectedFilters;
+    };
+    data = { ...data, ...filter };
 
-    
-      let filter = {
-        isfiltered:true,
-        status: status,
-        effectivefrom: startDate,
-        expirydate: endDate,
-        region,
-        epa,
-        district,
-      };
-      data = { ...data, ...filter };
-    
     invokeGetAuthService(downloadUserList, data)
       .then((response) => {
         const data = response?.body?.rows;
-        DownloadCsv(data,"user.csv");
-        
+        DownloadCsv(data, "user.csv");
       })
       .catch((error) => {
         this.setState({ isLoader: false });
         console.log(error, "error");
       });
-        
-  
   };
 
   //   getProductCategory = () => {
@@ -537,14 +519,17 @@ class UserList extends Component<Props, States> {
   };
 
   handlePartnerChange = (name: String) => {
-    this.setState({ 
-      partnerType : {
-        type : name
+    this.setState(
+      {
+        partnerType: {
+          type: name,
+        },
+      },
+      () => {
+        this.getChannelPartnersList();
       }
-    },()=>{
-      this.getChannelPartnersList();
-    });
-  }
+    );
+  };
 
   resetFilter = (e: any) => {
     e.stopPropagation();
@@ -665,8 +650,8 @@ class UserList extends Component<Props, States> {
     });
   };
   backToUsersList = () => {
-    this.setState({ changeLogOpen: false});
-  }
+    this.setState({ changeLogOpen: false });
+  };
 
   render() {
     const {
@@ -714,7 +699,8 @@ class UserList extends Component<Props, States> {
 
     const locationList = this.state.dynamicFields?.map(
       (list: any, index: number) => {
-        let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
+        let nameCapitalized =
+          list.name.charAt(0).toUpperCase() + list.name.slice(1);
         return (
           <>
             <div className="country">
@@ -746,7 +732,7 @@ class UserList extends Component<Props, States> {
 
     return (
       <AUX>
-        {isLoader && <Loader />}
+        {/* {isLoader && <Loader />} */}
         <div
           className="container-fluid card card-height"
           style={{ backgroundColor: "#f8f8fa" }}
@@ -767,27 +753,28 @@ class UserList extends Component<Props, States> {
                       </AntTabs>
                     </div>
                   </div>
-                </div>)}
+                </div>
+              )}
             </div>
             <div className="col-sm-6 leftAlign">
               {!changeLogOpen && (
                 <>
-                <div>
-                  <button
-                    className="form-control changeLogs"
-                    onClick={() => this.handleChangeLog()}
-                  >
-                      <img src={Logs} alt={NoImage} />{" "}
-                    <span>Change Logs</span>
-                  </button>
-                </div>
-              
-              <div>
-                <button className="btn btn-primary" onClick={this.download}>
-                <img src={Download} width="17" alt={NoImage} />  <span>Download</span>
-                </button>
-              </div>
-              </>
+                  <div>
+                    <button
+                      className="form-control changeLogs"
+                      onClick={() => this.handleChangeLog()}
+                    >
+                      <img src={Logs} alt={NoImage} /> <span>Change Logs</span>
+                    </button>
+                  </div>
+
+                  <div>
+                    <button className="btn btn-primary" onClick={this.download}>
+                      <img src={Download} width="17" alt={NoImage} />{" "}
+                      <span>Download</span>
+                    </button>
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -799,7 +786,9 @@ class UserList extends Component<Props, States> {
               >
                 <div className="col-sm-6">
                   <div className="searchInputRow advisor-sales">
-                    <i className="icon"><img src={SearchIcon} width="17" alt={NoImage} /> </i>
+                    <i className="icon">
+                      <img src={SearchIcon} width="17" alt={NoImage} />{" "}
+                    </i>
                     <input
                       placeholder="Search user (min 3 letters)"
                       className="input-field"
@@ -807,30 +796,43 @@ class UserList extends Component<Props, States> {
                       onChange={this.handleSearch}
                       value={searchText}
                     />
-                    <i className="fa fa-info-circle" style={{ fontSize: '16px', width: '120px' }} title="Search applicable for User Name, Account Name and Owner Name"></i>
+                    <i
+                      className="fa fa-info-circle"
+                      style={{ fontSize: "16px", width: "120px" }}
+                      title="Search applicable for User Name, Account Name and Owner Name"
+                    ></i>
                   </div>
                 </div>
                 <div className="col-sm-6 leftAlign">
-                  <div className='partner'>
-                    <label className="font-weight-bold pt-4" style={{ color: "#363636", fontSize: " 14px" }}>
+                  <div className="partner">
+                    <label
+                      className="font-weight-bold pt-4"
+                      style={{ color: "#363636", fontSize: " 14px" }}
+                    >
                       Partner Type
                     </label>
-                    <div className='partnerType'>
+                    <div className="partnerType">
                       {this.state.list.map((item) => (
-                          <span className="mr-2">
-                            <Button color={this.state.partnerType.type === item
-                                  ? "btn activeColor rounded-pill"
-                                  : "btn rounded-pill boxColor"
-                              }
-                              size="md"
-                              onClick={()=>this.handlePartnerChange(item)}>
-                              {item}
-                            </Button>
-                          </span>
+                        <span className="mr-2">
+                          <Button
+                            color={
+                              this.state.partnerType.type === item
+                                ? "btn activeColor rounded-pill"
+                                : "btn rounded-pill boxColor"
+                            }
+                            size="md"
+                            onClick={() => this.handlePartnerChange(item)}
+                          >
+                            {item}
+                          </Button>
+                        </span>
                       ))}
                     </div>
                   </div>
-                  <div className="" style={{ marginLeft: "50px", marginTop: '16px'}}>
+                  <div
+                    className=""
+                    style={{ marginLeft: "50px", marginTop: "16px" }}
+                  >
                     {!changeLogOpen && (
                       <div className="filterRow">
                         <Dropdown
@@ -912,18 +914,35 @@ class UserList extends Component<Props, States> {
                               </div>
 
                               <div className="filterFooter pt-3">
-                                <Button
+                                {/* <Button
                                   color="btn rounded-pill boxColor reset-btn"
                                   onClick={(e) => this.resetFilter(e)}
                                 >
                                   Reset All
-                                </Button>
-                                <Button
+                                </Button> */}
+                                <button
+                                  className="cus-btn-user-filter reset"
+                                  onClick={(e) => this.resetFilter(e)}
+                                >
+                                   Reset All
+                                  
+                                </button>
+                                {/* <Button
                                   color="btn rounded-pill boxColor applybtn"
                                   onClick={this.applyFilter}
                                 >
                                   Apply
-                                </Button>
+                                </Button> */}
+                                <button
+                                  className="cus-btn-user-filter"
+                                  onClick={this.applyFilter}
+                                >
+                                  Apply
+                                  <span>
+                                    <img src={ArrowIcon} className="arrow-i" />{" "}
+                                    <img src={RtButton} className="layout" />
+                                  </span>
+                                </button>
                               </div>
                               {dateErrMsg && (
                                 <span className="error">{dateErrMsg} </span>
