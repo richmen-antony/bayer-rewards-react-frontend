@@ -10,12 +10,17 @@ import { addRoleInputList } from "../../../redux/actions";
 interface IRoleProps {
   role: any;
   setInputList: (data: any) => void;
+  inputList:Array<any>,
+  isValidNext:boolean,
+  getValidation:()=>void;
 }
 
 export const RoleHierarchy = (props: IRoleProps) => {
   const {
-    role: { dpList, inputList },
+    inputList,
     setInputList,
+    isValidNext,
+    getValidation
   } = props;
   const [valSelected, setValSelected] = useState("NA");
 
@@ -55,6 +60,9 @@ export const RoleHierarchy = (props: IRoleProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
+    const data =inputList[index];
+    getValidation();
+    if(data.rolehierarchyname && data.rolecode){
     setInputList([
       ...inputList,
       {
@@ -65,6 +73,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
         parentrole: "NA",
       },
     ]);
+  }
   };
 
   const handleDropdownChange = (event: any, index: any) => {
@@ -110,6 +119,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         value={item.rolecode}
                         onChange={(e) => handleInputChange(e, idx)}
                       />
+                         {item?.rolecode_error&&isValidNext&&<span className="error">{"Please enter Role Code"} </span>}
                     </td>
                     <td className="tableHeaderStyle">
                       <input
@@ -119,6 +129,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         value={item.rolehierarchyname}
                         onChange={(e) => handleInputChange(e, idx)}
                       />
+                      {item?.rolehierarchyname_error&&isValidNext&&<span className="error">{"Please enter Role Hierarchy"} </span>}
                     </td>
                     <td className="tableHeaderStyle">
                       <select

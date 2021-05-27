@@ -8,14 +8,18 @@ import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addTnTFlowInputList } from "../../../redux/actions";
 
 interface ITnTProps {
-  tntflow: any;
+  inputList: any;
   setInputList: (data: any) => void;
+  getValidation:()=>void;
+  isValidNext:boolean,
 }
 
 export const TnTFlow = (props: ITnTProps) => {
   const {
-    tntflow: { inputList },
+    inputList,
     setInputList,
+    getValidation,
+    isValidNext,
   } = props;
   const [valSelected, setValSelected] = useState("NA");
 
@@ -36,7 +40,11 @@ export const TnTFlow = (props: ITnTProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
+    const data =inputList[index];
+    getValidation();
+    if(data.code && data.position){
     setInputList([...inputList, { level: 0, code: "", position: "" }]);
+    }
   };
 
   const handleDropdownChange = (event: any, index: any) => {
@@ -46,7 +54,7 @@ export const TnTFlow = (props: ITnTProps) => {
     setInputList(list);
     setValSelected(event.target.value);
   };
-
+    console.log("tnt",inputList);
   return (
     <div className="col-md-10">
       <div className="container">
@@ -73,6 +81,7 @@ export const TnTFlow = (props: ITnTProps) => {
                         value={item.code}
                         onChange={(e) => handleInputChange(e, idx)}
                       />
+                      {item?.code_error&&isValidNext&&<span className="error">{"Please enter the code"} </span>}
                     </td>
 
                     <td className="tableHeaderStyle">
@@ -83,6 +92,7 @@ export const TnTFlow = (props: ITnTProps) => {
                         value={item.position}
                         onChange={(e) => handleInputChange(e, idx)}
                       />
+                      {item?.position_error&&isValidNext&&<span className="error">{"Please enter the position"} </span>}
                     </td>
 
                     <td className="tablebtnStyle">

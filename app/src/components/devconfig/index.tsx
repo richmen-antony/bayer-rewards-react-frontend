@@ -96,6 +96,10 @@ type MyComponentState = {
   currencyname: string;
   value: number;
   allTemplateDataByCountry: Array<any>;
+  isError:boolean,
+  locationHierarchy:Array<any>;
+  roleHierarchy:Array<any>;
+  tntflowData:Array<any>;
 };
 
 const AntTabs = withStyles({
@@ -211,6 +215,10 @@ class Devconfigurations extends React.Component<
       currencyname: "",
       value: 0,
       allTemplateDataByCountry: [],
+      isError:false,
+      locationHierarchy:[],
+      roleHierarchy:[],
+      tntflowData:[]
     };
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
     this.handleDropdownChangeRegion =
@@ -285,6 +293,21 @@ class Devconfigurations extends React.Component<
   //   //   isValid = validateField('postcode') && isValid;
   //   // return isValid;
   // };
+  validation(){
+    const { currentStep } = this.state;
+    const {loacationinputList} = this.props;
+    if(currentStep===2){
+      console.log({loacationinputList})
+      console.log("called");
+       const isValid=loacationinputList.filter((value:any)=> value.locationhiername==="");
+      if(isValid){
+        this.setState({isError:true})
+      }else{
+        this.setState({isError:false})
+
+      }
+    }
+  }
 
   handleClick(clickType?: any, e?: any) {
     const { currentStep } = this.state;
@@ -306,7 +329,9 @@ class Devconfigurations extends React.Component<
     }
 
     if (newStep > 0 && newStep <= stepsArray.length) {
-      // if (inputValidation()) {
+      console.log("props",this.props.loacationinputList)
+     
+      
       this.setState({
         currentStep: newStep,
       });
@@ -316,6 +341,10 @@ class Devconfigurations extends React.Component<
     if (newStep === stepsArray.length) {
       //Submit values
       // this.registerTemplateByCountry();
+    }
+
+    if( clickType === "next" ){
+      this.handleInputValidation();
     }
   }
 
@@ -356,6 +385,23 @@ class Devconfigurations extends React.Component<
     // if (this.state.setSelectedCluster) {
     //   this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
     // }
+ if(this.props.loacationinputList !==prevProps.loacationinputList){
+   this.setState({
+     locationHierarchy:this.props.loacationinputList
+   })
+ }
+
+ if(this.props.roleinputList !==prevProps.roleinputList){
+  this.setState({
+    roleHierarchy:this.props.roleinputList
+  })
+}
+if(this.props.tntflowinputList !==prevProps.tntflowinputList){
+  this.setState({
+    tntflowData:this.props.tntflowinputList
+  })
+}
+    
   }
 
   _retrieveSelectedContryofCluster = async (setSelectedCluster: any) => {
@@ -450,7 +496,10 @@ class Devconfigurations extends React.Component<
         console.log(error, "error");
       });
   };
+  handleValidation=(condIf:any)=>{
 
+    console.log({condIf});
+  }
   // // Proceed to next step
   // nextStep = (nextStep: FormSteps = null as any) => {
   //   const { currentStep } = this.state;
@@ -481,7 +530,7 @@ class Devconfigurations extends React.Component<
   // };
 
   _getCurrentStep = () => {
-    const { currentStep, selectedCountryDetails } = this.state;
+    const { currentStep, selectedCountryDetails,locationHierarchy,isError,roleHierarchy,tntflowData } = this.state;
 
     switch (currentStep) {
       case 1:
@@ -491,14 +540,15 @@ class Devconfigurations extends React.Component<
               this.setState({ selectedCountryDetails: data })
             }
             selectedCountryDetails={selectedCountryDetails}
+           
           />
         );
       case 2:
-        return <LocationHierarchy />;
+        return <LocationHierarchy getValidation={this.handleInputValidation} inputList={locationHierarchy} isValidNext={isError} />;
       case 3:
-        return <RoleHierarchy />;
+        return <RoleHierarchy  inputList={roleHierarchy} isValidNext={isError} getValidation={this.handleInputValidation} />;
       case 4:
-        return <TnTFlow />;
+        return <TnTFlow  inputList={tntflowData} isValidNext={isError} getValidation={this.handleInputValidation}/>;
       case 5:
         return <PackagingDefinition />;
       case 6:
@@ -529,8 +579,76 @@ class Devconfigurations extends React.Component<
     return unique;
   }
 
-  render() {
+  handleInputValidation=()=>{
     const { currentStep } = this.state;
+    const {loacationinputList,roleinputList,tntflowinputList} = this.props;
+    if(currentStep===2){
+      const data =loacationinputList.map((value:any)=>{
+        if(!value.locationhiername){
+          value={...value,error:true}
+          this.setState({
+            isError:true,
+            currentStep:2
+          })
+        }else{
+          value={...value,error:false}
+          this.setState({
+            isError:false
+          })
+        }
+        return value;
+      })
+      this.setState({locationHierarchy:data})
+    }
+   
+    if(currentStep===3){
+      const data =roleinputList.map((value:any)=>{
+        if(!value.rolehierarchyname || !value.rolecode ){
+          if(!value.rolehierarchyname)
+          value={...value,rolehierarchyname_error:true}
+          if(!value.rolecode)
+          value={...value,rolecode_error:true}
+          this.setState({
+            isError:true,
+            currentStep:3
+          })
+        }else{
+          value={...value,rolehierarchyname_error:false,rolecode_error:false}
+          this.setState({
+            isError:false
+          })
+        }
+        return value;
+      })
+      this.setState({roleHierarchy:data})
+
+    }
+     
+    if(currentStep===4){
+      const data =tntflowinputList.map((value:any)=>{
+        if(!value.code || !value.position ){
+          if(!value.code)
+          value={...value,code_error:true}
+          if(!value.position)
+          value={...value,position_error:true}
+          this.setState({
+            isError:true,
+            currentStep:4
+          })
+        }else{
+          value={...value,code_error:false,position_error:false}
+          this.setState({
+            isError:false
+          })
+        }
+        return value;
+      })
+      this.setState({tntflowData:data})
+
+    }
+  }
+  render() {
+    const { currentStep,isError } = this.state;
 
     const { region, cluster, country, countrycode, currency, currencyname } =
       this.state;
@@ -734,6 +852,7 @@ class Devconfigurations extends React.Component<
                 <button
                   className="btnNextSubmit cus-btn-dev"
                   onClick={() => this.handleClick("next")}
+                  
                 >
                   {currentStep === stepsArray.length ? "Apply" : "Next"}{" "}
                   {currentStep === stepsArray.length ? (

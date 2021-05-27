@@ -9,21 +9,29 @@ import { addLocationInputList } from "../../../redux/actions";
 interface ILocationProps {
   location: any;
   setInputList: (data: any) => void;
+  getValidation:()=>void;
+  inputList:Array<any>,
+  isValidNext:boolean,
 }
 
 const LocationHierarchy = (props: ILocationProps) => {
   const {
-    location: { inputList },
+    inputList,
     setInputList,
+    getValidation,
+    isValidNext,
   } = props;
+  console.log({inputList})
 
   const [valSelected, setValSelected] = useState("NA");
+  
 
   // handle input change
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     list[index][name] = value;
+
     setInputList(list);
   };
 
@@ -38,10 +46,16 @@ const LocationHierarchy = (props: ILocationProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-    setInputList([
-      ...inputList,
-      { locationhierlevel: inputList.length + 1, locationhiername: "", parentlocation: -1 },
-    ]);
+    const data =inputList[index];
+     getValidation();
+     if(data.locationhiername){
+      setInputList([
+        ...inputList,
+        { locationhierlevel: inputList.length + 1, locationhiername: "", parentlocation: -1 },
+      ]);
+   }
+   
+  
   };
 
   const handleDropdownChange = (event: any, index: any) => {
@@ -91,6 +105,7 @@ const LocationHierarchy = (props: ILocationProps) => {
                         onChange={(e) => handleInputChange(e, idx)}
                         data-id={idx}
                       />
+                      {item?.error&&isValidNext&&<span className="error">{"Please enter Location Hierarchy"} </span>}
                     </td>
 
                     <td className="tableHeaderStyle">
