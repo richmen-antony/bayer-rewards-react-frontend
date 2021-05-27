@@ -398,18 +398,18 @@ class Devconfigurations extends React.Component<
       scanpointallocationdefinition:
         devconfig.scanpointsandallocation.inputList,
     };
-    console.log(data);
-    // invokePostServiceTemp(registerTemplateData, data)
-    //   .then((response: any) => {
-    //     console.log(response);
-    //     this.setState({
-    //       isLoader: false,
-    //     });
-    //   })
-    //   .catch((error: any) => {
-    //     this.setState({ isLoader: false });
-    //     console.log(error, "error");
-    //   });
+
+    invokePostServiceTemp(registerTemplateData, data)
+      .then((response: any) => {
+        console.log(response);
+        this.setState({
+          isLoader: false,
+        });
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
   };
 
   getTemplateByCountry = () => {
