@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
-import plus_icon from "../../../assets/icons/plus_icon.svg";
-import minus from "../../../assets/icons/minus.svg";
+import CustomSwitch from "../../../container/components/switch";
+
 import {
   setAnticounterfeitSmsAuthentication,
   setAnticounterfeitDigitalScan,
@@ -54,9 +54,17 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
                     <label>SMS Authentication</label>
                   </td>
                   <td className="tableStyle">
-                    <input
+                    {/* <input
                       type="checkbox"
                       id="check1"
+                      onChange={(e) => {
+                        setAnticounterfeitSmsAuthentication(e.target.checked);
+                      }}
+                      checked={sms_authentication}
+                    /> */}
+
+                    <CustomSwitch
+                      name="SMSAuthentication"
                       onChange={(e) => {
                         setAnticounterfeitSmsAuthentication(e.target.checked);
                       }}
@@ -69,13 +77,20 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
                     <label>Digital Scan</label>
                   </td>
                   <td className="tableStyle">
-                    <input
+                    {/* <input
                       type="checkbox"
                       id="check2"
                       checked={digital_scan}
                       onChange={(e) => {
                         setAnticounterfeitDigitalScan(e.target.checked);
                       }}
+                    /> */}
+                    <CustomSwitch
+                      name="DigitalScan"
+                      onChange={(e) => {
+                        setAnticounterfeitDigitalScan(e.target.checked);
+                      }}
+                      checked={digital_scan}
                     />
                   </td>
                 </tr>
@@ -84,13 +99,21 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
                     <label>Smart Label</label>
                   </td>
                   <td className="tableStyle">
-                    <input
+                    {/* <input
                       type="checkbox"
                       id="check13"
                       checked={smart_label}
                       onChange={(e) => {
                         setAnticounterfeitSmartLabel(e.target.checked);
                       }}
+                    /> */}
+
+                    <CustomSwitch
+                      name="SmartLabel"
+                      onChange={(e) => {
+                        setAnticounterfeitSmartLabel(e.target.checked);
+                      }}
+                      checked={smart_label}
                     />
                   </td>
                 </tr>

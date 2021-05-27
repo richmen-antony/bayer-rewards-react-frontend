@@ -200,11 +200,11 @@ class Login extends Component<Props, States> {
                   <span className="checkmark"></span>
                 </label>
               </div>
-              <div className="form-group m-t-10 mb-0 row forgot">
+              {/* <div className="form-group m-t-10 mb-0 row forgot">
                 <div className="col-12">
                   <Link to="">Forgot password?</Link>
                 </div>
-              </div>
+              </div> */}
               <div className="col-sm-12 text-center">
                 {validErrorMsg && (
                   <span className="error">{validErrorMsg} </span>

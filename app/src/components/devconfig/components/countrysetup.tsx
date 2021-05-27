@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
-
-import { Input } from "../../../utility/widgets/input";
-import { setCountryCode } from "../../../redux/actions/devconfig/add";
-
-const dpstyle = {
-  width: 185,
-  height: 35,
-};
+import {
+  setCountryCode,
+  setCountryName,
+  setCurrencyCode,
+  setCurrencyName,
+} from "../../../redux/actions/devconfig/add";
 
 type ICountryProps = {
   setCountryDetails: (data: any) => void;
   selectedCountryDetails: cDetails[];
   setCountryCode: (data: any) => void;
   countryCode: any;
+  setCountryName: (data: any) => void;
+  countryName: any;
+  setCurrencyCode: (data: any) => void;
+  currencyCode: any;
+  setCurrencyName: (data: any) => void;
+  currencyName: any;
 };
 
 type State = {
@@ -34,11 +37,19 @@ interface cDetails {
 
 const mapDispatchToProps = {
   setCountryCode,
+  setCountryName,
+  setCurrencyCode,
+  setCurrencyName,
 };
 
-const mapStateToProps = ({ devconfig: { countryCode } }: any) => {
+const mapStateToProps = ({
+  devconfig: { countryCode, countryName, currencyCode, currencyName },
+}: any) => {
   return {
     countryCode,
+    countryName,
+    currencyCode,
+    currencyName,
   };
 };
 
@@ -48,6 +59,9 @@ const CountrySetupComp = (props: ICountryProps) => {
     selectedCountryDetails,
     countryCode,
     setCountryCode,
+    setCountryName,
+    setCurrencyCode,
+    setCurrencyName,
   } = props;
   const [countryISO, setCountryISO] = useState("");
   const [countryCurrency, setcountryCurrency] = useState([]);
@@ -75,6 +89,7 @@ const CountrySetupComp = (props: ICountryProps) => {
 
   const handleDropdownChange = (event: any) => {
     setCountryCode(event.target.value);
+
     _retriveCountryCode(event.target.value);
   };
 
@@ -100,6 +115,10 @@ const CountrySetupComp = (props: ICountryProps) => {
     setcurrencyDesc(currencyDesc);
     setCountryISO(countryISO);
     setcountryCurrency(countryName);
+
+    setCountryName(countryISO);
+    setCurrencyCode(countryName[0].currency);
+    setCurrencyName(currencyDesc);
   };
 
   return (
@@ -124,6 +143,12 @@ const CountrySetupComp = (props: ICountryProps) => {
                     </option>
                   ))
                 ) : (
+                  // countryDetails.length > 0 ? (
+                  //   countryDetails.map(({ name }) => (
+                  //     <option value={name} key={name}>
+                  //       {name}
+                  //     </option>
+                  //   ))
                   <option value="" key="">
                     No country found
                   </option>

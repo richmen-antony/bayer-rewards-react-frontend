@@ -32,9 +32,26 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
-    const list = [...inputList];
+    let list = [...inputList];
     list.splice(index, 1);
+    list = setCorrectHierLvlSeed(list, index);
+    console.log(list);
     setInputList(list);
+  };
+
+  const setCorrectHierLvlSeed = (list: any, index: number) => {
+    const newList = list.map((listItem: any, idx: number) => {
+      return {
+        ...listItem,
+        packaginghierarchylevel: idx,
+        parentpackage:
+          listItem.parentpackage >= index
+            ? listItem.parentpackage - 1
+            : listItem.parentpackage,
+        // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
+      };
+    });
+    return newList;
   };
 
   // handle click event of the Add button
@@ -42,9 +59,9 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     setInputList([
       ...inputList,
       {
-        packaginghierarchylevel: 0,
+        packaginghierarchylevel: inputList.length + 1,
         packaginghierarchyname: "",
-        parentpackage: -1,
+        parentpackage: "",
       },
     ]);
   };
@@ -85,7 +102,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
               </button>
             </div>
 
-            <table className="table" id="tab_logic">
+            <table className="devconfig table" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="tableStyle text-center">Level</th>
@@ -139,24 +156,12 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
-                        // <button
-                        //   className="btn btnStyleAdd"
-                        //   onClick={() => handleAddClick(idx)}
-                        // >
-                        //   <img src={plus_icon} />
-                        // </button>
                         <img
                           style={{ width: "50px", height: "50px" }}
                           src={AddBtn}
                           onClick={() => handleAddClick(idx)}
                         />
                       ) : (
-                        // <button
-                        //   className="btn btnStyleRemove"
-                        //   onClick={() => handleRemoveClick(idx)}
-                        // >
-                        //   <img src={minus} />
-                        // </button>
                         <img
                           style={{ width: "50px", height: "50px" }}
                           src={RemoveBtn}

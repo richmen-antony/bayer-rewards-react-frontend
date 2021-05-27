@@ -9,7 +9,10 @@ import {
     DEV_CONFIG_ANTI_COUNTERFEIT_SET_SMS_AUTHENTICATION,
     DEV_CONFIG_ANTI_COUNTERFEIT_SET_DIGITAL_SCAN,
     DEV_CONFIG_ANTI_COUNTERFEIT_SET_SMART_LABEL,
-    DEV_CONFIG_SET_COUNTRY_CODE
+    DEV_CONFIG_SET_COUNTRY_CODE,
+    DEV_CONFIG_SET_COUNTRY_NAME,
+    DEV_CONFIG_SET_CURRENCY_CODE,
+    DEV_CONFIG_SET_CURRENCY_NAME
 } from '../../actionTypes/devConfigTypes';
 
 export const addLocationInputList = (data: any) => ({
@@ -66,4 +69,19 @@ export const setAnticounterfeitSmartLabel = (data: any) => ({
 export const setCountryCode = (data: any) => ({
     payload: data,
     type: DEV_CONFIG_SET_COUNTRY_CODE,
+})
+
+export const setCountryName = (data: any) => ({
+    payload: data,
+    type: DEV_CONFIG_SET_COUNTRY_NAME,
+})
+
+export const setCurrencyCode = (data: any) => ({
+    payload: data,
+    type: DEV_CONFIG_SET_CURRENCY_CODE,
+})
+
+export const setCurrencyName = (data: any) => ({
+    payload: data,
+    type: DEV_CONFIG_SET_CURRENCY_NAME,
 })

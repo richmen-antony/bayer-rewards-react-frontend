@@ -117,20 +117,21 @@ input:read-only {
 }
 
 //Table design
-table {
-  text-align: left;
-  border-collapse: collapse;
+.devconfig {
+  table {
+    text-align: left;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    padding: 0.25rem;
+  }
+  th {
+    background: whitesmoke;
+    position: sticky;
+    top: 0; /* Don't forget this, required for the stickiness */
+  }
 }
-th,
-td {
-  padding: 0.25rem;
-}
-th {
-  background: whitesmoke;
-  position: sticky;
-  top: 0; /* Don't forget this, required for the stickiness */
-}
-
 //product-categeory
 .product-categeory {
   margin-left: 60px;
@@ -141,29 +142,6 @@ th {
 
 //button style
 .cus-btn-dev {
-  // color: #ffffff;
-  // background-color: #7eb343 !important;
-  // width: 180px;
-  // height: 35px;
-  // border-radius: 20px;
-  // border: 0;
-  // margin-left: 30px;
-  // font-size: 14px;
-  // span {
-  //   position: absolute;
-  //   right: 1px;
-  //   top: 0px;
-  // }
-  // .arrow-i {
-  //   position: relative;
-  //   left: 30px;
-  // }
-  // .layout {
-  //   width: 66%;
-  //   border-top-right-radius: 15px;
-  //   border-bottom-right-radius: 15px;
-  // }
-
   color: #ffffff;
   background-color: #7eb343 !important;
   width: 180px;

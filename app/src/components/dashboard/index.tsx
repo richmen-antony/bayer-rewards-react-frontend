@@ -154,7 +154,7 @@ class Dashboard extends Component<Props, States> {
                 >
                   <div className="count">
                     {this.state.adminUsersCount}
-                  </div>
+                 </div>
                   <div
                    className="title"
                   >
