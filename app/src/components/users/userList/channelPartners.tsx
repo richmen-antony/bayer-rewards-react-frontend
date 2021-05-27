@@ -63,6 +63,7 @@ type States = {
   isLoader: boolean;
   deActivatePopup: boolean;
   editPopup: boolean;
+  staffPopup: boolean;
   userData: any;
   status: String;
   geographicFields: Array<any>;
@@ -120,6 +121,7 @@ class ChannelPartners extends Component<Props, States> {
       isLoader: false,
       deActivatePopup: false,
       editPopup: false,
+      staffPopup: false,
       status: "",
       geographicFields: [],
       dynamicFields: [],
@@ -164,7 +166,7 @@ class ChannelPartners extends Component<Props, States> {
     this.setState({ hierarchyList: nextHierarchyResponse });
   }
   getGeographicFields() {
-    let res = ['country', 'region', 'district', 'epa', 'village'];
+    let res = ["country", "region", "add", "district", "epa", "village"];
     setTimeout(() => {
         this.setState({ geographicFields: res });
     }, 0)
@@ -175,12 +177,17 @@ class ChannelPartners extends Component<Props, States> {
       this.state.geographicFields.map((list: any, i: number) => {
         let result = [];
         let region = "";
+        let add = "";
         let district = "";
         let epa = "";
         let village = "";
         if('region' in data){
           result = this.getOptionLists('auto',list, data.region , i);
           region = data.region;
+        }
+        if('add' in data){
+          result = this.getOptionLists('auto',list, data.region , i);
+          add = data.region;
         }
         if('district' in data){
           result = this.getOptionLists('auto',list, data.district , i);
@@ -197,7 +204,7 @@ class ChannelPartners extends Component<Props, States> {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "country" ? getStoreData.country : list === 'region' ? region : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
+            value: list === "country" ? getStoreData.country : list === 'region' ? region : list === 'add' ? add : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
             options:
               list === "country"
                 ? this.state.countryList
@@ -238,35 +245,37 @@ class ChannelPartners extends Component<Props, States> {
   generateHeader(allChannelPartners : any, isAsc : Boolean) {
     let staticColumn : number = 3
     let res = [];
-    res.push(<th onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
+    res.push(<th onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'USER NAME'}
     {
       this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
     }
     </th>)
-    res.push(<th onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'Mobile #'}
+    res.push(<th onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'MOBILE#'}
     {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
-    res.push(<th onClick={e => this.handleSort(e, "accountname", allChannelPartners, isAsc)}>{'Account Name'}
+    res.push(<th onClick={e => this.handleSort(e, "accountname", allChannelPartners, isAsc)}>{'ACCOUNT NAME'}
     {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
-    res.push(<th onClick={e => this.handleSort(e, "ownername", allChannelPartners, isAsc)}>{'Owner Name'}
+    res.push(<th onClick={e => this.handleSort(e, "ownername", allChannelPartners, isAsc)}>{'OWNER NAME'}
     {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
 
     for (var i = 1; i < this.state.geographicFields.length; i++) {
-      let columnname : string = ""
-      columnname = this.state.geographicFields[i];
-      columnname = columnname.charAt(0).toUpperCase() + columnname.slice(1)
-      res.push(<th onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{columnname}
-      {this.tableCellIndex === i + staticColumn ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-      </th>)
+      if ( i <= staticColumn) {
+        let columnname : string = ""
+        columnname = this.state.geographicFields[i];
+        columnname = columnname.toUpperCase();
+        res.push(<th onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{columnname}
+        {this.tableCellIndex === i + staticColumn ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+        </th>)
+      }
     }
 
     let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
-    // res.push(<th>{'Staff Count'}</th>)
-    res.push(<th>{'Status'}</th>)
+    res.push(<th>{'STAFF COUNT'}</th>)
+    res.push(<th>{'STATUS'}</th>)
 
-    res.push(<th>{'Last Updated By'}</th>)
+    res.push(<th>{'LAST UPDATED BY'}</th>)
 
     res.push(<th></th>)
 
@@ -282,6 +291,11 @@ class ChannelPartners extends Component<Props, States> {
               { text: "Northern", value: "Northern" },
               { text: "Western", value: "Western" },
               { text: "Eastern", value: "Eastern" },
+            ];
+          } else if(type === 'add') {
+            options = [
+              { text: "Add1", value: "Add1"},
+              { text: "Add2", value: "Add2"},
             ];
           } else if(type === 'district'){
               options = [
@@ -313,6 +327,14 @@ class ChannelPartners extends Component<Props, States> {
           userData['region'] = value;
           this.setState({ userData : userData });
           this.setState({dynamicFields: dynamicFieldVal});
+        } else if (type === 'add'){
+          let epa = [
+            { text: "Add1", value: "Add1" },
+            { text: "Add2", value: "Add2" }, 
+          ];
+            dynamicFieldVal[index+1].options = epa;
+            dynamicFieldVal[index].value = value;
+            this.setState({dynamicFields: dynamicFieldVal});
        } else if(type === 'district') {
           let epa = [
             { text: "EPA1", value: "EPA1" },
@@ -343,7 +365,7 @@ class ChannelPartners extends Component<Props, States> {
     };
 
   handleClosePopup = () => {
-    this.setState({ deActivatePopup: false, editPopup: false });
+    this.setState({ deActivatePopup: false, editPopup: false, staffPopup: false });
   };
 
   showPopup = (e: any, key: keyof States) => {
@@ -362,6 +384,11 @@ class ChannelPartners extends Component<Props, States> {
     setTimeout(() => {
       this.getDynamicOptionFields(this.state.userData);
     }, 0);
+  }
+  editStaff =(list: any) =>{
+    this.setState({staffPopup : true},()=> {
+      this.getCurrentUserData(list);
+    });
   }
 
   handlePersonalChange = (e: any) => {
@@ -447,7 +474,7 @@ class ChannelPartners extends Component<Props, States> {
 
   submitUpdateUser = () => {
     const { updateUser } = apiURL;
-    const { username,status }: any = this.state.userData;
+    const { username,userstatus }: any = this.state.userData;
 
     const userDetails = {
       isedit : true,
@@ -475,9 +502,9 @@ class ChannelPartners extends Component<Props, States> {
 
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
-    const { username,status }: any = this.state.userData;
+    const { username,userstatus }: any = this.state.userData;
      this.setState({ isLoader: true });
-    if(status==="Not Activated"){
+    if(userstatus==="PENDING"){
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
@@ -486,8 +513,8 @@ class ChannelPartners extends Component<Props, States> {
     }else {
       let condUrl;
       if (
-       status === "Active" ||
-       status === "Inactive"
+        userstatus === "ACTIVE" ||
+        userstatus === "INACTIVE"
       ) {
         condUrl = activateChannelPartner;
       } else {
@@ -496,7 +523,7 @@ class ChannelPartners extends Component<Props, States> {
      
       let obj: any = {};
       obj.lastupdatedby = this.state.userName;
-      obj.lastupdateddate = "2021-04-30";
+      obj.lastupdateddate = new Date();
       obj.username = username;
      
       invokePostAuthService(condUrl, obj)
@@ -515,11 +542,17 @@ class ChannelPartners extends Component<Props, States> {
         });
     }
   };
+  editUser =(list: any) => {
+    this.getCurrentUserData(list);
+    this.props.history.push({
+      pathname: '/createUser',
+      state: { userFields: this.state.userData }}); 
+  }
   getCurrentUserData = (data: any) => {
     let passData = { ...data };
     passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
-    let activeStatus = (passData.status === 'Inactive' || passData.status === 'Declined') ? false : true;
-    this.setState({ userData: passData, status: data.status, activateUser: activeStatus });
+    let activeStatus = (passData.userstatus === 'INACTIVE' || passData.userstatus === 'DECLINED') ? false : true;
+    this.setState({ userData: passData, status: data.userstatus, activateUser: activeStatus });
   };
 
   replaceAll(str: any, mapObj: any) {
@@ -632,23 +665,23 @@ class ChannelPartners extends Component<Props, States> {
                 </div>
                 <div style={{ textAlign: "left" }}>
                   <label>
-                    {userData.status === "Active" ||
-                    userData.status === "Inactive" || userData.status === "Declined"  ? (
+                    {userData.userstatus === "ACTIVE" ||
+                    userData.userstatus === "INACTIVE" || userData.userstatus === "DECLINED"  ? (
                       <span>
                         Are you sure you want to change &nbsp;
                         <strong>
                           {userData.ownername} - {userData.accountname}
                         </strong>
                         &nbsp; account to
-                        {userData.status === "Active" ? (
+                        {userData.userstatus === "ACTIVE" ? (
                           <span> Inactive </span>
-                        ) : userData.status === "Inactive" || userData.status === "Declined" ? (
+                        ) : userData.userstatus === "INACTIVE" || userData.userstatus === "DECLINED" ? (
                           <span> active</span>
                         ) : ''}
                         ?
                       </span>
                     ) : (
-                      userData.status === "Not Activated" ? 
+                      userData.userstatus === "PENDING" ? 
                       <span>
                         Would you like to validate & approve&nbsp;
                         <strong>
@@ -675,7 +708,7 @@ class ChannelPartners extends Component<Props, States> {
                 className="admin-popup-btn filter-scan"
                 autoFocus
               >
-                {userData.status ==="Active" || userData.status==="Inactive" || userData.status==="Declined" ?  "Change" : userData.status === "Not Activated" ?"Validate & Approve" :"" }
+                {userData.userstatus ==="ACTIVE" || userData.userstatus==="INACTIVE" || userData.userstatus==="DECLINED" ?  "Change" : userData.userstatus === "PENDING" ?"Validate & Approve" :"" }
                
               </Button>
             </DialogActions>
@@ -687,9 +720,9 @@ class ChannelPartners extends Component<Props, States> {
         ) : (
           ""
         )}
-        {this.state.editPopup ? (
+        {this.state.staffPopup ? (
           <AdminPopup
-            open={this.state.editPopup}
+            open={this.state.staffPopup}
             onClose={this.handleClosePopup}
            maxWidth={"600px"}>
             <DialogContent>
@@ -702,125 +735,7 @@ class ChannelPartners extends Component<Props, States> {
                   </div>
                 </div>
                 <div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                        <div className='col-sm-6'>
-                          <label className="font-weight-bold pt-4">Account Name</label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            name="accountname"
-                            placeHolder="Account Name"
-                            value={userData.accountname}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                          {accountNameErr && (
-                            <span className="error">{accountNameErr} </span>
-                          )}
-                    
-                        </div>
-                      <div className='col-sm-6 editFilterText'>
-                      <label className="font-weight-bold pt-4">Owner Name</label>
-                      <Input
-                            type="text"
-                            className="form-control"
-                            name="ownername"
-                            placeHolder="Owner Name"
-                            value={userData.ownername}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                          {ownerNameErr && (
-                            <span className="error">{ownerNameErr} </span>
-                          )}
-                      </div>
-                    </div>
-                    <div className="row" style={{marginLeft: '15px'}}>
-                        {locationList}
-                    </div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                      <div className='col-sm-6'>
-                        <label className="font-weight-bold pt-4">Postal Code</label>
-                        <Input
-                            type="text"
-                            className="form-control"
-                            name="postalcode"
-                            placeHolder="Postal Code"
-                            value={userData.postalcode}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                          {postalCodeErr && (
-                            <span className="error">{postalCodeErr} </span>
-                          )}
-                        </div>
-                        <div className='col-sm-6 editFilterText'>
-                        <label className="font-weight-bold pt-4">Phone Number</label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            name="mobilenumber"
-                            placeHolder="Mobile Number"
-                            value={userData.mobilenumber}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                            onKeyUp={(e: any)=>this.isNumberKey(e)}
-                          />
-                          {phoneErr && <span className="error">{phoneErr} </span>}
-                        </div>
-                    </div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                      <div className='col-sm-6'>
-                        <label className="font-weight-bold pt-4">EMail</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="email"
-                          placeHolder="Email"
-                          value={userData.email}
-                          onChange={(e: any) => this.handlePersonalChange(e)}
-                          onKeyUp={(e: any)=>this.validateEmail(e)}
-                        />
-                        {emailErr && <span className="error">{emailErr} </span>}
-                        </div>
-                        <div className='col-sm-6 editFilterText'>
-                          <label className="font-weight-bold pt-4">Expiry Date</label>
-                          <input
-                            type="date"
-                            name="expirydate"
-                            className="form-control"
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                            value={userData.expirydate}
-                          />
-                          {toDateErr && <span className="error">{toDateErr} </span>}
-                        </div>
-                        
-                    </div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                      <div className='col-sm-6'>
-                        
-                        <label className="font-weight-bold pt-4">Address</label>
-                          <textarea
-                            name="address"
-                            rows={2}
-                            cols={28}
-                            placeholder="Address"
-                            value={userData.address}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                        </div>
-                        <div className='col-sm-6 editFilterText' style={{display:"flex",flexDirection:"column"}}>
-                        <label className="font-weight-bold pt-4">isActive?</label>
-                        <CustomSwitch
-                          checked={this.state.activateUser}
-                          onChange={(e: any) => this.handlePersonalChange(e)}
-                          name="activateUser"
-                        />
-                        {/* <div className="col-sm-6">
-                            <label className="font-weight-bold pt-4">isActive?
-                                <input type="checkbox" defaultChecked={this.state.activateUser} onClick={(e: any) => {this.setState({activateUser: e.target.checked})}} />
-                                <span className="checkmark"></span>
-                            </label>
-                        </div> */}
 
-                        </div>
-                    </div>
                 </div>
               <DialogActions>
               <Button
@@ -857,31 +772,30 @@ class ChannelPartners extends Component<Props, States> {
                   <AUX key={i}>
                     <tr 
                       style={
-                        list.status === "Active" ? { borderLeft: "8px solid #89D329" } : list.status === "Inactive" ? { borderLeft: "8px solid #FF6397" } : list.status === "Not Activated" ? { borderLeft: "8px solid #FFB43C" } : { borderLeft: "8px solid #FF0000" }
+                        list.userstatus === "ACTIVE" ? { borderLeft: "8px solid #89D329" } : list.userstatus === "INACTIVE" ? { borderLeft: "8px solid #FF6397" } : list.userstatus === "PENDING" ? { borderLeft: "8px solid #FFB43C" } : { borderLeft: "8px solid #FF0000" }
                       }
                      >
                       <td>{list.username}</td>
-                      <td>{list.mobilenumber} </td>
+                      <td>{list.ownerphonenumber} </td>
                       <td style={{textAlign: 'left'}}>{list.accountname} </td>
                       <td style={{textAlign: 'left'}}>{list.ownername} </td>
                       <td>{list.region} </td>
+                      <td>{list.add} </td>
                       <td>{list.district} </td>
-                      <td>{list.epa} </td>
-                      {/* <td>
+                      <td>
                       <div className="retailer-id">
                         <p>
-                          {2}
+                          {list.staffdetails.length}
                           <img
                             className="retailer-icon"
-                            // onClick={(event) => {
-                            //   this.showPopup(event, "showPopup");
-                            //   this.handleUpdateRetailer(value);
-                            // }}
-                            // src={ExpandWindowImg}
+                            onClick={(event) => {
+                              this.editStaff(list);
+                            }}
+                            src={ExpandWindowImg}
                           ></img>
                           </p>
                         </div>
-                      </td> */}
+                      </td>
                       <td>
                         <span
                           onClick={(event: any) => {
@@ -889,13 +803,13 @@ class ChannelPartners extends Component<Props, States> {
                             this.getCurrentUserData(list);
                           }}
                           className={`status ${
-                            list.status === "Active"
+                            list.userstatus === "ACTIVE"
                               ? "active"
-                              : list.status === "Inactive"
+                              : list.userstatus === "INACTIVE"
                               ? "inactive"
-                              : list.status === "Not Activated"
+                              : list.userstatus === "PENDING"
                               ? "notActivated"
-                              : list.status === "Declined"
+                              : list.userstatus === "DECLINED"
                               ? "declined"
                               : ""
                           }`}
@@ -903,19 +817,19 @@ class ChannelPartners extends Component<Props, States> {
                           <img
                             style={{ marginRight: "8px" }}
                             src={
-                              list.status === "Active"
+                              list.userstatus === "ACTIVE"
                                 ? Check
-                                : list.status === "Inactive"
+                                : list.userstatus === "INACTIVE"
                                 ? Cancel
-                                : list.status === "Not Activated"
+                                : list.userstatus === "PENDING"
                                 ? NotActivated
-                                : list.status === "Declined"
+                                : list.userstatus === "DECLINED"
                                 ? NotActivated
                                 : ""
                             }
                             width="17"
                           />
-                          {list.status}
+                          {list.userstatus}
                         </span>
                       </td>
                       {/* <td style={{width : '10px'}}>
@@ -933,12 +847,12 @@ class ChannelPartners extends Component<Props, States> {
                           <td>
                           <img
                           className="edit"
-                          src={list.status == 'Declined' ? EditDisabled : Edit}
+                          src={list.userstatus == 'DECLINED' ? EditDisabled : Edit}
                           width="20"
                           onClick={(event) => {
-                            list.status == 'Declined' 
+                            list.userstatus == 'DECLINED' 
                             ? event.preventDefault() 
-                            : this.editPopup(event, list);
+                            : this.editUser(list);
                           }}
                         />
                           </td>

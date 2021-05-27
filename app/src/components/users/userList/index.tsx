@@ -255,27 +255,27 @@ class UserList extends Component<Props, States> {
   getChannelPartnersList = (condIf?: string) => {
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
+    let { status, startDate, endDate, region, epa, district }: any =
+    this.state.selectedFilters;
     let data = {
+      countrycode: 'MW',
       page: this.state.pageNo,
       searchtext: this.state.searchText,
+      isfiltered: this.state.isFiltered,
       rowsperpage: this.state.rowsPerPage,
-      usertype: "CHANNEL PARTNER",
+      usertype: "EXTERNAL",
+      lastmodifieddatefrom: startDate,
+      lastmodifieddateto: endDate,
       partnertype:
         this.state.partnerType.type === "Distributor"
-          ? "Distributor"
+          ? "DISTRIBUTOR"
           : this.state.partnerType.type === "All"
           ? "ALL"
-          : "Retailer",
+          : "RETAILER",
     };
-    let { status, startDate, endDate, region, epa, district }: any =
-      this.state.selectedFilters;
-
     if (this.state.isFiltered) {
       let filter = {
-        isfiltered: this.state.isFiltered,
         status: status,
-        effectivefrom: startDate,
-        expirydate: endDate,
         region,
         epa,
         district,

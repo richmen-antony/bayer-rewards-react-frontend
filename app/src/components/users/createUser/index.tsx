@@ -64,30 +64,28 @@ class CreateUser extends Component<any, any> {
       userData : {
         countrycode: 'MW',
         locale: "English (Malawi)",
-        usertype: "EXTERNAL",
-        storewithmultiuser: false,
-        iscreatedfrommobile: false,
-        role: role[0].value,
+        storewithmultiuser: true,
+        rolename: role[0].value,
         shippingcountrycode: getStoreData.country,
-        shippingaddress: '',
+        shippingstreet: '',
         shippingcity: '',
         shippingstate:'',
-        shippingpostalcode: '',
+        shippingzipcode: '',
         taxid: '',
         accountname: '',
         ownername: '',
         billingcountrycode: getStoreData.country,
-        billingaddress: '',
+        billingstreet: '',
         billingcity: '',
         billingstate:'',
-        billingpostalcode: '',
+        billingzipcode: '',
         staffRows: [],
         ownerRows: [{
           firstname: "",
           lastname: "",
           mobilenumber: "",
           email: "",
-          isActive: true,
+          active: true,
           errObj: {
             firstnameErr:'',
             lastnameErr: "",
@@ -97,18 +95,18 @@ class CreateUser extends Component<any, any> {
         }],
       },
       shippingcountrycodeErr : "",
-      shippingaddressErr:  "",
+      shippingstreetErr:  "",
       shippingcityErr:'',
       shippingstateErr:'',
-      shippingpostalcodeErr: '',
+      shippingzipcodeErr: '',
       taxidErr: '',
       accountnameErr: '',
       ownernameErr: '',
       billingcountrycodeErr : "",
-      billingaddressErr:  "",
+      billingstreetErr:  "",
       billingcityErr:'',
       billingstateErr:'',
-      billingpostalcodeErr: '',
+      billingzipcodeErr: '',
 
       geographicFields: [],
       dynamicFields: [],
@@ -130,7 +128,7 @@ class CreateUser extends Component<any, any> {
       // userData: {
       //   fromdate: new Date().toISOString().substr(0, 10),
       //   expirydate: moment(oneYear).format("YYYY-MM-DD"),
-      //   isActive: true,
+      //   active: true,
       //   isDeclineUser: '',
       //   role: options[0].value,
       //   username: "",
@@ -174,28 +172,120 @@ class CreateUser extends Component<any, any> {
     if (this.props.location?.state) {
       let data: any = getLocalStorageData("userData");
       let userDetails = JSON.parse(data);
-      const { userFields } = this.props.location.state;
-      userFields['isActive'] = true;
+      this.setState({ userName: userDetails.username},()=>{
+        console.log("userData", this.state.userData);
+        // userFields['lastupdatedby'] = this.state.userName;
+      });
+      // const { userFields } = this.props.location.state;
+      // userFields['active'] = true;
       // userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
       // userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
-      let from = '2021-10-10';
-      let to = '2021-12-05';
-      userFields['fromdate'] = moment(from).format("YYYY-MM-DD");
-      userFields['expirydate']= moment(to).format("YYYY-MM-DD");
-      this.setState({ userName: userDetails.username},()=>{
-        userFields['lastupdatedby'] = this.state.userName;
-      });
-      userFields['isedit'] = false;
-      userFields['lastupdateddate'] = new Date().toISOString().substr(0, 10);
 
-      this.setState({ userData: userFields, isValidatePage : true }, () => {
-        console.log("userData", this.state.userData);
-      });
+      // userFields['isedit'] = false;
+      // userFields['lastupdateddate'] = new Date().toISOString().substr(0, 10);
+    
+      let userFields =  {
+        "countrycode": "MW",
+        "username": "MW-Mt-GT",
+        "ownerfirstname": "Mt",
+        "ownerlastname": "GT",
+        "ownerphonenumber": "9481144744",
+        "locale": "English (Malawi)",
+        "usertype": "EXTERNAL",
+        "rolename": "RETAILER",
+        "accountclassification": "RETAILER",
+        "userstatus": "ACTIVE",
+        "storewithmultiuser": true,
+        "iscreatedfrommobile": false,
+        "ownername": "Sahiya N",
+        "region": "geolevel1",
+        "add": "geolevel2",
+        "district": "geolevel3",
+        "village": null,
+        "shippingstreet": "testvalues",
+        "shippingcity": "testvalues",
+        "shippingstate": "testvalues",
+        "shippingzipcode": "testvalues",
+        "accountname": "Account Name",
+        "taxid": "45445",
+        "billingstreet": "testvalues",
+        "billingcity": "testvalues",
+        "billingstate": "testvalues",
+        "billingzipcode": "testvalues",
+        "staffdetails": [
+            {
+                "ownerid": "MW-Mt-GT",
+                "staffid": 18,
+                "firstname": "staff1 firstname",
+                "lastname": "staff lastname",
+                "mobilenumber": "95657844",
+                "emailid": "test@mail.com",
+                "isowner": false,
+                "active": true
+            },
+            {
+                "ownerid": "MW-Mt-GT",
+                "staffid": 19,
+                "firstname": "staff2 firstname",
+                "lastname": "staff2 lastname",
+                "mobilenumber": "95657844",
+                "emailid": "test@mail.com",
+                "isowner": false,
+                "active": true
+            }
+        ]
+    }
+       let ownerInfo =  {
+        email: userFields.ownerfirstname,
+        errObj: {
+            emailErr: "",
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: ""
+        },
+        firstname: userFields.ownerfirstname,
+        active: true,
+        lastname: userFields.ownerlastname,
+        mobilenumber: userFields.ownerphonenumber
+      }
+    
+    let userDataList = this.state.userData;
+    userDataList.ownerRows[0] = ownerInfo;
+    let userinfo =  {
+      ownerRows: userDataList.ownerRows,
+      countrycode: userFields.countrycode,
+      locale: userFields.locale,
+      storewithmultiuser: userFields.storewithmultiuser,
+      rolename:  userFields.rolename,
+      shippingcountrycode: userFields.countrycode,
+      shippingstreet: userFields.shippingstreet,
+      shippingcity: userFields.shippingcity,
+      shippingstate:userFields.shippingstate,
+      shippingzipcode: userFields.shippingzipcode,
+      taxid: userFields.taxid,
+      accountname: userFields.accountname,
+      ownername: userFields.ownername,
+      billingcountrycode: userFields.countrycode,
+      billingstreet: userFields.billingstreet,
+      billingcity: userFields.billingcity,
+      billingstate: userFields.billingstate,
+      billingzipcode: userFields.billingzipcode,
+      staffRows: userFields.staffdetails,
+      isStaff:userFields.storewithmultiuser
+  }
+  
+    this.setState({ userData: userinfo },()=>{
+      console.log('editdatas1', this.state.userData);
+    });
+      // this.setState((prevState: any)=>({
+      //   userData :
+      // }));
 
-        //Validate User
-        setTimeout(() => {
-          this.getDynamicOptionFields(userFields);
-        }, 0);
+      //Validate User
+      setTimeout(() => {
+        this.getDynamicOptionFields(userFields);
+        console.log('editdatas2', this.state.userData);
+      }, 0);
       } else {
         setTimeout(() => {
           this.getDynamicOptionFields('');
@@ -313,7 +403,7 @@ class CreateUser extends Component<any, any> {
   }
 }
 
-  getOptionLists = (cron: any, type: any, e: any, index: any) => {
+  getOptionLists = (cron: any, type: any, value: any, index: any) => {
     if(cron === 'auto'){
       let options: any = [];
       if(type === 'region'){
@@ -354,7 +444,7 @@ class CreateUser extends Component<any, any> {
           { text: "Blantyre", value: "Blantyre" }, 
         ];
           dynamicFieldVal[index+1].options = district;
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
     } else if (type === 'add'){
       let epa = [
@@ -362,7 +452,7 @@ class CreateUser extends Component<any, any> {
         { text: "Add2", value: "Add2" }, 
       ];
         dynamicFieldVal[index+1].options = epa;
-        dynamicFieldVal[index].value = e;
+        dynamicFieldVal[index].value = value;
         this.setState({dynamicFields: dynamicFieldVal});
      }else if(type === 'district') {
         let epa = [
@@ -370,7 +460,7 @@ class CreateUser extends Component<any, any> {
           { text: "EPA2", value: "EPA2" }, 
         ];
           dynamicFieldVal[index+1].options = epa;
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
       } else if(type === 'epa') {
         let village = [
@@ -378,10 +468,10 @@ class CreateUser extends Component<any, any> {
           { text: "Village2", value: "Village2" },
         ];
           dynamicFieldVal[index+1].options = village;
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
       } else if(type === 'village') {
-          dynamicFieldVal[index].value = e;
+          dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
       }
     }
@@ -465,9 +555,9 @@ class CreateUser extends Component<any, any> {
         "ownerphonenumber": userData.ownerRows[0].mobilenumber,
         "owneremail":userData.ownerRows[0].email,
         "locale": "English (Malawi)",
-        "usertype": (userData.role == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
-        "rolename": userData.role,
-        "accounttype":userData.role,
+        "usertype": (userData.rolename == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
+        "rolename": userData.rolename,
+        "accounttype":userData.rolename,
         "userstatus": "ACTIVE",
         "storewithmultiuser": this.state.isStaff ? true : false,
         "iscreatedfrommobile": false,
@@ -477,18 +567,18 @@ class CreateUser extends Component<any, any> {
         "epa": geoFields.epa,
         "village": geoFields.village,
         "shippingcountrycode": getStoreData.countryCode,
-        "shippingaddress": userData.shippingaddress,
+        "shippingstreet": userData.shippingstreet,
         "shippingcity": userData.shippingcity,
         "shippingstate": userData.shippingstate,
-        "shippingpostalcode": userData.shippingpostalcode,
+        "shippingzipcode": userData.shippingzipcode,
         "accountname": userData.accountname,
         "taxid": userData.taxid,
         "ownername": userData.ownername,
         "billingcountrycode": getStoreData.countryCode,
-        "billingaddress": this.state.accInfo ? userData.shippingaddress : userData.billingaddress,
+        "billingstreet": this.state.accInfo ? userData.shippingstreet : userData.billingstreet,
         "billingcity": this.state.accInfo ? userData.shippingcity : userData.billingcity,
         "billingstate": this.state.accInfo ? userData.shippingstate : userData.billingstate,
-        "billingpostalcode": this.state.accInfo ? userData.shippingpostalcode : userData.billingpostalcode,
+        "billingzipcode": this.state.accInfo ? userData.shippingzipcode : userData.billingzipcode,
         "staffdetails": [...this.state.userData.staffRows]
     }
     // const data = {
@@ -520,19 +610,19 @@ class CreateUser extends Component<any, any> {
     //   whtdistrict: stepper3["district"],
     //   whtepa: stepper3["epa"],
     //   whtvillage: stepper3["village"],
-    //   status: personalData['isDeclineUser'] ? 'Declined' : personalData["isActive"] ? "Active" : "Inactive",
+    //   status: personalData['isDeclineUser'] ? 'Declined' : personalData["active"] ? "Active" : "Inactive",
     // };
 
-    // const userDetails = this.state.isValidatePage ? { 
-    //   isedit : false,
-    //   lastupdatedby : personalData['lastupdatedby'],
-    //   lastupdateddate : personalData['lastupdateddate'],
-    // } : ''
+    const userDetails = this.state.isValidatePage ? { 
+      isedit : false,
+      lastupdatedby : this.state.userName,
+      lastupdateddate : new Date().toJSON()
+    } : ''
     console.log("all@@@@s", data);
     const url = this.state.isValidatePage ? updateUser : retailerCreation;
     const service = this.state.isValidatePage ? invokePostAuthService : invokePostService;
 
-    service(url, data)
+    service(url, data, userDetails)
       .then((response: any) => {
         this.setState({
           isLoader: false,
@@ -557,7 +647,7 @@ class CreateUser extends Component<any, any> {
   };
   // handlePersonalChange = (e: any) => {
   //   let val = this.state.userData;
-  //   if (e.target.name === "isActive") {
+  //   if (e.target.name === "active") {
   //     val[e.target.name] = e.target.checked;
   //   } else if (e.target.name === "accInfo") {
   //     if (!e.target.checked) {
@@ -683,19 +773,19 @@ class CreateUser extends Component<any, any> {
           })
     } else if ( this.state.currentStep === 2 ) {
       let shippingcountrycode = userData.shippingcountrycode  ? '' : "Please enter the Country";
-      let shippingaddress = userData.shippingaddress  ? '' : "Please enter the Street";
+      let shippingstreet = userData.shippingstreet  ? '' : "Please enter the Street";
       let shippingcity = userData.shippingcity  ? '' : "Please enter the City";
       let shippingstate = userData.shippingstate  ? '' : "Please enter the State";
-      let shippingpostalcode = userData.shippingpostalcode  ? '' : "Please enter the Postal";
-      if (shippingcountrycode != '' || shippingaddress != '' || shippingcity != '' || shippingstate != '' || shippingpostalcode != '') {
+      let shippingzipcode = userData.shippingzipcode  ? '' : "Please enter the Postal";
+      if (shippingcountrycode != '' || shippingstreet != '' || shippingcity != '' || shippingstate != '' || shippingzipcode != '') {
         formValid = false;
       }
       this.setState({ 
         shippingcountrycodeErr: shippingcountrycode, 
-        shippingaddressErr: shippingaddress,
+        shippingstreetErr: shippingstreet,
         shippingcityErr: shippingcity,
         shippingstateErr: shippingstate,
-        shippingpostalcodeErr: shippingpostalcode
+        shippingzipcodeErr: shippingzipcode
       })
     } else if (this.state.currentStep === 3 ) {
       this.state.dynamicFields.map((list: any) => {
@@ -715,12 +805,12 @@ class CreateUser extends Component<any, any> {
       let billingcountrycode = userData.billingcountrycode  ? '' : "Please enter the Country";
 
       if(!accInfo){
-        let billingaddress = userData.billingaddress  ? '' : "Please enter the Street";
+        let billingstreet = userData.billingstreet  ? '' : "Please enter the Street";
         let billingcity = userData.billingcity  ? '' : "Please enter the City";
         let billingstate = userData.billingstate  ? '' : "Please enter the State";
-        let billingpostalcode = userData.billingpostalcode  ? '' : "Please enter the Postal";
+        let billingzipcode = userData.billingzipcode  ? '' : "Please enter the Postal";
   
-        if (billingcountrycode != '' || billingaddress != '' || billingcity != '' || billingstate != '' || billingpostalcode != '' || taxid != '' || accountname != '' || ownername != '') {
+        if (billingcountrycode != '' || billingstreet != '' || billingcity != '' || billingstate != '' || billingzipcode != '' || taxid != '' || accountname != '' || ownername != '') {
           formValid = false;
         }
         this.setState({
@@ -728,10 +818,10 @@ class CreateUser extends Component<any, any> {
           accountnameErr: accountname,
           ownernameErr: ownername, 
           billingcountrycodeErr: billingcountrycode, 
-          billingaddressErr: billingaddress,
+          billingstreetErr: billingstreet,
           billingcityErr: billingcity,
           billingstateErr: billingstate,
-          billingpostalcodeErr: billingpostalcode
+          billingzipcodeErr: billingzipcode
         })
       }
       else {
@@ -849,10 +939,10 @@ class CreateUser extends Component<any, any> {
       this.setState((prevState: any)=> ({
         userData: {
           ...prevState.userData,
-          shippingaddress: '',
+          shippingstreet: '',
           shippingcity: '',
           shippingstate: '',
-          shippingpostalcode: '',
+          shippingzipcode: '',
         }
       }))
     }else if ( currentStep === 3) {
@@ -868,10 +958,10 @@ class CreateUser extends Component<any, any> {
           taxid:'',
           ownername:'',
           accountname:'',
-          billingaddress: '',
+          billingstreet: '',
           billingcity: '',
           billingstate: '',
-          billingpostalcode: '',
+          billingzipcode: '',
         }
       }))
     }
@@ -886,7 +976,7 @@ class CreateUser extends Component<any, any> {
 
   handlePersonalChange = (e: any) => {
     let val = this.state.userData;
-    if (e.target.name === "isActive") {
+    if (e.target.name === "active") {
       val[e.target.name] = e.target.checked;
     } else if (e.target.name === "accInfo") {
       if (!e.target.checked) {
@@ -925,7 +1015,7 @@ class CreateUser extends Component<any, any> {
       let owners = this.state.userData.ownerRows;
       if( key === 'phone') {
         owners[idx]['mobilenumber'] = val;
-      } else if (e.target.name === "isActive") {
+      } else if (e.target.name === "active") {
         owners[idx][e.target.name] = e.target.checked; 
       } else {
         let { name, value } = e.target;
@@ -941,7 +1031,7 @@ class CreateUser extends Component<any, any> {
       let staffs = this.state.userData.staffRows;
       if( key === 'phone') {
         staffs[idx]['mobilenumber'] = val;
-      } else if (e.target.name === "isActive") {
+      } else if (e.target.name === "active") {
         staffs[idx][e.target.name] = e.target.checked; 
       } else {
         let { name, value } = e.target;
@@ -972,6 +1062,7 @@ class CreateUser extends Component<any, any> {
       lastname: "",
       mobilenumber: "",
       email: "",
+      active: true,
       errObj: {
         firstnameErr:'',
         lastnameErr: "",
@@ -1007,7 +1098,7 @@ class CreateUser extends Component<any, any> {
     lastname: "",
     mobilenumber: "",
     email: "",
-    isActive: true,
+    active: true,
     errObj: {
       firstnameErr:'',
       lastnameErr: "",
@@ -1059,18 +1150,18 @@ class CreateUser extends Component<any, any> {
       isValidatePage,
       isStaff,
       shippingcountrycodeErr,
-      shippingaddressErr,
+      shippingstreetErr,
       shippingcityErr,
       shippingstateErr,
-      shippingpostalcodeErr,
+      shippingzipcodeErr,
       taxidErr,
       accountnameErr,
       ownernameErr,
       billingcountrycodeErr,
-      billingaddressErr,
+      billingstreetErr,
       billingcityErr,
       billingstateErr,
-      billingpostalcodeErr,
+      billingzipcodeErr,
       accInfo
     } = this.state;
 
@@ -1192,11 +1283,11 @@ class CreateUser extends Component<any, any> {
                   <div className="row" style={{ display: 'flex', alignItems: 'center', marginTop: '8px'}}>
                     <div className="col-sm-3 form-group">
                       <Dropdown
-                        name="role"
+                        name="rolename"
                         label="User Type"
                         options={role}
                         handleChange={(e: any)=>this.handleChange('', e, '', 'othersteps', '')}
-                        value={userData.role}
+                        value={userData.rolename}
                         isPlaceholder
                         isDisabled = {isValidatePage ? true : false} 
                       />
@@ -1295,9 +1386,9 @@ class CreateUser extends Component<any, any> {
                           <td style={{ display: 'flex', alignItems: 'center'}}>
                             <div>
                               <CustomSwitch
-                                checked={item.isActive}
+                                checked={item.active}
                                 onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
-                                name="isActive"
+                                name="active"
                               />
                               </div>
                               <div  style={{visibility: 'hidden'}}>
@@ -1409,9 +1500,9 @@ class CreateUser extends Component<any, any> {
                           <td style={{ display: 'flex', alignItems: 'center'}}>
                             <div>
                               <CustomSwitch
-                                checked={item.isActive}
+                                checked={item.active}
                                 onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
-                                name="isActive"
+                                name="active"
                               />
                               </div>
                               <div>
@@ -1454,14 +1545,14 @@ class CreateUser extends Component<any, any> {
                     <Input
                       type="text"
                       className="form-control"
-                      name="shippingaddress" 
+                      name="shippingstreet" 
                       placeHolder="Street"
-                      value={userData.shippingaddress}
+                      value={userData.shippingstreet}
                       onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
                       disabled={isValidatePage ? true : false}
                     />
-                    {shippingaddressErr && (
-                     <span className="error">{shippingaddressErr} </span>
+                    {shippingstreetErr && (
+                     <span className="error">{shippingstreetErr} </span>
                     )}
                   </div>
                   <div className="col-md-3">
@@ -1496,14 +1587,14 @@ class CreateUser extends Component<any, any> {
                     <Input
                       type="text"
                       className="form-control"
-                      name="shippingpostalcode" 
+                      name="shippingzipcode" 
                       placeHolder="Postal Code"
-                      value={userData.shippingpostalcode}
+                      value={userData.shippingzipcode}
                       onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
                       disabled={isValidatePage ? true : false}
                     />
-                  {shippingpostalcodeErr && (
-                      <span className="error">{shippingpostalcodeErr} </span>
+                  {shippingzipcodeErr && (
+                      <span className="error">{shippingzipcodeErr} </span>
                     )}
                   </div>
                 </div>
@@ -1596,14 +1687,14 @@ class CreateUser extends Component<any, any> {
                       <Input
                         type="text"
                         className="form-control"
-                        name="billingaddress" 
+                        name="billingstreet" 
                         placeHolder="Street"
-                        value={this.state.accInfo ? userData.shippingaddress : userData.billingaddress}
+                        value={this.state.accInfo ? userData.shippingstreet : userData.billingstreet}
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
                         disabled={this.state.accInfo || isValidatePage ? true : false}
                       />
-                      {!accInfo && billingaddressErr && (
-                        <span className="error">{billingaddressErr} </span>
+                      {!accInfo && billingstreetErr && (
+                        <span className="error">{billingstreetErr} </span>
                       )}
                     </div>
                     <div className="col-md-3 form-group">
@@ -1638,18 +1729,18 @@ class CreateUser extends Component<any, any> {
                       <Input
                         type="text"
                         className="form-control"
-                        name="billingpostalcode"
+                        name="billingzipcode"
                         placeHolder="Postal Code"
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
                         disabled={this.state.accInfo || isValidatePage ? true : false}
                         value={
                           this.state.accInfo
-                            ? userData.shippingpostalcode
-                            : userData.billingpostalcode
+                            ? userData.shippingzipcode
+                            : userData.billingzipcode
                         }
                       />
-                      {!accInfo && billingpostalcodeErr && (
-                        <span className="error">{billingpostalcodeErr} </span>
+                      {!accInfo && billingzipcodeErr && (
+                        <span className="error">{billingzipcodeErr} </span>
                       )}
                     </div>
                   </div>
