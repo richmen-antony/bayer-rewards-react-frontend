@@ -3,6 +3,8 @@ import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
 import { connect } from "react-redux";
+import AddBtn from "../../../assets/icons/add_btn.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addTnTFlowInputList } from "../../../redux/actions";
 
 interface ITnTProps {
@@ -85,19 +87,31 @@ export const TnTFlow = (props: ITnTProps) => {
 
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
-                        <button
-                          className="btn btnStyleAdd"
+                        // <button
+                        //   className="btn btnStyleAdd"
+                        //   onClick={() => handleAddClick(idx)}
+                        // >
+                        //   <img src={plus_icon} />
+                        // </button>
+
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={AddBtn}
                           onClick={() => handleAddClick(idx)}
-                        >
-                          <img src={plus_icon} />
-                        </button>
+                        />
                       ) : (
-                        <button
-                          className="btn btnStyleRemove"
+                        // <button
+                        //   className="btn btnStyleRemove"
+                        //   onClick={() => handleRemoveClick(idx)}
+                        // >
+                        //   <img src={minus} />
+                        // </button>
+
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={RemoveBtn}
                           onClick={() => handleRemoveClick(idx)}
-                        >
-                          <img src={minus} />
-                        </button>
+                        />
                       )}
                     </td>
                   </tr>

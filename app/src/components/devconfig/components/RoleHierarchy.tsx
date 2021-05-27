@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
+import AddBtn from "../../../assets/icons/add_btn.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addRoleInputList } from "../../../redux/actions";
 
 interface IRoleProps {
@@ -27,9 +29,28 @@ export const RoleHierarchy = (props: IRoleProps) => {
 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
-    const list = [...inputList];
+    let list = [...inputList];
     list.splice(index, 1);
+
+    list = setCorrectHierLvl(list, index);
+    console.log(list);
+
     setInputList(list);
+  };
+
+  const setCorrectHierLvl = (list: any, index: number) => {
+    const newList = list.map((listItem: any, idx: number) => {
+      return {
+        ...listItem,
+        locationhierlevel: idx,
+        parentlocation:
+          listItem.parentlocation >= index
+            ? listItem.parentlocation - 1
+            : listItem.parentlocation,
+        // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
+      };
+    });
+    return newList;
   };
 
   // handle click event of the Add button
@@ -37,7 +58,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
     setInputList([
       ...inputList,
       {
-        rolehierarchylevel: 0,
+        rolehierarchylevel: inputList.length + 1,
         rolecode: "",
         rolehierarchyname: "",
         roletype: "",
@@ -140,7 +161,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           inputList.map(
                             ({ rolecode }: any, index: number) =>
                               index < idx && (
-                                <option value={index} key={rolecode}>
+                                <option value={rolecode} key={rolecode}>
                                   {rolecode}
                                 </option>
                               )
@@ -150,19 +171,29 @@ export const RoleHierarchy = (props: IRoleProps) => {
 
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
-                        <button
-                          className="btn btnStyleAdd"
+                        // <button
+                        //   className="btn btnStyleAdd"
+                        //   onClick={() => handleAddClick(idx)}
+                        // >
+                        //   <img src={plus_icon} />
+                        // </button>
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={AddBtn}
                           onClick={() => handleAddClick(idx)}
-                        >
-                          <img src={plus_icon} />
-                        </button>
+                        />
                       ) : (
-                        <button
-                          className="btn btnStyleRemove"
+                        // <button
+                        //   className="btn btnStyleRemove"
+                        //   onClick={() => handleRemoveClick(idx)}
+                        // >
+                        //   <img src={minus} />
+                        // </button>
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={RemoveBtn}
                           onClick={() => handleRemoveClick(idx)}
-                        >
-                          <img src={minus} />
-                        </button>
+                        />
                       )}
                     </td>
                   </tr>

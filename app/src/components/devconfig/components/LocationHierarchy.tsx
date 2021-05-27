@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
-import plus_icon from "../../../assets/icons/plus_icon.svg";
-import minus from "../../../assets/icons/minus.svg";
+import AddBtn from "../../../assets/icons/add_btn.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
+
 import { addLocationInputList } from "../../../redux/actions";
 
 interface ILocationProps {
@@ -12,7 +13,7 @@ interface ILocationProps {
 
 const LocationHierarchy = (props: ILocationProps) => {
   const {
-    location: { dpList, inputList },
+    location: { inputList },
     setInputList,
   } = props;
 
@@ -28,8 +29,10 @@ const LocationHierarchy = (props: ILocationProps) => {
 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
-    const list = [...inputList];
+    let list = [...inputList];
     list.splice(index, 1);
+    list = setCorrectHierLvl(list,index);
+    console.log(list)
     setInputList(list);
   };
 
@@ -37,7 +40,7 @@ const LocationHierarchy = (props: ILocationProps) => {
   const handleAddClick = (index: any) => {
     setInputList([
       ...inputList,
-      { locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
+      { locationhierlevel: inputList.length + 1, locationhiername: "", parentlocation: -1 },
     ]);
   };
 
@@ -47,6 +50,18 @@ const LocationHierarchy = (props: ILocationProps) => {
     list[index].parentlocation = value;
     setInputList(list);
     setValSelected(event.target.value);
+  };
+
+  const setCorrectHierLvl = ( list: any, index : number) => {
+    const newList  = list.map((listItem:any, idx:number)=> {
+      return {
+        ...listItem,
+        locationhierlevel : idx,
+        parentlocation :  listItem.parentlocation >= index ? listItem.parentlocation-1 : listItem.parentlocation
+        // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
+      }
+    });
+    return newList;
   };
 
   return (
@@ -105,19 +120,30 @@ const LocationHierarchy = (props: ILocationProps) => {
                     </td>
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
-                        <button
-                          className="btn btnStyleAdd"
+                        // <button
+                        //   className="btn btnStyleAdd"
+                        //   onClick={() => handleAddClick(idx)}
+                        // >
+                        //   <img src={plus_icon} />
+                        // </button>
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={AddBtn}
                           onClick={() => handleAddClick(idx)}
-                        >
-                          <img src={plus_icon} />
-                        </button>
+                        />
                       ) : (
-                        <button
-                          className="btn btnStyleRemove"
+                        //   <button
+                        //     className="btn btnStyleRemove"
+                        //     onClick={() => handleRemoveClick(idx)}
+                        //   >
+
+                        //     {/* <img src={minus} /> */}
+                        //   </button>
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={RemoveBtn}
                           onClick={() => handleRemoveClick(idx)}
-                        >
-                          <img src={minus} />
-                        </button>
+                        />
                       )}
                     </td>
                   </tr>

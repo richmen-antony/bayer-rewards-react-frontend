@@ -2,12 +2,12 @@ import React from "react";
 import "../../assets/scss/configurations.scss";
 import { compose } from "redux";
 import { connect } from "react-redux";
-// import "../devconfig/devconfig.scss"
 import Stepper from "../../container/components/stepper/Stepper";
 import { apiURL } from "../../utility/base/utils/config";
 import {
   invokeGetAuthService,
   invokeGetAuthServiceTemp,
+  invokePostServiceTemp,
 } from "../../utility/base/service";
 
 import { FormSteps } from "../../utility/constant";
@@ -28,7 +28,10 @@ import {
   addRoleInputList,
   addTnTFlowInputList,
   addPackagingDefinitionInputList,
+  setAnticounterfeitSmsAuthentication,
 } from "../../redux/actions/devconfig/add";
+import ArrowIcon from "../../assets/icons/dark bg.svg";
+import RtButton from "../../assets/icons/right_btn.svg";
 
 import cluster_json from "../../utility/lib/cluster.json";
 
@@ -47,6 +50,7 @@ import left_arrow from "../../assets/icons/left_arrow.svg";
 import right_arrow from "../../assets/icons/left-arrow.svg";
 import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
+import tickIcon from "../../assets/icons/tick.svg";
 
 export interface IFormValue {
   id: string;
@@ -66,6 +70,8 @@ interface IDevConfigProps {
   addRoleInputList: any;
   addTnTFlowInputList: any;
   addPackagingDefinitionInputList: any;
+  setAnticounterfeitSmsAuthentication: any;
+  devconfig: any;
 }
 
 type MyComponentState = {
@@ -309,6 +315,7 @@ class Devconfigurations extends React.Component<
 
     if (newStep === stepsArray.length) {
       //Submit values
+      // this.registerTemplateByCountry();
     }
   }
 
@@ -346,9 +353,9 @@ class Devconfigurations extends React.Component<
       "componentDidUpdate -setSelectedCluster",
       this.state.setSelectedCluster
     );
-    if (this.state.setSelectedCluster) {
-      this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
-    }
+    // if (this.state.setSelectedCluster) {
+    //   this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
+    // }
   }
 
   _retrieveSelectedContryofCluster = async (setSelectedCluster: any) => {
@@ -367,6 +374,34 @@ class Devconfigurations extends React.Component<
     } catch (error) {
       console.log(error);
     }
+  };
+
+  registerTemplateByCountry = () => {
+    const { registerTemplateData } = apiURL;
+    const { devconfig } = this.props;
+    this.setState({ isLoader: true });
+    let data = {
+      countrycode: devconfig.countryCode,
+      currencycode: "MK",
+      currency: "MK",
+      country: this.state.country,
+      cluster: this.state.cluster,
+      digitalscan: false,
+      smartlabel: false,
+      locationhierarchy: devconfig.location.inputList,
+    };
+
+    invokePostServiceTemp(registerTemplateData, data)
+      .then((response: any) => {
+        console.log(response);
+        this.setState({
+          isLoader: false,
+        });
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        console.log(error, "error");
+      });
   };
 
   getTemplateByCountry = () => {
@@ -401,6 +436,9 @@ class Devconfigurations extends React.Component<
         this.props.addTnTFlowInputList(objCountryData.trackntraceflow);
         this.props.addPackagingDefinitionInputList(
           objCountryData.productpackagedefinition
+        );
+        this.props.setAnticounterfeitSmsAuthentication(
+          objCountryData.smsauthentication
         );
 
         this.setState({
@@ -528,17 +566,17 @@ class Devconfigurations extends React.Component<
     if (currentStep === stepsArray.length) {
       button = (
         <button
-          style={btnNextSubmit}
+          className="btnNextSubmit"
           onClick={() => this.handleClick("next", "")}
         >
-          Submit
+          Apply
           <img src={check} />
         </button>
       );
     } else {
       button = (
         <button
-          style={btnNextSubmit}
+          className="btnNextSubmit cus-btn-dev"
           onClick={(e) => this.handleClick("next", e)}
         >
           Next <img src={right_arrow} />
@@ -566,8 +604,8 @@ class Devconfigurations extends React.Component<
                 aria-label="ant example"
               >
                 <AntTab label="COUNTRY" />
-                <AntTab label="FEATURE TOGGLE" />
-                <AntTab label="DEV CONFIG" />
+                {/* <AntTab label="FEATURE TOGGLE" />
+                <AntTab label="DEV CONFIG" /> */}
               </AntTabs>
               <Typography />
             </div>
@@ -680,22 +718,35 @@ class Devconfigurations extends React.Component<
               {this._getCurrentStep()}
               <div className="col-md-12 buttons-container">
                 {this.state.isActive && (
-                  <button style={btnStyle} onClick={() => this.handleClick()}>
-                    <img src={left_arrow} /> Back
+                  <button
+                    className="cus-btn-dev reset"
+                    onClick={() => this.handleClick()}
+                  >
+                    <img src={left_arrow} width="12" /> Back
                   </button>
                 )}
-                <button style={btnStyle} onClick={() => this.handleReset()}>
-                  Reset <img src={reset} />
+                <button
+                  className="cus-btn-dev reset"
+                  onClick={() => this.handleReset()}
+                >
+                  Reset <img src={reset} width="12" />
                 </button>
                 <button
-                  style={btnNextSubmit}
+                  className="btnNextSubmit cus-btn-dev"
                   onClick={() => this.handleClick("next")}
                 >
                   {currentStep === stepsArray.length ? "Apply" : "Next"}{" "}
                   {currentStep === stepsArray.length ? (
-                    <img src={check} />
+                    // <img src={check} />
+                    <span>
+                      <img src={tickIcon} className="arrow-i" width="12" />{" "}
+                      <img src={RtButton} className="layout" />
+                    </span>
                   ) : (
-                    <img src={right_arrow} />
+                    <span>
+                      <img src={ArrowIcon} className="arrow-i" />{" "}
+                      <img src={RtButton} className="layout" />
+                    </span>
                   )}{" "}
                 </button>
               </div>
@@ -724,6 +775,7 @@ const stepsArray = [
 ];
 
 const mapStateToProps = ({
+  devconfig,
   devconfig: {
     location,
     role,
@@ -733,6 +785,7 @@ const mapStateToProps = ({
   },
 }: any) => {
   return {
+    devconfig,
     loacationinputList: location.inputList,
     roleinputList: role.inputList,
     tntflowinputList: tntflow.inputList,
@@ -746,6 +799,7 @@ const mapDispatchToProps = {
   addRoleInputList,
   addTnTFlowInputList,
   addPackagingDefinitionInputList,
+  setAnticounterfeitSmsAuthentication,
 };
 
 // const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);

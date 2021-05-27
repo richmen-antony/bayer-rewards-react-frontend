@@ -138,3 +138,34 @@ export function invokeGetAuthServiceTemp(path,formData) {
       });
   });
 };
+
+//Post method without auth
+export function invokePostServiceTemp(path,reqObj,params)  {
+  return new Promise(function (resolve, reject) {      
+    let headers = {
+      'Content-Type': 'application/json', 
+      'Accept': 'application/json',
+      "Access-Control-Allow-Origin": true
+    };
+    const apiEndPoint = configApp.template;
+    const config = {
+      method: 'POST',
+      data: reqObj,
+      params: params,
+      headers
+    };
+    axios.create({
+      baseURL: apiEndPoint+path,
+    })(config)
+      .then((response) => {
+        console.log(response.data, 'response')
+        resolve(response.data)
+      })
+      .catch((err) => {
+        console.log(err, 'error')
+        if(err.response){
+          reject(err.response.data);
+        }      
+      }); 
+  });
+};
