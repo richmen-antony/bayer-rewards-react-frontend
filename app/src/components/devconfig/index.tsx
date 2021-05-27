@@ -621,10 +621,12 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
     if(currentStep===3){
       const data =roleinputList.map((value:any)=>{
         if(!value.rolehierarchyname || !value.rolecode ){
-          if(!value.rolehierarchyname)
-          value={...value,rolehierarchyname_error:true}
-          if(!value.rolecode)
-          value={...value,rolecode_error:true}
+          if(!value.rolehierarchyname && !value.rolecode ){
+            value={...value,rolehierarchyname_error:true,rolecode_error:true}
+          }else if(!value.rolehierarchyname)
+          value={...value,rolehierarchyname_error:true,rolecode_error:false}
+          else if(!value.rolecode)
+          value={...value,rolecode_error:true,rolehierarchyname_error:false}
           this.setState({
             isError:true,
             currentStep:3
@@ -644,10 +646,14 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
     if(currentStep===4){
       const data =tntflowinputList.map((value:any)=>{
         if(!value.code || !value.position ){
-          if(!value.code)
-          value={...value,code_error:true}
-          if(!value.position)
-          value={...value,position_error:true}
+          if(!value.code &&!value.position){
+            value={...value,code_error:true,position_error:true}
+          }else if(!value.code){
+            value={...value,code_error:true,position_error:false}
+          }else if(!value.position){
+            value={...value,position_error:true,code_error:false}
+          }
+        
           this.setState({
             isError:true,
             currentStep:4
