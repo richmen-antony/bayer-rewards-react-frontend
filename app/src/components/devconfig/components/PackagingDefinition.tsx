@@ -3,19 +3,20 @@ import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
 import { connect } from "react-redux";
-import { addTnTFlowInputList } from "../../../redux/actions";
+import { addPackagingDefinitionInputList } from "../../../redux/actions";
 
-interface ITnTProps {
-  tntflow: any;
+interface IPackagingDefinitionProps {
+  packagingdefinition: any;
   setInputList: (data: any) => void;
 }
 
-export const TnTFlow = (props: ITnTProps) => {
+export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const {
-    tntflow: { inputList },
+    packagingdefinition: { inputList },
     setInputList,
   } = props;
   const [valSelected, setValSelected] = useState("NA");
+  const [activeButton, SetActiveButton] = React.useState("Seed");
 
   // handle input change
   const handleInputChange = (e: any, index: any) => {
@@ -34,13 +35,20 @@ export const TnTFlow = (props: ITnTProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-    setInputList([...inputList, { level: 0, code: "", position: "" }]);
+    setInputList([
+      ...inputList,
+      {
+        packaginghierarchylevel: 0,
+        packaginghierarchyname: "",
+        parentpackage: -1,
+      },
+    ]);
   };
 
   const handleDropdownChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].parentlocation = value;
+    list[index].parentpackage = value;
     setInputList(list);
     setValSelected(event.target.value);
   };
@@ -50,12 +58,35 @@ export const TnTFlow = (props: ITnTProps) => {
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">
+            <div
+              className="btn-group product-categeory"
+              role="group"
+              aria-label="Basic outlined"
+            >
+              <button
+                type="button"
+                className={`btn btn-outline-primary ${
+                  activeButton === "Seed" ? "active" : ""
+                }`}
+              >
+                Seed
+              </button>
+              <button
+                type="button"
+                className={`btn btn-outline-primary ${
+                  activeButton === "CP" ? "active" : ""
+                }`}
+              >
+                CP
+              </button>
+            </div>
+
             <table className="table" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="tableStyle text-center">Level</th>
-                  <th className="tableHeaderStyle">Code</th>
-                  <th className="tableHeaderStyle">Position</th>
+                  <th className="tableHeaderStyle">Name</th>
+                  <th className="tableHeaderStyle">Parent Name</th>
                   <th className="tablebtnStyle" />
                 </tr>
               </thead>
@@ -67,20 +98,39 @@ export const TnTFlow = (props: ITnTProps) => {
                       <input
                         className="form-control dpstyle"
                         type="text"
-                        name="code"
-                        value={item.code}
+                        name="packaginghierarchyname"
+                        value={item.packaginghierarchyname}
                         onChange={(e) => handleInputChange(e, idx)}
                       />
                     </td>
 
                     <td className="tableHeaderStyle">
-                      <input
-                        className="form-control dpstyle"
-                        type="text"
-                        name="position"
-                        value={item.position}
-                        onChange={(e) => handleInputChange(e, idx)}
-                      />
+                      <select
+                        className="dpstyle selectoutline"
+                        defaultValue="NA"
+                        name="parentpackage"
+                        data-id={idx}
+                        id="dropdown"
+                        value={item.parentpackage}
+                        onChange={(event) => handleDropdownChange(event, idx)}
+                      >
+                        <option value="NA" key="NA">
+                          NA
+                        </option>
+                        {idx > 0 &&
+                          inputList.length > 0 &&
+                          inputList.map(
+                            ({ packaginghierarchyname }: any, index: number) =>
+                              index < idx && (
+                                <option
+                                  value={index}
+                                  key={packaginghierarchyname}
+                                >
+                                  {packaginghierarchyname}
+                                </option>
+                              )
+                          )}
+                      </select>
                     </td>
 
                     <td className="tablebtnStyle">
@@ -111,14 +161,17 @@ export const TnTFlow = (props: ITnTProps) => {
   );
 };
 
-const mapStateToProps = ({ devconfig: { tntflow } }: any) => {
+const mapStateToProps = ({ devconfig: { packagingdefinition } }: any) => {
   return {
-    tntflow,
+    packagingdefinition,
   };
 };
 
 const mapDispatchToProps = {
-  setInputList: addTnTFlowInputList,
+  setInputList: addPackagingDefinitionInputList,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TnTFlow);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PackagingDefinition);

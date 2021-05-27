@@ -31,7 +31,7 @@ import ThirdPartyUsers from "./thirdPartyUsers";
 import ChangeLogs from "./changeLogs";
 import ArrowIcon from "../../../assets/icons/tick.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
-
+import {SearchInput} from "../../../utility/widgets/input/search-input";
 type SelectedFiltersTypes = {
   region: string;
   epa: string;
@@ -785,23 +785,13 @@ class UserList extends Component<Props, States> {
                 style={{ backgroundColor: "#ffffff" }}
               >
                 <div className="col-sm-6">
-                  <div className="searchInputRow advisor-sales">
-                    <i className="icon">
-                      <img src={SearchIcon} width="17" alt={NoImage} />{" "}
-                    </i>
-                    <input
-                      placeholder="Search user (min 3 letters)"
-                      className="input-field"
+                  <SearchInput 
+                      placeHolder="Search user (min 3 letters)"
                       type="text"
                       onChange={this.handleSearch}
-                      value={searchText}
-                    />
-                    <i
-                      className="fa fa-info-circle"
-                      style={{ fontSize: "16px", width: "120px" }}
-                      title="Search applicable for User Name, Account Name and Owner Name"
-                    ></i>
-                  </div>
+                      value={searchText} 
+                      tolltip="Search applicable for User Name, Account Name and Owner Name"
+                      />
                 </div>
                 <div className="col-sm-6 leftAlign">
                   <div className="partner">

@@ -19,6 +19,10 @@
   }
 }
 
+.selectoutline {
+  outline: none;
+}
+
 .tableStyle {
   border: none !important;
   text-align: center;
@@ -108,15 +112,29 @@
   background: #555;
 }
 
-
-@media only screen and (max-width: 1440px) {
-  .card-height {
-    height: 82vh;
-  }
+input:read-only {
+  background-color: white;
 }
 
-@media only screen and (max-width: 1920px) {
-  .card-height {
-    height: 84vh;
+//Table design
+table {
+  text-align: left;
+  border-collapse: collapse;
+}
+th,
+td {
+  padding: 0.25rem;
+}
+th {
+  background: whitesmoke;
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+}
+
+//product-categeory
+.product-categeory {
+  margin-left: 60px;
+  button {
+    width: 100px;
   }
 }

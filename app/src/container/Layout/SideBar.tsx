@@ -178,8 +178,8 @@ class Sidebar extends Component<Props, States> {
                           }
                         ></span>
                         <Link
-                          to="/scanLogs"
-                          onClick={() => this.setActiveTab("scanLogs")}
+                          to="/scanlogs"
+                          onClick={() => this.setActiveTab("scanlogs")}
                         >
                           <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
                           <span> Scan logs </span>
