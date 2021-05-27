@@ -406,7 +406,8 @@
     outline: none;
     width: 260px;
     height: 40px;
-    padding-left: 15px
+    padding-left: 15px;
+    border-radius:5px;
   }
   .search-i{
     position: relative;
@@ -415,13 +416,15 @@
   }
   .layout{
     position: relative;
-    right: 71px;
+    right: 52px;
     height: 40px;
     bottom: 1px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px
   }
   i{
     position: relative;
-    right: 60px;
+    right: 45px;
     bottom: 13px;
   }
 }
