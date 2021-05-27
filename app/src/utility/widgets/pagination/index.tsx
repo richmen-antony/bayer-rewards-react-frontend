@@ -11,7 +11,7 @@ import RightArrowDisabled from "../../../assets/icons/right_page_disabled.svg";
 
 type Props = {
     pageNo: number;
-    totalData: number;
+    totalData: any;
     rowsPerPage: number;
     previous: Function;
     next: Function;
