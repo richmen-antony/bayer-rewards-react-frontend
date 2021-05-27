@@ -298,7 +298,7 @@ class ChannelPartners extends Component<Props, States> {
     res.push(<th>{'STAFF COUNT'}</th>)
     res.push(<th>{'STATUS'}</th>)
 
-    res.push(<th>{'LAST UPDATED BY'}</th>)
+    res.push(<th>{'UPDATED BY'}</th>)
 
     res.push(<th></th>)
 
@@ -535,18 +535,15 @@ class ChannelPartners extends Component<Props, States> {
 
     }else {
       let condUrl;
-      if (
-        userstatus === "ACTIVE" ||
-        userstatus === "INACTIVE"
-      ) {
+      if (userstatus === "INACTIVE" ) {
         condUrl = activateChannelPartner;
-      } else {
+      } else if(userstatus === "ACTIVE"){
         condUrl = deactivateChannelPartner;
       }
      
       let obj: any = {};
       obj.lastupdatedby = this.state.userName;
-      obj.lastupdateddate = new Date();
+      obj.lastupdateddate = new Date().toJSON();
       obj.username = username;
      
       invokePostAuthService(condUrl, obj)
@@ -1076,13 +1073,13 @@ class ChannelPartners extends Component<Props, States> {
                           <td style={{ display: 'flex', alignItems: 'center'}}>
                             <div>
                               <CustomSwitch
-                                checked={item.active}
+                                checked={userData.ownerRows[0].active ? item.active : false}
                                 onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
                                 name="active"
                               />
                               </div>
                               <div>
-                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 5) ?
+                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 4) ?
                                   <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
                                   :  <img style={{width: '50px', height: '50px',}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
                               </div>

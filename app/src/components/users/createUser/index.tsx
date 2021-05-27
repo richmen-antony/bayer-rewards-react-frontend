@@ -495,7 +495,7 @@ class CreateUser extends Component<any, any> {
     } else {
       newStep = newStep - 1;
     }
-    // formValid = true;
+    formValid = true;
 
     if (newStep > 0 && newStep <= this.state.stepsArray.length) {
       if (formValid) {
@@ -642,7 +642,13 @@ class CreateUser extends Component<any, any> {
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
-        console.log(error, "error");
+        let message = error.message;
+        if (message === 'Retailer with the same Mobilenumber exists') {
+          message = 'User with same Mobilenumber exists';
+        } 
+        toastSuccess(message);
+        this.setState({isRendered: true});
+        this.props.history.push("/createUser");
       });
   };
   // handlePersonalChange = (e: any) => {
@@ -1500,13 +1506,13 @@ class CreateUser extends Component<any, any> {
                           <td style={{ display: 'flex', alignItems: 'center'}}>
                             <div>
                               <CustomSwitch
-                                checked={item.active}
+                                checked={userData.ownerRows[0].active ? item.active : false}
                                 onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
                                 name="active"
                               />
                               </div>
                               <div>
-                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 5) ?
+                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 4) ?
                                   <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
                                   :  <img style={{width: '50px', height: '50px',}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
                               </div>
