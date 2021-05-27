@@ -3,11 +3,15 @@ import "../../devconfig/devconfig.scss";
 import plus_icon from "../../../assets/icons/plus_icon.svg";
 import minus from "../../../assets/icons/minus.svg";
 import { connect } from "react-redux";
+import AddBtn from "../../../assets/icons/add_btn.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
+
 import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
 
 interface IScanPointsAndAllocationProps {
   scanpointsandallocation: any;
   setInputList: (data: any) => void;
+  tntflow: any
 }
 
 export const ScanPointsAndAllocation = (
@@ -119,25 +123,25 @@ export const ScanPointsAndAllocation = (
                         className="dpstyle selectoutline"
                         id="dropdown"
                         name="position"
-                        value={item.position.value}
+                        value={item.position}
                         onChange={(event) =>
                           handleDropdownPostionChange(event, idx)
                         }
                       >
-                        <option value="Plant" key="Plant">
+                        {/* <option value="Plant" key="Plant">
                           Plant
                         </option>
                         <option value="Warehouse" key="Warehouse">
                           Warehouse
-                        </option>
+                        </option> */}
 
-                        {/* {idx > 0 && this.state.dpList.length > 0 && (
-                          this.state.dpList.map(({ locationhierarchy }) => (
-                            <option value={locationhierarchy} key={locationhierarchy}>
-                              {locationhierarchy}
+                       { props.tntflow.inputList.length > 0 && (
+                          props.tntflow.inputList.map(({ position }: any) => (
+                            <option value={position} key={position}>
+                              {position}
                             </option>
                           ))
-                        )} */}
+                        )} 
                       </select>
                     </td>
                     <td className="tableHeaderStyle">
@@ -145,22 +149,22 @@ export const ScanPointsAndAllocation = (
                         className="dpstyle selectoutline"
                         id="dropdown"
                         name="scannedby"
-                        value={item.scannedby.value}
+                        value={item.scannedby}
                         onChange={(event) => handleScannedbyChange(event, idx)}
                       >
-                        <option value="Plant" key="Plant">
+                        {/* <option value="Plant" key="Plant">
                           Plant
                         </option>
                         <option value="Warehouse" key="Warehouse">
                           Warehouse
-                        </option>
-                        {/* {idx > 0 && this.state.dpList.length > 0 && (
-                          this.state.dpList.map(({ locationhierarchy }) => (
-                            <option value={locationhierarchy} key={locationhierarchy}>
-                              {locationhierarchy}
+                        </option> */}
+                        {props.tntflow.inputList.length > 0 && (
+                          props.tntflow.inputList.map(({ position }: any) => (
+                            <option value={position} key={position}>
+                              {position}
                             </option>
                           ))
-                        )} */}
+                        )} 
                       </select>
                     </td>
 
@@ -169,7 +173,7 @@ export const ScanPointsAndAllocation = (
                         className="dpstyle selectoutline"
                         id="dropdown"
                         name="scannedtype"
-                        value={item.scannedtype.value}
+                        value={item.scannedtype}
                         onChange={(event) =>
                           handleScannedtypeChange(event, idx)
                         }
@@ -200,7 +204,7 @@ export const ScanPointsAndAllocation = (
                         className="dpstyle selectoutline"
                         id="dropdown"
                         name="packaginglevel"
-                        value={item.packaginglevel.value}
+                        value={item.packaginglevel}
                         onChange={(event) =>
                           handlePackaginglevelChange(event, idx)
                         }
@@ -226,15 +230,15 @@ export const ScanPointsAndAllocation = (
                         className="dpstyle selectoutline"
                         id="dropdown"
                         name="pointsallocated"
-                        value={item.pointsallocated.value}
+                        value={item.pointsallocated}
                         onChange={(event) =>
                           handlePointsallocatedChange(event, idx)
                         }
                       >
-                        <option value="Yes" key="Yes">
+                        <option value={1} key="Yes">
                           Yes
                         </option>
-                        <option value="No" key="No">
+                        <option value={0} key="No">
                           No
                         </option>
                         {/* {idx > 0 && this.state.dpList.length > 0 && (
@@ -248,19 +252,30 @@ export const ScanPointsAndAllocation = (
                     </td>
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
-                        <button
-                          className="btn btnStyleAdd"
+                        // <button
+                        //   className="btn btnStyleAdd"
+                        //   onClick={() => handleAddClick(idx)}
+                        // >
+                        //   <img src={plus_icon} />
+                        // </button>
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={AddBtn}
                           onClick={() => handleAddClick(idx)}
-                        >
-                          <img src={plus_icon} />
-                        </button>
+                        />
                       ) : (
-                        <button
-                          className="btn btnStyleRemove"
+                        // <button
+                        //   className="btn btnStyleRemove"
+                        //   onClick={() => handleRemoveClick(idx)}
+                        // >
+                        //   <img src={minus} />
+                        // </button>
+
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={RemoveBtn}
                           onClick={() => handleRemoveClick(idx)}
-                        >
-                          <img src={minus} />
-                        </button>
+                        />
                       )}
                     </td>
                   </tr>
@@ -274,9 +289,10 @@ export const ScanPointsAndAllocation = (
   );
 };
 
-const mapStateToProps = ({ devconfig: { scanpointsandallocation } }: any) => {
+const mapStateToProps = ({ devconfig: { scanpointsandallocation, tntflow} }: any) => {
   return {
     scanpointsandallocation,
+    tntflow
   };
 };
 

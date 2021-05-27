@@ -46,7 +46,7 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
     <div className="col-md-10">
       <div className="container">
         <div className="row rm-group">
-          <div className="col-sm-3">
+          <div className="col-sm-5">
             <table className="table" id="tab_logic">
               <tbody>
                 <tr>
