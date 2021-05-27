@@ -31,8 +31,8 @@ const LocationHierarchy = (props: ILocationProps) => {
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
     list.splice(index, 1);
-    list = setCorrectHierLvl(list,index);
-    console.log(list)
+    list = setCorrectHierLvl(list, index);
+    console.log(list);
     setInputList(list);
   };
 
@@ -40,7 +40,11 @@ const LocationHierarchy = (props: ILocationProps) => {
   const handleAddClick = (index: any) => {
     setInputList([
       ...inputList,
-      { locationhierlevel: inputList.length + 1, locationhiername: "", parentlocation: -1 },
+      {
+        locationhierlevel: inputList.length + 1,
+        locationhiername: "",
+        parentlocation: -1,
+      },
     ]);
   };
 
@@ -52,14 +56,17 @@ const LocationHierarchy = (props: ILocationProps) => {
     setValSelected(event.target.value);
   };
 
-  const setCorrectHierLvl = ( list: any, index : number) => {
-    const newList  = list.map((listItem:any, idx:number)=> {
+  const setCorrectHierLvl = (list: any, index: number) => {
+    const newList = list.map((listItem: any, idx: number) => {
       return {
         ...listItem,
-        locationhierlevel : idx,
-        parentlocation :  listItem.parentlocation >= index ? listItem.parentlocation-1 : listItem.parentlocation
+        locationhierlevel: idx,
+        parentlocation:
+          listItem.parentlocation >= index
+            ? listItem.parentlocation - 1
+            : listItem.parentlocation,
         // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
-      }
+      };
     });
     return newList;
   };
@@ -69,7 +76,7 @@ const LocationHierarchy = (props: ILocationProps) => {
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">
-            <table className="table" id="tab_logic">
+            <table className="devconfig table" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="text-center tableStyle">Location Level</th>

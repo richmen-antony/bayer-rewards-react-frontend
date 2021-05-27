@@ -28,7 +28,10 @@ import {
   addRoleInputList,
   addTnTFlowInputList,
   addPackagingDefinitionInputList,
+  addScanpointsAndAllocationInputList,
   setAnticounterfeitSmsAuthentication,
+  setAnticounterfeitDigitalScan,
+  setAnticounterfeitSmartLabel,
 } from "../../redux/actions/devconfig/add";
 import ArrowIcon from "../../assets/icons/dark bg.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
@@ -70,7 +73,10 @@ interface IDevConfigProps {
   addRoleInputList: any;
   addTnTFlowInputList: any;
   addPackagingDefinitionInputList: any;
+  addScanpointsAndAllocationInputList: any;
   setAnticounterfeitSmsAuthentication: any;
+  setAnticounterfeitDigitalScan: any;
+  setAnticounterfeitSmartLabel: any;
   devconfig: any;
 }
 
@@ -96,6 +102,7 @@ type MyComponentState = {
   currencyname: string;
   value: number;
   allTemplateDataByCountry: Array<any>;
+  countryDetails: any;
 };
 
 const AntTabs = withStyles({
@@ -211,6 +218,7 @@ class Devconfigurations extends React.Component<
       currencyname: "",
       value: 0,
       allTemplateDataByCountry: [],
+      countryDetails: [],
     };
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
     this.handleDropdownChangeRegion =
@@ -313,9 +321,9 @@ class Devconfigurations extends React.Component<
       // }
     }
 
-    if (newStep === stepsArray.length) {
+    if (currentStep === stepsArray.length) {
       //Submit values
-      // this.registerTemplateByCountry();
+      this.registerTemplateByCountry();
     }
   }
 
@@ -336,10 +344,6 @@ class Devconfigurations extends React.Component<
     const setData = cluster_json;
     this.setState({ setData: setData });
 
-    console.log(
-      "componentWillMount - setSelectedCluster",
-      this.state.setSelectedCluster
-    );
     if (this.state.setSelectedCluster) {
       this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
     }
@@ -349,10 +353,6 @@ class Devconfigurations extends React.Component<
     if (this.state.currentStep !== prevState.currentStep) {
       window.scrollTo(0, 0);
     }
-    console.log(
-      "componentDidUpdate -setSelectedCluster",
-      this.state.setSelectedCluster
-    );
     // if (this.state.setSelectedCluster) {
     //   this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
     // }
@@ -382,26 +382,34 @@ class Devconfigurations extends React.Component<
     this.setState({ isLoader: true });
     let data = {
       countrycode: devconfig.countryCode,
-      currencycode: "MK",
-      currency: "MK",
-      country: this.state.country,
+      currencycode: devconfig.currencyCode,
+      currency: devconfig.currencyName,
+      country: devconfig.countryName,
       cluster: this.state.cluster,
-      digitalscan: false,
-      smartlabel: false,
+      region: this.state.region,
+      smsauthentication: devconfig.anticounterfeit.sms_authentication,
+      digitalscan: devconfig.anticounterfeit.digital_scan,
+      smartlabel: devconfig.anticounterfeit.smart_label,
+      createdby: "demo1",
       locationhierarchy: devconfig.location.inputList,
+      rolehierarchy: devconfig.role.inputList,
+      trackntraceflow: devconfig.tntflow.inputList,
+      productpackagedefinition: devconfig.packagingdefinition.inputList,
+      scanpointallocationdefinition:
+        devconfig.scanpointsandallocation.inputList,
     };
-
-    invokePostServiceTemp(registerTemplateData, data)
-      .then((response: any) => {
-        console.log(response);
-        this.setState({
-          isLoader: false,
-        });
-      })
-      .catch((error: any) => {
-        this.setState({ isLoader: false });
-        console.log(error, "error");
-      });
+    console.log(data);
+    // invokePostServiceTemp(registerTemplateData, data)
+    //   .then((response: any) => {
+    //     console.log(response);
+    //     this.setState({
+    //       isLoader: false,
+    //     });
+    //   })
+    //   .catch((error: any) => {
+    //     this.setState({ isLoader: false });
+    //     console.log(error, "error");
+    //   });
   };
 
   getTemplateByCountry = () => {
@@ -437,9 +445,17 @@ class Devconfigurations extends React.Component<
         this.props.addPackagingDefinitionInputList(
           objCountryData.productpackagedefinition
         );
+        this.props.addScanpointsAndAllocationInputList(
+          objCountryData.scanpointallocationdefinition
+        );
+
         this.props.setAnticounterfeitSmsAuthentication(
           objCountryData.smsauthentication
         );
+
+        this.props.setAnticounterfeitDigitalScan(objCountryData.digitalscan);
+
+        this.props.setAnticounterfeitSmartLabel(objCountryData.smartlabel);
 
         this.setState({
           isLoader: false,
@@ -479,9 +495,10 @@ class Devconfigurations extends React.Component<
   //     currentStep: currentStep - 1,
   //   });
   // };
+  getCountryDetails = () => {};
 
   _getCurrentStep = () => {
-    const { currentStep, selectedCountryDetails } = this.state;
+    const { currentStep, selectedCountryDetails, countryDetails } = this.state;
 
     switch (currentStep) {
       case 1:
@@ -799,7 +816,10 @@ const mapDispatchToProps = {
   addRoleInputList,
   addTnTFlowInputList,
   addPackagingDefinitionInputList,
+  addScanpointsAndAllocationInputList,
   setAnticounterfeitSmsAuthentication,
+  setAnticounterfeitDigitalScan,
+  setAnticounterfeitSmartLabel,
 };
 
 // const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);

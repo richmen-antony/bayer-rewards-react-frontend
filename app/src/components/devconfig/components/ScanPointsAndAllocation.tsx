@@ -11,7 +11,8 @@ import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
 interface IScanPointsAndAllocationProps {
   scanpointsandallocation: any;
   setInputList: (data: any) => void;
-  tntflow: any
+  tntflow: any;
+  packagingdefinition: any;
 }
 
 export const ScanPointsAndAllocation = (
@@ -22,6 +23,23 @@ export const ScanPointsAndAllocation = (
     setInputList,
   } = props;
   const [valSelected, setValSelected] = useState("NA");
+
+  const getUnique = (arr: any, comp: any) => {
+    //store the comparison  values in array
+    const unique = arr
+      .map((e: any) => e[comp])
+      // store the indexes of the unique objects
+      .map((e: any, i: any, final: any) => final.indexOf(e) === i && i)
+      // eliminate the false indexes & return unique objects
+      .filter((e: any) => arr[e])
+      .map((e: any) => arr[e]);
+    return unique;
+  };
+
+  const paackaginglevelList = getUnique(
+    props.packagingdefinition.inputList,
+    "packaginglevel"
+  );
 
   // handle input change
   const handleInputChange = (e: any, index: any) => {
@@ -45,16 +63,16 @@ export const ScanPointsAndAllocation = (
       //   {
       //     position: { id: 0, value: "NA" },
       //     scannedby: { id: 0, value: "NA" },
-      //     scannedtype: { id: 0, value: "NA" },
+      //     scantype: { id: 0, value: "NA" },
       //     packaginglevel: { id: 0, value: "NA" },
-      //     pointsallocated: { id: 0, value: "NA" },
+      //     pointallocated: { id: 0, value: "NA" },
       //   },
       {
         position: 0,
-        scannedby: -1,
-        scantype: -1,
-        packaginglevel: -1,
-        pointallocated: -1,
+        scannedby: "",
+        scantype: "",
+        packaginglevel: "",
+        pointallocated: false,
       },
     ]);
   };
@@ -62,7 +80,7 @@ export const ScanPointsAndAllocation = (
   const handleDropdownPostionChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].position.value = value;
+    list[index].position = value;
     setInputList(list);
     setValSelected(event.target.value);
   };
@@ -70,7 +88,7 @@ export const ScanPointsAndAllocation = (
   const handleScannedbyChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].scannedby.value = value;
+    list[index].scannedby = value;
     setInputList(list);
     setValSelected(event.target.value);
   };
@@ -78,7 +96,7 @@ export const ScanPointsAndAllocation = (
   const handleScannedtypeChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].scannedtype.value = value;
+    list[index].scantype = value;
     setInputList(list);
     setValSelected(event.target.value);
   };
@@ -86,7 +104,7 @@ export const ScanPointsAndAllocation = (
   const handlePackaginglevelChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].packaginglevel.value = value;
+    list[index].packaginglevel = value;
     setInputList(list);
     setValSelected(event.target.value);
   };
@@ -94,17 +112,19 @@ export const ScanPointsAndAllocation = (
   const handlePointsallocatedChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].pointsallocated.value = value;
+    console.log("value : ", value);
+    list[index].pointallocated = value;
     setInputList(list);
     setValSelected(event.target.value);
   };
 
+  // props.packagingdefinition.inputList
   return (
     <div className="col-md-12">
       <div className="container">
         <div className="row">
           <div className="col-xs-12 column tableScrollStyle">
-            <table className="table" id="tab_logic">
+            <table className="devconfig table" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="tableHeaderStyle">Position</th>
@@ -135,13 +155,12 @@ export const ScanPointsAndAllocation = (
                           Warehouse
                         </option> */}
 
-                       { props.tntflow.inputList.length > 0 && (
+                        {props.tntflow.inputList.length > 0 &&
                           props.tntflow.inputList.map(({ position }: any) => (
                             <option value={position} key={position}>
                               {position}
                             </option>
-                          ))
-                        )} 
+                          ))}
                       </select>
                     </td>
                     <td className="tableHeaderStyle">
@@ -158,13 +177,12 @@ export const ScanPointsAndAllocation = (
                         <option value="Warehouse" key="Warehouse">
                           Warehouse
                         </option> */}
-                        {props.tntflow.inputList.length > 0 && (
+                        {props.tntflow.inputList.length > 0 &&
                           props.tntflow.inputList.map(({ position }: any) => (
                             <option value={position} key={position}>
                               {position}
                             </option>
-                          ))
-                        )} 
+                          ))}
                       </select>
                     </td>
 
@@ -172,8 +190,8 @@ export const ScanPointsAndAllocation = (
                       <select
                         className="dpstyle selectoutline"
                         id="dropdown"
-                        name="scannedtype"
-                        value={item.scannedtype}
+                        name="scantype"
+                        value={item.scantype}
                         onChange={(event) =>
                           handleScannedtypeChange(event, idx)
                         }
@@ -181,14 +199,14 @@ export const ScanPointsAndAllocation = (
                         <option value="NA" key="NA">
                           NA
                         </option>
-                        <option value="Advisor" key="Advisor">
-                          Advisor
+                        <option value="ADVISOR" key="ADVISOR">
+                          ADVISOR
                         </option>
-                        <option value="Retailer" key="Retailer">
-                          Retailer
+                        <option value="RETAILER" key="RETAILER">
+                          RETAILER
                         </option>
-                        <option value="Distributor" key="Distributor">
-                          Distributor
+                        <option value="DISTRIBUTOR" key="DISTRIBUTOR">
+                          DISTRIBUTOR
                         </option>
                         {/* {idx > 0 && this.state.dpList.length > 0 && (
                           this.state.dpList.map(({ locationhierarchy }) => (
@@ -209,19 +227,23 @@ export const ScanPointsAndAllocation = (
                           handlePackaginglevelChange(event, idx)
                         }
                       >
-                        <option value="SKU" key="SKU">
+                        {/* <option value="SKU" key="SKU">
                           SKU
                         </option>
                         <option value="PalletBox" key="PalletBox">
                           Pallet, Box
-                        </option>
-                        {/* {idx > 0 && this.state.dpList.length > 0 && (
-                          this.state.dpList.map(({ locationhierarchy }) => (
-                            <option value={locationhierarchy} key={locationhierarchy}>
-                              {locationhierarchy}
-                            </option>
-                          ))
-                        )} */}
+                        </option> */}
+                        {paackaginglevelList.length > 0 &&
+                          paackaginglevelList.map(
+                            ({ packaginghierarchyname }: any) => (
+                              <option
+                                value={packaginghierarchyname}
+                                key={packaginghierarchyname}
+                              >
+                                {packaginghierarchyname}
+                              </option>
+                            )
+                          )}{" "}
                       </select>
                     </td>
 
@@ -229,48 +251,28 @@ export const ScanPointsAndAllocation = (
                       <select
                         className="dpstyle selectoutline"
                         id="dropdown"
-                        name="pointsallocated"
-                        value={item.pointsallocated}
+                        name="pointallocated"
+                        value={item.pointallocated}
                         onChange={(event) =>
                           handlePointsallocatedChange(event, idx)
                         }
                       >
-                        <option value={1} key="Yes">
-                          Yes
+                        <option value="true" key="YES">
+                          YES
                         </option>
-                        <option value={0} key="No">
-                          No
+                        <option value="false" key="NO">
+                          NO
                         </option>
-                        {/* {idx > 0 && this.state.dpList.length > 0 && (
-                          this.state.dpList.map(({ locationhierarchy }) => (
-                            <option value={locationhierarchy} key={locationhierarchy}>
-                              {locationhierarchy}
-                            </option>
-                          ))
-                        )} */}
                       </select>
                     </td>
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
-                        // <button
-                        //   className="btn btnStyleAdd"
-                        //   onClick={() => handleAddClick(idx)}
-                        // >
-                        //   <img src={plus_icon} />
-                        // </button>
                         <img
                           style={{ width: "50px", height: "50px" }}
                           src={AddBtn}
                           onClick={() => handleAddClick(idx)}
                         />
                       ) : (
-                        // <button
-                        //   className="btn btnStyleRemove"
-                        //   onClick={() => handleRemoveClick(idx)}
-                        // >
-                        //   <img src={minus} />
-                        // </button>
-
                         <img
                           style={{ width: "50px", height: "50px" }}
                           src={RemoveBtn}
@@ -289,10 +291,13 @@ export const ScanPointsAndAllocation = (
   );
 };
 
-const mapStateToProps = ({ devconfig: { scanpointsandallocation, tntflow} }: any) => {
+const mapStateToProps = ({
+  devconfig: { scanpointsandallocation, tntflow, packagingdefinition },
+}: any) => {
   return {
     scanpointsandallocation,
-    tntflow
+    tntflow,
+    packagingdefinition,
   };
 };
 

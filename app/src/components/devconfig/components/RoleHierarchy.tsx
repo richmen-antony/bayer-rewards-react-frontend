@@ -27,30 +27,28 @@ export const RoleHierarchy = (props: IRoleProps) => {
     setInputList(list);
   };
 
-  // handle click event of the Remove button
-  const handleRemoveClick = (index: any) => {
-    let list = [...inputList];
-    list.splice(index, 1);
-
-    list = setCorrectHierLvl(list, index);
-    console.log(list);
-
-    setInputList(list);
-  };
-
   const setCorrectHierLvl = (list: any, index: number) => {
     const newList = list.map((listItem: any, idx: number) => {
       return {
         ...listItem,
-        locationhierlevel: idx,
-        parentlocation:
-          listItem.parentlocation >= index
-            ? listItem.parentlocation - 1
-            : listItem.parentlocation,
-        // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
+        rolehierarchylevel: idx,
+        parentrole:
+          listItem.parentrole >= index
+            ? listItem.parentrole - 1
+            : listItem.parentrole,
+        // parentrole : listItem.parentrole === index ? -1 : listItem.parentrole > index ? listItem.parentrole-1 : listItem.parentrole
       };
     });
     return newList;
+  };
+
+  // handle click event of the Remove button
+  const handleRemoveClick = (index: any) => {
+    let list = [...inputList];
+    list.splice(index, 1);
+    list = setCorrectHierLvl(list, index);
+    console.log(list);
+    setInputList(list);
   };
 
   // handle click event of the Add button
@@ -62,7 +60,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
         rolecode: "",
         rolehierarchyname: "",
         roletype: "",
-        parentrole: "NA",
+        parentrole: "NONE",
       },
     ]);
   };
@@ -87,7 +85,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
       <div className="container">
         <div className="row">
           <div className="col-xs-12  column tableScrollStyle">
-            <table className="table" id="tab_logic">
+            <table className="devconfig table" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="text-center tableStyle">Role Level</th>
@@ -154,7 +152,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         onChange={(event) => handleDropdownChange(event, idx)}
                       >
                         <option value="" key="">
-                          NA
+                          NONE
                         </option>
                         {idx > 0 &&
                           inputList.length > 0 &&
@@ -171,24 +169,12 @@ export const RoleHierarchy = (props: IRoleProps) => {
 
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
-                        // <button
-                        //   className="btn btnStyleAdd"
-                        //   onClick={() => handleAddClick(idx)}
-                        // >
-                        //   <img src={plus_icon} />
-                        // </button>
                         <img
                           style={{ width: "50px", height: "50px" }}
                           src={AddBtn}
                           onClick={() => handleAddClick(idx)}
                         />
                       ) : (
-                        // <button
-                        //   className="btn btnStyleRemove"
-                        //   onClick={() => handleRemoveClick(idx)}
-                        // >
-                        //   <img src={minus} />
-                        // </button>
                         <img
                           style={{ width: "50px", height: "50px" }}
                           src={RemoveBtn}

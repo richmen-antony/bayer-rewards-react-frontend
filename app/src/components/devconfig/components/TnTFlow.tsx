@@ -52,7 +52,7 @@ export const TnTFlow = (props: ITnTProps) => {
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">
-            <table className="table" id="tab_logic">
+            <table className="devconfig table" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="tableStyle text-center">Level</th>

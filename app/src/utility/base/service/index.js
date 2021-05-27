@@ -118,7 +118,7 @@ export function invokeGetAuthService(path,formData) {
 //Get method with auth
 export function invokeGetAuthServiceTemp(path,formData) {
   return new Promise(function (resolve, reject) {
-    const URL = configApp.template;
+    const URL = configApp.env;
     const config = {
       method: 'GET',
       params: {
@@ -147,7 +147,7 @@ export function invokePostServiceTemp(path,reqObj,params)  {
       'Accept': 'application/json',
       "Access-Control-Allow-Origin": true
     };
-    const apiEndPoint = configApp.template;
+    const apiEndPoint = configApp.env;
     const config = {
       method: 'POST',
       data: reqObj,
