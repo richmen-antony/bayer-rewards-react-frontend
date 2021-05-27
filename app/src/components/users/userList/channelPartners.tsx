@@ -54,7 +54,7 @@ type Props = {
   callAPI: any;
   match?: any;
   staticContext?: any;
-  
+  totalData?: number
 };
 type States = {
   isActivateUser: boolean;
@@ -64,7 +64,7 @@ type States = {
   deActivatePopup: boolean;
   editPopup: boolean;
   staffPopup: boolean;
-  userData: any;
+  userList: any;
   status: String;
   geographicFields: Array<any>;
   dynamicFields: Array<any>;
@@ -136,7 +136,7 @@ class ChannelPartners extends Component<Props, States> {
       emailErr: '',
       postalCodeErr: '',
       isValidateSuccess: true,
-      userData: {},
+      userList: {},
     };
     this.generateHeader = this.generateHeader.bind(this);
   }
@@ -316,7 +316,7 @@ class ChannelPartners extends Component<Props, States> {
         return options;
       } else {
         let dynamicFieldVal = this.state.dynamicFields;
-        let userData = this.state.userData
+        let userList = this.state.userList
         if(type === 'region') {
           let district = [
             { text: "Balaka", value: "Balaka" },
@@ -324,8 +324,8 @@ class ChannelPartners extends Component<Props, States> {
           ];
           dynamicFieldVal[index+1].options = district;
           dynamicFieldVal[index].value = value;
-          userData['region'] = value;
-          this.setState({ userData : userData });
+          userList['region'] = value;
+          this.setState({ userList : userList });
           this.setState({dynamicFields: dynamicFieldVal});
         } else if (type === 'add'){
           let epa = [
@@ -342,8 +342,8 @@ class ChannelPartners extends Component<Props, States> {
           ];
           dynamicFieldVal[index+1].options = epa;
           dynamicFieldVal[index].value = value;
-          userData['district'] = value;
-          this.setState({ userData : userData });
+          userList['district'] = value;
+          this.setState({ userList : userList });
           this.setState({dynamicFields: dynamicFieldVal});
         } else if(type === 'epa') {
           let village = [
@@ -352,13 +352,13 @@ class ChannelPartners extends Component<Props, States> {
           ];
           dynamicFieldVal[index+1].options = village;
           dynamicFieldVal[index].value = value;
-          userData['epa'] = value;
-          this.setState({ userData : userData });
+          userList['epa'] = value;
+          this.setState({ userList : userList });
           this.setState({dynamicFields: dynamicFieldVal});
         } else if(type === 'village') {
           dynamicFieldVal[index].value = value;
-          userData['village'] = value;
-          this.setState({ userData : userData });
+          userList['village'] = value;
+          this.setState({ userList : userList });
           this.setState({dynamicFields: dynamicFieldVal});
         }
       }
@@ -382,7 +382,7 @@ class ChannelPartners extends Component<Props, States> {
     });
 
     setTimeout(() => {
-      this.getDynamicOptionFields(this.state.userData);
+      this.getDynamicOptionFields(this.state.userList);
     }, 0);
   }
   editStaff =(list: any) =>{
@@ -392,7 +392,7 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   handlePersonalChange = (e: any) => {
-    let val = this.state.userData;
+    let val = this.state.userList;
     if(val){
       if (e.target.name === "activateUser") {
           this.setState({ activateUser : !this.state.activateUser},()=>{
@@ -401,7 +401,7 @@ class ChannelPartners extends Component<Props, States> {
       } else {
         val[e.target.name] = e.target.value;
       }
-      this.setState({ userData: val,  isRendered: true });
+      this.setState({ userList: val,  isRendered: true });
       let dateValid = this.dateValidation(e);
       let formValid = this.checkValidation()
       if (dateValid && formValid) {
@@ -415,7 +415,7 @@ class ChannelPartners extends Component<Props, States> {
   dateValidation = (e: any) => {
     this.setState({ isValidateSuccess : false});
     let dateValid = true;
-    let usersState = this.state.userData;
+    let usersState = this.state.userList;
     if (e.target.name === "expirydate") {
       if (e.target.value < new Date().toISOString().substr(0, 10)) {
         this.setState({
@@ -432,28 +432,28 @@ class ChannelPartners extends Component<Props, States> {
   checkValidation = () => {
     this.setState({ isValidateSuccess : false});
     let formValid = true;
-    let userData = this.state.userData;
+    let userList = this.state.userList;
 
-    if (userData.accountname === "" || userData.accountname === null) {
+    if (userList.accountname === "" || userList.accountname === null) {
       this.setState({ accountNameErr: "Please enter the Owner name" });
       formValid = false;
     } else {
       this.setState({ accountNameErr: "" });
     }
-    if (userData.mobilenumber === "" || userData.mobilenumber === null) {
+    if (userList.mobilenumber === "" || userList.mobilenumber === null) {
       this.setState({ phoneErr: "Please enter the phone" });
       formValid = false;
     } else {
       this.setState({ phoneErr: "" });
     }
-    if (userData.email === "" || userData.email === null) {
+    if (userList.email === "" || userList.email === null) {
       alert('hi');
       this.setState({ emailErr: "Please enter the Email" });
       formValid = false;
     } else {
       this.setState({ emailErr: "" });
     }
-    if (userData.postalcode === "" || userData.postalcode === null) {
+    if (userList.postalcode === "" || userList.postalcode === null) {
       this.setState({ postalCodeErr: "Please enter Postal Code" });
       formValid = false;
     } else {
@@ -474,7 +474,7 @@ class ChannelPartners extends Component<Props, States> {
 
   submitUpdateUser = () => {
     const { updateUser } = apiURL;
-    const { username,userstatus }: any = this.state.userData;
+    const { username,userstatus }: any = this.state.userList;
 
     const userDetails = {
       isedit : true,
@@ -482,7 +482,7 @@ class ChannelPartners extends Component<Props, States> {
       lastupdateddate : new Date().toISOString().substr(0, 10)
     }
 
-    let data = {...this.state.userData}
+    let data = {...this.state.userList}
     if (this.state.isValidateSuccess) {
         invokePostAuthService(updateUser, data, userDetails)
         .then((response: any) => {
@@ -502,13 +502,13 @@ class ChannelPartners extends Component<Props, States> {
 
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
-    const { username,userstatus }: any = this.state.userData;
+    const { username,userstatus }: any = this.state.userList;
      this.setState({ isLoader: true });
     if(userstatus==="PENDING"){
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
-      state: { userFields: this.state.userData }}); 
+      state: { userFields: this.state.userList }}); 
 
     }else {
       let condUrl;
@@ -546,13 +546,13 @@ class ChannelPartners extends Component<Props, States> {
     this.getCurrentUserData(list);
     this.props.history.push({
       pathname: '/createUser',
-      state: { userFields: this.state.userData }}); 
+      state: { userFields: this.state.userList }}); 
   }
   getCurrentUserData = (data: any) => {
     let passData = { ...data };
     passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
     let activeStatus = (passData.userstatus === 'INACTIVE' || passData.userstatus === 'DECLINED') ? false : true;
-    this.setState({ userData: passData, status: data.userstatus, activateUser: activeStatus });
+    this.setState({ userList: passData, status: data.userstatus, activateUser: activeStatus });
   };
 
   replaceAll(str: any, mapObj: any) {
@@ -601,17 +601,15 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   render() {
-    const { allChannelPartners, isAsc, onSort } = this.props;
+    const { allChannelPartners, isAsc, onSort, totalData } = this.props;
     const {
       isLoader,
       pageNo,
-      totalData,
       rowsPerPage,
       gotoPage,
       showProductPopup,
-     
     } = this.props.state;
-    const { userData, 
+    const { userList, 
       toDateErr,
       accountNameErr,
       ownerNameErr,
@@ -659,33 +657,33 @@ class ChannelPartners extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userData?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {userList?.username || ""}, <label>{"Retailer"}</label>{" "}
                     </p>
                   </div>
                 </div>
                 <div style={{ textAlign: "left" }}>
                   <label>
-                    {userData.userstatus === "ACTIVE" ||
-                    userData.userstatus === "INACTIVE" || userData.userstatus === "DECLINED"  ? (
+                    {userList.userstatus === "ACTIVE" ||
+                    userList.userstatus === "INACTIVE" || userList.userstatus === "DECLINED"  ? (
                       <span>
                         Are you sure you want to change &nbsp;
                         <strong>
-                          {userData.ownername} - {userData.accountname}
+                          {userList.ownername} - {userList.accountname}
                         </strong>
                         &nbsp; account to
-                        {userData.userstatus === "ACTIVE" ? (
+                        {userList.userstatus === "ACTIVE" ? (
                           <span> Inactive </span>
-                        ) : userData.userstatus === "INACTIVE" || userData.userstatus === "DECLINED" ? (
+                        ) : userList.userstatus === "INACTIVE" || userList.userstatus === "DECLINED" ? (
                           <span> active</span>
                         ) : ''}
                         ?
                       </span>
                     ) : (
-                      userData.userstatus === "PENDING" ? 
+                      userList.userstatus === "PENDING" ? 
                       <span>
                         Would you like to validate & approve&nbsp;
                         <strong>
-                          {userData.ownername} - {userData.accountname}
+                          {userList.ownername} - {userList.accountname}
                         </strong>
                         &nbsp;account to use Bayer Rewards mobile application?
                         
@@ -708,7 +706,7 @@ class ChannelPartners extends Component<Props, States> {
                 className="admin-popup-btn filter-scan"
                 autoFocus
               >
-                {userData.userstatus ==="ACTIVE" || userData.userstatus==="INACTIVE" || userData.userstatus==="DECLINED" ?  "Change" : userData.userstatus === "PENDING" ?"Validate & Approve" :"" }
+                {userList.userstatus ==="ACTIVE" || userList.userstatus==="INACTIVE" || userList.userstatus==="DECLINED" ?  "Change" : userList.userstatus === "PENDING" ?"Validate & Approve" :"" }
                
               </Button>
             </DialogActions>
@@ -730,7 +728,7 @@ class ChannelPartners extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userData?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {userList?.username || ""}, <label>{"Retailer"}</label>{" "}
                     </p>
                   </div>
                 </div>
@@ -785,7 +783,7 @@ class ChannelPartners extends Component<Props, States> {
                       <td>
                       <div className="retailer-id">
                         <p>
-                          {list.staffdetails.length}
+                          {2}
                           <img
                             className="retailer-icon"
                             onClick={(event) => {

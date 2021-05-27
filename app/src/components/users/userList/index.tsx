@@ -289,7 +289,7 @@ class UserList extends Component<Props, States> {
           allChannelPartners:
             Object.keys(response.body).length !== 0 ? response.body.rows : [],
         });
-        const total = response.body.totalrows;
+        const total = response.totalrows;
         this.setState({ totalData: Number(total) });
       })
       .catch((error) => {
@@ -654,6 +654,7 @@ class UserList extends Component<Props, States> {
   };
 
   render() {
+    console.log('!!!', this.state.totalData);
     const {
       isAsc,
       allChannelPartners,
@@ -732,7 +733,7 @@ class UserList extends Component<Props, States> {
 
     return (
       <AUX>
-        {/* {isLoader && <Loader />} */}
+        {isLoader && <Loader />}
         <div
           className="container-fluid card card-height"
           style={{ backgroundColor: "#f8f8fa" }}
@@ -959,6 +960,7 @@ class UserList extends Component<Props, States> {
                     previous={this.previous}
                     next={this.next}
                     pageNumberClick={this.pageNumberClick}
+                    totalData={totalData}
                     handlePaginationChange={this.handlePaginationChange}
                     callAPI={this.getChannelPartnersList}
                   />
