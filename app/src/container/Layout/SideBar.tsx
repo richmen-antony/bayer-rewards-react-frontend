@@ -12,10 +12,14 @@ import helpCenterIcon from "../../assets/icons/help_icon.svg";
 import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
 import leftArrow from "../../assets/icons/left_arrow.svg";
-import country from '../../assets/images/country.svg';
-import { setLocalStorageData, getLocalStorageData, clearLocalStorageData } from '../../utility/base/localStore';
-import Cookies from 'js-cookie';
-import { Scrollbars } from 'react-custom-scrollbars';
+import country from "../../assets/images/country.svg";
+import {
+  setLocalStorageData,
+  getLocalStorageData,
+  clearLocalStorageData,
+} from "../../utility/base/localStore";
+import Cookies from "js-cookie";
+import { Scrollbars } from "react-custom-scrollbars";
 
 type Props = {
   history?: any;
@@ -25,7 +29,7 @@ type States = {
   userRole: any;
 };
 interface IProps {
-  style : any;
+  style: any;
 }
 
 class Sidebar extends Component<Props, States> {
@@ -72,7 +76,7 @@ class Sidebar extends Component<Props, States> {
         <div className="left side-menu ">
           <img className="sideMenuLine" src={lLogo} alt="" />
           <div className="sideMenuNav">
-            <Scrollbars
+            {/* <Scrollbars
               style={scrollHeight}
               autoHide
               autoHideTimeout={1000}
@@ -91,13 +95,13 @@ class Sidebar extends Component<Props, States> {
                 />
               )}
               {...this.props}
-            >
+            > */}
               <div id="sidebar-menu" className="">
                 <ul className="metismenu" id="side-menu">
                   <li className="d-flex">
                     <span
                       className={
-                        window.location.pathname.indexOf('dashboard') > -1
+                        window.location.pathname.indexOf("dashboard") > -1
                           ? "waves-effect active"
                           : "waves-effect"
                       }
@@ -114,19 +118,34 @@ class Sidebar extends Component<Props, States> {
                   {this.state.userRole === "ADMIN" && (
                     <>
                       <li className="menu-title">MANAGEMENT</li>
-                      
-                                      <li className="d-flex">
-                    <span className={activeTab === 'devconfig' ? 'waves-effect active' : 'waves-effect'}></span>
-                    <Link to="/devconfig" className={activeTab === 'devconfig' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('devconfig')}>
-                        <img src={country} alt="User" width="16" /> <span> Dev Config </span>
-                    </Link>
-                </li>
+                      {this.state.userRole === "ADMIN" && (
+                        <li className="d-flex">
+                          <span
+                            className={
+                              activeTab === "devconfig"
+                                ? "waves-effect active"
+                                : "waves-effect"
+                            }
+                          ></span>
+                          <Link
+                            to="/devconfig"
+                            className={
+                              activeTab === "devconfig"
+                                ? "waves-effect active"
+                                : "waves-effect"
+                            }
+                            onClick={() => this.setActiveTab("devconfig")}
+                          >
+                            <img src={country} alt="User" width="16" />{" "}
+                            <span> Dev Config </span>
+                          </Link>
+                        </li>
+                      )}
 
-                      
                       <li className="d-flex">
                         <span
                           className={
-                            window.location.pathname.indexOf('createUser') > -1
+                            window.location.pathname.indexOf("createUser") > -1
                               ? "waves-effect active"
                               : "waves-effect"
                           }
@@ -143,7 +162,7 @@ class Sidebar extends Component<Props, States> {
                       <li className="d-flex">
                         <span
                           className={
-                            window.location.pathname.indexOf('userList') > -1
+                            window.location.pathname.indexOf("userList") > -1
                               ? "waves-effect active"
                               : "waves-effect"
                           }
@@ -156,23 +175,22 @@ class Sidebar extends Component<Props, States> {
                           <span> User List </span>
                         </Link>
                       </li>
-                                            {/* <li className="d-flex">
+                      {/* <li className="d-flex">
                                                 <span className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'}></span>
                                                 <Link to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
                                                     <img src={pointLogsIcon} alt="User" width="16" /> <span> Configurations </span>
                                                 </Link>
                                             </li> */}
-
                     </>
                   )}
 
-                  <li className="menu-title">LOGS</li>
                   {this.state.userRole === "RSM" && (
                     <>
+                      <li className="menu-title">LOGS</li>
                       <li className="d-flex">
                         <span
                           className={
-                            window.location.pathname.indexOf('scanlogs') > -1
+                            window.location.pathname.indexOf("scanlogs") > -1
                               ? "waves-effect active"
                               : "waves-effect"
                           }
@@ -188,7 +206,7 @@ class Sidebar extends Component<Props, States> {
                       <li className="d-flex">
                         <span
                           className={
-                            window.location.pathname.indexOf('pointLogs') > -1
+                            window.location.pathname.indexOf("pointLogs") > -1
                               ? "waves-effect active"
                               : "waves-effect"
                           }
@@ -208,7 +226,7 @@ class Sidebar extends Component<Props, States> {
                   <li className="d-flex">
                     <span
                       className={
-                        window.location.pathname.indexOf('coachWalker') > -1
+                        window.location.pathname.indexOf("coachWalker") > -1
                           ? "waves-effect active"
                           : "waves-effect"
                       }
@@ -224,7 +242,7 @@ class Sidebar extends Component<Props, States> {
                   <li className="d-flex">
                     <span
                       className={
-                        window.location.pathname.indexOf('helpCenter') > -1
+                        window.location.pathname.indexOf("helpCenter") > -1
                           ? "waves-effect active"
                           : "waves-effect"
                       }
@@ -237,28 +255,31 @@ class Sidebar extends Component<Props, States> {
                       <span> Help center </span>
                     </Link>
                   </li>
-                  <li className="d-flex" style={{ paddingTop: '10px'}}>
-                    <span
-                      className={
-                        window.location.pathname.indexOf('landing') > -1
-                          ? "waves-effect active"
-                          : "waves-effect"
-                      }
-                    ></span>
-                    <Link
-                      to=""
-                      onClick={this.logout}
-                    >
-                      <img src={logoutIcon} alt="Help Center" width="16" />{" "}
-                      <span> Logout </span>
-                    </Link>
-                  </li>
                 </ul>
               </div>
 
               <div className="clearfix"></div>
-            </Scrollbars>
+            {/* </Scrollbars> */}
+
+            
           </div>
+          <div id="sidebar-menu" className="">
+              <ul className="metismenu" id="side-menu">
+                <li className="d-flex">
+                  <span
+                    className={
+                      window.location.pathname.indexOf("landing") > -1
+                        ? "waves-effect active"
+                        : "waves-effect"
+                    }
+                  ></span>
+                  <Link to="" onClick={this.logout}>
+                    <img src={logoutIcon} alt="Help Center" width="16" />{" "}
+                    <span> Logout </span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
         </div>
       </AUX>
     );

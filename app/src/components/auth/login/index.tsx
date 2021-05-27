@@ -6,7 +6,6 @@ import AUX from "../../../hoc/Aux_";
 import rewardsLogo from "../../../assets/icons/logo.svg";
 import bayerLogo from "../../shared/widgets/icons/bayer_logo.svg";
 import { Link } from "react-router-dom";
-import "../../../assets/scss/login.scss";
 import { Input } from "../../../utility/widgets/input";
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokePostService } from "../../../utility/base/service";
@@ -15,6 +14,7 @@ import { toastError } from "../../../utility/widgets/toaster";
 import Loaders from "../../../utility/widgets/loader";
 import Cookies from "js-cookie";
 import { CustomButton } from "../../../utility/widgets/button";
+import "../../../assets/scss/login.scss";
 
 type Props = {
   location?: any;
@@ -188,7 +188,7 @@ class Login extends Component<Props, States> {
             </div>
             <div className="form-group row m-t-20">
               <div className="col-sm-6">
-                <label className="container">
+                <label className="login-container">
                   Remember me
                   <input
                     type="checkbox"
