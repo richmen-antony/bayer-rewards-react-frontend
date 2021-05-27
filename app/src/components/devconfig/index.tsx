@@ -504,7 +504,7 @@ class Devconfigurations extends React.Component<
       case 1:
         return (
           <CountrySetup
-            setCountryDetails={(data) =>
+            setCountryDetails={(data:any) =>
               this.setState({ selectedCountryDetails: data })
             }
             selectedCountryDetails={selectedCountryDetails}
