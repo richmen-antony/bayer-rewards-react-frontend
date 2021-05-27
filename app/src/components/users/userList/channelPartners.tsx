@@ -19,11 +19,13 @@ import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
 import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import PhoneIcon from "../../../assets/icons/black-mockup.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import blackmockup from "../../../assets/icons/black-mockup.svg";
 import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import "../../../assets/scss/users.scss";
+import "../../../assets/scss/createUser.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
   invokeGetService,
@@ -38,6 +40,8 @@ import CustomSwitch from "../../../container/components/switch";
 import { List } from "@material-ui/core";
 import { AnyCnameRecord } from "node:dns";
 import Table from 'react-bootstrap/Table'
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 type Props = {
   location?: any;
@@ -79,6 +83,8 @@ type States = {
   emailErr: String;
   postalCodeErr: String;
   isValidateSuccess: Boolean;
+  userData: any;
+  isStaff: boolean;
 };
 
 
@@ -137,6 +143,23 @@ class ChannelPartners extends Component<Props, States> {
       postalCodeErr: '',
       isValidateSuccess: true,
       userList: {},
+      userData : {
+        staffRows: [],
+        ownerRows: [{
+          firstname: "",
+          lastname: "",
+          mobilenumber: "",
+          email: "",
+          active: true,
+          errObj: {
+            firstnameErr:'',
+            lastnameErr: "",
+            mobilenumberErr: "",
+            emailErr: "",
+          }
+        }],
+      },
+      isStaff: false
     };
     this.generateHeader = this.generateHeader.bind(this);
   }
@@ -562,25 +585,6 @@ class ChannelPartners extends Component<Props, States> {
     });
   }
 
-  validateEmail = (e: any) => {
-    let emailField = e.target.value;
-    this.setState({ emailErr: "" });
-    let valid = true;
-    if ( emailField === "" || emailField === null ) {
-      this.setState({ emailErr: "Please enter the Email" });
-      valid = false;
-    } else {
-      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-        this.setState({ emailErr: "" });
-        valid = true;
-      } else {
-        this.setState({ emailErr: "Please enter the Valid Email" });
-        valid = false;
-      }
-    }
-    return valid;
-  }
-
   isNumberKey = (evt: any) => {
     this.setState({ phoneErr: "" });
     let isValid = true;
@@ -599,6 +603,149 @@ class ChannelPartners extends Component<Props, States> {
     }
     return isValid;
   }
+  handleChange = (idx: any, e: any , key: string, type: string, val: any) => {
+    if ( type === 'owner') {
+      let owners = this.state.userData.ownerRows;
+      if( key === 'phone') {
+        owners[idx]['mobilenumber'] = val;
+      } else if (e.target.name === "active") {
+        owners[idx][e.target.name] = e.target.checked; 
+      } else {
+        let { name, value } = e.target;
+        owners[idx][name] = value;
+      }
+      this.setState((prevState:any)=>({
+        userData: {
+          ...prevState.userData,
+          ownerRows: owners
+        }
+      }));
+    } else if (type === 'staff') {
+      let staffs = this.state.userData.staffRows;
+      if( key === 'phone') {
+        staffs[idx]['mobilenumber'] = val;
+      } else if (e.target.name === "active") {
+        staffs[idx][e.target.name] = e.target.checked; 
+      } else {
+        let { name, value } = e.target;
+        staffs[idx][name] = value;
+      }
+      this.setState((prevState:any)=>({
+        userData: {
+          ...prevState.userData,
+          staffRows: staffs
+        }
+      }));
+    } else {
+      // if (e.target.name === "accInfo") {
+      //   this.setState({ accInfo: e.target.checked });
+      //   console.log('@@@', this.state.accInfo)
+      // } else {
+        let datas = this.state.userData;
+        let { name, value } = e.target;
+        datas[name] = value;
+        this.setState({ userData: datas})
+      // }
+    }
+  };
+  handleAddRow = (type: string) => {
+    const item = {
+      firstname: "",
+      lastname: "",
+      mobilenumber: "",
+      email: "",
+      active: true,
+      errObj: {
+        firstnameErr:'',
+        lastnameErr: "",
+        mobilenumberErr: "",
+        emailErr: "",
+      }
+    };
+    let usersObj = this.state.userData;
+    if ( type === 'owner'){
+      usersObj.ownerRows.push(item);
+      this.setState({ userData: usersObj });
+    } else {
+      usersObj.staffRows.push(item);
+      this.setState({ userData: usersObj });
+    }
+  };
+
+  handleRemoveSpecificRow = (idx: any, type: string) => () => {
+    let userObj=this.state.userData;
+    if (type === 'owner') {
+      userObj.ownerRows.splice(idx,1);
+      this.setState({ userData: userObj })
+    } else {
+      userObj.staffRows.splice(idx,1);
+      this.setState({ userData: userObj })
+    }
+  }
+  enableStoreStaff = (e: any) => {
+    let isStaff = e.target.checked
+    let userData=this.state.userData;
+    if(isStaff) {
+      userData.staffRows.push({firstname: "",
+    lastname: "",
+    mobilenumber: "",
+    email: "",
+    active: true,
+    errObj: {
+      firstnameErr:'',
+      lastnameErr: "",
+      mobilenumberErr: "",
+      emailErr: "",
+    }})
+    
+    } else {
+      userData.staffRows =[];
+    }
+    this.setState((prevState:any)=>({
+      userData: {
+        ...prevState.userData,
+        staffRows: userData.staffRows
+      }
+    }));
+    this.setState({isStaff: isStaff});
+  }
+  validateEmail = (e: any, idx: number,type:string) =>{
+    let emailField = e.target.value;
+    let ownerRows = [...this.state.userData.ownerRows];
+    let staffRows = [...this.state.userData.staffRows];
+    
+    if(type==='staff') {
+      if (!emailField) {
+        staffRows[idx].errObj.emailErr = "Please enter the Email";
+      } else {
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+          staffRows[idx].errObj.emailErr = "";
+        }else {
+          staffRows[idx].errObj.emailErr = "Please enter a valid email";
+        }
+      }
+
+    }
+    if(type==='owner'){
+      if (!emailField) {
+        ownerRows[idx].errObj.emailErr = "Please enter the Email";
+      } else {
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+          ownerRows[idx].errObj.emailErr = "";
+        }else {
+          ownerRows[idx].errObj.emailErr = "Please enter a valid email";
+        }
+      }
+    }
+    this.setState((prevState: any)=> ({
+      userData: {
+        ...prevState.userData,
+        ownerRows: ownerRows,
+        staffRows: staffRows,
+      },
+      isRendered:true
+    }))
+  }
 
   render() {
     const { allChannelPartners, isAsc, onSort, totalData } = this.props;
@@ -615,7 +762,9 @@ class ChannelPartners extends Component<Props, States> {
       ownerNameErr,
       postalCodeErr,
       phoneErr,
-      emailErr }: any = this.state;
+      emailErr,
+     userData,
+     isStaff }: any = this.state;
 
     const locationList = this.state.dynamicFields ?.map((list: any, index: number) => {
       let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
@@ -722,7 +871,7 @@ class ChannelPartners extends Component<Props, States> {
           <AdminPopup
             open={this.state.staffPopup}
             onClose={this.handleClosePopup}
-           maxWidth={"600px"}>
+            maxWidth={"1300px"}>
             <DialogContent>
               <div className="popup-container">
                 <div className="popup-content">
@@ -731,6 +880,222 @@ class ChannelPartners extends Component<Props, States> {
                       {userList?.username || ""}, <label>{"Retailer"}</label>{" "}
                     </p>
                   </div>
+              <>
+                <div className="personal">
+                  <>
+                  <div className="row" style={{ display: 'flex', alignItems: 'center', marginTop: '8px'}}>
+                    <div className="col-sm-3" style={{marginLeft: '46px'}}>
+                        <label className="font-weight-bold">Has store staff?
+                            <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.enableStoreStaff(e)}} />
+                            <span className="checkmark"></span>
+                        </label>
+                    </div>
+                  </div>
+                  <div  style={{ maxHeight: "280px", overflowY: "auto", overflowX: "hidden"}}>
+                  <div style={{ marginLeft: '35px'}}>
+                  {/* <Table borderless> */}
+                    <table className="table table-borderless">
+                    <thead>
+                        <tr>
+                          <th>Type</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Mobile Number</th>
+                          <th>Email</th>
+                          <th>isActive?</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {userData.ownerRows?.map((item: any, idx: number) => (
+                        <tr>
+                          {idx === 0 ? <td className="font-weight-bold">Owner</td> : <td></td>}
+                          <td>
+                            <Input
+                              type="text"
+                              className="form-control"
+                              name="firstname"
+                              placeHolder="Eg: Keanu"
+                              value={item.firstname}
+                              onChange={(e: any)=>this.handleChange(idx, e, '', 'owner', '')}
+                            />
+                            {item.errObj.firstNameErr && (
+                              <span className="error">{item.errObj.firstNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="lastname"
+                            placeHolder="Eg: Reeves"
+                            value={item.lastname}
+                            onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
+                            />
+                            {item.errObj.lastNameErr && (
+                              <span className="error">{item.errObj.lastNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                          <div  style={{display: 'flex'}}>
+                            <div className='flagInput'>
+                              <PhoneInput
+                                placeholder="Mobile Number"
+                                inputProps={{
+                                  name: "mobilenumber",
+                                  required: true
+                                }}
+                                country={'mw'}
+                                value={item.mobilenumber}
+                                onChange={(value, e)=>this.handleChange(idx, e, 'phone','owner', value)}
+                                onlyCountries={['mw']}
+                                autoFormat
+                                disableDropdown
+                                disableCountryCode
+                              />
+                              {item.errObj.mobilenumberErr && (
+                                <span className="error">{item.errObj.mobilenumberErr} </span>
+                              )}
+                            </div>
+                            </div>
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="email"
+                            placeHolder="Eg: abc@mail.com"
+                            value={item.email}
+                            onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
+                            onKeyUp={(e: any)=>this.validateEmail(e, idx,'owner')}
+                          />
+                          {item.errObj.emailErr && (
+                            <span className="error">{item.errObj.emailErr} </span>
+                          )}
+                          </td>
+                          <td style={{ display: 'flex', alignItems: 'center'}}>
+                            <div>
+                              <CustomSwitch
+                                checked={item.active}
+                                onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
+                                name="active"
+                              />
+                              </div>
+                              <div  style={{visibility: 'hidden'}}>
+                                {((idx === userData.ownerRows.length - 1 ) && userData.ownerRows.length < 5) ?
+                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
+                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
+                              </div>
+                          </td>
+                        </tr> ))}
+                        </tbody>
+                        </table>
+                        </div>
+                        <div style={{marginTop: '-10px'}}>
+                          {isStaff ? <hr/> : <></>}
+                        </div>
+                        <div style={{ marginRight: '0px'}}>
+                        <table className="table table-borderless">
+                        <thead style={{display:'none'}}>
+                        <tr>
+                          <th>Type</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Mobile Number</th>
+                          <th>Email</th>
+                          <th>isActive?</th>
+                        </tr>
+                      </thead>
+                          <tbody>
+                        {isStaff &&
+                        userData.staffRows?.map((item: any, idx: number) => (
+                        <tr>
+                          {idx === 0 ? <td className="font-weight-bold">Store Staffs</td> : <td></td>}
+                          <td>
+                            <Input
+                              type="text"
+                              className="form-control"
+                              name="firstname"
+                              placeHolder="Eg: Keanu"
+                              value={item.firstname}
+                              onChange={(e: any)=>this.handleChange(idx, e, '', 'staff', '')}
+                            />
+                              {item.errObj.firstNameErr && (
+                              <span className="error">{item.errObj.firstNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="lastname"
+                            placeHolder="Eg: Reeves"
+                            value={item.lastname}
+                            onChange={(e: any)=>this.handleChange(idx, e, '', 'staff', '')}
+                            />
+                             {item.errObj.lastNameErr && (
+                              <span className="error">{item.errObj.lastNameErr} </span>
+                            )}
+                          </td>
+                          <td>
+                          <div  style={{display: 'flex'}}>
+                            <div className='flagInput'>
+                              <PhoneInput
+                                placeholder="Mobile Number"
+                                inputProps={{
+                                  name: "mobilenumber",
+                                  required: true
+                                }}
+                                country={'mw'}
+                                value={item.mobilenumber}
+                                onChange={(value, e)=>this.handleChange(idx, e, 'phone','staff', value)}
+                                onlyCountries={['mw']}
+                                autoFormat
+                                disableDropdown
+                                disableCountryCode
+                              />
+                              {item.errObj.mobilenumberErr && (
+                                <span className="error">{item.errObj.mobilenumberErr} </span>
+                              )}
+                            </div>
+                          </div>
+                          </td>
+                          <td>
+                            <Input
+                            type="text"
+                            className="form-control"
+                            name="email"
+                            placeHolder="Eg.abc@mail.com"
+                            value={item.email}
+                            onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
+                            onKeyUp={(e: any)=>this.validateEmail(e, idx,'staff')}
+                          />
+                          {item.errObj.emailErr && (
+                            <span className="error">{item.errObj.emailErr} </span>
+                          )}
+                          </td>
+                          <td style={{ display: 'flex', alignItems: 'center'}}>
+                            <div>
+                              <CustomSwitch
+                                checked={item.active}
+                                onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
+                                name="active"
+                              />
+                              </div>
+                              <div>
+                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 5) ?
+                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
+                                  :  <img style={{width: '50px', height: '50px',}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
+                              </div>
+                          </td>
+                        </tr> ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  </div>
+                  </>
+                </div>
+              </>
+
                 </div>
                 <div>
 
@@ -770,7 +1135,7 @@ class ChannelPartners extends Component<Props, States> {
                   <AUX key={i}>
                     <tr 
                       style={
-                        list.userstatus === "ACTIVE" ? { borderLeft: "8px solid #89D329" } : list.userstatus === "INACTIVE" ? { borderLeft: "8px solid #FF6397" } : list.userstatus === "PENDING" ? { borderLeft: "8px solid #FFB43C" } : { borderLeft: "8px solid #FF0000" }
+                        list.userstatus === "ACTIVE" ? { borderLeft: "8px solid #89D329" } : list.userstatus === "INACTIVE" ? { borderLeft: "8px solid #FF0000" } : list.userstatus === "PENDING" ? { borderLeft: "8px solid #FFB43C" } : { borderLeft: "8px solid #FF0000" }
                       }
                      >
                       <td>{list.username}</td>
@@ -854,9 +1219,10 @@ class ChannelPartners extends Component<Props, States> {
                           }}
                         />
                           </td>
+                          {list.iscreatedfrommobile &&
                           <td>
                           <img src={blackmockup} width="20" height="25" />
-                          </td>
+                          </td>}
                       </td>
                     </tr>
                   </AUX> 
