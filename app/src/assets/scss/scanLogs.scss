@@ -546,6 +546,11 @@
       border-color: #89d329;
     }
   }
+  &.inactive {
+    &::after {
+      border-color: #C9C9C9;
+    }
+  }
   &:last-child {
     &:after {
       display: none;

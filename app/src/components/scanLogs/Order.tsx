@@ -13,6 +13,7 @@ import _ from "lodash";
 import CornImg from "../../assets/icons/corn_products.svg";
 import "../../assets/scss/configurations.scss";
 import RtArrow from "../../assets/icons/right_arrow.svg";
+import FarmerDenied from "../../assets/icons/farmer_denied.svg";
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -90,9 +91,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </span>
                 </div>
               </li>
-              <li className="active">
+              <li className={`${data.orderstatus === "FULFILLED" ?"active" :data.orderstatus === "EXPIRED"?"inactive" :""} `}>
                 <div className="line-cnt-expiry-date">
-                  <p>Expiry date</p>
+                  <p>{data.orderstatus === "FULFILLED" ? "Fulfilled date" : data.orderstatus === "EXPIRED"?"Expiry date" :""}</p>
                   <label>
                     {data.orderexpirydate &&
                       moment(data.orderexpirydate).format("Do MMM, YYYY")}
@@ -108,7 +109,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               </li>
               <li>
                 <div className="content">
-                  <img src={farmerImg} alt="" />
+                  <img src={data.orderstatus === "FULFILLED" ? farmerImg:FarmerDenied} alt="" />
                   <p>Farmer ID & Name</p>
                   <span>
                     {data.farmerid} - {data.farmername}
@@ -181,7 +182,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                       )
                                     }
                                       )
-                                    })
+                                    }
                                     
                                   </tbody>
                                 </table>

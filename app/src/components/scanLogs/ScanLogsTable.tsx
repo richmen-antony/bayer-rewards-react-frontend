@@ -451,7 +451,7 @@ class ScanLogsTable extends Component<Props, States> {
                       type="text"
                       onChange={this.handleSearch}
                       value={searchText} 
-                      tolltip="Search applicable for Retailer Name, Farmer Name and New Value"
+                      tolltip="Search applicable for Retailer Name/ID, Farmer Name/ID/Mobile Number"
                       />
                   <div className="filter-right-side">
                     <div className="filterRow">
@@ -830,12 +830,12 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "11%" }}
+                      style={{ width: "15%" }}
                       onClick={(e) =>
                         this.handleSort(e, "farmerphonenumber", allScanLogs, isAsc)
                       }
                     >
-                      FARMER #
+                      FARMER MOBILE
                       {this.tableCellIndex === 6 ? (
                         <i
                           className={`fas ${
@@ -885,7 +885,7 @@ class ScanLogsTable extends Component<Props, States> {
                         )
                       }
                     >
-                      LAST UPDATED DATE
+                      LAST UPDATED  BY
                       {this.tableCellIndex === 9 ? (
                         <i
                           className={`fas ${
