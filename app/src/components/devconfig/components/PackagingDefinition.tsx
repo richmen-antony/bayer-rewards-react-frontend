@@ -23,12 +23,18 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const [activeButton, SetActiveButton] = React.useState("SEED");
 
   // handle input change
-  const handleInputChange = (e: any, index: any, pc: any) => {
+  const handleInputChange = (e: any, index: any, data: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
-    list[index][name] = value;
-    console.log("list", list);
-    setInputList(list);
+   const arr= list.map((val:any)=>{
+      if(val.productcategory ===data.productcategory && val.parentpackage ===data.parentpackage){
+        return val={...val,[name]:value}
+      } else{
+        return val;
+      }
+    })
+    console.log({arr});
+    setInputList(arr);
   };
 
   // handle click event of the Remove button
@@ -63,6 +69,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         packaginghierarchylevel: inputList.length + 1,
         packaginghierarchyname: "",
         parentpackage: "",
+        productcategory:activeButton
       },
     ]);
   };
@@ -70,9 +77,12 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const handleDropdownChange = (event: any, index: any, pc: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].parentpackage = value;
-    setInputList(list);
-    setValSelected(event.target.value);
+    if(activeButton === list[index].productcategory){
+      list[index].parentpackage = value;
+      setInputList(list);
+      setValSelected(event.target.value);
+    }
+   
   };
 
   /**
@@ -125,9 +135,9 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                 </tr>
               </thead>
               <tbody>
-                {activeButton === "SEED" &&
+                {
                   inputList
-                    .filter((pc: any) => pc.productcategory == "SEED")
+                    .filter((pc: any) => pc.productcategory == activeButton)
                     .map((item: any, idx: number) => (
                       <tr id="addr0" key={idx}>
                         <td className="tableStyle">{idx}</td>
@@ -137,7 +147,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                             type="text"
                             name="packaginghierarchyname"
                             value={item.packaginghierarchyname}
-                            onChange={(e) => handleInputChange(e, idx, "SEED")}
+                            onChange={(e) => handleInputChange(e, idx,item)}
                           />
                         </td>
 
@@ -160,10 +170,10 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               inputList.length > 0 &&
                               inputList.map(
                                 (
-                                  { packaginghierarchyname }: any,
+                                  { packaginghierarchyname,productcategory }: any,
                                   index: number
                                 ) =>
-                                  index < idx && (
+                                  index < idx && productcategory===activeButton&&(
                                     <option
                                       value={index}
                                       key={packaginghierarchyname}
@@ -193,7 +203,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                       </tr>
                     ))}
 
-                {activeButton === "CP" &&
+                {/* {activeButton === "CP" &&
                   inputList
                     .filter((pc: any) => pc.productcategory == "CP")
                     .map((item: any, idx: number) => (
@@ -259,7 +269,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                           )}
                         </td>
                       </tr>
-                    ))}
+                    ))} */}
               </tbody>
             </table>
           </div>
