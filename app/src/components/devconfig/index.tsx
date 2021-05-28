@@ -422,6 +422,30 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
   registerTemplateByCountry = () => {
     const { registerTemplateData } = apiURL;
     const { devconfig } = this.props;
+    const {locationHierarchy,roleHierarchy,tntflowData} = this.state;
+    let locationHierarchyData=locationHierarchy.map((value:any)=>{
+      if(value?.error || !value?.error){
+        delete value.error;
+        return value={...value};
+      }
+    })
+    
+    let roleHierarchyData=roleHierarchy.map((value:any)=>{
+      if(value?.rolehierarchyname_error || !value?.rolecode_error){
+        delete value?.rolehierarchyname_error;
+        delete value?.rolecode_error;
+        return value={...value};
+      }
+    })
+
+    let tntflowDataData=tntflowData.map((value:any)=>{
+      if(value?.code_error || !value?.position_error){
+        delete value?.code_error;
+        delete value?.position_error;
+        return value={...value};
+      }
+    })
+    console.log({tntflowDataData,locationHierarchyData,roleHierarchyData})
     this.setState({ isLoader: true });
     let data = {
       countrycode: devconfig.countryCode,
