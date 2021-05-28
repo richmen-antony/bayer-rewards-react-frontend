@@ -33,6 +33,7 @@ import {
   setAnticounterfeitDigitalScan,
   setAnticounterfeitSmartLabel,
 } from "../../redux/actions/devconfig/add";
+import left from "../../assets/icons/left.svg";
 import ArrowIcon from "../../assets/icons/dark bg.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 
@@ -831,7 +832,7 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
                     className="cus-btn-dev reset"
                     onClick={() => this.handleClick()}
                   >
-                    <img src={left_arrow} width="12" /> Back
+                    <img src={left} width="8" /> Back
                   </button>
                 )}
                 <button
