@@ -257,15 +257,17 @@ class UserList extends Component<Props, States> {
     this.setState({ isLoader: true });
     let { status, startDate, endDate, region, epa, district }: any =
     this.state.selectedFilters;
+    let enddateformat = new Date(endDate);
+    let dateformat = enddateformat.toJSON();
     let data = {
       countrycode: 'MW',
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       isfiltered: this.state.isFiltered,
       rowsperpage: this.state.rowsPerPage,
-      usertype: "EXTERNAL",
       lastmodifieddatefrom: startDate,
-      lastmodifieddateto: endDate,
+      lastmodifieddateto: new Date().toJSON(),
+      usertype: "EXTERNAL",
       partnertype:
         this.state.partnerType.type === "Distributor"
           ? "DISTRIBUTOR"
@@ -276,6 +278,8 @@ class UserList extends Component<Props, States> {
     if (this.state.isFiltered) {
       let filter = {
         status: status,
+        // lastmodifieddatefrom: startDate,
+        // lastmodifieddateto: endDate,
         region,
         epa,
         district,
@@ -479,6 +483,7 @@ class UserList extends Component<Props, States> {
     }));
   };
   handleFilterChange = (e: any, name: string, item: any) => {
+    console.log('datetime', e.target.value)
     e.stopPropagation();
     let val = this.state.selectedFilters;
     let flag = false;

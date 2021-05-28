@@ -64,7 +64,6 @@ class CreateUser extends Component<any, any> {
       userData : {
         countrycode: 'MW',
         locale: "English (Malawi)",
-        storewithmultiuser: true,
         rolename: role[0].value,
         shippingcountrycode: getStoreData.country,
         shippingstreet: '',
@@ -150,6 +149,7 @@ class CreateUser extends Component<any, any> {
       accInfo: true,
       regionList: [],
       isValidatePage: false,
+      isEditPage: false,
       userName: '',
       isStaff: false
     };
@@ -169,74 +169,22 @@ class CreateUser extends Component<any, any> {
     this.getGeographicFields();
     this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
 
-    if (this.props.location?.state) {
+    if (this.props.location?.page) {
+      let currentPage = this.props.location?.page;
       let data: any = getLocalStorageData("userData");
       let userDetails = JSON.parse(data);
       this.setState({ userName: userDetails.username},()=>{
         console.log("userData", this.state.userData);
         // userFields['lastupdatedby'] = this.state.userName;
       });
-      // const { userFields } = this.props.location.state;
+      let userFields = this.props.location.state.userFields;
       // userFields['active'] = true;
       // userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
       // userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
-
       // userFields['isedit'] = false;
       // userFields['lastupdateddate'] = new Date().toISOString().substr(0, 10);
-    
-      let userFields =  {
-        "countrycode": "MW",
-        "username": "MW-Mt-GT",
-        "ownerfirstname": "Mt",
-        "ownerlastname": "GT",
-        "ownerphonenumber": "9481144744",
-        "locale": "English (Malawi)",
-        "usertype": "EXTERNAL",
-        "rolename": "RETAILER",
-        "accountclassification": "RETAILER",
-        "userstatus": "ACTIVE",
-        "storewithmultiuser": true,
-        "iscreatedfrommobile": false,
-        "ownername": "Sahiya N",
-        "region": "geolevel1",
-        "add": "geolevel2",
-        "district": "geolevel3",
-        "village": null,
-        "shippingstreet": "testvalues",
-        "shippingcity": "testvalues",
-        "shippingstate": "testvalues",
-        "shippingzipcode": "testvalues",
-        "accountname": "Account Name",
-        "taxid": "45445",
-        "billingstreet": "testvalues",
-        "billingcity": "testvalues",
-        "billingstate": "testvalues",
-        "billingzipcode": "testvalues",
-        "staffdetails": [
-            {
-                "ownerid": "MW-Mt-GT",
-                "staffid": 18,
-                "firstname": "staff1 firstname",
-                "lastname": "staff lastname",
-                "mobilenumber": "95657844",
-                "emailid": "test@mail.com",
-                "isowner": false,
-                "active": true
-            },
-            {
-                "ownerid": "MW-Mt-GT",
-                "staffid": 19,
-                "firstname": "staff2 firstname",
-                "lastname": "staff2 lastname",
-                "mobilenumber": "95657844",
-                "emailid": "test@mail.com",
-                "isowner": false,
-                "active": true
-            }
-        ]
-    }
+
        let ownerInfo =  {
-        email: userFields.ownerfirstname,
         errObj: {
             emailErr: "",
             firstnameErr: "",
@@ -246,51 +194,63 @@ class CreateUser extends Component<any, any> {
         firstname: userFields.ownerfirstname,
         active: true,
         lastname: userFields.ownerlastname,
-        mobilenumber: userFields.ownerphonenumber
+        mobilenumber: userFields.ownerphonenumber,
+        email: userFields.owneremail
       }
     
-    let userDataList = this.state.userData;
-    userDataList.ownerRows[0] = ownerInfo;
-    let userinfo =  {
-      ownerRows: userDataList.ownerRows,
-      countrycode: userFields.countrycode,
-      locale: userFields.locale,
-      storewithmultiuser: userFields.storewithmultiuser,
-      rolename:  userFields.rolename,
-      shippingcountrycode: userFields.countrycode,
-      shippingstreet: userFields.shippingstreet,
-      shippingcity: userFields.shippingcity,
-      shippingstate:userFields.shippingstate,
-      shippingzipcode: userFields.shippingzipcode,
-      taxid: userFields.taxid,
-      accountname: userFields.accountname,
-      ownername: userFields.ownername,
-      billingcountrycode: userFields.countrycode,
-      billingstreet: userFields.billingstreet,
-      billingcity: userFields.billingcity,
-      billingstate: userFields.billingstate,
-      billingzipcode: userFields.billingzipcode,
-      staffRows: userFields.staffdetails,
-      isStaff:userFields.storewithmultiuser
-  }
-  
-    this.setState({ userData: userinfo },()=>{
-      console.log('editdatas1', this.state.userData);
-    });
-      // this.setState((prevState: any)=>({
-      //   userData :
-      // }));
+      let userDataList = this.state.userData;
+      userDataList.ownerRows[0] = ownerInfo;
+      let userinfo =  {
+        ownerRows: userDataList.ownerRows,
+        countrycode: userFields.countrycode,
+        locale: userFields.locale,
+        rolename:  userFields.rolename,
+        shippingcountrycode: userFields.countrycode,
+        shippingstreet: userFields.shippingstreet,
+        shippingcity: userFields.shippingcity,
+        shippingstate:userFields.shippingstate,
+        shippingzipcode: userFields.shippingzipcode,
+        taxid: userFields.taxid,
+        accountname: userFields.accountname,
+        ownername: userFields.ownername,
+        billingcountrycode: userFields.countrycode,
+        billingstreet: userFields.billingstreet,
+        billingcity: userFields.billingcity,
+        billingstate: userFields.billingstate,
+        billingzipcode: userFields.billingzipcode,
+        staffRows: userFields.staffdetails,
+    }
+    if (userinfo) {
+      userinfo.staffRows.forEach((staffInfo: any)=>{
+        let errObjd = {errObj:{
+          emailErr: "",
+          firstnameErr: "",
+          lastnameErr: "",
+          mobilenumberErr: ""
+      }}
+      let obj =Object.assign(staffInfo,errObjd);
+      console.log('testobj', obj);
+      });
+    }
+    if ( currentPage === 'edit') {
+      this.setState({ userData: userinfo, isEditPage: true, isStaff: userFields.storewithmultiuser, isRendered: true },()=>{
+        console.log('editdatas1', this.state.userData, this.state.isStaff);
+      });
+    } else if (currentPage === 'validate') {
+      this.setState({ userData: userinfo, isValidatePage: true, isStaff: userFields.storewithmultiuser, isRendered: true},()=>{
+        console.log('editdatas1', this.state.userData);
+      });
+    }
 
       //Validate User
       setTimeout(() => {
         this.getDynamicOptionFields(userFields);
-        console.log('editdatas2', this.state.userData);
       }, 0);
-      } else {
-        setTimeout(() => {
-          this.getDynamicOptionFields('');
-        }, 0);
-      }
+    } else {
+      setTimeout(() => {
+        this.getDynamicOptionFields('');
+      }, 0);
+    }
   }
 
   getRegion() {
@@ -495,7 +455,7 @@ class CreateUser extends Component<any, any> {
     } else {
       newStep = newStep - 1;
     }
-    formValid = true;
+    // formValid = true;
 
     if (newStep > 0 && newStep <= this.state.stepsArray.length) {
       if (formValid) {
@@ -746,10 +706,10 @@ class CreateUser extends Component<any, any> {
         let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
         errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
         errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
-        errObj.emailErr=userInfo.email ? '' : "Please enter the email";
+        // errObj.emailErr=userInfo.email ? '' : "Please enter the email";
         errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
         userData.ownerRows[idx].errObj = errObj;
-        if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.emailErr !== '' || errObj.mobilenumberErr !== '') {
+        if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
           formValid = false;
         }
         this.setState((prevState:any) => ({
@@ -764,10 +724,9 @@ class CreateUser extends Component<any, any> {
           let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
           errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
           errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
-          errObj.emailErr=userInfo.email ? '' : "Please enter the email";
           errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
           userData.staffRows[idx].errObj = errObj;
-          if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.emailErr !== '' || errObj.mobilenumberErr !== '') {
+          if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
             formValid = false;
           }
           this.setState((prevState:any) => ({
@@ -867,26 +826,20 @@ class CreateUser extends Component<any, any> {
     let staffRows = [...this.state.userData.staffRows];
     
     if(type==='staff') {
-      if (!emailField) {
-        staffRows[idx].errObj.emailErr = "Please enter the Email";
-      } else {
-        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-          staffRows[idx].errObj.emailErr = "";
-        }else {
-          staffRows[idx].errObj.emailErr = "Please enter a valid email";
-        }
+      // if (!emailField) {
+      //   staffRows[idx].errObj.emailErr = "Please enter the Email";
+      // } else {
+      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+        staffRows[idx].errObj.emailErr = "";
+      }else {
+        staffRows[idx].errObj.emailErr = "Please enter a valid email";
       }
-
     }
     if(type==='owner'){
-      if (!emailField) {
-        ownerRows[idx].errObj.emailErr = "Please enter the Email";
-      } else {
-        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-          ownerRows[idx].errObj.emailErr = "";
-        }else {
-          ownerRows[idx].errObj.emailErr = "Please enter a valid email";
-        }
+      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+        ownerRows[idx].errObj.emailErr = "";
+      }else {
+        ownerRows[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
     this.setState((prevState: any)=> ({
@@ -933,6 +886,7 @@ class CreateUser extends Component<any, any> {
         item.lastname ='';
         item.mobilenumber ='';
         item.email ='';
+
        })
       this.setState((prevState: any)=> ({
         userData: {
@@ -1069,6 +1023,7 @@ class CreateUser extends Component<any, any> {
       mobilenumber: "",
       email: "",
       active: true,
+      isowner: false,
       errObj: {
         firstnameErr:'',
         lastnameErr: "",
@@ -1105,6 +1060,7 @@ class CreateUser extends Component<any, any> {
     mobilenumber: "",
     email: "",
     active: true,
+    isowner: false,
     errObj: {
       firstnameErr:'',
       lastnameErr: "",
@@ -1154,6 +1110,7 @@ class CreateUser extends Component<any, any> {
       userData,
       stepsArray,
       isValidatePage,
+      isEditPage,
       isStaff,
       shippingcountrycodeErr,
       shippingstreetErr,
@@ -1178,6 +1135,7 @@ class CreateUser extends Component<any, any> {
       width: 35, height: 35, borderRadius: 20
     }
     const tableScrollStyle = { maxHeight: "280px", overflowY: "auto", overflowX: "hidden" };
+    let currentPage = this.props.location?.page;
 
     // const fields =
     //   currentStep == 3 ? this.state.dynamicFields : this.state.withHolding;
@@ -1247,7 +1205,7 @@ class CreateUser extends Component<any, any> {
     } else {
       nextButton = (
         <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("createUser", e)}>
-          {!this.props.location?.state ? "Create User" : "Approve"}
+          {currentPage === 'edit' ? 'Update' : currentPage === 'validate' ? 'Approve' : 'Create' }
          <span>
            <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
          </span>
@@ -1300,7 +1258,7 @@ class CreateUser extends Component<any, any> {
                     </div>
                     <div className="col-sm-3">
                         <label className="font-weight-bold">Has store staff?
-                            <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.enableStoreStaff(e)}} />
+                            <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.enableStoreStaff(e)}} checked={isStaff} />
                             <span className="checkmark"></span>
                         </label>
                     </div>
@@ -1770,15 +1728,20 @@ class CreateUser extends Component<any, any> {
                 Back
               </button>
             )}
-             {!this.props.location?.state &&
+             {(isEditPage || isValidatePage) && (currentStep === 1) &&
+            <button
+              className="cus-btn-user reset buttonStyle"
+              onClick={() => this.props.history.push('/userList')}
+            >
+              Cancel
+            </button>}
             <button
               className="cus-btn-user reset buttonStyle"
               onClick={() => this.reset()}
             >
               Reset
             </button>
-            }
-            {this.props.location?.state && currentStep===4 &&
+            {currentPage === 'validate' &&
              <button
              className="btn btn-decline buttonStyle"
              onClick={() => this.declineUser()}
