@@ -124,7 +124,7 @@ export const ScanPointsAndAllocation = (
       <div className="container">
         <div className="row">
           <div className="col-xs-12 column tableScrollStyle">
-            <table className="devconfig table" id="tab_logic">
+            <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="tableHeaderStyle">Position</th>
@@ -140,7 +140,7 @@ export const ScanPointsAndAllocation = (
                   <tr id="addr0" key={idx}>
                     <td className="tableHeaderStyle">
                       <select
-                        className="dpstyle selectoutline"
+                        className="dpstyle selectoutline label"
                         id="dropdown"
                         name="position"
                         value={item.position}
@@ -165,7 +165,7 @@ export const ScanPointsAndAllocation = (
                     </td>
                     <td className="tableHeaderStyle">
                       <select
-                        className="dpstyle selectoutline"
+                        className="dpstyle selectoutline label"
                         id="dropdown"
                         name="scannedby"
                         value={item.scannedby}
@@ -188,7 +188,7 @@ export const ScanPointsAndAllocation = (
 
                     <td className="tableHeaderStyle">
                       <select
-                        className="dpstyle selectoutline"
+                        className="dpstyle selectoutline label"
                         id="dropdown"
                         name="scantype"
                         value={item.scantype}
@@ -219,7 +219,7 @@ export const ScanPointsAndAllocation = (
                     </td>
                     <td className="tableHeaderStyle">
                       <select
-                        className="dpstyle selectoutline"
+                        className="dpstyle selectoutline label"
                         id="dropdown"
                         name="packaginglevel"
                         value={item.packaginglevel}
@@ -249,7 +249,7 @@ export const ScanPointsAndAllocation = (
 
                     <td className="tableHeaderStyle">
                       <select
-                        className="dpstyle selectoutline"
+                        className="dpstyle selectoutline label"
                         id="dropdown"
                         name="pointallocated"
                         value={item.pointallocated}

@@ -10,17 +10,12 @@ import { addTnTFlowInputList } from "../../../redux/actions";
 interface ITnTProps {
   inputList: any;
   setInputList: (data: any) => void;
-  getValidation:()=>void;
-  isValidNext:boolean,
+  getValidation: () => void;
+  isValidNext: boolean;
 }
 
 export const TnTFlow = (props: ITnTProps) => {
-  const {
-    inputList,
-    setInputList,
-    getValidation,
-    isValidNext,
-  } = props;
+  const { inputList, setInputList, getValidation, isValidNext } = props;
   const [valSelected, setValSelected] = useState("NA");
 
   // handle input change
@@ -40,10 +35,10 @@ export const TnTFlow = (props: ITnTProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-    const data =inputList[index];
+    const data = inputList[index];
     getValidation();
-    if(data.code && data.position){
-    setInputList([...inputList, { level: 0, code: "", position: "" }]);
+    if (data.code && data.position) {
+      setInputList([...inputList, { level: 0, code: "", position: "" }]);
     }
   };
 
@@ -54,13 +49,13 @@ export const TnTFlow = (props: ITnTProps) => {
     setInputList(list);
     setValSelected(event.target.value);
   };
-    console.log("tnt",inputList);
+  console.log("tnt", inputList);
   return (
     <div className="col-md-10">
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">
-            <table className="devconfig table" id="tab_logic">
+            <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="tableStyle text-center">Level</th>
@@ -70,62 +65,57 @@ export const TnTFlow = (props: ITnTProps) => {
                 </tr>
               </thead>
               <tbody>
-                {inputList.map((item: any, idx: number) => (
-                  <tr id="addr0" key={idx}>
-                    <td className="tableStyle">{idx}</td>
-                    <td className="tableHeaderStyle">
-                      <input
-                        className="form-control dpstyle"
-                        type="text"
-                        name="code"
-                        value={item.code}
-                        onChange={(e) => handleInputChange(e, idx)}
-                      />
-                      {item?.code_error&&isValidNext&&<span className="error">{"Please enter the code"} </span>}
-                    </td>
-
-                    <td className="tableHeaderStyle">
-                      <input
-                        className="form-control dpstyle"
-                        type="text"
-                        name="position"
-                        value={item.position}
-                        onChange={(e) => handleInputChange(e, idx)}
-                      />
-                      {item?.position_error&&isValidNext&&<span className="error">{"Please enter the position"} </span>}
-                    </td>
-
-                    <td className="tablebtnStyle">
-                      {idx === inputList.length - 1 ? (
-                        // <button
-                        //   className="btn btnStyleAdd"
-                        //   onClick={() => handleAddClick(idx)}
-                        // >
-                        //   <img src={plus_icon} />
-                        // </button>
-
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={AddBtn}
-                          onClick={() => handleAddClick(idx)}
+                {inputList.length > 0 &&
+                  inputList.map((item: any, idx: number) => (
+                    <tr id="addr0" key={idx}>
+                      <td className="tableStyle">{idx}</td>
+                      <td className="tableHeaderStyle">
+                        <input
+                          className="form-control dpstyle label"
+                          type="text"
+                          name="code"
+                          value={item.code}
+                          onChange={(e) => handleInputChange(e, idx)}
                         />
-                      ) : (
-                        // <button
-                        //   className="btn btnStyleRemove"
-                        //   onClick={() => handleRemoveClick(idx)}
-                        // >
-                        //   <img src={minus} />
-                        // </button>
+                        {item?.code_error && isValidNext && (
+                          <span className="error">
+                            {"Please enter the code"}{" "}
+                          </span>
+                        )}
+                      </td>
 
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={RemoveBtn}
-                          onClick={() => handleRemoveClick(idx)}
+                      <td className="tableHeaderStyle">
+                        <input
+                          className="form-control dpstyle label"
+                          type="text"
+                          name="position"
+                          value={item.position}
+                          onChange={(e) => handleInputChange(e, idx)}
                         />
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                        {item?.position_error && isValidNext && (
+                          <span className="error">
+                            {"Please enter the position"}{" "}
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="tablebtnStyle ">
+                        {idx === inputList.length - 1 ? (
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={AddBtn}
+                            onClick={() => handleAddClick(idx)}
+                          />
+                        ) : (
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={RemoveBtn}
+                            onClick={() => handleRemoveClick(idx)}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

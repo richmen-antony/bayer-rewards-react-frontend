@@ -79,6 +79,9 @@ interface IDevConfigProps {
   setAnticounterfeitDigitalScan: any;
   setAnticounterfeitSmartLabel: any;
   devconfig: any;
+
+  location?: any;
+  history?: any;
 }
 
 type MyComponentState = {
@@ -103,10 +106,10 @@ type MyComponentState = {
   currencyname: string;
   value: number;
   allTemplateDataByCountry: Array<any>;
-  isError:boolean,
-  locationHierarchy:Array<any>;
-  roleHierarchy:Array<any>;
-  tntflowData:Array<any>;
+  isError: boolean;
+  locationHierarchy: Array<any>;
+  roleHierarchy: Array<any>;
+  tntflowData: Array<any>;
   countryDetails: any;
 };
 
@@ -223,10 +226,10 @@ class Devconfigurations extends React.Component<
       currencyname: "",
       value: 0,
       allTemplateDataByCountry: [],
-      isError:false,
-      locationHierarchy:[],
-      roleHierarchy:[],
-      tntflowData:[],
+      isError: false,
+      locationHierarchy: [],
+      roleHierarchy: [],
+      tntflowData: [],
       countryDetails: [],
     };
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
@@ -246,74 +249,19 @@ class Devconfigurations extends React.Component<
     this.setState({ setSelectedCluster: event.target.value });
   };
 
-  // const validateField = (fieldName: string): boolean => {
-  //   let isValid = true;
-  //   if (
-  //     props.values[fieldName] &&
-  //     props.values[fieldName] !== '' &&
-  //     props.values[fieldName].toString().trim().length > 0
-  //   ) {
-  //     setValidation((preState) => ({ ...preState, [fieldName]: isValid }));
-  //     return true;
-  //   } else {
-  //     isValid = false;
-  //     setValidation((preState) => ({ ...preState, [fieldName]: isValid }));
-  //     return false;
-  //   }
-  // };
-
-  // inputValidation = (): boolean => {
-  //   let isValid = true;
-  //   const { currentStep } = this.state;
-
-  //   switch (currentStep) {
-  //     case 1:
-  //       return isValid;
-  //       break;
-  //     case 2:
-  //       return isValid;
-  //       break;
-  //     case 3:
-  //       return isValid;
-  //       break;
-  //     case 4:
-  //       return isValid;
-  //       break;
-  //     case 5:
-  //       return isValid;
-  //       break;
-  //     case 6:
-  //       return isValid;
-  //       break;
-  //     case 7:
-  //       return isValid;
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  //   //   isValid = validateField('firstName') && isValid;
-  //   //   isValid = validateField('lastName') && isValid;
-  //   //   isValid = validateField('phone') && isValid;
-  //   //   isValid = validateField('email') && isValid;
-  //   //   isValid = validateField('streetAddress') && isValid;
-  //   //   isValid = validateField('dateOfBirth') && isValid;
-  //   //   isValid = validateField('city') && isValid;
-  //   //   isValid = validateField('state') && isValid;
-  //   //   isValid = validateField('postcode') && isValid;
-  //   // return isValid;
-  // };
-  validation(){
+  validation() {
     const { currentStep } = this.state;
-    const {loacationinputList} = this.props;
-    if(currentStep===2){
-      console.log({loacationinputList})
+    const { loacationinputList } = this.props;
+    if (currentStep === 2) {
+      console.log({ loacationinputList });
       console.log("called");
-       const isValid=loacationinputList.filter((value:any)=> value.locationhiername==="");
-      if(isValid){
-        this.setState({isError:true})
-      }else{
-        this.setState({isError:false})
-
+      const isValid = loacationinputList.filter(
+        (value: any) => value.locationhiername === ""
+      );
+      if (isValid) {
+        this.setState({ isError: true });
+      } else {
+        this.setState({ isError: false });
       }
     }
   }
@@ -338,9 +286,8 @@ class Devconfigurations extends React.Component<
     }
 
     if (newStep > 0 && newStep <= stepsArray.length) {
-      console.log("props",this.props.loacationinputList)
-     
-      
+      console.log("props", this.props.loacationinputList);
+
       this.setState({
         currentStep: newStep,
       });
@@ -352,13 +299,39 @@ class Devconfigurations extends React.Component<
       this.registerTemplateByCountry();
     }
 
-    if( clickType === "next" ){
+    if (clickType === "next") {
       this.handleInputValidation();
     }
   }
 
   handleReset() {
-    // let newStep = this.state.currentStep;
+    // const { currentStep } = this.state;
+    // switch (currentStep) {
+    //   case 1:
+
+    //     break;
+    //   case 2:
+    //     this.props.addLocationInputList({});
+    //     break;
+    //   case 3:
+    //     return isValid;
+    //     break;
+    //   // case 4:
+    //   //   return isValid;
+    //   //   break;
+    //   // case 5:
+    //   //   return isValid;
+    //   //   break;
+    //   // case 6:
+    //   //   return isValid;
+    //   //   break;
+    //   // case 7:
+    //   //   return isValid;
+    //   //   break;
+    //   default:
+    //     break;
+    // }
+
     let newStep = 1;
     this.setState({
       currentStep: newStep,
@@ -382,23 +355,22 @@ class Devconfigurations extends React.Component<
     // if (this.state.setSelectedCluster) {
     //   this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
     // }
- if(this.props.loacationinputList !==prevProps.loacationinputList){
-   this.setState({
-     locationHierarchy:this.props.loacationinputList
-   })
- }
+    if (this.props.loacationinputList !== prevProps.loacationinputList) {
+      this.setState({
+        locationHierarchy: this.props.loacationinputList,
+      });
+    }
 
- if(this.props.roleinputList !==prevProps.roleinputList){
-  this.setState({
-    roleHierarchy:this.props.roleinputList
-  })
-}
-if(this.props.tntflowinputList !==prevProps.tntflowinputList){
-  this.setState({
-    tntflowData:this.props.tntflowinputList
-  })
-}
-    
+    if (this.props.roleinputList !== prevProps.roleinputList) {
+      this.setState({
+        roleHierarchy: this.props.roleinputList,
+      });
+    }
+    if (this.props.tntflowinputList !== prevProps.tntflowinputList) {
+      this.setState({
+        tntflowData: this.props.tntflowinputList,
+      });
+    }
   }
 
   _retrieveSelectedContryofCluster = async (setSelectedCluster: any) => {
@@ -422,42 +394,42 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
   registerTemplateByCountry = () => {
     const { registerTemplateData } = apiURL;
     const { devconfig } = this.props;
-    const {locationHierarchy,roleHierarchy,tntflowData} = this.state;
-    let locationHierarchyData=locationHierarchy.map((value:any)=>{
-      if(value?.error || !value?.error){
+    const { locationHierarchy, roleHierarchy, tntflowData } = this.state;
+    let locationHierarchyData = locationHierarchy.map((value: any) => {
+      if (value?.error || !value?.error) {
         delete value.error;
-        return value={...value};
+        return (value = { ...value });
       }
-    })
-    
-    let roleHierarchyData=roleHierarchy.map((value:any)=>{
-      if(value?.rolehierarchyname_error || !value?.rolecode_error){
+    });
+
+    let roleHierarchyData = roleHierarchy.map((value: any) => {
+      if (value?.rolehierarchyname_error || !value?.rolecode_error) {
         delete value?.rolehierarchyname_error;
         delete value?.rolecode_error;
-        return value={...value};
+        return (value = { ...value });
       }
-    })
+    });
 
-    let tntflowDataData=tntflowData.map((value:any)=>{
-      if(value?.code_error || !value?.position_error){
+    let tntflowDataData = tntflowData.map((value: any) => {
+      if (value?.code_error || !value?.position_error) {
         delete value?.code_error;
         delete value?.position_error;
-        return value={...value};
+        return (value = { ...value });
       }
-    })
-    console.log({tntflowDataData,locationHierarchyData,roleHierarchyData})
+    });
+    console.log({ tntflowDataData, locationHierarchyData, roleHierarchyData });
     this.setState({ isLoader: true });
     let data = {
-      countrycode: devconfig.countryCode,
+      countrycode: devconfig.countryName,
       currencycode: devconfig.currencyCode,
       currency: devconfig.currencyName,
-      country: devconfig.countryName,
+      country: devconfig.countryCode,
       cluster: "AFRICA", //this.state.cluster,
       region: "EMEA", //this.state.region,
       smsauthentication: devconfig.anticounterfeit.sms_authentication,
       digitalscan: devconfig.anticounterfeit.digital_scan,
       smartlabel: devconfig.anticounterfeit.smart_label,
-      createdby: "demo1",
+      createdby: "demo",
       locationhierarchy: devconfig.location.inputList,
       rolehierarchy: devconfig.role.inputList,
       trackntraceflow: devconfig.tntflow.inputList,
@@ -469,6 +441,7 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
     invokePostServiceTemp(registerTemplateData, data)
       .then((response: any) => {
         console.log(response);
+        this.props.history.push("./dashboard");
         this.setState({
           isLoader: false,
         });
@@ -540,25 +513,50 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
   getCountryDetails = () => {};
 
   _getCurrentStep = () => {
-    const { currentStep, selectedCountryDetails,locationHierarchy,isError,roleHierarchy,tntflowData,countryDetails } = this.state;
+    const {
+      currentStep,
+      selectedCountryDetails,
+      locationHierarchy,
+      isError,
+      roleHierarchy,
+      tntflowData,
+      countryDetails,
+    } = this.state;
 
     switch (currentStep) {
       case 1:
         return (
           <CountrySetup
-            setCountryDetails={(data:any) =>
+            setCountryDetails={(data: any) =>
               this.setState({ selectedCountryDetails: data })
             }
             selectedCountryDetails={selectedCountryDetails}
-           
           />
         );
       case 2:
-        return <LocationHierarchy getValidation={this.handleInputValidation} inputList={locationHierarchy} isValidNext={isError} />;
+        return (
+          <LocationHierarchy
+            getValidation={this.handleInputValidation}
+            inputList={locationHierarchy}
+            isValidNext={isError}
+          />
+        );
       case 3:
-        return <RoleHierarchy  inputList={roleHierarchy} isValidNext={isError} getValidation={this.handleInputValidation} />;
+        return (
+          <RoleHierarchy
+            inputList={roleHierarchy}
+            isValidNext={isError}
+            getValidation={this.handleInputValidation}
+          />
+        );
       case 4:
-        return <TnTFlow  inputList={tntflowData} isValidNext={isError} getValidation={this.handleInputValidation}/>;
+        return (
+          <TnTFlow
+            inputList={tntflowData}
+            isValidNext={isError}
+            getValidation={this.handleInputValidation}
+          />
+        );
       case 5:
         return <PackagingDefinition />;
       case 6:
@@ -589,82 +587,96 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
     return unique;
   }
 
-  handleInputValidation=()=>{
+  handleInputValidation = () => {
     const { currentStep } = this.state;
-    const {loacationinputList,roleinputList,tntflowinputList} = this.props;
-    if(currentStep===2){
-      const data =loacationinputList.map((value:any)=>{
-        if(!value.locationhiername){
-          value={...value,error:true}
+    const { loacationinputList, roleinputList, tntflowinputList } = this.props;
+    if (currentStep === 2) {
+      const data = loacationinputList.map((value: any) => {
+        if (!value.locationhiername) {
+          value = { ...value, error: true };
           this.setState({
-            isError:true,
-            currentStep:2
-          })
-        }else{
-          value={...value,error:false}
+            isError: true,
+            currentStep: 2,
+          });
+        } else {
+          value = { ...value, error: false };
           this.setState({
-            isError:false
-          })
+            isError: false,
+          });
         }
         return value;
-      })
-      this.setState({locationHierarchy:data})
+      });
+      this.setState({ locationHierarchy: data });
     }
-   
-    if(currentStep===3){
-      const data =roleinputList.map((value:any)=>{
-        if(!value.rolehierarchyname || !value.rolecode ){
-          if(!value.rolehierarchyname && !value.rolecode ){
-            value={...value,rolehierarchyname_error:true,rolecode_error:true}
-          }else if(!value.rolehierarchyname)
-          value={...value,rolehierarchyname_error:true,rolecode_error:false}
-          else if(!value.rolecode)
-          value={...value,rolecode_error:true,rolehierarchyname_error:false}
-          this.setState({
-            isError:true,
-            currentStep:3
-          })
-        }else{
-          value={...value,rolehierarchyname_error:false,rolecode_error:false}
-          this.setState({
-            isError:false
-          })
-        }
-        return value;
-      })
-      this.setState({roleHierarchy:data})
 
+    if (currentStep === 3) {
+      const data = roleinputList.map((value: any) => {
+        if (!value.rolehierarchyname || !value.rolecode) {
+          if (!value.rolehierarchyname && !value.rolecode) {
+            value = {
+              ...value,
+              rolehierarchyname_error: true,
+              rolecode_error: true,
+            };
+          } else if (!value.rolehierarchyname)
+            value = {
+              ...value,
+              rolehierarchyname_error: true,
+              rolecode_error: false,
+            };
+          else if (!value.rolecode)
+            value = {
+              ...value,
+              rolecode_error: true,
+              rolehierarchyname_error: false,
+            };
+          this.setState({
+            isError: true,
+            currentStep: 3,
+          });
+        } else {
+          value = {
+            ...value,
+            rolehierarchyname_error: false,
+            rolecode_error: false,
+          };
+          this.setState({
+            isError: false,
+          });
+        }
+        return value;
+      });
+      this.setState({ roleHierarchy: data });
     }
-     
-    if(currentStep===4){
-      const data =tntflowinputList.map((value:any)=>{
-        if(!value.code || !value.position ){
-          if(!value.code &&!value.position){
-            value={...value,code_error:true,position_error:true}
-          }else if(!value.code){
-            value={...value,code_error:true,position_error:false}
-          }else if(!value.position){
-            value={...value,position_error:true,code_error:false}
+
+    if (currentStep === 4) {
+      const data = tntflowinputList.map((value: any) => {
+        if (!value.code || !value.position) {
+          if (!value.code && !value.position) {
+            value = { ...value, code_error: true, position_error: true };
+          } else if (!value.code) {
+            value = { ...value, code_error: true, position_error: false };
+          } else if (!value.position) {
+            value = { ...value, position_error: true, code_error: false };
           }
-        
+
           this.setState({
-            isError:true,
-            currentStep:4
-          })
-        }else{
-          value={...value,code_error:false,position_error:false}
+            isError: true,
+            currentStep: 4,
+          });
+        } else {
+          value = { ...value, code_error: false, position_error: false };
           this.setState({
-            isError:false
-          })
+            isError: false,
+          });
         }
         return value;
-      })
-      this.setState({tntflowData:data})
-
+      });
+      this.setState({ tntflowData: data });
     }
-  }
+  };
   render() {
-    const { currentStep,isError } = this.state;
+    const { currentStep, isError } = this.state;
 
     const { region, cluster, country, countrycode, currency, currencyname } =
       this.state;
@@ -750,12 +762,13 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
                     <div className="row rm-group">
                       <div className="col-sm-3">
                         <div>
-                          <label className="font-weight-bold pt-4">
+                          <label className="font-weight-bold pt-4 label">
                             Region
                           </label>
                         </div>
                         <div>
                           <select
+                            disabled
                             className="dpstyle selectoutline"
                             id="dropdown"
                             value={this.state.setSelectedRegion}
@@ -780,13 +793,14 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
                       </div>
                       <div className="col-sm-3">
                         <div>
-                          <label className="font-weight-bold pt-4">
+                          <label className="font-weight-bold pt-4 label">
                             Cluster
                           </label>
                         </div>
                         <div>
                           {" "}
                           <select
+                            disabled
                             className="dpstyle selectoutline"
                             id="dropdown"
                             value={this.state.setSelectedCluster}
@@ -868,7 +882,6 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
                 <button
                   className="btnNextSubmit cus-btn-dev"
                   onClick={() => this.handleClick("next")}
-                  
                 >
                   {currentStep === stepsArray.length ? "Apply" : "Next"}{" "}
                   {currentStep === stepsArray.length ? (

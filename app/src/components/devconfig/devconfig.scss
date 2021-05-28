@@ -122,6 +122,7 @@ input:read-only {
   table {
     text-align: left;
     border-collapse: collapse;
+    font-size: 12px;
   }
   th,
   td {
@@ -155,7 +156,7 @@ input:read-only {
   span {
     position: absolute;
     top: 0px;
-    margin-left: 5px;
+    margin-left: 3px;
   }
   .arrow-i {
     position: relative;
@@ -174,4 +175,16 @@ input:read-only {
   color: #10384f;
   border: 1px solid #7eb343 !important;
   box-shadow: 0px 1px 3px #0000004d;
+}
+
+@media only screen and (max-width: 1400px) {
+  .label {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (min-width: 1400px) and (max-width: 1920px) {
+  .label {
+    font-size: 14px !important;
+  }
 }

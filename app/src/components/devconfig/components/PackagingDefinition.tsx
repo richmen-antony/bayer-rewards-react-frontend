@@ -126,6 +126,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
               </thead>
               <tbody>
                 {activeButton === "SEED" &&
+                  inputList.length > 0 &&
                   inputList
                     .filter((pc: any) => pc.productcategory == "SEED")
                     .map((item: any, idx: number) => (
@@ -133,7 +134,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                         <td className="tableStyle">{idx}</td>
                         <td className="tableHeaderStyle">
                           <input
-                            className="form-control dpstyle"
+                            className="form-control dpstyle label"
                             type="text"
                             name="packaginghierarchyname"
                             value={item.packaginghierarchyname}
@@ -143,7 +144,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
                         <td className="tableHeaderStyle">
                           <select
-                            className="dpstyle selectoutline"
+                            className="dpstyle selectoutline label"
                             defaultValue="NA"
                             name="parentpackage"
                             data-id={idx}
@@ -194,6 +195,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                     ))}
 
                 {activeButton === "CP" &&
+                  inputList.length > 0 &&
                   inputList
                     .filter((pc: any) => pc.productcategory == "CP")
                     .map((item: any, idx: number) => (
@@ -201,7 +203,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                         <td className="tableStyle">{idx}</td>
                         <td className="tableHeaderStyle">
                           <input
-                            className="form-control dpstyle"
+                            className="form-control dpstyle label"
                             type="text"
                             name="packaginghierarchyname"
                             value={item.packaginghierarchyname}
@@ -211,7 +213,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
                         <td className="tableHeaderStyle">
                           <select
-                            className="dpstyle selectoutline"
+                            className="dpstyle selectoutline label"
                             defaultValue="NA"
                             name="parentpackage"
                             data-id={idx}

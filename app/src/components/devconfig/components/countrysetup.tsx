@@ -119,6 +119,7 @@ const CountrySetupComp = (props: ICountryProps) => {
     if (countryCode) {
       _retriveCountryCode(countryCode);
     }
+
     return () => {
       setCountryDetails(countryDetails);
     };
@@ -136,15 +137,14 @@ const CountrySetupComp = (props: ICountryProps) => {
     setCountryCode(event.target.value);
 
     _retriveCountryCode(event.target.value);
-
-    getTemplateByCountry();
   };
 
-  const getTemplateByCountry = () => {
+  const getTemplateByCountry = (countryShortName: any) => {
     const { getTemplateData } = apiURL;
-    const { devconfig } = props;
+    console.log(countryShortName);
+
     let data = {
-      countryCode: props.countryName,
+      countryCode: countryShortName,
     };
 
     invokeGetAuthServiceTemp(getTemplateData, data)
@@ -199,6 +199,7 @@ const CountrySetupComp = (props: ICountryProps) => {
     setCountryName(countryISO);
     setCurrencyCode(countryName[0].currency);
     setCurrencyName(currencyDesc);
+    getTemplateByCountry(countryISO);
   };
 
   return (
@@ -207,7 +208,7 @@ const CountrySetupComp = (props: ICountryProps) => {
         <div className="row effectiveDate fo  rm-group">
           <div className="col-sm-3">
             <div>
-              <label className="font-weight-bold pt-4">Country</label>
+              <label className="font-weight-bold pt-4 label">Country</label>
             </div>
             <div>
               <select
@@ -215,7 +216,7 @@ const CountrySetupComp = (props: ICountryProps) => {
                 id="dropdown"
                 onChange={(event) => handleDropdownChange(event)}
                 value={countryCode}
-                defaultValue={countryCode}
+                defaultValue="Malawi"
               >
                 {countryDetails.length > 0 ? (
                   countryDetails.map(({ name }) => (
@@ -239,7 +240,9 @@ const CountrySetupComp = (props: ICountryProps) => {
           </div>
           <div className="col-sm-3">
             <div>
-              <label className="font-weight-bold pt-4">Country Code</label>
+              <label className="font-weight-bold pt-4 label">
+                Country Code
+              </label>
             </div>
             <div>
               <input
@@ -254,7 +257,9 @@ const CountrySetupComp = (props: ICountryProps) => {
 
           <div className="col-sm-3">
             <div>
-              <label className="font-weight-bold pt-4">Currency Code</label>
+              <label className="font-weight-bold pt-4 label">
+                Currency Code
+              </label>
             </div>
             <div>
               <input
@@ -268,7 +273,7 @@ const CountrySetupComp = (props: ICountryProps) => {
 
           <div className="col-sm-3">
             <div>
-              <label className="font-weight-bold pt-4">Currency</label>
+              <label className="font-weight-bold pt-4 label">Currency</label>
             </div>
             <div>
               <input
