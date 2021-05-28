@@ -83,7 +83,7 @@ class Pagination extends Component<Props,States>{
                 <div className='row'>
                     <div className='col-sm-6' style={{display: 'flex',justifyContent: 'flex-start', fontSize: '13px',alignItems: "center",padding: "0"}}>
                         <div className='col-sm-3 pl-0'>
-                            Total Sales: {totalData}
+                            Total Sales: {totalData || 0}
                         </div>
                         
                     

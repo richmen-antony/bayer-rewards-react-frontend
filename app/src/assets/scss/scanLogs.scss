@@ -701,7 +701,7 @@
       thead {
         tr {
           th {
-            font-size: 12px;
+            font-size: 11px;
             font-family: "Open Sans";
             padding: 12px;
           }
@@ -765,7 +765,19 @@
   .dropdown-menu {
     font-size: 11px;
   } 
-
+  .ordered-table {
+    table {
+      thead {
+        tr {
+          th {
+            font-size: 11px;
+            font-family: "Open Sans";
+            padding: 12px;
+          }
+        }
+      }
+    }
+  }
   .scanlog-table {
     table {
       thead {

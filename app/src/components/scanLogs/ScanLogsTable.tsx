@@ -136,7 +136,7 @@ class ScanLogsTable extends Component<Props, States> {
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
       productCategories: [],
-      status: ["All", "Fulfilled", "Expired", "Duplicate"],
+      status: ["All", "FULFILLED", "Expired", "Duplicate"],
       list: ["All", "Distributor", "Retailer"],
       selectedFilters: {
         type: "All",
@@ -185,14 +185,15 @@ class ScanLogsTable extends Component<Props, States> {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
-      role: this.state.selectedFilters.type,
-      scantype: this.state.selectedFilters.scanType,
-      productcategory: this.state.selectedFilters.productCategory,
-      scanstatus: this.state.selectedFilters.status,
+      // role: this.state.selectedFilters.type,
+      // scantype: this.state.selectedFilters.scanType,
+      // productcategory: this.state.selectedFilters.productCategory,
+      // scanstatus: this.state.selectedFilters.status,
       isfiltered: this.state.isFiltered,
-      startdate: this.state.selectedFilters.startDate,
-      enddate: this.state.selectedFilters.endDate,
-      region: "R1",
+      // startdate: this.state.selectedFilters.startDate,
+      // enddate: this.state.selectedFilters.endDate,
+      region: "Northern",
+      countrycode:"MW"
     };
 
     invokeGetAuthService(scanLogs, data)
@@ -202,7 +203,7 @@ class ScanLogsTable extends Component<Props, States> {
           allScanLogs:
             Object.keys(response.body).length !== 0 ? response.body.rows : [],
         });
-        const total = response.body.totalrows;
+        const total = response.body.rows?.length;
         this.setState({ totalData: Number(total) });
       })
       .catch((error) => {
@@ -751,7 +752,7 @@ class ScanLogsTable extends Component<Props, States> {
                     <th
                       style={{ width: "16%" }}
                       onClick={(e) =>
-                        this.handleSort(e, "sellername", allScanLogs, isAsc)
+                        this.handleSort(e, "staffname", allScanLogs, isAsc)
                       }
                     >
                       RETAILER NAME/ID
@@ -766,7 +767,7 @@ class ScanLogsTable extends Component<Props, States> {
                     <th
                       style={{ width: "14%" }}
                       onClick={(e) =>
-                        this.handleSort(e, "sellername", allScanLogs, isAsc)
+                        this.handleSort(e, "staffname", allScanLogs, isAsc)
                       }
                     >
                       PRODUCT SOLD
@@ -783,7 +784,7 @@ class ScanLogsTable extends Component<Props, States> {
                       onClick={(e) =>
                         this.handleSort(
                           e,
-                          "orderedquantity",
+                          "totalorderedquantity",
                           allScanLogs,
                           isAsc
                         )
@@ -831,7 +832,7 @@ class ScanLogsTable extends Component<Props, States> {
                     <th
                       style={{ width: "11%" }}
                       onClick={(e) =>
-                        this.handleSort(e, "farmerphone", allScanLogs, isAsc)
+                        this.handleSort(e, "farmerphonenumber", allScanLogs, isAsc)
                       }
                     >
                       FARMER #
@@ -861,7 +862,7 @@ class ScanLogsTable extends Component<Props, States> {
                     <th
                       style={{ width: "10%" }}
                       onClick={(e) =>
-                        this.handleSort(e, "status", allScanLogs, isAsc)
+                        this.handleSort(e, "orderstatus", allScanLogs, isAsc)
                       }
                     >
                       STATUS
@@ -905,11 +906,11 @@ class ScanLogsTable extends Component<Props, States> {
                             this.updateOrderData(value);
                           }}
                         >
-                          <td>{value.order_id}</td>
+                          <td>{value.orderid}</td>
                           <td>
                             <div className="retailer-id">
                               <p>
-                                {value.sellername}
+                                {value.staffname}
                                 <img
                                   className="retailer-icon"
                                   onClick={(event) => {
@@ -919,14 +920,14 @@ class ScanLogsTable extends Component<Props, States> {
                                   src={ExpandWindowImg}
                                 ></img>
                               </p>
-                              <label>{value.retailerid}</label>
+                              <label>{value.staffid}</label>
                             </div>
                           </td>
                           <td style={{ textAlign: "center" }}>
                             {value.products_ordered?.length || 0}
                           </td>
                           <td style={{ textAlign: "center" }}>
-                            {value.orderedquantity}
+                            {value.totalorderedquantity}
                           </td>
                           <td>{"MK " +value.totalcost}</td>
                           <td>
@@ -935,19 +936,19 @@ class ScanLogsTable extends Component<Props, States> {
                               <label>{value.farmerid}</label>
                             </div>
                           </td>
-                          <td>{value.farmerphone}</td>
+                          <td>{value.farmerphonenumber}</td>
                           <td>
                             {moment(value.ordereddate).format("DD-MM-YYYY")}
                           </td>
                           <td>
                             <span
                               className={`status ${
-                                value.status === "Fulfilled"
+                                value.orderstatus === "FULFILLED"
                                   ? "active"
                                   : "inactive"
                               }`}
                             >
-                              {value.status === "Fulfilled" ? (
+                              {value.orderstatus === "FULFILLED" ? (
                                 <img
                                   src={ActiveIcon}
                                   style={{ marginRight: "8px" }}
@@ -956,7 +957,7 @@ class ScanLogsTable extends Component<Props, States> {
                               ) : (
                                 <i className="fas fa-clock"></i>
                               )}
-                              {value.status}
+                              {value.orderstatus}
                             </span>
                           </td>
                           <td style={{ textAlign: "center" }}>
@@ -1007,7 +1008,7 @@ class ScanLogsTable extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {retailerPopupData.sellername},{" "}
+                      {retailerPopupData.staffname},{" "}
                       <label>{popupHeader?.sub}</label>{" "}
                     </p>
                   </div>

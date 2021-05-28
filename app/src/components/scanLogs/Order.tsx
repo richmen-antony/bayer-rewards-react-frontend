@@ -67,7 +67,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
-                ORDER ID <label>{data?.order_id}</label>{" "}
+                ORDER ID <label>{data?.orderid}</label>{" "}
               </p>
             </div>
           </div>
@@ -102,7 +102,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   <img src={retailerImg} alt="" />
                   <p>Retailer ID & Name</p>
                   <span>
-                    {data.retailerid} - {data.sellername}
+                    {data.staffname} - {data.staffid}
                   </span>
                 </div>
               </li>
@@ -139,12 +139,12 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                         <>
                           <tr key={index} onClick={() => handleExpand(value)}>
                             <th scope="row">{<img src={CornImg} />}</th>
-                            <td>{value.productsku}</td>
-                            <td>{value.type || "Seed-corn"}</td>
-                            <td>{value.intendedqty}</td>
-                            <td>{value.orderedqty}</td>
-                            <td>{"MK " + value.price}</td>
-                            {data.status === "Fulfilled" &&
+                            <td>{value.productname}</td>
+                            <td>{value.productgroup || "Seed-corn"}</td>
+                            <td>{value.intendedquantity}</td>
+                            <td>{value.orderedquantity}</td>
+                            <td>{"MK " + value.productprice}</td>
+                            {data.orderstatus === "FULFILLED" &&
                             <td>
                               <i
                                 className={`fas ${
@@ -154,7 +154,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             </td>
                            }
                           </tr>
-                          {accordionView && value?.order_id === accordionId && data.status === "Fulfilled"&& (
+                          {accordionView && value?.order_id === accordionId && data.orderstatus === "FULFILLED"&& (
                             <tr>
                               <td
                                 colSpan={7}
@@ -162,37 +162,27 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                               >
                                 <table className="inner-table">
                                   <tbody>
-                                    <tr>
+                                    {value.ordered_qrcodes &&
+                                    value.ordered_qrcodes.map((list:any)=>{
+                                      return (
+                                        <tr>
                                       <td className="title">
                                         <p>Label ID</p>
                                         <p className="sub-val">Batch #</p>
                                       </td>
                                       <td>
                                         <p className="qr-val">
-                                          625823651452258
+                                          {list.labelid}
                                         </p>
-                                        <p className="sub-val">125698</p>
+                                        <p className="sub-val">  {list.batchno}</p>
                                       </td>
-                                      <td>
-                                        <p className="qr-val">
-                                          632581548902502
-                                        </p>
-                                        <p className="sub-val">125698</p>
-                                      </td>
-                                      <td>
-                                        <p className="qr-val">
-                                          6250258403665286
-                                        </p>
-                                        <p className="sub-val">504147</p>
-                                      </td>
-                                      <td>
-                                        <p className="qr-val">
-                                          {" "}
-                                          625823651452258
-                                        </p>
-                                        <p className="sub-val">304100</p>
-                                      </td>
+                                      
                                     </tr>
+                                      )
+                                    }
+                                      )
+                                    })
+                                    
                                   </tbody>
                                 </table>
                               </td>
@@ -203,7 +193,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                     })}
                   </tbody>
                 </table>
-               {data.status === "Fulfilled" &&
+               {data.orderstatus === "FULFILLED" &&
                 <div id="accordion">
                   <div className="card dev product-sold-popup">
                     <div
@@ -211,11 +201,11 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       id="headingOne"
                       onClick={() => handleButton("e")}
                     >
-                      <span>{"Invalid Scans (3)"}</span>
+                      <span>{"Invalid Scans (0)"}</span>
                       <img src={RtArrow} />
-                        <span>Expired Labels (2)</span> 
+                        <span>Expired Labels (0)</span> 
                       <div>
-                        <span>Non Bayer Labels (2)</span>
+                        <span>Non Bayer Labels (0)</span>
                       </div>
                       <div className="expand-icon">
                         <i
@@ -226,7 +216,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       </div>
                     </div>
 
-                    <div
+                    {/* <div
                       id="collapseOne"
                       className={`collapse ${accordion && "show"}`}
                       aria-labelledby="headingOne"
@@ -257,7 +247,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                           </tbody>
                         </table>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                
                 </div>
@@ -269,17 +259,17 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               <div className="sum-total">
                 <p className="total">Total</p>
 
-                <span className="intendedqty">
-                  {_.sumBy(data.products_ordered, "intendedqty")}
+                <span className="intendedquantity">
+                  {_.sumBy(data.products_ordered, "intendedquantity")}
                 </span>
 
-                <span className="orderedqty">
-                  {_.sumBy(data.products_ordered, "orderedqty")}
+                <span className="orderedquantity">
+                  {_.sumBy(data.products_ordered, "orderedquantity")}
                 </span>
-                <span className="price">
+                <span className="productprice">
                   {"MK " +
                     _.sumBy(data.products_ordered, (item: any) =>
-                      Number(item.price)
+                      Number(item.productprice)
                     )}
                 </span>
               </div>
