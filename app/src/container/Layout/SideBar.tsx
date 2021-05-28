@@ -96,190 +96,191 @@ class Sidebar extends Component<Props, States> {
               )}
               {...this.props}
             > */}
-              <div id="sidebar-menu" className="">
-                <ul className="metismenu" id="side-menu">
-                  <li className="d-flex">
-                    <span
-                      className={
-                        window.location.pathname.indexOf("dashboard") > -1
-                          ? "waves-effect active"
-                          : "waves-effect"
-                      }
-                    ></span>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => this.setActiveTab("dashboard")}
-                    >
-                      <img src={homeIcon} alt="User" width="16" />{" "}
-                      <span> Dashboard </span>
-                    </Link>
-                  </li>
+            <div id="sidebar-menu" className="">
+              <ul className="metismenu" id="side-menu">
+                <li className="d-flex">
+                  <span
+                    className={
+                      window.location.pathname.indexOf("dashboard") > -1
+                        ? "waves-effect active"
+                        : "waves-effect"
+                    }
+                  ></span>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => this.setActiveTab("dashboard")}
+                  >
+                    <img src={homeIcon} alt="User" width="16" />{" "}
+                    <span> Dashboard </span>
+                  </Link>
+                </li>
 
-                  {this.state.userRole === "ADMIN" && (
-                    <>
-                      <li className="menu-title">MANAGEMENT</li>
-                      {this.state.userRole === "ADMIN" && (
-                        <li className="d-flex">
-                          <span
-                            className={
-                              activeTab === "devconfig"
-                                ? "waves-effect active"
-                                : "waves-effect"
-                            }
-                          ></span>
-                          <Link
-                            to="/devconfig"
-                            className={
-                              activeTab === "devconfig"
-                                ? "waves-effect active"
-                                : "waves-effect"
-                            }
-                            onClick={() => this.setActiveTab("devconfig")}
-                          >
-                            <img src={country} alt="User" width="16" />{" "}
-                            <span> Dev Config </span>
-                          </Link>
-                        </li>
-                      )}
+                {this.state.userRole === "ADMIN" && (
+                  <>
+                    <li className="menu-title">MANAGEMENT</li>
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("createUser") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/createUser"
+                        onClick={() => this.setActiveTab("createUser")}
+                      >
+                        <img src={addUserIcon} alt="User" width="16" />{" "}
+                        <span> Create a new user </span>
+                      </Link>
+                    </li>
 
-                      <li className="d-flex">
-                        <span
-                          className={
-                            window.location.pathname.indexOf("createUser") > -1
-                              ? "waves-effect active"
-                              : "waves-effect"
-                          }
-                        ></span>
-                        <Link
-                          to="/createUser"
-                          onClick={() => this.setActiveTab("createUser")}
-                        >
-                          <img src={addUserIcon} alt="User" width="16" />{" "}
-                          <span> Create a new user </span>
-                        </Link>
-                      </li>
-
-                      <li className="d-flex">
-                        <span
-                          className={
-                            window.location.pathname.indexOf("userList") > -1
-                              ? "waves-effect active"
-                              : "waves-effect"
-                          }
-                        ></span>
-                        <Link
-                          to="/userList"
-                          onClick={() => this.setActiveTab("userList")}
-                        >
-                          <img src={userListIcon} alt="User" width="16" />{" "}
-                          <span> User List </span>
-                        </Link>
-                      </li>
-                      {/* <li className="d-flex">
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("userList") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/userList"
+                        onClick={() => this.setActiveTab("userList")}
+                      >
+                        <img src={userListIcon} alt="User" width="16" />{" "}
+                        <span> User List </span>
+                      </Link>
+                    </li>
+                    {/* <li className="d-flex">
                                                 <span className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'}></span>
                                                 <Link to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
                                                     <img src={pointLogsIcon} alt="User" width="16" /> <span> Configurations </span>
                                                 </Link>
                                             </li> */}
-                    </>
-                  )}
+                  </>
+                )}
 
-                  {this.state.userRole === "RSM" && (
-                    <>
-                      <li className="menu-title">LOGS</li>
-                      <li className="d-flex">
-                        <span
-                          className={
-                            window.location.pathname.indexOf("scanlogs") > -1
-                              ? "waves-effect active"
-                              : "waves-effect"
-                          }
-                        ></span>
-                        <Link
-                          to="/scanlogs"
-                          onClick={() => this.setActiveTab("scanlogs")}
-                        >
-                          <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                          <span> Scan logs </span>
-                        </Link>
-                      </li>
-                      <li className="d-flex">
-                        <span
-                          className={
-                            window.location.pathname.indexOf("pointLogs") > -1
-                              ? "waves-effect active"
-                              : "waves-effect"
-                          }
-                        ></span>
-                        <Link
-                          to="/pointLogs"
-                          onClick={() => this.setActiveTab("pointLogs")}
-                        >
-                          <img src={pointLogsIcon} alt="Points" width="16" />{" "}
-                          <span> Point logs </span>
-                        </Link>
-                      </li>{" "}
-                    </>
-                  )}
+                {this.state.userRole === "DEVADMIN" && (
+                  <>
+                    <li className="menu-title">MANAGEMENT</li>
+                    <li className="d-flex">
+                      <span
+                        className={
+                          activeTab === "devconfig"
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/devconfig"
+                        className={
+                          activeTab === "devconfig"
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                        onClick={() => this.setActiveTab("devconfig")}
+                      >
+                        <img src={country} alt="User" width="16" />{" "}
+                        <span> Dev Config </span>
+                      </Link>
+                    </li>
+                  </>
+                )}
 
-                  <li className="menu-title">HELP</li>
-                  <li className="d-flex">
-                    <span
-                      className={
-                        window.location.pathname.indexOf("coachWalker") > -1
-                          ? "waves-effect active"
-                          : "waves-effect"
-                      }
-                    ></span>
-                    <Link
-                      to="/coachWalker"
-                      onClick={() => this.setActiveTab("coachWalker")}
-                    >
-                      <img src={coachIcon} alt="Coach Walker" width="16" />{" "}
-                      <span> Coach walker </span>
-                    </Link>
-                  </li>
-                  <li className="d-flex">
-                    <span
-                      className={
-                        window.location.pathname.indexOf("helpCenter") > -1
-                          ? "waves-effect active"
-                          : "waves-effect"
-                      }
-                    ></span>
-                    <Link
-                      to="/helpCenter"
-                      onClick={() => this.setActiveTab("helpCenter")}
-                    >
-                      <img src={helpCenterIcon} alt="Help Center" width="16" />{" "}
-                      <span> Help center </span>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+                {this.state.userRole === "RSM" && (
+                  <>
+                    <li className="menu-title">LOGS</li>
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("scanlogs") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/scanlogs"
+                        onClick={() => this.setActiveTab("scanlogs")}
+                      >
+                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
+                        <span> Scan logs </span>
+                      </Link>
+                    </li>
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("pointLogs") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/pointLogs"
+                        onClick={() => this.setActiveTab("pointLogs")}
+                      >
+                        <img src={pointLogsIcon} alt="Points" width="16" />{" "}
+                        <span> Point logs </span>
+                      </Link>
+                    </li>{" "}
+                  </>
+                )}
 
-              <div className="clearfix"></div>
-            {/* </Scrollbars> */}
-
-            
-          </div>
-          <div id="sidebar-menu" className="">
-              <ul className="metismenu" id="side-menu">
+                <li className="menu-title">HELP</li>
                 <li className="d-flex">
                   <span
                     className={
-                      window.location.pathname.indexOf("landing") > -1
+                      window.location.pathname.indexOf("coachWalker") > -1
                         ? "waves-effect active"
                         : "waves-effect"
                     }
                   ></span>
-                  <Link to="" onClick={this.logout}>
-                    <img src={logoutIcon} alt="Help Center" width="16" />{" "}
-                    <span> Logout </span>
+                  <Link
+                    to="/coachWalker"
+                    onClick={() => this.setActiveTab("coachWalker")}
+                  >
+                    <img src={coachIcon} alt="Coach Walker" width="16" />{" "}
+                    <span> Coach walker </span>
+                  </Link>
+                </li>
+                <li className="d-flex">
+                  <span
+                    className={
+                      window.location.pathname.indexOf("helpCenter") > -1
+                        ? "waves-effect active"
+                        : "waves-effect"
+                    }
+                  ></span>
+                  <Link
+                    to="/helpCenter"
+                    onClick={() => this.setActiveTab("helpCenter")}
+                  >
+                    <img src={helpCenterIcon} alt="Help Center" width="16" />{" "}
+                    <span> Help center </span>
                   </Link>
                 </li>
               </ul>
             </div>
+
+            <div className="clearfix"></div>
+            {/* </Scrollbars> */}
+          </div>
+          <div id="sidebar-menu" className="">
+            <ul className="metismenu" id="side-menu">
+              <li className="d-flex">
+                <span
+                  className={
+                    window.location.pathname.indexOf("landing") > -1
+                      ? "waves-effect active"
+                      : "waves-effect"
+                  }
+                ></span>
+                <Link to="" onClick={this.logout}>
+                  <img src={logoutIcon} alt="Help Center" width="16" />{" "}
+                  <span> Logout </span>
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </AUX>
     );
