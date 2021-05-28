@@ -181,10 +181,18 @@ input:read-only {
   .label {
     font-size: 12px;
   }
+
+  .card-container {
+    height: 550px;
+  }
 }
 
 @media only screen and (min-width: 1400px) and (max-width: 1920px) {
   .label {
     font-size: 14px !important;
+  }
+
+  .card-container {
+    height: 620px;
   }
 }
