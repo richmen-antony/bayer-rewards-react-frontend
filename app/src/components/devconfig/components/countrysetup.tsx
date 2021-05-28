@@ -5,8 +5,17 @@ import {
   setCountryName,
   setCurrencyCode,
   setCurrencyName,
+  addLocationInputList,
+  addRoleInputList,
+  addTnTFlowInputList,
+  addPackagingDefinitionInputList,
+  addScanpointsAndAllocationInputList,
+  setAnticounterfeitSmsAuthentication,
+  setAnticounterfeitDigitalScan,
+  setAnticounterfeitSmartLabel,
 } from "../../../redux/actions/devconfig/add";
-
+import { apiURL } from "../../../utility/base/utils/config";
+import { invokeGetAuthServiceTemp } from "../../../utility/base/service";
 type ICountryProps = {
   setCountryDetails: (data: any) => void;
   selectedCountryDetails: cDetails[];
@@ -18,6 +27,16 @@ type ICountryProps = {
   currencyCode: any;
   setCurrencyName: (data: any) => void;
   currencyName: any;
+
+  addLocationInputList: any;
+  addRoleInputList: any;
+  addTnTFlowInputList: any;
+  addPackagingDefinitionInputList: any;
+  addScanpointsAndAllocationInputList: any;
+  setAnticounterfeitSmsAuthentication: any;
+  setAnticounterfeitDigitalScan: any;
+  setAnticounterfeitSmartLabel: any;
+  devconfig: any;
 };
 
 type State = {
@@ -40,16 +59,42 @@ const mapDispatchToProps = {
   setCountryName,
   setCurrencyCode,
   setCurrencyName,
+
+  addLocationInputList,
+  addRoleInputList,
+  addTnTFlowInputList,
+  addPackagingDefinitionInputList,
+  addScanpointsAndAllocationInputList,
+  setAnticounterfeitSmsAuthentication,
+  setAnticounterfeitDigitalScan,
+  setAnticounterfeitSmartLabel,
 };
 
 const mapStateToProps = ({
-  devconfig: { countryCode, countryName, currencyCode, currencyName },
+  devconfig,
+  devconfig: {
+    countryCode,
+    countryName,
+    currencyCode,
+    currencyName,
+    location,
+    role,
+    tntflow,
+    packagingdefinition,
+    scanpointsandallocation,
+  },
 }: any) => {
   return {
     countryCode,
     countryName,
     currencyCode,
     currencyName,
+    devconfig,
+    loacationinputList: location.inputList,
+    roleinputList: role.inputList,
+    tntflowinputList: tntflow.inputList,
+    packagingdefinitionList: packagingdefinition.inputList,
+    scanpointsandallocationinputList: scanpointsandallocation.inputList,
   };
 };
 
@@ -91,6 +136,41 @@ const CountrySetupComp = (props: ICountryProps) => {
     setCountryCode(event.target.value);
 
     _retriveCountryCode(event.target.value);
+
+    getTemplateByCountry();
+  };
+
+  const getTemplateByCountry = () => {
+    const { getTemplateData } = apiURL;
+    const { devconfig } = props;
+    let data = {
+      countryCode: props.countryName,
+    };
+
+    invokeGetAuthServiceTemp(getTemplateData, data)
+      .then((response: any) => {
+        let objCountryData = response.body[0];
+        props.addLocationInputList(objCountryData.locationhierarchy);
+        props.addRoleInputList(objCountryData.rolehierarchy);
+        props.addTnTFlowInputList(objCountryData.trackntraceflow);
+        props.addPackagingDefinitionInputList(
+          objCountryData.productpackagedefinition
+        );
+        props.addScanpointsAndAllocationInputList(
+          objCountryData.scanpointallocationdefinition
+        );
+
+        props.setAnticounterfeitSmsAuthentication(
+          objCountryData.smsauthentication
+        );
+
+        props.setAnticounterfeitDigitalScan(objCountryData.digitalscan);
+
+        props.setAnticounterfeitSmartLabel(objCountryData.smartlabel);
+      })
+      .catch((error: any) => {
+        console.log(error, "error");
+      });
   };
 
   const getUnique = (arr: any, comp: any) => {
@@ -135,6 +215,7 @@ const CountrySetupComp = (props: ICountryProps) => {
                 id="dropdown"
                 onChange={(event) => handleDropdownChange(event)}
                 value={countryCode}
+                defaultValue={countryCode}
               >
                 {countryDetails.length > 0 ? (
                   countryDetails.map(({ name }) => (

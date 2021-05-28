@@ -365,10 +365,6 @@ class Devconfigurations extends React.Component<
     });
   }
 
-  componentDidMount() {
-    this.getTemplateByCountry();
-  }
-
   componentWillMount() {
     const setData = cluster_json;
     this.setState({ setData: setData });
@@ -455,8 +451,8 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
       currencycode: devconfig.currencyCode,
       currency: devconfig.currencyName,
       country: devconfig.countryName,
-      cluster: this.state.cluster,
-      region: this.state.region,
+      cluster: "AFRICA", //this.state.cluster,
+      region: "EMEA", //this.state.region,
       smsauthentication: devconfig.anticounterfeit.sms_authentication,
       digitalscan: devconfig.anticounterfeit.digital_scan,
       smartlabel: devconfig.anticounterfeit.smart_label,
@@ -482,92 +478,64 @@ if(this.props.tntflowinputList !==prevProps.tntflowinputList){
       });
   };
 
-  getTemplateByCountry = () => {
-    const { getTemplateData } = apiURL;
-    this.setState({ isLoader: true });
-    let data = {
-      countryCode: "MW",
-    };
+  // getTemplateByCountry = () => {
+  //   const { getTemplateData } = apiURL;
+  //   this.setState({ isLoader: true });
+  //   let data = {
+  //     countryCode: "MW",
+  //   };
 
-    invokeGetAuthServiceTemp(getTemplateData, data)
-      .then((response: any) => {
-        // const location = response.body[0].locationhierarchy.map(
-        //   (locationhier: any, idx: any) => {
-        //     return {
-        //       locationhierarchy: locationhier.locationhiername,
-        //       parentlocation: {
-        //         id: locationhier.parentlocation,
-        //         value:
-        //           locationhier.parentlocation === 0
-        //             ? "NA"
-        //             : response.body[0].locationhierarchy[
-        //                 locationhier.parentlocation
-        //               ].locationhiername,
-        //       },
-        //     };
-        //   }
-        // );
-        // console.log(location);
-        let objCountryData = response.body[0];
-        this.props.addLocationInputList(objCountryData.locationhierarchy);
-        this.props.addRoleInputList(objCountryData.rolehierarchy);
-        this.props.addTnTFlowInputList(objCountryData.trackntraceflow);
-        this.props.addPackagingDefinitionInputList(
-          objCountryData.productpackagedefinition
-        );
-        this.props.addScanpointsAndAllocationInputList(
-          objCountryData.scanpointallocationdefinition
-        );
+  //   invokeGetAuthServiceTemp(getTemplateData, data)
+  //     .then((response: any) => {
+  //       // const location = response.body[0].locationhierarchy.map(
+  //       //   (locationhier: any, idx: any) => {
+  //       //     return {
+  //       //       locationhierarchy: locationhier.locationhiername,
+  //       //       parentlocation: {
+  //       //         id: locationhier.parentlocation,
+  //       //         value:
+  //       //           locationhier.parentlocation === 0
+  //       //             ? "NA"
+  //       //             : response.body[0].locationhierarchy[
+  //       //                 locationhier.parentlocation
+  //       //               ].locationhiername,
+  //       //       },
+  //       //     };
+  //       //   }
+  //       // );
+  //       // console.log(location);
+  //       let objCountryData = response.body[0];
+  //       this.props.addLocationInputList(objCountryData.locationhierarchy);
+  //       this.props.addRoleInputList(objCountryData.rolehierarchy);
+  //       this.props.addTnTFlowInputList(objCountryData.trackntraceflow);
+  //       this.props.addPackagingDefinitionInputList(
+  //         objCountryData.productpackagedefinition
+  //       );
+  //       this.props.addScanpointsAndAllocationInputList(
+  //         objCountryData.scanpointallocationdefinition
+  //       );
 
-        this.props.setAnticounterfeitSmsAuthentication(
-          objCountryData.smsauthentication
-        );
+  //       this.props.setAnticounterfeitSmsAuthentication(
+  //         objCountryData.smsauthentication
+  //       );
 
-        this.props.setAnticounterfeitDigitalScan(objCountryData.digitalscan);
+  //       this.props.setAnticounterfeitDigitalScan(objCountryData.digitalscan);
 
-        this.props.setAnticounterfeitSmartLabel(objCountryData.smartlabel);
+  //       this.props.setAnticounterfeitSmartLabel(objCountryData.smartlabel);
 
-        this.setState({
-          isLoader: false,
-        });
-      })
-      .catch((error: any) => {
-        this.setState({ isLoader: false });
-        console.log(error, "error");
-      });
-  };
-  handleValidation=(condIf:any)=>{
-
-    console.log({condIf});
-  }
-  // // Proceed to next step
-  // nextStep = (nextStep: FormSteps = null as any) => {
-  //   const { currentStep } = this.state;
-
-  //   switch (currentStep) {
-  //     case FormSteps.LocationHierarchy:
-  //       this.goNextStep(nextStep);
-  //       break;
-
-  //     default:
-  //   }
-  // };
-
-  // goNextStep = (nextStep: FormSteps = null as any) => {
-  //   const { currentStep } = this.state;
-  //   if (!nextStep)
-  //     this.setState({
-  //       currentStep: currentStep + 1,
+  //       this.setState({
+  //         isLoader: false,
+  //       });
+  //     })
+  //     .catch((error: any) => {
+  //       this.setState({ isLoader: false });
+  //       console.log(error, "error");
   //     });
   // };
+  handleValidation = (condIf: any) => {
+    console.log({ condIf });
+  };
 
-  // // Go back to previous step
-  // prevStep = () => {
-  //   const { currentStep } = this.state;
-  //   this.setState({
-  //     currentStep: currentStep - 1,
-  //   });
-  // };
   getCountryDetails = () => {};
 
   _getCurrentStep = () => {
