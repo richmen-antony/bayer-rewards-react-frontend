@@ -50,19 +50,10 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
             <table className="table" id="tab_logic">
               <tbody>
                 <tr>
-                  <td className="tableStyle">
+                  <td className="tableStyle label">
                     <label>SMS Authentication</label>
                   </td>
-                  <td className="tableStyle">
-                    {/* <input
-                      type="checkbox"
-                      id="check1"
-                      onChange={(e) => {
-                        setAnticounterfeitSmsAuthentication(e.target.checked);
-                      }}
-                      checked={sms_authentication}
-                    /> */}
-
+                  <td className="tableStyle label">
                     <CustomSwitch
                       name="SMSAuthentication"
                       onChange={(e) => {
@@ -73,18 +64,10 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
                   </td>
                 </tr>
                 <tr>
-                  <td className="tableStyle">
+                  <td className="tableStyle label">
                     <label>Digital Scan</label>
                   </td>
-                  <td className="tableStyle">
-                    {/* <input
-                      type="checkbox"
-                      id="check2"
-                      checked={digital_scan}
-                      onChange={(e) => {
-                        setAnticounterfeitDigitalScan(e.target.checked);
-                      }}
-                    /> */}
+                  <td className="tableStyle label">
                     <CustomSwitch
                       name="DigitalScan"
                       onChange={(e) => {
@@ -95,19 +78,10 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
                   </td>
                 </tr>
                 <tr>
-                  <td className="tableStyle">
+                  <td className="tableStyle label">
                     <label>Smart Label</label>
                   </td>
-                  <td className="tableStyle">
-                    {/* <input
-                      type="checkbox"
-                      id="check13"
-                      checked={smart_label}
-                      onChange={(e) => {
-                        setAnticounterfeitSmartLabel(e.target.checked);
-                      }}
-                    /> */}
-
+                  <td className="tableStyle label">
                     <CustomSwitch
                       name="SmartLabel"
                       onChange={(e) => {

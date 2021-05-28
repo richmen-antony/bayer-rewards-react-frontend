@@ -10,18 +10,13 @@ import { addRoleInputList } from "../../../redux/actions";
 interface IRoleProps {
   role: any;
   setInputList: (data: any) => void;
-  inputList:Array<any>,
-  isValidNext:boolean,
-  getValidation:()=>void;
+  inputList: Array<any>;
+  isValidNext: boolean;
+  getValidation: () => void;
 }
 
 export const RoleHierarchy = (props: IRoleProps) => {
-  const {
-    inputList,
-    setInputList,
-    isValidNext,
-    getValidation
-  } = props;
+  const { inputList, setInputList, isValidNext, getValidation } = props;
   const [valSelected, setValSelected] = useState("NA");
 
   // handle input change
@@ -58,20 +53,20 @@ export const RoleHierarchy = (props: IRoleProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-    const data =inputList[index];
+    const data = inputList[index];
     getValidation();
-    if(data.rolehierarchyname && data.rolecode){
-    setInputList([
-      ...inputList,
-      {
-        rolehierarchylevel: inputList.length + 1,
-        rolecode: "",
-        rolehierarchyname: "",
-        roletype: "",
-        parentrole: "NONE",
-      },
-    ]);
-  }
+    if (data.rolehierarchyname && data.rolecode) {
+      setInputList([
+        ...inputList,
+        {
+          rolehierarchylevel: inputList.length + 1,
+          rolecode: "",
+          rolehierarchyname: "",
+          roletype: "",
+          parentrole: "NONE",
+        },
+      ]);
+    }
   };
 
   const handleDropdownChange = (event: any, index: any) => {
@@ -94,7 +89,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
       <div className="container">
         <div className="row">
           <div className="col-xs-12  column tableScrollStyle">
-            <table className="devconfig table" id="tab_logic">
+            <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="text-center tableStyle">Role Level</th>
@@ -106,95 +101,104 @@ export const RoleHierarchy = (props: IRoleProps) => {
                 </tr>
               </thead>
               <tbody>
-                {inputList.map((item: any, idx: number) => (
-                  <tr id="addr0" key={idx}>
-                    <td className="tableStyle">{idx}</td>
-                    <td className="tableHeaderStyle">
-                      <input
-                        className="form-control dpstyle"
-                        type="text"
-                        name="rolecode"
-                        value={item.rolecode}
-                        onChange={(e) => handleInputChange(e, idx)}
-                      />
-                         {item?.rolecode_error&&isValidNext&&<span className="error">{"Please enter Role Code"} </span>}
-                    </td>
-                    <td className="tableHeaderStyle">
-                      <input
-                        className="form-control dpstyle"
-                        type="text"
-                        name="rolehierarchyname"
-                        value={item.rolehierarchyname}
-                        onChange={(e) => handleInputChange(e, idx)}
-                      />
-                      {item?.rolehierarchyname_error&&isValidNext&&<span className="error">{"Please enter Role Hierarchy"} </span>}
-                    </td>
-                    <td className="tableHeaderStyle">
-                      <select
-                        className="dpstyle selectoutline"
-                        name="roletype"
-                        id="dropdown"
-                        value={item.roletype}
-                        onChange={(event) =>
-                          handleDropdownRoleChange(event, idx)
-                        }
-                      >
-                        <option value="INTERNAL" key="INTERNAL">
-                          INTERNAL
-                        </option>
-                        <option value="EXTERNAL" key="EXTERNAL">
-                          EXTERNAL
-                        </option>
-                        {/* {idx > 0 && this.state.dpList.length > 0 && (
+                {inputList.length > 0 &&
+                  inputList.map((item: any, idx: number) => (
+                    <tr id="addr0" key={idx}>
+                      <td className="tableStyle label">{idx}</td>
+                      <td className="tableHeaderStyle">
+                        <input
+                          className="form-control dpstyle label"
+                          type="text"
+                          name="rolecode"
+                          value={item.rolecode}
+                          onChange={(e) => handleInputChange(e, idx)}
+                        />
+                        {item?.rolecode_error && isValidNext && (
+                          <span className="error">
+                            {"Please enter Role Code"}{" "}
+                          </span>
+                        )}
+                      </td>
+                      <td className="tableHeaderStyle">
+                        <input
+                          className="form-control dpstyle label"
+                          type="text"
+                          name="rolehierarchyname"
+                          value={item.rolehierarchyname}
+                          onChange={(e) => handleInputChange(e, idx)}
+                        />
+                        {item?.rolehierarchyname_error && isValidNext && (
+                          <span className="error">
+                            {"Please enter Role Hierarchy"}{" "}
+                          </span>
+                        )}
+                      </td>
+                      <td className="tableHeaderStyle">
+                        <select
+                          className="dpstyle selectoutline label"
+                          name="roletype"
+                          id="dropdown"
+                          value={item.roletype}
+                          onChange={(event) =>
+                            handleDropdownRoleChange(event, idx)
+                          }
+                        >
+                          <option value="INTERNAL" key="INTERNAL">
+                            INTERNAL
+                          </option>
+                          <option value="EXTERNAL" key="EXTERNAL">
+                            EXTERNAL
+                          </option>
+                          {/* {idx > 0 && this.state.dpList.length > 0 && (
                           this.state.dpList.map(({ locationhierarchy }) => (
                             <option value={locationhierarchy} key={locationhierarchy}>
                               {locationhierarchy}
                             </option>
                           ))
                         )} */}
-                      </select>
-                    </td>
-                    <td className="tableHeaderStyle">
-                      <select
-                        className="dpstyle selectoutline"
-                        name="parentrole"
-                        id="dropdown"
-                        value={item.parentrole}
-                        onChange={(event) => handleDropdownChange(event, idx)}
-                      >
-                        <option value="" key="">
-                          NONE
-                        </option>
-                        {idx > 0 &&
-                          inputList.length > 0 &&
-                          inputList.map(
-                            ({ rolecode }: any, index: number) =>
-                              index < idx && (
-                                <option value={rolecode} key={rolecode}>
-                                  {rolecode}
-                                </option>
-                              )
-                          )}
-                      </select>
-                    </td>
+                        </select>
+                      </td>
+                      <td className="tableHeaderStyle">
+                        <select
+                          className="dpstyle selectoutline label"
+                          name="parentrole"
+                          id="dropdown"
+                          value={item.parentrole}
+                          onChange={(event) => handleDropdownChange(event, idx)}
+                        >
+                          <option value="" key="">
+                            NONE
+                          </option>
+                          {idx > 0 &&
+                            inputList.length > 0 &&
+                            inputList.map(
+                              ({ rolecode }: any, index: number) =>
+                                index < idx && (
+                                  <option value={rolecode} key={rolecode}>
+                                    {rolecode}
+                                  </option>
+                                )
+                            )}
+                        </select>
+                      </td>
 
-                    <td className="tablebtnStyle">
-                      {idx === inputList.length - 1 ? (
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={AddBtn}
-                          onClick={() => handleAddClick(idx)}
-                        />
-                      ) : (
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={RemoveBtn}
-                          onClick={() => handleRemoveClick(idx)}
-                        />
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                      <td className="tablebtnStyle">
+                        {idx === inputList.length - 1 ? (
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={AddBtn}
+                            onClick={() => handleAddClick(idx)}
+                          />
+                        ) : (
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={RemoveBtn}
+                            onClick={() => handleRemoveClick(idx)}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

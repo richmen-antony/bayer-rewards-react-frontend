@@ -9,22 +9,16 @@ import { addLocationInputList } from "../../../redux/actions";
 interface ILocationProps {
   location: any;
   setInputList: (data: any) => void;
-  getValidation:()=>void;
-  inputList:Array<any>,
-  isValidNext:boolean,
+  getValidation: () => void;
+  inputList: Array<any>;
+  isValidNext: boolean;
 }
 
 const LocationHierarchy = (props: ILocationProps) => {
-  const {
-    inputList,
-    setInputList,
-    getValidation,
-    isValidNext,
-  } = props;
-  console.log({inputList})
+  const { inputList, setInputList, getValidation, isValidNext } = props;
+  console.log({ inputList });
 
   const [valSelected, setValSelected] = useState("NA");
-  
 
   // handle input change
   const handleInputChange = (e: any, index: any) => {
@@ -46,16 +40,18 @@ const LocationHierarchy = (props: ILocationProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-    const data =inputList[index];
-     getValidation();
-     if(data.locationhiername){
+    const data = inputList[index];
+    getValidation();
+    if (data.locationhiername) {
       setInputList([
         ...inputList,
-        { locationhierlevel: inputList.length + 1, locationhiername: "", parentlocation: -1 },
+        {
+          locationhierlevel: inputList.length + 1,
+          locationhiername: "",
+          parentlocation: -1,
+        },
       ]);
-   }
-   
-  
+    }
   };
 
   const handleDropdownChange = (event: any, index: any) => {
@@ -86,7 +82,7 @@ const LocationHierarchy = (props: ILocationProps) => {
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">
-            <table className="devconfig table" id="tab_logic">
+            <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="text-center tableStyle">Location Level</th>
@@ -96,76 +92,81 @@ const LocationHierarchy = (props: ILocationProps) => {
                 </tr>
               </thead>
               <tbody>
-                {inputList.map((item: any, idx: number) => (
-                  <tr id="addr0" key={idx}>
-                    <td className="tableStyle">{idx}</td>
-                    <td className="tableHeaderStyle">
-                      <input
-                        className="form-control dpstyle"
-                        type="text"
-                        name="locationhiername"
-                        value={item.locationhiername}
-                        onChange={(e) => handleInputChange(e, idx)}
-                        data-id={idx}
-                      />
-                      {item?.error&&isValidNext&&<span className="error">{"Please enter Location Hierarchy"} </span>}
-                    </td>
-
-                    <td className="tableHeaderStyle">
-                      <select
-                        defaultValue="NA"
-                        name="parentlocation"
-                        data-id={idx}
-                        className="dpstyle selectoutline"
-                        id="dropdown"
-                        value={item.parentlocation}
-                        onChange={(event) => handleDropdownChange(event, idx)}
-                      >
-                        <option value="NA" key="NA">
-                          NA
-                        </option>
-                        {idx > 0 &&
-                          inputList.length > 0 &&
-                          inputList.map(
-                            ({ locationhiername }: any, index: number) =>
-                              index < idx && (
-                                <option value={index} key={locationhiername}>
-                                  {locationhiername}
-                                </option>
-                              )
-                          )}
-                      </select>
-                    </td>
-                    <td className="tablebtnStyle">
-                      {idx === inputList.length - 1 ? (
-                        // <button
-                        //   className="btn btnStyleAdd"
-                        //   onClick={() => handleAddClick(idx)}
-                        // >
-                        //   <img src={plus_icon} />
-                        // </button>
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={AddBtn}
-                          onClick={() => handleAddClick(idx)}
+                {inputList.length > 0 &&
+                  inputList.map((item: any, idx: number) => (
+                    <tr id="addr0" key={idx}>
+                      <td className="tableStyle">{idx}</td>
+                      <td className="tableHeaderStyle">
+                        <input
+                          className="form-control dpstyle label"
+                          type="text"
+                          name="locationhiername"
+                          value={item.locationhiername}
+                          onChange={(e) => handleInputChange(e, idx)}
+                          data-id={idx}
                         />
-                      ) : (
-                        //   <button
-                        //     className="btn btnStyleRemove"
-                        //     onClick={() => handleRemoveClick(idx)}
-                        //   >
+                        {item?.error && isValidNext && (
+                          <span className="error">
+                            {"Please enter Location Hierarchy"}{" "}
+                          </span>
+                        )}
+                      </td>
 
-                        //     {/* <img src={minus} /> */}
-                        //   </button>
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={RemoveBtn}
-                          onClick={() => handleRemoveClick(idx)}
-                        />
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                      <td className="tableHeaderStyle">
+                        <select
+                          defaultValue="NA"
+                          name="parentlocation"
+                          data-id={idx}
+                          className="dpstyle selectoutline label"
+                          id="dropdown"
+                          value={item.parentlocation}
+                          onChange={(event) => handleDropdownChange(event, idx)}
+                        >
+                          <option value="NA" key="NA">
+                            NA
+                          </option>
+                          {idx > 0 &&
+                            inputList.length > 0 &&
+                            inputList.map(
+                              ({ locationhiername }: any, index: number) =>
+                                index < idx && (
+                                  <option value={index} key={locationhiername}>
+                                    {locationhiername}
+                                  </option>
+                                )
+                            )}
+                        </select>
+                      </td>
+                      <td className="tablebtnStyle">
+                        {idx === inputList.length - 1 ? (
+                          // <button
+                          //   className="btn btnStyleAdd"
+                          //   onClick={() => handleAddClick(idx)}
+                          // >
+                          //   <img src={plus_icon} />
+                          // </button>
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={AddBtn}
+                            onClick={() => handleAddClick(idx)}
+                          />
+                        ) : (
+                          //   <button
+                          //     className="btn btnStyleRemove"
+                          //     onClick={() => handleRemoveClick(idx)}
+                          //   >
+
+                          //     {/* <img src={minus} /> */}
+                          //   </button>
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={RemoveBtn}
+                            onClick={() => handleRemoveClick(idx)}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

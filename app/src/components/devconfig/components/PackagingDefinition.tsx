@@ -135,7 +135,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                 </tr>
               </thead>
               <tbody>
-                {
+                {inputList.length> 0 &&
                   inputList
                     .filter((pc: any) => pc.productcategory == activeButton)
                     .map((item: any, idx: number) => (
@@ -143,7 +143,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                         <td className="tableStyle">{idx}</td>
                         <td className="tableHeaderStyle">
                           <input
-                            className="form-control dpstyle"
+                            className="form-control dpstyle label"
                             type="text"
                             name="packaginghierarchyname"
                             value={item.packaginghierarchyname}
@@ -153,7 +153,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
                         <td className="tableHeaderStyle">
                           <select
-                            className="dpstyle selectoutline"
+                            className="dpstyle selectoutline label"
                             defaultValue="NA"
                             name="parentpackage"
                             data-id={idx}
@@ -203,73 +203,6 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                       </tr>
                     ))}
 
-                {/* {activeButton === "CP" &&
-                  inputList
-                    .filter((pc: any) => pc.productcategory == "CP")
-                    .map((item: any, idx: number) => (
-                      <tr id="addr0" key={idx}>
-                        <td className="tableStyle">{idx}</td>
-                        <td className="tableHeaderStyle">
-                          <input
-                            className="form-control dpstyle"
-                            type="text"
-                            name="packaginghierarchyname"
-                            value={item.packaginghierarchyname}
-                            onChange={(e) => handleInputChange(e, idx, "CP")}
-                          />
-                        </td>
-
-                        <td className="tableHeaderStyle">
-                          <select
-                            className="dpstyle selectoutline"
-                            defaultValue="NA"
-                            name="parentpackage"
-                            data-id={idx}
-                            id="dropdown"
-                            value={item.parentpackage}
-                            onChange={(event) =>
-                              handleDropdownChange(event, idx, "CP")
-                            }
-                          >
-                            <option value="NA" key="NA">
-                              NA
-                            </option>
-                            {idx > 0 &&
-                              inputList.length > 0 &&
-                              inputList.map(
-                                (
-                                  { packaginghierarchyname }: any,
-                                  index: number
-                                ) =>
-                                  index < idx && (
-                                    <option
-                                      value={index}
-                                      key={packaginghierarchyname}
-                                    >
-                                      {packaginghierarchyname}
-                                    </option>
-                                  )
-                              )}
-                          </select>
-                        </td>
-
-                        <td className="tablebtnStyle">
-                          {idx === inputList.length - 1 ? (
-                            <img
-                              style={{ width: "50px", height: "50px" }}
-                              src={AddBtn}
-                              onClick={() => handleAddClick(idx, "CP")}
-                            />
-                          ) : (
-                            <img
-                              style={{ width: "50px", height: "50px" }}
-                              src={RemoveBtn}
-                              onClick={() => handleRemoveClick(idx, "CP")}
-                            />
-                          )}
-                        </td>
-                      </tr>
-                    ))} */}
               </tbody>
             </table>
           </div>

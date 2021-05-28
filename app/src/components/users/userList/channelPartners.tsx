@@ -85,6 +85,7 @@ type States = {
   isValidateSuccess: Boolean;
   userData: any;
   isStaff: boolean;
+  isEditRedirect: boolean
 };
 
 
@@ -159,7 +160,8 @@ class ChannelPartners extends Component<Props, States> {
           }
         }],
       },
-      isStaff: false
+      isStaff: false,
+      isEditRedirect: false
     };
     this.generateHeader = this.generateHeader.bind(this);
   }
@@ -452,47 +454,44 @@ class ChannelPartners extends Component<Props, States> {
     return dateValid;
   };
 
-  checkValidation = () => {
-    this.setState({ isValidateSuccess : false});
+  checkValidation() {
     let formValid = true;
-    let userList = this.state.userList;
-
-    if (userList.accountname === "" || userList.accountname === null) {
-      this.setState({ accountNameErr: "Please enter the Owner name" });
-      formValid = false;
-    } else {
-      this.setState({ accountNameErr: "" });
-    }
-    if (userList.mobilenumber === "" || userList.mobilenumber === null) {
-      this.setState({ phoneErr: "Please enter the phone" });
-      formValid = false;
-    } else {
-      this.setState({ phoneErr: "" });
-    }
-    if (userList.email === "" || userList.email === null) {
-      alert('hi');
-      this.setState({ emailErr: "Please enter the Email" });
-      formValid = false;
-    } else {
-      this.setState({ emailErr: "" });
-    }
-    if (userList.postalcode === "" || userList.postalcode === null) {
-      this.setState({ postalCodeErr: "Please enter Postal Code" });
-      formValid = false;
-    } else {
-      this.setState({ postalCodeErr: "" });
-    }
-    this.state.dynamicFields .map((list: any) => {
-        if (list.value === "") {
-          list.error = "Please enter the " + list.name;
+    let userData = this.state.userData;
+      userData.ownerRows.map((userInfo:any,idx:number)=>{
+        let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
+        errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
+        errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
+        // errObj.emailErr=userInfo.email ? '' : "Please enter the email";
+        errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
+        userData.ownerRows[idx].errObj = errObj;
+        if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
           formValid = false;
-        } else {
-          list.error = "";
         }
-        this.setState({ isRendered: true });
-    });
+        this.setState((prevState:any) => ({
+          userData: {
+            ...prevState.userData,
+            ownerRows : userData.ownerRows
+          }
+        }))
+        })
+        userData.staffRows.map((userInfo:any,idx:number)=>{
+          let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
+          errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
+          errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
+          errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
+          userData.staffRows[idx].errObj = errObj;
+          if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
+            formValid = false;
+          }
+          this.setState((prevState:any) => ({
+            userData: {
+              ...prevState.userData,
+              staffRows : userData.staffRows
+            }
+          }))
+          })
     return formValid;
-  };
+  }
 
 
   submitUpdateUser = () => {
@@ -531,6 +530,7 @@ class ChannelPartners extends Component<Props, States> {
       // redirect add user page
       this.props.history.push({
       pathname: '/createUser',
+      page: 'validate',
       state: { userFields: this.state.userList }}); 
 
     }else {
@@ -563,16 +563,24 @@ class ChannelPartners extends Component<Props, States> {
     }
   };
   editUser =(list: any) => {
-    this.getCurrentUserData(list);
-    this.props.history.push({
-      pathname: '/createUser',
-      state: { userFields: this.state.userList }}); 
+    this.getCurrentUserData(list, true);
+
   }
-  getCurrentUserData = (data: any) => {
-    let passData = { ...data };
-    passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
+
+  getCurrentUserData = (data: any, edit?: boolean) => {
+    let passData: any = { ...data };
+    // passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
     let activeStatus = (passData.userstatus === 'INACTIVE' || passData.userstatus === 'DECLINED') ? false : true;
-    this.setState({ userList: passData, status: data.userstatus, activateUser: activeStatus });
+    this.setState({ userList: passData, status: data.userstatus, activateUser: activeStatus }, ()=>{
+      if(edit){
+        this.props.history.push({
+          pathname: '/createUser',
+          page: 'edit',
+          state: { userFields: this.state.userList }}); 
+      }
+      console.log('datas', this.state.userList);
+     }
+    );
   };
 
   replaceAll(str: any, mapObj: any) {
@@ -706,32 +714,27 @@ class ChannelPartners extends Component<Props, States> {
     }));
     this.setState({isStaff: isStaff});
   }
+
   validateEmail = (e: any, idx: number,type:string) =>{
     let emailField = e.target.value;
     let ownerRows = [...this.state.userData.ownerRows];
     let staffRows = [...this.state.userData.staffRows];
     
     if(type==='staff') {
-      if (!emailField) {
-        staffRows[idx].errObj.emailErr = "Please enter the Email";
-      } else {
-        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-          staffRows[idx].errObj.emailErr = "";
-        }else {
-          staffRows[idx].errObj.emailErr = "Please enter a valid email";
-        }
+      // if (!emailField) {
+      //   staffRows[idx].errObj.emailErr = "Please enter the Email";
+      // } else {
+      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+        staffRows[idx].errObj.emailErr = "";
+      }else {
+        staffRows[idx].errObj.emailErr = "Please enter a valid email";
       }
-
     }
     if(type==='owner'){
-      if (!emailField) {
-        ownerRows[idx].errObj.emailErr = "Please enter the Email";
-      } else {
-        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-          ownerRows[idx].errObj.emailErr = "";
-        }else {
-          ownerRows[idx].errObj.emailErr = "Please enter a valid email";
-        }
+      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
+        ownerRows[idx].errObj.emailErr = "";
+      }else {
+        ownerRows[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
     this.setState((prevState: any)=> ({
@@ -745,6 +748,7 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   render() {
+    console.log('userlist', this.state.userList);
     const { allChannelPartners, isAsc, onSort, totalData } = this.props;
     const {
       isLoader,
@@ -1150,6 +1154,7 @@ class ChannelPartners extends Component<Props, States> {
                             className="retailer-icon"
                             onClick={(event) => {
                               this.editStaff(list);
+                              this.getCurrentUserData(list);
                             }}
                             src={ExpandWindowImg}
                           ></img>
@@ -1173,6 +1178,7 @@ class ChannelPartners extends Component<Props, States> {
                               ? "declined"
                               : ""
                           }`}
+                          style = {{fontStyle: '12px'}}
                         >
                           <img
                             style={{ marginRight: "8px" }}
