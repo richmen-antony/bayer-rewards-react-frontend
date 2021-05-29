@@ -19,6 +19,7 @@ import {
 } from "../../utility/base/localStore";
 import Cookies from "js-cookie";
 import DropdownArrow from "../../assets/images/down-arrow.svg";
+import BayerRewardsImg from "../../assets/icons/logo.svg";
 
 type Props = {
   history?: any;
@@ -70,11 +71,11 @@ class TopBar extends Component<Props, States> {
         <div className="topbar-left">
           <div className="logo">
             <span>
-              <img src={logo} alt="Logo" height="40" />
+              <img src={BayerRewardsImg} alt="Logo" height="60" />
               <span className="ml-3">Rewards</span>
             </span>
             <i>
-              <img src={logo} alt="Logo" height="30" />
+              <img src={BayerRewardsImg} alt="Logo" height="50" />
             </i>
           </div>
         </div>
@@ -136,6 +137,9 @@ class TopBar extends Component<Props, States> {
 
                     <div>
                       <span className="mdi mdi-chevron-down "></span>
+                    </div>
+                    <div style={{ paddingLeft: "30px", paddingTop: "8px" }}>
+                      <img src={logo} alt="Logo" height="50" />
                     </div>
                   </div>
                 </DropdownToggle>

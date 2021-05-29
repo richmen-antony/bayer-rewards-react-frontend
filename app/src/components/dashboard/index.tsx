@@ -49,8 +49,11 @@ class Dashboard extends Component<Props, States> {
   }
   getrsmDashboardDetails = () => {
     const { rsmDashboard } = apiURL;
+    let obj: any = getLocalStorageData("userData");
+    let userData = JSON.parse(obj);
     const data = {
-      region: 'R1'
+      region: userData.geolevel1 ,
+      countrycode:userData.countrycode
     }
     this.setState({ isLoader: true });
     invokeGetAuthService(rsmDashboard, data).then((response) => {

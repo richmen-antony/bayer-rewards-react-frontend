@@ -27,7 +27,8 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
    const arr= list.map((val:any)=>{
-      if(val.productcategory ===data.productcategory && val.parentpackage ===data.parentpackage){
+      if(val.productcategory ===data.productcategory && val.packaginghierarchylevel ===data.packaginghierarchylevel){
+        console.log((val));
         return val={...val,[name]:value}
       } else{
         return val;
@@ -38,11 +39,17 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   };
 
   // handle click event of the Remove button
-  const handleRemoveClick = (index: any, pc: any) => {
+  const handleRemoveClick = (index: any, data: any) => {
     let list = [...inputList];
-    list.splice(index, 1);
+    let arr= list.map((val:any,i:number)=>{
+      if(val.productcategory ===data.productcategory && val.packaginghierarchylevel ===data.packaginghierarchylevel){
+        console.log("c",val);
+        list.splice(i, 1);
+      } 
+    })
+    
     list = setCorrectHierLvlSeed(list, index);
-    console.log(list);
+    console.log({list});
     setInputList(list);
   };
 
@@ -93,7 +100,9 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     // call the SetActiveButton and update the activeButton value
     SetActiveButton(value);
   };
-
+  const inputListData= inputList
+  .filter((pc: any) => pc.productcategory == activeButton)
+  .map((item: any, idx: number) => (item));
   return (
     <div className="col-md-10">
       <div className="container">
@@ -135,10 +144,12 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                 </tr>
               </thead>
               <tbody>
-                {inputList.length> 0 &&
-                  inputList
+                {inputListData.length> 0 &&
+                  inputListData
                     .filter((pc: any) => pc.productcategory == activeButton)
-                    .map((item: any, idx: number) => (
+                    .map((item: any, idx: number) => {
+                      console.log({item,idx});
+                      return (
                       <tr id="addr0" key={idx}>
                         <td className="tableStyle">{idx}</td>
                         <td className="tableHeaderStyle">
@@ -167,8 +178,8 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               NA
                             </option>
                             {idx > 0 &&
-                              inputList.length > 0 &&
-                              inputList.map(
+                              inputListData.length > 0 &&
+                              inputListData.map(
                                 (
                                   { packaginghierarchyname,productcategory }: any,
                                   index: number
@@ -186,7 +197,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                         </td>
 
                         <td className="tablebtnStyle">
-                          {idx === inputList.length - 1 ? (
+                          {idx === inputListData.length - 1 ? (
                             <img
                               style={{ width: "50px", height: "50px" }}
                               src={AddBtn}
@@ -196,12 +207,12 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                             <img
                               style={{ width: "50px", height: "50px" }}
                               src={RemoveBtn}
-                              onClick={() => handleRemoveClick(idx, "SEED")}
+                              onClick={() => handleRemoveClick(idx, item)}
                             />
                           )}
                         </td>
                       </tr>
-                    ))}
+                    )})}
 
               </tbody>
             </table>

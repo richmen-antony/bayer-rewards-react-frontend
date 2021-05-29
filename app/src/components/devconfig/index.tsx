@@ -56,6 +56,8 @@ import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
 import tickIcon from "../../assets/icons/tick.svg";
 
+import {hasDuplicate} from "../../utility/helper";
+
 export interface IFormValue {
   id: string;
   label: string;
@@ -592,7 +594,7 @@ class Devconfigurations extends React.Component<
     const { loacationinputList, roleinputList, tntflowinputList } = this.props;
     if (currentStep === 2) {
       const data = loacationinputList.map((value: any) => {
-        if (!value.locationhiername) {
+        if (!value.locationhiername ) {
           value = { ...value, error: true };
           this.setState({
             isError: true,
@@ -604,8 +606,16 @@ class Devconfigurations extends React.Component<
             isError: false,
           });
         }
+
+        if(value?.isDuplicate){
+          this.setState({
+            isError: true,
+            currentStep: 2,
+          });
+        }
         return value;
       });
+  
       this.setState({ locationHierarchy: data });
     }
 
@@ -642,6 +652,13 @@ class Devconfigurations extends React.Component<
           };
           this.setState({
             isError: false,
+          });
+        }
+
+        if(value?.rolehierarchynameIsDuplicate || value?.rolecodeIsDuplicate){
+          this.setState({
+            isError: true,
+            currentStep: 3,
           });
         }
         return value;
@@ -893,7 +910,7 @@ class Devconfigurations extends React.Component<
                   ) : (
                     <span>
                       <img src={ArrowIcon} className="arrow-i" />{" "}
-                      <img src={RtButton} className="layout" />
+                      {/* <img src={RtButton} className="layout" /> */}
                     </span>
                   )}{" "}
                 </button>

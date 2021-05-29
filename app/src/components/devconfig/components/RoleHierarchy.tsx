@@ -23,8 +23,17 @@ export const RoleHierarchy = (props: IRoleProps) => {
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
+    if(value){
+      const isDuplicate= list.find((duplicate :any)=> duplicate[name].toLowerCase() === value.toLowerCase());
+      if(isDuplicate){
+        list[index][name+"IsDuplicate"]=true;
+      }else{
+        list[index][name+"IsDuplicate"]=false;
+      }
+    }
     list[index][name] = value;
     setInputList(list);
+    getValidation();
   };
 
   const setCorrectHierLvl = (list: any, index: number) => {
@@ -55,7 +64,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
-    if (data.rolehierarchyname && data.rolecode) {
+    if (data.rolehierarchyname && data.rolecode && !data.rolehierarchynameIsDuplicate&& !data.rolecodeIsDuplicate) {
       setInputList([
         ...inputList,
         {
@@ -118,6 +127,11 @@ export const RoleHierarchy = (props: IRoleProps) => {
                             {"Please enter Role Code"}{" "}
                           </span>
                         )}
+                        {item?.rolecodeIsDuplicate && isValidNext&& (
+                          <span className="error">
+                            {item.rolecode + ' is unavailable'}
+                          </span>
+                        )}
                       </td>
                       <td className="tableHeaderStyle">
                         <input
@@ -129,7 +143,12 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         />
                         {item?.rolehierarchyname_error && isValidNext && (
                           <span className="error">
-                            {"Please enter Role Hierarchy"}{" "}
+                            {"Please enter Role Hierarchy"}
+                          </span>
+                        )}
+                         {item?.rolehierarchynameIsDuplicate && (
+                          <span className="error">
+                            {item.rolehierarchyname + ' is unavailable'}
                           </span>
                         )}
                       </td>

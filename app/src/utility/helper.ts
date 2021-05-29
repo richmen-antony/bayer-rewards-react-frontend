@@ -1,4 +1,5 @@
 import { toastWarning } from "./widgets/toaster";
+import _ from "lodash";
 
 /**
  * Download excel file 
@@ -120,5 +121,11 @@ function objectValues<T extends {}>(obj: T) {
     }
   
   }
+
+  }
+
+
+  export const hasDuplicate=(array:Array<any>,key:string)=> {
+   return true;
 
   }

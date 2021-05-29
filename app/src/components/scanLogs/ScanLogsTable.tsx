@@ -451,7 +451,7 @@ class ScanLogsTable extends Component<Props, States> {
                       type="text"
                       onChange={this.handleSearch}
                       value={searchText} 
-                      tolltip="Search applicable for Retailer Name/ID, Farmer Name/ID/Mobile Number"
+                      tolltip="Search applicable for Retailer Name/ID, Farmer Name/ID"
                       />
                   <div className="filter-right-side">
                     <div className="filterRow">
@@ -717,6 +717,7 @@ class ScanLogsTable extends Component<Props, States> {
                       <button
                         className="btn btn-primary"
                         onClick={this.download}
+                        style={{backgroundColor: "#1f445a",borderColor: "#1f445a"}}
                       > 
                         
                         <img src={Download} width="17" alt={NoImage} />
@@ -817,10 +818,10 @@ class ScanLogsTable extends Component<Props, States> {
                     <th
                       style={{ width: "16%" }}
                       onClick={(e) =>
-                        this.handleSort(e, "farmername", allScanLogs, isAsc)
+                        this.handleSort(e, "advisorname", allScanLogs, isAsc)
                       }
                     >
-                      FARMER NAME/ID
+                      ADVISOR NAME/ID
                       {this.tableCellIndex === 5 ? (
                         <i
                           className={`fas ${
@@ -830,28 +831,13 @@ class ScanLogsTable extends Component<Props, States> {
                       ) : null}
                     </th>
                     <th
-                      style={{ width: "15%" }}
+                      style={{ width: "16%" }}
                       onClick={(e) =>
-                        this.handleSort(e, "farmerphonenumber", allScanLogs, isAsc)
+                        this.handleSort(e, "farmername", allScanLogs, isAsc)
                       }
                     >
-                      FARMER MOBILE
-                      {this.tableCellIndex === 6 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "15%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "ordereddate", allScanLogs, isAsc)
-                      }
-                    >
-                      ORDERED DATE
-                      {this.tableCellIndex === 7 ? (
+                      FARMER NAME/ID
+                      {this.tableCellIndex === 5 ? (
                         <i
                           className={`fas ${
                             isAsc ? "fa-sort-down" : "fa-sort-up"
@@ -885,7 +871,7 @@ class ScanLogsTable extends Component<Props, States> {
                         )
                       }
                     >
-                      LAST UPDATED  BY
+                      UPDATED  BY
                       {this.tableCellIndex === 9 ? (
                         <i
                           className={`fas ${
@@ -920,7 +906,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   src={ExpandWindowImg}
                                 ></img>
                               </p>
-                              <label>{value.staffid}</label>
+                              <label>{value.username}</label>
                             </div>
                           </td>
                           <td style={{ textAlign: "center" }}>
@@ -932,13 +918,15 @@ class ScanLogsTable extends Component<Props, States> {
                           <td>{"MK " +value.totalcost}</td>
                           <td>
                             <div className="farmer-id">
+                              <p>{value.advisorname}</p>
+                              <label>{value.advisorid}</label>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="farmer-id">
                               <p>{value.farmername}</p>
                               <label>{value.farmerid}</label>
                             </div>
-                          </td>
-                          <td>{value.farmerphonenumber}</td>
-                          <td>
-                            {moment(value.ordereddate).format("DD-MM-YYYY")}
                           </td>
                           <td>
                             <span
@@ -1039,22 +1027,7 @@ class ScanLogsTable extends Component<Props, States> {
                     </div>
                     <div className="content-list">
                       <label>Postal Code</label>
-                      <p>{retailerPopupData.postalcode}</p>
-                    </div>
-                    <div className="content-list">
-                      <label>Account expiry date</label>
-                      <div style={{ minWidth: "130px" }}>
-                        <p>
-                          <img
-                            src={CalenderIcon}
-                            style={{ paddingRight: "5px" }}
-                          />
-                          {retailerPopupData.expirydate &&
-                            moment(retailerPopupData.expirydate).format(
-                              "Do MMMM, YYYY"
-                            )}
-                        </p>
-                      </div>
+                      <p>{retailerPopupData.billingzipcode}</p>
                     </div>
                   </div>
                 </div>

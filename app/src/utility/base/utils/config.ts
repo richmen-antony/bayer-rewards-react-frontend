@@ -7,7 +7,7 @@ export const apiURL = {
     login: "user/login",
     scanLogs: "rsm/advisorsaleslog",
     productCategory: "user/getproductcategory",
-    rsmDashboard: "user/getrsmdashboard/",
+    rsmDashboard: "rsm/dashboard/",
     channelPartnersList: "user/userlist",
     retailerCreation: "user/createexternaluser",
     deactivateChannelPartner:"user/deactivate",

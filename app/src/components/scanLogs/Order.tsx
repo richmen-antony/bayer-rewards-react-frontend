@@ -117,7 +117,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   <img src={retailerImg} alt="" />
                   <p>Retailer ID & Name</p>
                   <span>
-                    {data.staffname} - {data.staffid}
+                    {data.username} - {data.staffname}
                   </span>
                 </div>
               </li>

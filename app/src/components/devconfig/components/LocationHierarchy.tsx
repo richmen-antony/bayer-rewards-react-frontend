@@ -24,8 +24,17 @@ const LocationHierarchy = (props: ILocationProps) => {
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
+    if(value){
+      const isDuplicate= list.find((duplicate :any)=> duplicate[name].toLowerCase() === value.toLowerCase());
+      if(isDuplicate){
+        getValidation();
+        list[index]["isDuplicate"]=true;
+      }else{
+        list[index]["isDuplicate"]=false;
+      }
+    }
+    
     list[index][name] = value;
-
     setInputList(list);
   };
 
@@ -42,7 +51,7 @@ const LocationHierarchy = (props: ILocationProps) => {
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
-    if (data.locationhiername) {
+    if (data.locationhiername && !data.isDuplicate) {
       setInputList([
         ...inputList,
         {
@@ -98,7 +107,7 @@ const LocationHierarchy = (props: ILocationProps) => {
                       <td className="tableStyle">{idx}</td>
                       <td className="tableHeaderStyle">
                         <input
-                          className="form-control dpstyle label"
+                          className={`form-control dpstyle label ${item?.error&& isValidNext ? "invalid":""}`}
                           type="text"
                           name="locationhiername"
                           value={item.locationhiername}
@@ -107,7 +116,12 @@ const LocationHierarchy = (props: ILocationProps) => {
                         />
                         {item?.error && isValidNext && (
                           <span className="error">
-                            {"Please enter Location Hierarchy"}{" "}
+                            {"Please enter Location Hierarchy"}
+                          </span>
+                        )}
+                         {item?.isDuplicate &&isValidNext &&  (
+                          <span className="error">
+                            {item.locationhiername + ' is unavailable'}
                           </span>
                         )}
                       </td>
