@@ -139,25 +139,12 @@ const LocationHierarchy = (props: ILocationProps) => {
                       </td>
                       <td className="tablebtnStyle">
                         {idx === inputList.length - 1 ? (
-                          // <button
-                          //   className="btn btnStyleAdd"
-                          //   onClick={() => handleAddClick(idx)}
-                          // >
-                          //   <img src={plus_icon} />
-                          // </button>
                           <img
                             style={{ width: "50px", height: "50px" }}
                             src={AddBtn}
                             onClick={() => handleAddClick(idx)}
                           />
                         ) : (
-                          //   <button
-                          //     className="btn btnStyleRemove"
-                          //     onClick={() => handleRemoveClick(idx)}
-                          //   >
-
-                          //     {/* <img src={minus} /> */}
-                          //   </button>
                           <img
                             style={{ width: "50px", height: "50px" }}
                             src={RemoveBtn}
