@@ -91,12 +91,26 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </span>
                 </div>
               </li>
-              <li className={`${data.orderstatus === "FULFILLED" ?"active" :data.orderstatus === "EXPIRED"?"inactive" :""} `}>
+              <li
+                className={`${
+                  data.orderstatus === "FULFILLED"
+                    ? "active"
+                    : data.orderstatus === "EXPIRED"
+                    ? "inactive"
+                    : ""
+                } `}
+              >
                 <div className="line-cnt-expiry-date">
-                  <p>{data.orderstatus === "FULFILLED" ? "Fulfilled date" : data.orderstatus === "EXPIRED"?"Expiry date" :""}</p>
+                  <p>
+                    {data.orderstatus === "FULFILLED"
+                      ? "Fulfilled date"
+                      : data.orderstatus === "EXPIRED"
+                      ? "Expiry date"
+                      : ""}
+                  </p>
                   <label>
-                    {data.orderexpirydate &&
-                      moment(data.orderexpirydate).format("Do MMM, YYYY")}
+                    {data.lastupdateddate &&
+                      moment(data.lastupdateddate).format("Do MMM, YYYY")}
                   </label>
                 </div>
                 <div className="content">
@@ -109,7 +123,14 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               </li>
               <li>
                 <div className="content">
-                  <img src={data.orderstatus === "FULFILLED" ? farmerImg:FarmerDenied} alt="" />
+                  <img
+                    src={
+                      data.orderstatus === "FULFILLED"
+                        ? farmerImg
+                        : FarmerDenied
+                    }
+                    alt=""
+                  />
                   <p>Farmer ID & Name</p>
                   <span>
                     {data.farmerid} - {data.farmername}
@@ -145,117 +166,118 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>{value.intendedquantity}</td>
                             <td>{value.orderedquantity}</td>
                             <td>{"MK " + value.productprice}</td>
-                            {data.orderstatus === "FULFILLED" &&
-                            <td>
-                              <i
-                                className={`fas ${
-                                  accordionView ? "fa-sort-down" : "fa-sort-up"
-                                }`}
-                              />
-                            </td>
-                           }
-                          </tr>
-                          {accordionView && value?.order_id === accordionId && data.orderstatus === "FULFILLED"&& (
-                            <tr>
-                              <td
-                                colSpan={7}
-                                style={{ padding: 0, borderTop: 0 }}
-                              >
-                                <table className="inner-table">
-                                  <tbody>
-                                    {value.ordered_qrcodes &&
-                                    value.ordered_qrcodes.map((list:any)=>{
-                                      return (
-                                        <tr>
-                                      <td className="title">
-                                        <p>Label ID</p>
-                                        <p className="sub-val">Batch #</p>
-                                      </td>
-                                      <td>
-                                        <p className="qr-val">
-                                          {list.labelid}
-                                        </p>
-                                        <p className="sub-val">  {list.batchno}</p>
-                                      </td>
-                                      
-                                    </tr>
-                                      )
-                                    }
-                                      )
-                                    }
-                                    
-                                  </tbody>
-                                </table>
+                            {data.orderstatus === "FULFILLED" && (
+                              <td>
+                                <i
+                                  className={`fas ${
+                                    accordionView
+                                      ? "fa-sort-down"
+                                      : "fa-sort-up"
+                                  }`}
+                                />
                               </td>
-                            </tr>
-                          )}
+                            )}
+                          </tr>
+                          {accordionView &&
+                            value?.order_id === accordionId &&
+                            data.orderstatus === "FULFILLED" && (
+                              <tr>
+                                <td
+                                  colSpan={7}
+                                  style={{ padding: 0, borderTop: 0 }}
+                                >
+                                  <table className="inner-table">
+                                    <tbody>
+                                      {value.ordered_qrcodes &&
+                                        value.ordered_qrcodes.map(
+                                          (list: any) => {
+                                            return (
+                                              <tr>
+                                                <td className="title">
+                                                  <p>Label ID</p>
+                                                  <p className="sub-val">
+                                                    Batch #
+                                                  </p>
+                                                </td>
+                                                <td>
+                                                  <p className="qr-val">
+                                                    {list.labelid}
+                                                  </p>
+                                                  <p className="sub-val">
+                                                    {" "}
+                                                    {list.batchno}
+                                                  </p>
+                                                </td>
+                                              </tr>
+                                            );
+                                          }
+                                        )}
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            )}
                         </>
                       );
                     })}
                   </tbody>
                 </table>
-               {data.orderstatus === "FULFILLED" &&
-                <div id="accordion">
-                  <div className="card dev product-sold-popup">
-                    <div
-                      className="card-header"
-                      id="headingOne"
-                      onClick={() => handleButton("e")}
-                    >
-                      <span>{"Invalid Scans (0)"}</span>
-                      <img src={RtArrow} />
-                        <span>Expired Labels (0)</span> 
-                      <div>
-                        <span>Non Bayer Labels (0)</span>
+                {data.orderstatus === "FULFILLED" && (
+                  <div id="accordion">
+                    <div className="card dev product-sold-popup">
+                      <div
+                        className="card-header"
+                        id="headingOne"
+                        onClick={() => handleButton("e")}
+                      >
+                        <span>{"Invalid Scans (0)"}</span>
+                        <img src={RtArrow} />
+                        <span>Expired Labels (0)</span>
+                        <div>
+                          <span>Non Bayer Labels (0)</span>
+                        </div>
+                        <div className="expand-icon">
+                          <i
+                            className={`fa ${
+                              accordion
+                                ? "fas fa-caret-down"
+                                : "fas fa-caret-up"
+                            } `}
+                          ></i>
+                        </div>
                       </div>
-                      <div className="expand-icon">
-                        <i
-                          className={`fa ${
-                            accordion ? "fas fa-caret-down" : "fas fa-caret-up"
-                          } `}
-                        ></i>
+
+                      <div
+                        id="collapseOne"
+                        className={`collapse ${accordion && "show"}`}
+                        aria-labelledby="headingOne"
+                        data-parent="#accordion"
+                      >
+                        <div className="card-body">
+                          <table className="inner-table">
+                            <tbody>
+                              {data?.invalidscans.map((scan: any) => {
+                                return (
+                                  <tr>
+                                    <td className="title">
+                                      <p>Label ID</p>
+                                      <p className="sub-val">Reason</p>
+                                    </td>
+                                    <td>
+                                      <p className="qr-val">{scan.qrcodeid}</p>
+                                      <p className="sub-val">{scan.reason}</p>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
-
-                    {/* <div
-                      id="collapseOne"
-                      className={`collapse ${accordion && "show"}`}
-                      aria-labelledby="headingOne"
-                      data-parent="#accordion"
-                    >
-                      <div className="card-body">
-                        <table className="inner-table">
-                          <tbody>
-                            <tr>
-                              <td className="title">
-                                <p>Label ID</p>
-                                <p className="sub-val">Reason</p>
-                              </td>
-                              <td>
-                                <p className="qr-val">625823651452258</p>
-                                <p className="sub-val">Non Bayer Products</p>
-                              </td>
-                              <td>
-                                <p className="qr-val">632581548902502</p>
-                                <p className="sub-val">Non Bayer Products</p>
-                              </td>
-                              <td>
-                                <p className="qr-val">6250258403665286</p>
-                                <p className="sub-val">Expired Label</p>
-                              </td>
-                              
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div> */}
                   </div>
-               
-                </div>
-                 }
-                
+                )}
               </div>
-                        
 
               <div className="sum-total">
                 <p className="total">Total</p>

@@ -147,7 +147,7 @@ class ScanLogsTable extends Component<Props, States> {
         endDate: new Date().toISOString().substr(0, 10),
         ordereddate:new Date(),
         orderexpirydate:new Date(),
-        lastupdateddate:new Date(),
+        lastupdateddate: today.setMonth(today.getMonth()-3),
         expirydate:new Date(),
         farmername:"All"
       },
@@ -1023,19 +1023,19 @@ class ScanLogsTable extends Component<Props, States> {
                     </div>
                     <div className="content-list">
                       <label>Phone Number</label>
-                      <p>{retailerPopupData.mobilenumber}</p>
+                      <p>{retailerPopupData.phonenumber}</p>
                     </div>
                     <div className="content-list">
                       <label>Region</label>
-                      <p>{retailerPopupData.region}</p>
+                      <p>{retailerPopupData.geolevel1}</p>
                     </div>
                     <div className="content-list">
                       <label>District</label>
-                      <p>{retailerPopupData.district}</p>
+                      <p>{retailerPopupData.geolevel3}</p>
                     </div>
                     <div className="content-list">
                       <label>EPA</label>
-                      <p>{retailerPopupData.epa}</p>
+                      <p>{retailerPopupData.geolevel4}</p>
                     </div>
                     <div className="content-list">
                       <label>Postal Code</label>
@@ -1045,7 +1045,6 @@ class ScanLogsTable extends Component<Props, States> {
                       <label>Account expiry date</label>
                       <div style={{ minWidth: "130px" }}>
                         <p>
-                          {" "}
                           <img
                             src={CalenderIcon}
                             style={{ paddingRight: "5px" }}
