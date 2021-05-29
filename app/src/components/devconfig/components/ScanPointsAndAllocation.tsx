@@ -266,12 +266,54 @@ export const ScanPointsAndAllocation = (
                       </select>
                     </td>
                     <td className="tablebtnStyle">
-                      {idx === inputList.length - 1 ? (
+                      {/* {idx === inputList.length - 1 ? (
                         <img
                           style={{ width: "50px", height: "50px" }}
                           src={AddBtn}
                           onClick={() => handleAddClick(idx)}
                         />
+                      ) : (
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          src={RemoveBtn}
+                          onClick={() => handleRemoveClick(idx)}
+                        />
+                      )} */}
+
+                      {idx === inputList.length - 1 ? (
+                        (() => {
+                          if (idx === 0 && idx === inputList.length - 1) {
+                            return (
+                              <div>
+                                <img
+                                  style={{ width: "50px", height: "50px" }}
+                                  src={AddBtn}
+                                  onClick={() => handleAddClick(idx)}
+                                />
+                              </div>
+                            );
+                          } else if (idx > 0 && idx === inputList.length - 1) {
+                            return (
+                              <div>
+                                <td style={{ border: "none" }}>
+                                  <img
+                                    style={{ width: "50px", height: "50px" }}
+                                    src={RemoveBtn}
+                                    onClick={() => handleRemoveClick(idx)}
+                                  />
+                                </td>
+
+                                <td style={{ border: "none" }}>
+                                  <img
+                                    style={{ width: "50px", height: "50px" }}
+                                    src={AddBtn}
+                                    onClick={() => handleAddClick(idx)}
+                                  />
+                                </td>
+                              </div>
+                            );
+                          }
+                        })()
                       ) : (
                         <img
                           style={{ width: "50px", height: "50px" }}

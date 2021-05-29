@@ -26,14 +26,17 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const handleInputChange = (e: any, index: any, data: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
-   const arr= list.map((val:any)=>{
-      if(val.productcategory ===data.productcategory && val.parentpackage ===data.parentpackage){
-        return val={...val,[name]:value}
-      } else{
+    const arr = list.map((val: any) => {
+      if (
+        val.productcategory === data.productcategory &&
+        val.parentpackage === data.parentpackage
+      ) {
+        return (val = { ...val, [name]: value });
+      } else {
         return val;
       }
-    })
-    console.log({arr});
+    });
+    console.log({ arr });
     setInputList(arr);
   };
 
@@ -69,7 +72,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         packaginghierarchylevel: inputList.length + 1,
         packaginghierarchyname: "",
         parentpackage: "",
-        productcategory:activeButton
+        productcategory: activeButton,
       },
     ]);
   };
@@ -77,12 +80,11 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const handleDropdownChange = (event: any, index: any, pc: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    if(activeButton === list[index].productcategory){
+    if (activeButton === list[index].productcategory) {
       list[index].parentpackage = value;
       setInputList(list);
       setValSelected(event.target.value);
     }
-   
   };
 
   /**
@@ -135,7 +137,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                 </tr>
               </thead>
               <tbody>
-                {inputList.length> 0 &&
+                {inputList.length > 0 &&
                   inputList
                     .filter((pc: any) => pc.productcategory == activeButton)
                     .map((item: any, idx: number) => (
@@ -147,7 +149,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                             type="text"
                             name="packaginghierarchyname"
                             value={item.packaginghierarchyname}
-                            onChange={(e) => handleInputChange(e, idx,item)}
+                            onChange={(e) => handleInputChange(e, idx, item)}
                           />
                         </td>
 
@@ -170,10 +172,14 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               inputList.length > 0 &&
                               inputList.map(
                                 (
-                                  { packaginghierarchyname,productcategory }: any,
+                                  {
+                                    packaginghierarchyname,
+                                    productcategory,
+                                  }: any,
                                   index: number
                                 ) =>
-                                  index < idx && productcategory===activeButton&&(
+                                  index < idx &&
+                                  productcategory === activeButton && (
                                     <option
                                       value={index}
                                       key={packaginghierarchyname}
@@ -202,7 +208,6 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                         </td>
                       </tr>
                     ))}
-
               </tbody>
             </table>
           </div>
