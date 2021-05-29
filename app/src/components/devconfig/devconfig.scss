@@ -177,22 +177,24 @@ input:read-only {
   box-shadow: 0px 1px 3px #0000004d;
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1368px) {
   .label {
     font-size: 12px;
   }
 
   .card-container {
     height: 550px;
+    background: white !important;
   }
 }
 
-@media only screen and (min-width: 1400px) and (max-width: 1920px) {
+@media only screen and (min-width: 1368px) and (max-width: 1920px) {
   .label {
     font-size: 14px !important;
   }
 
   .card-container {
-    height: 620px;
+    height: 590px;
+    background: white !important;
   }
 }
