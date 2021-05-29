@@ -36,21 +36,6 @@ export const RoleHierarchy = (props: IRoleProps) => {
     getValidation();
   };
 
-  const setCorrectHierLvl = (list: any, index: number) => {
-    const newList = list.map((listItem: any, idx: number) => {
-      return {
-        ...listItem,
-        rolehierarchylevel: idx,
-        parentrole:
-          listItem.parentrole >= index
-            ? listItem.parentrole - 1
-            : listItem.parentrole,
-        // parentrole : listItem.parentrole === index ? -1 : listItem.parentrole > index ? listItem.parentrole-1 : listItem.parentrole
-      };
-    });
-    return newList;
-  };
-
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
@@ -93,6 +78,22 @@ export const RoleHierarchy = (props: IRoleProps) => {
     setInputList(list);
     setValSelected(event.target.value);
   };
+
+  const setCorrectHierLvl = (list: any, index: number) => {
+    const newList = list.map((listItem: any, idx: number) => {
+      return {
+        ...listItem,
+        rolehierarchylevel: idx,
+        parentrole:
+          listItem.parentrole >= index
+            ? listItem.parentrole - 1
+            : listItem.parentrole,
+        // parentrole : listItem.parentrole === index ? -1 : listItem.parentrole > index ? listItem.parentrole-1 : listItem.parentrole
+      };
+    });
+    return newList;
+  };
+
   return (
     <div className="col-md-10">
       <div className="container">
@@ -202,12 +203,57 @@ export const RoleHierarchy = (props: IRoleProps) => {
                       </td>
 
                       <td className="tablebtnStyle">
-                        {idx === inputList.length - 1 ? (
+                        {/* {idx === inputList.length - 1 ? (
                           <img
                             style={{ width: "50px", height: "50px" }}
                             src={AddBtn}
                             onClick={() => handleAddClick(idx)}
                           />
+                        ) : (
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={RemoveBtn}
+                            onClick={() => handleRemoveClick(idx)}
+                          />
+                        )} */}
+
+                        {idx === inputList.length - 1 ? (
+                          (() => {
+                            if (idx === 0 && idx === inputList.length - 1) {
+                              return (
+                                <div>
+                                  <img
+                                    style={{ width: "50px", height: "50px" }}
+                                    src={AddBtn}
+                                    onClick={() => handleAddClick(idx)}
+                                  />
+                                </div>
+                              );
+                            } else if (
+                              idx > 0 &&
+                              idx === inputList.length - 1
+                            ) {
+                              return (
+                                <div>
+                                  <td style={{ border: "none" }}>
+                                    <img
+                                      style={{ width: "50px", height: "50px" }}
+                                      src={RemoveBtn}
+                                      onClick={() => handleRemoveClick(idx)}
+                                    />
+                                  </td>
+
+                                  <td style={{ border: "none" }}>
+                                    <img
+                                      style={{ width: "50px", height: "50px" }}
+                                      src={AddBtn}
+                                      onClick={() => handleAddClick(idx)}
+                                    />
+                                  </td>
+                                </div>
+                              );
+                            }
+                          })()
                         ) : (
                           <img
                             style={{ width: "50px", height: "50px" }}

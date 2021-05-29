@@ -152,26 +152,58 @@ const LocationHierarchy = (props: ILocationProps) => {
                         </select>
                       </td>
                       <td className="tablebtnStyle">
-                        {idx === inputList.length - 1 ? (
-                          // <button
-                          //   className="btn btnStyleAdd"
-                          //   onClick={() => handleAddClick(idx)}
-                          // >
-                          //   <img src={plus_icon} />
-                          // </button>
+                        {/* {idx === inputList.length - 1 ? (
                           <img
                             style={{ width: "50px", height: "50px" }}
                             src={AddBtn}
                             onClick={() => handleAddClick(idx)}
                           />
                         ) : (
-                          //   <button
-                          //     className="btn btnStyleRemove"
-                          //     onClick={() => handleRemoveClick(idx)}
-                          //   >
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            src={RemoveBtn}
+                            onClick={() => handleRemoveClick(idx)}
+                          />
+                        )} */}
 
-                          //     {/* <img src={minus} /> */}
-                          //   </button>
+                        {idx === inputList.length - 1 ? (
+                          (() => {
+                            if (idx === 0 && idx === inputList.length - 1) {
+                              return (
+                                <div>
+                                  <img
+                                    style={{ width: "50px", height: "50px" }}
+                                    src={AddBtn}
+                                    onClick={() => handleAddClick(idx)}
+                                  />
+                                </div>
+                              );
+                            } else if (
+                              idx > 0 &&
+                              idx === inputList.length - 1
+                            ) {
+                              return (
+                                <div>
+                                  <td style={{ border: "none" }}>
+                                    <img
+                                      style={{ width: "50px", height: "50px" }}
+                                      src={RemoveBtn}
+                                      onClick={() => handleRemoveClick(idx)}
+                                    />
+                                  </td>
+
+                                  <td style={{ border: "none" }}>
+                                    <img
+                                      style={{ width: "50px", height: "50px" }}
+                                      src={AddBtn}
+                                      onClick={() => handleAddClick(idx)}
+                                    />
+                                  </td>
+                                </div>
+                              );
+                            }
+                          })()
+                        ) : (
                           <img
                             style={{ width: "50px", height: "50px" }}
                             src={RemoveBtn}

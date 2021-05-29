@@ -33,8 +33,8 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
       } else{
         return val;
       }
-    })
-    console.log({arr});
+    });
+    console.log({ arr });
     setInputList(arr);
   };
 
@@ -76,7 +76,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         packaginghierarchylevel: inputList.length + 1,
         packaginghierarchyname: "",
         parentpackage: "",
-        productcategory:activeButton
+        productcategory: activeButton,
       },
     ]);
   };
@@ -84,12 +84,11 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const handleDropdownChange = (event: any, index: any, pc: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    if(activeButton === list[index].productcategory){
+    if (activeButton === list[index].productcategory) {
       list[index].parentpackage = value;
       setInputList(list);
       setValSelected(event.target.value);
     }
-   
   };
 
   /**
@@ -158,7 +157,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                             type="text"
                             name="packaginghierarchyname"
                             value={item.packaginghierarchyname}
-                            onChange={(e) => handleInputChange(e, idx,item)}
+                            onChange={(e) => handleInputChange(e, idx, item)}
                           />
                         </td>
 
@@ -181,10 +180,14 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               inputListData.length > 0 &&
                               inputListData.map(
                                 (
-                                  { packaginghierarchyname,productcategory }: any,
+                                  {
+                                    packaginghierarchyname,
+                                    productcategory,
+                                  }: any,
                                   index: number
                                 ) =>
-                                  index < idx && productcategory===activeButton&&(
+                                  index < idx &&
+                                  productcategory === activeButton && (
                                     <option
                                       value={index}
                                       key={packaginghierarchyname}

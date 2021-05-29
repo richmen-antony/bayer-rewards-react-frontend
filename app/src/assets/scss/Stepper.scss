@@ -1,3 +1,9 @@
+.stepper-container-horizontal {
+  border-radius: 5px;
+  margin: 20px auto;
+  width: 100%;
+}
+
 .stepper-wrapper-horizontal {
   display: flex;
   justify-content: center;
@@ -87,13 +93,13 @@
 @media only screen and (max-width: 1400px) {
   .stepper-wrapper-horizontal .step-wrapper {
     width: 12%;
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
 @media only screen and (min-width: 1400px) and (max-width: 1920px) {
   .stepper-wrapper-horizontal .step-wrapper {
-    width: 10%;
+    width: 12%;
     font-size: 13px;
   }
 }

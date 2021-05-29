@@ -126,14 +126,25 @@ input:read-only {
   }
   th,
   td {
+    border: 1px solid #ddd;
     padding: 0.25rem;
     vertical-align: baseline !important;
   }
+
   th {
-    background: whitesmoke;
     position: sticky;
-    top: 0; /* Don't forget this, required for the stickiness */
+    top: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: left;
+    background-color: white;
   }
+
+  // th {
+  //   background: white;
+  //   position: sticky;
+  //   top: 0; /* Don't forget this, required for the stickiness */
+  // }
 }
 //product-categeory
 .product-categeory {
@@ -183,22 +194,24 @@ input:read-only {
   box-shadow: 0px 1px 3px #0000004d;
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1368px) {
   .label {
     font-size: 12px;
   }
 
   .card-container {
     height: 550px;
+    background: white !important;
   }
 }
 
-@media only screen and (min-width: 1400px) and (max-width: 1920px) {
+@media only screen and (min-width: 1368px) and (max-width: 1920px) {
   .label {
     font-size: 14px !important;
   }
 
   .card-container {
-    height: 620px;
+    height: 660px;
+    background: white !important;
   }
 }
