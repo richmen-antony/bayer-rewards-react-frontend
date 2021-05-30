@@ -307,7 +307,6 @@
   background: #ffffff;
   border: 1px solid #a0a0a047;
   border-radius: 10px !important;
-  height:400px;
   table {
     table-layout: fixed;
     border-collapse: collapse;
@@ -573,7 +572,7 @@
     }
     span {
       color: #000000;
-      font-size: 16px;
+      font-size: 14px;
     }
   }
 }
@@ -765,6 +764,9 @@
   
   }
 }
+.scanlog-container{
+  height: 400px;
+}
 
 @media only screen  and (min-width:1400px) and  (max-width: 1920px) {
   /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
@@ -817,5 +819,8 @@
         }
       }
     }
+  }
+  .scanlog-container{
+    height: 480px;
   }
 }

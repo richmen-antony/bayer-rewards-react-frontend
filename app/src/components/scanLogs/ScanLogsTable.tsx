@@ -442,7 +442,7 @@ class ScanLogsTable extends Component<Props, States> {
       <AUX>
         {isLoader && <Loader />}
         <div>
-          <div>
+          <div className="scanlog-container">
             <div className="scanlog-table">
               <div className="advisor-filter">
                 <div className="filter-left-side">
