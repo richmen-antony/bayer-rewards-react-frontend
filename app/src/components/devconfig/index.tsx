@@ -499,6 +499,7 @@ class Devconfigurations extends React.Component<
     invokePostServiceTemp(registerTemplateData, data)
       .then((response: any) => {
         console.log(response);
+        toastSuccess("Country configuration is successfully created");
         this.props.history.push("./dashboard");
         this.setState({
           isLoader: false,
@@ -515,7 +516,7 @@ class Devconfigurations extends React.Component<
           message = "Country configuration is already exists";
         }
         toastInfo(message);
-        this.props.history.push("/dashboard");
+        this.props.history.push("/devconfig");
       });
   };
 

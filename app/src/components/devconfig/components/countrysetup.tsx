@@ -16,6 +16,7 @@ import {
 } from "../../../redux/actions/devconfig/add";
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokeGetAuthServiceTemp } from "../../../utility/base/service";
+import { ContactSupportOutlined } from "@material-ui/icons";
 type ICountryProps = {
   setCountryDetails: (data: any) => void;
   selectedCountryDetails: cDetails[];
@@ -119,23 +120,24 @@ const CountrySetupComp = (props: ICountryProps) => {
     if (countryCode) {
       _retriveCountryCode(countryCode);
     }
-
+    if (countryDetails.length) {
+      _retriveCountryCode(countryDetails[0].name);
+    }
     return () => {
       setCountryDetails(countryDetails);
     };
   }, []);
 
-  const handleDropdownChangeCurrency = (event: any) => {
-    const countryName: any = countryDetails.filter(function (result: any) {
-      return result.name === event.target.value;
-    });
-    const currencyDesc = countryName[0].currencyDesc;
-    setcurrencyDesc(currencyDesc);
-  };
+  // const handleDropdownChangeCurrency = (event: any) => {
+  //   const countryName: any = countryDetails.filter(function (result: any) {
+  //     return result.name === event.target.value;
+  //   });
+  //   const currencyDesc = countryName[0].currencyDesc;
+  //   setcurrencyDesc(currencyDesc);
+  // };
 
   const handleDropdownChange = (event: any) => {
     setCountryCode(event.target.value);
-
     _retriveCountryCode(event.target.value);
   };
 
@@ -241,6 +243,7 @@ const CountrySetupComp = (props: ICountryProps) => {
     setCountryISO(countryISO);
     setcountryCurrency(countryName);
 
+    setCountryCode(countryValue);
     setCountryName(countryISO);
     setCurrencyCode(countryName[0].currency);
     setCurrencyName(currencyDesc);
@@ -261,7 +264,7 @@ const CountrySetupComp = (props: ICountryProps) => {
                 id="dropdown"
                 onChange={(event) => handleDropdownChange(event)}
                 value={countryCode}
-                defaultValue="Malawi"
+                // defaultValue={countryDetails[0].name}
               >
                 {countryDetails.length > 0 ? (
                   countryDetails.map(({ name }) => (
