@@ -36,8 +36,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
-import {SearchInput} from "../../utility/widgets/input/search-input";
-import { getLocalStorageData } from '../../utility/base/localStore';
+import { SearchInput } from "../../utility/widgets/input/search-input";
+import { getLocalStorageData } from "../../utility/base/localStore";
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -144,12 +144,12 @@ class ScanLogsTable extends Component<Props, States> {
       selectedFilters: {
         // productCategory: "All",
         status: "All",
-        ordereddatefrom:new Date().setMonth(new Date().getMonth()-3),
-        ordereddateto:new Date(),
-        lastmodifiedfrom:new Date().setMonth(new Date().getMonth()-3),
-        lastmodifiedto:new Date(),
-        farmer:"ALL",
-        retailer:"ALL"
+        ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+        ordereddateto: new Date(),
+        lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
+        lastmodifiedto: new Date(),
+        farmer: "ALL",
+        retailer: "ALL",
       },
       dateErrMsg: "",
       searchText: "",
@@ -166,7 +166,7 @@ class ScanLogsTable extends Component<Props, States> {
       accordionId: "",
       // value: 0,
       value: moment(),
-      lastUpdatedDateErr:""
+      lastUpdatedDateErr: "",
     };
     this.timeOut = 0;
   }
@@ -178,12 +178,12 @@ class ScanLogsTable extends Component<Props, States> {
     // this.setState({
     //   userRole: userData.role,
     // });
-    console.log({userData});
+    console.log({ userData });
   }
   getScanLogs = () => {
     const { scanLogs } = apiURL;
     this.setState({ isLoader: true });
-    const {selectedFilters,isFiltered}= this.state;
+    const { selectedFilters, isFiltered } = this.state;
     let data = {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
@@ -195,22 +195,27 @@ class ScanLogsTable extends Component<Props, States> {
       isfiltered: this.state.isFiltered,
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
-      region: userData.geolevel1 ,
-      countrycode:userData.countrycode
+      region: userData.geolevel1,
+      countrycode: userData.countrycode,
     };
-    console.log("selected",selectedFilters);
-    if(isFiltered){
-      let filter={...selectedFilters};
-      filter.ordereddatefrom= moment(filter.ordereddatefrom).format("YYYY-MM-DD");
-      filter.ordereddateto= moment(filter.ordereddateto).format("YYYY-MM-DD");
-      filter.lastmodifiedfrom= moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
-      filter.lastmodifiedto= moment(filter.lastmodifiedto).format("YYYY-MM-DD");
+    console.log("selected", selectedFilters);
+    if (isFiltered) {
+      let filter = { ...selectedFilters };
+      filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
+        "YYYY-MM-DD"
+      );
+      filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
+      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format(
+        "YYYY-MM-DD"
+      );
+      filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
+        "YYYY-MM-DD"
+      );
 
-      data={...data,...filter}
-      console.log("called",filter,data);
+      data = { ...data, ...filter };
+      console.log("called", filter, data);
     }
-  
-      
+
     invokeGetAuthService(scanLogs, data)
       .then((response) => {
         this.setState({
@@ -317,18 +322,18 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   resetFilter = (e: any) => {
-    let today=new Date();
+    let today = new Date();
     e.stopPropagation();
     this.setState({
       selectedFilters: {
-       // productCategory: "All",
+        // productCategory: "All",
         status: "All",
-        ordereddatefrom:today.setMonth(today.getMonth()-3),
-        ordereddateto:new Date(),
-        lastmodifiedfrom: today.setMonth(today.getMonth()-3),
-        lastmodifiedto:new Date(),
-        farmer:"ALL",
-        retailer:"ALL"
+        ordereddatefrom: today.setMonth(today.getMonth() - 3),
+        ordereddateto: new Date(),
+        lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
+        lastmodifiedto: new Date(),
+        farmer: "ALL",
+        retailer: "ALL",
       },
       isFiltered: false,
     });
@@ -338,10 +343,9 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   applyFilter = () => {
-    this.setState({ isFiltered: true },()=>{
+    this.setState({ isFiltered: true }, () => {
       this.getScanLogs();
     });
-    
   };
   previous = (pageNo: any) => {
     console.log("pageno", this.state.pageNo);
@@ -400,7 +404,7 @@ class ScanLogsTable extends Component<Props, States> {
   };
   download = () => {
     const { downloadScanlogs } = apiURL;
-    
+
     const data = {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
@@ -408,7 +412,7 @@ class ScanLogsTable extends Component<Props, States> {
       role: this.state.selectedFilters.type,
       isfiltered: this.state.isFiltered,
       region: "R1",
-       ...this.state.seletedFilters
+      ...this.state.seletedFilters,
     };
 
     invokeGetAuthService(downloadScanlogs, data)
@@ -417,64 +421,67 @@ class ScanLogsTable extends Component<Props, States> {
         DownloadCsv(data, "scanlogs.csv");
       })
       .catch((error) => {
-        console.log({error})
+        console.log({ error });
       });
   };
- handleDateChange =(date:any,name:string)=>{
-  let val = this.state.selectedFilters;
-  let flag = false;
-  if (name === "ordereddatefrom") {
-    if (date <= val.ordereddateto) {
-      this.setState({
-        dateErrMsg: "",
-      });
-    } else {
-      this.setState({
-        dateErrMsg: "Order Start Date should be lesser than  Order End Date",
-      });
+  handleDateChange = (date: any, name: string) => {
+    let val = this.state.selectedFilters;
+    let flag = false;
+    if (name === "ordereddatefrom") {
+      if (date <= val.ordereddateto) {
+        this.setState({
+          dateErrMsg: "",
+        });
+      } else {
+        this.setState({
+          dateErrMsg: "Order Start Date should be lesser than  Order End Date",
+        });
+      }
     }
-  }
-  if (name === "lastmodifiedfrom") {
-    if (date <= val.lastmodifiedto) {
-      this.setState({
-        lastUpdatedDateErr: "",
-      });
-    } else {
-      this.setState({
-        lastUpdatedDateErr: "Last Updated Start Date should be lesser than  Last Updated End Date",
-      });
+    if (name === "lastmodifiedfrom") {
+      if (date <= val.lastmodifiedto) {
+        this.setState({
+          lastUpdatedDateErr: "",
+        });
+      } else {
+        this.setState({
+          lastUpdatedDateErr:
+            "Last Updated Start Date should be lesser than  Last Updated End Date",
+        });
+      }
     }
-  }
-  
-  // else if (name === "endDate") {
-  //   if (date >= new Date().toISOString().substr(0, 10)) {
-  //     this.setState({
-  //       dateErrMsg: "End Date should not be greater than todays date",
-  //     });
-  //   } else if (date <= val.startDate) {
-  //     this.setState({
-  //       dateErrMsg: "End Date should be greater than Start Date",
-  //     });
-  //   } else {
-  //     val[name] = date;
-  //     flag = true;
-  //   }
-  // }
-  // if (flag) {
-  //   this.setState({ selectedFilters: val });
-  // }
 
-   this.setState({
-    selectedFilters:{...this.state.selectedFilters,[name]:date}
-   })
+    // else if (name === "endDate") {
+    //   if (date >= new Date().toISOString().substr(0, 10)) {
+    //     this.setState({
+    //       dateErrMsg: "End Date should not be greater than todays date",
+    //     });
+    //   } else if (date <= val.startDate) {
+    //     this.setState({
+    //       dateErrMsg: "End Date should be greater than Start Date",
+    //     });
+    //   } else {
+    //     val[name] = date;
+    //     flag = true;
+    //   }
+    // }
+    // if (flag) {
+    //   this.setState({ selectedFilters: val });
+    // }
 
- }
+    this.setState({
+      selectedFilters: { ...this.state.selectedFilters, [name]: date },
+    });
+  };
 
- handleSelect=(event:any,name:string)=>{
-   this.setState({
-    selectedFilters:{...this.state.selectedFilters,[name]:event.target.value}
-   })
- }
+  handleSelect = (event: any, name: string) => {
+    this.setState({
+      selectedFilters: {
+        ...this.state.selectedFilters,
+        [name]: event.target.value,
+      },
+    });
+  };
   render() {
     const {
       retailerPopupData,
@@ -490,7 +497,7 @@ class ScanLogsTable extends Component<Props, States> {
       userRole,
       totalData,
       rowsPerPage,
-      lastUpdatedDateErr
+      lastUpdatedDateErr,
     } = this.state;
 
     const pageNumbers = [];
@@ -503,17 +510,17 @@ class ScanLogsTable extends Component<Props, States> {
       <AUX>
         {isLoader && <Loader />}
         <div>
-          <div >
+          <div>
             <div className="scanlog-table">
               <div className="advisor-filter">
                 <div className="filter-left-side">
-                   <SearchInput 
-                      placeHolder="Search (min 3 letters)"
-                      type="text"
-                      onChange={this.handleSearch}
-                      value={searchText} 
-                      tolltip="Search applicable for Retailer Name/ID, Farmer Name/ID"
-                      />
+                  <SearchInput
+                    placeHolder="Search (min 3 letters)"
+                    type="text"
+                    onChange={this.handleSearch}
+                    value={searchText}
+                    tolltip="Search applicable for Retailer Name/ID, Farmer Name/ID"
+                  />
                   <div className="filter-right-side">
                     <div className="filterRow">
                       <Dropdown
@@ -551,11 +558,10 @@ class ScanLogsTable extends Component<Props, States> {
                                 name="retailer"
                                 value={selectedFilters.retailer}
                                 label={"Retailer"}
-                                handleChange={(e:any)=>this.handleSelect(e,"retailer")}
-                                options={[
-                                  { text: "ALL", value: "ALl" },
-                                  
-                                ]}
+                                handleChange={(e: any) =>
+                                  this.handleSelect(e, "retailer")
+                                }
+                                options={[{ text: "ALL", value: "ALl" }]}
                               />
                             </div>
 
@@ -578,10 +584,10 @@ class ScanLogsTable extends Component<Props, States> {
                                 name="farmer"
                                 value={selectedFilters.farmer}
                                 label={"Farmer"}
-                                handleChange={(e:any)=>this.handleSelect(e,"farmer")}
-                                options={[
-                                  { text: "ALL", value: "ALl" }
-                                ]}
+                                handleChange={(e: any) =>
+                                  this.handleSelect(e, "farmer")
+                                }
+                                options={[{ text: "ALL", value: "ALl" }]}
                               />
                             </div>
 
@@ -661,12 +667,15 @@ class ScanLogsTable extends Component<Props, States> {
                                   customInput={<Input />}
                                   selected={selectedFilters.ordereddatefrom}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"ordereddatefrom")
+                                    this.handleDateChange(
+                                      date,
+                                      "ordereddatefrom"
+                                    )
                                   }
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
-                                  maxDate={new Date()} 
+                                  maxDate={new Date()}
                                 />
                               </div>
                               <div className="p-2">-</div>
@@ -686,7 +695,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   customInput={<Input />}
                                   selected={selectedFilters.ordereddateto}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"ordereddateto")
+                                    this.handleDateChange(date, "ordereddateto")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
@@ -695,48 +704,55 @@ class ScanLogsTable extends Component<Props, States> {
                               </div>
                             </div>
                             {dateErrMsg && (
-                                <span className="error">{dateErrMsg} </span>
-                              )}
+                              <span className="error">{dateErrMsg} </span>
+                            )}
                             <label className="font-weight-bold pt-2">
                               Last Updated Date
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
-                              <DatePicker
+                                <DatePicker
                                   value={selectedFilters.lastmodifiedfrom}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
                                   selected={selectedFilters.lastmodifiedfrom}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"lastmodifiedfrom")
+                                    this.handleDateChange(
+                                      date,
+                                      "lastmodifiedfrom"
+                                    )
                                   }
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
-                                  maxDate={new Date()} 
+                                  maxDate={new Date()}
                                 />
                               </div>
-                            
+
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
-                              <DatePicker
+                                <DatePicker
                                   value={selectedFilters.lastmodifiedto}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
                                   selected={selectedFilters.lastmodifiedto}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"lastmodifiedto")
+                                    this.handleDateChange(
+                                      date,
+                                      "lastmodifiedto"
+                                    )
                                   }
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
                                 />
                               </div>
-                              
                             </div>
                             {lastUpdatedDateErr && (
-                                <span className="error">{lastUpdatedDateErr} </span>
-                              )}
+                              <span className="error">
+                                {lastUpdatedDateErr}{" "}
+                              </span>
+                            )}
 
                             <div className="filterFooter pt-3">
                               {/* <Button
@@ -746,12 +762,11 @@ class ScanLogsTable extends Component<Props, States> {
                                 Reset All
                               </Button> */}
                               <button
-                                  className="cus-btn-scanlog-filter reset"
-                                  onClick={(e) => this.resetFilter(e)}
-                                >
-                                   Reset All
-                                  
-                                </button>
+                                className="cus-btn-scanlog-filter reset"
+                                onClick={(e) => this.resetFilter(e)}
+                              >
+                                Reset All
+                              </button>
                               {/* <Button
                                 color="btn rounded-pill boxColor applybtn"
                                 onClick={() => this.applyFilter()}
@@ -759,16 +774,20 @@ class ScanLogsTable extends Component<Props, States> {
                                 Apply
                               </Button> */}
                               <button
-                                  className="cus-btn-scanlog-filter"
-                                  onClick={this.applyFilter}
-                                  disabled={lastUpdatedDateErr || dateErrMsg ? true :false}
-                                >
-                                  Apply
-                                  <span>
-                                    <img src={ArrowIcon} className="arrow-i" />{" "}
-                                    <img src={RtButton} className="layout" />
-                                  </span>
-                                </button>
+                                className="cus-btn-scanlog-filter"
+                                onClick={this.applyFilter}
+                                disabled={
+                                  lastUpdatedDateErr || dateErrMsg
+                                    ? true
+                                    : false
+                                }
+                              >
+                                Apply
+                                <span>
+                                  <img src={ArrowIcon} className="arrow-i" />{" "}
+                                  <img src={RtButton} className="layout" />
+                                </span>
+                              </button>
                             </div>
                             {/* {dateErrMsg && (
                               <span className="error">{dateErrMsg} </span>
@@ -778,260 +797,262 @@ class ScanLogsTable extends Component<Props, States> {
                       </Dropdown>
                     </div>
                     <div>
-                   
                       <button
                         className="btn btn-primary"
                         onClick={this.download}
-                        style={{backgroundColor: "#1f445a",borderColor: "#1f445a"}}
-                      > 
-                        
+                        style={{
+                          backgroundColor: "#1f445a",
+                          borderColor: "#1f445a",
+                        }}
+                      >
                         <img src={Download} width="17" alt={NoImage} />
-                        <span style={{padding:"15px"}}>Download</span>
-                       
+                        <span style={{ padding: "15px" }}>Download</span>
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="scanlog-container">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th
-                      style={{ width: "10%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "order_id", allScanLogs, isAsc)
-                      }
-                    >
-                      ORDER ID
-                      {this.tableCellIndex !== undefined ? (
-                        this.tableCellIndex === 0 ? (
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th
+                        style={{ width: "10%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "orderid", allScanLogs, isAsc)
+                        }
+                      >
+                        ORDER ID
+                        {this.tableCellIndex !== undefined ? (
+                          this.tableCellIndex === 0 ? (
+                            <i
+                              className={`fas ${
+                                isAsc ? "fa-sort-down" : "fa-sort-up"
+                              } ml-2`}
+                            ></i>
+                          ) : null
+                        ) : (
+                          <i className={"fas fa-sort-up ml-2"}></i>
+                        )}
+                      </th>
+                      <th
+                        style={{ width: "16%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "staffname", allScanLogs, isAsc)
+                        }
+                      >
+                        RETAILER NAME/ID
+                        {this.tableCellIndex === 1 ? (
                           <i
                             className={`fas ${
                               isAsc ? "fa-sort-down" : "fa-sort-up"
                             } ml-2`}
                           ></i>
-                        ) : null
-                      ) : (
-                        <i className={"fas fa-sort-up ml-2"}></i>
-                      )}
-                    </th>
-                    <th
-                      style={{ width: "16%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "staffname", allScanLogs, isAsc)
-                      }
-                    >
-                      RETAILER NAME/ID
-                      {this.tableCellIndex === 1 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "14%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "staffname", allScanLogs, isAsc)
-                      }
-                    >
-                      PRODUCT SOLD
-                      {this.tableCellIndex === 2 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "13%" }}
-                      onClick={(e) =>
-                        this.handleSort(
-                          e,
-                          "totalorderedquantity",
-                          allScanLogs,
-                          isAsc
-                        )
-                      }
-                    >
-                      ORDERED QTY
-                      {this.tableCellIndex === 3 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "12%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "totalcost", allScanLogs, isAsc)
-                      }
-                    >
-                      TOTAL COST
-                      {this.tableCellIndex === 4 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "16%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "advisorname", allScanLogs, isAsc)
-                      }
-                    >
-                      ADVISOR NAME/ID
-                      {this.tableCellIndex === 5 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "16%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "farmername", allScanLogs, isAsc)
-                      }
-                    >
-                      FARMER NAME/ID
-                      {this.tableCellIndex === 5 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "10%" }}
-                      onClick={(e) =>
-                        this.handleSort(e, "orderstatus", allScanLogs, isAsc)
-                      }
-                    >
-                      STATUS
-                      {this.tableCellIndex === 8 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      style={{ width: "20%" }}
-                      onClick={(e) =>
-                        this.handleSort(
-                          e,
-                          "lastupdateddate",
-                          allScanLogs,
-                          isAsc
-                        )
-                      }
-                    >
-                      UPDATED  BY
-                      {this.tableCellIndex === 9 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-2`}
-                        ></i>
-                      ) : null}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allScanLogs.length > 0 ? (
-                    allScanLogs.map((value: any, i: number) => {
-                      return (
-                        <tr
-                          onClick={(event) => {
-                            this.showPopup(event, "showProductPopup");
-                            this.updateOrderData(value);
-                          }}
-                        >
-                          <td>{value.orderid}</td>
-                          <td>
-                            <div className="retailer-id">
-                              <p>
-                                {value.staffname}
-                                <img
-                                  className="retailer-icon"
-                                  onClick={(event) => {
-                                    this.showPopup(event, "showPopup");
-                                    this.handleUpdateRetailer(value);
-                                  }}
-                                  src={ExpandWindowImg}
-                                ></img>
-                              </p>
-                              <label>{value.username}</label>
-                            </div>
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            {value.products_ordered?.length || 0}
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            {value.totalorderedquantity}
-                          </td>
-                          <td>{"MK " +value.totalcost}</td>
-                          <td>
-                            <div className="farmer-id">
-                              <p>{value.advisorname}</p>
-                              <label>{value.advisorid}</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div className="farmer-id">
-                              <p>{value.farmername}</p>
-                              <label>{value.farmerid}</label>
-                            </div>
-                          </td>
-                          <td>
-                            <span
-                              className={`status ${
-                                value.orderstatus === "FULFILLED"
-                                  ? "active"
-                                  : "inactive"
-                              }`}
-                            >
-                              {value.orderstatus === "FULFILLED" ? (
-                                <img
-                                  src={ActiveIcon}
-                                  style={{ marginRight: "8px" }}
-                                  width="17"
-                                />
-                              ) : (
-                                <i className="fas fa-clock"></i>
-                              )}
-                              {value.orderstatus}
-                            </span>
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            {moment(value.lastupdateddate).format("DD-MM-YYYY")}
-                            <img className="max-image" src={maxImg} />
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : isLoader ? (
-                    <Loaders />
-                  ) : (
-                    <tr style={{height:"250px"}}>
-                      <td colSpan={10} className="no-records">
-                        No records found
-                      </td>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "14%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "staffname", allScanLogs, isAsc)
+                        }
+                      >
+                        PRODUCT SOLD
+                        {this.tableCellIndex === 2 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "13%" }}
+                        onClick={(e) =>
+                          this.handleSort(
+                            e,
+                            "totalorderedquantity",
+                            allScanLogs,
+                            isAsc
+                          )
+                        }
+                      >
+                        ORDERED QTY
+                        {this.tableCellIndex === 3 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "12%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "totalcost", allScanLogs, isAsc)
+                        }
+                      >
+                        TOTAL COST
+                        {this.tableCellIndex === 4 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "16%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "advisorname", allScanLogs, isAsc)
+                        }
+                      >
+                        ADVISOR NAME/ID
+                        {this.tableCellIndex === 5 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "16%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "farmername", allScanLogs, isAsc)
+                        }
+                      >
+                        FARMER NAME/ID
+                        {this.tableCellIndex === 6 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "10%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "orderstatus", allScanLogs, isAsc)
+                        }
+                      >
+                        STATUS
+                        {this.tableCellIndex === 7 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "20%" }}
+                        onClick={(e) =>
+                          this.handleSort(
+                            e,
+                            "lastupdateddate",
+                            allScanLogs,
+                            isAsc
+                          )
+                        }
+                      >
+                        UPDATED BY
+                        {this.tableCellIndex === 8 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {allScanLogs.length > 0 ? (
+                      allScanLogs.map((value: any, i: number) => {
+                        return (
+                          <tr
+                            onClick={(event) => {
+                              this.showPopup(event, "showProductPopup");
+                              this.updateOrderData(value);
+                            }}
+                          >
+                            <td>{value.orderid}</td>
+                            <td>
+                              <div className="retailer-id">
+                                <p>
+                                  {value.staffname}
+                                  <img
+                                    className="retailer-icon"
+                                    onClick={(event) => {
+                                      this.showPopup(event, "showPopup");
+                                      this.handleUpdateRetailer(value);
+                                    }}
+                                    src={ExpandWindowImg}
+                                  ></img>
+                                </p>
+                                <label>{value.username}</label>
+                              </div>
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              {value.products_ordered?.length || 0}
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              {value.totalorderedquantity}
+                            </td>
+                            <td>{"MK " + value.totalcost}</td>
+                            <td>
+                              <div className="farmer-id">
+                                <p>{value.advisorname}</p>
+                                <label>{value.advisorid}</label>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="farmer-id">
+                                <p>{value.farmername}</p>
+                                <label>{value.farmerid}</label>
+                              </div>
+                            </td>
+                            <td>
+                              <span
+                                className={`status ${
+                                  value.orderstatus === "FULFILLED"
+                                    ? "active"
+                                    : "inactive"
+                                }`}
+                              >
+                                {value.orderstatus === "FULFILLED" ? (
+                                  <img
+                                    src={ActiveIcon}
+                                    style={{ marginRight: "8px" }}
+                                    width="17"
+                                  />
+                                ) : (
+                                  <i className="fas fa-clock"></i>
+                                )}
+                                {value.orderstatus}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              {moment(value.lastupdateddate).format(
+                                "DD-MM-YYYY"
+                              )}
+                              <img className="max-image" src={maxImg} />
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : isLoader ? (
+                      <Loaders />
+                    ) : (
+                      <tr style={{ height: "250px" }}>
+                        <td colSpan={10} className="no-records">
+                          No records found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

@@ -186,35 +186,27 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   colSpan={7}
                                   style={{ padding: 0, borderTop: 0 }}
                                 >
-                                  <div >
-                                      {value.ordered_qrcodes &&
-                                        value.ordered_qrcodes.map(
-                                          (list: any) => {
-                                            return (
-                                              <div className="inner-expand">
-                                              
-                                                <div className="title inner-row">
-                                                
-                                                
-                                                  <p>Label ID</p>
-                                                  <p className="sub-val">
-                                                    Batch #
-                                                  </p>
-                                                </div>
-                                                <div className="inner-row">
-                                                  <p className="qr-val">
-                                                    {list.labelid}
-                                                  </p>
-                                                  <p className="sub-val">
-                                                    {" "}
-                                                    {list.batchno}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            );
-                                          }
-                                        )}
-                                   
+                                  <div>
+                                    {value.ordered_qrcodes &&
+                                      value.ordered_qrcodes.map((list: any) => {
+                                        return (
+                                          <div className="inner-expand">
+                                            <div className="title inner-row">
+                                              <p>Label ID</p>
+                                              <p className="sub-val">Batch #</p>
+                                            </div>
+                                            <div className="inner-row">
+                                              <p className="qr-val">
+                                                {list.labelid}
+                                              </p>
+                                              <p className="sub-val">
+                                                {" "}
+                                                {list.batchno}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
                                   </div>
                                 </td>
                               </tr>
@@ -256,42 +248,31 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                         data-parent="#accordion"
                       >
                         <div className="card-body">
-                        
-                              {data?.invalidscans.map((scan: any) => {
-                                return (
-                                  // <tr>
-                                  //   <td className="title">
-                                  //     <p>Label ID</p>
-                                  //     <p className="sub-val">Reason</p>
-                                  //   </td>
-                                  //   <td>
-                                  //     <p className="qr-val">{scan.qrcodeid}</p>
-                                  //     <p className="sub-val">{scan.reason}</p>
-                                  //   </td>
-                                  // </tr>
-                                  <div className="inner-expand">
-                                              
-                                                <div className="title inner-row">
-                                                
-                                                
-                                                  <p>Label ID</p>
-                                                  <p className="sub-val">
-                                                    Batch #
-                                                  </p>
-                                                </div>
-                                                <div className="inner-row">
-                                                  <p className="qr-val">
-                                                    {scan.qrcodeid}
-                                                  </p>
-                                                  <p className="sub-val">
-                                                    {" "}
-                                                    {scan.reason}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                );
-                              })}
-                            
+                          {data.length > 0 &&
+                            data?.invalidscans.map((scan: any) => {
+                              return (
+                                // <tr>
+                                //   <td className="title">
+                                //     <p>Label ID</p>
+                                //     <p className="sub-val">Reason</p>
+                                //   </td>
+                                //   <td>
+                                //     <p className="qr-val">{scan.qrcodeid}</p>
+                                //     <p className="sub-val">{scan.reason}</p>
+                                //   </td>
+                                // </tr>
+                                <div className="inner-expand">
+                                  <div className="title inner-row">
+                                    <p>Label ID</p>
+                                    <p className="sub-val">Batch #</p>
+                                  </div>
+                                  <div className="inner-row">
+                                    <p className="qr-val">{scan.qrcodeid}</p>
+                                    <p className="sub-val"> {scan.reason}</p>
+                                  </div>
+                                </div>
+                              );
+                            })}
                         </div>
                       </div>
                     </div>
