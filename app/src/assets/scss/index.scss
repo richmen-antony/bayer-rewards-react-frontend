@@ -800,3 +800,22 @@ label {
   }
 }
 
+.Toastify__toast-container {
+  width: 320px;
+}
+.Toastify__toast--default {
+  background: #fff;
+  color: #aaa;
+}
+.Toastify__toast--info {
+  background: purple;
+}
+.Toastify__toast--success {
+  background: green;
+}
+.Toastify__toast--warning {
+  background: yellow;
+}
+.Toastify__toast--error {
+  background: red;
+}

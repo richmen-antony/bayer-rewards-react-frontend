@@ -4,7 +4,7 @@ import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
-import { toastSuccess } from "../../../utility/widgets/toaster";
+import { toastSuccess, toastInfo } from "../../../utility/widgets/toaster";
 import { setLocalStorageData } from "../../../utility/base/localStore";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import CustomSwitch from "../../../container/components/switch";
@@ -606,7 +606,7 @@ class CreateUser extends Component<any, any> {
         if (message === 'Retailer with the same Mobilenumber exists') {
           message = 'User with same Mobilenumber exists';
         } 
-        toastSuccess(message);
+        toastInfo(message);
         this.setState({isRendered: true});
         this.props.history.push("/createUser");
       });
