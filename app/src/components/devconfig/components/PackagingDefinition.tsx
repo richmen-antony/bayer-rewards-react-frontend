@@ -118,6 +118,9 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
               role="group"
               aria-label="Basic outlined"
             >
+              <span>
+                <label>Product Category</label>
+              </span>
               <button
                 type="button"
                 className={`btn btn-outline-primary ${

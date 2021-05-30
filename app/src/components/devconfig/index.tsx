@@ -269,9 +269,12 @@ class Devconfigurations extends React.Component<
   }
 
   handleClick(clickType?: any, e?: any) {
-    const { currentStep } = this.state;
-
+    let { currentStep } = this.state;
     let newStep = currentStep;
+    if (clickType === undefined) {
+      currentStep = currentStep - 1;
+    }
+
     clickType === "next" ? newStep++ : newStep--;
 
     if (newStep === 2) {
@@ -288,8 +291,6 @@ class Devconfigurations extends React.Component<
     }
 
     if (newStep > 0 && newStep <= stepsArray.length) {
-      console.log("props", this.props.loacationinputList);
-
       this.setState({
         currentStep: newStep,
       });
