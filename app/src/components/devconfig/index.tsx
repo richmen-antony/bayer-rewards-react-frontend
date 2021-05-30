@@ -307,38 +307,94 @@ class Devconfigurations extends React.Component<
   }
 
   handleReset() {
-    // const { currentStep } = this.state;
-    // switch (currentStep) {
-    //   case 1:
+    const { currentStep } = this.state;
+    let newStep: number = 1;
+    // let newStep = 1;
+    // this.setState({
+    //   currentStep: newStep,
+    //   isActive: false,
+    // });
 
-    //     break;
-    //   case 2:
-    //     this.props.addLocationInputList({});
-    //     break;
-    //   case 3:
-    //     return isValid;
-    //     break;
-    //   // case 4:
-    //   //   return isValid;
-    //   //   break;
-    //   // case 5:
-    //   //   return isValid;
-    //   //   break;
-    //   // case 6:
-    //   //   return isValid;
-    //   //   break;
-    //   // case 7:
-    //   //   return isValid;
-    //   //   break;
-    //   default:
-    //     break;
-    // }
+    switch (currentStep) {
+      case 1:
+        break;
+      case 2:
+        this.props.addLocationInputList({});
+        this.props.addLocationInputList([
+          { locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
+        ]);
+        newStep = 2;
+        break;
+      case 3:
+        this.props.addRoleInputList({});
+        this.props.addRoleInputList([
+          {
+            rolehierarchylevel: 0,
+            rolecode: "",
+            rolehierarchyname: "",
+            roletype: "",
+            parentrole: "NONE",
+          },
+        ]);
+        newStep = 3;
+        break;
+      case 4:
+        this.props.addTnTFlowInputList({});
+        this.props.addTnTFlowInputList([{ level: 0, code: "", position: "" }]);
+        newStep = 4;
+        break;
+      case 5:
+        this.props.addPackagingDefinitionInputList({});
+        this.props.addPackagingDefinitionInputList([
+          {
+            packaginghierarchylevel: 0,
+            packaginghierarchyname: "",
+            parentpackage: "",
+          },
+        ]);
+        newStep = 5;
+        break;
+      case 6:
+        this.props.addScanpointsAndAllocationInputList({});
+        this.props.addScanpointsAndAllocationInputList([
+          {
+            position: 0,
+            scannedby: "",
+            scantype: "",
+            packaginglevel: "",
+            pointallocated: false,
+          },
+        ]);
+        newStep = 6;
+        break;
+      case 7:
+        this.props.setAnticounterfeitSmsAuthentication(false);
+        this.props.setAnticounterfeitDigitalScan(false);
+        this.props.setAnticounterfeitSmartLabel(false);
+        newStep = 7;
+        break;
+      default:
+        break;
+    }
 
-    let newStep = 1;
-    this.setState({
-      currentStep: newStep,
-      isActive: false,
-    });
+    if (newStep === 2) {
+      this.setState({
+        isActive: true,
+      });
+    }
+
+    if (newStep === 1) {
+      console.log("currentStep : ", currentStep);
+      this.setState({
+        isActive: false,
+      });
+    }
+
+    if (newStep > 0 && newStep <= stepsArray.length) {
+      this.setState({
+        currentStep: newStep,
+      });
+    }
   }
 
   componentWillMount() {
