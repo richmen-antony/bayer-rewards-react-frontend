@@ -9,7 +9,7 @@ import {
   invokeGetAuthServiceTemp,
   invokePostServiceTemp,
 } from "../../utility/base/service";
-
+import { toastSuccess, toastInfo } from "../../utility/widgets/toaster";
 import { FormSteps } from "../../utility/constant";
 import { CountrySetup } from "./components/countrysetup";
 import LocationHierarchy from "./components/LocationHierarchy";
@@ -56,7 +56,7 @@ import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
 import tickIcon from "../../assets/icons/tick.svg";
 
-import {hasDuplicate} from "../../utility/helper";
+import { hasDuplicate } from "../../utility/helper";
 
 export interface IFormValue {
   id: string;
@@ -451,6 +451,15 @@ class Devconfigurations extends React.Component<
       .catch((error: any) => {
         this.setState({ isLoader: false });
         console.log(error, "error");
+        let message = error.message;
+        if (
+          message ===
+          'duplicate key value violates unique constraint "tt_tem_countrydef_pkey"'
+        ) {
+          message = "Country configuration is already exists";
+        }
+        toastInfo(message);
+        this.props.history.push("/dashboard");
       });
   };
 
@@ -594,7 +603,7 @@ class Devconfigurations extends React.Component<
     const { loacationinputList, roleinputList, tntflowinputList } = this.props;
     if (currentStep === 2) {
       const data = loacationinputList.map((value: any) => {
-        if (!value.locationhiername ) {
+        if (!value.locationhiername) {
           value = { ...value, error: true };
           this.setState({
             isError: true,
@@ -607,7 +616,7 @@ class Devconfigurations extends React.Component<
           });
         }
 
-        if(value?.isDuplicate){
+        if (value?.isDuplicate) {
           this.setState({
             isError: true,
             currentStep: 2,
@@ -615,7 +624,7 @@ class Devconfigurations extends React.Component<
         }
         return value;
       });
-  
+
       this.setState({ locationHierarchy: data });
     }
 
@@ -655,7 +664,7 @@ class Devconfigurations extends React.Component<
           });
         }
 
-        if(value?.rolehierarchynameIsDuplicate || value?.rolecodeIsDuplicate){
+        if (value?.rolehierarchynameIsDuplicate || value?.rolecodeIsDuplicate) {
           this.setState({
             isError: true,
             currentStep: 3,
@@ -887,14 +896,16 @@ class Devconfigurations extends React.Component<
                     className="cus-btn-dev reset"
                     onClick={() => this.handleClick()}
                   >
-                    <img src={left} width="8" /> Back
+                    <img src={left} width="7" style={{ marginRight: "8px" }} />{" "}
+                    Back
                   </button>
                 )}
                 <button
                   className="cus-btn-dev reset"
                   onClick={() => this.handleReset()}
                 >
-                  Reset <img src={reset} width="12" />
+                  Reset{" "}
+                  <img src={reset} width="12" style={{ marginLeft: "5px" }} />
                 </button>
                 <button
                   className="btnNextSubmit cus-btn-dev"

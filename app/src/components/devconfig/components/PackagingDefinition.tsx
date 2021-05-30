@@ -26,11 +26,14 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const handleInputChange = (e: any, index: any, data: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
-   const arr= list.map((val:any)=>{
-      if(val.productcategory ===data.productcategory && val.packaginghierarchylevel ===data.packaginghierarchylevel){
-        console.log((val));
-        return val={...val,[name]:value}
-      } else{
+    const arr = list.map((val: any) => {
+      if (
+        val.productcategory === data.productcategory &&
+        val.packaginghierarchylevel === data.packaginghierarchylevel
+      ) {
+        console.log(val);
+        return (val = { ...val, [name]: value });
+      } else {
         return val;
       }
     });
@@ -41,15 +44,18 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   // handle click event of the Remove button
   const handleRemoveClick = (index: any, data: any) => {
     let list = [...inputList];
-    let arr= list.map((val:any,i:number)=>{
-      if(val.productcategory ===data.productcategory && val.packaginghierarchylevel ===data.packaginghierarchylevel){
-        console.log("c",val);
+    let arr = list.map((val: any, i: number) => {
+      if (
+        val.productcategory === data.productcategory &&
+        val.packaginghierarchylevel === data.packaginghierarchylevel
+      ) {
+        console.log("c", val);
         list.splice(i, 1);
-      } 
-    })
-    
+      }
+    });
+
     list = setCorrectHierLvlSeed(list, index);
-    console.log({list});
+    console.log({ list });
     setInputList(list);
   };
 
@@ -69,7 +75,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   };
 
   // handle click event of the Add button
-  const handleAddClick = (index: any, pc: any) => {
+  const handleAddClick = (index: any) => {
     setInputList([
       ...inputList,
       {
@@ -99,9 +105,9 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     // call the SetActiveButton and update the activeButton value
     SetActiveButton(value);
   };
-  const inputListData= inputList
-  .filter((pc: any) => pc.productcategory == activeButton)
-  .map((item: any, idx: number) => (item));
+  const inputListData = inputList
+    .filter((pc: any) => pc.productcategory == activeButton)
+    .map((item: any, idx: number) => item);
   return (
     <div className="col-md-10">
       <div className="container">
@@ -143,80 +149,139 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                 </tr>
               </thead>
               <tbody>
-                {inputListData.length> 0 &&
+                {inputListData.length > 0 &&
                   inputListData
                     .filter((pc: any) => pc.productcategory == activeButton)
                     .map((item: any, idx: number) => {
-                      console.log({item,idx});
+                      console.log({ item, idx });
                       return (
-                      <tr id="addr0" key={idx}>
-                        <td className="tableStyle">{idx}</td>
-                        <td className="tableHeaderStyle">
-                          <input
-                            className="form-control dpstyle label"
-                            type="text"
-                            name="packaginghierarchyname"
-                            value={item.packaginghierarchyname}
-                            onChange={(e) => handleInputChange(e, idx, item)}
-                          />
-                        </td>
-
-                        <td className="tableHeaderStyle">
-                          <select
-                            className="dpstyle selectoutline label"
-                            defaultValue="NA"
-                            name="parentpackage"
-                            data-id={idx}
-                            id="dropdown"
-                            value={item.parentpackage}
-                            onChange={(event) =>
-                              handleDropdownChange(event, idx, "SEED")
-                            }
-                          >
-                            <option value="NA" key="NA">
-                              NA
-                            </option>
-                            {idx > 0 &&
-                              inputListData.length > 0 &&
-                              inputListData.map(
-                                (
-                                  {
-                                    packaginghierarchyname,
-                                    productcategory,
-                                  }: any,
-                                  index: number
-                                ) =>
-                                  index < idx &&
-                                  productcategory === activeButton && (
-                                    <option
-                                      value={index}
-                                      key={packaginghierarchyname}
-                                    >
-                                      {packaginghierarchyname}
-                                    </option>
-                                  )
-                              )}
-                          </select>
-                        </td>
-
-                        <td className="tablebtnStyle">
-                          {idx === inputListData.length - 1 ? (
-                            <img
-                              style={{ width: "50px", height: "50px" }}
-                              src={AddBtn}
-                              onClick={() => handleAddClick(idx, "SEED")}
+                        <tr id="addr0" key={idx}>
+                          <td className="tableStyle">{idx}</td>
+                          <td className="tableHeaderStyle">
+                            <input
+                              className="form-control dpstyle label"
+                              type="text"
+                              name="packaginghierarchyname"
+                              value={item.packaginghierarchyname}
+                              onChange={(e) => handleInputChange(e, idx, item)}
                             />
-                          ) : (
-                            <img
-                              style={{ width: "50px", height: "50px" }}
-                              src={RemoveBtn}
-                              onClick={() => handleRemoveClick(idx, item)}
-                            />
-                          )}
-                        </td>
-                      </tr>
-                    )})}
+                          </td>
 
+                          <td className="tableHeaderStyle">
+                            <select
+                              className="dpstyle selectoutline label"
+                              defaultValue="NA"
+                              name="parentpackage"
+                              data-id={idx}
+                              id="dropdown"
+                              value={item.parentpackage}
+                              onChange={(event) =>
+                                handleDropdownChange(event, idx, "SEED")
+                              }
+                            >
+                              <option value="NA" key="NA">
+                                NA
+                              </option>
+                              {idx > 0 &&
+                                inputListData.length > 0 &&
+                                inputListData.map(
+                                  (
+                                    {
+                                      packaginghierarchyname,
+                                      productcategory,
+                                    }: any,
+                                    index: number
+                                  ) =>
+                                    index < idx &&
+                                    productcategory === activeButton && (
+                                      <option
+                                        value={index}
+                                        key={packaginghierarchyname}
+                                      >
+                                        {packaginghierarchyname}
+                                      </option>
+                                    )
+                                )}
+                            </select>
+                          </td>
+
+                          <td className="tablebtnStyle">
+                            {/* {idx === inputListData.length - 1 ? (
+                              <img
+                                style={{ width: "50px", height: "50px" }}
+                                src={AddBtn}
+                                onClick={() => handleAddClick(idx)}
+                              />
+                            ) : (
+                              <img
+                                style={{ width: "50px", height: "50px" }}
+                                src={RemoveBtn}
+                                onClick={() => handleRemoveClick(idx, item)}
+                              />
+                            )} */}
+
+                            {idx === inputListData.length - 1 ? (
+                              (() => {
+                                if (
+                                  idx === 0 &&
+                                  idx === inputListData.length - 1
+                                ) {
+                                  return (
+                                    <div>
+                                      <img
+                                        style={{
+                                          width: "50px",
+                                          height: "50px",
+                                        }}
+                                        src={AddBtn}
+                                        onClick={() => handleAddClick(idx)}
+                                      />
+                                    </div>
+                                  );
+                                } else if (
+                                  idx > 0 &&
+                                  idx === inputListData.length - 1
+                                ) {
+                                  return (
+                                    <div>
+                                      <td style={{ border: "none" }}>
+                                        <img
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                          }}
+                                          src={RemoveBtn}
+                                          onClick={() =>
+                                            handleRemoveClick(idx, item)
+                                          }
+                                        />
+                                      </td>
+
+                                      <td style={{ border: "none" }}>
+                                        <img
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                          }}
+                                          src={AddBtn}
+                                          onClick={() => handleAddClick(idx)}
+                                        />
+                                      </td>
+                                    </div>
+                                  );
+                                }
+                              })()
+                            ) : (
+                              <img
+                                style={{ width: "50px", height: "50px" }}
+                                src={RemoveBtn}
+                                onClick={() => handleRemoveClick(idx, item)}
+                              />
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
               </tbody>
             </table>
           </div>

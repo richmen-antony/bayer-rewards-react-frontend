@@ -141,14 +141,23 @@ const CountrySetupComp = (props: ICountryProps) => {
 
   const getTemplateByCountry = (countryShortName: any) => {
     const { getTemplateData } = apiURL;
-    console.log(countryShortName);
-
+    let newCountry: boolean = true;
     let data = {
       countryCode: countryShortName,
     };
 
+    props.addLocationInputList({});
+    props.addRoleInputList({});
+    props.addTnTFlowInputList({});
+    props.addPackagingDefinitionInputList({});
+    props.addScanpointsAndAllocationInputList({});
+    props.setAnticounterfeitSmsAuthentication(false);
+    props.setAnticounterfeitDigitalScan(false);
+    props.setAnticounterfeitSmartLabel(false);
+
     invokeGetAuthServiceTemp(getTemplateData, data)
       .then((response: any) => {
+        newCountry = false;
         let objCountryData = response.body[0];
         props.addLocationInputList(objCountryData.locationhierarchy);
         props.addRoleInputList(objCountryData.rolehierarchy);
@@ -171,6 +180,42 @@ const CountrySetupComp = (props: ICountryProps) => {
       .catch((error: any) => {
         console.log(error, "error");
       });
+
+    if (newCountry == true) {
+      props.addLocationInputList([
+        { locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
+      ]);
+      props.addRoleInputList([
+        {
+          rolehierarchylevel: 0,
+          rolecode: "",
+          rolehierarchyname: "",
+          roletype: "",
+          parentrole: "NONE",
+        },
+      ]);
+      props.addTnTFlowInputList([{ level: 0, code: "", position: "" }]);
+      props.addPackagingDefinitionInputList([
+        {
+          packaginghierarchylevel: 0,
+          packaginghierarchyname: "",
+          parentpackage: "",
+        },
+      ]);
+      props.addScanpointsAndAllocationInputList([
+        {
+          position: 0,
+          scannedby: "",
+          scantype: "",
+          packaginglevel: "",
+          pointallocated: false,
+        },
+      ]);
+
+      props.setAnticounterfeitSmsAuthentication(false);
+      props.setAnticounterfeitDigitalScan(false);
+      props.setAnticounterfeitSmartLabel(false);
+    }
   };
 
   const getUnique = (arr: any, comp: any) => {
