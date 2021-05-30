@@ -301,14 +301,16 @@
   width: 200px;
 }
 .scanlog-table {
-  background: #ffffff;
-  border: 1px solid #a0a0a047;
-  border-radius: 10px !important;
+ 
   table {
     table-layout: fixed;
     border-collapse: collapse;
     border-spacing: 0;
     width: 100%;
+    background: #ffffff;
+    border: 1px solid #a0a0a047;
+    border-radius: 10px !important;
+    border-style: hidden;
     thead {
       tr {
         background: #1f445a;
@@ -651,12 +653,18 @@
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px
   }
+ 
 }
 .cus-btn-scanlog-filter.reset{
   background-color: #ffffff ; 
   border: 1px solid #dee2e6;
   color: #10384F;
   
+}
+.cus-btn-scanlog-filter:disabled,
+cus-btn-scanlog-filter[disabled]{
+  background-color: #96A8AE;
+
 }
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {
@@ -762,7 +770,8 @@
   }
 }
 .scanlog-container{
-  height: 400px;
+  height: 58vh;
+  overflow: auto;
 }
 
 @media only screen  and (min-width:1400px) and  (max-width: 1920px) {

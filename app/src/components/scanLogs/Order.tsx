@@ -186,20 +186,22 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   colSpan={7}
                                   style={{ padding: 0, borderTop: 0 }}
                                 >
-                                  <table className="inner-table">
-                                    <tbody>
+                                  <div >
                                       {value.ordered_qrcodes &&
                                         value.ordered_qrcodes.map(
                                           (list: any) => {
                                             return (
-                                              <tr>
-                                                <td className="title">
+                                              <div className="inner-expand">
+                                              
+                                                <div className="title inner-row">
+                                                
+                                                
                                                   <p>Label ID</p>
                                                   <p className="sub-val">
                                                     Batch #
                                                   </p>
-                                                </td>
-                                                <td>
+                                                </div>
+                                                <div className="inner-row">
                                                   <p className="qr-val">
                                                     {list.labelid}
                                                   </p>
@@ -207,13 +209,13 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                                     {" "}
                                                     {list.batchno}
                                                   </p>
-                                                </td>
-                                              </tr>
+                                                </div>
+                                              </div>
                                             );
                                           }
                                         )}
-                                    </tbody>
-                                  </table>
+                                   
+                                  </div>
                                 </td>
                               </tr>
                             )}
@@ -254,24 +256,42 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                         data-parent="#accordion"
                       >
                         <div className="card-body">
-                          <table className="inner-table">
-                            <tbody>
+                        
                               {data?.invalidscans.map((scan: any) => {
                                 return (
-                                  <tr>
-                                    <td className="title">
-                                      <p>Label ID</p>
-                                      <p className="sub-val">Reason</p>
-                                    </td>
-                                    <td>
-                                      <p className="qr-val">{scan.qrcodeid}</p>
-                                      <p className="sub-val">{scan.reason}</p>
-                                    </td>
-                                  </tr>
+                                  // <tr>
+                                  //   <td className="title">
+                                  //     <p>Label ID</p>
+                                  //     <p className="sub-val">Reason</p>
+                                  //   </td>
+                                  //   <td>
+                                  //     <p className="qr-val">{scan.qrcodeid}</p>
+                                  //     <p className="sub-val">{scan.reason}</p>
+                                  //   </td>
+                                  // </tr>
+                                  <div className="inner-expand">
+                                              
+                                                <div className="title inner-row">
+                                                
+                                                
+                                                  <p>Label ID</p>
+                                                  <p className="sub-val">
+                                                    Batch #
+                                                  </p>
+                                                </div>
+                                                <div className="inner-row">
+                                                  <p className="qr-val">
+                                                    {scan.qrcodeid}
+                                                  </p>
+                                                  <p className="sub-val">
+                                                    {" "}
+                                                    {scan.reason}
+                                                  </p>
+                                                </div>
+                                              </div>
                                 );
                               })}
-                            </tbody>
-                          </table>
+                            
                         </div>
                       </div>
                     </div>

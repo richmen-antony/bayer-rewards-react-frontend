@@ -37,6 +37,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 import {SearchInput} from "../../utility/widgets/input/search-input";
+import { getLocalStorageData } from '../../utility/base/localStore';
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -111,6 +112,8 @@ type States = {
   [key: string]: any;
   isAsc: Boolean;
 };
+const obj: any = getLocalStorageData("userData");
+const userData = JSON.parse(obj);
 
 class ScanLogsTable extends Component<Props, States> {
   tableCellIndex: any;
@@ -136,20 +139,17 @@ class ScanLogsTable extends Component<Props, States> {
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
       productCategories: [],
-      status: ["All", "FULFILLED", "Expired", "Duplicate"],
+      status: ["All", "FULFILLED", "EXPIRED", "DUPLICATE"],
       list: ["All", "Distributor", "Retailer"],
       selectedFilters: {
-        type: "All",
-        scanType: "All",
-        productCategory: "All",
+        // productCategory: "All",
         status: "All",
-        startDate: backdate.toISOString().substr(0, 10),
-        endDate: new Date().toISOString().substr(0, 10),
-        ordereddate:new Date(),
-        orderexpirydate:new Date(),
-        lastupdateddate: today.setMonth(today.getMonth()-3),
-        expirydate:new Date(),
-        farmername:"All"
+        ordereddatefrom:new Date().setMonth(new Date().getMonth()-3),
+        ordereddateto:new Date(),
+        lastmodifiedfrom:new Date().setMonth(new Date().getMonth()-3),
+        lastmodifiedto:new Date(),
+        farmer:"ALL",
+        retailer:"ALL"
       },
       dateErrMsg: "",
       searchText: "",
@@ -166,6 +166,7 @@ class ScanLogsTable extends Component<Props, States> {
       accordionId: "",
       // value: 0,
       value: moment(),
+      lastUpdatedDateErr:""
     };
     this.timeOut = 0;
   }
@@ -177,11 +178,13 @@ class ScanLogsTable extends Component<Props, States> {
     // this.setState({
     //   userRole: userData.role,
     // });
+    console.log({userData});
   }
   getScanLogs = () => {
     const { scanLogs } = apiURL;
     this.setState({ isLoader: true });
-    const data = {
+    const {selectedFilters,isFiltered}= this.state;
+    let data = {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
@@ -192,10 +195,22 @@ class ScanLogsTable extends Component<Props, States> {
       isfiltered: this.state.isFiltered,
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
-      region: "Northern",
-      countrycode:"MW"
+      region: userData.geolevel1 ,
+      countrycode:userData.countrycode
     };
+    console.log("selected",selectedFilters);
+    if(isFiltered){
+      let filter={...selectedFilters};
+      filter.ordereddatefrom= moment(filter.ordereddatefrom).format("YYYY-MM-DD");
+      filter.ordereddateto= moment(filter.ordereddateto).format("YYYY-MM-DD");
+      filter.lastmodifiedfrom= moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
+      filter.lastmodifiedto= moment(filter.lastmodifiedto).format("YYYY-MM-DD");
 
+      data={...data,...filter}
+      console.log("called",filter,data);
+    }
+  
+      
     invokeGetAuthService(scanLogs, data)
       .then((response) => {
         this.setState({
@@ -302,15 +317,18 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   resetFilter = (e: any) => {
+    let today=new Date();
     e.stopPropagation();
     this.setState({
       selectedFilters: {
-        type: "All",
-        scanType: "All",
-        productCategory: "All",
+       // productCategory: "All",
         status: "All",
-        startDate: new Date().toISOString().substr(0, 10),
-        endDate: new Date().toISOString().substr(0, 10),
+        ordereddatefrom:today.setMonth(today.getMonth()-3),
+        ordereddateto:new Date(),
+        lastmodifiedfrom: today.setMonth(today.getMonth()-3),
+        lastmodifiedto:new Date(),
+        farmer:"ALL",
+        retailer:"ALL"
       },
       isFiltered: false,
     });
@@ -320,10 +338,10 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   applyFilter = () => {
-    this.setState({ isFiltered: true });
-    this.timeOut = setTimeout(() => {
-      // this.getScanLogs();
-    }, 0);
+    this.setState({ isFiltered: true },()=>{
+      this.getScanLogs();
+    });
+    
   };
   previous = (pageNo: any) => {
     console.log("pageno", this.state.pageNo);
@@ -382,6 +400,7 @@ class ScanLogsTable extends Component<Props, States> {
   };
   download = () => {
     const { downloadScanlogs } = apiURL;
+    
     const data = {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
@@ -389,11 +408,7 @@ class ScanLogsTable extends Component<Props, States> {
       role: this.state.selectedFilters.type,
       isfiltered: this.state.isFiltered,
       region: "R1",
-      ordereddatefrom: "2020-04-20",
-      ordereddateto: "2022-04-21",
-      status: "ALL",
-      retailer: "ALL",
-      farmer: "ALL",
+       ...this.state.seletedFilters
     };
 
     invokeGetAuthService(downloadScanlogs, data)
@@ -401,9 +416,54 @@ class ScanLogsTable extends Component<Props, States> {
         const data = response?.body?.rows;
         DownloadCsv(data, "scanlogs.csv");
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log({error})
+      });
   };
  handleDateChange =(date:any,name:string)=>{
+  let val = this.state.selectedFilters;
+  let flag = false;
+  if (name === "ordereddatefrom") {
+    if (date <= val.ordereddateto) {
+      this.setState({
+        dateErrMsg: "",
+      });
+    } else {
+      this.setState({
+        dateErrMsg: "Order Start Date should be lesser than  Order End Date",
+      });
+    }
+  }
+  if (name === "lastmodifiedfrom") {
+    if (date <= val.lastmodifiedto) {
+      this.setState({
+        lastUpdatedDateErr: "",
+      });
+    } else {
+      this.setState({
+        lastUpdatedDateErr: "Last Updated Start Date should be lesser than  Last Updated End Date",
+      });
+    }
+  }
+  
+  // else if (name === "endDate") {
+  //   if (date >= new Date().toISOString().substr(0, 10)) {
+  //     this.setState({
+  //       dateErrMsg: "End Date should not be greater than todays date",
+  //     });
+  //   } else if (date <= val.startDate) {
+  //     this.setState({
+  //       dateErrMsg: "End Date should be greater than Start Date",
+  //     });
+  //   } else {
+  //     val[name] = date;
+  //     flag = true;
+  //   }
+  // }
+  // if (flag) {
+  //   this.setState({ selectedFilters: val });
+  // }
+
    this.setState({
     selectedFilters:{...this.state.selectedFilters,[name]:date}
    })
@@ -430,6 +490,7 @@ class ScanLogsTable extends Component<Props, States> {
       userRole,
       totalData,
       rowsPerPage,
+      lastUpdatedDateErr
     } = this.state;
 
     const pageNumbers = [];
@@ -442,7 +503,7 @@ class ScanLogsTable extends Component<Props, States> {
       <AUX>
         {isLoader && <Loader />}
         <div>
-          <div className="scanlog-container">
+          <div >
             <div className="scanlog-table">
               <div className="advisor-filter">
                 <div className="filter-left-side">
@@ -487,16 +548,13 @@ class ScanLogsTable extends Component<Props, States> {
                               <option>Retailer</option>
                             </select> */}
                               <NativeDropdown
-                                name="type"
-                                value={selectedFilters.type}
+                                name="retailer"
+                                value={selectedFilters.retailer}
                                 label={"Retailer"}
-                                handleChange={(e:any)=>this.handleSelect(e,"type")}
+                                handleChange={(e:any)=>this.handleSelect(e,"retailer")}
                                 options={[
                                   { text: "ALL", value: "ALl" },
-                                  {
-                                    text: "Retailer Name",
-                                    value: "Retailer Name",
-                                  },
+                                  
                                 ]}
                               />
                             </div>
@@ -517,16 +575,12 @@ class ScanLogsTable extends Component<Props, States> {
                               <option>Farmer Name3</option>
                             </select> */}
                               <NativeDropdown
-                                name="farmername"
-                                value={selectedFilters.farmername}
+                                name="farmer"
+                                value={selectedFilters.farmer}
                                 label={"Farmer"}
-                                handleChange={(e:any)=>this.handleSelect(e,"farmername")}
+                                handleChange={(e:any)=>this.handleSelect(e,"farmer")}
                                 options={[
-                                  { text: "ALL", value: "ALl" },
-                                  {
-                                    text: "Farmer Name",
-                                    value: "Farmer Name",
-                                  },
+                                  { text: "ALL", value: "ALl" }
                                 ]}
                               />
                             </div>
@@ -602,16 +656,17 @@ class ScanLogsTable extends Component<Props, States> {
                                   /> */}
 
                                 <DatePicker
-                                  value={selectedFilters.ordereddate}
+                                  value={selectedFilters.ordereddatefrom}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={selectedFilters.ordereddate}
+                                  selected={selectedFilters.ordereddatefrom}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"ordereddate")
+                                    this.handleDateChange(date,"ordereddatefrom")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
+                                  maxDate={new Date()} 
                                 />
                               </div>
                               <div className="p-2">-</div>
@@ -626,12 +681,12 @@ class ScanLogsTable extends Component<Props, States> {
                                   /> */}
 
                                 <DatePicker
-                                  value={selectedFilters.orderexpirydate}
+                                  value={selectedFilters.ordereddateto}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={selectedFilters.orderexpirydate}
+                                  selected={selectedFilters.ordereddateto}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"orderexpirydate")
+                                    this.handleDateChange(date,"ordereddateto")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
@@ -639,40 +694,49 @@ class ScanLogsTable extends Component<Props, States> {
                                 />
                               </div>
                             </div>
+                            {dateErrMsg && (
+                                <span className="error">{dateErrMsg} </span>
+                              )}
                             <label className="font-weight-bold pt-2">
                               Last Updated Date
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
                               <DatePicker
-                                  value={selectedFilters.lastupdateddate}
+                                  value={selectedFilters.lastmodifiedfrom}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={selectedFilters.lastupdateddate}
+                                  selected={selectedFilters.lastmodifiedfrom}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"lastupdateddate")
+                                    this.handleDateChange(date,"lastmodifiedfrom")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
+                                  maxDate={new Date()} 
                                 />
                               </div>
+                            
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
                               <DatePicker
-                                  value={selectedFilters.expirydate}
+                                  value={selectedFilters.lastmodifiedto}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input />}
-                                  selected={selectedFilters.expirydate}
+                                  selected={selectedFilters.lastmodifiedto}
                                   onChange={(date: any) =>
-                                    this.handleDateChange(date,"expirydate")
+                                    this.handleDateChange(date,"lastmodifiedto")
                                   }
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
                                 />
                               </div>
+                              
                             </div>
+                            {lastUpdatedDateErr && (
+                                <span className="error">{lastUpdatedDateErr} </span>
+                              )}
 
                             <div className="filterFooter pt-3">
                               {/* <Button
@@ -697,6 +761,7 @@ class ScanLogsTable extends Component<Props, States> {
                               <button
                                   className="cus-btn-scanlog-filter"
                                   onClick={this.applyFilter}
+                                  disabled={lastUpdatedDateErr || dateErrMsg ? true :false}
                                 >
                                   Apply
                                   <span>
@@ -705,9 +770,9 @@ class ScanLogsTable extends Component<Props, States> {
                                   </span>
                                 </button>
                             </div>
-                            {dateErrMsg && (
+                            {/* {dateErrMsg && (
                               <span className="error">{dateErrMsg} </span>
-                            )}
+                            )} */}
                           </div>
                         </DropdownMenu>
                       </Dropdown>
@@ -728,6 +793,7 @@ class ScanLogsTable extends Component<Props, States> {
                   </div>
                 </div>
               </div>
+              <div className="scanlog-container">
               <table className="table">
                 <thead>
                   <tr>
@@ -966,6 +1032,7 @@ class ScanLogsTable extends Component<Props, States> {
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
           <div>
