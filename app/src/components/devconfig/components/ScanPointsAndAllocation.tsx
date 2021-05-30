@@ -203,10 +203,10 @@ export const ScanPointsAndAllocation = (
                           ADVISOR
                         </option>
                         <option value="RETAILER" key="RETAILER">
-                          RETAILER
+                          WALKIN
                         </option>
                         <option value="DISTRIBUTOR" key="DISTRIBUTOR">
-                          DISTRIBUTOR
+                          SEND GOODS
                         </option>
                         {/* {idx > 0 && this.state.dpList.length > 0 && (
                           this.state.dpList.map(({ locationhierarchy }) => (
