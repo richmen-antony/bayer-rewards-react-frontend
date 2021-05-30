@@ -9,7 +9,7 @@ import {
   invokeGetAuthServiceTemp,
   invokePostServiceTemp,
 } from "../../utility/base/service";
-
+import { toastSuccess, toastInfo } from "../../utility/widgets/toaster";
 import { FormSteps } from "../../utility/constant";
 import { CountrySetup } from "./components/countrysetup";
 import LocationHierarchy from "./components/LocationHierarchy";
@@ -56,7 +56,7 @@ import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
 import tickIcon from "../../assets/icons/tick.svg";
 
-import {hasDuplicate} from "../../utility/helper";
+import { hasDuplicate } from "../../utility/helper";
 
 export interface IFormValue {
   id: string;
@@ -269,9 +269,12 @@ class Devconfigurations extends React.Component<
   }
 
   handleClick(clickType?: any, e?: any) {
-    const { currentStep } = this.state;
-
+    let { currentStep } = this.state;
     let newStep = currentStep;
+    if (clickType === undefined) {
+      currentStep = currentStep - 1;
+    }
+
     clickType === "next" ? newStep++ : newStep--;
 
     if (newStep === 2) {
@@ -288,8 +291,6 @@ class Devconfigurations extends React.Component<
     }
 
     if (newStep > 0 && newStep <= stepsArray.length) {
-      console.log("props", this.props.loacationinputList);
-
       this.setState({
         currentStep: newStep,
       });
@@ -307,38 +308,94 @@ class Devconfigurations extends React.Component<
   }
 
   handleReset() {
-    // const { currentStep } = this.state;
-    // switch (currentStep) {
-    //   case 1:
+    const { currentStep } = this.state;
+    let newStep: number = 1;
+    // let newStep = 1;
+    // this.setState({
+    //   currentStep: newStep,
+    //   isActive: false,
+    // });
 
-    //     break;
-    //   case 2:
-    //     this.props.addLocationInputList({});
-    //     break;
-    //   case 3:
-    //     return isValid;
-    //     break;
-    //   // case 4:
-    //   //   return isValid;
-    //   //   break;
-    //   // case 5:
-    //   //   return isValid;
-    //   //   break;
-    //   // case 6:
-    //   //   return isValid;
-    //   //   break;
-    //   // case 7:
-    //   //   return isValid;
-    //   //   break;
-    //   default:
-    //     break;
-    // }
+    switch (currentStep) {
+      case 1:
+        break;
+      case 2:
+        this.props.addLocationInputList({});
+        this.props.addLocationInputList([
+          { locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
+        ]);
+        newStep = 2;
+        break;
+      case 3:
+        this.props.addRoleInputList({});
+        this.props.addRoleInputList([
+          {
+            rolehierarchylevel: 0,
+            rolecode: "",
+            rolehierarchyname: "",
+            roletype: "",
+            parentrole: "NONE",
+          },
+        ]);
+        newStep = 3;
+        break;
+      case 4:
+        this.props.addTnTFlowInputList({});
+        this.props.addTnTFlowInputList([{ level: 0, code: "", position: "" }]);
+        newStep = 4;
+        break;
+      case 5:
+        this.props.addPackagingDefinitionInputList({});
+        this.props.addPackagingDefinitionInputList([
+          {
+            packaginghierarchylevel: 0,
+            packaginghierarchyname: "",
+            parentpackage: "",
+          },
+        ]);
+        newStep = 5;
+        break;
+      case 6:
+        this.props.addScanpointsAndAllocationInputList({});
+        this.props.addScanpointsAndAllocationInputList([
+          {
+            position: 0,
+            scannedby: "",
+            scantype: "",
+            packaginglevel: "",
+            pointallocated: false,
+          },
+        ]);
+        newStep = 6;
+        break;
+      case 7:
+        this.props.setAnticounterfeitSmsAuthentication(false);
+        this.props.setAnticounterfeitDigitalScan(false);
+        this.props.setAnticounterfeitSmartLabel(false);
+        newStep = 7;
+        break;
+      default:
+        break;
+    }
 
-    let newStep = 1;
-    this.setState({
-      currentStep: newStep,
-      isActive: false,
-    });
+    if (newStep === 2) {
+      this.setState({
+        isActive: true,
+      });
+    }
+
+    if (newStep === 1) {
+      console.log("currentStep : ", currentStep);
+      this.setState({
+        isActive: false,
+      });
+    }
+
+    if (newStep > 0 && newStep <= stepsArray.length) {
+      this.setState({
+        currentStep: newStep,
+      });
+    }
   }
 
   componentWillMount() {
@@ -443,6 +500,7 @@ class Devconfigurations extends React.Component<
     invokePostServiceTemp(registerTemplateData, data)
       .then((response: any) => {
         console.log(response);
+        toastSuccess("Country configuration is successfully created");
         this.props.history.push("./dashboard");
         this.setState({
           isLoader: false,
@@ -451,6 +509,15 @@ class Devconfigurations extends React.Component<
       .catch((error: any) => {
         this.setState({ isLoader: false });
         console.log(error, "error");
+        let message = error.message;
+        if (
+          message ===
+          'duplicate key value violates unique constraint "tt_tem_countrydef_pkey"'
+        ) {
+          message = "Country configuration is already exists";
+        }
+        toastInfo(message);
+        this.props.history.push("/devconfig");
       });
   };
 
@@ -594,7 +661,7 @@ class Devconfigurations extends React.Component<
     const { loacationinputList, roleinputList, tntflowinputList } = this.props;
     if (currentStep === 2) {
       const data = loacationinputList.map((value: any) => {
-        if (!value.locationhiername ) {
+        if (!value.locationhiername) {
           value = { ...value, error: true };
           this.setState({
             isError: true,
@@ -607,7 +674,7 @@ class Devconfigurations extends React.Component<
           });
         }
 
-        if(value?.isDuplicate){
+        if (value?.isDuplicate) {
           this.setState({
             isError: true,
             currentStep: 2,
@@ -615,7 +682,7 @@ class Devconfigurations extends React.Component<
         }
         return value;
       });
-  
+
       this.setState({ locationHierarchy: data });
     }
 
@@ -655,7 +722,7 @@ class Devconfigurations extends React.Component<
           });
         }
 
-        if(value?.rolehierarchynameIsDuplicate || value?.rolecodeIsDuplicate){
+        if (value?.rolehierarchynameIsDuplicate || value?.rolecodeIsDuplicate) {
           this.setState({
             isError: true,
             currentStep: 3,
@@ -887,14 +954,16 @@ class Devconfigurations extends React.Component<
                     className="cus-btn-dev reset"
                     onClick={() => this.handleClick()}
                   >
-                    <img src={left} width="8" /> Back
+                    <img src={left} width="7" style={{ marginRight: "8px" }} />{" "}
+                    Back
                   </button>
                 )}
                 <button
                   className="cus-btn-dev reset"
                   onClick={() => this.handleReset()}
                 >
-                  Reset <img src={reset} width="12" />
+                  Reset{" "}
+                  <img src={reset} width="12" style={{ marginLeft: "5px" }} />
                 </button>
                 <button
                   className="btnNextSubmit cus-btn-dev"
