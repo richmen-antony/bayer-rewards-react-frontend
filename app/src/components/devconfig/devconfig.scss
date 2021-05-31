@@ -123,6 +123,7 @@ input:read-only {
     text-align: left;
     border-collapse: collapse;
     font-size: 12px;
+    font-family: "appRegular" !important;
   }
   th,
   td {
@@ -175,10 +176,7 @@ input:read-only {
     right: 30px;
     line-height: 1;
   }
-  .arrow-i {
-    // position: relative;
-    // left: 35px;
-  }
+
   .layout {
     width: 66%;
     border-top-right-radius: 15px;
@@ -197,6 +195,7 @@ input:read-only {
 @media only screen and (max-width: 1368px) {
   .label {
     font-size: 12px;
+    font-family: "appRegular" !important;
   }
 
   .card-container {
@@ -208,6 +207,7 @@ input:read-only {
 @media only screen and (min-width: 1368px) and (max-width: 1920px) {
   .label {
     font-size: 14px !important;
+    font-family: "appRegular" !important;
   }
 
   .card-container {
