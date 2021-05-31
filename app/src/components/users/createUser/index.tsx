@@ -135,7 +135,7 @@ class CreateUser extends Component<any, any> {
     //   console.log("userData", this.state.userData);
     // });
     setTimeout(() => {
-    this.getGeographicFields();
+      this.getGeographicFields();
     },0);
     ///API to get country and language settings
     this.getCountryList();

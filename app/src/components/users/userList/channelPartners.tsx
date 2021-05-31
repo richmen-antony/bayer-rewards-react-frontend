@@ -1,6 +1,5 @@
 import React, { Component, useDebugValue } from "react";
 import { Tooltip } from "reactstrap";
-// import Button from '@material-ui/core/Button';
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -8,17 +7,13 @@ import Button from "@material-ui/core/Button";
 import AUX from "../../../hoc/Aux_";
 import { Pagination } from "../../../utility/widgets/pagination";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
-// import '../../../assets/scss/users.scss';
-import moment from "moment";
 import Edit from "../../../assets/images/edit.svg";
 import EditDisabled from "../../../assets/icons/edit_disabled.svg";
 import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
-import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
-import PhoneIcon from "../../../assets/icons/black-mockup.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import blackmockup from "../../../assets/icons/black-mockup.svg";
@@ -29,6 +24,7 @@ import "../../../assets/scss/createUser.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
   invokeGetService,
+  invokeGetAuthService,
   invokePostAuthService,
 } from "../../../utility/base/service";
 import { toastSuccess, toastInfo } from "../../../utility/widgets/toaster";
@@ -37,8 +33,6 @@ import { withRouter,RouteComponentProps  } from "react-router-dom";
 import { Input } from "../../../utility/widgets/input";
 import CustomDropdown from '../../../utility/widgets/dropdown';
 import CustomSwitch from "../../../container/components/switch";
-import { List } from "@material-ui/core";
-import { AnyCnameRecord } from "node:dns";
 import Table from 'react-bootstrap/Table'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
@@ -47,7 +41,6 @@ import Loader from "../../../utility/widgets/loader";
 type Props = {
   location?: any;
   history?: any;
-  // classes?: any;
   onSort: Function;
   allChannelPartners: any;
   isAsc: Boolean;
@@ -190,10 +183,22 @@ class ChannelPartners extends Component<Props, States> {
     this.setState({ hierarchyList: nextHierarchyResponse });
   }
   getGeographicFields() {
-    let res = ["country", "region", "add", "district", "epa", "village"];
-    setTimeout(() => {
-        this.setState({ geographicFields: res });
-    }, 0)
+    this.setState({ isLoader: true });
+    const { getTemplateData } = apiURL;
+    let data = {
+      countryCode: 'MW'
+    }
+    invokeGetAuthService(getTemplateData, data)
+    .then((response: any) => {
+        let locationData = response.body[0].locationhierarchy;
+        let levels:any = [];
+        locationData.map((item: any) => {
+          let levelsSmall = (item.locationhiername).toLowerCase();
+          levels.push(levelsSmall)
+        })
+        this.setState({ isLoader: false,
+          geographicFields: levels });
+      })
   }
   getDynamicOptionFields(data: any) {
     if(data){
@@ -205,25 +210,25 @@ class ChannelPartners extends Component<Props, States> {
         let district = "";
         let epa = "";
         let village = "";
-        if('region' in data){
-          result = this.getOptionLists('auto',list, data.region , i);
-          region = data.region;
+        if('deliveryregion' in data){
+          result = this.getOptionLists('auto',list, data.deliveryregion , i);
+          region = data.deliveryregion;
         }
-        if('add' in data){
-          result = this.getOptionLists('auto',list, data.region , i);
-          add = data.region;
+        if('deliverystate' in data){
+          result = this.getOptionLists('auto',list, data.deliverystate , i);
+          add = data.deliverystate;
         }
-        if('district' in data){
-          result = this.getOptionLists('auto',list, data.district , i);
-          district = data.district;
+        if('deliverydistrict' in data){
+          result = this.getOptionLists('auto',list, data.deliverydistrict , i);
+          district = data.deliverydistrict;
         } 
-        if('epa' in data){
-          result = this.getOptionLists('auto',list, data.epa , i)
-          epa = data.epa;
+        if('deliverycity' in data){
+          result = this.getOptionLists('auto',list, data.deliverycity , i)
+          epa = data.deliverycity;
         }
-        if('village' in data){
-          result = this.getOptionLists('auto',list, data.village , i);
-          village = data.village;
+        if('deliveryvillage' in data){
+          result = this.getOptionLists('auto',list, data.deliveryvillage , i);
+          village = data.deliveryvillage;
         }
           setFormArray.push({
             name: list,
@@ -254,6 +259,87 @@ class ChannelPartners extends Component<Props, States> {
       this.setState({ dynamicFields: setFormArray });
     }
   }
+  getOptionLists = (cron: any, type: any, value: any, index: any) => {
+    if(cron === 'auto'){
+      let options: any = [];
+      if(type === 'region'){
+          options = [
+            { text: "Central", value: "Central" },
+            { text: "Northern", value: "Northern" },
+            { text: "Western", value: "Western" },
+            { text: "Eastern", value: "Eastern" },
+          ];
+        } else if(type === 'add') {
+          options = [
+            { text: "Add1", value: "Add1"},
+            { text: "Add2", value: "Add2"},
+          ];
+        } else if(type === 'district'){
+            options = [
+              { text: "Balaka", value: "Balaka" },
+              { text: "Blantyre", value: "Blantyre" }, 
+            ];
+        } else if(type === 'epa'){
+            options = [
+              { text: "EPA1", value: "EPA1" },
+              { text: "EPA2", value: "EPA2" },
+            ];
+        } else if(type === 'village'){
+            options = [
+              { text: "Village1", value: "Village1" },
+              { text: "Village2", value: "Village2" },
+            ];
+        }
+      return options;
+    } else {
+      let dynamicFieldVal = this.state.dynamicFields;
+      let userList = this.state.userList
+      if(type === 'region') {
+        let district = [
+          { text: "Balaka", value: "Balaka" },
+          { text: "Blantyre", value: "Blantyre" }, 
+        ];
+        dynamicFieldVal[index+1].options = district;
+        dynamicFieldVal[index].value = value;
+        userList['region'] = value;
+        this.setState({ userList : userList });
+        this.setState({dynamicFields: dynamicFieldVal});
+      } else if (type === 'add'){
+        let epa = [
+          { text: "Add1", value: "Add1" },
+          { text: "Add2", value: "Add2" }, 
+        ];
+          dynamicFieldVal[index+1].options = epa;
+          dynamicFieldVal[index].value = value;
+          this.setState({dynamicFields: dynamicFieldVal});
+     } else if(type === 'district') {
+        let epa = [
+          { text: "EPA1", value: "EPA1" },
+          { text: "EPA2", value: "EPA2" }, 
+        ];
+        dynamicFieldVal[index+1].options = epa;
+        dynamicFieldVal[index].value = value;
+        userList['district'] = value;
+        this.setState({ userList : userList });
+        this.setState({dynamicFields: dynamicFieldVal});
+      } else if(type === 'epa') {
+        let village = [
+          { text: "Village1", value: "Village1" },
+          { text: "Village2", value: "Village2" },
+        ];
+        dynamicFieldVal[index+1].options = village;
+        dynamicFieldVal[index].value = value;
+        userList['epa'] = value;
+        this.setState({ userList : userList });
+        this.setState({dynamicFields: dynamicFieldVal});
+      } else if(type === 'village') {
+        dynamicFieldVal[index].value = value;
+        userList['village'] = value;
+        this.setState({ userList : userList });
+        this.setState({dynamicFields: dynamicFieldVal});
+      }
+    }
+  };
   
   handleSort(e:any,columnname: string, allChannelPartners : any, isAsc : Boolean){
     this.tableCellIndex = e.currentTarget.cellIndex;
@@ -263,7 +349,6 @@ class ChannelPartners extends Component<Props, States> {
   createUserClick = () => {
     const { history } = this.props;
     if(history) history.push('./createUser');
-    // this.props.history.push('./createUser');
   }
   
   generateHeader(allChannelPartners : any, isAsc : Boolean) {
@@ -294,99 +379,14 @@ class ChannelPartners extends Component<Props, States> {
         </th>)
       }
     }
-
     let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
     res.push(<th>{'STAFF COUNT'}</th>)
     res.push(<th>{'STATUS'}</th>)
-
     res.push(<th>{'UPDATED BY'}</th>)
-
     res.push(<th></th>)
 
     return res;
   }
-
-    getOptionLists = (cron: any, type: any, value: any, index: any) => {
-      if(cron === 'auto'){
-        let options: any = [];
-        if(type === 'region'){
-            options = [
-              { text: "Central", value: "Central" },
-              { text: "Northern", value: "Northern" },
-              { text: "Western", value: "Western" },
-              { text: "Eastern", value: "Eastern" },
-            ];
-          } else if(type === 'add') {
-            options = [
-              { text: "Add1", value: "Add1"},
-              { text: "Add2", value: "Add2"},
-            ];
-          } else if(type === 'district'){
-              options = [
-                { text: "Balaka", value: "Balaka" },
-                { text: "Blantyre", value: "Blantyre" }, 
-              ];
-          } else if(type === 'epa'){
-              options = [
-                { text: "EPA1", value: "EPA1" },
-                { text: "EPA2", value: "EPA2" },
-              ];
-          } else if(type === 'village'){
-              options = [
-                { text: "Village1", value: "Village1" },
-                { text: "Village2", value: "Village2" },
-              ];
-          }
-        return options;
-      } else {
-        let dynamicFieldVal = this.state.dynamicFields;
-        let userList = this.state.userList
-        if(type === 'region') {
-          let district = [
-            { text: "Balaka", value: "Balaka" },
-            { text: "Blantyre", value: "Blantyre" }, 
-          ];
-          dynamicFieldVal[index+1].options = district;
-          dynamicFieldVal[index].value = value;
-          userList['region'] = value;
-          this.setState({ userList : userList });
-          this.setState({dynamicFields: dynamicFieldVal});
-        } else if (type === 'add'){
-          let epa = [
-            { text: "Add1", value: "Add1" },
-            { text: "Add2", value: "Add2" }, 
-          ];
-            dynamicFieldVal[index+1].options = epa;
-            dynamicFieldVal[index].value = value;
-            this.setState({dynamicFields: dynamicFieldVal});
-       } else if(type === 'district') {
-          let epa = [
-            { text: "EPA1", value: "EPA1" },
-            { text: "EPA2", value: "EPA2" }, 
-          ];
-          dynamicFieldVal[index+1].options = epa;
-          dynamicFieldVal[index].value = value;
-          userList['district'] = value;
-          this.setState({ userList : userList });
-          this.setState({dynamicFields: dynamicFieldVal});
-        } else if(type === 'epa') {
-          let village = [
-            { text: "Village1", value: "Village1" },
-            { text: "Village2", value: "Village2" },
-          ];
-          dynamicFieldVal[index+1].options = village;
-          dynamicFieldVal[index].value = value;
-          userList['epa'] = value;
-          this.setState({ userList : userList });
-          this.setState({dynamicFields: dynamicFieldVal});
-        } else if(type === 'village') {
-          dynamicFieldVal[index].value = value;
-          userList['village'] = value;
-          this.setState({ userList : userList });
-          this.setState({dynamicFields: dynamicFieldVal});
-        }
-      }
-    };
 
   handleClosePopup = () => {
     this.setState({ deActivatePopup: false, editPopup: false, staffPopup: false });
@@ -409,64 +409,6 @@ class ChannelPartners extends Component<Props, States> {
       this.getDynamicOptionFields(this.state.userList);
     }, 0);
   }
-  // editStaff =(list: any) =>{
-  //   this.setState({staffPopup : true},()=> {
-  //     this.getCurrentUserData(list);
-  //     const userFields = this.state.userList;
-  //     let ownerInfo =  {
-  //       errObj: {
-  //           emailErr: "",
-  //           firstnameErr: "",
-  //           lastnameErr: "",
-  //           mobilenumberErr: ""
-  //       },
-  //       firstname: userFields.ownerfirstname,
-  //       active: true,
-  //       lastname: userFields.ownerlastname,
-  //       mobilenumber: userFields.ownerphonenumber,
-  //       email: userFields.owneremail
-  //     }
-    
-  //     let userDataList = this.state.userData;
-  //     userDataList.ownerRows[0] = ownerInfo;
-  //     let userinfo =  {
-  //       ownerRows: userDataList.ownerRows,
-  //       countrycode: userFields.countrycode,
-  //       locale: userFields.locale,
-  //       rolename:  userFields.rolename,
-  //       username:  userFields.username,
-  //       // shippingcountrycode: userFields.countrycode,
-  //       shippingstreet: userFields.shippingstreet,
-  //       shippingcity: userFields.shippingcity,
-  //       shippingstate:userFields.shippingstate,
-  //       shippingzipcode: userFields.shippingzipcode,
-  //       taxid: userFields.taxid,
-  //       accountname: userFields.accountname,
-  //       ownername: userFields.ownername,
-  //       // billingcountrycode: userFields.countrycode,
-  //       billingstreet: userFields.billingstreet,
-  //       billingcity: userFields.billingcity,
-  //       billingstate: userFields.billingstate,
-  //       billingzipcode: userFields.billingzipcode,
-  //       staffRows: userFields.staffdetails,
-  //   }
-  //   if (userinfo) {
-  //     userinfo.staffRows.forEach((staffInfo: any)=>{
-  //       let errObjd = {errObj:{
-  //         emailErr: "",
-  //         firstnameErr: "",
-  //         lastnameErr: "",
-  //         mobilenumberErr: ""
-  //     }}
-  //     let obj =Object.assign(staffInfo,errObjd);
-  //     console.log('testobj', obj);
-  //     });
-  //   }
-  //     this.setState({ userData: userinfo, isStaff: userFields.storewithmultiuser, isRendered: true })
-  //   });
-
-
-  // }
 
   editStaff =(data: any) => {
     let passData: any = { ...data };
@@ -495,7 +437,6 @@ class ChannelPartners extends Component<Props, States> {
         locale: userFields.locale,
         rolename:  userFields.rolename,
         username:  userFields.username,
-        // shippingcountrycode: userFields.countrycode,
         shippingstreet: userFields.shippingstreet,
         shippingcity: userFields.shippingcity,
         shippingstate:userFields.shippingstate,
@@ -503,7 +444,6 @@ class ChannelPartners extends Component<Props, States> {
         taxid: userFields.taxid,
         whtaccountname: userFields.whtaccountname,
         whtownername: userFields.whtownername,
-        // billingcountrycode: userFields.countrycode,
         billingstreet: userFields.billingstreet,
         billingcity: userFields.billingcity,
         billingstate: userFields.billingstate,
@@ -524,7 +464,6 @@ class ChannelPartners extends Component<Props, States> {
     }
       this.setState({ userData: userinfo, isStaff: userFields.storewithmultiuser, isRendered: true })
     });
-   
   }
 
   handlePersonalChange = (e: any) => {
@@ -712,7 +651,6 @@ class ChannelPartners extends Component<Props, States> {
 
   getCurrentUserData = (data: any, edit?: boolean) => {
     let passData: any = { ...data };
-    // passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
     let activeStatus = (passData.userstatus === 'INACTIVE' || passData.userstatus === 'DECLINED') ? false : true;
     this.setState({ userList: passData, status: data.userstatus, activateUser: activeStatus }, ()=>{
       if(edit){
@@ -733,24 +671,6 @@ class ChannelPartners extends Component<Props, States> {
     });
   }
 
-  isNumberKey = (evt: any) => {
-    this.setState({ phoneErr: "" });
-    let isValid = true;
-    if ( !evt.target.value ) {
-      this.setState({ phoneErr: "Please enter Mobile number" });
-      isValid = false;
-    } else {
-      let pattern = new RegExp(/^[0-9\b]+$/);
-      if ( !pattern.test(evt.target.value) ){
-        this.setState({ phoneErr: "Please enter Number Format" });
-        isValid = false;
-      } else{
-          this.setState({ phoneErr: "" });
-          isValid = true;
-      }
-    }
-    return isValid;
-  }
   handleChange = (idx: any, e: any , key: string, type: string, val: any) => {
     if ( type === 'owner') {
       let owners = this.state.userData.ownerRows;
@@ -935,17 +855,9 @@ class ChannelPartners extends Component<Props, States> {
     const {
       isLoader,
       pageNo,
-      rowsPerPage,
-      gotoPage,
-      showProductPopup,
+      rowsPerPage
     } = this.props.state;
     const { userList, 
-      toDateErr,
-      accountNameErr,
-      ownerNameErr,
-      postalCodeErr,
-      phoneErr,
-      emailErr,
      userData,
      isStaff }: any = this.state;
 
@@ -1384,17 +1296,9 @@ class ChannelPartners extends Component<Props, States> {
                           {list.userstatus}
                         </span>
                       </td>
-                      {/* <td style={{width : '10px'}}>
-                      <img
-                          style={{ marginRight: "8px" }}
-                          src={Edit}
-                          width="20"
-                        />
-                      </td> */}
                       <td>
                         {list.lastupdatedby}
                       </td>
-                      {/* <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td> */}
                       <td>
                           <td>
                           <img
