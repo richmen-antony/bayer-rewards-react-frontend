@@ -406,19 +406,16 @@ class ScanLogsTable extends Component<Props, States> {
     const { downloadScanlogs } = apiURL;
 
     const data = {
-      page: this.state.pageNo,
-      searchtext: this.state.searchText,
-      rowsperpage: this.state.rowsPerPage,
-      role: this.state.selectedFilters.type,
-      isfiltered: this.state.isFiltered,
-      region: "R1",
-      ...this.state.seletedFilters,
+      // ...this.state.selectedFilters,
+      countrycode: userData.countrycode,
     };
 
+    console.log("data",data);
     invokeGetAuthService(downloadScanlogs, data)
       .then((response) => {
-        const data = response?.body?.rows;
-        DownloadCsv(data, "scanlogs.csv");
+        const data = response;
+        console.log({data});
+        downloadCsvFile(data, "scanlogs.csv");
       })
       .catch((error) => {
         console.log({ error });
@@ -427,19 +424,21 @@ class ScanLogsTable extends Component<Props, States> {
   handleDateChange = (date: any, name: string) => {
     let val = this.state.selectedFilters;
     let flag = false;
-    if (name === "ordereddatefrom") {
-      if (date <= val.ordereddateto) {
+    if (name === "ordereddateto") {
+      if (date >= val.ordereddatefrom) {
+        console.log("checking")
         this.setState({
           dateErrMsg: "",
         });
       } else {
+        console.log("called");
         this.setState({
           dateErrMsg: "Order Start Date should be lesser than  Order End Date",
         });
       }
     }
-    if (name === "lastmodifiedfrom") {
-      if (date <= val.lastmodifiedto) {
+    if (name === "lastmodifiedto") {
+      if (date >= val.lastmodifiedfrom) {
         this.setState({
           lastUpdatedDateErr: "",
         });

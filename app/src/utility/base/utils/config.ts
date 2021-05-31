@@ -16,7 +16,7 @@ export const apiURL = {
     adminUserCount: "user/getadmindashboard",
     downloadUserList:"user/downloaduserlist",
     changeLogs: "user/getchangelogs",
-    downloadScanlogs:"user/downloadscantransactionlist",
+    downloadScanlogs:"order/advisororder/report",
     getTemplateData:"template/getTemplateByCountry",
     registerTemplateData: "template/templateForCountryRegister"
 }

@@ -50,6 +50,14 @@
   }
 }
 
+.sub-order{
+  height: 200px;
+  overflow: auto;
+  .table td, .table th {
+    vertical-align: middle;
+}
+}
+
 @media only screen and (max-width: 1400px) {
   .sum-total{
     .total{

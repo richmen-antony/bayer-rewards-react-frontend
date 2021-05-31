@@ -163,10 +163,10 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <th scope="row">{<img src={CornImg} />}</th>
                             <td>{value.productname}</td>
                             <td>{value.productgroup || "Seed-corn"}</td>
-                            <td>{value.intendedquantity}</td>
-                            <td>{value.orderedquantity}</td>
+                            <td className="text-center">{value.intendedquantity}</td>
+                            <td className="text-center">{value.orderedquantity}</td>
                             <td>{"MK " + value.productprice}</td>
-                            {data.orderstatus === "FULFILLED" && (
+                            {data.orderstatus === "FULFILLED" && value?.ordered_qrcodes?.length>0 && (
                               <td>
                                 <i
                                   className={`fas ${
@@ -187,7 +187,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   style={{ padding: 0, borderTop: 0 }}
                                 >
                                   <div>
-                                    {value.ordered_qrcodes &&
+                                    {value?.ordered_qrcodes?.length>0 &&
                                       value.ordered_qrcodes.map((list: any) => {
                                         return (
                                           <div className="inner-expand">
@@ -248,19 +248,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                         data-parent="#accordion"
                       >
                         <div className="card-body">
-                          {data.length > 0 &&
+                          {data?.invalidscans?.length > 0 &&
                             data?.invalidscans.map((scan: any) => {
                               return (
-                                // <tr>
-                                //   <td className="title">
-                                //     <p>Label ID</p>
-                                //     <p className="sub-val">Reason</p>
-                                //   </td>
-                                //   <td>
-                                //     <p className="qr-val">{scan.qrcodeid}</p>
-                                //     <p className="sub-val">{scan.reason}</p>
-                                //   </td>
-                                // </tr>
                                 <div className="inner-expand">
                                   <div className="title inner-row">
                                     <p>Label ID</p>
