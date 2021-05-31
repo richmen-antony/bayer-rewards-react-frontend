@@ -23,12 +23,12 @@ export const ScanPointsAndAllocation = (
     setInputList,
   } = props;
   const [valSelected, setValSelected] = useState("NA");
- 
 
- 
-  const paackaginglevelList =_.uniqBy(props.packagingdefinition.inputList, 'packaginghierarchyname'); 
-   
- 
+  const paackaginglevelList = _.uniqBy(
+    props.packagingdefinition.inputList,
+    "packaginghierarchyname"
+  );
+
   // handle input change
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
@@ -214,7 +214,6 @@ export const ScanPointsAndAllocation = (
                         onChange={(event) =>
                           handlePackaginglevelChange(event, idx)
                         }
-                        multiple
                       >
                         {/* <option value="SKU" key="SKU">
                           SKU
