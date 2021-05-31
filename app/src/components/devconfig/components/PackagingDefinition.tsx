@@ -31,13 +31,11 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         val.productcategory === data.productcategory &&
         val.packaginghierarchylevel === data.packaginghierarchylevel
       ) {
-        console.log(val);
         return (val = { ...val, [name]: value });
       } else {
         return val;
       }
     });
-    console.log({ arr });
     setInputList(arr);
   };
 
@@ -49,13 +47,11 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         val.productcategory === data.productcategory &&
         val.packaginghierarchylevel === data.packaginghierarchylevel
       ) {
-        console.log("c", val);
         list.splice(i, 1);
       }
     });
 
     list = setCorrectHierLvlSeed(list, index);
-    console.log({ list });
     setInputList(list);
   };
 
@@ -87,14 +83,21 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     ]);
   };
 
-  const handleDropdownChange = (event: any, index: any, pc: any) => {
+  const handleDropdownChange = (event: any, index: any, data: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    if (activeButton === list[index].productcategory) {
-      list[index].parentpackage = value;
-      setInputList(list);
-      setValSelected(event.target.value);
-    }
+    activeButton ===data.productcategory&& list.map((val: any, i: number) => {
+      if (
+       
+        val.productcategory === data.productcategory &&
+        val.packaginghierarchylevel === data.packaginghierarchylevel
+      ) {
+        list[i].parentpackage = value;
+        setInputList(list);
+        setValSelected(event.target.value);
+      }
+    });
+  
   };
 
   /**
@@ -156,7 +159,6 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                   inputListData
                     .filter((pc: any) => pc.productcategory == activeButton)
                     .map((item: any, idx: number) => {
-                      console.log({ item, idx });
                       return (
                         <tr id="addr0" key={idx}>
                           <td className="tableStyle">{idx}</td>
@@ -179,7 +181,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               id="dropdown"
                               value={item.parentpackage}
                               onChange={(event) =>
-                                handleDropdownChange(event, idx, "SEED")
+                                handleDropdownChange(event, idx, item)
                               }
                             >
                               <option value="NA" key="NA">
