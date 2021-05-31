@@ -853,7 +853,12 @@ class ScanLogsTable extends Component<Props, States> {
                       <th
                         style={{ width: "14%" }}
                         onClick={(e) =>
-                          this.handleSort(e, "staffname", allScanLogs, isAsc)
+                          this.handleSort(
+                            e,
+                            "products_ordered",
+                            allScanLogs,
+                            isAsc
+                          )
                         }
                       >
                         PRODUCT SOLD
