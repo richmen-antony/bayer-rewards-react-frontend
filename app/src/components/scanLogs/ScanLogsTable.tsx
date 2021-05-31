@@ -228,7 +228,7 @@ class ScanLogsTable extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        console.log(error, "error");
+        console.log("error",error);
       });
   };
   handleClosePopup = () => {
@@ -407,14 +407,15 @@ class ScanLogsTable extends Component<Props, States> {
 
     const data = {
       // ...this.state.selectedFilters,
+      region: userData.geolevel1,
       countrycode: userData.countrycode,
+      isfiltered: this.state.isFiltered,
     };
 
-    console.log("data",data);
+    
     invokeGetAuthService(downloadScanlogs, data)
       .then((response) => {
         const data = response;
-        console.log({data});
         downloadCsvFile(data, "scanlogs.csv");
       })
       .catch((error) => {

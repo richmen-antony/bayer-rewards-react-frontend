@@ -326,6 +326,11 @@
           font-weight: 500;
           // font-family: "Open Sans", sans-serif;
           font-family: "appRegular" !important;
+          position: sticky;
+          top: 0;
+          background-color: #1f445a;
+          z-index: 1;
+
         }
       }
     }
