@@ -6,8 +6,6 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import AUX from "../../../hoc/Aux_";
-import Loaders from "../../../utility/widgets/loader";
-import { sortBy } from "../../../utility/base/utils/tableSort";
 import { Pagination } from "../../../utility/widgets/pagination";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
 // import '../../../assets/scss/users.scss';
@@ -21,8 +19,10 @@ import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import PhoneIcon from "../../../assets/icons/black-mockup.svg";
+import RtButton from "../../../assets/icons/right_btn.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import blackmockup from "../../../assets/icons/black-mockup.svg";
+import ArrowIcon from "../../../assets/icons/dark bg.svg";
 import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
@@ -31,7 +31,7 @@ import {
   invokeGetService,
   invokePostAuthService,
 } from "../../../utility/base/service";
-import { toastSuccess } from "../../../utility/widgets/toaster";
+import { toastSuccess, toastInfo } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { withRouter,RouteComponentProps  } from "react-router-dom";
 import { Input } from "../../../utility/widgets/input";
@@ -42,6 +42,7 @@ import { AnyCnameRecord } from "node:dns";
 import Table from 'react-bootstrap/Table'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import Loader from "../../../utility/widgets/loader";
 
 type Props = {
   location?: any;
@@ -88,13 +89,11 @@ type States = {
   isEditRedirect: boolean
 };
 
-
 const getStoreData = {
-  country: "MAL",
+  country: "MALAWI",
+  countryCode: 'MW',
   Language: "EN-US",
 };
-
-
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -278,10 +277,10 @@ class ChannelPartners extends Component<Props, States> {
     res.push(<th onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'MOBILE#'}
     {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
-    res.push(<th onClick={e => this.handleSort(e, "accountname", allChannelPartners, isAsc)}>{'ACCOUNT NAME'}
+    res.push(<th onClick={e => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}>{'ACCOUNT NAME'}
     {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
-    res.push(<th onClick={e => this.handleSort(e, "ownername", allChannelPartners, isAsc)}>{'OWNER NAME'}
+    res.push(<th onClick={e => this.handleSort(e, "whtownername", allChannelPartners, isAsc)}>{'OWNER NAME'}
     {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
     </th>)
 
@@ -410,10 +409,122 @@ class ChannelPartners extends Component<Props, States> {
       this.getDynamicOptionFields(this.state.userList);
     }, 0);
   }
-  editStaff =(list: any) =>{
-    this.setState({staffPopup : true},()=> {
-      this.getCurrentUserData(list);
+  // editStaff =(list: any) =>{
+  //   this.setState({staffPopup : true},()=> {
+  //     this.getCurrentUserData(list);
+  //     const userFields = this.state.userList;
+  //     let ownerInfo =  {
+  //       errObj: {
+  //           emailErr: "",
+  //           firstnameErr: "",
+  //           lastnameErr: "",
+  //           mobilenumberErr: ""
+  //       },
+  //       firstname: userFields.ownerfirstname,
+  //       active: true,
+  //       lastname: userFields.ownerlastname,
+  //       mobilenumber: userFields.ownerphonenumber,
+  //       email: userFields.owneremail
+  //     }
+    
+  //     let userDataList = this.state.userData;
+  //     userDataList.ownerRows[0] = ownerInfo;
+  //     let userinfo =  {
+  //       ownerRows: userDataList.ownerRows,
+  //       countrycode: userFields.countrycode,
+  //       locale: userFields.locale,
+  //       rolename:  userFields.rolename,
+  //       username:  userFields.username,
+  //       // shippingcountrycode: userFields.countrycode,
+  //       shippingstreet: userFields.shippingstreet,
+  //       shippingcity: userFields.shippingcity,
+  //       shippingstate:userFields.shippingstate,
+  //       shippingzipcode: userFields.shippingzipcode,
+  //       taxid: userFields.taxid,
+  //       accountname: userFields.accountname,
+  //       ownername: userFields.ownername,
+  //       // billingcountrycode: userFields.countrycode,
+  //       billingstreet: userFields.billingstreet,
+  //       billingcity: userFields.billingcity,
+  //       billingstate: userFields.billingstate,
+  //       billingzipcode: userFields.billingzipcode,
+  //       staffRows: userFields.staffdetails,
+  //   }
+  //   if (userinfo) {
+  //     userinfo.staffRows.forEach((staffInfo: any)=>{
+  //       let errObjd = {errObj:{
+  //         emailErr: "",
+  //         firstnameErr: "",
+  //         lastnameErr: "",
+  //         mobilenumberErr: ""
+  //     }}
+  //     let obj =Object.assign(staffInfo,errObjd);
+  //     console.log('testobj', obj);
+  //     });
+  //   }
+  //     this.setState({ userData: userinfo, isStaff: userFields.storewithmultiuser, isRendered: true })
+  //   });
+
+
+  // }
+
+  editStaff =(data: any) => {
+    let passData: any = { ...data };
+    let activeStatus = (passData.userstatus === 'INACTIVE' || passData.userstatus === 'DECLINED') ? false : true;
+    this.setState({ userList: passData, status: data.userstatus, activateUser: activeStatus,staffPopup : true }, ()=>{
+      const userFields = this.state.userList;
+      let ownerInfo =  {
+        errObj: {
+            emailErr: "",
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: ""
+        },
+        firstname: userFields.ownerfirstname,
+        active: true,
+        lastname: userFields.ownerlastname,
+        mobilenumber: userFields.ownerphonenumber,
+        email: userFields.owneremail
+      }
+    
+      let userDataList = this.state.userData;
+      userDataList.ownerRows[0] = ownerInfo;
+      let userinfo =  {
+        ownerRows: userDataList.ownerRows,
+        countrycode: userFields.countrycode,
+        locale: userFields.locale,
+        rolename:  userFields.rolename,
+        username:  userFields.username,
+        // shippingcountrycode: userFields.countrycode,
+        shippingstreet: userFields.shippingstreet,
+        shippingcity: userFields.shippingcity,
+        shippingstate:userFields.shippingstate,
+        shippingzipcode: userFields.shippingzipcode,
+        taxid: userFields.taxid,
+        whtaccountname: userFields.whtaccountname,
+        whtownername: userFields.whtownername,
+        // billingcountrycode: userFields.countrycode,
+        billingstreet: userFields.billingstreet,
+        billingcity: userFields.billingcity,
+        billingstate: userFields.billingstate,
+        billingzipcode: userFields.billingzipcode,
+        staffRows: userFields.staffdetails,
+    }
+    if (userinfo) {
+      userinfo.staffRows.forEach((staffInfo: any)=>{
+        let errObjd = {errObj:{
+          emailErr: "",
+          firstnameErr: "",
+          lastnameErr: "",
+          mobilenumberErr: ""
+      }}
+      let obj =Object.assign(staffInfo,errObjd);
+      console.log('testobj', obj);
+      });
+    }
+      this.setState({ userData: userinfo, isStaff: userFields.storewithmultiuser, isRendered: true })
     });
+   
   }
 
   handlePersonalChange = (e: any) => {
@@ -428,7 +539,7 @@ class ChannelPartners extends Component<Props, States> {
       }
       this.setState({ userList: val,  isRendered: true });
       let dateValid = this.dateValidation(e);
-      let formValid = this.checkValidation()
+      let formValid = this.checkValidation();
       if (dateValid && formValid) {
         this.setState({ isValidateSuccess : true});
       } else {
@@ -454,58 +565,84 @@ class ChannelPartners extends Component<Props, States> {
     return dateValid;
   };
 
-  checkValidation() {
-    let formValid = true;
-    let userData = this.state.userData;
-      userData.ownerRows.map((userInfo:any,idx:number)=>{
-        let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
-        errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
-        errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
-        // errObj.emailErr=userInfo.email ? '' : "Please enter the email";
-        errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
-        userData.ownerRows[idx].errObj = errObj;
-        if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
-          formValid = false;
-        }
-        this.setState((prevState:any) => ({
-          userData: {
-            ...prevState.userData,
-            ownerRows : userData.ownerRows
-          }
-        }))
-        })
-        userData.staffRows.map((userInfo:any,idx:number)=>{
-          let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
-          errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
-          errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
-          errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
-          userData.staffRows[idx].errObj = errObj;
-          if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
-            formValid = false;
-          }
-          this.setState((prevState:any) => ({
-            userData: {
-              ...prevState.userData,
-              staffRows : userData.staffRows
-            }
-          }))
-          })
-    return formValid;
-  }
-
-
   submitUpdateUser = () => {
+    // this.setState({staffPopup: true},()=>{
+    //   this.setState({isLoader: true})      
+    // });
+    this.setState({isLoader: true})   
     const { updateUser } = apiURL;
-    const { username,userstatus }: any = this.state.userList;
+    let geoFields: any = {};
+    this.state.dynamicFields.map((list: any, i: number) => {
+      geoFields[list.name] = list.value;
+    });
 
+    let newUserList= this.state.userData; 
+    if(this.state.isStaff) {
+      newUserList.staffRows.map((item:any, index:number) => {
+         delete item.errObj 
+      })
+      this.setState((prevState: any)=> ({
+        userData: {
+          ...prevState.userData,
+          staffRows: newUserList.staffRows
+        }
+      }))
+    }else {
+      newUserList.staffRows=[];
+      this.setState((prevState: any)=> ({
+        userData: {
+          ...prevState.userData,
+          staffRows: newUserList.staffRows
+        }
+      }))
+    }
+    this.setState({ isLoader: true });
+    let userData = this.state.userList;
+    console.log('allDatas', this.state.userList );
+
+      let data = {
+        "countrycode": getStoreData.countryCode,
+        "ownerfirstname": newUserList.ownerRows[0].firstname,
+        "ownerlastname": newUserList.ownerRows[0].lastname,
+        "ownerphonenumber": newUserList.ownerRows[0].mobilenumber,
+        "owneremail":newUserList.ownerRows[0].email,
+        "locale": "English (Malawi)",
+        "usertype": (userData.rolename == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
+        "rolename": userData.rolename,
+        "username": userData.username,
+        "accounttype": userData.rolename,
+        "userstatus":  newUserList.ownerRows[0].active ? 'ACTIVE' : 'INACTIVE',
+        "storewithmultiuser": this.state.isStaff ? true : false,
+        "iscreatedfrommobile": false,
+        "whtaccountname": userData.whtaccountname,
+        "taxid": userData.taxid,
+        "whtownername": userData.whtownername,
+        "deliverycountry": getStoreData.countryCode,
+        "deliveryregion": userData.deliveryregion,
+        "deliverystate": userData.deliverystate,
+        "deliverycity": userData.deliverycity,
+        "deliverydistrict": userData.deliverydistrict,
+        "deliveryvillage":userData.deliveryvillage,
+        "deliverystreet": userData.deliverystreet,
+        "deliveryzipcode": userData.deliveryzipcode,
+        "billingcountry": getStoreData.countryCode,
+        "billingregion": userData.billingregion,
+        "billingstate": userData.billingstate,
+        "billingcity": userData.billingcity,
+        "billingdistrict": userData.billingdistrict,
+        "billingvillage": userData.billingvillage,
+        "billingstreet": userData.billingstreet,
+        "billingzipcode":  userData.billingzipcode,
+        "staffdetails": [...this.state.userData.staffRows]
+    }
     const userDetails = {
       isedit : true,
-      lastupdatedby : this.state.userName,
-      lastupdateddate : new Date().toISOString().substr(0, 10)
+      lastupdatedby : (this.state.userName).toUpperCase(),
+      lastupdateddate : new Date().toJSON()
     }
 
-    let data = {...this.state.userList}
-    if (this.state.isValidateSuccess) {
+    let formValid = this.checkValidation();
+      if(formValid) {
         invokePostAuthService(updateUser, data, userDetails)
         .then((response: any) => {
           this.setState({
@@ -517,9 +654,15 @@ class ChannelPartners extends Component<Props, States> {
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
-          console.log(error, "error");
+          let message = error.message;
+          if (message === 'Retailer with the same Mobilenumber exists') {
+            message = 'User with same Mobilenumber exists';
+          }
+          this.setState({isRendered: true, staffPopup: false}, ()=>{
+            toastInfo(message);
+          });
         });
-    }
+      }
   }
 
   changeStatus = () => {
@@ -746,6 +889,45 @@ class ChannelPartners extends Component<Props, States> {
       isRendered:true
     }))
   }
+  checkValidation = () => {
+    let formValid = true;
+    let userData = this.state.userData;
+    userData.ownerRows.map((userInfo:any,idx:number)=>{
+      let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
+      errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
+      errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
+      // errObj.emailErr=userInfo.email ? '' : "Please enter the email";
+      errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
+      userData.ownerRows[idx].errObj = errObj;
+      if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
+        formValid = false;
+      }
+      this.setState((prevState:any) => ({
+        userData: {
+          ...prevState.userData,
+          ownerRows : userData.ownerRows
+        }
+      }))
+    })
+
+    userData.staffRows.map((userInfo:any,idx:number)=>{
+        let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
+        errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
+        errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
+        errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
+        userData.staffRows[idx].errObj = errObj;
+        if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
+          formValid = false;
+        }
+        this.setState((prevState:any) => ({
+          userData: {
+            ...prevState.userData,
+            staffRows : userData.staffRows
+          }
+        }))
+      })
+   return formValid;
+  }
 
   render() {
     console.log('userlist', this.state.userList);
@@ -796,7 +978,8 @@ class ChannelPartners extends Component<Props, States> {
   });
 
     return (
-      <>
+      <AUX>
+        {isLoader && <Loader />}
         {this.state.deActivatePopup ? (
           <AdminPopup
             open={this.state.deActivatePopup}
@@ -818,7 +1001,7 @@ class ChannelPartners extends Component<Props, States> {
                       <span>
                         Are you sure you want to change &nbsp;
                         <strong>
-                          {userList.ownername} - {userList.accountname}
+                          {userList.whtownername} - {userList.whtaccountname}
                         </strong>
                         &nbsp; account to
                         {userList.userstatus === "ACTIVE" ? (
@@ -833,7 +1016,7 @@ class ChannelPartners extends Component<Props, States> {
                       <span>
                         Would you like to validate & approve&nbsp;
                         <strong>
-                          {userList.ownername} - {userList.accountname}
+                          {userList.whtownername} - {userList.whtaccountname}
                         </strong>
                         &nbsp;account to use Bayer Rewards mobile application?
                         
@@ -874,11 +1057,12 @@ class ChannelPartners extends Component<Props, States> {
             onClose={this.handleClosePopup}
             maxWidth={"1300px"}>
             <DialogContent>
+            {isLoader && <Loader />}
               <div className="popup-container">
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userList?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {userList?.whtaccountname || ""}, <label>{userList?.rolename}</label>{" "}
                     </p>
                   </div>
               <>
@@ -886,7 +1070,7 @@ class ChannelPartners extends Component<Props, States> {
                   <>
                   <div className="row" style={{ display: 'flex', alignItems: 'center', marginTop: '8px'}}>
                     <div className="col-sm-3" style={{marginLeft: '46px'}}>
-                        <label className="font-weight-bold">Has store staff?
+                        <label className="font-weight-bold">Has store staff?(Max 4)
                             <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.enableStoreStaff(e)}} />
                             <span className="checkmark"></span>
                         </label>
@@ -902,8 +1086,8 @@ class ChannelPartners extends Component<Props, States> {
                           <th>First Name</th>
                           <th>Last Name</th>
                           <th>Mobile Number</th>
-                          <th>Email</th>
-                          <th>isActive?</th>
+                          <th>Email(Optional)</th>
+                          <th>Active?</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -919,7 +1103,7 @@ class ChannelPartners extends Component<Props, States> {
                               value={item.firstname}
                               onChange={(e: any)=>this.handleChange(idx, e, '', 'owner', '')}
                             />
-                            {item.errObj.firstNameErr && (
+                            {item.errObj?.firstNameErr && (
                               <span className="error">{item.errObj.firstNameErr} </span>
                             )}
                           </td>
@@ -932,7 +1116,7 @@ class ChannelPartners extends Component<Props, States> {
                             value={item.lastname}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
                             />
-                            {item.errObj.lastNameErr && (
+                            {item.errObj?.lastNameErr && (
                               <span className="error">{item.errObj.lastNameErr} </span>
                             )}
                           </td>
@@ -953,7 +1137,7 @@ class ChannelPartners extends Component<Props, States> {
                                 disableDropdown
                                 disableCountryCode
                               />
-                              {item.errObj.mobilenumberErr && (
+                              {item.errObj?.mobilenumberErr && (
                                 <span className="error">{item.errObj.mobilenumberErr} </span>
                               )}
                             </div>
@@ -969,7 +1153,7 @@ class ChannelPartners extends Component<Props, States> {
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
                             onKeyUp={(e: any)=>this.validateEmail(e, idx,'owner')}
                           />
-                          {item.errObj.emailErr && (
+                          {item.errObj?.emailErr && (
                             <span className="error">{item.errObj.emailErr} </span>
                           )}
                           </td>
@@ -1002,8 +1186,8 @@ class ChannelPartners extends Component<Props, States> {
                           <th>First Name</th>
                           <th>Last Name</th>
                           <th>Mobile Number</th>
-                          <th>Email</th>
-                          <th>isActive?</th>
+                          <th>Email(Optional)</th>
+                          <th>Active?</th>
                         </tr>
                       </thead>
                           <tbody>
@@ -1102,18 +1286,21 @@ class ChannelPartners extends Component<Props, States> {
 
                 </div>
               <DialogActions>
-              <Button
+              <button
                 onClick={this.handleClosePopup}
-                className="admin-popup-btn close-btn"
+                className="cus-btn-user reset buttonStyle"
               >
                 Cancel
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={this.submitUpdateUser}
-                className="admin-popup-btn filter-scan"
+                className="cus-btn-user buttonStyle"
               >
                 Update
-              </Button>
+                <span>
+                  <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
+                </span>
+              </button>
             </DialogActions>
             </div>
             </DialogContent>
@@ -1141,20 +1328,19 @@ class ChannelPartners extends Component<Props, States> {
                      >
                       <td>{list.username}</td>
                       <td>{list.ownerphonenumber} </td>
-                      <td style={{textAlign: 'left'}}>{list.accountname} </td>
-                      <td style={{textAlign: 'left'}}>{list.ownername} </td>
-                      <td>{list.region} </td>
-                      <td>{list.add} </td>
-                      <td>{list.district} </td>
+                      <td style={{textAlign: 'left'}}>{list.whtaccountname} </td>
+                      <td style={{textAlign: 'left'}}>{list.whtownername} </td>
+                      <td>{list.deliveryregion} </td>
+                      <td>{list.deliverystate} </td>
+                      <td>{list.deliverydistrict} </td>
                       <td>
                       <div className="retailer-id">
                         <p>
-                          {2}
+                          {list.staffdetails?.length}
                           <img
                             className="retailer-icon"
                             onClick={(event) => {
                               this.editStaff(list);
-                              this.getCurrentUserData(list);
                             }}
                             src={ExpandWindowImg}
                           ></img>
@@ -1173,7 +1359,7 @@ class ChannelPartners extends Component<Props, States> {
                               : list.userstatus === "INACTIVE"
                               ? "inactive"
                               : list.userstatus === "PENDING"
-                              ? "notActivated"
+                              ? "pending"
                               : list.userstatus === "DECLINED"
                               ? "declined"
                               : ""
@@ -1258,7 +1444,7 @@ class ChannelPartners extends Component<Props, States> {
             
           </div>
         
-      </>
+      </AUX>
     );
   }
 }

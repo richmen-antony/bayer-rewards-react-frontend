@@ -29,6 +29,7 @@ type States = {
   rowsPerPage: Number;
   pageNo: Number;
   isAsc: Boolean;
+  totalData: number;
 };
 
 class ChangeLogs extends Component<Props, States> {
@@ -43,6 +44,7 @@ class ChangeLogs extends Component<Props, States> {
       rowsPerPage: 15,
       pageNo: 1,
       isAsc: true,
+      totalData: 0
     };
     this.timeOut = 0;
   }
@@ -58,6 +60,7 @@ class ChangeLogs extends Component<Props, States> {
         page: this.state.pageNo,
         searchtext: this.state.searchText,
         rowsperpage: this.state.rowsPerPage,
+        countrycode: 'MW' 
       }
 
       invokeGetAuthService(changeLogs, data)
@@ -65,9 +68,10 @@ class ChangeLogs extends Component<Props, States> {
         this.setState({
           isLoader: false,
           allChangeLogs:
-          Object.keys(response.body).length !== 0 ? response.body : [],
+          Object.keys(response.body).length !== 0 ? response.body.rows : [],
         });
-
+        const total = response.body.rows.count();
+        this.setState({ totalData: total });
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
@@ -101,6 +105,7 @@ class ChangeLogs extends Component<Props, States> {
   render() {
     const { backToUsersList } = this.props;
     const { allChangeLogs, searchText, isLoader, isAsc} = this.state;
+    console.log('changelogs', allChangeLogs);
 
     return (
       <AUX>
@@ -175,12 +180,12 @@ class ChangeLogs extends Component<Props, States> {
                 {allChangeLogs.map((list: any, i: number) => (
                   <AUX key={i}>
                     <tr>
-                      <td>{list.lastmodifiedby}</td>
-                      <td>{list.field} </td>
+                      <td>{list.userid}</td>
+                      <td>{list.fieldname} </td>
                       <td>{list.oldvalue} </td>
                       <td>{list.newvalue} </td>
-                      <td>{moment(list.modifieddate).format("YYYY-MM-DD")}</td>
-                      <td>{null}</td>
+                      <td>{moment(list.lastmodifieddate).format("YYYY-MM-DD")}</td>
+                      <td>{moment(list.lastmodifieddate).format("HH-mm-ss")}</td>
                     </tr>
                   </AUX>
                 ))}

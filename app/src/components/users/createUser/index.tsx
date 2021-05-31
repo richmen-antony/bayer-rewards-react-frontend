@@ -5,8 +5,6 @@ import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import { toastSuccess, toastInfo } from "../../../utility/widgets/toaster";
-import { setLocalStorageData } from "../../../utility/base/localStore";
-import filterIcon from "../../assets/icons/filter_icon.svg";
 import CustomSwitch from "../../../container/components/switch";
 import CountryJson from "../../../utility/lib/country.json";
 import { apiURL } from "../../../utility/base/utils/config";
@@ -18,20 +16,14 @@ import {
 } from "../../../utility/base/service";
 import moment from "moment";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-import { isConstructorDeclaration } from "typescript";
-import { FormatColorResetRounded, LiveTvRounded } from "@material-ui/icons";
-import Table from 'react-bootstrap/Table';
-import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import { keys } from "@material-ui/core/styles/createBreakpoints";
-import { StringDecoder } from "node:string_decoder";
-import { AnyARecord } from "node:dns";
 import ArrowIcon from "../../../assets/icons/dark bg.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
-import { findAllByTestId } from "@testing-library/dom";
+import Loader from "../../../utility/widgets/loader";
+import AUX from "../../../hoc/Aux_";
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -65,14 +57,15 @@ class CreateUser extends Component<any, any> {
         countrycode: 'MW',
         locale: "English (Malawi)",
         rolename: role[0].value,
+        username: '',
         shippingcountrycode: getStoreData.country,
-        shippingstreet: '',
+        deliverystreet: '',
         shippingcity: '',
         shippingstate:'',
-        shippingzipcode: '',
+        deliveryzipcode: '',
         taxid: '',
-        accountname: '',
-        ownername: '',
+        whtaccountname: '',
+        whtownername: '',
         billingcountrycode: getStoreData.country,
         billingstreet: '',
         billingcity: '',
@@ -94,10 +87,10 @@ class CreateUser extends Component<any, any> {
         }],
       },
       shippingcountrycodeErr : "",
-      shippingstreetErr:  "",
+      deliverystreetErr:  "",
       shippingcityErr:'',
       shippingstateErr:'',
-      shippingzipcodeErr: '',
+      deliveryzipcodeErr: '',
       taxidErr: '',
       accountnameErr: '',
       ownernameErr: '',
@@ -120,38 +113,17 @@ class CreateUser extends Component<any, any> {
       currentStep: 1,
       stepsArray: [
         "Personal Information",
-        "Shipping Details",
-        "Geo-Hierarchy information",
+        "Address information",
         "With-Holding tax",
       ],
-      // userData: {
-      //   fromdate: new Date().toISOString().substr(0, 10),
-      //   expirydate: moment(oneYear).format("YYYY-MM-DD"),
-      //   active: true,
-      //   isDeclineUser: '',
-      //   role: options[0].value,
-      //   username: "",
-      //   firstname: "",
-      //   lastname: "",
-      //   accountname: "",
-      //   ownername: "",
-      //   mobilenumber: "",
-      //   email: "",
-      //   address: "",
-      //   postalcode: "",
-      //   taxid: "",
-      //   whtownername: "",
-      //   whtaccountname: "",
-      //   whtaddress: '',
-      //   whtpostalcode: "",
-      // },
       phone: '',
       accInfo: true,
       regionList: [],
       isValidatePage: false,
       isEditPage: false,
-      userName: '',
-      isStaff: false
+      name: '',
+      isStaff: false,
+      isLoader: false
     };
   }
 
@@ -162,95 +134,11 @@ class CreateUser extends Component<any, any> {
     // this.setState({ userName: userDetails.username},()=>{
     //   console.log("userData", this.state.userData);
     // });
-
-    this.setState({ isRendered: true });
+    setTimeout(() => {
+    this.getGeographicFields();
+    },0);
     ///API to get country and language settings
     this.getCountryList();
-    this.getGeographicFields();
-    this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
-
-    if (this.props.location?.page) {
-      let currentPage = this.props.location?.page;
-      let data: any = getLocalStorageData("userData");
-      let userDetails = JSON.parse(data);
-      this.setState({ userName: userDetails.username},()=>{
-        console.log("userData", this.state.userData);
-        // userFields['lastupdatedby'] = this.state.userName;
-      });
-      let userFields = this.props.location.state.userFields;
-      // userFields['active'] = true;
-      // userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
-      // userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
-      // userFields['isedit'] = false;
-      // userFields['lastupdateddate'] = new Date().toISOString().substr(0, 10);
-
-       let ownerInfo =  {
-        errObj: {
-            emailErr: "",
-            firstnameErr: "",
-            lastnameErr: "",
-            mobilenumberErr: ""
-        },
-        firstname: userFields.ownerfirstname,
-        active: true,
-        lastname: userFields.ownerlastname,
-        mobilenumber: userFields.ownerphonenumber,
-        email: userFields.owneremail
-      }
-    
-      let userDataList = this.state.userData;
-      userDataList.ownerRows[0] = ownerInfo;
-      let userinfo =  {
-        ownerRows: userDataList.ownerRows,
-        countrycode: userFields.countrycode,
-        locale: userFields.locale,
-        rolename:  userFields.rolename,
-        shippingcountrycode: userFields.countrycode,
-        shippingstreet: userFields.shippingstreet,
-        shippingcity: userFields.shippingcity,
-        shippingstate:userFields.shippingstate,
-        shippingzipcode: userFields.shippingzipcode,
-        taxid: userFields.taxid,
-        accountname: userFields.accountname,
-        ownername: userFields.ownername,
-        billingcountrycode: userFields.countrycode,
-        billingstreet: userFields.billingstreet,
-        billingcity: userFields.billingcity,
-        billingstate: userFields.billingstate,
-        billingzipcode: userFields.billingzipcode,
-        staffRows: userFields.staffdetails,
-    }
-    if (userinfo) {
-      userinfo.staffRows.forEach((staffInfo: any)=>{
-        let errObjd = {errObj:{
-          emailErr: "",
-          firstnameErr: "",
-          lastnameErr: "",
-          mobilenumberErr: ""
-      }}
-      let obj =Object.assign(staffInfo,errObjd);
-      console.log('testobj', obj);
-      });
-    }
-    if ( currentPage === 'edit') {
-      this.setState({ userData: userinfo, isEditPage: true, isStaff: userFields.storewithmultiuser, isRendered: true },()=>{
-        console.log('editdatas1', this.state.userData, this.state.isStaff);
-      });
-    } else if (currentPage === 'validate') {
-      this.setState({ userData: userinfo, isValidatePage: true, isStaff: userFields.storewithmultiuser, isRendered: true},()=>{
-        console.log('editdatas1', this.state.userData);
-      });
-    }
-
-      //Validate User
-      setTimeout(() => {
-        this.getDynamicOptionFields(userFields);
-      }, 0);
-    } else {
-      setTimeout(() => {
-        this.getDynamicOptionFields('');
-      }, 0);
-    }
   }
 
   getRegion() {
@@ -292,16 +180,99 @@ class CreateUser extends Component<any, any> {
     this.setState({ hierarchyList: nextHierarchyResponse });
   }
   getGeographicFields() {
-    //service call to get dynamic fields
-    // servicesVersion().then((res: any) => {
-    //     let res = ['country', 'state', 'district', 'village'];
-    // }).catch((err: any) => {
-    // })
-
-    let res = ["country", "region", "add", "district", "epa", "village"];
-    setTimeout(() => {
-      this.setState({ geographicFields: res });
-    }, 0);
+    this.setState({ isLoader: true });
+    const { getTemplateData } = apiURL;
+    let data = {
+      countryCode: 'MW'
+    }
+    invokeGetAuthService(getTemplateData, data)
+    .then((response: any) => {
+        let locationData = response.body[0].locationhierarchy;
+        let levels:any = [];
+        locationData.map((item: any) => {
+          let levelsSmall = (item.locationhiername).toLowerCase();
+          levels.push(levelsSmall)
+        })
+        this.setState({ isLoader: false,
+          geographicFields: levels }, ()=>{
+            this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
+            if (this.props.location?.page) {
+              let currentPage = this.props.location?.page;
+              let data: any = getLocalStorageData("userData");
+              let userDetails = JSON.parse(data);
+              this.setState({ username: userDetails.username},()=>{
+                console.log("userData", this.state.userData);
+              });
+              let userFields = this.props.location.state.userFields;
+        
+              let ownerInfo =  {
+                errObj: {
+                    emailErr: "",
+                    firstnameErr: "",
+                    lastnameErr: "",
+                    mobilenumberErr: ""
+                },
+              firstname: userFields.ownerfirstname,
+              active: true,
+              lastname: userFields.ownerlastname,
+              mobilenumber: userFields.ownerphonenumber,
+              email: userFields.owneremail
+              }
+            
+              let userDataList = this.state.userData;
+              userDataList.ownerRows[0] = ownerInfo;
+              let userinfo =  {
+                ownerRows: userDataList.ownerRows,
+                countrycode: userFields.countrycode,
+                locale: userFields.locale,
+                rolename:  userFields.rolename,
+                username:  userFields.username,
+                deliverystreet: userFields.deliverystreet,
+                shippingcity: userFields.shippingcity,
+                shippingstate:userFields.shippingstate,
+                deliveryzipcode: userFields.deliveryzipcode,
+                taxid: userFields.taxid,
+                whtaccountname: userFields.whtaccountname,
+                whtownername: userFields.whtownername,
+                billingstreet: userFields.billingstreet,
+                billingcity: userFields.billingcity,
+                billingstate: userFields.billingstate,
+                billingzipcode: userFields.billingzipcode,
+                staffRows: userFields.staffdetails,
+            }
+            if (userinfo) {
+              userinfo.staffRows.forEach((staffInfo: any)=>{
+                let errObjd = {errObj:{
+                  emailErr: "",
+                  firstnameErr: "",
+                  lastnameErr: "",
+                  mobilenumberErr: ""
+              }}
+              let obj =Object.assign(staffInfo,errObjd);
+              console.log('testobj', obj);
+              });
+            }
+            if ( currentPage === 'edit') {
+              this.setState({ userData: userinfo, isEditPage: true, isStaff: userFields.storewithmultiuser, isRendered: true });
+            } else if (currentPage === 'validate') {
+              this.setState({ userData: userinfo, isValidatePage: true, isStaff: userFields.storewithmultiuser, isRendered: true},()=>{
+                console.log('editdatas1', this.state.userData);
+              });
+            }
+        
+              //Validate and edit User
+              setTimeout(() => {
+                this.getDynamicOptionFields(userFields);
+              }, 0);
+            } else {
+              setTimeout(() => {
+                this.getDynamicOptionFields('');
+              }, 0);
+            }
+          });
+    }).catch((err: any) => {
+      this.setState({ isLoader: false });
+    })
   }
   getDynamicOptionFields(data: any) {
   if(data){
@@ -313,25 +284,25 @@ class CreateUser extends Component<any, any> {
       let district = "";
       let epa = "";
       let village = "";
-      if('region' in data){
-        result = this.getOptionLists('auto',list, data.region , i);
-        region = data.region;
+      if('deliveryregion' in data){
+        result = this.getOptionLists('auto',list, data.deliveryregion , i);
+        region = data.deliveryregion;
       }
-      if('add' in data){
-        result = this.getOptionLists('auto',list, data.region , i);
-        add = data.region;
+      if('deliverystate' in data){
+        result = this.getOptionLists('auto',list, data.deliverystate , i);
+        add = data.deliverystate;
       }
-      if('district' in data){
-        result = this.getOptionLists('auto',list, data.district , i);
-        district = data.district;
+      if('deliverydistrict' in data){
+        result = this.getOptionLists('auto',list, data.deliverydistrict , i);
+        district = data.deliverydistrict;
       } 
-      if('epa' in data){
-        result = this.getOptionLists('auto',list, data.epa , i)
-        epa = data.epa;
+      if('deliverycity' in data){
+        result = this.getOptionLists('auto',list, data.deliverycity , i)
+        epa = data.deliverycity;
       }
-      if('village' in data){
-        result = this.getOptionLists('auto',list, data.village , i);
-        village = data.village;
+      if('deliveryvillage' in data){
+        result = this.getOptionLists('auto',list, data.deliveryvillage , i);
+        village = data.deliveryvillage;
       }
         setFormArray.push({
           name: list,
@@ -399,40 +370,69 @@ class CreateUser extends Component<any, any> {
       let dynamicFieldVal = this.state.dynamicFields;
       let withHoldingVal = this.state.withHolding; 
       if(type === 'region') {
+        let add = [
+          { text: "Add1", value: "Add1" },
+          { text: "Add2", value: "Add2" }, 
+        ];
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = add;
+          dynamicFieldVal[index].value = value;
+          this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index+1].options = add;
+          withHoldingVal[index].value = value;
+          this.setState({withHolding: withHoldingVal});
+        }
+     } else if(type === 'add') {
         let district = [
           { text: "Balaka", value: "Balaka" },
           { text: "Blantyre", value: "Blantyre" }, 
         ];
+        if ( this.state.currentStep == 2){
           dynamicFieldVal[index+1].options = district;
           dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
-    } else if (type === 'add'){
-      let epa = [
-        { text: "Add1", value: "Add1" },
-        { text: "Add2", value: "Add2" }, 
-      ];
-        dynamicFieldVal[index+1].options = epa;
-        dynamicFieldVal[index].value = value;
-        this.setState({dynamicFields: dynamicFieldVal});
-     }else if(type === 'district') {
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index+1].options = district;
+          withHoldingVal[index].value = value;
+          this.setState({withHolding: withHoldingVal});
+        }
+      } else if(type === 'district') {
         let epa = [
           { text: "EPA1", value: "EPA1" },
           { text: "EPA2", value: "EPA2" }, 
         ];
+        if ( this.state.currentStep == 2){
           dynamicFieldVal[index+1].options = epa;
           dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index+1].options = epa;
+          withHoldingVal[index].value = value;
+          this.setState({withHolding: withHoldingVal});
+        }
       } else if(type === 'epa') {
         let village = [
           { text: "Village1", value: "Village1" },
           { text: "Village2", value: "Village2" },
         ];
+        if ( this.state.currentStep == 2){
           dynamicFieldVal[index+1].options = village;
           dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index+1].options = village;
+          withHoldingVal[index].value = value;
+          this.setState({withHolding: withHoldingVal});
+        }
       } else if(type === 'village') {
+        if ( this.state.currentStep == 2){
           dynamicFieldVal[index].value = value;
           this.setState({dynamicFields: dynamicFieldVal});
+        } else if ( this.state.currentStep == 3) {
+          withHoldingVal[index].value = value;
+          this.setState({withHolding: withHoldingVal});
+        }
       }
     }
   };
@@ -441,21 +441,23 @@ class CreateUser extends Component<any, any> {
     let formValid = true;
     if (clickType === "personalNext") {
       formValid = this.checkValidation();
-    } else if (clickType === "shippingNext") {
-      formValid = this.checkValidation();
     } else if (clickType === "geographicNext") {
       formValid = this.checkValidation();
+      if (formValid) {
+        if (this.state.accInfo) {
+          this.setState({ withHolding: this.state.dynamicFields });
+        }
+      }
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
     const { currentStep } = this.state;
     let newStep = currentStep;
-    if (clickType == "personalNext" || clickType == "shippingNext" || clickType == "geographicNext") {
+    if (clickType == "personalNext" || clickType == "geographicNext") {
       newStep = newStep + 1;
     } else {
       newStep = newStep - 1;
     }
-    // formValid = true;
 
     if (newStep > 0 && newStep <= this.state.stepsArray.length) {
       if (formValid) {
@@ -476,10 +478,17 @@ class CreateUser extends Component<any, any> {
     }
   }
   submitUserDatas = () => {
+    this.setState({
+      isLoader: true,
+    });
     const { retailerCreation, updateUser} = apiURL;
     let geoFields: any = {};
+    let shippingFields: any = {};
     this.state.dynamicFields.map((list: any, i: number) => {
       geoFields[list.name] = list.value;
+    });
+    this.state.withHolding.map((list: any, i: number) => {
+      shippingFields[list.name] = list.value;
     });
     let newUserList= this.state.userData; 
     if(this.state.isStaff) {
@@ -501,14 +510,49 @@ class CreateUser extends Component<any, any> {
         }
       }))
     }
-   // let stepper3: any = {};
-    // this.state.withHolding.map((list: any, i: number) => {
-    //   stepper3[list.name] = list.value;
-    // });
     this.setState({ isLoader: true });
     let userData = this.state.userData;
     console.log('allDatas', this.state.userData );
-    const data = {
+
+    let data = {};
+    if (this.state.isEditPage || this.state.isValidatePage) {
+      data = {
+        "countrycode": getStoreData.countryCode,
+        "ownerfirstname": userData.ownerRows[0].firstname,
+        "ownerlastname": userData.ownerRows[0].lastname,
+        "ownerphonenumber": userData.ownerRows[0].mobilenumber,
+        "owneremail":userData.ownerRows[0].email,
+        "locale": "English (Malawi)",
+        "usertype": (userData.rolename == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
+        "rolename": userData.rolename,
+        "username": userData.username,
+        "accounttype": userData.rolename,
+        "userstatus":  userData.isDeclineUser ? 'Declined' : userData.ownerRows[0].active ? 'ACTIVE' : 'INACTIVE',
+        "storewithmultiuser": this.state.isStaff ? true : false,
+        "iscreatedfrommobile": false,
+        "whtaccountname": userData.whtaccountname,
+        "taxid": userData.taxid,
+        "whtownername": userData.whtownername,
+        "deliverycountry": getStoreData.countryCode,
+        "deliveryregion": geoFields.region,
+        "deliverystate": geoFields.add,
+        "deliverycity": geoFields.epa,
+        "deliverydistrict": geoFields.district,
+        "deliveryvillage":geoFields.village,
+        "deliverystreet": userData.deliverystreet,
+        "deliveryzipcode": userData.deliveryzipcode,
+        "billingcountry": getStoreData.countryCode,
+        "billingregion": shippingFields.region,
+        "billingstate": shippingFields.add,
+        "billingcity": shippingFields.epa,
+        "billingdistrict": shippingFields.district,
+        "billingvillage": shippingFields.village,
+        "billingstreet": this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
+        "billingzipcode": this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
+        "staffdetails": [...this.state.userData.staffRows]
+    }
+    } else {
+      data = {
         "countrycode": getStoreData.countryCode,
         "ownerfirstname": userData.ownerRows[0].firstname,
         "ownerlastname": userData.ownerRows[0].lastname,
@@ -518,69 +562,41 @@ class CreateUser extends Component<any, any> {
         "usertype": (userData.rolename == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
         "rolename": userData.rolename,
         "accounttype":userData.rolename,
-        "userstatus": "ACTIVE",
+        "userstatus": userData.isDeclineUser ? 'Declined' : userData.ownerRows[0].active ? 'ACTIVE' : 'INACTIVE',
         "storewithmultiuser": this.state.isStaff ? true : false,
         "iscreatedfrommobile": false,
-        "region": geoFields.region,
-        "add": geoFields.add,
-        "district": geoFields.district,
-        "epa": geoFields.epa,
-        "village": geoFields.village,
-        "shippingcountrycode": getStoreData.countryCode,
-        "shippingstreet": userData.shippingstreet,
-        "shippingcity": userData.shippingcity,
-        "shippingstate": userData.shippingstate,
-        "shippingzipcode": userData.shippingzipcode,
-        "accountname": userData.accountname,
+        "whtaccountname": userData.whtaccountname,
         "taxid": userData.taxid,
-        "ownername": userData.ownername,
-        "billingcountrycode": getStoreData.countryCode,
-        "billingstreet": this.state.accInfo ? userData.shippingstreet : userData.billingstreet,
-        "billingcity": this.state.accInfo ? userData.shippingcity : userData.billingcity,
-        "billingstate": this.state.accInfo ? userData.shippingstate : userData.billingstate,
-        "billingzipcode": this.state.accInfo ? userData.shippingzipcode : userData.billingzipcode,
+        "whtownername": userData.whtownername,
+        "deliverycountry": getStoreData.countryCode,
+        "deliveryregion": geoFields.region,
+        "deliverystate": geoFields.add,
+        "deliverycity": geoFields.epa,
+        "deliverydistrict": geoFields.district,
+        "deliveryvillage":geoFields.village,
+        "deliverystreet": userData.deliverystreet,
+        "deliveryzipcode":userData.deliveryzipcode,
+        "billingcountry": getStoreData.countryCode,
+        "billingregion": shippingFields.region,
+        "billingstate": shippingFields.add,
+        "billingcity": shippingFields.epa,
+        "billingdistrict": shippingFields.district,
+        "billingvillage": shippingFields.village,
+        "billingstreet": this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
+        "billingzipcode": this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
         "staffdetails": [...this.state.userData.staffRows]
     }
-    // const data = {
-    //   effectivefrom: personalData["fromdate"],
-    //   expirydate: personalData["expirydate"],
-    //   username: personalData["username"],
-    //   firstname: personalData["firstname"],
-    //   lastname: personalData["lastname"],
-    //   accountname: personalData["accountname"],
-    //   ownername: personalData["accountname"],
-    //   mobilenumber: personalData["mobilenumber"],
-    //   email: personalData["email"],
-    //   address: personalData["address"],
-    //   postalcode: personalData["postalcode"],
-    //   usertypename : (personalData["role"] == 'Area Sales Agent') ? 'THIRD PARTY' : 'CHANNEL PARTNER',
-    //   role: personalData["role"],
-    //   region: stepper2["region"],
-    //   district: stepper2["district"],
-    //   epa: stepper2["epa"],
-    //   village: stepper2["village"],
-    //   taxid: personalData["taxid"],
-    //   whtownername: personalData["whtownername"],
-    //   whtaccountname: personalData["whtaccountname"],
-    //   whtaddress: personalData["whtaddress"],
-    //   whtpostalcode: this.state.accInfo
-    //     ? personalData["postalcode"]
-    //     : personalData["whtpostalcode"],
-    //   whtregion: stepper3["region"],
-    //   whtdistrict: stepper3["district"],
-    //   whtepa: stepper3["epa"],
-    //   whtvillage: stepper3["village"],
-    //   status: personalData['isDeclineUser'] ? 'Declined' : personalData["active"] ? "Active" : "Inactive",
-    // };
+    }
 
-    const userDetails = this.state.isValidatePage ? { 
-      isedit : false,
-      lastupdatedby : this.state.userName,
+
+    const userDetails = (this.state.isValidatePage || this.state.isEditPage) ? { 
+      isedit : true,
+      lastupdatedby : (this.state.username).toUpperCase(),
       lastupdateddate : new Date().toJSON()
     } : ''
     console.log("all@@@@s", data);
-    const url = this.state.isValidatePage ? updateUser : retailerCreation;
-    const service = this.state.isValidatePage ? invokePostAuthService : invokePostService;
+    const url = (this.state.isValidatePage || this.state.isEditPage ) ? updateUser : retailerCreation;
+    const service = (this.state.isValidatePage || this.state.isEditPage) ? invokePostAuthService : invokePostService;
 
     service(url, data, userDetails)
       .then((response: any) => {
@@ -594,7 +610,9 @@ class CreateUser extends Component<any, any> {
           } else {
             msg = 'User Validated Successfully';
           }
-        }else {
+        } else if(this.state.isEditPage) {
+          msg = 'User Updated Successfully';
+        } else {
           msg = 'User Created Successfully';
         }
         toastSuccess(msg);
@@ -605,58 +623,12 @@ class CreateUser extends Component<any, any> {
         let message = error.message;
         if (message === 'Retailer with the same Mobilenumber exists') {
           message = 'User with same Mobilenumber exists';
-        } 
-        toastInfo(message);
-        this.setState({isRendered: true});
-        this.props.history.push("/createUser");
+        }
+        this.setState({isRendered: true, currentStep: 1}, ()=>{
+          toastInfo(message);
+        });
       });
   };
-  // handlePersonalChange = (e: any) => {
-  //   let val = this.state.userData;
-  //   if (e.target.name === "active") {
-  //     val[e.target.name] = e.target.checked;
-  //   } else if (e.target.name === "accInfo") {
-  //     if (!e.target.checked) {
-  //       let setFormArray: any = [];
-  //       this.state.geographicFields.map((list: any, i: number) => {
-  //         setFormArray.push({
-  //           name: list,
-  //           placeHolder: true,
-  //           value: list === "country" ? getStoreData.country : "",
-  //           options:
-  //             list === "country"
-  //               ? this.state.countryList
-  //               : i == 1
-  //               ? this.state.hierarchyList
-  //               : "",
-  //           error: "",
-  //         });
-  //       });
-  //       this.setState({ withHolding: setFormArray });
-  //     } else {
-  //       this.setState({ accInfo: e.target.checked });
-  //       this.setState({ withHolding: this.state.dynamicFields });
-  //     }
-  //     this.setState({ accInfo: e.target.checked });
-  //   } else {
-  //     val[e.target.name] = e.target.value;
-  //   }
-  //   // if (e.target.name === 'role') {
-  //   //     let steps = this.state.stepsArray;
-  //   //     this.setState({stepsArray : steps });
-  //   //     if(e.target.value !== 'salesagent' ) {
-  //   //         steps.splice(2,1,'With-Holding Tax');
-  //   //         this.setState({stepsArray : steps });
-  //   //     } else {
-  //   //         steps.splice(2,1,'User Mappings');
-  //   //         this.setState({stepsArray : steps});
-  //   //     }
-  //   // }
-  //   let dateVal = this.dateValidation(e);
-  //   if (dateVal) {
-  //     this.setState({ userData: val });
-  //   }
-  // };
 
   dateValidation = (e: any) => {
     let dateValid = true;
@@ -736,23 +708,16 @@ class CreateUser extends Component<any, any> {
             }
           }))
           })
-    } else if ( this.state.currentStep === 2 ) {
-      let shippingcountrycode = userData.shippingcountrycode  ? '' : "Please enter the Country";
-      let shippingstreet = userData.shippingstreet  ? '' : "Please enter the Street";
-      let shippingcity = userData.shippingcity  ? '' : "Please enter the City";
-      let shippingstate = userData.shippingstate  ? '' : "Please enter the State";
-      let shippingzipcode = userData.shippingzipcode  ? '' : "Please enter the Postal";
-      if (shippingcountrycode != '' || shippingstreet != '' || shippingcity != '' || shippingstate != '' || shippingzipcode != '') {
+    } else if (this.state.currentStep === 2 ) {
+      let deliverystreet = userData.deliverystreet  ? '' : "Please enter the Street";
+      let deliveryzipcode = userData.deliveryzipcode  ? '' : "Please enter the Postal";
+      if (deliverystreet != '' || deliveryzipcode != '') {
         formValid = false;
       }
       this.setState({ 
-        shippingcountrycodeErr: shippingcountrycode, 
-        shippingstreetErr: shippingstreet,
-        shippingcityErr: shippingcity,
-        shippingstateErr: shippingstate,
-        shippingzipcodeErr: shippingzipcode
+        deliverystreetErr: deliverystreet,
+        deliveryzipcodeErr: deliveryzipcode
       })
-    } else if (this.state.currentStep === 3 ) {
       this.state.dynamicFields.map((list: any) => {
         if (list.value === "") {
           list.error = "Please enter the " + list.name;
@@ -765,28 +730,33 @@ class CreateUser extends Component<any, any> {
     } else {
       let accInfo = this.state.accInfo;
       let taxid = userData.taxid  ? '' : "Please enter the tax id";
-      let accountname = userData.accountname  ? '' : "Please enter account name";
-      let ownername = userData.ownername  ? '' : "Please enter owner name";
-      let billingcountrycode = userData.billingcountrycode  ? '' : "Please enter the Country";
+      let whtaccountname = userData.whtaccountname  ? '' : "Please enter account name";
+      let whtownername = userData.whtownername  ? '' : "Please enter owner name";
+      this.setState({
+        taxidErr: taxid,
+        accountnameErr: whtaccountname,
+        ownernameErr: whtownername
+      })
 
       if(!accInfo){
         let billingstreet = userData.billingstreet  ? '' : "Please enter the Street";
-        let billingcity = userData.billingcity  ? '' : "Please enter the City";
-        let billingstate = userData.billingstate  ? '' : "Please enter the State";
         let billingzipcode = userData.billingzipcode  ? '' : "Please enter the Postal";
   
-        if (billingcountrycode != '' || billingstreet != '' || billingcity != '' || billingstate != '' || billingzipcode != '' || taxid != '' || accountname != '' || ownername != '') {
+        if (billingstreet != '' || billingzipcode != '' || taxid != '' || whtaccountname != '' || whtownername != '') {
           formValid = false;
         }
         this.setState({
-          taxidErr: taxid,
-          accountnameErr: accountname,
-          ownernameErr: ownername, 
-          billingcountrycodeErr: billingcountrycode, 
           billingstreetErr: billingstreet,
-          billingcityErr: billingcity,
-          billingstateErr: billingstate,
           billingzipcodeErr: billingzipcode
+        })
+        this.state.withHolding.map((list: any) => {
+          if (list.value === "") {
+            list.error = "Please enter the " + list.name;
+            formValid = false;
+          } else {
+            list.error = "";
+          }
+          this.setState({ isRendered: true });
         })
       }
       else {
@@ -796,39 +766,12 @@ class CreateUser extends Component<any, any> {
     return formValid;
   }
 
-  geographicValidation = () => {
-    let userData = this.state.userData;
-    let currentStep = this.state.currentStep;
-    let geographicFormValid = true;
-    if (currentStep == 4) {
-      if (userData.taxid === "" || userData.taxid === null) {
-        this.setState({ taxIdErr: "Please enter Tax Id" });
-        geographicFormValid = false;
-      } else {
-        this.setState({ taxIdErr: "" });
-      }
-    }
-      this.state.dynamicFields.map((list: any) => {
-      if (list.value === "") {
-        list.error = "Please enter the " + list.name;
-        geographicFormValid = false;
-      } else {
-        list.error = "";
-      }
-      this.setState({ isRendered: true });
-    });
-    return geographicFormValid;
-  };
-
   validateEmail = (e: any, idx: number,type:string) =>{
     let emailField = e.target.value;
     let ownerRows = [...this.state.userData.ownerRows];
     let staffRows = [...this.state.userData.staffRows];
     
     if(type==='staff') {
-      // if (!emailField) {
-      //   staffRows[idx].errObj.emailErr = "Please enter the Email";
-      // } else {
       if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
         staffRows[idx].errObj.emailErr = "";
       }else {
@@ -852,23 +795,11 @@ class CreateUser extends Component<any, any> {
     }))
   }
 
-  isNumberKey = (evt: any) => {
-    this.setState({ phoneErr: "" });
-    let isValid = true;
-    if ( !evt.target.value ) {
-      this.setState({ phoneErr: "Please enter Mobile number" });
-      isValid = false;
-    } else {
-      let pattern = new RegExp(/^[0-9\b]+$/);
-      if ( !pattern.test(evt.target.value) ){
-        this.setState({ phoneErr: "Please enter Number Format" });
-        isValid = false;
-      } else{
-          this.setState({ phoneErr: "" });
-          isValid = true;
-      }
+  isNumberKey = (e: any) => {
+    var code = (e.which) ? e.which : e.keyCode;
+    if (code > 31 && (code < 48 || code > 57)) {
+        e.preventDefault();
     }
-    return isValid;
   }
 
   reset =() => {
@@ -896,33 +827,33 @@ class CreateUser extends Component<any, any> {
         }
       }))
     } else if ( currentStep === 2) {
-      this.setState((prevState: any)=> ({
-        userData: {
-          ...prevState.userData,
-          shippingstreet: '',
-          shippingcity: '',
-          shippingstate: '',
-          shippingzipcode: '',
-        }
-      }))
-    }else if ( currentStep === 3) {
       let data: any = this.state.dynamicFields;
       data.map((list: any) => {
         list.value = "";
       });
-      this.setState({ dynamicFields: data})
+      this.setState((prevState: any)=> ({
+        userData: {
+          ...prevState.userData,
+          deliverystreet: '',
+          deliveryzipcode: '',
+        },
+        dynamicFields: data
+      }))
     } else {
+      let data: any = this.state.withholding;
+      data.map((list: any) => {
+        list.value = "";
+      });
       this.setState((prevState: any)=> ({
         userData: {
           ...prevState.userData,
           taxid:'',
-          ownername:'',
-          accountname:'',
+          whtownername:'',
+          whtaccountname:'',
           billingstreet: '',
-          billingcity: '',
-          billingstate: '',
           billingzipcode: '',
-        }
+        },
+        withholding: data
       }))
     }
   }
@@ -936,7 +867,7 @@ class CreateUser extends Component<any, any> {
 
   handlePersonalChange = (e: any) => {
     let val = this.state.userData;
-    if (e.target.name === "active") {
+    if (e.target.name === "activateUser") {
       val[e.target.name] = e.target.checked;
     } else if (e.target.name === "accInfo") {
       if (!e.target.checked) {
@@ -964,10 +895,19 @@ class CreateUser extends Component<any, any> {
     } else {
       val[e.target.name] = e.target.value;
     }
-    let dateVal = this.dateValidation(e);
-    if (dateVal) {
+    // if (e.target.name === 'role') {
+    //     let steps = this.state.stepsArray;
+    //     this.setState({stepsArray : steps });
+    //     if(e.target.value !== 'salesagent' ) {
+    //         steps.splice(2,1,'With-Holding Tax');
+    //         this.setState({stepsArray : steps });
+    //     } else {
+    //         steps.splice(2,1,'User Mappings');
+    //         this.setState({stepsArray : steps});
+    //     }
+    // }
       this.setState({ userData: val });
-    }
+    
   };
 
   handleChange = (idx: any, e: any , key: string, type: string, val: any) => {
@@ -1005,8 +945,28 @@ class CreateUser extends Component<any, any> {
       }));
     } else {
       if (e.target.name === "accInfo") {
+        if (!e.target.checked) {
+          let setFormArray: any = [];
+          this.state.geographicFields.map((list: any, i: number) => {
+            setFormArray.push({
+              name: list,
+              placeHolder: true,
+              value: list === "country" ? getStoreData.country : "",
+              options:
+                list === "country"
+                  ? this.state.countryList
+                  : i == 1
+                  ? this.state.hierarchyList
+                  : "",
+              error: "",
+            });
+          });
+          this.setState({ withHolding: setFormArray });
+        } else {
+          this.setState({ accInfo: e.target.checked });
+          this.setState({ withHolding: this.state.dynamicFields });
+        }
         this.setState({ accInfo: e.target.checked });
-        console.log('@@@', this.state.accInfo)
       } else {
         let datas = this.state.userData;
         let { name, value } = e.target;
@@ -1078,33 +1038,9 @@ class CreateUser extends Component<any, any> {
       }
     }));
     this.setState({isStaff: isStaff});
-
   }
 
-  // handlePhoneChange = (value: any, idx: any, type: string) => {
-  //   console.log('phonenum', value);
-  //   if ( type === 'owner')
-
-  //   this.setState({ phone: value }, () => {
-  //     console.log(this.state.phone);
-  //   });
-  // };
-
-  // //phone without dial code
-  // handleOnChange(value, data, event, formattedValue) {
-  //   this.setState({ rawPhone: value.slice(data.dialCode.length) })
-  // }
-
   render() {
-    console.log('staffRows', this.state.staffRows);
-    console.log('ownerRows', this.state.ownerRows);
-    console.log('userData', this.state.userData);
-    console.log('dynamicFields', this.state.dynamicFields);
-    const dpstyle = {
-      width: "220px",
-      height: "40px",
-    };
-
     const {
       currentStep,
       userData,
@@ -1112,38 +1048,25 @@ class CreateUser extends Component<any, any> {
       isValidatePage,
       isEditPage,
       isStaff,
-      shippingcountrycodeErr,
-      shippingstreetErr,
-      shippingcityErr,
-      shippingstateErr,
-      shippingzipcodeErr,
+      deliverystreetErr,
+      deliveryzipcodeErr,
       taxidErr,
       accountnameErr,
       ownernameErr,
-      billingcountrycodeErr,
       billingstreetErr,
-      billingcityErr,
-      billingstateErr,
       billingzipcodeErr,
-      accInfo
+      accInfo,
+      isLoader
     } = this.state;
 
-    const btnStyleRemove = {
-      color: "white", background: "#C1C1C1 0% 0% no-repeat padding-box",
-      boxshadow: " 0px 3px 6px #00000029", opacity: 1,
-      fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20
-    }
-    const tableScrollStyle = { maxHeight: "280px", overflowY: "auto", overflowX: "hidden" };
     let currentPage = this.props.location?.page;
-
-    // const fields =
-    //   currentStep == 3 ? this.state.dynamicFields : this.state.withHolding;
-    const locationList = this.state.dynamicFields?.map((list: any, index: number) => {
+    const fields =
+      currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
+    const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
       return (
         <>
-          <div className= "col-sm-4 country">
+          <div className= {(list.error && currentStep === 3) ?  "col-sm-4 country3" : "col-sm-4 country"}>
                 <Dropdown
                   name={list.name}
                   label={nameCapitalized}
@@ -1156,7 +1079,7 @@ class CreateUser extends Component<any, any> {
                   value={list.value}
                   isPlaceholder
                   isDisabled={
-                    (this.state.currentStep === 4 && this.state.accInfo) || (isValidatePage) || (list.name=='country')
+                    (this.state.currentStep === 3 && this.state.accInfo) || (list.name=='country')
                       ? true
                       : false
                   }
@@ -1170,12 +1093,6 @@ class CreateUser extends Component<any, any> {
     let nextButton;
     if (currentStep === 1) {
       nextButton = (
-        // <button
-        //   className="btn buttonColor buttonStyle"
-        //   onClick={(e) => this.handleClick("personalNext", e)}
-        // >
-        //   Next
-        // </button>
         <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("personalNext", e)}>
       Next
       <span>
@@ -1184,16 +1101,6 @@ class CreateUser extends Component<any, any> {
     </button>
       );
     } else if (currentStep === 2) {
-      nextButton = (
-   
-         <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("shippingNext", e)}>
-         Next
-         <span>
-           <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
-         </span>
-       </button>
-      );
-    } else if (currentStep === 3) {
       nextButton = (
          <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("geographicNext", e)}>
          Next
@@ -1210,22 +1117,12 @@ class CreateUser extends Component<any, any> {
            <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
          </span>
        </button>
-        // <button
-        //   className="btn buttonColor createBtn"
-        //   onClick={(e) => this.handleClick("createUser", e)}
-        // >
-        //   {!this.props.location?.state ? "Create User" : "Approve"}
-        // </button>
       );
     }
-    const togglePosition = { top: 20 };
-    const sub_div = {
-      position: "absolute",
-      bottom: "35px",
-      marginLeft: "350px",
-    };
 
     return (
+      <AUX>
+      {isLoader && <Loader />}
       <div className="card card-main">
         <div className="stepper-container-horizontal">
           <Stepper
@@ -1235,8 +1132,8 @@ class CreateUser extends Component<any, any> {
             stepColor="#7DBB41"
           />
         </div>
-        <div className="col-md-10">
-          <label className="font-weight-bold" style={{fontSize: '17px', color: '#10384F', marginTop: currentStep ==1 ? '0px' : '28px'}}>
+        <div className="col-md-10" style={{marginTop:  currentStep == 3  ? '-30px' : '0px'}}>
+          <label className="font-weight-bold" style={{fontSize: '17px', color: '#10384F', marginTop: currentStep ==1 ? '0px' : currentStep == 2 ? '28px' : '-3px'}}>
             {stepsArray[currentStep - 1]}
           </label>
           <div className="container">
@@ -1253,11 +1150,10 @@ class CreateUser extends Component<any, any> {
                         handleChange={(e: any)=>this.handleChange('', e, '', 'othersteps', '')}
                         value={userData.rolename}
                         isPlaceholder
-                        isDisabled = {isValidatePage ? true : false} 
                       />
                     </div>
                     <div className="col-sm-3">
-                        <label className="font-weight-bold">Has store staff?
+                        <label className="font-weight-bold">Has store staff?(Max 4)
                             <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.enableStoreStaff(e)}} checked={isStaff} />
                             <span className="checkmark"></span>
                         </label>
@@ -1273,8 +1169,8 @@ class CreateUser extends Component<any, any> {
                           <th>First Name</th>
                           <th>Last Name</th>
                           <th>Mobile Number</th>
-                          <th>Email</th>
-                          <th>isActive?</th>
+                          <th>Email(Optional)</th>
+                          <th>Active?</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1289,7 +1185,6 @@ class CreateUser extends Component<any, any> {
                               placeHolder="Eg: Keanu"
                               value={item.firstname}
                               onChange={(e: any)=>this.handleChange(idx, e, '', 'owner', '')}
-                              disabled={isValidatePage ? true : false}
                             />
                             {item.errObj.firstNameErr && (
                               <span className="error">{item.errObj.firstNameErr} </span>
@@ -1303,7 +1198,6 @@ class CreateUser extends Component<any, any> {
                             placeHolder="Eg: Reeves"
                             value={item.lastname}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
-                            disabled={isValidatePage ? true : false}
                             />
                             {item.errObj.lastNameErr && (
                               <span className="error">{item.errObj.lastNameErr} </span>
@@ -1321,10 +1215,10 @@ class CreateUser extends Component<any, any> {
                                 country={'mw'}
                                 value={item.mobilenumber}
                                 onChange={(value, e)=>this.handleChange(idx, e, 'phone','owner', value)}
-                                onlyCountries={['mw']}
+                                onlyCountries={['mw','in']}
                                 autoFormat
-                                disableDropdown
-                                disableCountryCode
+                                // disableDropdown
+                                // disableCountryCode
                               />
                               {item.errObj.mobilenumberErr && (
                                 <span className="error">{item.errObj.mobilenumberErr} </span>
@@ -1340,7 +1234,6 @@ class CreateUser extends Component<any, any> {
                             placeHolder="Eg: abc@mail.com"
                             value={item.email}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'owner','')}
-                            disabled={isValidatePage ? true : false}
                             onKeyUp={(e: any)=>this.validateEmail(e, idx,'owner')}
                           />
                           {item.errObj.emailErr && (
@@ -1376,8 +1269,8 @@ class CreateUser extends Component<any, any> {
                           <th>First Name</th>
                           <th>Last Name</th>
                           <th>Mobile Number</th>
-                          <th>Email</th>
-                          <th>isActive?</th>
+                          <th>Email(Optional)</th>
+                          <th>Active?</th>
                         </tr>
                       </thead>
                           <tbody>
@@ -1393,9 +1286,8 @@ class CreateUser extends Component<any, any> {
                               placeHolder="Eg: Keanu"
                               value={item.firstname}
                               onChange={(e: any)=>this.handleChange(idx, e, '', 'staff', '')}
-                              disabled={isValidatePage ? true : false}
                             />
-                              {item.errObj.firstNameErr && (
+                              {item.errObj?.firstNameErr && (
                               <span className="error">{item.errObj.firstNameErr} </span>
                             )}
                           </td>
@@ -1407,9 +1299,8 @@ class CreateUser extends Component<any, any> {
                             placeHolder="Eg: Reeves"
                             value={item.lastname}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'staff', '')}
-                            disabled={isValidatePage ? true : false}
                             />
-                             {item.errObj.lastNameErr && (
+                             {item.errObj?.lastNameErr && (
                               <span className="error">{item.errObj.lastNameErr} </span>
                             )}
                           </td>
@@ -1425,26 +1316,16 @@ class CreateUser extends Component<any, any> {
                                 country={'mw'}
                                 value={item.mobilenumber}
                                 onChange={(value, e)=>this.handleChange(idx, e, 'phone','staff', value)}
-                                onlyCountries={['mw']}
+                                onlyCountries={['mw','in']}
                                 autoFormat
-                                disableDropdown
-                                disableCountryCode
+                                // disableDropdown
+                                // disableCountryCode
                               />
-                              {item.errObj.mobilenumberErr && (
+                              {item.errObj?.mobilenumberErr && (
                                 <span className="error">{item.errObj.mobilenumberErr} </span>
                               )}
                             </div>
                           </div>
-                              {/* <Input
-                              type="text"
-                              className="form-control"
-                              name="mobilenumber"
-                              placeHolder="Mobile Number"
-                              value={userData.mobilenumber}
-                              onChange={(e: any) => this.handlePersonalChange(e)}
-                              disabled={isValidatePage ? true : false}
-                              onKeyUp={(e: any)=>this.isNumberKey(e)}
-                              /> */}
                           </td>
                           <td>
                             <Input
@@ -1454,10 +1335,9 @@ class CreateUser extends Component<any, any> {
                             placeHolder="Eg.abc@mail.com"
                             value={item.email}
                             onChange={(e: any)=>this.handleChange(idx, e, '', 'staff','')}
-                            disabled={isValidatePage ? true : false}
                             onKeyUp={(e: any)=>this.validateEmail(e, idx,'staff')}
                           />
-                          {item.errObj.emailErr && (
+                          {item.errObj?.emailErr && (
                             <span className="error">{item.errObj.emailErr} </span>
                           )}
                           </td>
@@ -1484,99 +1364,51 @@ class CreateUser extends Component<any, any> {
                 </div>
               </>
             )}
-
-            <div className="shipping">
+            <div className="geographicLocation" style={{ width: '80%'}}>
               {(currentStep == 2 ) && (
                 <>
-                <div className="row fieldsAlign">
-                  <div className="col-md-12  form-group">
-                  <Input
-                      type="text"
-                      className="form-control"
-                      name="shippingcountrycode" 
-                      placeHolder="Country"
-                      value={userData.shippingcountrycode}
-                      onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                      disabled
-                    />
-                     {shippingcountrycodeErr && (
-                            <span className="error">{shippingcountrycodeErr} </span>
-                      )}
-                  </div>
-                </div>
-                <div className="row fieldsAlign">
-                  <div className="col-md-3 form-group">
-                    <Input
-                      type="text"
-                      className="form-control"
-                      name="shippingstreet" 
-                      placeHolder="Street"
-                      value={userData.shippingstreet}
-                      onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                      disabled={isValidatePage ? true : false}
-                    />
-                    {shippingstreetErr && (
-                     <span className="error">{shippingstreetErr} </span>
-                    )}
-                  </div>
-                  <div className="col-md-3">
-                      <Dropdown
-                        name="shippingcity"
-                        label="City"
-                        options={shippingcity}
-                        value={userData.shippingcity}
-                        handleChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        isPlaceholder
-                        isDisabled = {isValidatePage ? true : false} 
-                      />
-                        {shippingcityErr && (
-                     <span className="error">{shippingcityErr} </span>
-                    )}
-                  </div>
-                  <div className="col-md-3">
-                      <Dropdown
-                        name="shippingstate"
-                        label="State"
-                        options={shippingstate}
-                        value={userData.shippingstate}
-                        handleChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        isPlaceholder
-                        isDisabled = {isValidatePage ? true : false} 
-                      />
-                      {shippingstateErr && (
-                        <span className="error">{shippingstateErr} </span>
-                      )}
-                  </div>
-                  <div className="col-md-3">
-                    <Input
-                      type="text"
-                      className="form-control"
-                      name="shippingzipcode" 
-                      placeHolder="Postal Code"
-                      value={userData.shippingzipcode}
-                      onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                      disabled={isValidatePage ? true : false}
-                    />
-                  {shippingzipcodeErr && (
-                      <span className="error">{shippingzipcodeErr} </span>
-                    )}
-                  </div>
-                </div>
-               </>
-              )}
-            </div>
-            <div className="geographicLocation" style={{ width: '80%'}}>
-              {(currentStep == 3 ) && (
                   <div className="row fieldsAlign">
                     {locationList}
                   </div>
+                  <div className="row">
+                    <div className="col-md-8">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="deliverystreet" 
+                        placeHolder="Street"
+                        value={userData.deliverystreet}
+                        onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
+                        width='96%'
+                      />
+                      {deliverystreetErr && (
+                        <span className="error">{deliverystreetErr} </span>
+                      )}
+                    </div>
+
+                    <div className="col-md-4">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="deliveryzipcode" 
+                        placeHolder="Postal Code"
+                        value={userData.deliveryzipcode}
+                        onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
+                        onKeyPress={(e: any)=>this.isNumberKey(e)}
+                      />
+                    {deliveryzipcodeErr && (
+                        <span className="error">{deliveryzipcodeErr} </span>
+                      )}
+                    </div>
+                  </div>
+                </>
               )}
             </div>
-            <div>
-              {currentStep == 4 && (
+            <div style={{marginTop: '-28px' }}>
+              {currentStep == 3 && (
                 <>
                   <div className="row fieldsAlign">
-                    <div className="col-sm-3 form-group">
+                    <div className="col-sm-3">
                       <Input
                         type="text"
                         className="form-control"
@@ -1584,60 +1416,35 @@ class CreateUser extends Component<any, any> {
                         placeHolder="Tax Id"
                         value={userData.taxid}
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        disabled={isValidatePage ? true : false}
                       />
                       {taxidErr && (
                         <span className="error">{taxidErr} </span>
                       )}
                     </div>
-                    <div className="col-sm-3 form-group">
+                    <div className="col-sm-3">
                       <Input
                         type="text"
                         className="form-control"
-                        name="accountname"
+                        name="whtaccountname"
                         placeHolder="Account Name"
-                        value={userData.accountname}
+                        value={userData.whtaccountname}
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        disabled={isValidatePage ? true : false}
                       />
                       {accountnameErr && (
                         <span className="error">{accountnameErr} </span>
                       )}
                     </div>
-                    <div className="col-sm-3">
-                      <label className="font-weight-bold">Same as Personal Info</label>
-                      <CustomSwitch
-                        checked={this.state.accInfo}
-                        onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        name="accInfo"
-                        disabled={isValidatePage ? true : false}
-                      />
-                    </div>
                   </div>
+
                   <div className="row fieldsAlign">
-                    <div className="col-sm-3 form-group">
+                    <div className="col-sm-3">
                       <Input
                         type="text"
                         className="form-control"
-                        name="billingcountrycode" 
-                        placeHolder="Country"
-                        value={userData.billingcountrycode}
-                        onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        disabled
-                      />
-                      {billingcountrycodeErr && (
-                        <span className="error">{billingcountrycodeErr} </span>
-                      )}
-                    </div>
-                    <div className="col-sm-3 form-group">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="ownername" 
+                        name="whtownername" 
                         placeHolder="Owner Name"
-                        value={userData.ownername}
+                        value={userData.whtownername}
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        disabled={isValidatePage ? true : false}
                       />
                       <div>
                       {ownernameErr && (
@@ -1645,61 +1452,46 @@ class CreateUser extends Component<any, any> {
                       )}
                       </div>
                     </div>
+                    <div className="col-sm-3">
+                      <label className="font-weight-bold">Same as Personal Info</label>
+                      <CustomSwitch
+                        checked={this.state.accInfo}
+                        onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
+                        name="accInfo"
+                      />
+                    </div>
                   </div>
-                  <div className="row fieldsAlign">
-                    <div className="col-md-3 form-group">
+                  <div className="row fieldsAlign" style={{ width: '80%' }}>
+                    {locationList}
+                  </div>
+                  <div className="row" style={{ width: '81%'}}>
+                    <div className="col-md-8">
                       <Input
                         type="text"
                         className="form-control"
                         name="billingstreet" 
                         placeHolder="Street"
-                        value={this.state.accInfo ? userData.shippingstreet : userData.billingstreet}
+                        value={this.state.accInfo ? userData.deliverystreet : userData.billingstreet}
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        disabled={this.state.accInfo || isValidatePage ? true : false}
+                        disabled={this.state.accInfo ? true : false}
+                        width='96%'
                       />
                       {!accInfo && billingstreetErr && (
                         <span className="error">{billingstreetErr} </span>
                       )}
                     </div>
-                    <div className="col-md-3 form-group">
-                        <Dropdown
-                          name="billingcity"
-                          label="City"
-                          options={shippingcity}
-                          value={this.state.accInfo ? userData.shippingcity : userData.billingcity}
-                          handleChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                          isPlaceholder
-                          isDisabled={this.state.accInfo || isValidatePage ? true : false}
-                        />
-                        {!accInfo && billingcityErr && (
-                        <span className="error">{billingcityErr} </span>
-                      )}
-                    </div>
-                    <div className="col-md-3 form-group">
-                        <Dropdown
-                          name="billingstate"
-                          label="State"
-                          options={shippingstate}
-                          handleChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                          value={this.state.accInfo ? userData.shippingstate : userData.billingstate}
-                          isPlaceholder
-                          isDisabled={this.state.accInfo || isValidatePage ? true : false}
-                        />
-                        {!accInfo && billingstateErr && (
-                        <span className="error">{billingstateErr} </span>
-                      )}
-                    </div>
-                    <div className="col-sm-3 form-group">
+                    <div className="col-sm-4">
                       <Input
                         type="text"
                         className="form-control"
                         name="billingzipcode"
                         placeHolder="Postal Code"
                         onChange={(e: any)=>this.handleChange('', e, '', 'otherSteps','')}
-                        disabled={this.state.accInfo || isValidatePage ? true : false}
+                        onKeyPress={(e: any)=>this.isNumberKey(e)}
+                        disabled={this.state.accInfo ? true : false}
                         value={
                           this.state.accInfo
-                            ? userData.shippingzipcode
+                            ? userData.deliveryzipcode
                             : userData.billingzipcode
                         }
                       />
@@ -1716,7 +1508,7 @@ class CreateUser extends Component<any, any> {
 
         <div
           className="submit"
-          style={{ position: "absolute", bottom: "0px", marginLeft: currentStep == 1 ? "350px" : "275px" }}
+          style={{ position: "absolute", bottom: "0px", marginLeft: currentStep == 1 ? "350px" : (currentStep == 3 && isValidatePage) ? "200px" : "275px" }}
         >
           <div className="">
             {currentStep !== 1 && (
@@ -1741,9 +1533,9 @@ class CreateUser extends Component<any, any> {
             >
               Reset
             </button>
-            {currentPage === 'validate' &&
+            {(isValidatePage) && (currentStep === 3) &&
              <button
-             className="btn btn-decline buttonStyle"
+             className="btn buttonStyle dec-btn-user"
              onClick={() => this.declineUser()}
            >
              Decline
@@ -1753,6 +1545,7 @@ class CreateUser extends Component<any, any> {
           <div className="">{nextButton}</div>
         </div>
       </div>
+      </AUX>
     );
   }
 }

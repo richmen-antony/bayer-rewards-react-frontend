@@ -12,10 +12,10 @@ export const apiURL = {
     retailerCreation: "user/createexternaluser",
     deactivateChannelPartner:"user/deactivate",
     activateChannelPartner:"user/activate",
-    updateUser: "user/updateuser",
+    updateUser: "user/update",
     adminUserCount: "user/getadmindashboard",
     downloadUserList:"user/downloaduserlist",
-    changeLogs: "user/getchangelogs",
+    changeLogs: "user/changelogs",
     downloadScanlogs:"order/advisororder/report",
     getTemplateData:"template/getTemplateByCountry",
     registerTemplateData: "template/templateForCountryRegister"

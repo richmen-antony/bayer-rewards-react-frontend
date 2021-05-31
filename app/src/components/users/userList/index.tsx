@@ -265,8 +265,6 @@ class UserList extends Component<Props, States> {
       searchtext: this.state.searchText,
       isfiltered: this.state.isFiltered,
       rowsperpage: this.state.rowsPerPage,
-      lastmodifieddatefrom: startDate,
-      lastmodifieddateto: new Date().toJSON(),
       usertype: "EXTERNAL",
       partnertype:
         this.state.partnerType.type === "Distributor"
