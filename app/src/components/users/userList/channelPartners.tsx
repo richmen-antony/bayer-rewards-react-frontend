@@ -1178,7 +1178,7 @@ class ChannelPartners extends Component<Props, States> {
                               ? "declined"
                               : ""
                           }`}
-                          style = {{fontStyle: '12px'}}
+                          style={{ fontStyle: "12px", height: "32px" }}
                         >
                           <img
                             style={{ marginRight: "8px" }}
