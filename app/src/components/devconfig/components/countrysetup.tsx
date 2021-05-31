@@ -199,7 +199,13 @@ const CountrySetupComp = (props: ICountryProps) => {
       props.addTnTFlowInputList([{ level: 0, code: "", position: "" }]);
       props.addPackagingDefinitionInputList([
         {
-          productcategory: "",
+          productcategory: "SEED",
+          packaginghierarchylevel: 0,
+          packaginghierarchyname: "",
+          parentpackage: "",
+        },
+        {
+          productcategory: "CP",
           packaginghierarchylevel: 0,
           packaginghierarchyname: "",
           parentpackage: "",

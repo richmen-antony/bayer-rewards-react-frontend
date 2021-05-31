@@ -348,6 +348,13 @@ class Devconfigurations extends React.Component<
         this.props.addPackagingDefinitionInputList({});
         this.props.addPackagingDefinitionInputList([
           {
+            productcategory: "SEED",
+            packaginghierarchylevel: 0,
+            packaginghierarchyname: "",
+            parentpackage: "",
+          },
+          {
+            productcategory: "CP",
             packaginghierarchylevel: 0,
             packaginghierarchyname: "",
             parentpackage: "",
