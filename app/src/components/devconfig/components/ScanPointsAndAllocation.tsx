@@ -5,7 +5,7 @@ import minus from "../../../assets/icons/minus.svg";
 import { connect } from "react-redux";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
-
+import _ from "lodash";
 import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
 
 interface IScanPointsAndAllocationProps {
@@ -23,24 +23,12 @@ export const ScanPointsAndAllocation = (
     setInputList,
   } = props;
   const [valSelected, setValSelected] = useState("NA");
+ 
 
-  const getUnique = (arr: any, comp: any) => {
-    //store the comparison  values in array
-    const unique = arr
-      .map((e: any) => e[comp])
-      // store the indexes of the unique objects
-      .map((e: any, i: any, final: any) => final.indexOf(e) === i && i)
-      // eliminate the false indexes & return unique objects
-      .filter((e: any) => arr[e])
-      .map((e: any) => arr[e]);
-    return unique;
-  };
-
-  const paackaginglevelList = getUnique(
-    props.packagingdefinition.inputList,
-    "packaginglevel"
-  );
-
+ 
+  const paackaginglevelList =_.uniqBy(props.packagingdefinition.inputList, 'packaginghierarchyname'); 
+   
+ 
   // handle input change
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
@@ -226,6 +214,7 @@ export const ScanPointsAndAllocation = (
                         onChange={(event) =>
                           handlePackaginglevelChange(event, idx)
                         }
+                        multiple
                       >
                         {/* <option value="SKU" key="SKU">
                           SKU
