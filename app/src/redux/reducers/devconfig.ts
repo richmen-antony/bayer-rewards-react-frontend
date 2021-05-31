@@ -34,7 +34,7 @@ const INITIAL_STATE: any = {
         inputList: [{ level:0, code: "", position: "" }]
     },
     packagingdefinition: {
-        inputList: [{ packaginghierarchylevel :0, packaginghierarchyname: "", parentpackage: "" }]
+        inputList: [{ productcategory:"", packaginghierarchylevel :0, packaginghierarchyname: "", parentpackage: "" }]
     },
     scanpointsandallocation: {
         inputList: [{ position: 0 , scannedby: "", scantype: "", packaginglevel:"", pointallocated:false }]
