@@ -38,7 +38,7 @@ function SearchInput(props: any) {
       <img src={Layout} className="layout" />
       <i
         className="fa fa-info-circle"
-        style={{ fontSize: "16px" }}
+        style={{ fontSize: "16px", fontFamily: "appRegular !important" }}
         title={tolltip}
       ></i>
     </div>

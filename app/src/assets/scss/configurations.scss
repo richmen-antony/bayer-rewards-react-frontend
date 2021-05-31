@@ -3,7 +3,6 @@
 //   margin: 20px auto;
 //   width: 100%;
 // }
-
 .buttons-container {
   text-align: right;
   padding-right: 10%;
@@ -55,23 +54,23 @@
   overflow: auto;
   padding: 0;
 }
-.card-body{
-  .add-plus-icon{
+.card-body {
+  .add-plus-icon {
     position: absolute;
     right: 20px;
     bottom: 15px;
-    img{
-    width: 40px;
-    height: 40px;
+    img {
+      width: 40px;
+      height: 40px;
     }
   }
 
-  .createdBy-text{
+  .createdBy-text {
     margin: 0;
-    color:#000000;
+    color: #000000;
   }
-  .createdBy-sub-text{
-    color:#3A3A3A;
+  .createdBy-sub-text {
+    color: #3a3a3a;
   }
 }
 .config-header {
@@ -164,7 +163,8 @@
 
 .my-tablist {
   button[aria-selected="true"] {
-    font-family: "Open Sans", sans-serif;
+    // font-family: "Open Sans", sans-serif;
+    font-family: "appRegular" !important;
     font-weight: 600;
   }
   ::after {
@@ -190,94 +190,93 @@
     font-weight: 600;
   }
   button {
-
     background-color: rgba(0, 108, 248, 1);
     border-radius: 5px;
     text-align: center;
     padding: 10px 20px;
-    color: #FFFFFF;
+    color: #ffffff;
     border: 0.5px solid #006cf8;
   }
-
 }
-.card-header{
+.card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.pencilEditImg{
+.pencilEditImg {
   width: 20px;
   height: 20px;
 }
 
-.checkbox-warning-filled [type="checkbox"][class*='filled-in']:checked+label:after {
+.checkbox-warning-filled
+  [type="checkbox"][class*="filled-in"]:checked
+  + label:after {
   border-color: #28a745 !important;
   background-color: #28a745;
 }
-.card.dev{
+.card.dev {
   margin: 20px 30px;
   border-radius: 10px !important;
   border: 1px solid #70707052;
   overflow: hidden;
-
 }
-.card-header{
+.card-header {
   background-color: inherit;
   border: 0;
   padding: 0 1rem;
- .title{
-   color:#000000;
-   font-size: 20px;
-   font-weight: 600;
-   font-family: "Open Sans";
-   width: 30%;
- }
- .base-url{
-  width: 50%;
-  color:#0A0A0A;
-   span{
-     font-family: italic;
-     font-size: 16px;
-     padding: 10px;
-   }
- }
+  .title {
+    color: #000000;
+    font-size: 20px;
+    font-weight: 600;
+    //  font-family: "Open Sans";
+    font-family: "appRegular" !important;
+    width: 30%;
+  }
+  .base-url {
+    width: 50%;
+    color: #0a0a0a;
+    span {
+      //  font-family: italic;
+      font-family: "appItalic" !important;
+      font-size: 16px;
+      padding: 10px;
+    }
+  }
 }
 
-.total-parms{
+.total-parms {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  .params{
-    background-color: #6E6D6D;
+  .params {
+    background-color: #6e6d6d;
     padding: 5px 15px;
     border-radius: 20px;
     text-align: center;
     margin-right: 10px;
     margin-bottom: 10px;
 
-    label{
-      color:#FFFFFF;
+    label {
+      color: #ffffff;
       font-size: 16px;
       margin: 0;
     }
   }
 }
 
-.checkbox-tick-icon{
+.checkbox-tick-icon {
   width: 20px;
   height: 20px;
 }
-.configure-title{
+.configure-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 20px 0;
-
 }
 
 .searchInputRow.baseurl {
-
-  label{
+  label {
     padding-right: 20px;
   }
   .input-field {
@@ -291,25 +290,24 @@
     border: 1px solid #7c7c7c4a;
     border-radius: 5px;
   }
-
 }
-.add-system-input{
+.add-system-input {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-left: 30px;
   margin-right: 35px;
-  p{
+  p {
     color: #000000;
     font-size: 18px;
     font-weight: 600;
-    font-family: "Open Sans";
+    // font-family: "Open Sans";
+    font-family: "appRegular" !important;
     margin: 0px;
   }
 }
 
 @media only screen and (max-width: 1440px) {
-
   .card-body.configure {
     border-radius: 15px;
     margin: 20px;
@@ -348,31 +346,29 @@
       color: #10384f;
       font-size: 18px;
       font-weight: 400;
-
     }
   }
 
-  .card.dev{
+  .card.dev {
     margin: 20px 30px;
-
   }
-  .card-header{
+  .card-header {
     padding: 15px;
-   .title{
-     font-size: 18px;
-     font-weight: 600;
-     font-family: "Open Sans";
-     margin: 0px;
-   }
-   .base-url{
-
-     span{
-       font-size: 14px;
-     }
-   }
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      // font-family: "Open Sans";
+      font-family: "appRegular" !important;
+      margin: 0px;
+    }
+    .base-url {
+      span {
+        font-size: 14px;
+      }
+    }
   }
 
-  .pencilEditImg{
+  .pencilEditImg {
     width: 15px;
     height: 15px;
   }
