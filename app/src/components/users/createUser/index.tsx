@@ -649,7 +649,7 @@ class CreateUser extends Component<any, any> {
       this.state.isValidatePage || this.state.isEditPage
         ? {
             isedit: true,
-            lastupdatedby: this.state.username.toUpperCase(),
+            lastupdatedby: this.state.username,
             lastupdateddate: new Date().toJSON(),
           }
         : "";
@@ -1854,7 +1854,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          disabled={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : false}
                           width="96%"
                         />
                         {!accInfo && billingstreetErr && (
@@ -1871,7 +1871,7 @@ class CreateUser extends Component<any, any> {
                             this.handleChange("", e, "", "otherSteps", "")
                           }
                           onKeyPress={(e: any) => this.isNumberKey(e)}
-                          disabled={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : false}
                           value={
                             this.state.accInfo
                               ? userData.deliveryzipcode
