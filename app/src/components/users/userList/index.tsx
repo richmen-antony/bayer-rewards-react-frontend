@@ -773,7 +773,7 @@ class UserList extends Component<Props, States> {
                   </div>
 
                   <div>
-                    <button className="btn btn-primary" onClick={this.download}>
+                    <button className="btn btn-primary" onClick={this.download} style={{backgroundColor:"#1F445A"}}>
                       <img src={Download} width="17" alt={NoImage} />{" "}
                       <span>Download</span>
                     </button>

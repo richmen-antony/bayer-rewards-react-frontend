@@ -158,10 +158,7 @@ class ChangeLogs extends Component<Props, States> {
     return (
       <AUX>
         {isLoader && <Loaders />}
-        <div
-          className="container-fluid card"
-          style={{ backgroundColor: "#f8f8fa" }}
-        >
+        <div style={{ backgroundColor: "#f8f8fa" }}>
           <div className="row align-items-center user-tab">
             <div className="col-sm-6">
               <span>
@@ -184,7 +181,7 @@ class ChangeLogs extends Component<Props, States> {
                 tolltip="Search applicable for User Name, Field, Old Value and New Value"
               />
               <div>
-                <button className="btn btn-primary">
+                <button className="btn btn-primary" style={{backgroundColor:"#1F445A"}}>
                   <img src={Download} width="17" alt={NoImage} />
                 </button>
               </div>
