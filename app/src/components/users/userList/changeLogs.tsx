@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
-import { Tooltip } from "reactstrap";
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
@@ -22,6 +20,12 @@ type Props = {
   location?: any;
   history?: any;
   backToUsersList: Function;
+  state: any;
+  previous: any;
+  next: any;
+  pageNumberClick: any;
+  handlePaginationChange: any;
+  totalData?: number
 };
 type States = {
   isLoader: boolean;

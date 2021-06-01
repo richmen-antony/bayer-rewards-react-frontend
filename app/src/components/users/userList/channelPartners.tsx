@@ -137,7 +137,7 @@ class ChannelPartners extends Component<Props, States> {
       isValidateSuccess: true,
       userList: {},
       userData : {
-        staffRows: [],
+        staffdetails: [],
         ownerRows: [{
           firstname: "",
           lastname: "",
@@ -192,6 +192,7 @@ class ChannelPartners extends Component<Props, States> {
     .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels:any = [];
+        levels = ['country','region','add','district','epa','village'];
         locationData.map((item: any) => {
           let levelsSmall = (item.locationhiername).toLowerCase();
           levels.push(levelsSmall)
@@ -389,7 +390,7 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   handleClosePopup = () => {
-    this.setState({ deActivatePopup: false, editPopup: false, staffPopup: false });
+    this.setState({ deActivatePopup: false, editPopup: false, staffPopup: false});
   };
 
   showPopup = (e: any, key: keyof States) => {
@@ -411,7 +412,7 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   editStaff =(data: any) => {
-    let passData: any = { ...data };
+    let passData: any = JSON.parse(JSON.stringify(data));
     let activeStatus = (passData.userstatus === 'INACTIVE' || passData.userstatus === 'DECLINED') ? false : true;
     this.setState({ userList: passData, status: data.userstatus, activateUser: activeStatus,staffPopup : true }, ()=>{
       const userFields = this.state.userList;
@@ -448,10 +449,10 @@ class ChannelPartners extends Component<Props, States> {
         billingcity: userFields.billingcity,
         billingstate: userFields.billingstate,
         billingzipcode: userFields.billingzipcode,
-        staffRows: userFields.staffdetails,
+        staffdetails: userFields.staffdetails,
     }
     if (userinfo) {
-      userinfo.staffRows.forEach((staffInfo: any)=>{
+      userinfo.staffdetails.forEach((staffInfo: any)=>{
         let errObjd = {errObj:{
           emailErr: "",
           firstnameErr: "",
@@ -517,21 +518,21 @@ class ChannelPartners extends Component<Props, States> {
 
     let newUserList= this.state.userData; 
     if(this.state.isStaff) {
-      newUserList.staffRows.map((item:any, index:number) => {
+      newUserList.staffdetails.map((item:any, index:number) => {
          delete item.errObj 
       })
       this.setState((prevState: any)=> ({
         userData: {
           ...prevState.userData,
-          staffRows: newUserList.staffRows
+          staffdetails: newUserList.staffdetails
         }
       }))
     }else {
-      newUserList.staffRows=[];
+      newUserList.staffdetails=[];
       this.setState((prevState: any)=> ({
         userData: {
           ...prevState.userData,
-          staffRows: newUserList.staffRows
+          staffdetails: newUserList.staffdetails
         }
       }))
     }
@@ -572,7 +573,7 @@ class ChannelPartners extends Component<Props, States> {
         "billingvillage": userData.billingvillage,
         "billingstreet": userData.billingstreet,
         "billingzipcode":  userData.billingzipcode,
-        "staffdetails": [...this.state.userData.staffRows]
+        "staffdetails": [...this.state.userData.staffdetails]
     }
     const userDetails = {
       isedit : true,
@@ -689,7 +690,7 @@ class ChannelPartners extends Component<Props, States> {
         }
       }));
     } else if (type === 'staff') {
-      let staffs = this.state.userData.staffRows;
+      let staffs = this.state.userData.staffdetails;
       if( key === 'phone') {
         staffs[idx]['mobilenumber'] = val;
       } else if (e.target.name === "active") {
@@ -701,7 +702,7 @@ class ChannelPartners extends Component<Props, States> {
       this.setState((prevState:any)=>({
         userData: {
           ...prevState.userData,
-          staffRows: staffs
+          staffdetails: staffs
         }
       }));
     } else {
@@ -735,7 +736,7 @@ class ChannelPartners extends Component<Props, States> {
       usersObj.ownerRows.push(item);
       this.setState({ userData: usersObj });
     } else {
-      usersObj.staffRows.push(item);
+      usersObj.staffdetails.push(item);
       this.setState({ userData: usersObj });
     }
   };
@@ -746,7 +747,7 @@ class ChannelPartners extends Component<Props, States> {
       userObj.ownerRows.splice(idx,1);
       this.setState({ userData: userObj })
     } else {
-      userObj.staffRows.splice(idx,1);
+      userObj.staffdetails.splice(idx,1);
       this.setState({ userData: userObj })
     }
   }
@@ -754,25 +755,24 @@ class ChannelPartners extends Component<Props, States> {
     let isStaff = e.target.checked
     let userData=this.state.userData;
     if(isStaff) {
-      userData.staffRows.push({firstname: "",
-    lastname: "",
-    mobilenumber: "",
-    email: "",
-    active: true,
-    errObj: {
-      firstnameErr:'',
-      lastnameErr: "",
-      mobilenumberErr: "",
-      emailErr: "",
-    }})
-    
+      userData.staffdetails.push({firstname: "",
+      lastname: "",
+      mobilenumber: "",
+      email: "",
+      active: true,
+      errObj: {
+        firstnameErr:'',
+        lastnameErr: "",
+        mobilenumberErr: "",
+        emailErr: "",
+      }})
     } else {
-      userData.staffRows =[];
+      userData.staffdetails =[];
     }
     this.setState((prevState:any)=>({
       userData: {
         ...prevState.userData,
-        staffRows: userData.staffRows
+        staffdetails: userData.staffdetails
       }
     }));
     this.setState({isStaff: isStaff});
@@ -781,16 +781,16 @@ class ChannelPartners extends Component<Props, States> {
   validateEmail = (e: any, idx: number,type:string) =>{
     let emailField = e.target.value;
     let ownerRows = [...this.state.userData.ownerRows];
-    let staffRows = [...this.state.userData.staffRows];
+    let staffdetails = [...this.state.userData.staffdetails];
     
     if(type==='staff') {
       // if (!emailField) {
-      //   staffRows[idx].errObj.emailErr = "Please enter the Email";
+      //   staffdetails[idx].errObj.emailErr = "Please enter the Email";
       // } else {
       if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-        staffRows[idx].errObj.emailErr = "";
+        staffdetails[idx].errObj.emailErr = "";
       }else {
-        staffRows[idx].errObj.emailErr = "Please enter a valid email";
+        staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
     if(type==='owner'){
@@ -804,7 +804,7 @@ class ChannelPartners extends Component<Props, States> {
       userData: {
         ...prevState.userData,
         ownerRows: ownerRows,
-        staffRows: staffRows,
+        staffdetails: staffdetails,
       },
       isRendered:true
     }))
@@ -830,19 +830,19 @@ class ChannelPartners extends Component<Props, States> {
       }))
     })
 
-    userData.staffRows.map((userInfo:any,idx:number)=>{
+    userData.staffdetails.map((userInfo:any,idx:number)=>{
         let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
         errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
         errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
         errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
-        userData.staffRows[idx].errObj = errObj;
+        userData.staffdetails[idx].errObj = errObj;
         if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
           formValid = false;
         }
         this.setState((prevState:any) => ({
           userData: {
             ...prevState.userData,
-            staffRows : userData.staffRows
+            staffdetails : userData.staffdetails
           }
         }))
       })
@@ -850,8 +850,9 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   render() {
-    console.log('userlist', this.state.userList);
+
     const { allChannelPartners, isAsc, onSort, totalData } = this.props;
+    console.log('allChannelPartners', allChannelPartners);
     const {
       isLoader,
       pageNo,
@@ -1104,7 +1105,7 @@ class ChannelPartners extends Component<Props, States> {
                       </thead>
                           <tbody>
                         {isStaff &&
-                        userData.staffRows?.map((item: any, idx: number) => (
+                        userData.staffdetails?.map((item: any, idx: number) => (
                         <tr>
                           {idx === 0 ? <td className="font-weight-bold">Store Staffs</td> : <td></td>}
                           <td>
@@ -1179,7 +1180,7 @@ class ChannelPartners extends Component<Props, States> {
                               />
                               </div>
                               <div>
-                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 4) ?
+                                {((idx === userData.staffdetails.length - 1 ) && userData.staffdetails.length < 4) ?
                                   <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
                                   :  <img style={{width: '50px', height: '50px',}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
                               </div>
