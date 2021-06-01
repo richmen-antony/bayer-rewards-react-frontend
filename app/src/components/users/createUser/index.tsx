@@ -71,7 +71,7 @@ class CreateUser extends Component<any, any> {
         billingcity: '',
         billingstate:'',
         billingzipcode: '',
-        staffRows: [],
+        staffdetails: [],
         ownerRows: [{
           firstname: "",
           lastname: "",
@@ -193,7 +193,9 @@ class CreateUser extends Component<any, any> {
           let levelsSmall = (item.locationhiername).toLowerCase();
           levels.push(levelsSmall)
         })
-        this.setState({ isLoader: false,
+        levels = ['country','region','add','district','epa','village'];
+        this.setState({ 
+          isLoader: false,
           geographicFields: levels }, ()=>{
             this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
             if (this.props.location?.page) {
@@ -238,10 +240,10 @@ class CreateUser extends Component<any, any> {
                 billingcity: userFields.billingcity,
                 billingstate: userFields.billingstate,
                 billingzipcode: userFields.billingzipcode,
-                staffRows: userFields.staffdetails,
+                staffdetails: userFields.staffdetails,
             }
             if (userinfo) {
-              userinfo.staffRows.forEach((staffInfo: any)=>{
+              userinfo.staffdetails.forEach((staffInfo: any)=>{
                 let errObjd = {errObj:{
                   emailErr: "",
                   firstnameErr: "",
@@ -492,21 +494,21 @@ class CreateUser extends Component<any, any> {
     });
     let newUserList= this.state.userData; 
     if(this.state.isStaff) {
-      newUserList.staffRows.map((item:any, index:number) => {
+      newUserList.staffdetails.map((item:any, index:number) => {
          delete item.errObj 
       })
       this.setState((prevState: any)=> ({
         userData: {
           ...prevState.userData,
-          staffRows: newUserList.staffRows
+          staffdetails: newUserList.staffdetails
         }
       }))
     }else {
-      newUserList.staffRows=[];
+      newUserList.staffdetails=[];
       this.setState((prevState: any)=> ({
         userData: {
           ...prevState.userData,
-          staffRows: newUserList.staffRows
+          staffdetails: newUserList.staffdetails
         }
       }))
     }
@@ -527,7 +529,7 @@ class CreateUser extends Component<any, any> {
         "rolename": userData.rolename,
         "username": userData.username,
         "accounttype": userData.rolename,
-        "userstatus":  userData.isDeclineUser ? 'Declined' : userData.ownerRows[0].active ? 'ACTIVE' : 'INACTIVE',
+        "userstatus":  userData.isDeclineUser ? 'DECLINED' : userData.ownerRows[0].active ? 'ACTIVE' : 'INACTIVE',
         "storewithmultiuser": this.state.isStaff ? true : false,
         "iscreatedfrommobile": false,
         "whtaccountname": userData.whtaccountname,
@@ -549,7 +551,7 @@ class CreateUser extends Component<any, any> {
         "billingvillage": shippingFields.village,
         "billingstreet": this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
         "billingzipcode": this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
-        "staffdetails": [...this.state.userData.staffRows]
+        "staffdetails": [...this.state.userData.staffdetails]
     }
     } else {
       data = {
@@ -562,7 +564,7 @@ class CreateUser extends Component<any, any> {
         "usertype": (userData.rolename == 'Area Sales Agent') ? 'INTERNAL' : 'EXTERNAL',
         "rolename": userData.rolename,
         "accounttype":userData.rolename,
-        "userstatus": userData.isDeclineUser ? 'Declined' : userData.ownerRows[0].active ? 'ACTIVE' : 'INACTIVE',
+        "userstatus": userData.isDeclineUser ? 'DECLINED' : userData.ownerRows[0].active ? 'ACTIVE' : 'INACTIVE',
         "storewithmultiuser": this.state.isStaff ? true : false,
         "iscreatedfrommobile": false,
         "whtaccountname": userData.whtaccountname,
@@ -584,7 +586,7 @@ class CreateUser extends Component<any, any> {
         "billingvillage": shippingFields.village,
         "billingstreet": this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
         "billingzipcode": this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
-        "staffdetails": [...this.state.userData.staffRows]
+        "staffdetails": [...this.state.userData.staffdetails]
     }
     }
 
@@ -692,19 +694,19 @@ class CreateUser extends Component<any, any> {
         }))
         })
   
-        userData.staffRows.map((userInfo:any,idx:number)=>{
+        userData.staffdetails.map((userInfo:any,idx:number)=>{
           let errObj:any = {firstNameErr:'',lastNameErr:'',emailNameErr:'',mobilenumberErr:''};
           errObj.firstNameErr=userInfo.firstname ? '' : "Please enter the First Name";
           errObj.lastNameErr=userInfo.lastname ? '' : "Please enter the last Name";
           errObj.mobilenumberErr=userInfo.mobilenumber ? '' : "Please enter the mobile number";
-          userData.staffRows[idx].errObj = errObj;
+          userData.staffdetails[idx].errObj = errObj;
           if (errObj.firstNameErr !== '' ||  errObj.lastNameErr !== '' || errObj.mobilenumberErr !== '') {
             formValid = false;
           }
           this.setState((prevState:any) => ({
             userData: {
               ...prevState.userData,
-              staffRows : userData.staffRows
+              staffdetails : userData.staffdetails
             }
           }))
           })
@@ -769,13 +771,13 @@ class CreateUser extends Component<any, any> {
   validateEmail = (e: any, idx: number,type:string) =>{
     let emailField = e.target.value;
     let ownerRows = [...this.state.userData.ownerRows];
-    let staffRows = [...this.state.userData.staffRows];
+    let staffdetails = [...this.state.userData.staffdetails];
     
     if(type==='staff') {
       if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-        staffRows[idx].errObj.emailErr = "";
+        staffdetails[idx].errObj.emailErr = "";
       }else {
-        staffRows[idx].errObj.emailErr = "Please enter a valid email";
+        staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
     if(type==='owner'){
@@ -789,7 +791,7 @@ class CreateUser extends Component<any, any> {
       userData: {
         ...prevState.userData,
         ownerRows: ownerRows,
-        staffRows: staffRows,
+        staffdetails: staffdetails,
       },
       isRendered:true
     }))
@@ -812,7 +814,7 @@ class CreateUser extends Component<any, any> {
        item.mobilenumber ='';
        item.email ='';
       })
-      userData.staffRows.forEach((item:any, index:number) => {
+      userData.staffdetails.forEach((item:any, index:number) => {
         item.firstname ='';
         item.lastname ='';
         item.mobilenumber ='';
@@ -823,7 +825,7 @@ class CreateUser extends Component<any, any> {
         userData: {
           ...prevState.userData,
           ownerRows: userData.ownerRows,
-          staffRows: userData.staffRows,
+          staffdetails: userData.staffdetails,
         }
       }))
     } else if ( currentStep === 2) {
@@ -928,7 +930,7 @@ class CreateUser extends Component<any, any> {
         }
       }));
     } else if (type === 'staff') {
-      let staffs = this.state.userData.staffRows;
+      let staffs = this.state.userData.staffdetails;
       if( key === 'phone') {
         staffs[idx]['mobilenumber'] = val;
       } else if (e.target.name === "active") {
@@ -940,7 +942,7 @@ class CreateUser extends Component<any, any> {
       this.setState((prevState:any)=>({
         userData: {
           ...prevState.userData,
-          staffRows: staffs
+          staffdetails: staffs
         }
       }));
     } else {
@@ -996,7 +998,7 @@ class CreateUser extends Component<any, any> {
       usersObj.ownerRows.push(item);
       this.setState({ userData: usersObj });
     } else {
-      usersObj.staffRows.push(item);
+      usersObj.staffdetails.push(item);
       this.setState({ userData: usersObj });
     }
   };
@@ -1007,7 +1009,7 @@ class CreateUser extends Component<any, any> {
       userObj.ownerRows.splice(idx,1);
       this.setState({ userData: userObj })
     } else {
-      userObj.staffRows.splice(idx,1);
+      userObj.staffdetails.splice(idx,1);
       this.setState({ userData: userObj })
     }
   }
@@ -1015,7 +1017,7 @@ class CreateUser extends Component<any, any> {
     let isStaff = e.target.checked
     let userData=this.state.userData;
     if(isStaff) {
-      userData.staffRows.push({firstname: "",
+      userData.staffdetails.push({firstname: "",
     lastname: "",
     mobilenumber: "",
     email: "",
@@ -1029,12 +1031,12 @@ class CreateUser extends Component<any, any> {
     }})
     
     } else {
-      userData.staffRows =[];
+      userData.staffdetails =[];
     }
     this.setState((prevState:any)=>({
       userData: {
         ...prevState.userData,
-        staffRows: userData.staffRows
+        staffdetails: userData.staffdetails
       }
     }));
     this.setState({isStaff: isStaff});
@@ -1275,7 +1277,7 @@ class CreateUser extends Component<any, any> {
                       </thead>
                           <tbody>
                         {isStaff &&
-                        userData.staffRows?.map((item: any, idx: number) => (
+                        userData.staffdetails?.map((item: any, idx: number) => (
                         <tr>
                           {idx === 0 ? <td className="font-weight-bold">Store Staffs</td> : <td></td>}
                           <td>
@@ -1350,7 +1352,7 @@ class CreateUser extends Component<any, any> {
                               />
                               </div>
                               <div>
-                                {((idx === userData.staffRows.length - 1 ) && userData.staffRows.length < 4) ?
+                                {((idx === userData.staffdetails.length - 1 ) && userData.staffdetails.length < 4) ?
                                   <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
                                   :  <img style={{width: '50px', height: '50px',}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
                               </div>

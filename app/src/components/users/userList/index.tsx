@@ -253,6 +253,7 @@ class UserList extends Component<Props, States> {
   }
 
   getChannelPartnersList = (condIf?: string) => {
+    this.setState({ allChannelPartners: [] })
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
     let { status, startDate, endDate, region, epa, district }: any =
@@ -977,7 +978,13 @@ class UserList extends Component<Props, States> {
                 </TabPanel>
               </>
             ) : (
-              <ChangeLogs backToUsersList={this.backToUsersList} />
+              <ChangeLogs backToUsersList={this.backToUsersList}
+              state={this.state}
+              previous={this.previous}
+              next={this.next}
+              pageNumberClick={this.pageNumberClick}
+              totalData={totalData}
+              handlePaginationChange={this.handlePaginationChange} />
             )}
           </div>
         </div>

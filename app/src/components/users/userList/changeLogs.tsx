@@ -16,11 +16,19 @@ import NoImage from "../../../assets/images/no_image.svg";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import Download from "../../../assets/icons/download.svg";
 import {SearchInput} from "../../../utility/widgets/input/search-input";
+import Table from 'react-bootstrap/Table';
+import { Pagination } from "../../../utility/widgets/pagination";
 
 type Props = {
   location?: any;
   history?: any;
   backToUsersList: Function;
+  state: any;
+  previous: any;
+  next: any;
+  pageNumberClick: any;
+  handlePaginationChange: any;
+  totalData?: number
 };
 type States = {
   isLoader: boolean;
@@ -103,8 +111,12 @@ class ChangeLogs extends Component<Props, States> {
   }
 
   render() {
-    const { backToUsersList } = this.props;
+    const { backToUsersList,totalData } = this.props;
     const { allChangeLogs, searchText, isLoader, isAsc} = this.state;
+    const {
+      pageNo,
+      rowsPerPage
+    } = this.props.state;
     console.log('changelogs', allChangeLogs);
 
     return (
@@ -144,9 +156,8 @@ class ChangeLogs extends Component<Props, States> {
             </div>
           </div>
 
-        {allChangeLogs.length > 0 ? (
           <div className="table-responsive">
-            <table className="table" id="tableData">
+            <Table responsive>
               <thead>
                 <tr>
                   <th onClick={e => this.handleSort(e, "username", allChangeLogs, isAsc)}>
@@ -177,7 +188,8 @@ class ChangeLogs extends Component<Props, States> {
                 </tr>
               </thead>
               <tbody>
-                {allChangeLogs.map((list: any, i: number) => (
+              {allChangeLogs.length > 0 ? 
+                allChangeLogs.map((list: any, i: number) => (
                   <AUX key={i}>
                     <tr>
                       <td>{list.userid}</td>
@@ -188,19 +200,30 @@ class ChangeLogs extends Component<Props, States> {
                       <td>{moment(list.lastmodifieddate).format("HH-mm-ss")}</td>
                     </tr>
                   </AUX>
-                ))}
+                  
+                ))
+                : <>
+                <div className="col-12 card mt-4">
+                  <div className="card-body ">
+                    <div className="text-red py-4 text-center">No Data Found</div>
+                  </div>
+                </div></>
+                }
               </tbody>
-            </table>
-          </div>
-        ) : this.state.isLoader ? (
-          <Loaders />
-          ) : (
-            <div className="col-12 card mt-4">
-              <div className="card-body ">
-                <div className="text-red py-4 text-center">No Data Found</div>
+               </Table>
+              <div>
+                <Pagination
+                  data = {allChangeLogs}
+                  totalData={totalData}
+                  rowsPerPage={rowsPerPage}
+                  previous={this.props.previous}
+                  next={this.props.next}
+                  pageNumberClick={this.props.pageNumberClick}
+                  pageNo={pageNo}
+                  handlePaginationChange={this.props.handlePaginationChange}
+                />
               </div>
-            </div>
-          )}
+          </div>
         </div>
       </AUX>
     );
