@@ -129,8 +129,14 @@ function objectValues<T extends {}>(obj: T) {
 
   }
 
-
   export const hasDuplicate=(array:Array<any>,key:string)=> {
    return true;
-
   }
+
+export const handledropdownoption = (array:Array<any>,key:string) => {
+  const data : any = 
+  array?.length > 0 &&
+  array.map((val: any) => {
+      return { value: val[key], text: val[key] }})
+    return data;
+};
