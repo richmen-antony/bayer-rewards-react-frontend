@@ -51,7 +51,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
 
   const handleExpand = (value: any) => {
     handleAccordion(!accordionView);
-    setAccordionId(value.order_id);
+    setAccordionId(value.orderlineitemid);
   };
   const handleButton = (id: string) => {
     setAccordion(!accordion);
@@ -179,7 +179,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             )}
                           </tr>
                           {accordionView &&
-                            value?.order_id === accordionId &&
+                            value?.orderlineitemid === accordionId &&
                             data.orderstatus === "FULFILLED" && (
                               <tr>
                                 <td

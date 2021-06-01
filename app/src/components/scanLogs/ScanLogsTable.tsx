@@ -138,11 +138,11 @@ class ScanLogsTable extends Component<Props, States> {
       actions: ["All", "Distributor", "Retailer"],
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-      productCategories: [],
+      productCategories: ["All","HYBRID","CORN SEED","HERBICIDES","FUNGICIDES","INSECTICIDES"],
       status: ["All", "FULFILLED", "EXPIRED", "DUPLICATE"],
       list: ["All", "Distributor", "Retailer"],
       selectedFilters: {
-        // productCategory: "All",
+        productgroup: "All",
         status: "All",
         ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
         ordereddateto: new Date(),
@@ -190,7 +190,7 @@ class ScanLogsTable extends Component<Props, States> {
       rowsperpage: this.state.rowsPerPage,
       // role: this.state.selectedFilters.type,
       // scantype: this.state.selectedFilters.scanType,
-      // productcategory: this.state.selectedFilters.productCategory,
+      // productgroup: this.state.selectedFilters.productgroup,
       // scanstatus: this.state.selectedFilters.status,
       isfiltered: this.state.isFiltered,
       // startdate: this.state.selectedFilters.startDate,
@@ -326,7 +326,7 @@ class ScanLogsTable extends Component<Props, States> {
     e.stopPropagation();
     this.setState({
       selectedFilters: {
-        // productCategory: "All",
+        productgroup: "All",
         status: "All",
         ordereddatefrom: today.setMonth(today.getMonth() - 3),
         ordereddateto: new Date(),
@@ -600,7 +600,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   <span className="mr-2 chipLabel" key={i}>
                                     <Button
                                       color={
-                                        selectedFilters.productCategory === item
+                                        selectedFilters.productgroup === item
                                           ? "btn activeColor rounded-pill"
                                           : "btn rounded-pill boxColor"
                                       }
@@ -608,10 +608,11 @@ class ScanLogsTable extends Component<Props, States> {
                                       onClick={(e) =>
                                         this.handleFilterChange(
                                           e,
-                                          "productCategory",
+                                          "productgroup",
                                           item
                                         )
                                       }
+                                      style={{marginBottom:"5px"}}
                                     >
                                       {item}
                                     </Button>
