@@ -14,6 +14,7 @@ import CornImg from "../../assets/icons/corn_products.svg";
 import "../../assets/scss/configurations.scss";
 import RtArrow from "../../assets/icons/right_arrow.svg";
 import FarmerDenied from "../../assets/icons/farmer_denied.svg";
+import CpproductImg from "../../assets/icons/cp_products.svg";
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -157,11 +158,12 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </thead>
                   <tbody>
                     {data.products_ordered.map((value: any, index: number) => {
+                      console.log({value});
                       return (
                         <>
                           <tr key={index} onClick={() => handleExpand(value)}>
-                            <th scope="row">{<img src={CornImg} />}</th>
-                            <td>{value.productname}</td>
+                            <th scope="row">{<img src={value.productgroup ==="CORN SEED"?CornImg :value.productgroup ==="FUNGICIDES" ? CpproductImg :"" } />}</th>
+                            <td>{value.productname} <p>{value.materialid}</p></td>
                             <td>{value.productgroup || "Seed-corn"}</td>
                             <td className="text-center">{value.intendedquantity}</td>
                             <td className="text-center">{value.orderedquantity}</td>

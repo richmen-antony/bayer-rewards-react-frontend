@@ -15,7 +15,8 @@ import SearchIcon from "../../../assets/icons/search_icon.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import Download from "../../../assets/icons/download.svg";
-import {SearchInput} from "../../../utility/widgets/input/search-input";
+import { SearchInput } from "../../../utility/widgets/input/search-input";
+import { Pagination } from "../../../utility/widgets/pagination";
 
 type Props = {
   location?: any;
@@ -26,14 +27,14 @@ type States = {
   isLoader: boolean;
   allChangeLogs: Array<any>;
   searchText: any;
-  rowsPerPage: Number;
-  pageNo: Number;
+  rowsPerPage: number;
+  pageNo: number;
   isAsc: Boolean;
   totalData: number;
 };
 
 class ChangeLogs extends Component<Props, States> {
-  tableCellIndex : any;
+  tableCellIndex: any;
   timeOut: any;
   constructor(props: any) {
     super(props);
@@ -44,45 +45,49 @@ class ChangeLogs extends Component<Props, States> {
       rowsPerPage: 15,
       pageNo: 1,
       isAsc: true,
-      totalData: 0
+      totalData: 0,
     };
     this.timeOut = 0;
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.getChangeLogs();
   }
 
-  getChangeLogs =()=>{
-      const { changeLogs } = apiURL;
-       this.setState({ isLoader: true });
-      let data = {
-        page: this.state.pageNo,
-        searchtext: this.state.searchText,
-        rowsperpage: this.state.rowsPerPage,
-        countrycode: 'MW' 
-      }
+  getChangeLogs = () => {
+    const { changeLogs } = apiURL;
+    this.setState({ isLoader: true });
+    let data = {
+      page: this.state.pageNo,
+      searchtext: this.state.searchText,
+      rowsperpage: this.state.rowsPerPage,
+      countrycode: "MW",
+    };
 
-      invokeGetAuthService(changeLogs, data)
+    invokeGetAuthService(changeLogs, data)
       .then((response: any) => {
-        this.setState({
-          isLoader: false,
-          allChangeLogs:
-          Object.keys(response.body).length !== 0 ? response.body.rows : [],
-        });
-        const total = response.body.rows.count();
-        this.setState({ totalData: total });
+        if(response.body){
+          const total = response.body?.totalrows;
+          console.log({total});
+          this.setState({
+            isLoader: false,
+            allChangeLogs:
+              Object.keys(response.body).length !== 0 ? response.body?.rows : [],
+            totalData: Number(total),
+          });
+        }
+       
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
         console.log(error, "error");
       });
-  }
+  };
   handleSearch = (e: any) => {
     // alert('hi')
     let searchText = e.target.value;
     this.setState({ searchText: searchText });
-    console.log('text', this.state.searchText)
+    console.log("text", this.state.searchText);
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
@@ -97,103 +102,186 @@ class ChangeLogs extends Component<Props, States> {
     this.setState({ allChangeLogs: response, isAsc: !isAsc });
   };
 
-  handleSort(e:any,columnname: string, allChangeLogs : any, isAsc : Boolean){
+  handleSort(e: any, columnname: string, allChangeLogs: any, isAsc: Boolean) {
     this.tableCellIndex = e.currentTarget.cellIndex;
-    this.onSort(columnname, allChangeLogs, isAsc)
+    this.onSort(columnname, allChangeLogs, isAsc);
   }
+  previous = (pageNo: any) => {
+    this.setState({ pageNo: pageNo - 1 });
+    setTimeout(() => {
+      this.getChangeLogs();
+    }, 0);
+  };
+  next = (pageNo: any) => {
+    this.setState({ pageNo: pageNo + 1 });
+    setTimeout(() => {
+      this.getChangeLogs();
+    }, 0);
+  };
+  pageNumberClick = (number: any) => {
+    this.setState({ pageNo: number });
+    setTimeout(() => {
+      this.getChangeLogs();
+    }, 0);
+  };
+
+  handlePaginationChange = (e: any) => {
+    let value = 0;
+    if (e.target.name === "perpage") {
+      value = e.target.value;
+      this.setState({ rowsPerPage: value });
+      setTimeout(() => {
+        this.getChangeLogs();
+      }, 2000);
+    } else if (e.target.name === "gotopage") {
+      value = e.target.value;
+      this.setState({ pageNo: value });
+      setTimeout(() => {
+        this.getChangeLogs();
+      }, 2000);
+    }
+  };
 
   render() {
     const { backToUsersList } = this.props;
-    const { allChangeLogs, searchText, isLoader, isAsc} = this.state;
-    console.log('changelogs', allChangeLogs);
+    const {
+      allChangeLogs,
+      searchText,
+      isLoader,
+      isAsc,
+      totalData,
+      rowsPerPage,
+      pageNo,
+    } = this.state;
+    console.log("changelogs", totalData);
 
     return (
       <AUX>
-          {isLoader && <Loaders />}
+        {isLoader && <Loaders />}
         <div
           className="container-fluid card"
           style={{ backgroundColor: "#f8f8fa" }}
         >
           <div className="row align-items-center user-tab">
             <div className="col-sm-6">
-            <span>
-                  <img
-                    style={{ marginRight: "8px" }}
-                    src={leftArrow}
-                    width="17"
-                    alt="leftArrow"
-                    onClick={()=>backToUsersList()}
-                  />
-                  CHANGE LOGS
-                </span>
-            
+              <span>
+                <img
+                  style={{ marginRight: "8px" }}
+                  src={leftArrow}
+                  width="17"
+                  alt="leftArrow"
+                  onClick={() => backToUsersList()}
+                />
+                CHANGE LOGS
+              </span>
             </div>
             <div className="col-sm-6 leftAlign">
-                 <SearchInput 
-                      placeHolder="Search Logs (min 3 letters)"
-                      type="text"
-                      onChange={this.handleSearch}
-                      value={searchText} 
-                      tolltip="Search applicable for User Name, Field, Old Value and New Value"
-                      />
+              <SearchInput
+                placeHolder="Search Logs (min 3 letters)"
+                type="text"
+                onChange={this.handleSearch}
+                value={searchText}
+                tolltip="Search applicable for User Name, Field, Old Value and New Value"
+              />
               <div>
                 <button className="btn btn-primary">
-                <img src={Download} width="17" alt={NoImage} /> 
+                  <img src={Download} width="17" alt={NoImage} />
                 </button>
               </div>
             </div>
           </div>
 
-        {allChangeLogs.length > 0 ? (
-          <div className="table-responsive">
-            <table className="table" id="tableData">
-              <thead>
-                <tr>
-                  <th onClick={e => this.handleSort(e, "username", allChangeLogs, isAsc)}>
-                    User Name
-                    {
-                      this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
-                    }
-                  </th>
-                  <th onClick={e => this.handleSort(e, "field", allChangeLogs, isAsc)}>Field
-                  {
-                      this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null 
-                  }
-                    
-                  </th>
-                  <th onClick={e => this.handleSort(e, "oldvalue", allChangeLogs, isAsc)}>
-                    Old Value
-                    {
-                      this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null 
-                    }
-                  </th>
-                  <th onClick={e => this.handleSort(e, "newvalue", allChangeLogs, isAsc)}>New Value
-                  {
-                      this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null 
-                    }
-                  </th>
-                  <th>Modified Date</th>
-                  <th>Modified Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allChangeLogs.map((list: any, i: number) => (
-                  <AUX key={i}>
-                    <tr>
-                      <td>{list.userid}</td>
-                      <td>{list.fieldname} </td>
-                      <td>{list.oldvalue} </td>
-                      <td>{list.newvalue} </td>
-                      <td>{moment(list.lastmodifieddate).format("YYYY-MM-DD")}</td>
-                      <td>{moment(list.lastmodifieddate).format("HH-mm-ss")}</td>
-                    </tr>
-                  </AUX>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : this.state.isLoader ? (
-          <Loaders />
+          {allChangeLogs.length > 0 ? (
+            <div className="table-responsive change-logs">
+              <table className="table" id="tableData">
+                <thead>
+                  <tr>
+                    <th
+                      onClick={(e) =>
+                        this.handleSort(e, "username", allChangeLogs, isAsc)
+                      }
+                    >
+                      User Name
+                      {this.tableCellIndex !== undefined ? (
+                        this.tableCellIndex === 0 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-3`}
+                          ></i>
+                        ) : null
+                      ) : (
+                        <i className={"fas fa-sort-up ml-3"}></i>
+                      )}
+                    </th>
+                    <th
+                      onClick={(e) =>
+                        this.handleSort(e, "field", allChangeLogs, isAsc)
+                      }
+                    >
+                      Field
+                      {this.tableCellIndex === 1 ? (
+                        <i
+                          className={`fas ${
+                            isAsc ? "fa-sort-down" : "fa-sort-up"
+                          } ml-3`}
+                        ></i>
+                      ) : null}
+                    </th>
+                    <th
+                      onClick={(e) =>
+                        this.handleSort(e, "oldvalue", allChangeLogs, isAsc)
+                      }
+                    >
+                      Old Value
+                      {this.tableCellIndex === 2 ? (
+                        <i
+                          className={`fas ${
+                            isAsc ? "fa-sort-down" : "fa-sort-up"
+                          } ml-3`}
+                        ></i>
+                      ) : null}
+                    </th>
+                    <th
+                      onClick={(e) =>
+                        this.handleSort(e, "newvalue", allChangeLogs, isAsc)
+                      }
+                    >
+                      New Value
+                      {this.tableCellIndex === 3 ? (
+                        <i
+                          className={`fas ${
+                            isAsc ? "fa-sort-down" : "fa-sort-up"
+                          } ml-3`}
+                        ></i>
+                      ) : null}
+                    </th>
+                    <th>Modified Date</th>
+                    <th>Modified Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allChangeLogs.map((list: any, i: number) => (
+                    <AUX key={i}>
+                      <tr>
+                        <td>{list.userid}</td>
+                        <td>{list.fieldname} </td>
+                        <td>{list.oldvalue} </td>
+                        <td>{list.newvalue} </td>
+                        <td>
+                          {moment(list.lastmodifieddate).format("YYYY-MM-DD")}
+                        </td>
+                        <td>
+                          {moment(list.lastmodifieddate).format("HH-mm-ss")}
+                        </td>
+                      </tr>
+                    </AUX>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : this.state.isLoader ? (
+            <Loaders />
           ) : (
             <div className="col-12 card mt-4">
               <div className="card-body ">
@@ -201,6 +289,18 @@ class ChangeLogs extends Component<Props, States> {
               </div>
             </div>
           )}
+          <div>
+            <Pagination
+              totalData={totalData}
+              rowsPerPage={rowsPerPage}
+              previous={this.previous}
+              next={this.next}
+              pageNumberClick={this.pageNumberClick}
+              pageNo={pageNo}
+              handlePaginationChange={this.handlePaginationChange}
+              data={allChangeLogs}
+            />
+          </div>
         </div>
       </AUX>
     );
