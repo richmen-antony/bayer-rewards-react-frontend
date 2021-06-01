@@ -31,7 +31,6 @@ import {
   invokeGetAuthService,
   invokeGetService,
 } from "../../utility/base/service";
-import ExpiredIcon from "../../assets/icons/expired.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
@@ -138,7 +137,14 @@ class ScanLogsTable extends Component<Props, States> {
       actions: ["All", "Distributor", "Retailer"],
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-      productCategories: ["All","HYBRID","CORN SEED","HERBICIDES","FUNGICIDES","INSECTICIDES"],
+      productCategories: [
+        "All",
+        "HYBRID",
+        "CORN SEED",
+        "HERBICIDES",
+        "FUNGICIDES",
+        "INSECTICIDES",
+      ],
       status: ["All", "FULFILLED", "EXPIRED", "DUPLICATE"],
       list: ["All", "Distributor", "Retailer"],
       selectedFilters: {
@@ -167,19 +173,52 @@ class ScanLogsTable extends Component<Props, States> {
       // value: 0,
       value: moment(),
       lastUpdatedDateErr: "",
+      farmerOptions: [],
+      retailerOptions: [],
     };
     this.timeOut = 0;
   }
   componentDidMount() {
     this.getScanLogs();
-    // let data: any = getLocalStorageData("userData");
-    // let userData = JSON.parse(data);
-
-    // this.setState({
-    //   userRole: userData.role,
-    // });
-    console.log({ userData });
+    this.getRetailerList();
   }
+  getRetailerList = () => {
+    const { rsmRetailerList } = apiURL;
+    const { selectedFilters } = this.state;
+    let queryParams = {
+      region: userData.geolevel1,
+      countrycode: userData.countrycode,
+      retailerid:
+        selectedFilters.retailer === "ALL" ? null : selectedFilters.retailer,
+    };
+    invokeGetAuthService(rsmRetailerList, queryParams)
+      .then((response) => {
+        if (response.data) {
+          const { farmers, retailers } = response.data;
+          const farmerOptions =
+            farmers?.length > 0
+              ? farmers.map((val: any) => {
+                  return { value: val.farmerid, text: val.farmername };
+                })
+              : [];
+          const retailerOptions =
+            retailers?.length > 0
+              ? retailers.map((val: any) => {
+                  return { value: val.staffid, text: val.staffname };
+                })
+              : [];
+          this.setState({
+            isLoader: false,
+            farmerOptions,
+            retailerOptions,
+          });
+        }
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+        console.log("error", error);
+      });
+  };
   getScanLogs = () => {
     const { scanLogs } = apiURL;
     this.setState({ isLoader: true });
@@ -228,7 +267,7 @@ class ScanLogsTable extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        console.log("error",error);
+        console.log("error", error);
       });
   };
   handleClosePopup = () => {
@@ -405,14 +444,14 @@ class ScanLogsTable extends Component<Props, States> {
   download = () => {
     const { downloadScanlogs } = apiURL;
 
-    const data = {
-      // ...this.state.selectedFilters,
+    let data = {
       region: userData.geolevel1,
       countrycode: userData.countrycode,
       isfiltered: this.state.isFiltered,
     };
-
-    
+    if (this.state.isFiltered) {
+      data = { ...data, ...this.state.selectedFilters };
+    }
     invokeGetAuthService(downloadScanlogs, data)
       .then((response) => {
         const data = response;
@@ -427,7 +466,7 @@ class ScanLogsTable extends Component<Props, States> {
     let flag = false;
     if (name === "ordereddateto") {
       if (date >= val.ordereddatefrom) {
-        console.log("checking")
+        console.log("checking");
         this.setState({
           dateErrMsg: "",
         });
@@ -475,12 +514,17 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   handleSelect = (event: any, name: string) => {
-    this.setState({
-      selectedFilters: {
-        ...this.state.selectedFilters,
-        [name]: event.target.value,
+    this.setState(
+      {
+        selectedFilters: {
+          ...this.state.selectedFilters,
+          [name]: event.target.value,
+        },
       },
-    });
+      () => {
+        if (name === "retailer") this.getRetailerList();
+      }
+    );
   };
   render() {
     const {
@@ -498,6 +542,8 @@ class ScanLogsTable extends Component<Props, States> {
       totalData,
       rowsPerPage,
       lastUpdatedDateErr,
+      farmerOptions,
+      retailerOptions,
     } = this.state;
 
     const pageNumbers = [];
@@ -561,7 +607,8 @@ class ScanLogsTable extends Component<Props, States> {
                                 handleChange={(e: any) =>
                                   this.handleSelect(e, "retailer")
                                 }
-                                options={[{ text: "ALL", value: "ALl" }]}
+                                options={retailerOptions}
+                                defaultValue="ALL"
                               />
                             </div>
 
@@ -587,7 +634,8 @@ class ScanLogsTable extends Component<Props, States> {
                                 handleChange={(e: any) =>
                                   this.handleSelect(e, "farmer")
                                 }
-                                options={[{ text: "ALL", value: "ALl" }]}
+                                options={farmerOptions}
+                                defaultValue="ALL"
                               />
                             </div>
 
@@ -612,7 +660,7 @@ class ScanLogsTable extends Component<Props, States> {
                                           item
                                         )
                                       }
-                                      style={{marginBottom:"5px"}}
+                                      style={{ marginBottom: "5px" }}
                                     >
                                       {item}
                                     </Button>

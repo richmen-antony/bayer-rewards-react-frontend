@@ -22,7 +22,7 @@ import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
 import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import "../../../assets/scss/users.scss";
-import { DownloadCsv } from "../../../utility/helper";
+import { downloadCsvFile } from "../../../utility/helper";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import { Input } from "../../../utility/widgets/input";
 import Logs from "../../../assets/icons/logs.svg";
@@ -32,6 +32,9 @@ import ChangeLogs from "./changeLogs";
 import ArrowIcon from "../../../assets/icons/tick.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import {SearchInput} from "../../../utility/widgets/input/search-input";
+import { getLocalStorageData } from "../../../utility/base/localStore";
+
+
 type SelectedFiltersTypes = {
   region: string;
   epa: string;
@@ -172,7 +175,8 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
+const obj: any = getLocalStorageData("userData");
+const userData = JSON.parse(obj);
 class UserList extends Component<Props, States> {
   timeOut: any;
   constructor(props: any) {
@@ -416,28 +420,31 @@ class UserList extends Component<Props, States> {
     const { downloadUserList } = apiURL;
 
     let data = {
-      searchtext: this.state.searchText,
-      usertype: "CHANNEL PARTNER",
-      partnertype: "Retailer",
+      countrycode:userData.countrycode
+      // usertype: "CHANNEL PARTNER",
+      // partnertype: "Retailer",
     };
     let { status, startDate, endDate, region, epa, district }: any =
       this.state.selectedFilters;
-
-    let filter = {
-      isfiltered: true,
-      status: status,
-      effectivefrom: startDate,
-      expirydate: endDate,
-      region,
-      epa,
-      district,
-    };
-    data = { ...data, ...filter };
+     if(this.state.isFiltered){
+      let filter = {
+        isfiltered: true,
+        status: status,
+        effectivefrom: startDate,
+        expirydate: endDate,
+        region,
+        epa,
+        district,
+        searchtext: this.state.searchText,
+      };
+      data = { ...data, ...filter };
+     }
+   
 
     invokeGetAuthService(downloadUserList, data)
       .then((response) => {
-        const data = response?.body?.rows;
-        DownloadCsv(data, "user.csv");
+        const data = response;
+        downloadCsvFile(data, "user.csv");
       })
       .catch((error) => {
         this.setState({ isLoader: false });

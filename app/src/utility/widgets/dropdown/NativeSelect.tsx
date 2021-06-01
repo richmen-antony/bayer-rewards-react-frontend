@@ -37,9 +37,11 @@ export const NativeDropdown = ({
         onChange={handleChange}
         disabled={isDisabled ? true : false}
       >
-        {/* <option value="" disabled>
-          {label}
-        </option> */}
+        {defaultValue&&
+        <option value={defaultValue}>
+          {defaultValue}
+        </option>
+         }
 
         {options &&
           options.map((person: any) => (

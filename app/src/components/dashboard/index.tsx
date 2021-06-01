@@ -44,8 +44,11 @@ class Dashboard extends Component<Props, States> {
     this.setState({
       userRole: userData.role,
     });
-    this.getrsmDashboardDetails();
+    if(userData.role ==="ADMIN")
     this.getAdminDashboardDetails();
+    if(userData.role ==="RSM")
+    this.getrsmDashboardDetails();
+   
   }
   getrsmDashboardDetails = () => {
     const { rsmDashboard } = apiURL;
@@ -66,7 +69,13 @@ class Dashboard extends Component<Props, States> {
   };
   getAdminDashboardDetails = () => {
     const { adminUserCount } = apiURL;
-    invokeGetAuthService(adminUserCount)
+    let obj: any = getLocalStorageData("userData");
+    let userData = JSON.parse(obj);
+    const data = {
+      // region: userData.geolevel1 ,
+      countrycode:userData.countrycode
+    }
+    invokeGetAuthService(adminUserCount,data)
       .then((response: any) => {
         let res = Object.keys(response.body).length !== 0 ? response.body : "";
         this.setState({
