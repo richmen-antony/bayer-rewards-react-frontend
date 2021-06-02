@@ -642,7 +642,7 @@ class CreateUser extends Component<any, any> {
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
-    formValid = true;
+
     const { currentStep } = this.state;
     let newStep = currentStep;
     if (clickType == "personalNext" || clickType == "geographicNext") {
