@@ -23,8 +23,6 @@ import Loader from "../../../utility/widgets/loader";
 import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import "../../../assets/scss/users.scss";
 import { downloadCsvFile } from "../../../utility/helper";
-import leftArrow from "../../../assets/icons/left_arrow.svg";
-import { Input } from "../../../utility/widgets/input";
 import Logs from "../../../assets/icons/logs.svg";
 import ChannelPartners from "./channelPartners";
 import ThirdPartyUsers from "./thirdPartyUsers";
@@ -33,17 +31,12 @@ import ArrowIcon from "../../../assets/icons/tick.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import {SearchInput} from "../../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../../utility/base/localStore";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import CalenderIcon from "../../../assets/icons/calendar.svg";
+import moment from "moment";
 
 
-type SelectedFiltersTypes = {
-  region: string;
-  epa: string;
-  district: string;
-  status: string;
-  startDate: any;
-  endDate: any;
-  [key: string]: string;
-};
 type PartnerTypes = {
   type: String;
 };
@@ -64,7 +57,7 @@ type States = {
   productCategories: Array<any>;
   status: Array<any>;
   list: Array<any>;
-  selectedFilters: SelectedFiltersTypes;
+  selectedFilters: any;
   dateErrMsg: string;
   searchText: string;
   rowsPerPage: number;
@@ -90,6 +83,7 @@ type States = {
   countryList: Array<any>;
   hierarchyList: Array<any>;
   partnerType: PartnerTypes;
+  userData:any;
 };
 
 const AntTabs = withStyles({
@@ -175,8 +169,32 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-const obj: any = getLocalStorageData("userData");
-const userData = JSON.parse(obj);
+interface IProps {
+  onChange?: any;
+  placeholder?: any;
+  value?: any;
+  id?: any;
+  onClick?: any;
+  // any other props that come into the component
+}
+const CalenderInput = ({ onChange, placeholder, value, id, onClick }: IProps) => (
+  <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+    <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+    <input
+      style={{
+        border: "none",
+        width: "120px",
+        height: "31px",
+        outline: "none",
+      }}
+      onChange={onChange}
+      placeholder={placeholder}
+      value={value}
+      id={id}
+      onClick={onClick}
+    />
+  </div>
+);
 class UserList extends Component<Props, States> {
   timeOut: any;
   constructor(props: any) {
@@ -202,8 +220,8 @@ class UserList extends Component<Props, States> {
         epa: "All",
         district: "All",
         status: "All",
-        startDate: backdate.toISOString().substr(0, 10),
-        endDate: new Date().toISOString().substr(0, 10),
+        lastmodifieddatefrom:new Date().setMonth(new Date().getMonth() - 6),
+        lastmodifieddateto: new Date() ,
       },
       partnerType: {
         type: "Retailer",
@@ -234,6 +252,7 @@ class UserList extends Component<Props, States> {
       dynamicFields: [],
       countryList: [],
       hierarchyList: [],
+      userData:{}
     };
     this.timeOut = 0;
   }
@@ -248,12 +267,12 @@ class UserList extends Component<Props, States> {
       this.getDynamicOptionFields();
     }, 0);
 
-    // let data: any = getLocalStorageData("userData");
-    // let userData = JSON.parse(data);
+    let data: any = getLocalStorageData("userData");
+    let userData = JSON.parse(data);
 
-    // this.setState({
-    //   userRole: userData.role,
-    // });
+    this.setState({
+      userData: userData,
+    });
   }
 
   getChannelPartnersList = (condIf?: string) => {
@@ -264,10 +283,8 @@ class UserList extends Component<Props, States> {
     const userData = JSON.parse(obj);
 
     this.setState({ isLoader: true });
-    let { status, startDate, endDate, region, epa, district }: any =
+    let { status, lastmodifieddatefrom, lastmodifieddateto, region, epa, district }: any =
     this.state.selectedFilters;
-    let enddateformat = new Date(endDate);
-    let dateformat = enddateformat.toJSON();
     let data = {
       // countrycode: 'MW',
       countrycode:userData.countrycode,
@@ -286,8 +303,12 @@ class UserList extends Component<Props, States> {
     if (this.state.isFiltered) {
       let filter = {
         status: status,
-        // lastmodifieddatefrom: startDate,
-        // lastmodifieddateto: endDate,
+        lastmodifieddatefrom: moment(lastmodifieddatefrom).format(
+          "YYYY-MM-DD"
+        ),
+        lastmodifieddateto: moment(lastmodifieddateto).format(
+          "YYYY-MM-DD"
+        ),
         region,
         epa,
         district,
@@ -425,18 +446,18 @@ class UserList extends Component<Props, States> {
     const { downloadUserList } = apiURL;
 
     let data = {
-      countrycode:userData.countrycode
+      countrycode:this.state.userData.countrycode
       // usertype: "CHANNEL PARTNER",
       // partnertype: "Retailer",
     };
-    let { status, startDate, endDate, region, epa, district }: any =
+    let { status, lastmodifieddatefrom, lastmodifieddateto, region, epa, district }: any =
       this.state.selectedFilters;
      if(this.state.isFiltered){
       let filter = {
         isfiltered: true,
         status: status,
-        effectivefrom: startDate,
-        expirydate: endDate,
+        effectivefrom: lastmodifieddatefrom,
+        expirydate: lastmodifieddateto,
         region,
         epa,
         district,
@@ -494,15 +515,14 @@ class UserList extends Component<Props, States> {
     }));
   };
   handleFilterChange = (e: any, name: string, item: any) => {
-    console.log('datetime', e.target.value)
     e.stopPropagation();
     let val = this.state.selectedFilters;
     let flag = false;
     if (name === "type") {
       val[name] = e.target.value;
       flag = true;
-    } else if (name === "startDate") {
-      if (e.target.value <= val.endDate) {
+    } else if (name === "lastmodifieddatefrom") {
+      if (e.target.value <= val.lastmodifieddateto) {
         val[name] = e.target.value;
         flag = true;
       } else {
@@ -510,12 +530,12 @@ class UserList extends Component<Props, States> {
           dateErrMsg: "Start date should be lesser than End Date",
         });
       }
-    } else if (name === "endDate") {
+    } else if (name === "lastmodifieddateto") {
       if (e.target.value >= new Date().toISOString().substr(0, 10)) {
         this.setState({
           dateErrMsg: "End Date should not be greater than todays date",
         });
-      } else if (e.target.value <= val.startDate) {
+      } else if (e.target.value <= val.lastmodifieddatefrom) {
         this.setState({
           dateErrMsg: "End Date should be greater than Start Date",
         });
@@ -529,7 +549,6 @@ class UserList extends Component<Props, States> {
     }
     if (flag) {
       this.setState({ selectedFilters: val }, () => {
-        console.log("status", this.state.selectedFilters);
       });
     }
   };
@@ -556,13 +575,12 @@ class UserList extends Component<Props, States> {
           epa: "All",
           district: "All",
           status: "All",
-          startDate: new Date().toISOString().substr(0, 10),
-          endDate: new Date().toISOString().substr(0, 10),
+          lastmodifieddatefrom: new Date(),
+          lastmodifieddateto: new Date(),
         },
         isFiltered: false,
       },
       () => {
-        console.log("testi", this.state.selectedFilters);
       }
     );
     setTimeout(() => {
@@ -668,9 +686,24 @@ class UserList extends Component<Props, States> {
   backToUsersList = () => {
     this.setState({ changeLogOpen: false });
   };
-
+  handleDateChange = (date: any, name: string) => {
+    let val = this.state.selectedFilters;
+    if (name === "lastmodifieddateto") {
+      if (date >= val.lastmodifieddatefrom) {
+        this.setState({
+          dateErrMsg: "",
+        });
+      } else {
+        this.setState({
+          dateErrMsg: "Start Date should be lesser than  End Date",
+        });
+      }
+    }
+    this.setState({
+      selectedFilters: { ...this.state.selectedFilters, [name]: date },
+    });
+  };
   render() {
-    console.log('!!!', this.state.totalData);
     const {
       isAsc,
       allChannelPartners,
@@ -750,6 +783,7 @@ class UserList extends Component<Props, States> {
     return (
       <AUX>
         {isLoader && <Loader />}
+        
         <div
           className="container-fluid card card-height"
           style={{ backgroundColor: "#f8f8fa" }}
@@ -890,35 +924,70 @@ class UserList extends Component<Props, States> {
                               </div>
                               <div className="form-group">{locationList}</div>
                               <label className="font-weight-bold pt-2">
-                                Date Range
+                                Last Modified Date
                               </label>
                               <div className="d-flex">
                                 <div className="user-filter-date-picker">
-                                  <input
+                                  {/* <input
                                     type="date"
                                     className="form-control"
-                                    value={selectedFilters.startDate}
+                                    value={selectedFilters.lastmodifieddatefrom}
                                     onChange={(e) =>
                                       this.handleFilterChange(
                                         e,
-                                        "startDate",
+                                        "lastmodifieddatefrom",
                                         ""
                                       )
                                     }
-                                  />
+                                  /> */}
+                                  <DatePicker
+                                  value={selectedFilters.lastmodifieddatefrom}
+                                  dateFormat="dd-MM-yyyy"
+                                  customInput={<CalenderInput />}
+                                  selected={selectedFilters.lastmodifieddatefrom}
+                                  onChange={(date: any) =>
+                                    this.handleDateChange(
+                                      date,
+                                      "lastmodifieddatefrom"
+                                    )
+                                  }
+                                  showMonthDropdown
+                                  showYearDropdown
+                                  dropdownMode="select"
+                                  maxDate={new Date()}
+                                />
                                 </div>
                                 <div className="p-2">-</div>
                                 <div className="user-filter-date-picker">
-                                  <input
+                                  {/* <input
                                     type="date"
                                     className="form-control"
-                                    value={selectedFilters.endDate}
+                                    value={selectedFilters.lastmodifieddateto}
                                     onChange={(e) =>
-                                      this.handleFilterChange(e, "endDate", "")
+                                      this.handleFilterChange(e, "lastmodifieddateto", "")
                                     }
-                                  />
+                                  /> */}
+                                  <DatePicker
+                                  value={selectedFilters.lastmodifieddateto}
+                                  dateFormat="dd-MM-yyyy"
+                                  customInput={<CalenderInput />}
+                                  selected={selectedFilters.lastmodifieddateto}
+                                  onChange={(date: any) =>
+                                    this.handleDateChange(
+                                      date,
+                                      "lastmodifieddateto"
+                                    )
+                                  }
+                                  showMonthDropdown
+                                  showYearDropdown
+                                  dropdownMode="select"
+                                  
+                                />
                                 </div>
                               </div>
+                              {dateErrMsg && (
+                                <span className="error">{dateErrMsg} </span>
+                              )}
 
                               <div className="filterFooter pt-3">
                                 {/* <Button
@@ -951,9 +1020,7 @@ class UserList extends Component<Props, States> {
                                   </span>
                                 </button>
                               </div>
-                              {dateErrMsg && (
-                                <span className="error">{dateErrMsg} </span>
-                              )}
+                             
                             </div>
                           </DropdownMenu>
                         </Dropdown>
@@ -965,6 +1032,7 @@ class UserList extends Component<Props, States> {
             </div>
           )}
           <div className="test">
+         
             {!this.state.changeLogOpen ? (
               <>
                 <TabPanel value={this.state.value} index={0}>
