@@ -24,15 +24,9 @@ import ArrowIcon from "../../../assets/icons/dark bg.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
-import { ArrowForwardIosOutlined } from "@material-ui/icons";
-import { AnyAaaaRecord, AnyMxRecord, AnyNaptrRecord } from "node:dns";
-import { StringifyOptions } from "node:querystring";
 import _ from "lodash";
 
 
-let data: any = getLocalStorageData("userData");
-
-let userinfo = JSON.parse(data);
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -40,12 +34,7 @@ const role = [
   { value: "DISTRIBUTOR", text: "Distributor" },
 ];
 
-const getStoreData = {
-  country: userinfo.geolevel0,
-  countryCode: userinfo.countrycode,
-  Language: "EN-US",
-};
- console.log({getStoreData});
+
 const shippingcity = [
   { value: "Chengalpattu", text: "Chengalpattu" },
   { value: "Kancheepuram", text: "Kancheepuram" },
@@ -60,17 +49,26 @@ let epa:any=[];
 let levelFive:any=[];
 
 class CreateUser extends Component<any, any> {
+  loggedUserInfo: any;
+  getStoreData:any
   constructor(props: any) {
     super(props);
     let oneYearFromNow = new Date();
     let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+    const dataObj: any = getLocalStorageData("userData");
+    const loggedUserInfo = JSON.parse(dataObj);
+      this.getStoreData = {
+      country: loggedUserInfo.geolevel0,
+      countryCode: loggedUserInfo.countrycode,
+      Language: "EN-US",
+    };
     this.state = {
       userData : {
-        countrycode: getStoreData.countryCode,
+        countrycode: this.getStoreData.countryCode,
         locale: "English (Malawi)",
         rolename: role[0].value,
         username: "",
-        shippingcountrycode: getStoreData.country,
+        shippingcountrycode:this.getStoreData.country,
         deliverystreet: "",
         shippingcity: "",
         shippingstate: "",
@@ -78,7 +76,7 @@ class CreateUser extends Component<any, any> {
         taxid: "",
         whtaccountname: "",
         whtownername: "",
-        billingcountrycode: getStoreData.country,
+        billingcountrycode:  this.getStoreData.country,
         billingstreet: "",
         billingcity: "",
         billingstate: "",
@@ -145,6 +143,7 @@ class CreateUser extends Component<any, any> {
       epaoptions: [],
       villageoptions:[]
     };
+    this.loggedUserInfo =loggedUserInfo;
   }
  
 
@@ -204,7 +203,7 @@ class CreateUser extends Component<any, any> {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: getStoreData.countryCode
+      countryCode:  this.getStoreData.countryCode
     }
     invokeGetAuthService(getTemplateData, data)
       .then((response: any) => {
@@ -220,7 +219,7 @@ class CreateUser extends Component<any, any> {
         this.setState({ 
           isLoader: false,
           geographicFields: levels }, ()=>{
-            // this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
+            // this.getNextHierarchy( this.getStoreData.country, this.state.geographicFields[1]);
             if (this.props.location?.page) {
               let currentPage = this.props.location?.page;
               let data: any = getLocalStorageData("userData");
@@ -324,7 +323,7 @@ class CreateUser extends Component<any, any> {
     this.setState({ isLoader: true });
     const { getHierarchyLevels } = apiURL;
     let countrycode = {
-      countryCode: getStoreData.countryCode
+      countryCode:  this.getStoreData.countryCode
     }
     invokeGetAuthService(getHierarchyLevels, countrycode)
     .then((response: any) => {
@@ -426,11 +425,11 @@ class CreateUser extends Component<any, any> {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "country" ? getStoreData.country : list === 'region' ? region : list === 'add' ? add : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
+            value: list === "country" ?  this.getStoreData.country : list === 'region' ? region : list === 'add' ? add : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
             options:
               list === "country"
                 ? this.state.countryList
-                : list === "country" ? getStoreData.country : list === 'region' ? regionoptions : list === 'add' ? addoptions : list === "district" ? districtoptions : list === "epa" ? epaoptions : list === "village" ? villageoptions : '',
+                : list === "country" ?  this.getStoreData.country : list === 'region' ? regionoptions : list === 'add' ? addoptions : list === "district" ? districtoptions : list === "epa" ? epaoptions : list === "village" ? villageoptions : '',
             error: "",
           });
         });
@@ -442,7 +441,7 @@ class CreateUser extends Component<any, any> {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "country" ? getStoreData.country : '',
+            value: list === "country" ?  this.getStoreData.country : '',
             options:
               list === "country"
                 ? this.state.countryList
@@ -581,7 +580,7 @@ class CreateUser extends Component<any, any> {
     this.setState({ isLoader: true });
      const { getLevelFive } = apiURL;
     let data = {
-      countrycode: getStoreData.countryCode,
+      countrycode:  this.getStoreData.countryCode,
       region: geoLocationInfo.region,
       add: geoLocationInfo.add,
       district: geoLocationInfo.district
@@ -605,7 +604,7 @@ class CreateUser extends Component<any, any> {
     this.setState({ isLoader: true });
     const { getLevelSix } = apiURL;
     let data = {
-      countrycode: getStoreData.countryCode,
+      countrycode:  this.getStoreData.countryCode,
       region: geoLocationInfo.region,
       add: geoLocationInfo.add,
       district: geoLocationInfo.district,
@@ -710,7 +709,7 @@ class CreateUser extends Component<any, any> {
     let data = {};
     if (this.state.isEditPage || this.state.isValidatePage) {
       data = {
-        countrycode: getStoreData.countryCode,
+        countrycode:  this.getStoreData.countryCode,
         ownerfirstname: userData.ownerRows[0].firstname,
         ownerlastname: userData.ownerRows[0].lastname,
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
@@ -731,7 +730,7 @@ class CreateUser extends Component<any, any> {
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
-        deliverycountry: getStoreData.countryCode,
+        deliverycountry:  this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
         deliverycity: geoFields.epa,
@@ -739,7 +738,7 @@ class CreateUser extends Component<any, any> {
         deliveryvillage: geoFields.village,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billingcountry: getStoreData.countryCode,
+        billingcountry:  this.getStoreData.countryCode,
         billingregion: shippingFields.region,
         billingstate: shippingFields.add,
         billingcity: shippingFields.epa,
@@ -755,7 +754,7 @@ class CreateUser extends Component<any, any> {
       };
     } else {
       data = {
-        countrycode: getStoreData.countryCode,
+        countrycode:  this.getStoreData.countryCode,
         ownerfirstname: userData.ownerRows[0].firstname,
         ownerlastname: userData.ownerRows[0].lastname,
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
@@ -775,7 +774,7 @@ class CreateUser extends Component<any, any> {
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
-        deliverycountry: getStoreData.countryCode,
+        deliverycountry:  this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
         deliverycity: geoFields.epa,
@@ -783,7 +782,7 @@ class CreateUser extends Component<any, any> {
         deliveryvillage: geoFields.village,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billingcountry: getStoreData.countryCode,
+        billingcountry:  this.getStoreData.countryCode,
         billingregion: shippingFields.region,
         billingstate: shippingFields.add,
         billingcity: shippingFields.epa,
@@ -1147,7 +1146,7 @@ class CreateUser extends Component<any, any> {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "country" ? getStoreData.country : "",
+            value: list === "country" ?  this.getStoreData.country : "",
             options:
               list === "country"
                 ? this.state.countryList
@@ -1222,11 +1221,11 @@ class CreateUser extends Component<any, any> {
             //   setFormArray.push({
             //     name: list,
             //     placeHolder: true,
-            //     value: list === "country" ? getStoreData.country : '' ,
+            //     value: list === "country" ?  this.getStoreData.country : '' ,
             //     options:
             //       list === "country"
             //         ? this.state.countryList
-            //         : list === "country" ? getStoreData.country : list === 'region' ? this.state.regionoptions : list === 'add' ? this.state.addoptions : list === "district" ? this.state.districtoptions : list === "epa" ? this.state.epaoptions : list === "village" ? this.state.villageoptions : '',
+            //         : list === "country" ?  this.getStoreData.country : list === 'region' ? this.state.regionoptions : list === 'add' ? this.state.addoptions : list === "district" ? this.state.districtoptions : list === "epa" ? this.state.epaoptions : list === "village" ? this.state.villageoptions : '',
             //     error: "",
             //   });
             // });
@@ -1234,7 +1233,7 @@ class CreateUser extends Component<any, any> {
               setFormArray.push({
                 name: list,
                 placeHolder: true,
-                value: list === "country" ? getStoreData.country : "",
+                value: list === "country" ?  this.getStoreData.country : "",
                 options:
                   list === "country"
                     ? this.state.countryList
@@ -1329,7 +1328,7 @@ class CreateUser extends Component<any, any> {
   render() {
     console.log('dynamicfields', this.state.dynamicFields)
     // let countryCode = (userinfo.countrycode).toLowerCase();
-    let countryCodeLower = _.toLower(userinfo.countrycode)
+    let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode)
     const {
       currentStep,
       userData,
