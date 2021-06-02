@@ -20,6 +20,9 @@ import {
 import Cookies from "js-cookie";
 import DropdownArrow from "../../assets/images/down-arrow.svg";
 import BayerRewardsImg from "../../assets/icons/logo.svg";
+import IndiaFLag from "../../assets/icons/india_flag.svg";
+import MalawiFlag from "../../assets/icons/malawi_flag.svg";
+
 
 type Props = {
   history?: any;
@@ -71,8 +74,7 @@ class TopBar extends Component<Props, States> {
         <div className="topbar-left">
           <div className="logo">
             <span>
-              <img src={BayerRewardsImg} alt="Logo" height="60" />
-              <span className="ml-3">Rewards</span>
+              <img src={BayerRewardsImg} alt="Logo" height="80" />
             </span>
             <i>
               <img src={BayerRewardsImg} alt="Logo" height="50" />
@@ -120,14 +122,14 @@ class TopBar extends Component<Props, States> {
                   <div className="profileToggle">
                     <div className="profileImg">
                       <img
-                        src={userImg}
+                        src={userData.countrycode ==="MW" ? MalawiFlag : IndiaFLag}
                         alt="user"
                         className="rounded-circle nav-pro-img"
                       />
                       <div className="content">
                         <h4 className="title">{userData.username}</h4>
 
-                        <span>{userData.email}</span>
+                        {/* <span>{userData.email}</span> */}
                       </div>
                       <img
                         src={DropdownArrow}

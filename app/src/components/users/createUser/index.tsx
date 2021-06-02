@@ -25,6 +25,10 @@ import RtButton from "../../../assets/icons/right_btn.svg";
 import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
 
+ let data: any = getLocalStorageData("userData");
+
+ let userinfo = JSON.parse(data);
+
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
@@ -32,11 +36,11 @@ const role = [
 ];
 
 const getStoreData = {
-  country: "MALAWI",
-  countryCode: "MW",
+  country: userinfo.geolevel0,
+  countryCode: userinfo.countrycode,
   Language: "EN-US",
 };
-
+ console.log({getStoreData});
 const shippingcity = [
   { value: "Chengalpattu", text: "Chengalpattu" },
   { value: "Kancheepuram", text: "Kancheepuram" },
@@ -160,8 +164,8 @@ class CreateUser extends Component<any, any> {
   getCountryList() {
     //service call
     let res = [
-      { value: "INDIA", text: "INDIA" },
-      { value: "MALAWI", text: "Malawi" },
+      { value: "India", text: "India" },
+      { value: "Malawi", text: "Malawi" },
     ];
     this.setState({ countryList: res });
   }
@@ -1313,7 +1317,7 @@ class CreateUser extends Component<any, any> {
                             isPlaceholder
                           />
                         </div>
-                        <div className="col-sm-3">
+                        <div className="col-sm-3" style={{marginLeft:"20px"}}>
                           <label className="font-weight-bold">
                             Has store staff?(Max 4)
                             <input

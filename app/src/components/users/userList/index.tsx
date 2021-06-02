@@ -794,7 +794,7 @@ class UserList extends Component<Props, States> {
             <div className="">
               <div
                 className="row align-items-center"
-                style={{ backgroundColor: "#ffffff" }}
+                style={{ backgroundColor: "#ffffff",padding:"10px 0" }}
               >
                 <div className="col-sm-6">
                   <SearchInput 
@@ -808,7 +808,7 @@ class UserList extends Component<Props, States> {
                 <div className="col-sm-6 leftAlign">
                   <div className="partner">
                     <label
-                      className="font-weight-bold pt-4"
+                      className="font-weight-bold pt-2"
                       style={{ color: "#363636", fontSize: " 14px" }}
                     >
                       Partner Type
@@ -833,7 +833,7 @@ class UserList extends Component<Props, States> {
                   </div>
                   <div
                     className=""
-                    style={{ marginLeft: "50px", marginTop: "16px" }}
+                    style={{ marginLeft: "50px" }}
                   >
                     {!changeLogOpen && (
                       <div className="filterRow">

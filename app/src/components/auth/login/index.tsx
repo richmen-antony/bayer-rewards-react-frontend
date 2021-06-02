@@ -227,6 +227,7 @@ class Login extends Component<Props, States> {
                     backgroundColor: "#10384F",
                     width: "100%",
                     padding: "7px",
+                    border:"1px solid  #10384F"
                   }}
                   handleClick={(e: any) => {
                     e.preventDefault();
