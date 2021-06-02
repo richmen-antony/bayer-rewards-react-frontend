@@ -1207,10 +1207,10 @@ class ChannelPartners extends Component<Props, States> {
               </button>
               <button
                 onClick={this.submitUpdateUser}
-                className="cus-btn-user buttonStyle"
+                className="cus-btn-user buttonStyle "
               >
                 Update
-                <span>
+                <span  className="staffcount">
                   <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
                 </span>
               </button>
