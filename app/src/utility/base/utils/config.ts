@@ -18,5 +18,8 @@ export const apiURL = {
     downloadScanlogs:"order/advisororder/report",
     getTemplateData:"template/getTemplateByCountry",
     registerTemplateData: "template/templateForCountryRegister",
-    rsmRetailerList:"order/users"
+    rsmRetailerList:"order/users",
+    getHierarchyLevels: "geographical/getRegionLocationHierLevelByCountry",
+    getLevelFive: "geographical/getEPA",
+    getLevelSix: "geographical/getVillage"
 }
