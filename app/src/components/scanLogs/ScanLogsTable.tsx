@@ -112,8 +112,7 @@ type States = {
   [key: string]: any;
   isAsc: Boolean;
 };
-const obj: any = getLocalStorageData("userData");
-const userData = JSON.parse(obj);
+
 
 class ScanLogsTable extends Component<Props, States> {
   tableCellIndex: any;
@@ -176,19 +175,27 @@ class ScanLogsTable extends Component<Props, States> {
       lastUpdatedDateErr: "",
       farmerOptions: [],
       retailerOptions: [],
+      loggedUserInfo:{}
     };
     this.timeOut = 0;
   }
   componentDidMount() {
-    this.getScanLogs();
-    this.getRetailerList();
+   
+    let data: any = getLocalStorageData("userData");
+    let userData = JSON.parse(data);
+    this.setState({
+      loggedUserInfo: userData,
+    },()=>{
+      this.getScanLogs();
+      this.getRetailerList();
+    });
   }
   getRetailerList = () => {
     const { rsmRetailerList } = apiURL;
     const { selectedFilters } = this.state;
     let queryParams = {
-      region: userData.geolevel1,
-      countrycode: userData.countrycode,
+      region: this.state.loggedUserInfo.geolevel1,
+      countrycode: this.state.loggedUserInfo.countrycode,
       retailerid:
         selectedFilters.retailer === "ALL" ? null : selectedFilters.retailer,
     };
@@ -235,8 +242,8 @@ class ScanLogsTable extends Component<Props, States> {
       isfiltered: this.state.isFiltered,
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
-      region: userData.geolevel1,
-      countrycode: userData.countrycode,
+      region: this.state.loggedUserInfo.geolevel1,
+      countrycode: this.state.loggedUserInfo.countrycode,
     };
     console.log("selected", selectedFilters);
     if (isFiltered) {
@@ -446,8 +453,8 @@ class ScanLogsTable extends Component<Props, States> {
     const { downloadScanlogs } = apiURL;
 
     let data = {
-      region: userData.geolevel1,
-      countrycode: userData.countrycode,
+      region: this.state.loggedUserInfo.geolevel1,
+      countrycode: this.state.loggedUserInfo.countrycode,
       isfiltered: this.state.isFiltered,
     };
     if (this.state.isFiltered) {
