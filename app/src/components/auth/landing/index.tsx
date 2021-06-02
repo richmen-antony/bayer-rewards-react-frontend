@@ -167,7 +167,7 @@ render(){
                                                 <div className="form-group row getStartedBtnRow" onClick={this.toLogin}>
                                                     <div className="col-sm-5 text-left">
                                                         {/* <button className="btn btn-secondary getStartedBtn form-control w-md waves-effect waves-light" type="button">Get started</button> */}
-                                                     <CustomButton label="Get Started" style={{borderRadius:"30px",backgroundColor:"#10384F",width:'100%',padding:"7px"}} />
+                                                     <CustomButton label="Get Started" style={{borderRadius:"30px",backgroundColor:"#10384F",width:'100%',padding:"7px",border:"1px solid  #10384F"}} />
                                                     </div>
                                                 </div>
                                             </>

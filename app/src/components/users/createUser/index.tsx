@@ -28,9 +28,11 @@ import { ArrowForwardIosOutlined } from "@material-ui/icons";
 import { AnyAaaaRecord, AnyMxRecord, AnyNaptrRecord } from "node:dns";
 import { StringifyOptions } from "node:querystring";
 
- let data: any = getLocalStorageData("userData");
 
- let userinfo = JSON.parse(data);
+
+let data: any = getLocalStorageData("userData");
+
+let userinfo = JSON.parse(data);
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -1536,7 +1538,7 @@ class CreateUser extends Component<any, any> {
                                               name: "mobilenumber",
                                               required: true,
                                             }}
-                                            country={"mw"}
+                                            country={userinfo.countrycode.toLocaleLowerCase()}
                                             value={item.mobilenumber}
                                             disabled={
                                               isEditPage || isValidatePage
@@ -1552,10 +1554,10 @@ class CreateUser extends Component<any, any> {
                                                 value
                                               )
                                             }
-                                            onlyCountries={["mw", "in"]}
+                                            // onlyCountries={["mw", "in"]}
                                             autoFormat
-                                            // disableDropdown
-                                            // disableCountryCode
+                                            disableDropdown
+                                            disableCountryCode
                                           />
                                           {item.errObj.mobilenumberErr && (
                                             <span className="error">
@@ -1729,7 +1731,7 @@ class CreateUser extends Component<any, any> {
                                                 name: "mobilenumber",
                                                 required: true,
                                               }}
-                                              country={"mw"}
+                                              country={userinfo.countrycode.toLocaleLowerCase()}
                                               value={item.mobilenumber}
                                               disabled={
                                                 isEditPage || isValidatePage
@@ -1745,10 +1747,10 @@ class CreateUser extends Component<any, any> {
                                                   value
                                                 )
                                               }
-                                              onlyCountries={["mw", "in"]}
+                                              // onlyCountries={["mw", "in"]}
                                               autoFormat
-                                              // disableDropdown
-                                              // disableCountryCode
+                                               disableDropdown
+                                              disableCountryCode
                                             />
                                             {item.errObj?.mobilenumberErr && (
                                               <span className="error">
