@@ -27,7 +27,7 @@ import AUX from "../../../hoc/Aux_";
 import { ArrowForwardIosOutlined } from "@material-ui/icons";
 import { AnyAaaaRecord, AnyMxRecord, AnyNaptrRecord } from "node:dns";
 import { StringifyOptions } from "node:querystring";
-
+import _ from "lodash";
 
 
 let data: any = getLocalStorageData("userData");
@@ -138,9 +138,15 @@ class CreateUser extends Component<any, any> {
       name: "",
       isStaff: false,
       isLoader: false,
-      allRegions: []
+      allRegions: [],
+      regionoptions: [],
+       addoptions: [],
+      districtoptions: [],
+      epaoptions: [],
+      villageoptions:[]
     };
   }
+ 
 
   componentDidMount() {
     // let data: any = getLocalStorageData("userData");
@@ -360,6 +366,7 @@ class CreateUser extends Component<any, any> {
             geoLocationInfo.region= regionInfo.code;
           }
         })
+        this.setState({regionoptions:regionoptions})
       }
       if('deliverystate' in data){
         let filteredAdd = allRegions.filter((region: any)=>region.name === data.deliveryregion);
@@ -371,6 +378,7 @@ class CreateUser extends Component<any, any> {
         let selectedAdd = addoptions.filter((district:any)=>district.text===data.deliverystate);
         geoLocationInfo.add = selectedAdd[0].code;
         add = data.deliverystate;
+        this.setState({addoptions:addoptions})
       }
       if('deliverydistrict' in data){
         district = data.deliverydistrict;
@@ -384,6 +392,7 @@ class CreateUser extends Component<any, any> {
         
         // district = 'Mzimba';
         geoLocationInfo.district = selectedDistrict[0].code;
+        this.setState({districtoptions:districtoptions})
       } 
       if('deliverycity' in data){
         epaoptions =  await this.getEPADetails();
@@ -397,6 +406,7 @@ class CreateUser extends Component<any, any> {
           city.text = city.name;
           city.value = city.name;
         })
+        this.setState({epaoptions:epaoptions})
       }
       if('deliveryvillage' in data){
         village = data.deliveryvillage;
@@ -410,6 +420,7 @@ class CreateUser extends Component<any, any> {
             village.value = village.name;
           })
         }
+        this.setState({villageoptions:villageoptions})
 
         this.state.geographicFields.map( (list: any, i: number) => {
           setFormArray.push({
@@ -446,6 +457,12 @@ class CreateUser extends Component<any, any> {
 
   getOptionLists =  async(cron: any, type: any, value: any, index: any) => {
     let allRegions = this.state.allRegions;
+    allRegions.forEach((region:any)=>{
+      region.text = region.name;
+      region.value = region.name;
+    })
+    let currentStep = this.state.currentStep;
+    this.setState({regionoptions:allRegions})
       let dynamicFieldVal = this.state.dynamicFields;
       let withHoldingVal = this.state.withHolding; 
       if(type === 'region') {
@@ -466,7 +483,15 @@ class CreateUser extends Component<any, any> {
           this.setState({ withHolding: withHoldingVal });
         }
      } else if(type === 'add') {
-        let filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+       let filteredAdd: any = [];
+       if (currentStep === 2){
+        filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+       } 
+       if (currentStep === 3){
+        filteredAdd = allRegions.filter((region: any)=>region.name === withHoldingVal[1].value);
+       }
+
+        // this.setState({addoptions:allRegions})
         let addList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === value)
         let district: any= [];
         addList[0].district.forEach((item:any)=>{
@@ -484,8 +509,16 @@ class CreateUser extends Component<any, any> {
           this.setState({ withHolding: withHoldingVal });
         }
       } else if(type === 'district') {
-        let filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-        let districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+        let filteredAdd: any = [];
+        let districtList: any = [];
+        if (currentStep === 2){
+          filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+          districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+         } 
+         if (currentStep === 3){
+          filteredAdd = allRegions.filter((region: any)=>region.name === withHoldingVal[1].value);
+          districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === withHoldingVal[2].value)
+         }
         districtList[0].district.forEach((item:any)=>{
           if(item.name === value) {
             geoLocationInfo.district = item.code;
@@ -609,7 +642,7 @@ class CreateUser extends Component<any, any> {
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
-
+    formValid = true;
     const { currentStep } = this.state;
     let newStep = currentStep;
     if (clickType == "personalNext" || clickType == "geographicNext") {
@@ -770,7 +803,7 @@ class CreateUser extends Component<any, any> {
       this.state.isValidatePage || this.state.isEditPage
         ? {
             isedit: true,
-            lastupdatedby: this.state.username,
+            lastupdatedby: (this.state.username).toUpperCase(),
             lastupdateddate: new Date().toJSON(),
           }
         : "";
@@ -1119,7 +1152,7 @@ class CreateUser extends Component<any, any> {
               list === "country"
                 ? this.state.countryList
                 : i == 1
-                ? this.state.hierarchyList
+                ? this.state.regionoptions
                 : "",
             error: "",
           });
@@ -1183,22 +1216,37 @@ class CreateUser extends Component<any, any> {
     } else {
       if (e.target.name === "accInfo") {
         if (!e.target.checked) {
-          let setFormArray: any = [];
-          this.state.geographicFields.map((list: any, i: number) => {
-            setFormArray.push({
-              name: list,
-              placeHolder: true,
-              value: list === "country" ? getStoreData.country : "",
-              options:
-                list === "country"
-                  ? this.state.countryList
-                  : i == 1
-                  ? this.state.hierarchyList
-                  : "",
-              error: "",
+          this.setState({ isRendered: true },()=>{
+            let setFormArray: any = [];
+            // this.state.geographicFields.map( (list: any, i: number) => {
+            //   setFormArray.push({
+            //     name: list,
+            //     placeHolder: true,
+            //     value: list === "country" ? getStoreData.country : '' ,
+            //     options:
+            //       list === "country"
+            //         ? this.state.countryList
+            //         : list === "country" ? getStoreData.country : list === 'region' ? this.state.regionoptions : list === 'add' ? this.state.addoptions : list === "district" ? this.state.districtoptions : list === "epa" ? this.state.epaoptions : list === "village" ? this.state.villageoptions : '',
+            //     error: "",
+            //   });
+            // });
+            this.state.geographicFields.map((list: any, i: number) => {
+              setFormArray.push({
+                name: list,
+                placeHolder: true,
+                value: list === "country" ? getStoreData.country : "",
+                options:
+                  list === "country"
+                    ? this.state.countryList
+                    : i == 1
+                    ? this.state.regionoptions
+                    : "",
+                error: "",
+              });
             });
+            this.setState({ withHolding: setFormArray });
           });
-          this.setState({ withHolding: setFormArray });
+
         } else {
           this.setState({ accInfo: e.target.checked });
           this.setState({ withHolding: this.state.dynamicFields });
@@ -1280,6 +1328,8 @@ class CreateUser extends Component<any, any> {
 
   render() {
     console.log('dynamicfields', this.state.dynamicFields)
+    // let countryCode = (userinfo.countrycode).toLowerCase();
+    let countryCodeLower = _.toLower(userinfo.countrycode)
     const {
       currentStep,
       userData,
@@ -1538,7 +1588,7 @@ class CreateUser extends Component<any, any> {
                                               name: "mobilenumber",
                                               required: true,
                                             }}
-                                            country={userinfo.countrycode.toLocaleLowerCase()}
+                                            country={countryCodeLower}
                                             value={item.mobilenumber}
                                             disabled={
                                               isEditPage || isValidatePage
@@ -1554,7 +1604,7 @@ class CreateUser extends Component<any, any> {
                                                 value
                                               )
                                             }
-                                            // onlyCountries={["mw", "in"]}
+                                            onlyCountries={[countryCodeLower]}
                                             autoFormat
                                             disableDropdown
                                             disableCountryCode
@@ -1731,7 +1781,7 @@ class CreateUser extends Component<any, any> {
                                                 name: "mobilenumber",
                                                 required: true,
                                               }}
-                                              country={userinfo.countrycode.toLocaleLowerCase()}
+                                              country={countryCodeLower}
                                               value={item.mobilenumber}
                                               disabled={
                                                 isEditPage || isValidatePage
@@ -1747,7 +1797,7 @@ class CreateUser extends Component<any, any> {
                                                   value
                                                 )
                                               }
-                                              // onlyCountries={["mw", "in"]}
+                                              onlyCountries={[countryCodeLower]}
                                               autoFormat
                                                disableDropdown
                                               disableCountryCode
