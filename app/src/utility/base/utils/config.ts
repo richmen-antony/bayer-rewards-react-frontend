@@ -1,6 +1,5 @@
 
 export const configApp = {
-    // env: 'https://bayer-track-trace.herokuapp.com/api/',
     env: 'https://bayer-reward-plus.herokuapp.com/api/'
 }
 export const apiURL = {
@@ -19,5 +18,8 @@ export const apiURL = {
     downloadScanlogs:"order/advisororder/report",
     getTemplateData:"template/getTemplateByCountry",
     registerTemplateData: "template/templateForCountryRegister",
-    rsmRetailerList:"order/users"
+    rsmRetailerList:"order/users",
+    getHierarchyLevels: "geographical/getRegionLocationHierLevelByCountry",
+    getLevelFive: "geographical/getEPA",
+    getLevelSix: "geographical/getVillage"
 }

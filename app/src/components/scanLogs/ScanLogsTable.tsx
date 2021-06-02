@@ -21,6 +21,7 @@ import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import Download from "../../assets/icons/download.svg";
+import _ from "lodash";
 import {
   downloadExcel,
   downloadCsvFile,
@@ -1084,7 +1085,8 @@ class ScanLogsTable extends Component<Props, States> {
                                 ) : (
                                   <i className="fas fa-clock"></i>
                                 )}
-                                {value.orderstatus}
+                                {/* {value.orderstatus} */}
+                                {_.startCase(_.toLower(value.orderstatus))}
                               </span>
                             </td>
                             <td style={{ textAlign: "center" }}>

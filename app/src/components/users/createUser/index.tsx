@@ -24,6 +24,9 @@ import ArrowIcon from "../../../assets/icons/dark bg.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
+import { ArrowForwardIosOutlined } from "@material-ui/icons";
+import { AnyAaaaRecord, AnyMxRecord, AnyNaptrRecord } from "node:dns";
+import { StringifyOptions } from "node:querystring";
 
  let data: any = getLocalStorageData("userData");
 
@@ -50,6 +53,9 @@ const shippingstate = [
   { value: "tamilnadu", text: "tamilnadu" },
   { value: "kerala", text: "kerala" },
 ];
+let geoLocationInfo = {region: '', add: '', district:'', epa: '', village:''};
+let epa:any=[];
+let levelFive:any=[];
 
 class CreateUser extends Component<any, any> {
   constructor(props: any) {
@@ -57,8 +63,8 @@ class CreateUser extends Component<any, any> {
     let oneYearFromNow = new Date();
     let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     this.state = {
-      userData: {
-        countrycode: "MW",
+      userData : {
+        countrycode: getStoreData.countryCode,
         locale: "English (Malawi)",
         rolename: role[0].value,
         username: "",
@@ -130,6 +136,7 @@ class CreateUser extends Component<any, any> {
       name: "",
       isStaff: false,
       isLoader: false,
+      allRegions: []
     };
   }
 
@@ -140,9 +147,8 @@ class CreateUser extends Component<any, any> {
     // this.setState({ userName: userDetails.username},()=>{
     //   console.log("userData", this.state.userData);
     // });
-    setTimeout(() => {
+      this.getHierarchyDatas();
       this.getGeographicFields();
-    }, 0);
     ///API to get country and language settings
     this.getCountryList();
   }
@@ -169,7 +175,7 @@ class CreateUser extends Component<any, any> {
     ];
     this.setState({ countryList: res });
   }
-  getNextHierarchy(country: any, nextLevel: any) {
+  getNextHierarchyold(country: any, nextLevel: any) {
     //API to get region options for initial set since mal is default option in country
     const data = {
       type: country,
@@ -185,31 +191,28 @@ class CreateUser extends Component<any, any> {
     ];
     this.setState({ hierarchyList: nextHierarchyResponse });
   }
+
   getGeographicFields() {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: "MW",
-    };
+      countryCode: getStoreData.countryCode
+    }
     invokeGetAuthService(getTemplateData, data)
       .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
         locationData.map((item: any) => {
-          let levelsSmall = item.locationhiername.toLowerCase();
-          levels.push(levelsSmall);
-        });
-        levels = ["country", "region", "add", "district", "epa", "village"];
-        this.setState(
-          {
-            isLoader: false,
-            geographicFields: levels,
-          },
-          () => {
-            this.getNextHierarchy(
-              getStoreData.country,
-              this.state.geographicFields[1]
-            );
+          let allLevels = item.locationhierlevel;
+          let levelsSmall = (item.locationhiername).toLowerCase();
+          levels.push(levelsSmall)
+        })
+        // levels = ['country','region','add','district','epa','village'];
+
+        this.setState({ 
+          isLoader: false,
+          geographicFields: levels }, ()=>{
+            // this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
             if (this.props.location?.page) {
               let currentPage = this.props.location?.page;
               let data: any = getLocalStorageData("userData");
@@ -219,7 +222,7 @@ class CreateUser extends Component<any, any> {
               });
               let userFields = this.props.location.state.userFields;
 
-              let ownerInfo = {
+              let ownerInfo =  {
                 errObj: {
                   emailErr: "",
                   firstnameErr: "",
@@ -298,127 +301,161 @@ class CreateUser extends Component<any, any> {
                 this.getDynamicOptionFields("");
               }, 0);
             }
-          }
-        );
-      })
-      .catch((err: any) => {
-        this.setState({ isLoader: false });
-      });
-  }
-  getDynamicOptionFields(data: any) {
-    if (data) {
-      let setFormArray: any = [];
-      this.state.geographicFields.map((list: any, i: number) => {
-        let result = [];
-        let region = "";
-        let add = "";
-        let district = "";
-        let epa = "";
-        let village = "";
-        if ("deliveryregion" in data) {
-          result = this.getOptionLists("auto", list, data.deliveryregion, i);
-          region = data.deliveryregion;
-        }
-        if ("deliverystate" in data) {
-          result = this.getOptionLists("auto", list, data.deliverystate, i);
-          add = data.deliverystate;
-        }
-        if ("deliverydistrict" in data) {
-          result = this.getOptionLists("auto", list, data.deliverydistrict, i);
-          district = data.deliverydistrict;
-        }
-        if ("deliverycity" in data) {
-          result = this.getOptionLists("auto", list, data.deliverycity, i);
-          epa = data.deliverycity;
-        }
-        if ("deliveryvillage" in data) {
-          result = this.getOptionLists("auto", list, data.deliveryvillage, i);
-          village = data.deliveryvillage;
-        }
-        setFormArray.push({
-          name: list,
-          placeHolder: true,
-          value:
-            list === "country"
-              ? getStoreData.country
-              : list === "region"
-              ? region
-              : list === "add"
-              ? add
-              : list === "district"
-              ? district
-              : list === "epa"
-              ? epa
-              : list === "village"
-              ? village
-              : "",
-          options: list === "country" ? this.state.countryList : result,
-          error: "",
-        });
-      });
-      this.setState({ dynamicFields: setFormArray });
-    } else {
-      let setFormArray: any = [];
-      this.state.geographicFields.map((list: any, i: number) => {
-        setFormArray.push({
-          name: list,
-          placeHolder: true,
-          value: list === "country" ? getStoreData.country : "",
-          options:
-            list === "country"
-              ? this.state.countryList
-              : list === "region"
-              ? this.state.hierarchyList
-              : "",
-          error: "",
-        });
-      });
-      this.setState({ dynamicFields: setFormArray });
-    }
+          });
+    }).catch((err: any) => {
+      this.setState({ isLoader: false });
+      let levels = ['country','region','add','district','epa','village'];
+      this.setState({ 
+        isLoader: false,
+        geographicFields: levels })
+    })
   }
 
-  getOptionLists = (cron: any, type: any, value: any, index: any) => {
-    if (cron === "auto") {
-      let options: any = [];
-      if (type === "region") {
-        options = [
-          { text: "Central", value: "Central" },
-          { text: "Northern", value: "Northern" },
-          { text: "Western", value: "Western" },
-          { text: "Eastern", value: "Eastern" },
-        ];
-      } else if (type === "add") {
-        options = [
-          { text: "Add1", value: "Add1" },
-          { text: "Add2", value: "Add2" },
-        ];
-      } else if (type === "district") {
-        options = [
-          { text: "Balaka", value: "Balaka" },
-          { text: "Blantyre", value: "Blantyre" },
-        ];
-      } else if (type === "epa") {
-        options = [
-          { text: "EPA1", value: "EPA1" },
-          { text: "EPA2", value: "EPA2" },
-        ];
-      } else if (type === "village") {
-        options = [
-          { text: "Village1", value: "Village1" },
-          { text: "Village2", value: "Village2" },
-        ];
+  getHierarchyDatas() {
+    //To get all level datas
+    this.setState({ isLoader: true });
+    const { getHierarchyLevels } = apiURL;
+    let countrycode = {
+      countryCode: getStoreData.countryCode
+    }
+    invokeGetAuthService(getHierarchyLevels, countrycode)
+    .then((response: any) => {
+      let regions = Object.keys(response.body).length !== 0 ? response.body.regions : [];
+      this.setState({ isLoader: false, allRegions : regions },()=>{
+        console.log('allregions', this.state.allRegions, response);
+      })
+    }).catch((err: any) => {
+      this.setState({ isLoader: false });
+    })
+  }
+
+  getDynamicOptionFields = async(data: any) => {
+    console.log('allRegions', this.state.allRegions);
+    let regionOptions:any = [];
+    this.state.allRegions.forEach((item:any) => {
+      let regionInfo = {text: item.name, code: item.code, value: item.name}
+      regionOptions.push(regionInfo);
+    })
+    let allRegions = this.state.allRegions;
+    if(data){
+      let setFormArray: any = [];
+      let regionoptions:any = [];
+      let addoptions:any = [];
+      let districtoptions:any = [];
+      let epaoptions:any= [];
+      let villageoptions:any = [];
+      geoLocationInfo = {region: '', add: '', district:'', epa: '', village:''};
+      let region = "";
+      let add = "";
+      let district = "";
+      let epa = "";
+      let village = "";
+      if('deliveryregion' in data){
+        regionoptions = regionOptions;
+        region = data.deliveryregion;
+        regionoptions.forEach((regionInfo:any)=>{
+          if(regionInfo.name===data.deliveryregion) {
+            geoLocationInfo.region= regionInfo.code;
+          }
+        })
       }
-      return options;
+      if('deliverystate' in data){
+        let filteredAdd = allRegions.filter((region: any)=>region.name === data.deliveryregion);
+        geoLocationInfo.region = filteredAdd[0].code;
+        filteredAdd[0].add.forEach((item:any)=>{
+          let addInfo = { text: item.name, value: item.name, code: item.code };
+          addoptions.push(addInfo)
+        });
+        let selectedAdd = addoptions.filter((district:any)=>district.text===data.deliverystate);
+        geoLocationInfo.add = selectedAdd[0].code;
+        add = data.deliverystate;
+      }
+      if('deliverydistrict' in data){
+        district = data.deliverydistrict;
+        let filteredAdd = allRegions.filter((region: any)=>region.name === data.deliveryregion);
+        let addList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === data.deliverystate)
+        addList[0].district.forEach((item:any)=>{
+          let addInfo = { text: item.name, value: item.name, code: item.code };
+          districtoptions.push(addInfo)
+        });
+        let selectedDistrict = districtoptions.filter((districtInfo:any)=>districtInfo.text===district);
+        
+        // district = 'Mzimba';
+        geoLocationInfo.district = selectedDistrict[0].code;
+      } 
+      if('deliverycity' in data){
+        epaoptions =  await this.getEPADetails();
+        console.log('epadetails',epaoptions)
+        epa = data.deliverycity;
+        // epa = 'Bwengu';
+        epaoptions.forEach((city:any)=>{
+          if(city.name===epa){
+            geoLocationInfo.epa = city.code;
+          }
+          city.text = city.name;
+          city.value = city.name;
+        })
+      }
+      if('deliveryvillage' in data){
+        village = data.deliveryvillage;
+        villageoptions =  await this.getVillageDetails();
+        if(villageoptions.length){
+          villageoptions.forEach((village:any)=>{
+            if(village.name===village){
+              geoLocationInfo.village = village.code;
+            }
+            village.text = village.name;
+            village.value = village.name;
+          })
+        }
+
+        this.state.geographicFields.map( (list: any, i: number) => {
+          setFormArray.push({
+            name: list,
+            placeHolder: true,
+            value: list === "country" ? getStoreData.country : list === 'region' ? region : list === 'add' ? add : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
+            options:
+              list === "country"
+                ? this.state.countryList
+                : list === "country" ? getStoreData.country : list === 'region' ? regionoptions : list === 'add' ? addoptions : list === "district" ? districtoptions : list === "epa" ? epaoptions : list === "village" ? villageoptions : '',
+            error: "",
+          });
+        });
+      }
+      this.setState({ dynamicFields: setFormArray });
     } else {
+      let setFormArray: any = [];
+      this.state.geographicFields.map((list: any, i: number) => {
+          setFormArray.push({
+            name: list,
+            placeHolder: true,
+            value: list === "country" ? getStoreData.country : '',
+            options:
+              list === "country"
+                ? this.state.countryList
+                : list === 'region' ? regionOptions : '',
+            error: "",
+          });
+      });
+      this.setState({ dynamicFields: setFormArray });
+      this.setState({ withHolding: setFormArray });
+    }
+}
+
+  getOptionLists =  async(cron: any, type: any, value: any, index: any) => {
+    let allRegions = this.state.allRegions;
       let dynamicFieldVal = this.state.dynamicFields;
-      let withHoldingVal = this.state.withHolding;
-      if (type === "region") {
-        let add = [
-          { text: "Add1", value: "Add1" },
-          { text: "Add2", value: "Add2" },
-        ];
-        if (this.state.currentStep == 2) {
-          dynamicFieldVal[index + 1].options = add;
+      let withHoldingVal = this.state.withHolding; 
+      if(type === 'region') {
+        let filteredRegion = allRegions.filter((region: any)=>region.name === value);
+        let add: any= [];
+        filteredRegion[0].add.forEach((item:any)=>{
+          let regionInfo = { text: item.name, value: item.name, code: item.code };
+          add.push(regionInfo)
+        });
+        geoLocationInfo.region = filteredRegion[0].code
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = add;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
@@ -426,13 +463,17 @@ class CreateUser extends Component<any, any> {
           withHoldingVal[index].value = value;
           this.setState({ withHolding: withHoldingVal });
         }
-      } else if (type === "add") {
-        let district = [
-          { text: "Balaka", value: "Balaka" },
-          { text: "Blantyre", value: "Blantyre" },
-        ];
-        if (this.state.currentStep == 2) {
-          dynamicFieldVal[index + 1].options = district;
+     } else if(type === 'add') {
+        let filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+        let addList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === value)
+        let district: any= [];
+        addList[0].district.forEach((item:any)=>{
+          let districtInfo = { text: item.name, value: item.name, code: item.code };
+          district.push(districtInfo)
+        });
+        geoLocationInfo.add = addList[0].code;
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = district;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
@@ -440,27 +481,49 @@ class CreateUser extends Component<any, any> {
           withHoldingVal[index].value = value;
           this.setState({ withHolding: withHoldingVal });
         }
-      } else if (type === "district") {
-        let epa = [
-          { text: "EPA1", value: "EPA1" },
-          { text: "EPA2", value: "EPA2" },
-        ];
-        if (this.state.currentStep == 2) {
-          dynamicFieldVal[index + 1].options = epa;
-          dynamicFieldVal[index].value = value;
-          this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
-          withHoldingVal[index + 1].options = epa;
-          withHoldingVal[index].value = value;
-          this.setState({ withHolding: withHoldingVal });
+      } else if(type === 'district') {
+        let filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+        let districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+        districtList[0].district.forEach((item:any)=>{
+          if(item.name === value) {
+            geoLocationInfo.district = item.code;
+          }
+        });
+       
+        levelFive =  await this.getEPADetails();
+                         
+        if(levelFive.length) {
+          levelFive.forEach((item:any)=>{
+            item.text = item.name;
+            item.value = item.name;
+          });
+          if ( this.state.currentStep == 2){
+            dynamicFieldVal[index+1].options = levelFive;
+            dynamicFieldVal[index].value = value;
+            this.setState({dynamicFields: dynamicFieldVal});
+          } else if ( this.state.currentStep == 3) {
+            withHoldingVal[index+1].options = levelFive;
+            withHoldingVal[index].value = value;
+            this.setState({withHolding: withHoldingVal});
+          }
         }
-      } else if (type === "epa") {
-        let village = [
-          { text: "Village1", value: "Village1" },
-          { text: "Village2", value: "Village2" },
-        ];
-        if (this.state.currentStep == 2) {
-          dynamicFieldVal[index + 1].options = village;
+      } else if(type === 'epa') {
+        // geoLocationInfo.epa = value;
+        if(levelFive && levelFive.length) {
+          levelFive.forEach((item:any)=>{
+            if(item.name === value) {
+              geoLocationInfo.epa = item.code;
+            }
+          });
+        }
+        let village:any=[];
+        village =  await this.getVillageDetails();
+        village.forEach((villageInfo:any)=>{
+          villageInfo.text = villageInfo.name;
+          villageInfo.value = villageInfo.name;
+        })
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = village;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
@@ -477,8 +540,56 @@ class CreateUser extends Component<any, any> {
           this.setState({ withHolding: withHoldingVal });
         }
       }
-    }
   };
+
+  getEPADetails = () => {
+    this.setState({ isLoader: true });
+     const { getLevelFive } = apiURL;
+    let data = {
+      countrycode: getStoreData.countryCode,
+      region: geoLocationInfo.region,
+      add: geoLocationInfo.add,
+      district: geoLocationInfo.district
+    }
+    let levelFive:any = [];
+    return new Promise((resolve,reject) => {
+      invokeGetAuthService(getLevelFive, data)
+      .then((response: any) => {
+           levelFive = response.body.epa;
+          this.setState({isLoader: false});
+          resolve(levelFive);
+          console.log('levelfive',levelFive);
+        }).catch((err: any) => {
+          this.setState({ isLoader: false });
+          reject(err)
+        })
+    })
+  }
+
+  getVillageDetails = () => {
+    this.setState({ isLoader: true });
+    const { getLevelSix } = apiURL;
+    let data = {
+      countrycode: getStoreData.countryCode,
+      region: geoLocationInfo.region,
+      add: geoLocationInfo.add,
+      district: geoLocationInfo.district,
+      epa: geoLocationInfo.epa
+    }
+    let levelSix:any = [];
+    return new Promise((resolve,reject) => {
+      invokeGetAuthService(getLevelSix, data)
+      .then((response: any) => {
+           levelSix = response.body.village;
+          this.setState({isLoader: false})
+          console.log('levelSix', response.body);
+          resolve(levelSix)
+        }).catch((err: any) => {
+          this.setState({ isLoader: false });
+          reject(err)
+        })
+    })
+  }
 
   handleClick(clickType: any, e: any) {
     let formValid = true;
@@ -488,12 +599,15 @@ class CreateUser extends Component<any, any> {
       formValid = this.checkValidation();
       if (formValid) {
         if (this.state.accInfo) {
-          this.setState({ withHolding: this.state.dynamicFields });
+          this.setState({ withHolding: this.state.dynamicFields },()=>{
+            console.log('withHoldingvalues', this.state.withHolding)
+          });
         }
       }
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
+
     const { currentStep } = this.state;
     let newStep = currentStep;
     if (clickType == "personalNext" || clickType == "geographicNext") {
@@ -509,6 +623,7 @@ class CreateUser extends Component<any, any> {
         });
       }
     }
+
     if (clickType === "createUser") {
       if (formValid) {
         // this.setState({
@@ -1162,6 +1277,7 @@ class CreateUser extends Component<any, any> {
   };
 
   render() {
+    console.log('dynamicfields', this.state.dynamicFields)
     const {
       currentStep,
       userData,

@@ -259,13 +259,18 @@ class UserList extends Component<Props, States> {
   getChannelPartnersList = (condIf?: string) => {
     this.setState({ allChannelPartners: [] })
     const { channelPartnersList } = apiURL;
+
+    const obj: any = getLocalStorageData("userData");
+    const userData = JSON.parse(obj);
+
     this.setState({ isLoader: true });
     let { status, startDate, endDate, region, epa, district }: any =
     this.state.selectedFilters;
     let enddateformat = new Date(endDate);
     let dateformat = enddateformat.toJSON();
     let data = {
-      countrycode: 'MW',
+      // countrycode: 'MW',
+      countrycode:userData.countrycode,
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       isfiltered: this.state.isFiltered,

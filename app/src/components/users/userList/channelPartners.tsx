@@ -37,7 +37,7 @@ import Table from 'react-bootstrap/Table'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import Loader from "../../../utility/widgets/loader";
-
+import _ from "lodash";
 type Props = {
   location?: any;
   history?: any;
@@ -912,7 +912,7 @@ class ChannelPartners extends Component<Props, States> {
                     {userList.userstatus === "ACTIVE" ||
                     userList.userstatus === "INACTIVE" || userList.userstatus === "DECLINED"  ? (
                       <span>
-                        Are you sure you want to change &nbsp;
+                          Are you sure you want to change &nbsp;
                         <strong>
                           {userList.whtownername} - {userList.whtaccountname}
                         </strong>
@@ -1294,7 +1294,7 @@ class ChannelPartners extends Component<Props, States> {
                             }
                             width="17"
                           />
-                          {list.userstatus}
+                          {_.startCase(_.toLower(list.userstatus))}
                         </span>
                       </td>
                       <td>
