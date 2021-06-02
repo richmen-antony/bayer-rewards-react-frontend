@@ -82,11 +82,19 @@ type States = {
   isEditRedirect: boolean
 };
 
+let data: any = getLocalStorageData("userData");
+let userinfo = JSON.parse(data);
 const getStoreData = {
-  country: "MALAWI",
-  countryCode: 'MW',
+  country: userinfo.geolevel0,
+  countryCode: userinfo.countrycode,
   Language: "EN-US",
 };
+
+// const getStoreData = {
+//   country: "MALAWI",
+//   countryCode: 'MW',
+//   Language: "EN-US",
+// };
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -169,7 +177,10 @@ class ChannelPartners extends Component<Props, States> {
 
   getCountryList() {
     //service call
-    let res = [{ value: 'IND', text: 'INDIA' }, { value: 'MAL', text: 'Malawi' }];
+    let res = [
+      { value: "India", text: "India" },
+      { value: "Malawi", text: "Malawi" },
+    ];
     this.setState({ countryList: res });
   }
   getNextHierarchy(country: any, nextLevel: any) {
@@ -186,7 +197,7 @@ class ChannelPartners extends Component<Props, States> {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: 'MW'
+      countryCode: userinfo.countrycode,
     }
     invokeGetAuthService(getTemplateData, data)
     .then((response: any) => {
