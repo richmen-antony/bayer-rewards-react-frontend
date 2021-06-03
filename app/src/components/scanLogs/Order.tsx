@@ -242,63 +242,97 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                         </>
                       );
                     })}
-                  </tbody>
-                </table>
-                {data.orderstatus === "FULFILLED" && (
-                  <div id="accordion">
-                    <div className="card dev product-sold-popup">
-                      <div
-                        className="card-header"
-                        id="headingOne"
-                        onClick={() => handleButton("e")}
-                      >
-                        <span>{"Invalid Scans (0)"}</span>
-                        <img src={RtArrow} />
-                        <span>Expired Labels (0)</span>
-                        <div>
-                          <span>Non Bayer Labels (0)</span>
-                        </div>
-                        <div className="expand-icon">
-                          <i
-                            className={`fa ${
-                              accordion
-                                ? "fas fa-caret-down"
-                                : "fas fa-caret-up"
-                            } `}
-                          ></i>
-                        </div>
-                      </div>
+                    <tr>
+                      <td colSpan={8}>
+                        {data.orderstatus === "FULFILLED" && (
+                          <div id="accordion">
+                            <div className="card order-accordion product-sold-popup">
+                              <div
+                                className="card-header"
+                                id="headingOne"
+                                onClick={() => handleButton("e")}
+                              >
+                                <span>{"Invalid Scans (0)"}</span>
+                                <img src={RtArrow} />
+                                <span>Expired Labels (0)</span>
+                                <div>
+                                  <span>Non Bayer Labels (0)</span>
+                                </div>
+                                <div className="expand-icon">
+                                  <i
+                                    className={`fa ${
+                                      accordion
+                                        ? "fas fa-caret-down"
+                                        : "fas fa-caret-up"
+                                    } `}
+                                  ></i>
+                                </div>
+                              </div>
 
-                      <div
-                        id="collapseOne"
-                        className={`collapse ${accordion && "show"}`}
-                        aria-labelledby="headingOne"
-                        data-parent="#accordion"
-                      >
-                        <div className="card-body">
-                          <div className="inner-expand">
-                            <div className="title inner-row">
-                              <p>Label ID</p>
-                              <p className="sub-val">Reason</p>
-                            </div>
-                            {data?.invalidscans?.length > 0 &&
-                              data?.invalidscans.map((scan: any) => {
-                                return (
-                                  <div className="inner-row">
-                                    <p className="qr-val">{scan.qrcodeid}</p>
-                                    <p className="sub-val"> {scan.reason}</p>
+                              <div
+                                id="collapseOne"
+                                className={`collapse ${accordion && "show"}`}
+                                aria-labelledby="headingOne"
+                                data-parent="#accordion"
+                              >
+                                <div className="inner-expand">
+                                  <div className="title inner-row">
+                                    <p>Label ID</p>
+                                    <p className="sub-val">Reason</p>
                                   </div>
-                                );
-                              })}
+                                  {data?.invalidscans?.length > 0 &&
+                                    data?.invalidscans.map((scan: any) => {
+                                      return (
+                                        <div className="inner-row">
+                                          <p className="qr-val">
+                                            {scan.qrcodeid}
+                                          </p>
+                                          <p className="sub-val">
+                                            {" "}
+                                            {scan.reason}
+                                          </p>
+                                        </div>
+                                      );
+                                    })}
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot className="sum-total">
+                    <tr>
+                      <td colSpan={2}></td>
+                      <td>
+                        <p className="total">Total</p>
+                      </td>
+                      <td className="text-center">
+                        <span className="intendedquantity">
+                          {_.sumBy(data.products_ordered, "intendedquantity")}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span className="orderedquantity">
+                          {_.sumBy(data.products_ordered, "orderedquantity")}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="productprice">
+                          {"MK " +
+                            _.sumBy(data.products_ordered, (item: any) =>
+                              Number(item.productprice)
+                            )}
+                        </span>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
 
-              <div className="sum-total">
+              {/* <div className="sum-total">
                 <p className="total">Total</p>
 
                 <span className="intendedquantity">
@@ -314,7 +348,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       Number(item.productprice)
                     )}
                 </span>
-              </div>
+              </div> */}
             </>
           ) : (
             <div className="col-12 card mt-4">

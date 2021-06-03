@@ -29,35 +29,47 @@
   
 }
 .sum-total{
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-right: 80px;
+  // display: flex;
+  // align-items: center;
+  // justify-content: flex-end;
+  // margin-right: 80px;
   color: #000000;
   font-weight: 600;
   font-size: 13px;
+  td{
+    position: sticky;
+    bottom: 0;
+    background-color: #ffffff;
+    z-index: 1;
+    border-top:0;
+  }
+  
+  
   .total{
     margin: 0;
-    width: 100px;
+    // width: 100px;
+    text-align: right;
   }
   .intendedquantity{
-    width: 132px;
+    // width: 132px;
   }
   .orderedquantity{
-    width: 120px;
+    // width: 120px;
   }
   .productprice{
-    width: 50px;
+    // width: 50px;
   }
 }
 
 .sub-order{
-  height: 200px;
+  height: 250px;
   overflow: auto;
   .table td, .table th {
     vertical-align: middle;
+    padding: 0.5rem;
  }
  table{
+   margin-bottom: 0;
    td{
      font-size: 14px;
    }

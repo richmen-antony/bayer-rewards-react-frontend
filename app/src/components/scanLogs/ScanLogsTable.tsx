@@ -26,6 +26,7 @@ import {
   downloadExcel,
   downloadCsvFile,
   DownloadCsv,
+  ErrorMsg
 } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import {
@@ -39,6 +40,10 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
+import {
+
+  Alert,
+} from "../../../utility/widgets/toaster";
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -226,6 +231,7 @@ class ScanLogsTable extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
+        ErrorMsg(error)
         console.log("error", error);
       });
   };
@@ -277,6 +283,7 @@ class ScanLogsTable extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false , allScanLogs:[]});
+        ErrorMsg(error);
         console.log("error", error);
       });
   };
@@ -385,10 +392,10 @@ class ScanLogsTable extends Component<Props, States> {
         retailer: "ALL",
       },
       isFiltered: false,
+    },()=>{
+      this.getScanLogs();
     });
-    setTimeout(() => {
-      //this.getScanLogs();
-    }, 0);
+    
   };
 
   applyFilter = () => {

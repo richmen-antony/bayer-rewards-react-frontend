@@ -1,6 +1,5 @@
-import { toastWarning } from "./widgets/toaster";
+import { toastWarning ,Alert} from "./widgets/toaster";
 import _ from "lodash";
-
 /**
  * Download excel file 
  * @param tableId 
@@ -140,3 +139,10 @@ export const handledropdownoption = (array:Array<any>,key:string) => {
       return { value: val[key], text: val[key] }})
     return data;
 };
+
+
+export const ErrorMsg=(error:any)=>{
+  let msg= error ? error?.message:"Something went wrong"
+   Alert('error',msg)
+  
+}

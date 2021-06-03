@@ -469,6 +469,7 @@
 }
 
 .ordered-table {
+  padding: 20px 0 5px !important;
   table {
     thead {
       background: #1f445a;
@@ -677,6 +678,37 @@ cus-btn-scanlog-filter[disabled] {
   height: 58vh;
   overflow: auto;
 }
+.card.order-accordion {
+  margin: 20px 5px;
+  border-radius: 10px !important;
+  border: 1px solid #70707052;
+  overflow: hidden;
+  .card-header {
+    background-color: inherit;
+    border: 0;
+    padding: 10px;
+    .title {
+      color: #000000;
+      font-size: 20px;
+      font-weight: 600;
+      //  font-family: "Open Sans";
+      font-family: "appRegular" !important;
+      width: 30%;
+    }
+    .base-url {
+      width: 50%;
+      color: #0a0a0a;
+      span {
+        //  font-family: italic;
+        font-family: "appItalic" !important;
+        font-size: 16px;
+        padding: 10px;
+      }
+    }
+  }
+  
+}
+
 
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {
@@ -810,6 +842,26 @@ cus-btn-scanlog-filter[disabled] {
       font-size: 12px;
     }
   }
+
+  .card.order-accordion {
+    margin: 20px 5px;
+    .card-header {
+      padding: 10px;
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+        // font-family: "Open Sans";
+        font-family: "appRegular" !important;
+        margin: 0px;
+      }
+      .base-url {
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
   
 }
 
