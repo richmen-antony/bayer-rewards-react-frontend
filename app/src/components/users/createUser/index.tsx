@@ -26,14 +26,11 @@ import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
 import _ from "lodash";
 
-
-
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
   { value: "DISTRIBUTOR", text: "Distributor" },
 ];
-
 
 const shippingcity = [
   { value: "Chengalpattu", text: "Chengalpattu" },
@@ -44,31 +41,37 @@ const shippingstate = [
   { value: "tamilnadu", text: "tamilnadu" },
   { value: "kerala", text: "kerala" },
 ];
-let geoLocationInfo = {region: '', add: '', district:'', epa: '', village:''};
-let epa:any=[];
-let levelFive:any=[];
+let geoLocationInfo = {
+  region: "",
+  add: "",
+  district: "",
+  epa: "",
+  village: "",
+};
+let epa: any = [];
+let levelFive: any = [];
 
 class CreateUser extends Component<any, any> {
   loggedUserInfo: any;
-  getStoreData:any
+  getStoreData: any;
   constructor(props: any) {
     super(props);
     let oneYearFromNow = new Date();
     let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
-      this.getStoreData = {
+    this.getStoreData = {
       country: loggedUserInfo.geolevel0,
       countryCode: loggedUserInfo.countrycode,
       Language: "EN-US",
     };
     this.state = {
-      userData : {
+      userData: {
         countrycode: this.getStoreData.countryCode,
         locale: "English (Malawi)",
         rolename: role[0].value,
         username: "",
-        shippingcountrycode:this.getStoreData.country,
+        shippingcountrycode: this.getStoreData.country,
         deliverystreet: "",
         shippingcity: "",
         shippingstate: "",
@@ -76,7 +79,7 @@ class CreateUser extends Component<any, any> {
         taxid: "",
         whtaccountname: "",
         whtownername: "",
-        billingcountrycode:  this.getStoreData.country,
+        billingcountrycode: this.getStoreData.country,
         billingstreet: "",
         billingcity: "",
         billingstate: "",
@@ -138,14 +141,13 @@ class CreateUser extends Component<any, any> {
       isLoader: false,
       allRegions: [],
       regionoptions: [],
-       addoptions: [],
+      addoptions: [],
       districtoptions: [],
       epaoptions: [],
-      villageoptions:[]
+      villageoptions: [],
     };
-    this.loggedUserInfo =loggedUserInfo;
+    this.loggedUserInfo = loggedUserInfo;
   }
- 
 
   componentDidMount() {
     // let data: any = getLocalStorageData("userData");
@@ -154,8 +156,8 @@ class CreateUser extends Component<any, any> {
     // this.setState({ userName: userDetails.username},()=>{
     //   console.log("userData", this.state.userData);
     // });
-      this.getHierarchyDatas();
-      this.getGeographicFields();
+    this.getHierarchyDatas();
+    this.getGeographicFields();
     ///API to get country and language settings
     this.getCountryList();
   }
@@ -203,22 +205,25 @@ class CreateUser extends Component<any, any> {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode:  this.getStoreData.countryCode
-    }
+      countryCode: this.getStoreData.countryCode,
+    };
     invokeGetAuthService(getTemplateData, data)
       .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
         locationData.map((item: any) => {
           let allLevels = item.locationhierlevel;
-          let levelsSmall = (item.locationhiername).toLowerCase();
-          levels.push(levelsSmall)
-        })
+          let levelsSmall = item.locationhiername.toLowerCase();
+          levels.push(levelsSmall);
+        });
         // levels = ['country','region','add','district','epa','village'];
 
-        this.setState({ 
-          isLoader: false,
-          geographicFields: levels }, ()=>{
+        this.setState(
+          {
+            isLoader: false,
+            geographicFields: levels,
+          },
+          () => {
             // this.getNextHierarchy( this.getStoreData.country, this.state.geographicFields[1]);
             if (this.props.location?.page) {
               let currentPage = this.props.location?.page;
@@ -229,7 +234,7 @@ class CreateUser extends Component<any, any> {
               });
               let userFields = this.props.location.state.userFields;
 
-              let ownerInfo =  {
+              let ownerInfo = {
                 errObj: {
                   emailErr: "",
                   firstnameErr: "",
@@ -308,14 +313,17 @@ class CreateUser extends Component<any, any> {
                 this.getDynamicOptionFields("");
               }, 0);
             }
-          });
-    }).catch((err: any) => {
-      this.setState({ isLoader: false });
-      let levels = ['country','region','add','district','epa','village'];
-      this.setState({ 
-        isLoader: false,
-        geographicFields: levels })
-    })
+          }
+        );
+      })
+      .catch((err: any) => {
+        this.setState({ isLoader: false });
+        let levels = ["country", "region", "add", "district", "epa", "village"];
+        this.setState({
+          isLoader: false,
+          geographicFields: levels,
+        });
+      });
   }
 
   getHierarchyDatas() {
@@ -323,113 +331,156 @@ class CreateUser extends Component<any, any> {
     this.setState({ isLoader: true });
     const { getHierarchyLevels } = apiURL;
     let countrycode = {
-      countryCode:  this.getStoreData.countryCode
-    }
+      countryCode: this.getStoreData.countryCode,
+    };
     invokeGetAuthService(getHierarchyLevels, countrycode)
-    .then((response: any) => {
-      let regions = Object.keys(response.body).length !== 0 ? response.body.regions : [];
-      this.setState({ isLoader: false, allRegions : regions },()=>{
-        console.log('allregions', this.state.allRegions, response);
+      .then((response: any) => {
+        let regions =
+          Object.keys(response.body).length !== 0 ? response.body.regions : [];
+        this.setState({ isLoader: false, allRegions: regions }, () => {
+          console.log("allregions", this.state.allRegions, response);
+        });
       })
-    }).catch((err: any) => {
-      this.setState({ isLoader: false });
-    })
+      .catch((err: any) => {
+        this.setState({ isLoader: false });
+      });
   }
 
-  getDynamicOptionFields = async(data: any) => {
-    console.log('allRegions', this.state.allRegions);
-    let regionOptions:any = [];
-    this.state.allRegions.forEach((item:any) => {
-      let regionInfo = {text: item.name, code: item.code, value: item.name}
+  getDynamicOptionFields = async (data: any) => {
+    console.log("allRegions", this.state.allRegions);
+    let regionOptions: any = [];
+    this.state.allRegions.forEach((item: any) => {
+      let regionInfo = { text: item.name, code: item.code, value: item.name };
       regionOptions.push(regionInfo);
-    })
+    });
     let allRegions = this.state.allRegions;
-    if(data){
+    if (data) {
       let setFormArray: any = [];
-      let regionoptions:any = [];
-      let addoptions:any = [];
-      let districtoptions:any = [];
-      let epaoptions:any= [];
-      let villageoptions:any = [];
-      geoLocationInfo = {region: '', add: '', district:'', epa: '', village:''};
+      let regionoptions: any = [];
+      let addoptions: any = [];
+      let districtoptions: any = [];
+      let epaoptions: any = [];
+      let villageoptions: any = [];
+      geoLocationInfo = {
+        region: "",
+        add: "",
+        district: "",
+        epa: "",
+        village: "",
+      };
       let region = "";
       let add = "";
       let district = "";
       let epa = "";
       let village = "";
-      if('deliveryregion' in data){
+      if ("deliveryregion" in data) {
         regionoptions = regionOptions;
         region = data.deliveryregion;
-        regionoptions.forEach((regionInfo:any)=>{
-          if(regionInfo.name===data.deliveryregion) {
-            geoLocationInfo.region= regionInfo.code;
+        regionoptions.forEach((regionInfo: any) => {
+          if (regionInfo.name === data.deliveryregion) {
+            geoLocationInfo.region = regionInfo.code;
           }
-        })
-        this.setState({regionoptions:regionoptions})
-      }
-      if('deliverystate' in data){
-        let filteredAdd = allRegions.filter((region: any)=>region.name === data.deliveryregion);
-        geoLocationInfo.region = filteredAdd[0].code;
-        filteredAdd[0].add.forEach((item:any)=>{
-          let addInfo = { text: item.name, value: item.name, code: item.code };
-          addoptions.push(addInfo)
         });
-        let selectedAdd = addoptions.filter((district:any)=>district.text===data.deliverystate);
+        this.setState({ regionoptions: regionoptions });
+      }
+      if ("deliverystate" in data) {
+        let filteredAdd = allRegions.filter(
+          (region: any) => region.name === data.deliveryregion
+        );
+        geoLocationInfo.region = filteredAdd[0].code;
+        filteredAdd[0].add.forEach((item: any) => {
+          let addInfo = { text: item.name, value: item.name, code: item.code };
+          addoptions.push(addInfo);
+        });
+        let selectedAdd = addoptions.filter(
+          (district: any) => district.text === data.deliverystate
+        );
         geoLocationInfo.add = selectedAdd[0].code;
         add = data.deliverystate;
-        this.setState({addoptions:addoptions})
+        this.setState({ addoptions: addoptions });
       }
-      if('deliverydistrict' in data){
+      if ("deliverydistrict" in data) {
         district = data.deliverydistrict;
-        let filteredAdd = allRegions.filter((region: any)=>region.name === data.deliveryregion);
-        let addList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === data.deliverystate)
-        addList[0].district.forEach((item:any)=>{
+        let filteredAdd = allRegions.filter(
+          (region: any) => region.name === data.deliveryregion
+        );
+        let addList = filteredAdd[0].add.filter(
+          (addinfo: any) => addinfo.name === data.deliverystate
+        );
+        addList[0].district.forEach((item: any) => {
           let addInfo = { text: item.name, value: item.name, code: item.code };
-          districtoptions.push(addInfo)
+          districtoptions.push(addInfo);
         });
-        let selectedDistrict = districtoptions.filter((districtInfo:any)=>districtInfo.text===district);
-        
+        let selectedDistrict = districtoptions.filter(
+          (districtInfo: any) => districtInfo.text === district
+        );
+
         // district = 'Mzimba';
         geoLocationInfo.district = selectedDistrict[0].code;
-        this.setState({districtoptions:districtoptions})
-      } 
-      if('deliverycity' in data){
-        epaoptions =  await this.getEPADetails();
-        console.log('epadetails',epaoptions)
+        this.setState({ districtoptions: districtoptions });
+      }
+      if ("deliverycity" in data) {
+        epaoptions = await this.getEPADetails();
+        console.log("epadetails", epaoptions);
         epa = data.deliverycity;
         // epa = 'Bwengu';
-        epaoptions.forEach((city:any)=>{
-          if(city.name===epa){
+        epaoptions.forEach((city: any) => {
+          if (city.name === epa) {
             geoLocationInfo.epa = city.code;
           }
           city.text = city.name;
           city.value = city.name;
-        })
-        this.setState({epaoptions:epaoptions})
+        });
+        this.setState({ epaoptions: epaoptions });
       }
-      if('deliveryvillage' in data){
+      if ("deliveryvillage" in data) {
         village = data.deliveryvillage;
-        villageoptions =  await this.getVillageDetails();
-        if(villageoptions.length){
-          villageoptions.forEach((village:any)=>{
-            if(village.name===village){
+        villageoptions = await this.getVillageDetails();
+        if (villageoptions.length) {
+          villageoptions.forEach((village: any) => {
+            if (village.name === village) {
               geoLocationInfo.village = village.code;
             }
             village.text = village.name;
             village.value = village.name;
-          })
+          });
         }
-        this.setState({villageoptions:villageoptions})
+        this.setState({ villageoptions: villageoptions });
 
-        this.state.geographicFields.map( (list: any, i: number) => {
+        this.state.geographicFields.map((list: any, i: number) => {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "country" ?  this.getStoreData.country : list === 'region' ? region : list === 'add' ? add : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
+            value:
+              list === "country"
+                ? this.getStoreData.country
+                : list === "region"
+                ? region
+                : list === "add"
+                ? add
+                : list === "district"
+                ? district
+                : list === "epa"
+                ? epa
+                : list === "village"
+                ? village
+                : "",
             options:
               list === "country"
                 ? this.state.countryList
-                : list === "country" ?  this.getStoreData.country : list === 'region' ? regionoptions : list === 'add' ? addoptions : list === "district" ? districtoptions : list === "epa" ? epaoptions : list === "village" ? villageoptions : '',
+                : list === "country"
+                ? this.getStoreData.country
+                : list === "region"
+                ? regionoptions
+                : list === "add"
+                ? addoptions
+                : list === "district"
+                ? districtoptions
+                : list === "epa"
+                ? epaoptions
+                : list === "village"
+                ? villageoptions
+                : "",
             error: "",
           });
         });
@@ -438,192 +489,216 @@ class CreateUser extends Component<any, any> {
     } else {
       let setFormArray: any = [];
       this.state.geographicFields.map((list: any, i: number) => {
-          setFormArray.push({
-            name: list,
-            placeHolder: true,
-            value: list === "country" ?  this.getStoreData.country : '',
-            options:
-              list === "country"
-                ? this.state.countryList
-                : list === 'region' ? regionOptions : '',
-            error: "",
-          });
+        setFormArray.push({
+          name: list,
+          placeHolder: true,
+          value: list === "country" ? this.getStoreData.country : "",
+          options:
+            list === "country"
+              ? this.state.countryList
+              : list === "region"
+              ? regionOptions
+              : "",
+          error: "",
+        });
       });
       this.setState({ dynamicFields: setFormArray });
       this.setState({ withHolding: setFormArray });
     }
-}
+  };
 
-  getOptionLists =  async(cron: any, type: any, value: any, index: any) => {
+  getOptionLists = async (cron: any, type: any, value: any, index: any) => {
     let allRegions = this.state.allRegions;
-    allRegions.forEach((region:any)=>{
+    allRegions.forEach((region: any) => {
       region.text = region.name;
       region.value = region.name;
-    })
+    });
     let currentStep = this.state.currentStep;
-    this.setState({regionoptions:allRegions})
-      let dynamicFieldVal = this.state.dynamicFields;
-      let withHoldingVal = this.state.withHolding; 
-      if(type === 'region') {
-        let filteredRegion = allRegions.filter((region: any)=>region.name === value);
-        let add: any= [];
-        filteredRegion[0].add.forEach((item:any)=>{
-          let regionInfo = { text: item.name, value: item.name, code: item.code };
-          add.push(regionInfo)
-        });
-        geoLocationInfo.region = filteredRegion[0].code
-        if ( this.state.currentStep == 2){
-          dynamicFieldVal[index+1].options = add;
-          dynamicFieldVal[index].value = value;
-          this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
-          withHoldingVal[index + 1].options = add;
-          withHoldingVal[index].value = value;
-          this.setState({ withHolding: withHoldingVal });
-        }
-     } else if(type === 'add') {
-       let filteredAdd: any = [];
-       if (currentStep === 2){
-        filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-       } 
-       if (currentStep === 3){
-        filteredAdd = allRegions.filter((region: any)=>region.name === withHoldingVal[1].value);
-       }
+    this.setState({ regionoptions: allRegions });
+    let dynamicFieldVal = this.state.dynamicFields;
+    let withHoldingVal = this.state.withHolding;
+    if (type === "region") {
+      let filteredRegion = allRegions.filter(
+        (region: any) => region.name === value
+      );
+      let add: any = [];
+      filteredRegion[0].add.forEach((item: any) => {
+        let regionInfo = { text: item.name, value: item.name, code: item.code };
+        add.push(regionInfo);
+      });
+      geoLocationInfo.region = filteredRegion[0].code;
+      if (this.state.currentStep == 2) {
+        dynamicFieldVal[index + 1].options = add;
+        dynamicFieldVal[index].value = value;
+        this.setState({ dynamicFields: dynamicFieldVal });
+      } else if (this.state.currentStep == 3) {
+        withHoldingVal[index + 1].options = add;
+        withHoldingVal[index].value = value;
+        this.setState({ withHolding: withHoldingVal });
+      }
+    } else if (type === "add") {
+      let filteredAdd: any = [];
+      if (currentStep === 2) {
+        filteredAdd = allRegions.filter(
+          (region: any) => region.name === dynamicFieldVal[1].value
+        );
+      }
+      if (currentStep === 3) {
+        filteredAdd = allRegions.filter(
+          (region: any) => region.name === withHoldingVal[1].value
+        );
+      }
 
-        // this.setState({addoptions:allRegions})
-        let addList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === value)
-        let district: any= [];
-        addList[0].district.forEach((item:any)=>{
-          let districtInfo = { text: item.name, value: item.name, code: item.code };
-          district.push(districtInfo)
+      // this.setState({addoptions:allRegions})
+      let addList = filteredAdd[0].add.filter(
+        (addinfo: any) => addinfo.name === value
+      );
+      let district: any = [];
+      addList[0].district.forEach((item: any) => {
+        let districtInfo = {
+          text: item.name,
+          value: item.name,
+          code: item.code,
+        };
+        district.push(districtInfo);
+      });
+      geoLocationInfo.add = addList[0].code;
+      if (this.state.currentStep == 2) {
+        dynamicFieldVal[index + 1].options = district;
+        dynamicFieldVal[index].value = value;
+        this.setState({ dynamicFields: dynamicFieldVal });
+      } else if (this.state.currentStep == 3) {
+        withHoldingVal[index + 1].options = district;
+        withHoldingVal[index].value = value;
+        this.setState({ withHolding: withHoldingVal });
+      }
+    } else if (type === "district") {
+      let filteredAdd: any = [];
+      let districtList: any = [];
+      if (currentStep === 2) {
+        filteredAdd = allRegions.filter(
+          (region: any) => region.name === dynamicFieldVal[1].value
+        );
+        districtList = filteredAdd[0].add.filter(
+          (addinfo: any) => addinfo.name === dynamicFieldVal[2].value
+        );
+      }
+      if (currentStep === 3) {
+        filteredAdd = allRegions.filter(
+          (region: any) => region.name === withHoldingVal[1].value
+        );
+        districtList = filteredAdd[0].add.filter(
+          (addinfo: any) => addinfo.name === withHoldingVal[2].value
+        );
+      }
+      districtList[0].district.forEach((item: any) => {
+        if (item.name === value) {
+          geoLocationInfo.district = item.code;
+        }
+      });
+
+      levelFive = await this.getEPADetails();
+
+      if (levelFive.length) {
+        levelFive.forEach((item: any) => {
+          item.text = item.name;
+          item.value = item.name;
         });
-        geoLocationInfo.add = addList[0].code;
-        if ( this.state.currentStep == 2){
-          dynamicFieldVal[index+1].options = district;
-          dynamicFieldVal[index].value = value;
-          this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
-          withHoldingVal[index + 1].options = district;
-          withHoldingVal[index].value = value;
-          this.setState({ withHolding: withHoldingVal });
-        }
-      } else if(type === 'district') {
-        let filteredAdd: any = [];
-        let districtList: any = [];
-        if (currentStep === 2){
-          filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-          districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
-         } 
-         if (currentStep === 3){
-          filteredAdd = allRegions.filter((region: any)=>region.name === withHoldingVal[1].value);
-          districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === withHoldingVal[2].value)
-         }
-        districtList[0].district.forEach((item:any)=>{
-          if(item.name === value) {
-            geoLocationInfo.district = item.code;
-          }
-        });
-       
-        levelFive =  await this.getEPADetails();
-                         
-        if(levelFive.length) {
-          levelFive.forEach((item:any)=>{
-            item.text = item.name;
-            item.value = item.name;
-          });
-          if ( this.state.currentStep == 2){
-            dynamicFieldVal[index+1].options = levelFive;
-            dynamicFieldVal[index].value = value;
-            this.setState({dynamicFields: dynamicFieldVal});
-          } else if ( this.state.currentStep == 3) {
-            withHoldingVal[index+1].options = levelFive;
-            withHoldingVal[index].value = value;
-            this.setState({withHolding: withHoldingVal});
-          }
-        }
-      } else if(type === 'epa') {
-        // geoLocationInfo.epa = value;
-        if(levelFive && levelFive.length) {
-          levelFive.forEach((item:any)=>{
-            if(item.name === value) {
-              geoLocationInfo.epa = item.code;
-            }
-          });
-        }
-        let village:any=[];
-        village =  await this.getVillageDetails();
-        village.forEach((villageInfo:any)=>{
-          villageInfo.text = villageInfo.name;
-          villageInfo.value = villageInfo.name;
-        })
-        if ( this.state.currentStep == 2){
-          dynamicFieldVal[index+1].options = village;
-          dynamicFieldVal[index].value = value;
-          this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
-          withHoldingVal[index + 1].options = village;
-          withHoldingVal[index].value = value;
-          this.setState({ withHolding: withHoldingVal });
-        }
-      } else if (type === "village") {
         if (this.state.currentStep == 2) {
+          dynamicFieldVal[index + 1].options = levelFive;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
+          withHoldingVal[index + 1].options = levelFive;
           withHoldingVal[index].value = value;
           this.setState({ withHolding: withHoldingVal });
         }
       }
+    } else if (type === "epa") {
+      // geoLocationInfo.epa = value;
+      if (levelFive && levelFive.length) {
+        levelFive.forEach((item: any) => {
+          if (item.name === value) {
+            geoLocationInfo.epa = item.code;
+          }
+        });
+      }
+      let village: any = [];
+      village = await this.getVillageDetails();
+      village.forEach((villageInfo: any) => {
+        villageInfo.text = villageInfo.name;
+        villageInfo.value = villageInfo.name;
+      });
+      if (this.state.currentStep == 2) {
+        dynamicFieldVal[index + 1].options = village;
+        dynamicFieldVal[index].value = value;
+        this.setState({ dynamicFields: dynamicFieldVal });
+      } else if (this.state.currentStep == 3) {
+        withHoldingVal[index + 1].options = village;
+        withHoldingVal[index].value = value;
+        this.setState({ withHolding: withHoldingVal });
+      }
+    } else if (type === "village") {
+      if (this.state.currentStep == 2) {
+        dynamicFieldVal[index].value = value;
+        this.setState({ dynamicFields: dynamicFieldVal });
+      } else if (this.state.currentStep == 3) {
+        withHoldingVal[index].value = value;
+        this.setState({ withHolding: withHoldingVal });
+      }
+    }
   };
 
   getEPADetails = () => {
     this.setState({ isLoader: true });
-     const { getLevelFive } = apiURL;
+    const { getLevelFive } = apiURL;
     let data = {
-      countrycode:  this.getStoreData.countryCode,
+      countrycode: this.getStoreData.countryCode,
       region: geoLocationInfo.region,
       add: geoLocationInfo.add,
-      district: geoLocationInfo.district
-    }
-    let levelFive:any = [];
-    return new Promise((resolve,reject) => {
+      district: geoLocationInfo.district,
+    };
+    let levelFive: any = [];
+    return new Promise((resolve, reject) => {
       invokeGetAuthService(getLevelFive, data)
-      .then((response: any) => {
-           levelFive = response.body.epa;
-          this.setState({isLoader: false});
-          resolve(levelFive);
-          console.log('levelfive',levelFive);
-        }).catch((err: any) => {
+        .then((response: any) => {
+          levelFive = response.body.epa;
           this.setState({ isLoader: false });
-          reject(err)
+          resolve(levelFive);
+          console.log("levelfive", levelFive);
         })
-    })
-  }
+        .catch((err: any) => {
+          this.setState({ isLoader: false });
+          reject(err);
+        });
+    });
+  };
 
   getVillageDetails = () => {
     this.setState({ isLoader: true });
     const { getLevelSix } = apiURL;
     let data = {
-      countrycode:  this.getStoreData.countryCode,
+      countrycode: this.getStoreData.countryCode,
       region: geoLocationInfo.region,
       add: geoLocationInfo.add,
       district: geoLocationInfo.district,
-      epa: geoLocationInfo.epa
-    }
-    let levelSix:any = [];
-    return new Promise((resolve,reject) => {
+      epa: geoLocationInfo.epa,
+    };
+    let levelSix: any = [];
+    return new Promise((resolve, reject) => {
       invokeGetAuthService(getLevelSix, data)
-      .then((response: any) => {
-           levelSix = response.body.village;
-          this.setState({isLoader: false})
-          console.log('levelSix', response.body);
-          resolve(levelSix)
-        }).catch((err: any) => {
+        .then((response: any) => {
+          levelSix = response.body.village;
           this.setState({ isLoader: false });
-          reject(err)
+          console.log("levelSix", response.body);
+          resolve(levelSix);
         })
-    })
-  }
+        .catch((err: any) => {
+          this.setState({ isLoader: false });
+          reject(err);
+        });
+    });
+  };
 
   handleClick(clickType: any, e: any) {
     let formValid = true;
@@ -633,8 +708,8 @@ class CreateUser extends Component<any, any> {
       formValid = this.checkValidation();
       if (formValid) {
         if (this.state.accInfo) {
-          this.setState({ withHolding: this.state.dynamicFields },()=>{
-            console.log('withHoldingvalues', this.state.withHolding)
+          this.setState({ withHolding: this.state.dynamicFields }, () => {
+            console.log("withHoldingvalues", this.state.withHolding);
           });
         }
       }
@@ -709,7 +784,7 @@ class CreateUser extends Component<any, any> {
     let data = {};
     if (this.state.isEditPage || this.state.isValidatePage) {
       data = {
-        countrycode:  this.getStoreData.countryCode,
+        countrycode: this.getStoreData.countryCode,
         ownerfirstname: userData.ownerRows[0].firstname,
         ownerlastname: userData.ownerRows[0].lastname,
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
@@ -730,7 +805,7 @@ class CreateUser extends Component<any, any> {
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
-        deliverycountry:  this.getStoreData.countryCode,
+        deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
         deliverycity: geoFields.epa,
@@ -738,7 +813,7 @@ class CreateUser extends Component<any, any> {
         deliveryvillage: geoFields.village,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billingcountry:  this.getStoreData.countryCode,
+        billingcountry: this.getStoreData.countryCode,
         billingregion: shippingFields.region,
         billingstate: shippingFields.add,
         billingcity: shippingFields.epa,
@@ -754,7 +829,7 @@ class CreateUser extends Component<any, any> {
       };
     } else {
       data = {
-        countrycode:  this.getStoreData.countryCode,
+        countrycode: this.getStoreData.countryCode,
         ownerfirstname: userData.ownerRows[0].firstname,
         ownerlastname: userData.ownerRows[0].lastname,
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
@@ -774,7 +849,7 @@ class CreateUser extends Component<any, any> {
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
-        deliverycountry:  this.getStoreData.countryCode,
+        deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
         deliverycity: geoFields.epa,
@@ -782,7 +857,7 @@ class CreateUser extends Component<any, any> {
         deliveryvillage: geoFields.village,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billingcountry:  this.getStoreData.countryCode,
+        billingcountry: this.getStoreData.countryCode,
         billingregion: shippingFields.region,
         billingstate: shippingFields.add,
         billingcity: shippingFields.epa,
@@ -802,7 +877,7 @@ class CreateUser extends Component<any, any> {
       this.state.isValidatePage || this.state.isEditPage
         ? {
             isedit: true,
-            lastupdatedby: (this.state.username).toUpperCase(),
+            lastupdatedby: this.state.username.toUpperCase(),
             lastupdateddate: new Date().toJSON(),
           }
         : "";
@@ -1146,7 +1221,7 @@ class CreateUser extends Component<any, any> {
           setFormArray.push({
             name: list,
             placeHolder: true,
-            value: list === "country" ?  this.getStoreData.country : "",
+            value: list === "country" ? this.getStoreData.country : "",
             options:
               list === "country"
                 ? this.state.countryList
@@ -1215,7 +1290,7 @@ class CreateUser extends Component<any, any> {
     } else {
       if (e.target.name === "accInfo") {
         if (!e.target.checked) {
-          this.setState({ isRendered: true },()=>{
+          this.setState({ isRendered: true }, () => {
             let setFormArray: any = [];
             // this.state.geographicFields.map( (list: any, i: number) => {
             //   setFormArray.push({
@@ -1233,7 +1308,7 @@ class CreateUser extends Component<any, any> {
               setFormArray.push({
                 name: list,
                 placeHolder: true,
-                value: list === "country" ?  this.getStoreData.country : "",
+                value: list === "country" ? this.getStoreData.country : "",
                 options:
                   list === "country"
                     ? this.state.countryList
@@ -1245,7 +1320,6 @@ class CreateUser extends Component<any, any> {
             });
             this.setState({ withHolding: setFormArray });
           });
-
         } else {
           this.setState({ accInfo: e.target.checked });
           this.setState({ withHolding: this.state.dynamicFields });
@@ -1326,9 +1400,9 @@ class CreateUser extends Component<any, any> {
   };
 
   render() {
-    console.log('dynamicfields', this.state.dynamicFields)
+    console.log("dynamicfields", this.state.dynamicFields);
     // let countryCode = (userinfo.countrycode).toLowerCase();
-    let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode)
+    let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
     const {
       currentStep,
       userData,
@@ -1484,7 +1558,10 @@ class CreateUser extends Component<any, any> {
                             isPlaceholder
                           />
                         </div>
-                        <div className="col-sm-3" style={{marginLeft:"20px"}}>
+                        <div
+                          className="col-sm-3"
+                          style={{ marginLeft: "20px" }}
+                        >
                           <label className="font-weight-bold">
                             Has store staff?(Max 4)
                             <input
@@ -1664,7 +1741,7 @@ class CreateUser extends Component<any, any> {
                                         />
                                       </div>
                                       <div style={{ visibility: "hidden" }}>
-                                        {idx ===
+                                        {/* {idx ===
                                           userData.ownerRows.length - 1 &&
                                         userData.ownerRows.length < 5 ? (
                                           <img
@@ -1677,6 +1754,85 @@ class CreateUser extends Component<any, any> {
                                               this.handleAddRow("owner")
                                             }
                                           />
+                                        ) : (
+                                          <img
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                            }}
+                                            src={RemoveBtn}
+                                            onClick={this.handleRemoveSpecificRow(
+                                              idx,
+                                              "owner"
+                                            )}
+                                          />
+                                        )} */}
+                                        {idx ===
+                                          userData.ownerRows.length - 1 &&
+                                        userData.ownerRows.length < 4 ? (
+                                          (() => {
+                                            if (
+                                              idx === 0 &&
+                                              idx ===
+                                                userData.ownerRows.length - 1
+                                            ) {
+                                              return (
+                                                <div>
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                    src={AddBtn}
+                                                    onClick={() =>
+                                                      this.handleAddRow("owner")
+                                                    }
+                                                  />
+                                                </div>
+                                              );
+                                            } else if (
+                                              idx > 0 &&
+                                              idx ===
+                                                userData.ownerRows.length - 1
+                                            ) {
+                                              return (
+                                                <div>
+                                                  <td
+                                                    style={{ border: "none" }}
+                                                  >
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={RemoveBtn}
+                                                      onClick={this.handleRemoveSpecificRow(
+                                                        idx,
+                                                        "owner"
+                                                      )}
+                                                    />
+                                                  </td>
+
+                                                  <td
+                                                    style={{ border: "none" }}
+                                                  >
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      onClick={() =>
+                                                        this.handleAddRow(
+                                                          "owner"
+                                                        )
+                                                      }
+                                                    />
+                                                  </td>
+                                                </div>
+                                              );
+                                            }
+                                          })()
                                         ) : (
                                           <img
                                             style={{
@@ -1798,7 +1954,7 @@ class CreateUser extends Component<any, any> {
                                               }
                                               onlyCountries={[countryCodeLower]}
                                               autoFormat
-                                               disableDropdown
+                                              disableDropdown
                                               disableCountryCode
                                             />
                                             {item.errObj?.mobilenumberErr && (
@@ -1861,7 +2017,7 @@ class CreateUser extends Component<any, any> {
                                           />
                                         </div>
                                         <div>
-                                          {idx ===
+                                          {/* {idx ===
                                             userData.staffdetails.length - 1 &&
                                           userData.staffdetails.length < 4 ? (
                                             <img
@@ -1874,6 +2030,90 @@ class CreateUser extends Component<any, any> {
                                                 this.handleAddRow("staff")
                                               }
                                             />
+                                          ) : (
+                                            <img
+                                              style={{
+                                                width: "50px",
+                                                height: "50px",
+                                              }}
+                                              src={RemoveBtn}
+                                              onClick={this.handleRemoveSpecificRow(
+                                                idx,
+                                                "staff"
+                                              )}
+                                            />
+                                          )} */}
+
+                                          {idx ===
+                                            userData.staffdetails.length - 1 &&
+                                          userData.staffdetails.length < 4 ? (
+                                            (() => {
+                                              if (
+                                                idx === 0 &&
+                                                idx ===
+                                                  userData.staffdetails.length -
+                                                    1
+                                              ) {
+                                                return (
+                                                  <div>
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      onClick={() =>
+                                                        this.handleAddRow(
+                                                          "staff"
+                                                        )
+                                                      }
+                                                    />
+                                                  </div>
+                                                );
+                                              } else if (
+                                                idx > 0 &&
+                                                idx ===
+                                                  userData.staffdetails.length -
+                                                    1
+                                              ) {
+                                                return (
+                                                  <div>
+                                                    <td
+                                                      style={{ border: "none" }}
+                                                    >
+                                                      <img
+                                                        style={{
+                                                          width: "50px",
+                                                          height: "50px",
+                                                        }}
+                                                        src={RemoveBtn}
+                                                        onClick={this.handleRemoveSpecificRow(
+                                                          idx,
+                                                          "staff"
+                                                        )}
+                                                      />
+                                                    </td>
+
+                                                    <td
+                                                      style={{ border: "none" }}
+                                                    >
+                                                      <img
+                                                        style={{
+                                                          width: "50px",
+                                                          height: "50px",
+                                                        }}
+                                                        src={AddBtn}
+                                                        onClick={() =>
+                                                          this.handleAddRow(
+                                                            "staff"
+                                                          )
+                                                        }
+                                                      />
+                                                    </td>
+                                                  </div>
+                                                );
+                                              }
+                                            })()
                                           ) : (
                                             <img
                                               style={{
