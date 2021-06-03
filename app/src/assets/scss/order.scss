@@ -35,6 +35,7 @@
   margin-right: 80px;
   color: #000000;
   font-weight: 600;
+  font-size: 13px;
   .total{
     margin: 0;
     width: 100px;
@@ -55,11 +56,21 @@
   overflow: auto;
   .table td, .table th {
     vertical-align: middle;
-}
-}
+ }
+ table{
+   td{
+     font-size: 14px;
+   }
+ }
+ 
 
-@media only screen and (max-width: 1400px) {
+}
+.product-sold-popup{
+  margin: 20px 10px;
+}
+@media only screen and (max-width: 1366px) {
   .sum-total{
+    font-size: 12px;
     .total{
       margin: 0;
       width: 100px;
@@ -74,8 +85,13 @@
       width: 49px;
     }
   }
+
+  .sub-order{
+    table{
+      td{
+        font-size: 12px;
+      }
+    }
+  }
 }
 
-.product-sold-popup{
-  margin: 20px 10px;
-}

@@ -322,7 +322,7 @@
           border: 0;
           padding: 15px 10px;
           vertical-align: middle;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 500;
           // font-family: "Open Sans", sans-serif;
           font-family: "appRegular" !important;
@@ -337,7 +337,7 @@
     tbody {
       tr {
         td {
-          font-size: 16px;
+          font-size: 14px;
           // font-family: "Open Sans";
           font-family: "appRegular" !important;
           .status {
@@ -375,25 +375,25 @@
     height: 12px;
   }
   p {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
     line-height: normal;
   }
   label {
     color: #717171;
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 .farmer-id {
   p {
     color: #242424;
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
     line-height: normal;
   }
   label {
     color: #717171;
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 .popup-retailer {
@@ -458,7 +458,7 @@
 }
 .popup-title.order {
   p {
-    font-size: 14px;
+    font-size: 12px;
     color: #777777;
     label {
       font-size: 14px;
@@ -576,7 +576,7 @@
     }
     p {
       color: #777777;
-      font-size: 15px;
+      font-size: 12px;
       margin: 0;
     }
     span {
@@ -592,15 +592,15 @@
   text-align: center;
   p {
     margin: 0;
-    margin-top: 12px;
+    margin-top: 15px;
     color: #808080;
-    font-size: 14px;
+    font-size: 12px;
   }
   label {
     margin: 0;
     margin-top: 12px;
     color: #000000;
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 
@@ -610,15 +610,15 @@
   text-align: center;
   p {
     margin: 0;
-    margin-top: 12px;
+    margin-top: 15px;
     color: #808080;
-    font-size: 14px;
+    font-size: 12px;
   }
   label {
     margin: 0;
     margin-top: 12px;
     color: #000000;
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -672,6 +672,12 @@
 cus-btn-scanlog-filter[disabled] {
   background-color: #96a8ae;
 }
+
+.scanlog-container {
+  height: 58vh;
+  overflow: auto;
+}
+
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {
     font-size: 11px;
@@ -682,7 +688,7 @@ cus-btn-scanlog-filter[disabled] {
         tr {
           th {
             padding: 15px 5px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
           }
         }
@@ -690,7 +696,7 @@ cus-btn-scanlog-filter[disabled] {
       tbody {
         tr {
           td {
-            font-size: 13px;
+            font-size: 12px;
             // font-family: "Open Sans";
             font-family: "appRegular" !important;
             vertical-align: middle;
@@ -725,24 +731,46 @@ cus-btn-scanlog-filter[disabled] {
         }
       }
     }
+    .popup-title {
+      text-align: center;
+    
+      p {
+        color: #000000;
+        font-size: 14px;
+        label {
+          font-size: 14px;
+        }
+      }
+    }
+    .popup-title.order {
+      p {
+        font-size: 12px;
+        label {
+          font-size: 14px;
+        }
+      }
+    }
+    
   }
   .line-cnt {
     left: 25%;
     p {
-      font-size: 12px;
+      font-size: 11px;
+      margin-top: 18px;
     }
     label {
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 
   .line-cnt-expiry-date {
     right: 25%;
     p {
-      font-size: 12px;
+      font-size: 11px;
+      margin-top: 18px;
     }
     label {
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 
@@ -758,10 +786,10 @@ cus-btn-scanlog-filter[disabled] {
 
     .content {
       p {
-        font-size: 12px;
+        font-size: 11px;
       }
       span {
-        font-size: 14px;
+        font-size: 12px;
       }
     }
   }
@@ -771,13 +799,18 @@ cus-btn-scanlog-filter[disabled] {
       font-size: 14px;
     }
     label {
-      font-size: 14px;
+      font-size: 12px;
     }
   }
-}
-.scanlog-container {
-  height: 58vh;
-  overflow: auto;
+  .retailer-id {
+    p {
+      font-size: 14px;
+    }
+    label {
+      font-size: 12px;
+    }
+  }
+  
 }
 
 @media only screen and (min-width: 1400px) and (max-width: 1920px) {
@@ -805,7 +838,7 @@ cus-btn-scanlog-filter[disabled] {
         tr {
           th {
             padding: 15px 5px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
           }
         }
@@ -813,7 +846,7 @@ cus-btn-scanlog-filter[disabled] {
       tbody {
         tr {
           td {
-            font-size: 14px;
+            font-size: 13px;
             // font-family: "Open Sans";
             font-family: "appRegular" !important;
             vertical-align: middle;

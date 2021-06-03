@@ -575,7 +575,7 @@ class UserList extends Component<Props, States> {
           epa: "All",
           district: "All",
           status: "All",
-          lastmodifieddatefrom: new Date(),
+          lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
           lastmodifieddateto: new Date(),
         },
         isFiltered: false,

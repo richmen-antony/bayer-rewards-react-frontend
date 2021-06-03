@@ -158,27 +158,51 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </thead>
                   <tbody>
                     {data.products_ordered.map((value: any, index: number) => {
-                      console.log({value});
                       return (
                         <>
-                          <tr key={index} onClick={() => handleExpand(value)}>
-                            <th scope="row">{<img src={value.productgroup ==="CORN SEED"?CornImg :value.productgroup ==="FUNGICIDES" ? CpproductImg :"" } />}</th>
-                            <td>{value.productname} <p>{value.materialid}</p></td>
-                            <td>{value.productgroup || "Seed-corn"}</td>
-                            <td className="text-center">{value.intendedquantity}</td>
-                            <td className="text-center">{value.orderedquantity}</td>
-                            <td>{"MK " + value.productprice}</td>
-                            {data.orderstatus === "FULFILLED" && value?.ordered_qrcodes?.length>0 && (
-                              <td>
-                                <i
-                                  className={`fas ${
-                                    accordionView
-                                      ? "fa-sort-down"
-                                      : "fa-sort-up"
-                                  }`}
+                          <tr
+                            key={index}
+                            onClick={() =>
+                              value?.ordered_qrcodes?.length > 0 &&
+                              handleExpand(value)
+                            }
+                          >
+                            <th scope="row">
+                              {
+                                <img
+                                  src={
+                                    value.productgroup === "CORN SEED"
+                                      ? CornImg
+                                      : value.productgroup === "FUNGICIDES"
+                                      ? CpproductImg
+                                      : ""
+                                  }
                                 />
-                              </td>
-                            )}
+                              }
+                            </th>
+                            <td >
+                              {value.productname} <p>{value.materialid}</p>
+                            </td>
+                            <td>{value.productgroup }</td>
+                            <td className="text-center">
+                              {value.intendedquantity}
+                            </td>
+                            <td className="text-center">
+                              {value.orderedquantity}
+                            </td>
+                            <td>{"MK " + value.productprice}</td>
+                            {data.orderstatus === "FULFILLED" &&
+                              value?.ordered_qrcodes?.length > 0 && (
+                                <td>
+                                  <i
+                                    className={`fas ${
+                                      accordionView
+                                        ? "fa-sort-down"
+                                        : "fa-sort-up"
+                                    }`}
+                                  />
+                                </td>
+                              )}
                           </tr>
                           {accordionView &&
                             value?.orderlineitemid === accordionId &&
@@ -189,26 +213,28 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   style={{ padding: 0, borderTop: 0 }}
                                 >
                                   <div>
-                                    {value?.ordered_qrcodes?.length>0 &&
-                                      value.ordered_qrcodes.map((list: any) => {
-                                        return (
-                                          <div className="inner-expand">
-                                            <div className="title inner-row">
-                                              <p>Label ID</p>
-                                              <p className="sub-val">Batch #</p>
-                                            </div>
-                                            <div className="inner-row">
-                                              <p className="qr-val">
-                                                {list.labelid}
-                                              </p>
-                                              <p className="sub-val">
-                                                {" "}
-                                                {list.batchno}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        );
-                                      })}
+                                    <div className="inner-expand">
+                                      <div className="title inner-row">
+                                        <p>Label ID</p>
+                                        <p className="sub-val">Batch #</p>
+                                      </div>
+                                      {value?.ordered_qrcodes?.length > 0 &&
+                                        value.ordered_qrcodes.map(
+                                          (list: any) => {
+                                            return (
+                                              <div className="inner-row">
+                                                <p className="qr-val">
+                                                  {list.labelid}
+                                                </p>
+                                                <p className="sub-val">
+                                                  {" "}
+                                                  {list.batchno}
+                                                </p>
+                                              </div>
+                                            );
+                                          }
+                                        )}
+                                    </div>
                                   </div>
                                 </td>
                               </tr>

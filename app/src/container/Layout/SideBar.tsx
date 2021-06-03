@@ -206,7 +206,7 @@ class Sidebar extends Component<Props, States> {
                         <span> Scan logs </span>
                       </Link>
                     </li>
-                    <li className="d-flex">
+                    {/* <li className="d-flex">
                       <span
                         className={
                           window.location.pathname.indexOf("pointLogs") > -1
@@ -221,7 +221,7 @@ class Sidebar extends Component<Props, States> {
                         <img src={pointLogsIcon} alt="Points" width="16" />{" "}
                         <span> Point logs </span>
                       </Link>
-                    </li>{" "}
+                    </li>{" "} */}
                   </>
                 )}
 

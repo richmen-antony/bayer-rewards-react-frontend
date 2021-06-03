@@ -101,7 +101,7 @@ class Pagination extends Component<Props,States>{
                             </div>
                         </div>
                     </div>
-                    <div className='col-sm-6' style={{ display: 'flex',justifyContent: 'flex-end',paddingRight: '55px'}}>
+                    <div className='col-sm-6' style={{ display: 'flex',justifyContent: 'flex-end'}}>
                     <div className="paginationNumber">
                         <div style={{marginTop: '8px'}}>
                             <a href="#" className="" onClick={()=>previous(pageNo)} style={{ pointerEvents : pageNo == 1 ? 'none' : 'auto'}}>
@@ -130,7 +130,7 @@ class Pagination extends Component<Props,States>{
                         {/* <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
                             <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
                         </div> */}
-                        <div style={{marginTop: '8px'}}>
+                        <div style={{marginTop: '8px',marginRight: "-20px"}}>
                             <a href="#" onClick={()=>next(pageNo)} style={{ pointerEvents: pageNo == pageData ? 'none' : 'auto'}}>
                             <img src={pageNo == pageData ? RightArrowDisabled : RightArrow} alt={NoImage} />
                             </a>
