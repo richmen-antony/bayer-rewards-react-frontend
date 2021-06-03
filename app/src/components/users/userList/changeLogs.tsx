@@ -300,6 +300,7 @@ class ChangeLogs extends Component<Props, States> {
               pageNo={pageNo}
               handlePaginationChange={this.handlePaginationChange}
               data={allChangeLogs}
+              totalLabel={"Users"}
             />
           </div>
         </div>

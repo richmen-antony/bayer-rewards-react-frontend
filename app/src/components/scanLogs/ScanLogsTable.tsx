@@ -38,6 +38,7 @@ import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
+import { CustomButton } from "../../utility/widgets/button";
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -113,7 +114,6 @@ type States = {
   isAsc: Boolean;
 };
 
-
 class ScanLogsTable extends Component<Props, States> {
   tableCellIndex: any;
   timeOut: any;
@@ -138,18 +138,18 @@ class ScanLogsTable extends Component<Props, States> {
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
       productCategories: [
-        "All",
+        "ALL",
         "HYBRID",
         "CORN SEED",
         "HERBICIDES",
         "FUNGICIDES",
         "INSECTICIDES",
       ],
-      status: ["All", "FULFILLED", "EXPIRED", "DUPLICATE"],
-      list: ["All", "Distributor", "Retailer"],
+      status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
+      list: ["ALL", "Distributor", "Retailer"],
       selectedFilters: {
-        productgroup: "All",
-        status: "All",
+        productgroup: "ALL",
+        status: "ALL",
         ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
         ordereddateto: new Date(),
         lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
@@ -175,20 +175,22 @@ class ScanLogsTable extends Component<Props, States> {
       lastUpdatedDateErr: "",
       farmerOptions: [],
       retailerOptions: [],
-      loggedUserInfo:{}
+      loggedUserInfo: {},
     };
     this.timeOut = 0;
   }
   componentDidMount() {
-   
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-    this.setState({
-      loggedUserInfo: userData,
-    },()=>{
-      this.getScanLogs();
-      this.getRetailerList();
-    });
+    this.setState(
+      {
+        loggedUserInfo: userData,
+      },
+      () => {
+        this.getScanLogs();
+        this.getRetailerList();
+      }
+    );
   }
   getRetailerList = () => {
     const { rsmRetailerList } = apiURL;
@@ -227,7 +229,7 @@ class ScanLogsTable extends Component<Props, States> {
         console.log("error", error);
       });
   };
-  getScanLogs = () => {
+  getScanLogs = (filterScan?: any) => {
     const { scanLogs } = apiURL;
     this.setState({ isLoader: true });
     const { selectedFilters, isFiltered } = this.state;
@@ -258,7 +260,7 @@ class ScanLogsTable extends Component<Props, States> {
       filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
         "YYYY-MM-DD"
       );
-
+      filter.retailer = filterScan ? filterScan : filter.retailer;
       data = { ...data, ...filter };
       console.log("called", filter, data);
     }
@@ -274,7 +276,7 @@ class ScanLogsTable extends Component<Props, States> {
         this.setState({ totalData: Number(total) });
       })
       .catch((error) => {
-        this.setState({ isLoader: false });
+        this.setState({ isLoader: false , allScanLogs:[]});
         console.log("error", error);
       });
   };
@@ -373,8 +375,8 @@ class ScanLogsTable extends Component<Props, States> {
     e.stopPropagation();
     this.setState({
       selectedFilters: {
-        productgroup: "All",
-        status: "All",
+        productgroup: "ALL",
+        status: "ALL",
         ordereddatefrom: today.setMonth(today.getMonth() - 3),
         ordereddateto: new Date(),
         lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
@@ -392,6 +394,7 @@ class ScanLogsTable extends Component<Props, States> {
   applyFilter = () => {
     this.setState({ isFiltered: true }, () => {
       this.getScanLogs();
+      this.toggleFilter();
     });
   };
   previous = (pageNo: any) => {
@@ -533,6 +536,14 @@ class ScanLogsTable extends Component<Props, States> {
         if (name === "retailer") this.getRetailerList();
       }
     );
+  };
+
+  filterScans = (filterValue: any) => {
+    console.log({ filterValue });
+    this.setState({ isFiltered: true }, () => {
+      this.getScanLogs(filterValue);
+      this.handleClosePopup();
+    });
   };
   render() {
     const {
@@ -1129,6 +1140,7 @@ class ScanLogsTable extends Component<Props, States> {
               pageNo={pageNo}
               handlePaginationChange={this.handlePaginationChange}
               data={allScanLogs}
+              totalLabel={"Scans"}
             />
           </div>
         </div>
@@ -1185,13 +1197,24 @@ class ScanLogsTable extends Component<Props, States> {
               </div>
             </DialogContent>
             <DialogActions>
-              <MaterialUIButton
-                onClick={this.handleClosePopup}
+              {/* <MaterialUIButton
+                onClick={() => this.filterScans(retailerPopupData.username)}
                 className="popup-btn filter-scan"
                 autoFocus
               >
                 Filter scans
-              </MaterialUIButton>
+              </MaterialUIButton> */}
+              <CustomButton
+                label="Filter scans"
+                style={{
+                  borderRadius: "30px",
+                  backgroundColor: "#7eb343",
+                  width: "190px",
+                  padding: "7px",
+                  border: "1px solid  #7eb343",
+                }}
+                handleClick={() => this.filterScans(retailerPopupData.username)}
+              />
             </DialogActions>
           </SimpleDialog>
         ) : (

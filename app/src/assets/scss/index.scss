@@ -785,14 +785,16 @@ label {
 
 .cus-btn {
   color: #ffffff;
+  background: url("../../assets/icons/right_btn.svg") no-repeat right;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
   span {
     position: absolute;
-    right: 10px;
-    top: 5px;
-  }
-  .arrow-i {
-    position: relative;
-    left: 30px;
+    right: 30px;
+    line-height: 1;
   }
   .layout {
     width: 60%;

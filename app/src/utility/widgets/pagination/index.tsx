@@ -18,6 +18,7 @@ type Props = {
   pageNumberClick: Function;
   handlePaginationChange: Function;
   data: any;
+  totalLabel?:any;
 };
 type States = {
   startIndex: number;
@@ -72,6 +73,7 @@ class Pagination extends Component<Props, States> {
       rowsPerPage,
       totalData,
       data,
+      totalLabel
     } = this.props;
     const pageNumbers = [];
     const pageData = Math.ceil(totalData / rowsPerPage);
@@ -114,7 +116,7 @@ class Pagination extends Component<Props, States> {
                 }}
               >
                 <div className="col-sm-3 pl-0">
-                  Total Users: {totalData || 0}
+                  Total {totalLabel || "Users"}: {totalData || 0}
                 </div>
 
                 <div className="col-sm-5">

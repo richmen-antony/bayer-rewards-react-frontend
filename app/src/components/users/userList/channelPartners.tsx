@@ -1925,6 +1925,7 @@ class ChannelPartners extends Component<Props, States> {
               pageNo={pageNo}
               handlePaginationChange={this.props.handlePaginationChange}
               data={allChannelPartners}
+              totalLabel={"Users"}
             />
           </div>
         </div>

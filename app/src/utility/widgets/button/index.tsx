@@ -8,7 +8,7 @@ function CustomButton(props: any) {
     <button className="cus-btn" style={style} onClick={handleClick}>
       {label}
       <span>
-        <img src={ArrowIcon}  className="arrow-i"/> <img src={RtButton} className="layout" />
+        <img src={ArrowIcon}  className="arrow-i"/> 
       </span>
     </button>
   );

@@ -180,10 +180,10 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 />
                               }
                             </th>
-                            <td >
+                            <td>
                               {value.productname} <p>{value.materialid}</p>
                             </td>
-                            <td>{value.productgroup }</td>
+                            <td>{value.productgroup}</td>
                             <td className="text-center">
                               {value.intendedquantity}
                             </td>
@@ -276,21 +276,21 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                         data-parent="#accordion"
                       >
                         <div className="card-body">
-                          {data?.invalidscans?.length > 0 &&
-                            data?.invalidscans.map((scan: any) => {
-                              return (
-                                <div className="inner-expand">
-                                  <div className="title inner-row">
-                                    <p>Label ID</p>
-                                    <p className="sub-val">Batch #</p>
-                                  </div>
+                          <div className="inner-expand">
+                            <div className="title inner-row">
+                              <p>Label ID</p>
+                              <p className="sub-val">Reason</p>
+                            </div>
+                            {data?.invalidscans?.length > 0 &&
+                              data?.invalidscans.map((scan: any) => {
+                                return (
                                   <div className="inner-row">
                                     <p className="qr-val">{scan.qrcodeid}</p>
                                     <p className="sub-val"> {scan.reason}</p>
                                   </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
+                          </div>
                         </div>
                       </div>
                     </div>
