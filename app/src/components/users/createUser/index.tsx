@@ -4,7 +4,11 @@ import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
-import { toastSuccess, toastInfo } from "../../../utility/widgets/toaster";
+import {
+  toastSuccess,
+  toastInfo,
+  Alert,
+} from "../../../utility/widgets/toaster";
 import CustomSwitch from "../../../container/components/switch";
 import CountryJson from "../../../utility/lib/country.json";
 import { apiURL } from "../../../utility/base/utils/config";
@@ -918,7 +922,8 @@ class CreateUser extends Component<any, any> {
           message = "User with same Mobilenumber exists";
         }
         this.setState({ isRendered: true, currentStep: 1 }, () => {
-          toastInfo(message);
+          // toastInfo(message);
+          Alert("info", message);
         });
       });
   };
