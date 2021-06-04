@@ -234,7 +234,7 @@ class UserList extends Component<Props, States> {
       list: ["Retailer", "Distributor"],
       selectedFilters: {
         region: "All",
-        epa: "All",
+        add: "All",
         district: "All",
         status: "All",
         lastmodifieddatefrom:new Date().setMonth(new Date().getMonth() - 6),
@@ -411,7 +411,7 @@ class UserList extends Component<Props, States> {
     this.setState({ allChannelPartners: [], dropdownOpenFilter: false, dateErrMsg: ""})
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
-    let { status, lastmodifieddatefrom, lastmodifieddateto, region, epa, district }: any =
+    let { status, lastmodifieddatefrom, lastmodifieddateto, region, add, district }: any =
     this.state.selectedFilters;
     let data = {
       countrycode: getStoreData.countryCode,
@@ -437,7 +437,7 @@ class UserList extends Component<Props, States> {
           "YYYY-MM-DD"
         ),
         region,
-        epa,
+        add,
         district,
       };
       data = { ...data, ...filter };
@@ -503,7 +503,7 @@ class UserList extends Component<Props, States> {
       // usertype: "CHANNEL PARTNER",
       // partnertype: "Retailer",
     };
-    let { status, lastmodifieddatefrom, lastmodifieddateto, region, epa, district }: any =
+    let { status, lastmodifieddatefrom, lastmodifieddateto, region, add, district }: any =
       this.state.selectedFilters;
      if(this.state.isFiltered){
       let filter = {
@@ -512,7 +512,7 @@ class UserList extends Component<Props, States> {
         effectivefrom: lastmodifieddatefrom,
         expirydate: lastmodifieddateto,
         region,
-        epa,
+        add,
         district,
         searchtext: this.state.searchText,
       };
@@ -634,7 +634,7 @@ class UserList extends Component<Props, States> {
       {
         selectedFilters: {
           region: "All",
-          epa: "All",
+          add: "All",
           district: "All",
           status: "All",
           lastmodifieddatefrom:new Date().setMonth(new Date().getMonth() - 6),
@@ -738,12 +738,12 @@ class UserList extends Component<Props, States> {
   };
 
   handleUpdateDropdown = (value: string, label: any) => {
-    this.setState({
+    this.setState((prevState:any)=>({
       selectedFilters: {
-        ...this.state.selectedFilters,
+        ...prevState.selectedFilters,
         [label.toLocaleLowerCase()]: value,
       },
-    });
+    }));
   };
   backToUsersList = () => {
     this.setState({ changeLogOpen: false });
