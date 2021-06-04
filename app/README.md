@@ -68,3 +68,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Environment Variables
+
+There are serveral environment variables:
+
+- .env: This is default environment variable
+- .env.development: This is environment variable for development computer, it is used when run "npm start"
+- .env.staging: This is environment variable for staging server
+- .env.production: This is environment variable for production server
+
+To run staging build, use the command line "npm run build:staging"
+
+To run production build, use the command line "npm run build"
