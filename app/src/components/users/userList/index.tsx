@@ -407,7 +407,7 @@ class UserList extends Component<Props, States> {
     this.setState({ allChannelPartners: [], dropdownOpenFilter: false, dateErrMsg: ""})
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
-    let { status, startDate, endDate, region, epa, district }: any =
+    let { status, lastmodifieddatefrom, lastmodifieddateto, region, epa, district }: any =
     this.state.selectedFilters;
     let data = {
       countrycode: getStoreData.countryCode,
@@ -426,8 +426,8 @@ class UserList extends Component<Props, States> {
     if (this.state.isFiltered) {
       let filter = {
         status: status,
-        lastmodifieddatefrom: startDate,
-        lastmodifieddateto: endDate,
+        lastmodifieddatefrom: lastmodifieddatefrom,
+        lastmodifieddateto: lastmodifieddateto,
         region,
         epa,
         district,
@@ -611,13 +611,13 @@ class UserList extends Component<Props, States> {
 
   resetFilter = (e: any) => {
     e.stopPropagation();
-    var today = new Date();
-    var month, day, year;
-    var year: any = today.getFullYear();
-    var month: any = today.getMonth();
-    var date = today.getDate();
-    if (month - 6 <= 0) year = today.getFullYear();
-    var backdate = new Date(year, month - 6, date);
+    // var today = new Date();
+    // var month, day, year;
+    // var year: any = today.getFullYear();
+    // var month: any = today.getMonth();
+    // var date = today.getDate();
+    // if (month - 6 <= 0) year = today.getFullYear();
+    // var backdate = new Date(year, month - 6, date);
     this.getDynamicOptionFields('reset');
     this.setState(
       {
@@ -626,8 +626,8 @@ class UserList extends Component<Props, States> {
           epa: "All",
           district: "All",
           status: "All",
-          startDate: backdate.toISOString().substr(0, 10),
-          endDate: new Date().toISOString().substr(0, 10),
+          lastmodifieddatefrom:new Date().setMonth(new Date().getMonth() - 6),
+          lastmodifieddateto: new Date() ,
         },
         isFiltered: false,
       },
@@ -743,6 +743,10 @@ class UserList extends Component<Props, States> {
       if (date >= val.lastmodifieddatefrom) {
         this.setState({
           dateErrMsg: "",
+        });
+      } else if (date <= val.lastmodifieddatefrom) {
+        this.setState({
+          dateErrMsg: "End Date should be greater than Start Date",
         });
       } else {
         this.setState({
@@ -1033,7 +1037,7 @@ class UserList extends Component<Props, States> {
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
-                                  
+                                  maxDate={new Date()}
                                 />
                                 </div>
                               </div>

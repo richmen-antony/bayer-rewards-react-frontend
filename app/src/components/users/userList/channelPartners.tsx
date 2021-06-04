@@ -855,7 +855,7 @@ class ChannelPartners extends Component<Props, States> {
                     </p>
                   </div>
                 </div>
-                <div style={{ textAlign: "left" }}>
+                <div style={{ textAlign: "center" }}>
                   <label>
                     {userList.userstatus === "ACTIVE" ||
                     userList.userstatus === "INACTIVE" ||

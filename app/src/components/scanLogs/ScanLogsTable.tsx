@@ -1109,7 +1109,7 @@ class ScanLogsTable extends Component<Props, States> {
                                 {_.startCase(_.toLower(value.orderstatus))}
                               </span>
                             </td>
-                            <td style={{ textAlign: "center" }}>
+                            <td>
                               {moment(value.lastupdateddate).format(
                                 "DD-MM-YYYY"
                               )}

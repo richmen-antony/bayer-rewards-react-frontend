@@ -1584,7 +1584,7 @@ class CreateUser extends Component<any, any> {
                           width: "124%",
                           maxHeight: "280px",
                           overflowY: "auto",
-                          overflowX: "hidden",
+                          overflowX: "auto",
                         }}
                       >
                         <div style={{ marginRight: "10px" }}>
