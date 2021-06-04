@@ -197,7 +197,7 @@ class ChannelPartners extends Component<Props, States> {
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
-        let message = error.message
+        let message = error.message;
         Alert("warning", message);
       });
   }
@@ -574,7 +574,7 @@ class ChannelPartners extends Component<Props, States> {
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
-          let message = error.message
+          let message = error.message;
           Alert("warning", message);
         });
     }
@@ -1178,38 +1178,29 @@ class ChannelPartners extends Component<Props, States> {
                                               ) {
                                                 return (
                                                   <div>
-                                                    <td
-                                                      style={{ border: "none" }}
-                                                    >
-                                                      <img
-                                                        style={{
-                                                          width: "50px",
-                                                          height: "50px",
-                                                        }}
-                                                        src={RemoveBtn}
-                                                        onClick={this.handleRemoveSpecificRow(
-                                                          idx,
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={RemoveBtn}
+                                                      onClick={this.handleRemoveSpecificRow(
+                                                        idx,
+                                                        "owner"
+                                                      )}
+                                                    />
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      onClick={() =>
+                                                        this.handleAddRow(
                                                           "owner"
-                                                        )}
-                                                      />
-                                                    </td>
-
-                                                    <td
-                                                      style={{ border: "none" }}
-                                                    >
-                                                      <img
-                                                        style={{
-                                                          width: "50px",
-                                                          height: "50px",
-                                                        }}
-                                                        src={AddBtn}
-                                                        onClick={() =>
-                                                          this.handleAddRow(
-                                                            "owner"
-                                                          )
-                                                        }
-                                                      />
-                                                    </td>
+                                                        )
+                                                      }
+                                                    />
                                                   </div>
                                                 );
                                               }
@@ -1461,42 +1452,29 @@ class ChannelPartners extends Component<Props, States> {
                                                 ) {
                                                   return (
                                                     <div>
-                                                      <td
+                                                      <img
                                                         style={{
-                                                          border: "none",
+                                                          width: "50px",
+                                                          height: "50px",
                                                         }}
-                                                      >
-                                                        <img
-                                                          style={{
-                                                            width: "50px",
-                                                            height: "50px",
-                                                          }}
-                                                          src={RemoveBtn}
-                                                          onClick={this.handleRemoveSpecificRow(
-                                                            idx,
+                                                        src={RemoveBtn}
+                                                        onClick={this.handleRemoveSpecificRow(
+                                                          idx,
+                                                          "staff"
+                                                        )}
+                                                      />
+                                                      <img
+                                                        style={{
+                                                          width: "50px",
+                                                          height: "50px",
+                                                        }}
+                                                        src={AddBtn}
+                                                        onClick={() =>
+                                                          this.handleAddRow(
                                                             "staff"
-                                                          )}
-                                                        />
-                                                      </td>
-
-                                                      <td
-                                                        style={{
-                                                          border: "none",
-                                                        }}
-                                                      >
-                                                        <img
-                                                          style={{
-                                                            width: "50px",
-                                                            height: "50px",
-                                                          }}
-                                                          src={AddBtn}
-                                                          onClick={() =>
-                                                            this.handleAddRow(
-                                                              "staff"
-                                                            )
-                                                          }
-                                                        />
-                                                      </td>
+                                                          )
+                                                        }
+                                                      />
                                                     </div>
                                                   );
                                                 }
