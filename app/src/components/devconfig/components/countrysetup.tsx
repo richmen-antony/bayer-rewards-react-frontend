@@ -17,6 +17,12 @@ import {
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokeGetAuthServiceTemp } from "../../../utility/base/service";
 import { ContactSupportOutlined } from "@material-ui/icons";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Input from "@material-ui/core/Input";
+import Dropdown from "../../../utility/widgets/dropdown";
+import { handledropdownoption } from "../../../utility/helper";
+
 type ICountryProps = {
   setCountryDetails: (data: any) => void;
   selectedCountryDetails: cDetails[];
@@ -97,6 +103,17 @@ const mapStateToProps = ({
     packagingdefinitionList: packagingdefinition.inputList,
     scanpointsandallocationinputList: scanpointsandallocation.inputList,
   };
+};
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
 };
 
 const CountrySetupComp = (props: ICountryProps) => {
@@ -257,6 +274,13 @@ const CountrySetupComp = (props: ICountryProps) => {
     getTemplateByCountry(countryISO);
   };
 
+  const countryDetailsOption = handledropdownoption(countryDetails, "name");
+  console.log(countryDetailsOption);
+  // countryDetails?.length > 0 &&
+  // countryDetails.map((val: any) => {
+  //   return { value: val.name, text: val.name };
+  // });
+
   return (
     <div className="col-md-10">
       <div className="container">
@@ -266,6 +290,30 @@ const CountrySetupComp = (props: ICountryProps) => {
               <label className="font-weight-bold pt-4 label">Country</label>
             </div>
             <div>
+              {/* <Select
+                labelId="demo-mutiple-name-label"
+                id="demo-mutiple-name"
+                value={countryCode}
+                onChange={(event) => handleDropdownChange(event)}
+              >
+                {countryDetails.map(({ name }) => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select> */}
+
+              <Dropdown
+                name="country"
+                label="Country"
+                options={countryDetailsOption}
+                handleChange={(event: any) => handleDropdownChange(event)}
+                value={countryCode}
+                isPlaceholder
+              />
+            </div>
+
+            {/* <div>
               <select
                 className="dpstyle selectoutline"
                 id="dropdown"
@@ -280,18 +328,12 @@ const CountrySetupComp = (props: ICountryProps) => {
                     </option>
                   ))
                 ) : (
-                  // countryDetails.length > 0 ? (
-                  //   countryDetails.map(({ name }) => (
-                  //     <option value={name} key={name}>
-                  //       {name}
-                  //     </option>
-                  //   ))
                   <option value="" key="">
                     No country found
                   </option>
                 )}
               </select>
-            </div>
+            </div> */}
           </div>
           <div className="col-sm-3">
             <div>

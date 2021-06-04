@@ -5,6 +5,9 @@ import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 
 import { addLocationInputList } from "../../../redux/actions";
+import Dropdown from "../../../utility/widgets/dropdown";
+import { handledropdownoption } from "../../../utility/helper";
+import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
 
 interface ILocationProps {
   location: any;
@@ -89,6 +92,11 @@ const LocationHierarchy = (props: ILocationProps) => {
     return newList;
   };
 
+  const LocationDetailsOption = handledropdownoption(
+    inputList,
+    "locationhiername"
+  );
+
   return (
     <div className="col-md-10">
       <div className="container">
@@ -155,6 +163,18 @@ const LocationHierarchy = (props: ILocationProps) => {
                                 )
                             )}
                         </select>
+
+                        {/* <ConfigSelect
+                          defaultValue="NA"
+                          name="parentlocation"
+                          options={LocationDetailsOption}
+                          handleChange={(event: any) =>
+                            handleDropdownChange(event, idx)
+                          }
+                          value={item.parentlocation}
+                          isPlaceholder
+                          parentIndex={idx}
+                        /> */}
                       </td>
                       <td className="tablebtnStyle">
                         {/* {idx === inputList.length - 1 ? (
