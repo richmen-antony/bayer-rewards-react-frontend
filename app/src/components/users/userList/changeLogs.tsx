@@ -9,12 +9,17 @@ import {
 } from "../../../utility/base/service";
 import "../../../assets/scss/users.scss";
 import moment from "moment";
-import SearchIcon from "../../../assets/icons/search_icon.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import Download from "../../../assets/icons/download.svg";
 import { SearchInput } from "../../../utility/widgets/input/search-input";
 import { Pagination } from "../../../utility/widgets/pagination";
+import {
+  downloadCsvFile,
+  ErrorMsg,
+} from "../../../utility/helper";
+import { getLocalStorageData } from "../../../utility/base/localStore";
+
 
 type Props = {
   location?: any;
@@ -35,6 +40,7 @@ type States = {
   pageNo: number;
   isAsc: Boolean;
   totalData: number;
+  loggedUserInfo:any
 };
 
 class ChangeLogs extends Component<Props, States> {
@@ -50,13 +56,26 @@ class ChangeLogs extends Component<Props, States> {
       pageNo: 1,
       isAsc: true,
       totalData: 0,
+      loggedUserInfo: {},
+
     };
     this.timeOut = 0;
   }
 
   componentDidMount() {
-    this.getChangeLogs();
+    let data: any = getLocalStorageData("userData");
+    let userData = JSON.parse(data);
+    this.setState(
+      {
+        loggedUserInfo: userData,
+      },
+      () => {
+        this.getChangeLogs();
+      }
+    );
   }
+    
+  
 
   getChangeLogs = () => {
     const { changeLogs } = apiURL;
@@ -65,7 +84,7 @@ class ChangeLogs extends Component<Props, States> {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
-      countrycode: "MW",
+      countrycode: this.state.loggedUserInfo.countrycode,
     };
 
     invokeGetAuthService(changeLogs, data)
@@ -142,7 +161,22 @@ class ChangeLogs extends Component<Props, States> {
       }, 2000);
     }
   };
+  download = () => {
+    const { downloadChanglogs } = apiURL;
+    let data = {
+      countrycode: this.state.loggedUserInfo.countrycode,
+    };
 
+    invokeGetAuthService(downloadChanglogs, data)
+      .then((response) => {
+        const data = response;
+        downloadCsvFile(data, "changelogs.csv");
+      })
+      .catch((error) => {
+        console.log({ error });
+        ErrorMsg(error);
+      });
+  };
   render() {
     const { backToUsersList } = this.props;
     const {
@@ -181,8 +215,8 @@ class ChangeLogs extends Component<Props, States> {
                 tolltip="Search applicable for User Name, Field, Old Value and New Value"
               />
               <div>
-                <button className="btn btn-primary" style={{backgroundColor:"#1F445A"}}>
-                  <img src={Download} width="17" alt={NoImage} />
+                <button className="btn btn-primary" style={{backgroundColor:"#1F445A"}} onClick={this.download}>
+                  <img src={Download} width="17" alt={NoImage}  />
                 </button>
               </div>
             </div>

@@ -430,8 +430,12 @@ class UserList extends Component<Props, States> {
     if (this.state.isFiltered) {
       let filter = {
         status: status,
-        lastmodifieddatefrom: lastmodifieddatefrom,
-        lastmodifieddateto: lastmodifieddateto,
+        lastmodifieddatefrom: moment(lastmodifieddatefrom).format(
+          "YYYY-MM-DD"
+        ),
+        lastmodifieddateto: moment(lastmodifieddateto).format(
+          "YYYY-MM-DD"
+        ),
         region,
         epa,
         district,

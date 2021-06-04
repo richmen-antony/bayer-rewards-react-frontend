@@ -21,5 +21,6 @@ export const apiURL = {
     rsmRetailerList:"order/users",
     getHierarchyLevels: "geographical/getRegionLocationHierLevelByCountry",
     getLevelFive: "geographical/getEPA",
-    getLevelSix: "geographical/getVillage"
+    getLevelSix: "geographical/getVillage",
+    downloadChanglogs:"user/changelogsdownload"
 }
