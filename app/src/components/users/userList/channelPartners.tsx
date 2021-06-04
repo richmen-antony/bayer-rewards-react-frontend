@@ -195,8 +195,10 @@ class ChannelPartners extends Component<Props, States> {
           geographicFields: levels,
         });
       })
-      .catch((err: any) => {
+      .catch((error: any) => {
         this.setState({ isLoader: false });
+        let message = error.message
+        Alert("warning", message);
       });
   }
 
@@ -387,7 +389,6 @@ class ChannelPartners extends Component<Props, States> {
               },
             };
             let obj = Object.assign(staffInfo, errObjd);
-            console.log("testobj", obj);
           });
         }
         this.setState({
@@ -573,7 +574,8 @@ class ChannelPartners extends Component<Props, States> {
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
-          console.log(error, "error");
+          let message = error.message
+          Alert("warning", message);
         });
     }
   };
@@ -601,7 +603,6 @@ class ChannelPartners extends Component<Props, States> {
             state: { userFields: this.state.userList },
           });
         }
-        console.log("datas", this.state.userList);
       }
     );
   };
@@ -832,7 +833,6 @@ class ChannelPartners extends Component<Props, States> {
 
   render() {
     const { allChannelPartners, isAsc, onSort, totalData } = this.props;
-    console.log("allChannelPartners", allChannelPartners);
     const { isLoader, pageNo, rowsPerPage } = this.props.state;
     const { userList, userData, isStaff }: any = this.state;
 
