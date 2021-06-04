@@ -147,7 +147,8 @@ class ScanLogsTable extends Component<Props, States> {
         "FUNGICIDES",
         "INSECTICIDES",
       ],
-      status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
+      status: ["ALL", "FULFILLED"],
+      // status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
       list: ["ALL", "Distributor", "Retailer"],
       selectedFilters: {
         productgroup: "ALL",
