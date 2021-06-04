@@ -319,8 +319,10 @@ class CreateUser extends Component<any, any> {
           }
         );
       })
-      .catch((err: any) => {
+      .catch((error: any) => {
         this.setState({ isLoader: false });
+        let message = error.message
+        Alert("warning", message);
       });
   }
 
@@ -336,16 +338,16 @@ class CreateUser extends Component<any, any> {
         let regions =
           Object.keys(response.body).length !== 0 ? response.body.regions : [];
         this.setState({ isLoader: false, allRegions: regions }, () => {
-          console.log("allregions", this.state.allRegions, response);
         });
       })
-      .catch((err: any) => {
+      .catch((error: any) => {
         this.setState({ isLoader: false });
+        let message = error.message
+        Alert("warning", message);
       });
   }
 
   getDynamicOptionFields = async (data: any) => {
-    console.log("allRegions", this.state.allRegions);
     let regionOptions: any = [];
     this.state.allRegions.forEach((item: any) => {
       let regionInfo = { text: item.name, code: item.code, value: item.name };
@@ -419,7 +421,6 @@ class CreateUser extends Component<any, any> {
       }
       if ("deliverycity" in data) {
         epaoptions = await this.getEPADetails();
-        console.log("epadetails", epaoptions);
         epa = data.deliverycity;
         // epa = 'Bwengu';
         epaoptions.forEach((city: any) => {
@@ -671,9 +672,11 @@ class CreateUser extends Component<any, any> {
           resolve(levelFive);
           console.log("levelfive", levelFive);
         })
-        .catch((err: any) => {
+        .catch((error: any) => {
           this.setState({ isLoader: false });
-          reject(err);
+          reject(error);
+          let message = error.message
+          Alert("warning", message);
         });
     });
   };
@@ -697,9 +700,11 @@ class CreateUser extends Component<any, any> {
           console.log("levelSix", response.body);
           resolve(levelSix);
         })
-        .catch((err: any) => {
+        .catch((error: any) => {
           this.setState({ isLoader: false });
-          reject(err);
+          reject(error);
+          let message = error.message
+          Alert("warning", message);
         });
     });
   };
@@ -924,7 +929,7 @@ class CreateUser extends Component<any, any> {
         }
         this.setState({ isRendered: true, currentStep: 1 }, () => {
           // toastInfo(message);
-          Alert("info", message);
+          Alert("warning", message);
         });
       });
   };
@@ -1724,7 +1729,6 @@ class CreateUser extends Component<any, any> {
                                     <td
                                       style={{
                                         display: "flex",
-                                        alignItems: "center",
                                       }}
                                     >
                                       <div>
@@ -1985,7 +1989,6 @@ class CreateUser extends Component<any, any> {
                                       <td
                                         style={{
                                           display: "flex",
-                                          alignItems: "center",
                                         }}
                                       >
                                         <div>

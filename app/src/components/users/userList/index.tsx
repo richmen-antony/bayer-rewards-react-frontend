@@ -20,6 +20,7 @@ import cross from "../../../assets/icons/cross.svg";
 import SearchIcon from "../../../assets/icons/search_icon.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
+import { Alert } from "../../../utility/widgets/toaster";
 import { createStyles, Theme, withStyles } from "@material-ui/core/styles";
 import "../../../assets/scss/users.scss";
 import { downloadCsvFile } from "../../../utility/helper";
@@ -34,6 +35,7 @@ import { getLocalStorageData } from "../../../utility/base/localStore";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
+
 import moment from "moment";
 
 
@@ -278,7 +280,7 @@ class UserList extends Component<Props, States> {
   }
   componentDidMount() {
     this.getChannelPartnersList();
-    this.getThirdPartysList();
+    // this.getThirdPartysList();
     ///API to get country and language settings
     this.getHierarchyDatas();
     this.getGeographicFields();
@@ -313,8 +315,10 @@ class UserList extends Component<Props, States> {
                 this.getDynamicOptionFields();
               }, 0);
           });
-    }).catch((err: any) => {
+    }).catch((error: any) => {
       this.setState({ isLoader: false });
+      let message = error.message
+      Alert("warning", message);
     })
   }
   getHierarchyDatas() {
@@ -330,12 +334,13 @@ class UserList extends Component<Props, States> {
       this.setState({ isLoader: false, allRegions : regions },()=>{
         console.log('allregions', this.state.allRegions, response);
       })
-    }).catch((err: any) => {
+    }).catch((error: any) => {
       this.setState({ isLoader: false });
+      let message = error.message
+      Alert("warning", message);
     })
   }
   getDynamicOptionFields = (reset?:string) => {
-    console.log('allRegions', this.state.allRegions);
     let regionlist= this.state.allRegions;
     if(!reset) {
       let allItem = {code: "All", name:'All',add:[] }
@@ -363,7 +368,6 @@ class UserList extends Component<Props, States> {
     this.setState({ dynamicFields: setFormArray });
   }
   getOptionLists =  (cron: any, type: any, value: any, index: any) => {
-    console.log('index@@', index);
     let allRegions = this.state.allRegions;
     this.setState({regionoptions:allRegions})
       let dynamicFieldVal = this.state.dynamicFields;
@@ -446,7 +450,8 @@ class UserList extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        console.log(error, "error");
+        let message = error.message
+        Alert("warning", message);
       });
   };
 
@@ -472,7 +477,8 @@ class UserList extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        console.log(error, "error");
+        let message = error.message
+        Alert("warning", message);
       });
   };
 
@@ -517,7 +523,8 @@ class UserList extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        console.log(error, "error");
+        let message = error.message;
+        Alert("warning", message);
       });
   };
 
