@@ -172,11 +172,11 @@ class LandingPage extends Component<any, any> {
                         <div className="pt-4 pl-1 pb-4">
                           <h4>Welcome to Bayer Rewards</h4>
                           <p className="mt-3">
-                            Lorem Ipsum is simply dummy text of the printing and
-                            typesetting industry. Lorem Ipsum has been the
-                            industry's standard dummy text ever since the 1500s,
-                            when an unknown printer took a galley of type and
-                            scrambled it to make a type specimen book.{" "}
+                            Bayer Rewards Plus application helps in channel
+                            inventory tracking and Advisor sales conversion.
+                            Through this portal administrators will be able to
+                            perform all setup activites required on daily/season
+                            basis and RSMs will be able to track the scan logs.{" "}
                           </p>
                         </div>
                         <div
