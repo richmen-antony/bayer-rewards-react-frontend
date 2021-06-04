@@ -26,7 +26,7 @@ import {
   downloadExcel,
   downloadCsvFile,
   DownloadCsv,
-  ErrorMsg
+  ErrorMsg,
 } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import {
@@ -40,10 +40,7 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
-import {
-
-  Alert,
-} from "../../../utility/widgets/toaster";
+import { Alert } from "../../../utility/widgets/toaster";
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -231,7 +228,7 @@ class ScanLogsTable extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        ErrorMsg(error)
+        ErrorMsg(error);
         console.log("error", error);
       });
   };
@@ -280,7 +277,7 @@ class ScanLogsTable extends Component<Props, States> {
         this.setState({ totalData: Number(total) });
       })
       .catch((error) => {
-        this.setState({ isLoader: false , allScanLogs:[]});
+        this.setState({ isLoader: false, allScanLogs: [] });
         ErrorMsg(error);
         console.log("error", error);
       });
@@ -378,22 +375,24 @@ class ScanLogsTable extends Component<Props, States> {
   resetFilter = (e: any) => {
     let today = new Date();
     e.stopPropagation();
-    this.setState({
-      selectedFilters: {
-        productgroup: "ALL",
-        status: "ALL",
-        ordereddatefrom: today.setMonth(today.getMonth() - 3),
-        ordereddateto: new Date(),
-        lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
-        lastmodifiedto: new Date(),
-        farmer: "ALL",
-        retailer: "ALL",
+    this.setState(
+      {
+        selectedFilters: {
+          productgroup: "ALL",
+          status: "ALL",
+          ordereddatefrom: today.setMonth(today.getMonth() - 3),
+          ordereddateto: new Date(),
+          lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
+          lastmodifiedto: new Date(),
+          farmer: "ALL",
+          retailer: "ALL",
+        },
+        isFiltered: false,
       },
-      isFiltered: false,
-    },()=>{
-      this.getScanLogs();
-    });
-    
+      () => {
+        this.getScanLogs();
+      }
+    );
   };
 
   applyFilter = () => {
@@ -478,11 +477,16 @@ class ScanLogsTable extends Component<Props, States> {
   };
   handleDateChange = (date: any, name: string) => {
     let val = this.state.selectedFilters;
-    let flag = false;
+
+    // order date - check End date
     if (name === "ordereddateto") {
       if (date >= val.ordereddatefrom) {
         this.setState({
           dateErrMsg: "",
+        });
+      } else if (date <= val.ordereddatefrom) {
+        this.setState({
+          dateErrMsg: "Order End Date should be greater than  Order Start Date",
         });
       } else {
         this.setState({
@@ -490,10 +494,32 @@ class ScanLogsTable extends Component<Props, States> {
         });
       }
     }
+    // order date - check Start date
+    if (name === "ordereddatefrom") {
+      if (date <= val.ordereddateto) {
+        this.setState({
+          dateErrMsg: "",
+        });
+      } else if (date >= val.ordereddateto) {
+        this.setState({
+          dateErrMsg: " Order Start Date should be lesser than Order End Date",
+        });
+      } else {
+        this.setState({
+          dateErrMsg: "Order Start Date should be greater than Order End Date",
+        });
+      }
+    }
+    // Last updated date - check End date
     if (name === "lastmodifiedto") {
       if (date >= val.lastmodifiedfrom) {
         this.setState({
           lastUpdatedDateErr: "",
+        });
+      } else if (date <= val.lastmodifiedfrom) {
+        this.setState({
+          lastUpdatedDateErr:
+            "Last Updated End Date should be greater than  Last Updated Start Date",
         });
       } else {
         this.setState({
@@ -503,23 +529,24 @@ class ScanLogsTable extends Component<Props, States> {
       }
     }
 
-    // else if (name === "endDate") {
-    //   if (date >= new Date().toISOString().substr(0, 10)) {
-    //     this.setState({
-    //       dateErrMsg: "End Date should not be greater than todays date",
-    //     });
-    //   } else if (date <= val.startDate) {
-    //     this.setState({
-    //       dateErrMsg: "End Date should be greater than Start Date",
-    //     });
-    //   } else {
-    //     val[name] = date;
-    //     flag = true;
-    //   }
-    // }
-    // if (flag) {
-    //   this.setState({ selectedFilters: val });
-    // }
+    // Last updated date - check Start date
+    if (name === "lastmodifiedfrom") {
+      if (date <= val.lastmodifiedto) {
+        this.setState({
+          lastUpdatedDateErr: "",
+        });
+      } else if (date >= val.lastmodifiedto) {
+        this.setState({
+          lastUpdatedDateErr:
+            "Last Updated Start Date should be lesser than Last Updated End Date",
+        });
+      } else {
+        this.setState({
+          lastUpdatedDateErr:
+            "Last Updated Start Date should be greater than Last Updated End Date",
+        });
+      }
+    }
 
     this.setState({
       selectedFilters: { ...this.state.selectedFilters, [name]: date },
@@ -1050,19 +1077,20 @@ class ScanLogsTable extends Component<Props, States> {
                               this.showPopup(event, "showProductPopup");
                               this.updateOrderData(value);
                             }}
-                            style={{cursor:"pointer"}}
+                            style={{ cursor: "pointer" }}
                           >
                             <td>{value.orderid}</td>
-                            <td>
+                            <td
+                              onClick={(event) => {
+                                this.showPopup(event, "showPopup");
+                                this.handleUpdateRetailer(value);
+                              }}
+                            >
                               <div className="retailer-id">
                                 <p>
                                   {value.staffname}
                                   <img
                                     className="retailer-icon"
-                                    onClick={(event) => {
-                                      this.showPopup(event, "showPopup");
-                                      this.handleUpdateRetailer(value);
-                                    }}
                                     src={ExpandWindowImg}
                                   ></img>
                                 </p>
@@ -1215,7 +1243,7 @@ class ScanLogsTable extends Component<Props, States> {
                   padding: "7px",
                   border: "1px solid  #7eb343",
                 }}
-                handleClick={() => this.filterScans(retailerPopupData.username)}
+                handleClick={() => this.filterScans(retailerPopupData.staffid)}
               />
             </DialogActions>
           </SimpleDialog>

@@ -746,6 +746,7 @@ class UserList extends Component<Props, States> {
   };
   handleDateChange = (date: any, name: string) => {
     let val = this.state.selectedFilters;
+    // to date
     if (name === "lastmodifieddateto") {
       if (date >= val.lastmodifieddatefrom) {
         this.setState({
@@ -761,6 +762,23 @@ class UserList extends Component<Props, States> {
         });
       }
     }
+    // from date
+    if (name === "lastmodifieddatefrom") {
+      if (date <= val.lastmodifieddateto) {
+        this.setState({
+          dateErrMsg: "",
+        });
+      } else if (date >= val.lastmodifieddateto) {
+        this.setState({
+          dateErrMsg: "Start Date should be lesser than End Date",
+        });
+      } else {
+        this.setState({
+          dateErrMsg: "Start Date should be greater than  End Date",
+        });
+      }
+    }
+    
     this.setState({
       selectedFilters: { ...this.state.selectedFilters, [name]: date },
     });
