@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter  } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -167,7 +167,10 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   getCountryList() {
-    let res = [{ value: 'IND', text: 'INDIA' }, { value: 'MAL', text: 'Malawi' }];
+    let res = [
+      { value: "India", text: "India" },
+      { value: "Malawi", text: "Malawi" },
+    ];
     this.setState({ countryList: res });
   }
 
@@ -175,27 +178,34 @@ class ChannelPartners extends Component<Props, States> {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: getStoreData.countryCode
-    }
+      countryCode: getStoreData.countryCode,
+    };
     invokeGetAuthService(getTemplateData, data)
       .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
         locationData.map((item: any) => {
           let allLevels = item.locationhierlevel;
-          let levelsSmall = (item.locationhiername).toLowerCase();
-          levels.push(levelsSmall)
-        })
+          let levelsSmall = item.locationhiername.toLowerCase();
+          levels.push(levelsSmall);
+        });
         // levels = ['country','region','add','district','epa','village'];
-        this.setState({ 
+        this.setState({
           isLoader: false,
-          geographicFields: levels });
-    }).catch((err: any) => {
-      this.setState({ isLoader: false });
-    })
+          geographicFields: levels,
+        });
+      })
+      .catch((err: any) => {
+        this.setState({ isLoader: false });
+      });
   }
-  
-  handleSort(e:any,columnname: string, allChannelPartners : any, isAsc : Boolean){
+
+  handleSort(
+    e: any,
+    columnname: string,
+    allChannelPartners: any,
+    isAsc: Boolean
+  ) {
     this.tableCellIndex = e.currentTarget.cellIndex;
     this.props.onSort(columnname, allChannelPartners, isAsc);
   }
@@ -306,7 +316,7 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   handleClosePopup = () => {
-    this.setState({ deActivatePopup: false, staffPopup: false});
+    this.setState({ deActivatePopup: false, staffPopup: false });
   };
 
   showPopup = (e: any, key: keyof States) => {
@@ -316,7 +326,7 @@ class ChannelPartners extends Component<Props, States> {
     });
   };
 
-  editStaff =(data: any) => {
+  editStaff = (data: any) => {
     let passData: any = JSON.parse(JSON.stringify(data));
     let activeStatus =
       passData.userstatus === "INACTIVE" || passData.userstatus === "DECLINED"
@@ -428,7 +438,7 @@ class ChannelPartners extends Component<Props, States> {
   };
 
   submitUpdateUser = () => {
-    this.setState({isLoader: true})   
+    this.setState({ isLoader: true });
     const { updateUser } = apiURL;
     let geoFields: any = {};
     this.state.dynamicFields.map((list: any, i: number) => {
@@ -569,7 +579,7 @@ class ChannelPartners extends Component<Props, States> {
   };
   editUser = (list: any) => {
     this.getCurrentUserData(list, true);
-  }
+  };
 
   getCurrentUserData = (data: any, edit?: boolean) => {
     let passData: any = { ...data };
@@ -840,7 +850,8 @@ class ChannelPartners extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userList?.whtaccountname || ""}, <label>{userList?.rolename}</label>{" "}
+                      {userList?.whtaccountname || ""},{" "}
+                      <label>{userList?.rolename}</label>{" "}
                     </p>
                   </div>
                 </div>
@@ -1576,7 +1587,7 @@ class ChannelPartners extends Component<Props, States> {
                       <td>{list.deliveryregion} </td>
                       <td>{list.deliverystate} </td>
                       <td>{list.deliverydistrict} </td>
-                      <td>
+                      <td style={{ textAlign: "center" }}>
                         <div className="retailer-id">
                           <p>
                             {list.staffdetails?.length}
@@ -1627,7 +1638,9 @@ class ChannelPartners extends Component<Props, States> {
                           {_.startCase(_.toLower(list.userstatus))}
                         </span>
                       </td>
-                      <td>{list.lastupdatedby}</td>
+                      <td style={{ textAlign: "center" }}>
+                        {list.lastupdatedby}
+                      </td>
                       <td>
                         <td>
                           <img

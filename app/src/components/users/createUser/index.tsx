@@ -245,7 +245,7 @@ class CreateUser extends Component<any, any> {
                   mobilenumberErr: "",
                 },
                 firstname: userFields.ownerfirstname,
-                active: userFields.userstatus === 'ACTIVE' ? true : false,
+                active: userFields.userstatus === "ACTIVE" ? true : false,
                 lastname: userFields.ownerlastname,
                 mobilenumber: userFields.ownerphonenumber,
                 email: userFields.owneremail,
@@ -386,7 +386,7 @@ class CreateUser extends Component<any, any> {
           (region: any) => region.name === data.deliveryregion
         );
         geoLocationInfo.region = filteredAdd[0].code;
-        filteredAdd[0]?.add.forEach((item:any)=>{
+        filteredAdd[0]?.add.forEach((item: any) => {
           let addInfo = { text: item.name, value: item.name, code: item.code };
           addoptions.push(addInfo);
         });
@@ -505,28 +505,35 @@ class CreateUser extends Component<any, any> {
     }
   };
 
-  getOptionLists =  async(cron: any, type: any, value: any, index: any) => {
+  getOptionLists = async (cron: any, type: any, value: any, index: any) => {
     let allRegions = this.state.allRegions;
-    if(allRegions.length) {
-    allRegions.forEach((region:any)=>{
-      region.text = region.name;
-      region.value = region.name;
-    })
-    let currentStep = this.state.currentStep;
-    this.setState({regionoptions:allRegions})
+    if (allRegions.length) {
+      allRegions.forEach((region: any) => {
+        region.text = region.name;
+        region.value = region.name;
+      });
+      let currentStep = this.state.currentStep;
+      this.setState({ regionoptions: allRegions });
       let dynamicFieldVal = this.state.dynamicFields;
-      let withHoldingVal = this.state.withHolding; 
-      if(type === 'region') {
-        let filteredRegion = allRegions?.filter((region: any)=>region.name === value);
-        let add: any= [];
+      let withHoldingVal = this.state.withHolding;
+      if (type === "region") {
+        let filteredRegion = allRegions?.filter(
+          (region: any) => region.name === value
+        );
+        let add: any = [];
 
-        filteredRegion[0]?.add.forEach((item:any)=>{
-          let regionInfo = { text: item.name, value: item.name, code: item.code };
-          add.push(regionInfo)
+        filteredRegion[0]?.add.forEach((item: any) => {
+          let regionInfo = {
+            text: item.name,
+            value: item.name,
+            code: item.code,
+          };
+          add.push(regionInfo);
         });
-        geoLocationInfo.region = filteredRegion.length && filteredRegion[0].code
-        if ( this.state.currentStep == 2){
-          dynamicFieldVal[index+1].options = add;
+        geoLocationInfo.region =
+          filteredRegion.length && filteredRegion[0].code;
+        if (this.state.currentStep == 2) {
+          dynamicFieldVal[index + 1].options = add;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
@@ -534,23 +541,33 @@ class CreateUser extends Component<any, any> {
           withHoldingVal[index].value = value;
           this.setState({ withHolding: withHoldingVal });
         }
-     } else if(type === 'add') {
-       let filteredAdd: any = [];
-       if (currentStep === 2){
-        filteredAdd = allRegions?.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-       } 
-       if (currentStep === 3){
-        filteredAdd = allRegions?.filter((region: any)=>region.name === withHoldingVal[1].value);
-       }
-        let addList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === value)
-        let district: any= [];
-        addList[0]?.district.forEach((item:any)=>{
-          let districtInfo = { text: item.name, value: item.name, code: item.code };
-          district.push(districtInfo)
+      } else if (type === "add") {
+        let filteredAdd: any = [];
+        if (currentStep === 2) {
+          filteredAdd = allRegions?.filter(
+            (region: any) => region.name === dynamicFieldVal[1].value
+          );
+        }
+        if (currentStep === 3) {
+          filteredAdd = allRegions?.filter(
+            (region: any) => region.name === withHoldingVal[1].value
+          );
+        }
+        let addList = filteredAdd[0]?.add.filter(
+          (addinfo: any) => addinfo.name === value
+        );
+        let district: any = [];
+        addList[0]?.district.forEach((item: any) => {
+          let districtInfo = {
+            text: item.name,
+            value: item.name,
+            code: item.code,
+          };
+          district.push(districtInfo);
         });
         geoLocationInfo.add = addList[0].code;
-        if ( this.state.currentStep == 2){
-          dynamicFieldVal[index+1].options = district;
+        if (this.state.currentStep == 2) {
+          dynamicFieldVal[index + 1].options = district;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
@@ -558,57 +575,65 @@ class CreateUser extends Component<any, any> {
           withHoldingVal[index].value = value;
           this.setState({ withHolding: withHoldingVal });
         }
-      } else if(type === 'district') {
+      } else if (type === "district") {
         let filteredAdd: any = [];
         let districtList: any = [];
-        if (currentStep === 2){
-          filteredAdd = allRegions?.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-          districtList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
-         } 
-         if (currentStep === 3){
-          filteredAdd = allRegions?.filter((region: any)=>region.name === withHoldingVal[1].value);
-          districtList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === withHoldingVal[2].value)
-         }
-        districtList[0]?.district.forEach((item:any)=>{
-          if(item.name === value) {
+        if (currentStep === 2) {
+          filteredAdd = allRegions?.filter(
+            (region: any) => region.name === dynamicFieldVal[1].value
+          );
+          districtList = filteredAdd[0]?.add.filter(
+            (addinfo: any) => addinfo.name === dynamicFieldVal[2].value
+          );
+        }
+        if (currentStep === 3) {
+          filteredAdd = allRegions?.filter(
+            (region: any) => region.name === withHoldingVal[1].value
+          );
+          districtList = filteredAdd[0]?.add.filter(
+            (addinfo: any) => addinfo.name === withHoldingVal[2].value
+          );
+        }
+        districtList[0]?.district.forEach((item: any) => {
+          if (item.name === value) {
             geoLocationInfo.district = item.code;
           }
         });
-       
-        levelFive =  await this.getEPADetails();
-                         
-        if(levelFive.length) {
-          levelFive.forEach((item:any)=>{
+
+        levelFive = await this.getEPADetails();
+
+        if (levelFive.length) {
+          levelFive.forEach((item: any) => {
             item.text = item.name;
             item.value = item.name;
           });
-          if ( this.state.currentStep == 2){
-            dynamicFieldVal[index+1].options = levelFive;
+          if (this.state.currentStep == 2) {
+            dynamicFieldVal[index + 1].options = levelFive;
             dynamicFieldVal[index].value = value;
-            this.setState({dynamicFields: dynamicFieldVal});
-          } else if ( this.state.currentStep == 3) {
-            withHoldingVal[index+1].options = levelFive;
+            this.setState({ dynamicFields: dynamicFieldVal });
+          } else if (this.state.currentStep == 3) {
+            withHoldingVal[index + 1].options = levelFive;
             withHoldingVal[index].value = value;
-            this.setState({withHolding: withHoldingVal});
+            this.setState({ withHolding: withHoldingVal });
           }
         }
-      } else if(type === 'epa') {
+      } else if (type === "epa") {
         // geoLocationInfo.epa = value;
-        if(levelFive && levelFive.length) {
-          levelFive.forEach((item:any)=>{
-            if(item.name === value) {
+        if (levelFive && levelFive.length) {
+          levelFive.forEach((item: any) => {
+            if (item.name === value) {
               geoLocationInfo.epa = item.code;
             }
           });
         }
-        let village:any=[];
-        village =  await this.getVillageDetails();
-        village.forEach((villageInfo:any)=>{
+        let village: any = [];
+        village = await this.getVillageDetails();
+        village.forEach((villageInfo: any) => {
           villageInfo.text = villageInfo.name;
           villageInfo.value = villageInfo.name;
-        })
-        if ( this.state.currentStep == 2){
-          dynamicFieldVal[index+1].options = village;
+        });
+        if (this.state.currentStep == 2) {
+          dynamicFieldVal[index + 1].options = village;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
@@ -627,7 +652,6 @@ class CreateUser extends Component<any, any> {
       }
     }
   };
-
 
   getEPADetails = () => {
     this.setState({ isLoader: true });
@@ -1775,38 +1799,27 @@ class CreateUser extends Component<any, any> {
                                             ) {
                                               return (
                                                 <div>
-                                                  <td
-                                                    style={{ border: "none" }}
-                                                  >
-                                                    <img
-                                                      style={{
-                                                        width: "50px",
-                                                        height: "50px",
-                                                      }}
-                                                      src={RemoveBtn}
-                                                      onClick={this.handleRemoveSpecificRow(
-                                                        idx,
-                                                        "owner"
-                                                      )}
-                                                    />
-                                                  </td>
-
-                                                  <td
-                                                    style={{ border: "none" }}
-                                                  >
-                                                    <img
-                                                      style={{
-                                                        width: "50px",
-                                                        height: "50px",
-                                                      }}
-                                                      src={AddBtn}
-                                                      onClick={() =>
-                                                        this.handleAddRow(
-                                                          "owner"
-                                                        )
-                                                      }
-                                                    />
-                                                  </td>
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                    src={RemoveBtn}
+                                                    onClick={this.handleRemoveSpecificRow(
+                                                      idx,
+                                                      "owner"
+                                                    )}
+                                                  />
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                    src={AddBtn}
+                                                    onClick={() =>
+                                                      this.handleAddRow("owner")
+                                                    }
+                                                  />
                                                 </div>
                                               );
                                             }
@@ -2056,38 +2069,30 @@ class CreateUser extends Component<any, any> {
                                               ) {
                                                 return (
                                                   <div>
-                                                    <td
-                                                      style={{ border: "none" }}
-                                                    >
-                                                      <img
-                                                        style={{
-                                                          width: "50px",
-                                                          height: "50px",
-                                                        }}
-                                                        src={RemoveBtn}
-                                                        onClick={this.handleRemoveSpecificRow(
-                                                          idx,
-                                                          "staff"
-                                                        )}
-                                                      />
-                                                    </td>
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={RemoveBtn}
+                                                      onClick={this.handleRemoveSpecificRow(
+                                                        idx,
+                                                        "staff"
+                                                      )}
+                                                    />
 
-                                                    <td
-                                                      style={{ border: "none" }}
-                                                    >
-                                                      <img
-                                                        style={{
-                                                          width: "50px",
-                                                          height: "50px",
-                                                        }}
-                                                        src={AddBtn}
-                                                        onClick={() =>
-                                                          this.handleAddRow(
-                                                            "staff"
-                                                          )
-                                                        }
-                                                      />
-                                                    </td>
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      onClick={() =>
+                                                        this.handleAddRow(
+                                                          "staff"
+                                                        )
+                                                      }
+                                                    />
                                                   </div>
                                                 );
                                               }
