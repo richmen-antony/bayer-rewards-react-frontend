@@ -193,7 +193,7 @@ class LandingPage extends Component<any, any> {
                                 width: "175px",
                                 padding: "7px",
                                 border: "1px solid  #10384F",
-                                height:"50px"
+                                height: "50px",
                               }}
                             />
                           </div>
