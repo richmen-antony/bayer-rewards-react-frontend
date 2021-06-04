@@ -992,10 +992,6 @@ class CreateUser extends Component<any, any> {
         errObj.lastNameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
-        // errObj.emailErr=userInfo.email ? '' : "Please enter the email";
-        // errObj.mobilenumberErr = userInfo.mobilenumber
-        //   ? ""
-        //   : (userInfo.mobilenumber).length != 9 ? "Please enter 9 digit": "Please enter the mobile number";
 
         if (userInfo.mobilenumber ) {
           errObj.mobilenumberErr = (userInfo.mobilenumber).length ==9 ? "" :  "Please enter 9 Digit";
