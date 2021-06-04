@@ -148,6 +148,7 @@ class CreateUser extends Component<any, any> {
       districtoptions: [],
       epaoptions: [],
       villageoptions: [],
+      mobileLimit: true
     };
     this.loggedUserInfo = loggedUserInfo;
   }
@@ -992,9 +993,15 @@ class CreateUser extends Component<any, any> {
           ? ""
           : "Please enter the last Name";
         // errObj.emailErr=userInfo.email ? '' : "Please enter the email";
-        errObj.mobilenumberErr = userInfo.mobilenumber
-          ? ""
-          : "Please enter the mobile number";
+        // errObj.mobilenumberErr = userInfo.mobilenumber
+        //   ? ""
+        //   : (userInfo.mobilenumber).length != 9 ? "Please enter 9 digit": "Please enter the mobile number";
+
+        if (userInfo.mobilenumber ) {
+          errObj.mobilenumberErr = (userInfo.mobilenumber).length ==9 ? "" :  "Please enter 9 Digit";
+        } else {
+          errObj.mobilenumberErr = "Please enter the mobile number";
+        }
         userData.ownerRows[idx].errObj = errObj;
         if (
           errObj.firstNameErr !== "" ||
@@ -1024,9 +1031,12 @@ class CreateUser extends Component<any, any> {
         errObj.lastNameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
-        errObj.mobilenumberErr = userInfo.mobilenumber
-          ? ""
-          : "Please enter the mobile number";
+
+        if (userInfo.mobilenumber ) {
+          errObj.mobilenumberErr = (userInfo.mobilenumber).length ==9 ? "" :  "Please enter 9 Digit";
+        } else {
+          errObj.mobilenumberErr = "Please enter the mobile number";
+        }
         userData.staffdetails[idx].errObj = errObj;
         if (
           errObj.firstNameErr !== "" ||
@@ -1265,7 +1275,13 @@ class CreateUser extends Component<any, any> {
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
     if (type === "owner") {
       let owners = this.state.userData.ownerRows;
+      let errObj = "";
       if (key === "phone") {
+        if (val ) {
+          owners[idx].errObj.mobilenumberErr = val.length ==9 ? "" :  "Please enter 9 Digit";
+        } else {
+          owners[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+        }
         owners[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
         owners[idx][e.target.name] = e.target.checked;
@@ -1275,6 +1291,7 @@ class CreateUser extends Component<any, any> {
       }
       this.setState((prevState: any) => ({
         userData: {
+          isRendered: true,
           ...prevState.userData,
           ownerRows: owners,
         },
@@ -1283,6 +1300,11 @@ class CreateUser extends Component<any, any> {
       let staffs = this.state.userData.staffdetails;
       if (key === "phone") {
         staffs[idx]["mobilenumber"] = val;
+        if (val ) {
+          staffs[idx].errObj.mobilenumberErr = val.length ==9 ? "" :  "Please enter 9 Digit";
+        } else {
+          staffs[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+        }
       } else if (e.target.name === "active") {
         staffs[idx][e.target.name] = e.target.checked;
       } else {
@@ -1670,6 +1692,7 @@ class CreateUser extends Component<any, any> {
                                             inputProps={{
                                               name: "mobilenumber",
                                               required: true,
+                                              maxLength:11
                                             }}
                                             country={countryCodeLower}
                                             value={item.mobilenumber}
@@ -1691,10 +1714,21 @@ class CreateUser extends Component<any, any> {
                                             autoFormat
                                             disableDropdown
                                             disableCountryCode
+                                            // error={!this.state.mobileLimit && 'no'}
+                                            // isValid={this.state.mobileLimit}
+                                            // error={item.mobilenumber && isPossiblePhoneNumber(item.mobilenumber) ? 'true' : 'false'}
+                                            // isValid={(value, country) => {
+                                            //   if (value.length > 9) {
+                                            //     e.preventDefault();
+                                            //     return false;
+                                            //   } else {
+                                            //     return true;
+                                            //   }
+                                            // }}
                                           />
                                           {item.errObj.mobilenumberErr && (
                                             <span className="error">
-                                              {item.errObj.mobilenumberErr}{" "}
+                                              {item.errObj.mobilenumberErr}
                                             </span>
                                           )}
                                         </div>
@@ -1930,6 +1964,7 @@ class CreateUser extends Component<any, any> {
                                               inputProps={{
                                                 name: "mobilenumber",
                                                 required: true,
+                                                maxLength:11
                                               }}
                                               country={countryCodeLower}
                                               value={item.mobilenumber}
