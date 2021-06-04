@@ -454,8 +454,8 @@ class UserList extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        let message = error.message
-        Alert("warning", message);
+        // let message = error.message
+        // Alert("warning", message);
       });
   };
 
