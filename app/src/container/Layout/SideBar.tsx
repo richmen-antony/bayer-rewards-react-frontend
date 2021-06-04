@@ -98,6 +98,7 @@ class Sidebar extends Component<Props, States> {
             > */}
             <div id="sidebar-menu" className="">
               <ul className="metismenu" id="side-menu">
+              {this.state.userRole != "DEVADMIN"&&
                 <li className="d-flex">
                   <span
                     className={
@@ -114,6 +115,7 @@ class Sidebar extends Component<Props, States> {
                     <span> Dashboard </span>
                   </Link>
                 </li>
+                 }
 
                 {this.state.userRole === "ADMIN" && (
                   <>
@@ -164,13 +166,14 @@ class Sidebar extends Component<Props, States> {
                   <>
                     <li className="menu-title">MANAGEMENT</li>
                     <li className="d-flex">
-                      <span
-                        className={
-                          activeTab === "devconfig"
-                            ? "waves-effect active"
-                            : "waves-effect"
-                        }
-                      ></span>
+                    <span
+                    className={
+                      window.location.pathname.indexOf("devconfig") > -1
+                        ? "waves-effect active"
+                        : "waves-effect"
+                    }
+                  ></span>
+                     
                       <Link
                         to="/devconfig"
                         className={
@@ -225,7 +228,7 @@ class Sidebar extends Component<Props, States> {
                   </>
                 )}
 
-                <li className="menu-title">HELP</li>
+                {/* <li className="menu-title">HELP</li>
                 <li className="d-flex">
                   <span
                     className={
@@ -257,7 +260,7 @@ class Sidebar extends Component<Props, States> {
                     <img src={helpCenterIcon} alt="Help Center" width="16" />{" "}
                     <span> Help center </span>
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
 

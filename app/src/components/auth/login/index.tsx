@@ -89,7 +89,13 @@ class Login extends Component<Props, States> {
           Cookies.set("userData", JSON.stringify(response.body), {
             expires: 7,
           });
+          const currentUser=response.body;
+         if(currentUser.role==="DEVADMIN"){
+          this.props.history.push("/devconfig");
+         }else{
           this.props.history.push("/dashboard");
+         }
+         
           this.setState({ isLoader: false, validErrorMsg: "" });
         })
         .catch((error) => {
