@@ -9,7 +9,7 @@ import {
   invokeGetAuthServiceTemp,
   invokePostServiceTemp,
 } from "../../utility/base/service";
-import { toastSuccess, toastInfo } from "../../utility/widgets/toaster";
+import { Alert } from "../../utility/widgets/toaster";
 import { FormSteps } from "../../utility/constant";
 import { CountrySetup } from "./components/countrysetup";
 import LocationHierarchy from "./components/LocationHierarchy";
@@ -507,7 +507,8 @@ class Devconfigurations extends React.Component<
     invokePostServiceTemp(registerTemplateData, data)
       .then((response: any) => {
         console.log(response);
-        toastSuccess("Country configuration is successfully created");
+        // toastSuccess("Country configuration is successfully created");
+        Alert("success", "Country configuration is successfully created");
         this.props.history.push("./dashboard");
         this.setState({
           isLoader: false,
@@ -523,7 +524,8 @@ class Devconfigurations extends React.Component<
         ) {
           message = "Country configuration is already exists";
         }
-        toastInfo(message);
+        // toastInfo(message);
+        Alert("info", message);
         this.props.history.push("/devconfig");
       });
   };

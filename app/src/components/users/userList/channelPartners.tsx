@@ -27,7 +27,7 @@ import {
   invokeGetAuthService,
   invokePostAuthService,
 } from "../../../utility/base/service";
-import { toastSuccess, toastInfo } from "../../../utility/widgets/toaster";
+import { Alert } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Input } from "../../../utility/widgets/input";
@@ -706,7 +706,8 @@ class ChannelPartners extends Component<Props, States> {
           this.setState({
             isLoader: false,
           });
-          toastSuccess("User Updated Successfully");
+          // toastSuccess("User Updated Successfully");
+          Alert("success", "User Updated Successfully");
           this.handleClosePopup();
           this.props.callAPI();
         })
@@ -717,7 +718,8 @@ class ChannelPartners extends Component<Props, States> {
             message = "User with same Mobilenumber exists";
           }
           this.setState({ isRendered: true, staffPopup: false }, () => {
-            toastInfo(message);
+            // toastInfo(message);
+            Alert("info", message);
           });
         });
     }
@@ -752,7 +754,8 @@ class ChannelPartners extends Component<Props, States> {
           this.setState({
             isLoader: false,
           });
-          toastSuccess("User Status Changed Successfully");
+          // toastSuccess("User Status Changed Successfully");
+          Alert("success", "User Status Changed Successfully");
           this.handleClosePopup();
 
           this.props.callAPI();
