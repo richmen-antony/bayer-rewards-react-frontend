@@ -1101,7 +1101,6 @@ class ChannelPartners extends Component<Props, States> {
                                       <td
                                         style={{
                                           display: "flex",
-                                          alignItems: "center",
                                         }}
                                       >
                                         <div>
@@ -1375,7 +1374,6 @@ class ChannelPartners extends Component<Props, States> {
                                         <td
                                           style={{
                                             display: "flex",
-                                            alignItems: "center",
                                           }}
                                         >
                                           <div>
