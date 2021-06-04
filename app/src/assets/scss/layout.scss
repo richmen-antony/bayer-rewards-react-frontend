@@ -392,13 +392,14 @@
 
 .search-input {
   input {
-    border: 1px solid #006cf8;
+    border: 1px solid rgb(31, 68, 90);
     background-color: #ffffff;
     outline: none;
     width: 260px;
     height: 40px;
     padding-left: 15px;
     border-radius: 5px;
+    font-size: 14px;
   }
   .search-i {
     position: relative;

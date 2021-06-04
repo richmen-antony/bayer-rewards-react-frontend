@@ -253,7 +253,6 @@ class ScanLogsTable extends Component<Props, States> {
       region: this.state.loggedUserInfo.geolevel1,
       countrycode: this.state.loggedUserInfo.countrycode,
     };
-    console.log("selected", selectedFilters);
     if (isFiltered) {
       let filter = { ...selectedFilters };
       filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
@@ -268,7 +267,6 @@ class ScanLogsTable extends Component<Props, States> {
       );
       filter.retailer = filterScan ? filterScan : filter.retailer;
       data = { ...data, ...filter };
-      console.log("called", filter, data);
     }
 
     invokeGetAuthService(scanLogs, data)
@@ -405,7 +403,6 @@ class ScanLogsTable extends Component<Props, States> {
     });
   };
   previous = (pageNo: any) => {
-    console.log("pageno", this.state.pageNo);
     // this.setState(prevState => ({
     //     pageNo: prevState.pageNo-1
     // }),()=>{
@@ -484,12 +481,10 @@ class ScanLogsTable extends Component<Props, States> {
     let flag = false;
     if (name === "ordereddateto") {
       if (date >= val.ordereddatefrom) {
-        console.log("checking");
         this.setState({
           dateErrMsg: "",
         });
       } else {
-        console.log("called");
         this.setState({
           dateErrMsg: "Order Start Date should be lesser than  Order End Date",
         });
@@ -546,7 +541,6 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   filterScans = (filterValue: any) => {
-    console.log({ filterValue });
     this.setState({ isFiltered: true }, () => {
       this.getScanLogs(filterValue);
       this.handleClosePopup();
@@ -1056,6 +1050,7 @@ class ScanLogsTable extends Component<Props, States> {
                               this.showPopup(event, "showProductPopup");
                               this.updateOrderData(value);
                             }}
+                            style={{cursor:"pointer"}}
                           >
                             <td>{value.orderid}</td>
                             <td>
@@ -1147,7 +1142,7 @@ class ScanLogsTable extends Component<Props, States> {
               pageNo={pageNo}
               handlePaginationChange={this.handlePaginationChange}
               data={allScanLogs}
-              totalLabel={"Scans"}
+              totalLabel={"Sales"}
             />
           </div>
         </div>

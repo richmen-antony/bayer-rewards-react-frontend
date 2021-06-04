@@ -72,7 +72,6 @@ class ChangeLogs extends Component<Props, States> {
       .then((response: any) => {
         if(response.body){
           const total = response.body?.totalrows;
-          console.log({total});
           this.setState({
             isLoader: false,
             allChangeLogs:
@@ -88,10 +87,8 @@ class ChangeLogs extends Component<Props, States> {
       });
   };
   handleSearch = (e: any) => {
-    // alert('hi')
     let searchText = e.target.value;
     this.setState({ searchText: searchText });
-    console.log("text", this.state.searchText);
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
@@ -157,7 +154,6 @@ class ChangeLogs extends Component<Props, States> {
       rowsPerPage,
       pageNo,
     } = this.state;
-    console.log("changelogs", totalData);
 
     return (
       <AUX>
@@ -300,7 +296,7 @@ class ChangeLogs extends Component<Props, States> {
               pageNo={pageNo}
               handlePaginationChange={this.handlePaginationChange}
               data={allChangeLogs}
-              totalLabel={"Users"}
+              totalLabel={"Logs"}
             />
           </div>
         </div>
