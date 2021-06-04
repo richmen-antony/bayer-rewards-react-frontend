@@ -1,4 +1,4 @@
-import { toastWarning ,Alert} from "./widgets/toaster";
+import { Alert} from "./widgets/toaster";
 import _ from "lodash";
 /**
  * Download excel file 
@@ -36,7 +36,8 @@ export const downloadExcel =(tableId:any,fileName:string)=>{
  */
 export const downloadCsvFile=(csv :any, filename:string)=>{
   if(!csv){
-    toastWarning("No data available !");
+    // toastWarning("No data available !");
+    Alert('warning',"No data available !")
   }else{
     var csvFile;
     var downloadLink;
@@ -86,7 +87,8 @@ function objectValues<T extends {}>(obj: T) {
 
   export const DownloadCsv = (data:any,fileName:string)=>{
     if(!data || !data.length){
-      toastWarning("No data available !");
+      // toastWarning("No data available !");
+      Alert('warning',"No data available !")
     }else{
     const rows= data;
     const separator = ',';

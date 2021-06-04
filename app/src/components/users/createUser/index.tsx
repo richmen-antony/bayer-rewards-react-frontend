@@ -4,11 +4,7 @@ import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
-import {
-  toastSuccess,
-  toastInfo,
-  Alert,
-} from "../../../utility/widgets/toaster";
+import { Alert } from "../../../utility/widgets/toaster";
 import CustomSwitch from "../../../container/components/switch";
 import CountryJson from "../../../utility/lib/country.json";
 import { apiURL } from "../../../utility/base/utils/config";
@@ -912,7 +908,8 @@ class CreateUser extends Component<any, any> {
         } else {
           msg = "User Created Successfully";
         }
-        toastSuccess(msg);
+        // toastSuccess(msg);
+        Alert("success", msg);
         this.props.history.push("/userList");
       })
       .catch((error: any) => {

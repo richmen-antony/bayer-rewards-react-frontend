@@ -10,7 +10,7 @@ import { Input } from "../../../utility/widgets/input";
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokePostService } from "../../../utility/base/service";
 import { setLocalStorageData } from "../../../utility/base/localStore";
-import { toastError } from "../../../utility/widgets/toaster";
+// import { toastError } from "../../../utility/widgets/toaster";
 import Loaders from "../../../utility/widgets/loader";
 import Cookies from "js-cookie";
 import { CustomButton } from "../../../utility/widgets/button";
@@ -227,15 +227,13 @@ class Login extends Component<Props, States> {
                     backgroundColor: "#10384F",
                     width: "100%",
                     padding: "7px",
-                    border:"1px solid  #10384F"
+                    border: "1px solid  #10384F",
                   }}
                   handleClick={(e: any) => {
                     e.preventDefault();
                     this.login();
                   }}
-                >
-                 
-                </CustomButton>
+                ></CustomButton>
               </div>
             </div>
           </form>
