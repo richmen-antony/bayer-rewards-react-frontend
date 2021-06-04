@@ -1,5 +1,5 @@
-import React, { Component, useDebugValue } from "react";
-import { Tooltip } from "reactstrap";
+import React, { Component } from "react";
+import { withRouter  } from "react-router-dom";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -23,21 +23,19 @@ import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
-  invokeGetService,
   invokeGetAuthService,
   invokePostAuthService,
 } from "../../../utility/base/service";
 import { Alert } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Input } from "../../../utility/widgets/input";
-import CustomDropdown from "../../../utility/widgets/dropdown";
 import CustomSwitch from "../../../container/components/switch";
 import Table from "react-bootstrap/Table";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Loader from "../../../utility/widgets/loader";
 import _ from "lodash";
+
 type Props = {
   location?: any;
   history?: any;
@@ -60,7 +58,6 @@ type States = {
   dialogOpen: boolean;
   isLoader: boolean;
   deActivatePopup: boolean;
-  editPopup: boolean;
   staffPopup: boolean;
   userList: any;
   status: String;
@@ -84,17 +81,12 @@ type States = {
 
 let data: any = getLocalStorageData("userData");
 let userinfo = JSON.parse(data);
+
 const getStoreData = {
   country: userinfo.geolevel0,
   countryCode: userinfo.countrycode,
   Language: "EN-US",
 };
-
-// const getStoreData = {
-//   country: "MALAWI",
-//   countryCode: 'MW',
-//   Language: "EN-US",
-// };
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -126,7 +118,6 @@ class ChannelPartners extends Component<Props, States> {
       isdeActivateUser: false,
       isLoader: false,
       deActivatePopup: false,
-      editPopup: false,
       staffPopup: false,
       status: "",
       geographicFields: [],
@@ -170,212 +161,41 @@ class ChannelPartners extends Component<Props, States> {
     //API to get country and language settings
     this.getCountryList();
     this.getGeographicFields();
-    this.getNextHierarchy("MALAWI", this.state.geographicFields[1]);
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
     this.setState({ userName: userData.username });
   }
 
   getCountryList() {
-    //service call
-    let res = [
-      { value: "India", text: "India" },
-      { value: "Malawi", text: "Malawi" },
-    ];
+    let res = [{ value: 'IND', text: 'INDIA' }, { value: 'MAL', text: 'Malawi' }];
     this.setState({ countryList: res });
   }
-  getNextHierarchy(country: any, nextLevel: any) {
-    //API to get state options for initial set since mal is default option in country
-    const data = {
-      type: country,
-      id: nextLevel,
-    };
 
-    let nextHierarchyResponse = [
-      { text: "Central", value: "Central" },
-      { text: "Central", value: "Central" },
-      { text: "Northern", value: "Northern" },
-      { text: "Western", value: "Western" },
-      { text: "Eastern", value: "Eastern" },
-    ];
-    this.setState({ hierarchyList: nextHierarchyResponse });
-  }
   getGeographicFields() {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: userinfo.countrycode,
-    };
-    invokeGetAuthService(getTemplateData, data).then((response: any) => {
-      let locationData = response.body[0].locationhierarchy;
-      let levels: any = [];
-      levels = ["country", "region", "add", "district", "epa", "village"];
-      locationData.map((item: any) => {
-        let levelsSmall = item.locationhiername.toLowerCase();
-        levels.push(levelsSmall);
-      });
-      this.setState({ isLoader: false, geographicFields: levels });
-    });
-  }
-  getDynamicOptionFields(data: any) {
-    if (data) {
-      let setFormArray: any = [];
-      this.state.geographicFields.map((list: any, i: number) => {
-        let result = [];
-        let region = "";
-        let add = "";
-        let district = "";
-        let epa = "";
-        let village = "";
-        if ("deliveryregion" in data) {
-          result = this.getOptionLists("auto", list, data.deliveryregion, i);
-          region = data.deliveryregion;
-        }
-        if ("deliverystate" in data) {
-          result = this.getOptionLists("auto", list, data.deliverystate, i);
-          add = data.deliverystate;
-        }
-        if ("deliverydistrict" in data) {
-          result = this.getOptionLists("auto", list, data.deliverydistrict, i);
-          district = data.deliverydistrict;
-        }
-        if ("deliverycity" in data) {
-          result = this.getOptionLists("auto", list, data.deliverycity, i);
-          epa = data.deliverycity;
-        }
-        if ("deliveryvillage" in data) {
-          result = this.getOptionLists("auto", list, data.deliveryvillage, i);
-          village = data.deliveryvillage;
-        }
-        setFormArray.push({
-          name: list,
-          placeHolder: true,
-          value:
-            list === "country"
-              ? getStoreData.country
-              : list === "region"
-              ? region
-              : list === "add"
-              ? add
-              : list === "district"
-              ? district
-              : list === "epa"
-              ? epa
-              : list === "village"
-              ? village
-              : "",
-          options: list === "country" ? this.state.countryList : result,
-          error: "",
-        });
-      });
-      this.setState({ dynamicFields: setFormArray });
-    } else {
-      let setFormArray: any = [];
-      this.state.geographicFields.map((list: any, i: number) => {
-        setFormArray.push({
-          name: list,
-          placeHolder: true,
-          value: list === "country" ? getStoreData.country : "",
-          options:
-            list === "country"
-              ? this.state.countryList
-              : list === "region"
-              ? this.state.hierarchyList
-              : "",
-          error: "",
-        });
-      });
-      this.setState({ dynamicFields: setFormArray });
+      countryCode: getStoreData.countryCode
     }
+    invokeGetAuthService(getTemplateData, data)
+      .then((response: any) => {
+        let locationData = response.body[0].locationhierarchy;
+        let levels: any = [];
+        locationData.map((item: any) => {
+          let allLevels = item.locationhierlevel;
+          let levelsSmall = (item.locationhiername).toLowerCase();
+          levels.push(levelsSmall)
+        })
+        // levels = ['country','region','add','district','epa','village'];
+        this.setState({ 
+          isLoader: false,
+          geographicFields: levels });
+    }).catch((err: any) => {
+      this.setState({ isLoader: false });
+    })
   }
-  getOptionLists = (cron: any, type: any, value: any, index: any) => {
-    if (cron === "auto") {
-      let options: any = [];
-      if (type === "region") {
-        options = [
-          { text: "Central", value: "Central" },
-          { text: "Northern", value: "Northern" },
-          { text: "Western", value: "Western" },
-          { text: "Eastern", value: "Eastern" },
-        ];
-      } else if (type === "add") {
-        options = [
-          { text: "Add1", value: "Add1" },
-          { text: "Add2", value: "Add2" },
-        ];
-      } else if (type === "district") {
-        options = [
-          { text: "Balaka", value: "Balaka" },
-          { text: "Blantyre", value: "Blantyre" },
-        ];
-      } else if (type === "epa") {
-        options = [
-          { text: "EPA1", value: "EPA1" },
-          { text: "EPA2", value: "EPA2" },
-        ];
-      } else if (type === "village") {
-        options = [
-          { text: "Village1", value: "Village1" },
-          { text: "Village2", value: "Village2" },
-        ];
-      }
-      return options;
-    } else {
-      let dynamicFieldVal = this.state.dynamicFields;
-      let userList = this.state.userList;
-      if (type === "region") {
-        let district = [
-          { text: "Balaka", value: "Balaka" },
-          { text: "Blantyre", value: "Blantyre" },
-        ];
-        dynamicFieldVal[index + 1].options = district;
-        dynamicFieldVal[index].value = value;
-        userList["region"] = value;
-        this.setState({ userList: userList });
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (type === "add") {
-        let epa = [
-          { text: "Add1", value: "Add1" },
-          { text: "Add2", value: "Add2" },
-        ];
-        dynamicFieldVal[index + 1].options = epa;
-        dynamicFieldVal[index].value = value;
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (type === "district") {
-        let epa = [
-          { text: "EPA1", value: "EPA1" },
-          { text: "EPA2", value: "EPA2" },
-        ];
-        dynamicFieldVal[index + 1].options = epa;
-        dynamicFieldVal[index].value = value;
-        userList["district"] = value;
-        this.setState({ userList: userList });
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (type === "epa") {
-        let village = [
-          { text: "Village1", value: "Village1" },
-          { text: "Village2", value: "Village2" },
-        ];
-        dynamicFieldVal[index + 1].options = village;
-        dynamicFieldVal[index].value = value;
-        userList["epa"] = value;
-        this.setState({ userList: userList });
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (type === "village") {
-        dynamicFieldVal[index].value = value;
-        userList["village"] = value;
-        this.setState({ userList: userList });
-        this.setState({ dynamicFields: dynamicFieldVal });
-      }
-    }
-  };
-
-  handleSort(
-    e: any,
-    columnname: string,
-    allChannelPartners: any,
-    isAsc: Boolean
-  ) {
+  
+  handleSort(e:any,columnname: string, allChannelPartners : any, isAsc : Boolean){
     this.tableCellIndex = e.currentTarget.cellIndex;
     this.props.onSort(columnname, allChannelPartners, isAsc);
   }
@@ -486,11 +306,7 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   handleClosePopup = () => {
-    this.setState({
-      deActivatePopup: false,
-      editPopup: false,
-      staffPopup: false,
-    });
+    this.setState({ deActivatePopup: false, staffPopup: false});
   };
 
   showPopup = (e: any, key: keyof States) => {
@@ -500,18 +316,7 @@ class ChannelPartners extends Component<Props, States> {
     });
   };
 
-  editPopup = (e: any, list: any) => {
-    e.stopPropagation();
-    this.setState({ editPopup: true }, () => {
-      this.getCurrentUserData(list);
-    });
-
-    setTimeout(() => {
-      this.getDynamicOptionFields(this.state.userList);
-    }, 0);
-  };
-
-  editStaff = (data: any) => {
+  editStaff =(data: any) => {
     let passData: any = JSON.parse(JSON.stringify(data));
     let activeStatus =
       passData.userstatus === "INACTIVE" || passData.userstatus === "DECLINED"
@@ -623,10 +428,7 @@ class ChannelPartners extends Component<Props, States> {
   };
 
   submitUpdateUser = () => {
-    // this.setState({staffPopup: true},()=>{
-    //   this.setState({isLoader: true})
-    // });
-    this.setState({ isLoader: true });
+    this.setState({isLoader: true})   
     const { updateUser } = apiURL;
     let geoFields: any = {};
     this.state.dynamicFields.map((list: any, i: number) => {
@@ -655,7 +457,6 @@ class ChannelPartners extends Component<Props, States> {
     }
     this.setState({ isLoader: true });
     let userData = this.state.userList;
-    console.log("allDatas", this.state.userList);
 
     let data = {
       countrycode: getStoreData.countryCode,
@@ -768,7 +569,7 @@ class ChannelPartners extends Component<Props, States> {
   };
   editUser = (list: any) => {
     this.getCurrentUserData(list, true);
-  };
+  }
 
   getCurrentUserData = (data: any, edit?: boolean) => {
     let passData: any = { ...data };
@@ -1025,54 +826,6 @@ class ChannelPartners extends Component<Props, States> {
     const { isLoader, pageNo, rowsPerPage } = this.props.state;
     const { userList, userData, isStaff }: any = this.state;
 
-    const locationList = this.state.dynamicFields?.map(
-      (list: any, index: number) => {
-        let nameCapitalized =
-          list.name.charAt(0).toUpperCase() + list.name.slice(1);
-        return (
-          <>
-            {index !== 0 && (
-              <div style={{ marginTop: "-15px" }}>
-                <label
-                  className="font-weight-bold pt-4"
-                  style={{
-                    marginLeft: index == 2 || index == 4 ? "30px" : "15px",
-                  }}
-                >
-                  {nameCapitalized}
-                </label>
-                <div
-                  className="col-sm-6"
-                  style={{
-                    marginLeft: index == 2 || index == 4 ? "15px" : "0px",
-                  }}
-                >
-                  <CustomDropdown
-                    name={list.name}
-                    label={nameCapitalized}
-                    options={list.options}
-                    handleChange={(e: any) => {
-                      list.value = e.target.value;
-                      this.setState({ isRendered: true });
-                      this.getOptionLists(
-                        "manual",
-                        list.name,
-                        e.target.value,
-                        index
-                      );
-                    }}
-                    value={list.value}
-                    isPlaceholder
-                  />
-                  {list.error && <span className="error">{list.error}</span>}
-                </div>
-              </div>
-            )}
-          </>
-        );
-      }
-    );
-
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -1087,7 +840,7 @@ class ChannelPartners extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userList?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {userList?.whtaccountname || ""}, <label>{userList?.rolename}</label>{" "}
                     </p>
                   </div>
                 </div>

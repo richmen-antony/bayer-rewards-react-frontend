@@ -26,6 +26,10 @@ import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
 import _ from "lodash";
 
+
+let data: any = getLocalStorageData("userData");
+let userinfo = JSON.parse(data);
+
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
@@ -106,7 +110,6 @@ class CreateUser extends Component<any, any> {
       shippingcityErr: "",
       shippingstateErr: "",
       deliveryzipcodeErr: "",
-      taxidErr: "",
       accountnameErr: "",
       ownernameErr: "",
       billingcountrycodeErr: "",
@@ -242,7 +245,7 @@ class CreateUser extends Component<any, any> {
                   mobilenumberErr: "",
                 },
                 firstname: userFields.ownerfirstname,
-                active: true,
+                active: userFields.userstatus === 'ACTIVE' ? true : false,
                 lastname: userFields.ownerlastname,
                 mobilenumber: userFields.ownerphonenumber,
                 email: userFields.owneremail,
@@ -318,11 +321,6 @@ class CreateUser extends Component<any, any> {
       })
       .catch((err: any) => {
         this.setState({ isLoader: false });
-        let levels = ["country", "region", "add", "district", "epa", "village"];
-        this.setState({
-          isLoader: false,
-          geographicFields: levels,
-        });
       });
   }
 
@@ -388,7 +386,7 @@ class CreateUser extends Component<any, any> {
           (region: any) => region.name === data.deliveryregion
         );
         geoLocationInfo.region = filteredAdd[0].code;
-        filteredAdd[0].add.forEach((item: any) => {
+        filteredAdd[0]?.add.forEach((item:any)=>{
           let addInfo = { text: item.name, value: item.name, code: item.code };
           addoptions.push(addInfo);
         });
@@ -507,147 +505,129 @@ class CreateUser extends Component<any, any> {
     }
   };
 
-  getOptionLists = async (cron: any, type: any, value: any, index: any) => {
+  getOptionLists =  async(cron: any, type: any, value: any, index: any) => {
     let allRegions = this.state.allRegions;
-    allRegions.forEach((region: any) => {
+    if(allRegions.length) {
+    allRegions.forEach((region:any)=>{
       region.text = region.name;
       region.value = region.name;
-    });
+    })
     let currentStep = this.state.currentStep;
-    this.setState({ regionoptions: allRegions });
-    let dynamicFieldVal = this.state.dynamicFields;
-    let withHoldingVal = this.state.withHolding;
-    if (type === "region") {
-      let filteredRegion = allRegions.filter(
-        (region: any) => region.name === value
-      );
-      let add: any = [];
-      filteredRegion[0].add.forEach((item: any) => {
-        let regionInfo = { text: item.name, value: item.name, code: item.code };
-        add.push(regionInfo);
-      });
-      geoLocationInfo.region = filteredRegion[0].code;
-      if (this.state.currentStep == 2) {
-        dynamicFieldVal[index + 1].options = add;
-        dynamicFieldVal[index].value = value;
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (this.state.currentStep == 3) {
-        withHoldingVal[index + 1].options = add;
-        withHoldingVal[index].value = value;
-        this.setState({ withHolding: withHoldingVal });
-      }
-    } else if (type === "add") {
-      let filteredAdd: any = [];
-      if (currentStep === 2) {
-        filteredAdd = allRegions.filter(
-          (region: any) => region.name === dynamicFieldVal[1].value
-        );
-      }
-      if (currentStep === 3) {
-        filteredAdd = allRegions.filter(
-          (region: any) => region.name === withHoldingVal[1].value
-        );
-      }
+    this.setState({regionoptions:allRegions})
+      let dynamicFieldVal = this.state.dynamicFields;
+      let withHoldingVal = this.state.withHolding; 
+      if(type === 'region') {
+        let filteredRegion = allRegions?.filter((region: any)=>region.name === value);
+        let add: any= [];
 
-      // this.setState({addoptions:allRegions})
-      let addList = filteredAdd[0].add.filter(
-        (addinfo: any) => addinfo.name === value
-      );
-      let district: any = [];
-      addList[0].district.forEach((item: any) => {
-        let districtInfo = {
-          text: item.name,
-          value: item.name,
-          code: item.code,
-        };
-        district.push(districtInfo);
-      });
-      geoLocationInfo.add = addList[0].code;
-      if (this.state.currentStep == 2) {
-        dynamicFieldVal[index + 1].options = district;
-        dynamicFieldVal[index].value = value;
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (this.state.currentStep == 3) {
-        withHoldingVal[index + 1].options = district;
-        withHoldingVal[index].value = value;
-        this.setState({ withHolding: withHoldingVal });
-      }
-    } else if (type === "district") {
-      let filteredAdd: any = [];
-      let districtList: any = [];
-      if (currentStep === 2) {
-        filteredAdd = allRegions.filter(
-          (region: any) => region.name === dynamicFieldVal[1].value
-        );
-        districtList = filteredAdd[0].add.filter(
-          (addinfo: any) => addinfo.name === dynamicFieldVal[2].value
-        );
-      }
-      if (currentStep === 3) {
-        filteredAdd = allRegions.filter(
-          (region: any) => region.name === withHoldingVal[1].value
-        );
-        districtList = filteredAdd[0].add.filter(
-          (addinfo: any) => addinfo.name === withHoldingVal[2].value
-        );
-      }
-      districtList[0].district.forEach((item: any) => {
-        if (item.name === value) {
-          geoLocationInfo.district = item.code;
-        }
-      });
-
-      levelFive = await this.getEPADetails();
-
-      if (levelFive.length) {
-        levelFive.forEach((item: any) => {
-          item.text = item.name;
-          item.value = item.name;
+        filteredRegion[0]?.add.forEach((item:any)=>{
+          let regionInfo = { text: item.name, value: item.name, code: item.code };
+          add.push(regionInfo)
         });
-        if (this.state.currentStep == 2) {
-          dynamicFieldVal[index + 1].options = levelFive;
+        geoLocationInfo.region = filteredRegion.length && filteredRegion[0].code
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = add;
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
-          withHoldingVal[index + 1].options = levelFive;
+          withHoldingVal[index + 1].options = add;
+          withHoldingVal[index].value = value;
+          this.setState({ withHolding: withHoldingVal });
+        }
+     } else if(type === 'add') {
+       let filteredAdd: any = [];
+       if (currentStep === 2){
+        filteredAdd = allRegions?.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+       } 
+       if (currentStep === 3){
+        filteredAdd = allRegions?.filter((region: any)=>region.name === withHoldingVal[1].value);
+       }
+        let addList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === value)
+        let district: any= [];
+        addList[0]?.district.forEach((item:any)=>{
+          let districtInfo = { text: item.name, value: item.name, code: item.code };
+          district.push(districtInfo)
+        });
+        geoLocationInfo.add = addList[0].code;
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = district;
+          dynamicFieldVal[index].value = value;
+          this.setState({ dynamicFields: dynamicFieldVal });
+        } else if (this.state.currentStep == 3) {
+          withHoldingVal[index + 1].options = district;
+          withHoldingVal[index].value = value;
+          this.setState({ withHolding: withHoldingVal });
+        }
+      } else if(type === 'district') {
+        let filteredAdd: any = [];
+        let districtList: any = [];
+        if (currentStep === 2){
+          filteredAdd = allRegions?.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+          districtList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+         } 
+         if (currentStep === 3){
+          filteredAdd = allRegions?.filter((region: any)=>region.name === withHoldingVal[1].value);
+          districtList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === withHoldingVal[2].value)
+         }
+        districtList[0]?.district.forEach((item:any)=>{
+          if(item.name === value) {
+            geoLocationInfo.district = item.code;
+          }
+        });
+       
+        levelFive =  await this.getEPADetails();
+                         
+        if(levelFive.length) {
+          levelFive.forEach((item:any)=>{
+            item.text = item.name;
+            item.value = item.name;
+          });
+          if ( this.state.currentStep == 2){
+            dynamicFieldVal[index+1].options = levelFive;
+            dynamicFieldVal[index].value = value;
+            this.setState({dynamicFields: dynamicFieldVal});
+          } else if ( this.state.currentStep == 3) {
+            withHoldingVal[index+1].options = levelFive;
+            withHoldingVal[index].value = value;
+            this.setState({withHolding: withHoldingVal});
+          }
+        }
+      } else if(type === 'epa') {
+        // geoLocationInfo.epa = value;
+        if(levelFive && levelFive.length) {
+          levelFive.forEach((item:any)=>{
+            if(item.name === value) {
+              geoLocationInfo.epa = item.code;
+            }
+          });
+        }
+        let village:any=[];
+        village =  await this.getVillageDetails();
+        village.forEach((villageInfo:any)=>{
+          villageInfo.text = villageInfo.name;
+          villageInfo.value = villageInfo.name;
+        })
+        if ( this.state.currentStep == 2){
+          dynamicFieldVal[index+1].options = village;
+          dynamicFieldVal[index].value = value;
+          this.setState({ dynamicFields: dynamicFieldVal });
+        } else if (this.state.currentStep == 3) {
+          withHoldingVal[index + 1].options = village;
+          withHoldingVal[index].value = value;
+          this.setState({ withHolding: withHoldingVal });
+        }
+      } else if (type === "village") {
+        if (this.state.currentStep == 2) {
+          dynamicFieldVal[index].value = value;
+          this.setState({ dynamicFields: dynamicFieldVal });
+        } else if (this.state.currentStep == 3) {
           withHoldingVal[index].value = value;
           this.setState({ withHolding: withHoldingVal });
         }
       }
-    } else if (type === "epa") {
-      // geoLocationInfo.epa = value;
-      if (levelFive && levelFive.length) {
-        levelFive.forEach((item: any) => {
-          if (item.name === value) {
-            geoLocationInfo.epa = item.code;
-          }
-        });
-      }
-      let village: any = [];
-      village = await this.getVillageDetails();
-      village.forEach((villageInfo: any) => {
-        villageInfo.text = villageInfo.name;
-        villageInfo.value = villageInfo.name;
-      });
-      if (this.state.currentStep == 2) {
-        dynamicFieldVal[index + 1].options = village;
-        dynamicFieldVal[index].value = value;
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (this.state.currentStep == 3) {
-        withHoldingVal[index + 1].options = village;
-        withHoldingVal[index].value = value;
-        this.setState({ withHolding: withHoldingVal });
-      }
-    } else if (type === "village") {
-      if (this.state.currentStep == 2) {
-        dynamicFieldVal[index].value = value;
-        this.setState({ dynamicFields: dynamicFieldVal });
-      } else if (this.state.currentStep == 3) {
-        withHoldingVal[index].value = value;
-        this.setState({ withHolding: withHoldingVal });
-      }
     }
   };
+
 
   getEPADetails = () => {
     this.setState({ isLoader: true });
@@ -1058,13 +1038,11 @@ class CreateUser extends Component<any, any> {
       });
     } else {
       let accInfo = this.state.accInfo;
-      let taxid = userData.taxid ? "" : "Please enter the tax id";
       let whtaccountname = userData.whtaccountname
         ? ""
         : "Please enter account name";
       let whtownername = userData.whtownername ? "" : "Please enter owner name";
       this.setState({
-        taxidErr: taxid,
         accountnameErr: whtaccountname,
         ownernameErr: whtownername,
       });
@@ -1080,7 +1058,6 @@ class CreateUser extends Component<any, any> {
         if (
           billingstreet != "" ||
           billingzipcode != "" ||
-          taxid != "" ||
           whtaccountname != "" ||
           whtownername != ""
         ) {
@@ -1414,7 +1391,6 @@ class CreateUser extends Component<any, any> {
       isStaff,
       deliverystreetErr,
       deliveryzipcodeErr,
-      taxidErr,
       accountnameErr,
       ownernameErr,
       billingstreetErr,
@@ -2199,7 +2175,6 @@ class CreateUser extends Component<any, any> {
                             this.handleChange("", e, "", "otherSteps", "")
                           }
                         />
-                        {taxidErr && <span className="error">{taxidErr} </span>}
                       </div>
                       <div className="col-sm-3">
                         <Input

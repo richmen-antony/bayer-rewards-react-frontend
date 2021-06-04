@@ -83,7 +83,12 @@ type States = {
   countryList: Array<any>;
   hierarchyList: Array<any>;
   partnerType: PartnerTypes;
-  userData:any;
+  allRegions: Array<any>;
+  regionoptions: Array<any>;
+  addoptions: Array<any>;
+  districtoptions: Array<any>;
+  epaoptions: Array<any>;
+  villageoptions: Array<any>;
 };
 
 const AntTabs = withStyles({
@@ -195,6 +200,16 @@ const CalenderInput = ({ onChange, placeholder, value, id, onClick }: IProps) =>
     />
   </div>
 );
+const obj: any = getLocalStorageData("userData");
+const userData = JSON.parse(obj);
+
+const getStoreData = {
+  country: userData.geolevel0,
+  countryCode: userData.countrycode,
+  Language: "EN-US",
+};
+
+
 class UserList extends Component<Props, States> {
   timeOut: any;
   constructor(props: any) {
@@ -252,7 +267,12 @@ class UserList extends Component<Props, States> {
       dynamicFields: [],
       countryList: [],
       hierarchyList: [],
-      userData:{}
+      allRegions: [],
+      regionoptions: [],
+      addoptions: [],
+      districtoptions: [],
+      epaoptions: [],
+      villageoptions:[]
     };
     this.timeOut = 0;
   }
@@ -260,34 +280,137 @@ class UserList extends Component<Props, States> {
     this.getChannelPartnersList();
     this.getThirdPartysList();
     ///API to get country and language settings
-    this.getCountryList();
+    this.getHierarchyDatas();
     this.getGeographicFields();
-    this.getNextHierarchy("MALAWI", this.state.geographicFields[1]);
     setTimeout(() => {
       this.getDynamicOptionFields();
     }, 0);
 
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-
-    this.setState({
-      userData: userData,
-    });
   }
 
-  getChannelPartnersList = (condIf?: string) => {
-    this.setState({ allChannelPartners: [] })
-    const { channelPartnersList } = apiURL;
-
-    const obj: any = getLocalStorageData("userData");
-    const userData = JSON.parse(obj);
-
+  getGeographicFields() {
     this.setState({ isLoader: true });
-    let { status, lastmodifieddatefrom, lastmodifieddateto, region, epa, district }: any =
+    const { getTemplateData } = apiURL;
+    let data = {
+      countryCode: getStoreData.countryCode
+    }
+    invokeGetAuthService(getTemplateData, data)
+      .then((response: any) => {
+        let locationData = response.body[0].locationhierarchy;
+        let levels: any = [];
+        locationData.map((item: any) => {
+          let allLevels = item.locationhierlevel;
+          let levelsSmall = (item.locationhiername).toLowerCase();
+          levels.push(levelsSmall)
+        })
+        // levels = ['country','region','add','district','epa','village'];
+        this.setState({ 
+          isLoader: false,
+          geographicFields: levels }, ()=>{
+              setTimeout(() => {
+                this.getDynamicOptionFields();
+              }, 0);
+          });
+    }).catch((err: any) => {
+      this.setState({ isLoader: false });
+    })
+  }
+  getHierarchyDatas() {
+    //To get all level datas
+    this.setState({ isLoader: true });
+    const { getHierarchyLevels } = apiURL;
+    let countrycode = {
+      countryCode: getStoreData.countryCode
+    }
+    invokeGetAuthService(getHierarchyLevels, countrycode)
+    .then((response: any) => {
+      let regions = Object.keys(response.body).length !== 0 ? response.body.regions : [];
+      this.setState({ isLoader: false, allRegions : regions },()=>{
+        console.log('allregions', this.state.allRegions, response);
+      })
+    }).catch((err: any) => {
+      this.setState({ isLoader: false });
+    })
+  }
+  getDynamicOptionFields = (reset?:string) => {
+    console.log('allRegions', this.state.allRegions);
+    let regionlist= this.state.allRegions;
+    if(!reset) {
+      let allItem = {code: "All", name:'All',add:[] }
+      regionlist.unshift(allItem);
+    }
+    this.setState({allRegions:regionlist})
+    let regionOptions :any=[]
+    this.state.allRegions.forEach((item:any) => {
+      let regionInfo = {text: item.name, code: item.code, value: item.name}
+      regionOptions.push(regionInfo);
+    })
+    let setFormArray: any = [];
+    this.state.geographicFields.map((list: any, i: number) => {
+        setFormArray.push({
+          name: list,
+          placeHolder: true,
+          value: list === "country" ? getStoreData.country : '',
+          options:
+            list === "country"
+              ? this.state.countryList
+              : list === 'region' ? regionOptions : [{text:'All', name:"All"}],
+          error: "",
+        });
+    });
+    this.setState({ dynamicFields: setFormArray });
+  }
+  getOptionLists =  (cron: any, type: any, value: any, index: any) => {
+    console.log('index@@', index);
+    let allRegions = this.state.allRegions;
+    this.setState({regionoptions:allRegions})
+      let dynamicFieldVal = this.state.dynamicFields;
+      if(type === 'region') {
+        let filteredRegion = allRegions?.filter((region: any)=>region.name === value);
+        let add: any= [];
+        filteredRegion[0]?.add.forEach((item:any)=>{
+          let regionInfo = { text: item.name, value: item.name, code: item.code };
+          add.push(regionInfo)
+        });
+        let addObj ={text:'All',code:'All',name:'All',value:'All',district:[]}
+        add.unshift(addObj)
+        dynamicFieldVal[index+1].options = add;
+        dynamicFieldVal[index].value = value;
+        this.setState({ dynamicFields: dynamicFieldVal });
+     } else if(type === 'add') {
+        let filteredAdd: any = [];
+        filteredAdd = allRegions?.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+        let district: any= [];
+        let addList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === value)
+        addList[0]?.district.forEach((item:any)=>{
+          let districtInfo = { text: item.name, value: item.name, code: item.code };
+          district.push(districtInfo)
+        });
+        let districtObj ={text:'All',code:'All',name:'All',value:'All'}
+        district.unshift(districtObj)
+        dynamicFieldVal[index+1].options = district;
+        dynamicFieldVal[index].value = value;
+        this.setState({ dynamicFields: dynamicFieldVal });
+        } else if(type === 'district') {
+          // let filteredAdd: any = [];
+          // let districtList: any = [];
+          // filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+          // districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+          dynamicFieldVal[index].value = value;
+          this.setState({dynamicFields: dynamicFieldVal});
+      }
+  };
+
+  getChannelPartnersList = (condIf?: string) => {
+    this.setState({ allChannelPartners: [], dropdownOpenFilter: false, dateErrMsg: ""})
+    const { channelPartnersList } = apiURL;
+    this.setState({ isLoader: true });
+    let { status, startDate, endDate, region, epa, district }: any =
     this.state.selectedFilters;
     let data = {
-      // countrycode: 'MW',
-      countrycode:userData.countrycode,
+      countrycode: getStoreData.countryCode,
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       isfiltered: this.state.isFiltered,
@@ -303,12 +426,8 @@ class UserList extends Component<Props, States> {
     if (this.state.isFiltered) {
       let filter = {
         status: status,
-        lastmodifieddatefrom: moment(lastmodifieddatefrom).format(
-          "YYYY-MM-DD"
-        ),
-        lastmodifieddateto: moment(lastmodifieddateto).format(
-          "YYYY-MM-DD"
-        ),
+        lastmodifieddatefrom: startDate,
+        lastmodifieddateto: endDate,
         region,
         epa,
         district,
@@ -365,88 +484,12 @@ class UserList extends Component<Props, States> {
     ];
     this.setState({ countryList: res });
   }
-  getNextHierarchy(country: any, nextLevel: any) {
-    //API to get state options for initial set since mal is default option in country
-    const data = {
-      type: country,
-      id: nextLevel,
-    };
-
-    let nextHierarchyResponse = [
-      { text: "All", value: "All" },
-      { text: "Central", value: "Central" },
-      { text: "Northern", value: "Northern" },
-      { text: "Western", value: "Western" },
-      { text: "Eastern", value: "Eastern" },
-    ];
-    this.setState({ hierarchyList: nextHierarchyResponse });
-  }
-  getGeographicFields() {
-    let res = ["country", "region", "district", "epa", "village"];
-    setTimeout(() => {
-      this.setState({ geographicFields: res });
-    }, 0);
-  }
-  getDynamicOptionFields() {
-    let setFormArray: any = [];
-    this.state.geographicFields.map((list: any, i: number) => {
-      setFormArray.push({
-        name: list,
-        placeHolder: true,
-        value: list === "country" ? "MALAWI" : "All",
-        options:
-          list === "country"
-            ? this.state.countryList
-            : i == 1
-            ? this.state.hierarchyList
-            : "",
-        error: "",
-      });
-    });
-    this.setState({ dynamicFields: setFormArray });
-  }
-
-  getOptionLists = (e: any, index: any) => {
-    e.stopPropagation();
-    let regionResponse = [
-      { text: "All", value: "All" },
-      { text: "Central", value: "central" },
-      { text: "Bangalore", value: "Bangalore" },
-    ];
-    let districtResponse = [
-      { text: "All", value: "All" },
-      { text: "Balaka", value: "Balaka" },
-      { text: "Blantyre", value: "Blantyre" },
-    ];
-    let epaResponse = [
-      { text: "All", value: "All" },
-      { text: "EPA1", value: "epa1" },
-      { text: "EPA2", value: "epa2" },
-    ];
-    let villageResponse = [
-      { text: "All", value: "All" },
-      { text: "Village1", value: "Village1" },
-      { text: "Village2", value: "Village2" },
-    ];
-
-    this.state.dynamicFields.map((list: any) => {
-      if (list.name === "region") {
-        list.options = this.state.hierarchyList;
-      } else if (list.name === "district") {
-        list.options = districtResponse;
-      } else if (list.name === "epa") {
-        list.options = epaResponse;
-      } else if (list.name === "village") {
-        list.options = villageResponse;
-      }
-    });
-  };
 
   download = () => {
     const { downloadUserList } = apiURL;
 
     let data = {
-      countrycode:this.state.userData.countrycode
+      countrycode: getStoreData.countryCode
       // usertype: "CHANNEL PARTNER",
       // partnertype: "Retailer",
     };
@@ -530,8 +573,8 @@ class UserList extends Component<Props, States> {
           dateErrMsg: "Start date should be lesser than End Date",
         });
       }
-    } else if (name === "lastmodifieddateto") {
-      if (e.target.value >= new Date().toISOString().substr(0, 10)) {
+    } else if (name === "endDate") {
+      if (e.target.value > new Date().toISOString().substr(0, 10)) {
         this.setState({
           dateErrMsg: "End Date should not be greater than todays date",
         });
@@ -568,6 +611,14 @@ class UserList extends Component<Props, States> {
 
   resetFilter = (e: any) => {
     e.stopPropagation();
+    var today = new Date();
+    var month, day, year;
+    var year: any = today.getFullYear();
+    var month: any = today.getMonth();
+    var date = today.getDate();
+    if (month - 6 <= 0) year = today.getFullYear();
+    var backdate = new Date(year, month - 6, date);
+    this.getDynamicOptionFields('reset');
     this.setState(
       {
         selectedFilters: {
@@ -575,8 +626,8 @@ class UserList extends Component<Props, States> {
           epa: "All",
           district: "All",
           status: "All",
-          lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
-          lastmodifieddateto: new Date(),
+          startDate: backdate.toISOString().substr(0, 10),
+          endDate: new Date().toISOString().substr(0, 10),
         },
         isFiltered: false,
       },
@@ -747,29 +798,30 @@ class UserList extends Component<Props, States> {
       margin: "5px",
     };
 
-    const locationList = this.state.dynamicFields?.map(
-      (list: any, index: number) => {
-        let nameCapitalized =
-          list.name.charAt(0).toUpperCase() + list.name.slice(1);
+    const fields = this.state.dynamicFields;
+    const locationList = fields?.map((list: any, index: number) => {
+    let nameCapitalized =
+      list.name.charAt(0).toUpperCase() + list.name.slice(1);
         return (
           <>
             <div className="country" style={{marginBottom:"5px"}}>
               {index !== 0 && (
                 <div>
-                  {list.name !== "village" && (
-                    <NativeDropdown
-                      name={list.name}
-                      label={nameCapitalized}
-                      options={list.options}
-                      handleChange={(e: any, index: number) => {
-                        e.stopPropagation();
-                        list.value = e.target.value;
-                        this.setState({ isRendered: true });
-                        this.getOptionLists(e, index);
-                        this.handleUpdateDropdown(e.target.value, list.name);
-                      }}
-                      value={list.value}
-                    />
+                  {list.name !== "epa" && (
+                    (list.name) !== "village" && (
+                        <NativeDropdown
+                        name={list.name}
+                        label={nameCapitalized}
+                        options={list.options}
+                        handleChange={(e: any) => {
+                          e.stopPropagation();
+                          list.value = e.target.value;
+                          this.getOptionLists("manual", list.name, e.target.value, index);
+                          this.handleUpdateDropdown(e.target.value, list.name);
+                        }}
+                        value={list.value}
+                      />
+                    )
                   )}
                 </div>
               )}
