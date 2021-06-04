@@ -15,6 +15,7 @@ import "../../assets/scss/configurations.scss";
 import RtArrow from "../../assets/icons/right_arrow.svg";
 import FarmerDenied from "../../assets/icons/farmer_denied.svg";
 import CpproductImg from "../../assets/icons/cp_products.svg";
+import NoImg from "../../assets/images/no-image-circle.jpg";
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -166,17 +167,20 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                               value?.ordered_qrcodes?.length > 0 &&
                               handleExpand(value)
                             }
+                            style={{cursor: `${value?.ordered_qrcodes?.length > 0 &&"pointer"}`}}
                           >
                             <th scope="row">
                               {
                                 <img
                                   src={
-                                    value.productgroup === "CORN SEED"
+                                    value.productgroup === "CORN SEED" || value.productgroup === "HYBRID" 
                                       ? CornImg
-                                      : value.productgroup === "FUNGICIDES"
+                                      : value.productgroup === "FUNGICIDES" || value.productgroup ==="HERBICIDES" || value.productgroup ==="INSECTICIDES"
                                       ? CpproductImg
-                                      : ""
+                                      : NoImg
                                   }
+                                  width={40}
+                                 
                                 />
                               }
                             </th>
@@ -193,10 +197,10 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>{"MK " + value.productprice}</td>
                             {data.orderstatus === "FULFILLED" &&
                               value?.ordered_qrcodes?.length > 0 && (
-                                <td>
+                                <td style={{cursor:"pointer"}}>
                                   <i
                                     className={`fas ${
-                                      accordionView
+                                      value?.orderlineitemid === accordionId &&accordionView
                                         ? "fa-sort-down"
                                         : "fa-sort-up"
                                     }`}
@@ -243,14 +247,16 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       );
                     })}
                     <tr>
-                      <td colSpan={8}>
+                      <td colSpan={8} >
                         {data.orderstatus === "FULFILLED" && (
                           <div id="accordion">
                             <div className="card order-accordion product-sold-popup">
                               <div
                                 className="card-header"
                                 id="headingOne"
-                                onClick={() => handleButton("e")}
+                                onClick={() => data?.invalidscans?.length > 0&&  handleButton("e")}
+                                style={{cursor: `${data?.invalidscans?.length > 0  &&"pointer"}`}}
+
                               >
                                 <span>{"Invalid Scans (0)"}</span>
                                 <img src={RtArrow} />
@@ -259,13 +265,15 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   <span>Non Bayer Labels (0)</span>
                                 </div>
                                 <div className="expand-icon">
+                                 {data?.invalidscans?.length > 0&&
                                   <i
                                     className={`fa ${
-                                      accordion
+                                       accordion
                                         ? "fas fa-caret-down"
                                         : "fas fa-caret-up"
                                     } `}
                                   ></i>
+                                   }
                                 </div>
                               </div>
 

@@ -80,7 +80,6 @@ class Pagination extends Component<Props, States> {
     for (let i = 1; i <= pageData; i++) {
       pageNumbers.push(i);
     }
-    console.log("pageNumbers", totalData);
     const renderPageNumbers = pageNumbers?.map((number, index) => {
       return (
         <>
@@ -214,7 +213,7 @@ class Pagination extends Component<Props, States> {
                   {/* <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
                             <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
                         </div> */}
-                  <div style={{ marginTop: "8px", marginRight: "-20px" }}>
+                  <div style={{ marginTop: "8px", marginRight: "-10px" }}>
                     <a
                       href="#"
                       onClick={() => next(pageNo)}

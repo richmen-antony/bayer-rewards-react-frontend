@@ -90,16 +90,16 @@ export function invokeGetService(path) {
 //Get method with auth
 export function invokeGetAuthService(path,formData) {
   return new Promise(function (resolve, reject) {
-    const data =  getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')) : "";
+    // const data =  getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')) : "";
     const URL = configApp.env;
     const config = {
       method: 'GET',
       params: {
         ...formData
       },
-      headers: {
-        'x-access-token': data.accessToken
-      }
+      // headers: {
+      //   'x-access-token': data.accessToken
+      // }
     };
     axios.create({
       baseURL: URL + path, 
