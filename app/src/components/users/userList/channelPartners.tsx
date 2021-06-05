@@ -836,6 +836,9 @@ class ChannelPartners extends Component<Props, States> {
     const { isLoader, pageNo, rowsPerPage } = this.props.state;
     const { userList, userData, isStaff }: any = this.state;
 
+    let data: any = getLocalStorageData("userData");
+    let loggedUserInfo = JSON.parse(data);
+    let countryCodeLower = _.toLower(loggedUserInfo.countrycode);
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -1047,8 +1050,16 @@ class ChannelPartners extends Component<Props, States> {
                                               inputProps={{
                                                 name: "mobilenumber",
                                                 required: true,
+                                                maxLength:
+                                                  process.env
+                                                    .REACT_APP_STAGE ===
+                                                    "DEV" ||
+                                                  process.env
+                                                    .REACT_APP_STAGE === "INT"
+                                                    ? 12
+                                                    : 11,
                                               }}
-                                              country={"mw"}
+                                              country={countryCodeLower}
                                               value={item.mobilenumber}
                                               onChange={(value, e) =>
                                                 this.handleChange(
@@ -1059,7 +1070,7 @@ class ChannelPartners extends Component<Props, States> {
                                                   value
                                                 )
                                               }
-                                              onlyCountries={["mw"]}
+                                              onlyCountries={[countryCodeLower]}
                                               autoFormat
                                               disableDropdown
                                               disableCountryCode
@@ -1307,8 +1318,16 @@ class ChannelPartners extends Component<Props, States> {
                                                 inputProps={{
                                                   name: "mobilenumber",
                                                   required: true,
+                                                  maxLength:
+                                                    process.env
+                                                      .REACT_APP_STAGE ===
+                                                      "DEV" ||
+                                                    process.env
+                                                      .REACT_APP_STAGE === "INT"
+                                                      ? 12
+                                                      : 11,
                                                 }}
-                                                country={"mw"}
+                                                country={countryCodeLower}
                                                 value={item.mobilenumber}
                                                 onChange={(value, e) =>
                                                   this.handleChange(
@@ -1319,7 +1338,9 @@ class ChannelPartners extends Component<Props, States> {
                                                     value
                                                   )
                                                 }
-                                                onlyCountries={["mw"]}
+                                                onlyCountries={[
+                                                  countryCodeLower,
+                                                ]}
                                                 autoFormat
                                                 disableDropdown
                                                 disableCountryCode
