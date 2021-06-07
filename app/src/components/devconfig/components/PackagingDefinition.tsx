@@ -8,6 +8,8 @@ import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 
 import { addPackagingDefinitionInputList } from "../../../redux/actions";
+import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
+import { handledropdownoption } from "../../../utility/helper";
 
 interface IPackagingDefinitionProps {
   packagingdefinition: any;
@@ -86,18 +88,17 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const handleDropdownChange = (event: any, index: any, data: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    activeButton ===data.productcategory&& list.map((val: any, i: number) => {
-      if (
-       
-        val.productcategory === data.productcategory &&
-        val.packaginghierarchylevel === data.packaginghierarchylevel
-      ) {
-        list[i].parentpackage = value;
-        setInputList(list);
-        setValSelected(event.target.value);
-      }
-    });
-  
+    activeButton === data.productcategory &&
+      list.map((val: any, i: number) => {
+        if (
+          val.productcategory === data.productcategory &&
+          val.packaginghierarchylevel === data.packaginghierarchylevel
+        ) {
+          list[i].parentpackage = value;
+          setInputList(list);
+          setValSelected(event.target.value);
+        }
+      });
   };
 
   /**
@@ -111,6 +112,9 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const inputListData = inputList
     .filter((pc: any) => pc.productcategory == activeButton)
     .map((item: any, idx: number) => item);
+
+  const parentpackageOptions = handledropdownoption(inputListData, "packaginghierarchyname");
+
   return (
     <div className="col-md-10">
       <div className="container">
@@ -211,20 +215,6 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                           </td>
 
                           <td className="tablebtnStyle">
-                            {/* {idx === inputListData.length - 1 ? (
-                              <img
-                                style={{ width: "50px", height: "50px" }}
-                                src={AddBtn}
-                                onClick={() => handleAddClick(idx)}
-                              />
-                            ) : (
-                              <img
-                                style={{ width: "50px", height: "50px" }}
-                                src={RemoveBtn}
-                                onClick={() => handleRemoveClick(idx, item)}
-                              />
-                            )} */}
-
                             {idx === inputListData.length - 1 ? (
                               (() => {
                                 if (

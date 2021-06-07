@@ -214,4 +214,12 @@ input:read-only {
     height: 640px;
     background: white !important;
   }
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl {
+    max-width: 1250px;
+  }
 }

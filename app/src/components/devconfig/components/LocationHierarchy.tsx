@@ -140,8 +140,8 @@ const LocationHierarchy = (props: ILocationProps) => {
                       </td>
 
                       <td className="tableHeaderStyle">
-                        <select
-                          defaultValue="NA"
+                        {/* <select
+                          defaultValue="NAA"
                           name="parentlocation"
                           data-id={idx}
                           className="dpstyle selectoutline label"
@@ -162,35 +162,26 @@ const LocationHierarchy = (props: ILocationProps) => {
                                   </option>
                                 )
                             )}
-                        </select>
+                        </select> */}
 
-                        {/* <ConfigSelect
+                        <ConfigSelect
                           defaultValue="NA"
                           name="parentlocation"
                           options={LocationDetailsOption}
                           handleChange={(event: any) =>
                             handleDropdownChange(event, idx)
                           }
-                          value={item.parentlocation}
+                          value={
+                            item.parentlocation === -1
+                              ? "NA"
+                              : item.parentlocation
+                          }
                           isPlaceholder
                           parentIndex={idx}
-                        /> */}
+                          locationHierarchySelected={true}
+                        />
                       </td>
                       <td className="tablebtnStyle">
-                        {/* {idx === inputList.length - 1 ? (
-                          <img
-                            style={{ width: "50px", height: "50px" }}
-                            src={AddBtn}
-                            onClick={() => handleAddClick(idx)}
-                          />
-                        ) : (
-                          <img
-                            style={{ width: "50px", height: "50px" }}
-                            src={RemoveBtn}
-                            onClick={() => handleRemoveClick(idx)}
-                          />
-                        )} */}
-
                         {idx === inputList.length - 1 ? (
                           (() => {
                             if (idx === 0 && idx === inputList.length - 1) {

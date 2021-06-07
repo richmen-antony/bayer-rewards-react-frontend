@@ -6,6 +6,8 @@ import minus from "../../../assets/icons/minus.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addRoleInputList } from "../../../redux/actions";
+import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
+import { handledropdownoption } from "../../../utility/helper";
 
 interface IRoleProps {
   role: any;
@@ -14,6 +16,10 @@ interface IRoleProps {
   isValidNext: boolean;
   getValidation: () => void;
 }
+const roleTypeOptions = [
+  { value: "INTERNAL", text: "INTERNAL" },
+  { value: "EXTERNAL", text: "EXTERNAL" },
+];
 
 export const RoleHierarchy = (props: IRoleProps) => {
   const { inputList, setInputList, isValidNext, getValidation } = props;
@@ -23,18 +29,22 @@ export const RoleHierarchy = (props: IRoleProps) => {
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
-    if(value){
-      const isDuplicate= list.find((duplicate :any)=> duplicate[name].toLowerCase() === value.toLowerCase());
-      if(isDuplicate){
-        list[index][name+"IsDuplicate"]=true;
-      }else{
-        list[index][name+"IsDuplicate"]=false;
+    if (value) {
+      const isDuplicate = list.find(
+        (duplicate: any) =>
+          duplicate[name].toLowerCase() === value.toLowerCase()
+      );
+      if (isDuplicate) {
+        list[index][name + "IsDuplicate"] = true;
+      } else {
+        list[index][name + "IsDuplicate"] = false;
       }
     }
     list[index][name] = value;
     setInputList(list);
     getValidation();
   };
+  console.log("inputlist : ", inputList);
 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
@@ -49,7 +59,12 @@ export const RoleHierarchy = (props: IRoleProps) => {
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
-    if (data.rolehierarchyname && data.rolecode && !data.rolehierarchynameIsDuplicate&& !data.rolecodeIsDuplicate) {
+    if (
+      data.rolehierarchyname &&
+      data.rolecode &&
+      !data.rolehierarchynameIsDuplicate &&
+      !data.rolecodeIsDuplicate
+    ) {
       setInputList([
         ...inputList,
         {
@@ -88,11 +103,15 @@ export const RoleHierarchy = (props: IRoleProps) => {
           listItem.parentrole >= index
             ? listItem.parentrole - 1
             : listItem.parentrole,
-        // parentrole : listItem.parentrole === index ? -1 : listItem.parentrole > index ? listItem.parentrole-1 : listItem.parentrole
+
+        // rolehierarchylevel: idx,
+        // parentrole: idx >= index ? list[idx - 1].parentrole : listItem.parentrole,
       };
     });
     return newList;
   };
+
+  const roleOptions = handledropdownoption(inputList, "rolecode");
 
   return (
     <div className="col-md-10">
@@ -128,9 +147,9 @@ export const RoleHierarchy = (props: IRoleProps) => {
                             {"Please enter Role Code"}{" "}
                           </span>
                         )}
-                        {item?.rolecodeIsDuplicate && isValidNext&& (
+                        {item?.rolecodeIsDuplicate && isValidNext && (
                           <span className="error">
-                            {item.rolecode + ' is unavailable'}
+                            {item.rolecode + " is unavailable"}
                           </span>
                         )}
                       </td>
@@ -147,14 +166,14 @@ export const RoleHierarchy = (props: IRoleProps) => {
                             {"Please enter Role Hierarchy"}
                           </span>
                         )}
-                         {item?.rolehierarchynameIsDuplicate && (
+                        {item?.rolehierarchynameIsDuplicate && (
                           <span className="error">
-                            {item.rolehierarchyname + ' is unavailable'}
+                            {item.rolehierarchyname + " is unavailable"}
                           </span>
                         )}
                       </td>
                       <td className="tableHeaderStyle">
-                        <select
+                        {/* <select
                           className="dpstyle selectoutline label"
                           name="roletype"
                           id="dropdown"
@@ -169,17 +188,21 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           <option value="EXTERNAL" key="EXTERNAL">
                             EXTERNAL
                           </option>
-                          {/* {idx > 0 && this.state.dpList.length > 0 && (
-                          this.state.dpList.map(({ locationhierarchy }) => (
-                            <option value={locationhierarchy} key={locationhierarchy}>
-                              {locationhierarchy}
-                            </option>
-                          ))
-                        )} */}
-                        </select>
+                        </select> */}
+
+                        <ConfigSelect
+                          name="roletype"
+                          options={roleTypeOptions}
+                          handleChange={(event: any) =>
+                            handleDropdownRoleChange(event, idx)
+                          }
+                          value={item.roletype}
+                          isPlaceholder
+                          commonSelectType={true}
+                        />
                       </td>
                       <td className="tableHeaderStyle">
-                        <select
+                        {/* <select
                           className="dpstyle selectoutline label"
                           name="parentrole"
                           id="dropdown"
@@ -199,24 +222,26 @@ export const RoleHierarchy = (props: IRoleProps) => {
                                   </option>
                                 )
                             )}
-                        </select>
+                        </select> */}
+
+                        <ConfigSelect
+                          defaultValue="NONE"
+                          name="parentrole"
+                          options={roleOptions}
+                          handleChange={(event: any) =>
+                            handleDropdownChange(event, idx)
+                          }
+                          value={
+                            item.parentrole === "NONE"
+                              ? "NONE"
+                              : item.parentrole
+                          }
+                          isPlaceholder
+                          parentIndex={idx}
+                        />
                       </td>
 
                       <td className="tablebtnStyle">
-                        {/* {idx === inputList.length - 1 ? (
-                          <img
-                            style={{ width: "50px", height: "50px" }}
-                            src={AddBtn}
-                            onClick={() => handleAddClick(idx)}
-                          />
-                        ) : (
-                          <img
-                            style={{ width: "50px", height: "50px" }}
-                            src={RemoveBtn}
-                            onClick={() => handleRemoveClick(idx)}
-                          />
-                        )} */}
-
                         {idx === inputList.length - 1 ? (
                           (() => {
                             if (idx === 0 && idx === inputList.length - 1) {
