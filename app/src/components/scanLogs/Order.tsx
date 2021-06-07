@@ -323,15 +323,13 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       </td>
                       <td className="text-center">
                         <span className="orderedquantity">
-                          {_.sumBy(data.products_ordered, "orderedquantity")}
+                          {data.totalorderedquantity}
                         </span>
                       </td>
                       <td>
                         <span className="productprice">
                           {"MK " +
-                            _.sumBy(data.products_ordered, (item: any) =>
-                              Number(item.productprice)
-                            )}
+                            data.totalcost}
                         </span>
                       </td>
                       <td></td>

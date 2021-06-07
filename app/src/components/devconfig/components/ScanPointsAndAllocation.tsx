@@ -1,12 +1,117 @@
 import React, { useState, useEffect } from "react";
 import "../../devconfig/devconfig.scss";
-import plus_icon from "../../../assets/icons/plus_icon.svg";
-import minus from "../../../assets/icons/minus.svg";
 import { connect } from "react-redux";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import _ from "lodash";
 import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
+import {
+  createStyles,
+  makeStyles,
+  useTheme,
+  Theme,
+  withStyles,
+} from "@material-ui/core/styles";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import ListItemText from "@material-ui/core/ListItemText";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import InputBase from '@material-ui/core/InputBase';
+
+
+
+const BootstrapInput = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      'label + &': {
+        marginTop: theme.spacing(3),
+      },
+    },
+    input: {
+      borderRadius: 4,
+      position: 'relative',
+      backgroundColor: theme.palette.background.paper,
+      border: '1px solid #ced4da',
+      fontSize: 16,
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#80bdff',
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+      },
+    },
+  }),
+)(InputBase);
+
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formControl: {
+      // margin: theme.spacing(1),
+      minWidth: 175,
+      maxWidth: 300,
+      marginTop: -12,
+    },
+    chips: {
+      display: "flex",
+      flexWrap: "wrap",
+    },
+    chip: {
+      margin: 2,
+    },
+    noLabel: {
+      marginTop: theme.spacing(3),
+    },
+  })
+);
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = [
+  "Oliver Hansen",
+  "Van Henry",
+  "April Tucker",
+  "Ralph Hubbard",
+  "Omar Alexander",
+  "Carlos Abbott",
+  "Miriam Wagner",
+  "Bradley Wilkerson",
+  "Virginia Andrews",
+  "Kelly Snyder",
+];
+
+function getStyles(name: string, packageLevelName: string[], theme: Theme) {
+  return {
+    fontWeight:
+      packageLevelName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
 
 interface IScanPointsAndAllocationProps {
   scanpointsandallocation: any;
@@ -22,12 +127,22 @@ export const ScanPointsAndAllocation = (
     scanpointsandallocation: { inputList },
     setInputList,
   } = props;
+  console.log({inputList})
   const [valSelected, setValSelected] = useState("NA");
+  const classes = useStyles();
+  const theme = useTheme();
+  const [packageLevelName, setPackageDropdown] = React.useState<string[]>([]);
+  const [packageLevelList,setPackageLevelList]=React.useState<string[]>([]);
 
-  const paackaginglevelList = _.uniqBy(
+
+  const paackaginglevelList =props.packagingdefinition?.inputList?.length>0&&_.uniqBy(
     props.packagingdefinition.inputList,
     "packaginghierarchyname"
   );
+  const packageLevelOption=paackaginglevelList?.length>0&&paackaginglevelList.map((value:any)=>{ return (value.packaginghierarchyname&& value.packaginghierarchyname)});
+   console.log({packageLevelOption,paackaginglevelList})
+  
+   
 
   // handle input change
   const handleInputChange = (e: any, index: any) => {
@@ -92,7 +207,7 @@ export const ScanPointsAndAllocation = (
   const handlePackaginglevelChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].packaginglevel = value;
+    list[index].packaginglevel = value.join(",");
     setInputList(list);
     setValSelected(event.target.value);
   };
@@ -105,8 +220,31 @@ export const ScanPointsAndAllocation = (
     setInputList(list);
     setValSelected(event.target.value);
   };
+ 
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>,i:number) => {
+    console.log("calue",event.target.value);
+    setPackageDropdown(event.target.value as string[]);
+    handlePackaginglevelChange(event,i)
+  };
 
-  // props.packagingdefinition.inputList
+  const handleChangeMultiple = (
+    event: React.ChangeEvent<{ value: unknown }>
+  ) => {
+    const { options } = event.target as HTMLSelectElement;
+    const value: string[] = [];
+    for (let i = 0, l = options.length; i < l; i += 1) {
+      if (options[i].selected) {
+        value.push(options[i].value);
+      }
+    }
+    setPackageDropdown(value);
+  };
+  useEffect(() => {
+    if(packageLevelOption){
+      setPackageLevelList(packageLevelOption)
+    }
+  },[]);
+  console.log({packageLevelList,packageLevelName})
   return (
     <div className="col-md-12">
       <div className="container">
@@ -206,7 +344,7 @@ export const ScanPointsAndAllocation = (
                       </select>
                     </td>
                     <td className="tableHeaderStyle">
-                      <select
+                      {/* <select
                         className="dpstyle selectoutline label"
                         id="dropdown"
                         name="packaginglevel"
@@ -215,12 +353,6 @@ export const ScanPointsAndAllocation = (
                           handlePackaginglevelChange(event, idx)
                         }
                       >
-                        {/* <option value="SKU" key="SKU">
-                          SKU
-                        </option>
-                        <option value="PalletBox" key="PalletBox">
-                          Pallet, Box
-                        </option> */}
                         {paackaginglevelList.length > 0 &&
                           paackaginglevelList.map(
                             ({ packaginghierarchyname }: any) => (
@@ -232,7 +364,37 @@ export const ScanPointsAndAllocation = (
                               </option>
                             )
                           )}{" "}
-                      </select>
+                      </select> */}
+                      <FormControl className={classes.formControl}>
+                        <Select
+                          labelId="demo-mutiple-checkbox-label"
+                          id="demo-mutiple-checkbox"
+                          multiple
+                          value={item.packaginglevel.split(",")}
+                          onChange={(e:any)=>handleChange(e,idx)}
+                          input={<BootstrapInput />}
+                          renderValue={(selected) =>
+                            (selected as string[]).join(", ")
+                          }
+                          MenuProps={MenuProps}
+                          
+                        >
+                          {packageLevelList.length > 0 &&
+                          packageLevelList.map((packaginghierarchyname:any) => {
+                            // let trimString= item.packaginglevel.replace(/ +/g, "");;
+                            return (
+                              <MenuItem key={packaginghierarchyname} value={packaginghierarchyname}>
+                              <Checkbox
+                                checked={item.packaginglevel.trim().split(",").indexOf(packaginghierarchyname) > -1}
+                              />
+                              <ListItemText primary={packaginghierarchyname} />
+                            </MenuItem>
+                            )
+                          }
+                            
+                          )}
+                        </Select>
+                      </FormControl>
                     </td>
 
                     <td className="tableHeaderStyle">

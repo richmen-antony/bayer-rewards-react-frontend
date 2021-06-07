@@ -373,9 +373,8 @@ class ScanLogsTable extends Component<Props, States> {
     }
   };
 
-  resetFilter = (e: any) => {
+  resetFilter = (e?: any) => {
     let today = new Date();
-    e.stopPropagation();
     this.setState(
       {
         selectedFilters: {
@@ -400,29 +399,26 @@ class ScanLogsTable extends Component<Props, States> {
     this.setState({ isFiltered: true }, () => {
       this.getScanLogs();
       this.toggleFilter();
+      this.resetFilter()
     });
   };
   previous = (pageNo: any) => {
-    // this.setState(prevState => ({
-    //     pageNo: prevState.pageNo-1
-    // }),()=>{
-    // });
-    this.setState({ pageNo: pageNo - 1 });
-    setTimeout(() => {
-      // this.getScanLogs();
-    }, 0);
+    this.setState({ pageNo: pageNo - 1 },()=>{
+      this.getScanLogs();
+    });
+  
   };
   next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 });
-    setTimeout(() => {
-      // this.getScanLogs();
-    }, 0);
+    this.setState({ pageNo: pageNo + 1 },()=>{
+      this.getScanLogs();
+    });
+    
   };
   pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number });
-    setTimeout(() => {
-      // this.getScanLogs();
-    }, 0);
+    this.setState({ pageNo: number },()=>{
+      this.getScanLogs();
+    });
+    
   };
 
   toggle = () => {
@@ -444,16 +440,16 @@ class ScanLogsTable extends Component<Props, States> {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value });
-      setTimeout(() => {
-        //this.getScanLogs();
-      }, 2000);
+      this.setState({ rowsPerPage: value },()=>{
+        this.getScanLogs();
+      });
+     
     } else if (e.target.name === "gotopage") {
       value = e.target.value;
-      this.setState({ pageNo: value });
-      setTimeout(() => {
-        //this.getScanLogs();
-      }, 2000);
+      this.setState({ pageNo: value },()=>{
+        this.getScanLogs();
+      });
+      
     }
   };
   download = () => {
@@ -465,7 +461,23 @@ class ScanLogsTable extends Component<Props, States> {
       isfiltered: this.state.isFiltered,
     };
     if (this.state.isFiltered) {
-      data = { ...data, ...this.state.selectedFilters };
+      let filter= {...this.state.selectedFilters};
+      filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
+        "YYYY-MM-DD"
+      );
+      filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
+      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format(
+        "YYYY-MM-DD"
+      );
+      filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
+        "YYYY-MM-DD"
+      );
+      filter.productgroup = filter.productgroup==="ALL" ? null :filter.productgroup;
+      filter.farmer = filter.farmer==="ALL" ? null :filter.farmer;
+      filter.retailer = filter.retailer==="ALL" ? null :filter.retailer;
+      filter.status = filter.status==="ALL" ? null :filter.status;
+
+      data = { ...data, ...filter };
     }
     invokeGetAuthService(downloadScanlogs, data)
       .then((response) => {
@@ -797,6 +809,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
+                                  maxDate={new Date()}
                                 />
                               </div>
                             </div>
@@ -842,6 +855,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
+                                  maxDate={new Date()}
                                 />
                               </div>
                             </div>
@@ -948,7 +962,7 @@ class ScanLogsTable extends Component<Props, States> {
                         ) : null}
                       </th>
                       <th
-                        style={{ width: "14%" }}
+                        style={{ width: "14%",textAlign:"center" }}
                         onClick={(e) =>
                           this.handleSort(
                             e,
@@ -958,7 +972,7 @@ class ScanLogsTable extends Component<Props, States> {
                           )
                         }
                       >
-                        PRODUCT SOLD
+                        INTENDED QTY
                         {this.tableCellIndex === 2 ? (
                           <i
                             className={`fas ${
@@ -968,7 +982,7 @@ class ScanLogsTable extends Component<Props, States> {
                         ) : null}
                       </th>
                       <th
-                        style={{ width: "13%" }}
+                        style={{ width: "13%" ,textAlign:"center"}}
                         onClick={(e) =>
                           this.handleSort(
                             e,
@@ -1058,7 +1072,7 @@ class ScanLogsTable extends Component<Props, States> {
                           )
                         }
                       >
-                        UPDATED BY
+                        UPDATED DATE
                         {this.tableCellIndex === 8 ? (
                           <i
                             className={`fas ${
@@ -1138,9 +1152,9 @@ class ScanLogsTable extends Component<Props, States> {
                                 {_.startCase(_.toLower(value.orderstatus))}
                               </span>
                             </td>
-                            <td>
+                            <td> 
                               {moment(value.lastupdateddate).format(
-                                "DD-MM-YYYY"
+                                "DD/MM/YYYY"
                               )}
                               <img className="max-image" src={maxImg} />
                             </td>
