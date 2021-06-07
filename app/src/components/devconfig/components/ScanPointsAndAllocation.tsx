@@ -241,7 +241,7 @@ export const ScanPointsAndAllocation = (
                       />
                     </td>
                     <td className="tableHeaderStyle">
-                      {/* <select
+                      <select
                         className="dpstyle selectoutline label"
                         id="dropdown"
                         name="packaginglevel"
@@ -261,9 +261,9 @@ export const ScanPointsAndAllocation = (
                               </option>
                             )
                           )}{" "}
-                      </select> */}
+                      </select>
 
-                      <ConfigSelect
+                      {/* <ConfigSelect
                         name="packaginglevel"
                         options={packaginglevelOptions}
                         handleChange={(event: any) =>
@@ -272,7 +272,7 @@ export const ScanPointsAndAllocation = (
                         value={item.packaginglevel}
                         isPlaceholder
                         commonSelectType={true}
-                      />
+                      /> */}
                     </td>
 
                     <td className="tableHeaderStyle">
