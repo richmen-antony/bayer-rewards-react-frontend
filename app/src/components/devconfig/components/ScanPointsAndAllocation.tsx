@@ -18,7 +18,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import InputBase from '@material-ui/core/InputBase';
-
+import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
+import { handledropdownoption } from "../../../utility/helper";
 
 
 const BootstrapInput = withStyles((theme: Theme) =>
@@ -113,12 +114,24 @@ function getStyles(name: string, packageLevelName: string[], theme: Theme) {
   };
 }
 
+
 interface IScanPointsAndAllocationProps {
   scanpointsandallocation: any;
   setInputList: (data: any) => void;
   tntflow: any;
   packagingdefinition: any;
 }
+const scanTypeOptions = [
+  { value: "NA", text: "NA" },
+  { value: "ADVISOR", text: "ADVISOR" },
+  { value: "WALKIN", text: "WALKIN" },
+  { value: "SEND GOODS", text: "SEND GOODS" },
+];
+
+const pointallocatedOptions = [
+  { value: "true", text: "YES" },
+  { value: "false", text: "NO" },
+];
 
 export const ScanPointsAndAllocation = (
   props: IScanPointsAndAllocationProps
@@ -245,6 +258,16 @@ export const ScanPointsAndAllocation = (
     }
   },[]);
   console.log({packageLevelList,packageLevelName})
+  const packaginglevelOptions = handledropdownoption(
+    paackaginglevelList,
+    "packaginghierarchyname"
+  );
+
+  const positionOptions = handledropdownoption(
+    props.tntflow.inputList,
+    "position"
+  );
+
   return (
     <div className="col-md-12">
       <div className="container">
@@ -265,7 +288,7 @@ export const ScanPointsAndAllocation = (
                 {inputList.map((item: any, idx: number) => (
                   <tr id="addr0" key={idx}>
                     <td className="tableHeaderStyle">
-                      <select
+                      {/* <select
                         className="dpstyle selectoutline label"
                         id="dropdown"
                         name="position"
@@ -274,46 +297,55 @@ export const ScanPointsAndAllocation = (
                           handleDropdownPostionChange(event, idx)
                         }
                       >
-                        {/* <option value="Plant" key="Plant">
-                          Plant
-                        </option>
-                        <option value="Warehouse" key="Warehouse">
-                          Warehouse
-                        </option> */}
-
                         {props.tntflow.inputList.length > 0 &&
                           props.tntflow.inputList.map(({ position }: any) => (
                             <option value={position} key={position}>
                               {position}
                             </option>
                           ))}
-                      </select>
+                      </select> */}
+
+                      <ConfigSelect
+                        name="position"
+                        options={positionOptions}
+                        handleChange={(event: any) =>
+                          handleDropdownPostionChange(event, idx)
+                        }
+                        value={item.position}
+                        isPlaceholder
+                        commonSelectType={true}
+                      />
                     </td>
                     <td className="tableHeaderStyle">
-                      <select
+                      {/* <select
                         className="dpstyle selectoutline label"
                         id="dropdown"
                         name="scannedby"
                         value={item.scannedby}
                         onChange={(event) => handleScannedbyChange(event, idx)}
                       >
-                        {/* <option value="Plant" key="Plant">
-                          Plant
-                        </option>
-                        <option value="Warehouse" key="Warehouse">
-                          Warehouse
-                        </option> */}
                         {props.tntflow.inputList.length > 0 &&
                           props.tntflow.inputList.map(({ position }: any) => (
                             <option value={position} key={position}>
                               {position}
                             </option>
                           ))}
-                      </select>
+                      </select> */}
+
+                      <ConfigSelect
+                        name="scannedby"
+                        options={positionOptions}
+                        handleChange={(event: any) =>
+                          handleScannedbyChange(event, idx)
+                        }
+                        value={item.scannedby}
+                        isPlaceholder
+                        commonSelectType={true}
+                      />
                     </td>
 
                     <td className="tableHeaderStyle">
-                      <select
+                      {/* <select
                         className="dpstyle selectoutline label"
                         id="dropdown"
                         name="scantype"
@@ -334,14 +366,18 @@ export const ScanPointsAndAllocation = (
                         <option value="DISTRIBUTOR" key="DISTRIBUTOR">
                           SEND GOODS
                         </option>
-                        {/* {idx > 0 && this.state.dpList.length > 0 && (
-                          this.state.dpList.map(({ locationhierarchy }) => (
-                            <option value={locationhierarchy} key={locationhierarchy}>
-                              {locationhierarchy}
-                            </option>
-                          ))
-                        )} */}
-                      </select>
+                      </select> */}
+
+                      <ConfigSelect
+                        name="scantype"
+                        options={scanTypeOptions}
+                        handleChange={(event: any) =>
+                          handleScannedtypeChange(event, idx)
+                        }
+                        value={item.scantype}
+                        isPlaceholder
+                        commonSelectType={true}
+                      />
                     </td>
                     <td className="tableHeaderStyle">
                       {/* <select
@@ -364,7 +400,18 @@ export const ScanPointsAndAllocation = (
                               </option>
                             )
                           )}{" "}
-                      </select> */}
+                      </select>
+
+                      {/* <ConfigSelect
+                        name="packaginglevel"
+                        options={packaginglevelOptions}
+                        handleChange={(event: any) =>
+                          handlePackaginglevelChange(event, idx)
+                        }
+                        value={item.packaginglevel}
+                        isPlaceholder
+                        commonSelectType={true}
+                      /> */}
                       <FormControl className={classes.formControl}>
                         <Select
                           labelId="demo-mutiple-checkbox-label"
@@ -398,7 +445,7 @@ export const ScanPointsAndAllocation = (
                     </td>
 
                     <td className="tableHeaderStyle">
-                      <select
+                      {/* <select
                         className="dpstyle selectoutline label"
                         id="dropdown"
                         name="pointallocated"
@@ -413,23 +460,20 @@ export const ScanPointsAndAllocation = (
                         <option value="false" key="NO">
                           NO
                         </option>
-                      </select>
+                      </select> */}
+
+                      <ConfigSelect
+                        name="scantype"
+                        options={pointallocatedOptions}
+                        handleChange={(event: any) =>
+                          handlePointsallocatedChange(event, idx)
+                        }
+                        value={item.pointallocated}
+                        isPlaceholder
+                        commonSelectType={true}
+                      />
                     </td>
                     <td className="tablebtnStyle">
-                      {/* {idx === inputList.length - 1 ? (
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={AddBtn}
-                          onClick={() => handleAddClick(idx)}
-                        />
-                      ) : (
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          src={RemoveBtn}
-                          onClick={() => handleRemoveClick(idx)}
-                        />
-                      )} */}
-
                       {idx === inputList.length - 1 ? (
                         (() => {
                           if (idx === 0 && idx === inputList.length - 1) {

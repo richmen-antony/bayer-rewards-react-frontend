@@ -25,6 +25,8 @@ export interface DropdownProps {
   isDisabled?: boolean;
   isNative?: boolean;
   parentIndex?: any;
+  locationHierarchySelected?: any;
+  commonSelectType?: any;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,9 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     formControl: {
-      margin: "0px !important",
       minWidth: 215,
       maxHeight: 100,
+      marginTop: -10,
     },
     selectEmpty: {
       marginTop: theme.spacing(2),
@@ -98,6 +100,8 @@ export const ConfigSelect = ({
   isDisabled,
   isNative,
   parentIndex,
+  locationHierarchySelected,
+  commonSelectType,
   ...props
 }: DropdownProps) => {
   const classes = useStyles();
@@ -121,7 +125,7 @@ export const ConfigSelect = ({
           native={isNative ? true : false}
         >
           {isPlaceholder && !isNative && parentIndex === 0 ? (
-            <MenuItem value="NA" key="NA">
+            <MenuItem value={defaultValue} key={defaultValue}>
               {defaultValue}
             </MenuItem>
           ) : (
@@ -133,10 +137,28 @@ export const ConfigSelect = ({
           {options &&
             options.map((person: any, index: number) =>
               !isNative ? (
-                index < parentIndex && (
-                  <MenuItem key={person.value} value={index}>
+                commonSelectType === true ? (
+                  <MenuItem
+                    key={person.value}
+                    value={
+                      locationHierarchySelected === true ? index : person.value
+                    }
+                  >
                     {person.text}
                   </MenuItem>
+                ) : (
+                  index < parentIndex && (
+                    <MenuItem
+                      key={person.value}
+                      value={
+                        locationHierarchySelected === true
+                          ? index
+                          : person.value
+                      }
+                    >
+                      {person.text}
+                    </MenuItem>
+                  )
                 )
               ) : (
                 <option key={person.value} value={person.value}>

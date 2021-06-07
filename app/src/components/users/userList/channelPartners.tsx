@@ -1053,9 +1053,9 @@ class ChannelPartners extends Component<Props, States> {
                                                 maxLength:
                                                   process.env
                                                     .REACT_APP_STAGE ===
-                                                    "DEV" ||
+                                                    "dev" ||
                                                   process.env
-                                                    .REACT_APP_STAGE === "INT"
+                                                    .REACT_APP_STAGE === "int"
                                                     ? 12
                                                     : 11,
                                               }}
@@ -1321,9 +1321,9 @@ class ChannelPartners extends Component<Props, States> {
                                                   maxLength:
                                                     process.env
                                                       .REACT_APP_STAGE ===
-                                                      "DEV" ||
+                                                      "dev" ||
                                                     process.env
-                                                      .REACT_APP_STAGE === "INT"
+                                                      .REACT_APP_STAGE === "int"
                                                       ? 12
                                                       : 11,
                                                 }}

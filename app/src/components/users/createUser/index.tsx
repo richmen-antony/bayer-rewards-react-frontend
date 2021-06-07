@@ -994,7 +994,9 @@ class CreateUser extends Component<any, any> {
 
         if (userInfo.mobilenumber) {
           errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+            userInfo.mobilenumber.length == 9 || 10
+              ? ""
+              : "Please enter 9 Digit";
         } else {
           errObj.mobilenumberErr = "Please enter the mobile number";
         }
@@ -1030,7 +1032,9 @@ class CreateUser extends Component<any, any> {
 
         if (userInfo.mobilenumber) {
           errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+            userInfo.mobilenumber.length == 9 || 10
+              ? ""
+              : "Please enter 9 Digit";
         } else {
           errObj.mobilenumberErr = "Please enter the mobile number";
         }
@@ -1276,7 +1280,7 @@ class CreateUser extends Component<any, any> {
       if (key === "phone") {
         if (val) {
           owners[idx].errObj.mobilenumberErr =
-            val.length == 9 ? "" : "Please enter 9 Digit";
+            val.length == 9 || 10 ? "" : "Please enter 9 Digit";
         } else {
           owners[idx].errObj.mobilenumberErr = "Please enter the mobile number";
         }
@@ -1300,7 +1304,7 @@ class CreateUser extends Component<any, any> {
         staffs[idx]["mobilenumber"] = val;
         if (val) {
           staffs[idx].errObj.mobilenumberErr =
-            val.length == 9 ? "" : "Please enter 9 Digit";
+            val.length == 9 || 10 ? "" : "Please enter 9 Digit";
         } else {
           staffs[idx].errObj.mobilenumberErr = "Please enter the mobile number";
         }
@@ -1693,9 +1697,9 @@ class CreateUser extends Component<any, any> {
                                               required: true,
                                               maxLength:
                                                 process.env.REACT_APP_STAGE ===
-                                                  "DEV" ||
+                                                  "dev" ||
                                                 process.env.REACT_APP_STAGE ===
-                                                  "INT"
+                                                  "int"
                                                   ? 12
                                                   : 11,
                                             }}
@@ -1972,9 +1976,9 @@ class CreateUser extends Component<any, any> {
                                                 maxLength:
                                                   process.env
                                                     .REACT_APP_STAGE ===
-                                                    "DEV" ||
+                                                    "dev" ||
                                                   process.env
-                                                    .REACT_APP_STAGE === "INT"
+                                                    .REACT_APP_STAGE === "int"
                                                     ? 12
                                                     : 11,
                                               }}
