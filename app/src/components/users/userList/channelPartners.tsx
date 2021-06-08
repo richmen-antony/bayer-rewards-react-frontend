@@ -388,7 +388,7 @@ class ChannelPartners extends Component<Props, States> {
                 firstnameErr: "",
                 lastnameErr: "",
                 mobilenumberErr: "",
-                isPhoneEdit: staffInfo.mobilenumber ? false : true
+                isPhoneEdit: staffInfo.mobilenumber ? false : true,
               },
             };
             staffInfo = Object.assign(staffInfo, errObjd);
@@ -402,8 +402,6 @@ class ChannelPartners extends Component<Props, States> {
       }
     );
   };
-
- 
 
   dateValidation = (e: any) => {
     this.setState({ isValidateSuccess: false });
@@ -432,24 +430,22 @@ class ChannelPartners extends Component<Props, States> {
     let newUserList = JSON.parse(JSON.stringify(this.state.userData));
     // let newUserList = [...this.state.userData];
     let formValid = this.checkValidation();
-    if(formValid) {
-
-    if (this.state.isStaff) {
-      newUserList.staffdetails.map((item: any, index: number) => {
-        delete item.errObj;
-      });
-     
-    } else {
-      newUserList.staffdetails = [];
-      this.setState((prevState: any) => ({
-        userData: {
-          ...prevState.userData,
-          staffdetails: newUserList.staffdetails,
-        },
-      }));
-    }
-    this.setState({ isLoader: true });
-    let userData = this.state.userList;
+    if (formValid) {
+      if (this.state.isStaff) {
+        newUserList.staffdetails.map((item: any, index: number) => {
+          delete item.errObj;
+        });
+      } else {
+        newUserList.staffdetails = [];
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            staffdetails: newUserList.staffdetails,
+          },
+        }));
+      }
+      this.setState({ isLoader: true });
+      let userData = this.state.userList;
 
     let data = {
       countrycode: getStoreData.countryCode,
@@ -493,27 +489,27 @@ class ChannelPartners extends Component<Props, States> {
       lastupdateddate: new Date().toJSON(),
     };
 
-    invokePostAuthService(updateUser, data, userDetails)
-      .then((response: any) => {
-        this.setState({
-          isLoader: false,
+      invokePostAuthService(updateUser, data, userDetails)
+        .then((response: any) => {
+          this.setState({
+            isLoader: false,
+          });
+          // toastSuccess("User Updated Successfully");
+          Alert("success", "User Updated Successfully");
+          this.handleClosePopup();
+          this.props.callAPI();
+        })
+        .catch((error: any) => {
+          this.setState({ isLoader: false });
+          let message = error.message;
+          if (message === "Retailer with the same Mobilenumber exists") {
+            message = "User with same Mobilenumber exists";
+          }
+          this.setState({ isRendered: true, staffPopup: false }, () => {
+            // toastInfo(message);
+            Alert("info", message);
+          });
         });
-        // toastSuccess("User Updated Successfully");
-        Alert("success", "User Updated Successfully");
-        this.handleClosePopup();
-        this.props.callAPI();
-      })
-      .catch((error: any) => {
-        this.setState({ isLoader: false });
-        let message = error.message;
-        if (message === "Retailer with the same Mobilenumber exists") {
-          message = "User with same Mobilenumber exists";
-        }
-        this.setState({ isRendered: true, staffPopup: false }, () => {
-          // toastInfo(message);
-          Alert("info", message);
-        });
-      });
     }
   };
 
@@ -597,8 +593,12 @@ class ChannelPartners extends Component<Props, States> {
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
-    const isOwnerPhoneEists = owners.filter((items: any)=> items.mobilenumber === val)
-    const isStaffPhoneEists = staffs.filter((items: any)=> items.mobilenumber === val);
+    const isOwnerPhoneEists = owners.filter(
+      (items: any) => items.mobilenumber === val
+    );
+    const isStaffPhoneEists = staffs.filter(
+      (items: any) => items.mobilenumber === val
+    );
     if (type === "owner") {
       let owners = this.state.userData.ownerRows;
       if (key === "phone") {
@@ -676,7 +676,7 @@ class ChannelPartners extends Component<Props, States> {
         lastnameErr: "",
         mobilenumberErr: "",
         emailErr: "",
-        isPhoneEdit:true
+        isPhoneEdit: true,
       },
     };
     let usersObj = this.state.userData;
@@ -714,7 +714,7 @@ class ChannelPartners extends Component<Props, States> {
           lastnameErr: "",
           mobilenumberErr: "",
           emailErr: "",
-          isPhoneEdit:true
+          isPhoneEdit: true,
         },
       });
     } else {
@@ -814,8 +814,8 @@ class ChannelPartners extends Component<Props, States> {
         firstNameErr: "",
         lastNameErr: "",
         emailNameErr: "",
-        mobilenumberErr:  userInfo.errObj.mobilenumberErr,
-        isPhoneEdit:  userInfo.errObj.isPhoneEdit ? true : false
+        mobilenumberErr: userInfo.errObj.mobilenumberErr,
+        isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
       };
       errObj.firstNameErr = userInfo.firstname
         ? ""
@@ -824,11 +824,17 @@ class ChannelPartners extends Component<Props, States> {
         ? ""
         : "Please enter the last Name";
 
-      if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
+      if (
+        userInfo.mobilenumber &&
+        errObj.mobilenumberErr !== "Phone Number Exists"
+      ) {
         errObj.mobilenumberErr =
         (userInfo.mobilenumber.length == phoneLength)? "" : "Please enter 9 Digit";
       } else {
-        errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+        errObj.mobilenumberErr =
+          errObj.mobilenumberErr == "Phone Number Exists"
+            ? errObj.mobilenumberErr
+            : "Please enter the mobile number";
       }
 
       userData.staffdetails[idx].errObj = errObj;

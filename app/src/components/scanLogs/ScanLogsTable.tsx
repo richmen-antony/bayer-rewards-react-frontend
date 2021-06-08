@@ -40,7 +40,8 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
-import { Alert } from "../../../utility/widgets/toaster";
+
+
 interface IProps {
   onChange?: any;
   placeholder?: any;
@@ -195,7 +196,7 @@ class ScanLogsTable extends Component<Props, States> {
       }
     );
   }
-  getRetailerList = () => {
+  getRetailerList = (condIf?: any) => {
     const { rsmRetailerList } = apiURL;
     const { selectedFilters } = this.state;
     let queryParams = {
@@ -204,6 +205,8 @@ class ScanLogsTable extends Component<Props, States> {
       retailerid:
         selectedFilters.retailer === "ALL" ? null : selectedFilters.retailer,
     };
+    let oneTimeUpdate =
+      selectedFilters.retailer !== "ALL" && condIf ? true : false;
     invokeGetAuthService(rsmRetailerList, queryParams)
       .then((response) => {
         if (response.data) {
@@ -214,16 +217,21 @@ class ScanLogsTable extends Component<Props, States> {
                   return { value: val.farmerid, text: val.farmername };
                 })
               : [];
+
           const retailerOptions =
             retailers?.length > 0
               ? retailers.map((val: any) => {
                   return { value: val.userid, text: val.username };
                 })
               : [];
+          const retailerList =
+            oneTimeUpdate && this.state.retailerOptions.length
+              ? this.state.retailerOptions
+              : retailerOptions;
           this.setState({
             isLoader: false,
             farmerOptions,
-            retailerOptions,
+            retailerOptions: retailerList,
           });
         }
       })
@@ -264,10 +272,11 @@ class ScanLogsTable extends Component<Props, States> {
         "YYYY-MM-DD"
       );
       filter.retailer = filterScan ? filterScan : filter.retailer;
-      filter.productgroup = filter.productgroup==="ALL" ? null :filter.productgroup;
-      filter.farmer = filter.farmer==="ALL" ? null :filter.farmer;
-      filter.retailer = filter.retailer==="ALL" ? null :filter.retailer;
-      filter.status = filter.status==="ALL" ? null :filter.status;
+      filter.productgroup =
+        filter.productgroup === "ALL" ? null : filter.productgroup;
+      filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
+      filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
+      filter.status = filter.status === "ALL" ? null : filter.status;
       data = { ...data, ...filter };
     }
 
@@ -282,8 +291,7 @@ class ScanLogsTable extends Component<Props, States> {
         this.setState({ totalData: Number(total) });
       })
       .catch((error) => {
-        this.setState({ isLoader: false, allScanLogs: [] },()=>{
-          console.log("allScanLogs",this.state.allScanLogs)
+        this.setState({ isLoader: false, allScanLogs: [] }, () => {
         });
         ErrorMsg(error);
         console.log("error", error);
@@ -409,22 +417,19 @@ class ScanLogsTable extends Component<Props, States> {
     });
   };
   previous = (pageNo: any) => {
-    this.setState({ pageNo: pageNo - 1 },()=>{
+    this.setState({ pageNo: pageNo - 1 }, () => {
       this.getScanLogs();
     });
-  
   };
   next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 },()=>{
+    this.setState({ pageNo: pageNo + 1 }, () => {
       this.getScanLogs();
     });
-    
   };
   pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number },()=>{
+    this.setState({ pageNo: number }, () => {
       this.getScanLogs();
     });
-    
   };
 
   toggle = () => {
@@ -446,16 +451,14 @@ class ScanLogsTable extends Component<Props, States> {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value },()=>{
+      this.setState({ rowsPerPage: value }, () => {
         this.getScanLogs();
       });
-     
     } else if (e.target.name === "gotopage") {
       value = e.target.value;
-      this.setState({ pageNo: value },()=>{
+      this.setState({ pageNo: value }, () => {
         this.getScanLogs();
       });
-      
     }
   };
   download = () => {
@@ -467,7 +470,7 @@ class ScanLogsTable extends Component<Props, States> {
       isfiltered: this.state.isFiltered,
     };
     if (this.state.isFiltered) {
-      let filter= {...this.state.selectedFilters};
+      let filter = { ...this.state.selectedFilters };
       filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
         "YYYY-MM-DD"
       );
@@ -478,10 +481,11 @@ class ScanLogsTable extends Component<Props, States> {
       filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
         "YYYY-MM-DD"
       );
-      filter.productgroup = filter.productgroup==="ALL" ? null :filter.productgroup;
-      filter.farmer = filter.farmer==="ALL" ? null :filter.farmer;
-      filter.retailer = filter.retailer==="ALL" ? null :filter.retailer;
-      filter.status = filter.status==="ALL" ? null :filter.status;
+      filter.productgroup =
+        filter.productgroup === "ALL" ? null : filter.productgroup;
+      filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
+      filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
+      filter.status = filter.status === "ALL" ? null : filter.status;
 
       data = { ...data, ...filter };
     }
@@ -581,7 +585,10 @@ class ScanLogsTable extends Component<Props, States> {
         },
       },
       () => {
-        if (name === "retailer") this.getRetailerList();
+        if (name === "retailer") {
+          let condIf = "retailer";
+          this.getRetailerList(condIf);
+        }
       }
     );
   };
@@ -592,6 +599,7 @@ class ScanLogsTable extends Component<Props, States> {
       this.handleClosePopup();
     });
   };
+
   render() {
     const {
       retailerPopupData,
@@ -617,7 +625,6 @@ class ScanLogsTable extends Component<Props, States> {
     for (let i = 1; i <= pageData; i++) {
       pageNumbers.push(i);
     }
-
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -925,14 +932,17 @@ class ScanLogsTable extends Component<Props, States> {
                         <img src={Download} width="17" alt={NoImage} />
                         <span style={{ padding: "15px" }}>Download</span>
                       </button>
-                    
                     </div>
                     <i
-        className="fa fa-info-circle"
-        style={{ fontSize: "16px", fontFamily: "appRegular !important" ,marginLeft: "5px",
-        marginTop: "-20px"}}
-        title={"Full extract"}
-      ></i>
+                      className="fa fa-info-circle"
+                      style={{
+                        fontSize: "16px",
+                        fontFamily: "appRegular !important",
+                        marginLeft: "5px",
+                        marginTop: "-20px",
+                      }}
+                      title={"Full extract"}
+                    ></i>
                   </div>
                 </div>
               </div>
@@ -943,7 +953,12 @@ class ScanLogsTable extends Component<Props, States> {
                       <th
                         style={{ width: "10%" }}
                         onClick={(e) =>
-                          this.handleSort(e, "advisororderid", allScanLogs, isAsc)
+                          this.handleSort(
+                            e,
+                            "advisororderid",
+                            allScanLogs,
+                            isAsc
+                          )
                         }
                       >
                         ORDER ID
@@ -975,7 +990,7 @@ class ScanLogsTable extends Component<Props, States> {
                         ) : null}
                       </th>
                       <th
-                        style={{ width: "14%",textAlign:"center" }}
+                        style={{ width: "14%", textAlign: "center" }}
                         onClick={(e) =>
                           this.handleSort(
                             e,
@@ -995,7 +1010,7 @@ class ScanLogsTable extends Component<Props, States> {
                         ) : null}
                       </th>
                       <th
-                        style={{ width: "13%" ,textAlign:"center"}}
+                        style={{ width: "13%", textAlign: "center" }}
                         onClick={(e) =>
                           this.handleSort(
                             e,
@@ -1115,8 +1130,17 @@ class ScanLogsTable extends Component<Props, States> {
                               }}
                             >
                               <div className="retailer-id">
-                                <p style={{display:"flex",alignItems: "center"}}>
-                                  <span style={{flex: "1",whiteSpace: "nowrap"}}>{value.username}</span>
+                                <p
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <span
+                                    style={{ flex: "1", whiteSpace: "nowrap" }}
+                                  >
+                                    {value.username}
+                                  </span>
                                   <img
                                     className="retailer-icon"
                                     src={ExpandWindowImg}
@@ -1165,7 +1189,7 @@ class ScanLogsTable extends Component<Props, States> {
                                 {_.startCase(_.toLower(value.orderstatus))}
                               </span>
                             </td>
-                            <td> 
+                            <td>
                               {moment(value.lastupdateddate).format(
                                 "DD/MM/YYYY"
                               )}
