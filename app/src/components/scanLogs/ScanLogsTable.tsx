@@ -264,6 +264,10 @@ class ScanLogsTable extends Component<Props, States> {
         "YYYY-MM-DD"
       );
       filter.retailer = filterScan ? filterScan : filter.retailer;
+      filter.productgroup = filter.productgroup==="ALL" ? null :filter.productgroup;
+      filter.farmer = filter.farmer==="ALL" ? null :filter.farmer;
+      filter.retailer = filter.retailer==="ALL" ? null :filter.retailer;
+      filter.status = filter.status==="ALL" ? null :filter.status;
       data = { ...data, ...filter };
     }
 
@@ -278,7 +282,9 @@ class ScanLogsTable extends Component<Props, States> {
         this.setState({ totalData: Number(total) });
       })
       .catch((error) => {
-        this.setState({ isLoader: false, allScanLogs: [] });
+        this.setState({ isLoader: false, allScanLogs: [] },()=>{
+          console.log("allScanLogs",this.state.allScanLogs)
+        });
         ErrorMsg(error);
         console.log("error", error);
       });
@@ -399,7 +405,7 @@ class ScanLogsTable extends Component<Props, States> {
     this.setState({ isFiltered: true }, () => {
       this.getScanLogs();
       this.toggleFilter();
-      this.resetFilter()
+      // this.resetFilter();
     });
   };
   previous = (pageNo: any) => {
@@ -919,7 +925,14 @@ class ScanLogsTable extends Component<Props, States> {
                         <img src={Download} width="17" alt={NoImage} />
                         <span style={{ padding: "15px" }}>Download</span>
                       </button>
+                    
                     </div>
+                    <i
+        className="fa fa-info-circle"
+        style={{ fontSize: "16px", fontFamily: "appRegular !important" ,marginLeft: "5px",
+        marginTop: "-20px"}}
+        title={"Full extract"}
+      ></i>
                   </div>
                 </div>
               </div>
@@ -949,7 +962,7 @@ class ScanLogsTable extends Component<Props, States> {
                       <th
                         style={{ width: "16%" }}
                         onClick={(e) =>
-                          this.handleSort(e, "staffname", allScanLogs, isAsc)
+                          this.handleSort(e, "username", allScanLogs, isAsc)
                         }
                       >
                         RETAILER NAME/ID
@@ -966,7 +979,7 @@ class ScanLogsTable extends Component<Props, States> {
                         onClick={(e) =>
                           this.handleSort(
                             e,
-                            "products_ordered",
+                            "totalintendedquantity",
                             allScanLogs,
                             isAsc
                           )
@@ -1109,11 +1122,11 @@ class ScanLogsTable extends Component<Props, States> {
                                     src={ExpandWindowImg}
                                   />
                                 </p>
-                                <label>{value.username}</label>
+                                <label>{value.userid}</label>
                               </div>
                             </td>
                             <td style={{ textAlign: "center" }}>
-                              {value.products_ordered?.length || 0}
+                              {value.totalintendedquantity}
                             </td>
                             <td style={{ textAlign: "center" }}>
                               {value.totalorderedquantity}
@@ -1204,14 +1217,14 @@ class ScanLogsTable extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {retailerPopupData.staffname},{" "}
+                      {retailerPopupData.username},{" "}
                       <label>{popupHeader?.sub}</label>{" "}
                     </p>
                   </div>
                   <div className="popup-content-row">
                     <div className="content-list">
                       <label>Username</label>
-                      <p>{retailerPopupData.username}</p>
+                      <p>{retailerPopupData.userid}</p>
                     </div>
                     <div className="content-list">
                       <label>Account Name</label>
