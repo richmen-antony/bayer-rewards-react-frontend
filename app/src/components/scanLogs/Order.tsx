@@ -318,7 +318,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       </td>
                       <td className="text-center">
                         <span className="intendedquantity">
-                          {_.sumBy(data.products_ordered, "intendedquantity")}
+                          {data.totalintendedquantity}
                         </span>
                       </td>
                       <td className="text-center">

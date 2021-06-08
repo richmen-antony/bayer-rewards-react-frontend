@@ -910,6 +910,11 @@ class UserList extends Component<Props, States> {
                       <span>Download</span>
                     </button>
                   </div>
+                  <i
+        className="fa fa-info-circle"
+        style={{ fontSize: "16px", fontFamily: "appRegular !important" ,marginLeft: "5px",marginTop: "-20px"}}
+        title={"Full extract"}
+      ></i>
                 </>
               )}
             </div>
