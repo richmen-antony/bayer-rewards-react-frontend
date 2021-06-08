@@ -146,7 +146,7 @@ class TopBar extends Component<Props, States> {
                   </div>
                 </DropdownToggle>
                 <DropdownMenu>
-                  <DropdownItem onClick={() => this.handleChange("profile")}>
+                  <DropdownItem>
                     <i className="fa fa-user-circle"></i>{" "}
                     <span className="ml-1">{userData.fullname}</span>{" "}
                   </DropdownItem>

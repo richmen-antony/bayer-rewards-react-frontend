@@ -52,7 +52,7 @@ class ChangeLogs extends Component<Props, States> {
       isLoader: false,
       allChangeLogs: [],
       searchText: "",
-      rowsPerPage: 15,
+      rowsPerPage: 10,
       pageNo: 1,
       isAsc: true,
       totalData: 0,

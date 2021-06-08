@@ -162,7 +162,7 @@ class ScanLogsTable extends Component<Props, States> {
       },
       dateErrMsg: "",
       searchText: "",
-      rowsPerPage: 15,
+      rowsPerPage: 10,
       totalData: 0,
       isFiltered: false,
       userRole: "",
@@ -930,7 +930,7 @@ class ScanLogsTable extends Component<Props, States> {
                       <th
                         style={{ width: "10%" }}
                         onClick={(e) =>
-                          this.handleSort(e, "orderid", allScanLogs, isAsc)
+                          this.handleSort(e, "advisororderid", allScanLogs, isAsc)
                         }
                       >
                         ORDER ID
@@ -1094,7 +1094,7 @@ class ScanLogsTable extends Component<Props, States> {
                             }}
                             style={{ cursor: "pointer" }}
                           >
-                            <td>{value.orderid}</td>
+                            <td>{value.advisororderid}</td>
                             <td
                               onClick={(event) => {
                                 this.showPopup(event, "showPopup");
@@ -1102,12 +1102,12 @@ class ScanLogsTable extends Component<Props, States> {
                               }}
                             >
                               <div className="retailer-id">
-                                <p>
-                                  {value.staffname}
+                                <p style={{display:"flex",alignItems: "center"}}>
+                                  <span style={{flex: "1",whiteSpace: "nowrap"}}>{value.username}</span>
                                   <img
                                     className="retailer-icon"
                                     src={ExpandWindowImg}
-                                  ></img>
+                                  />
                                 </p>
                                 <label>{value.username}</label>
                               </div>

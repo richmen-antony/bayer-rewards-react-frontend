@@ -8,6 +8,7 @@ import LeftArrow from "../../../assets/icons/left_page.svg";
 import RightArrow from "../../../assets/icons/right_page.svg";
 import LeftArrowDisabled from "../../../assets/icons/left_page_disabled.svg";
 import RightArrowDisabled from "../../../assets/icons/right_page_disabled.svg";
+import Dropdown from "../dropdown";
 
 type Props = {
   pageNo: number;
@@ -18,28 +19,19 @@ type Props = {
   pageNumberClick: Function;
   handlePaginationChange: Function;
   data: any;
-  totalLabel?:any;
+  totalLabel?: any;
 };
 type States = {
   startIndex: number;
   endIndex: number;
 };
 
-/* Pagination Reusable Component
- *  Example
- *
- *  import { Pagination } from "../../../utility/widgets/pagination";
- *  <Pagination
- *   totalData={totalData}
- *   rowsPerPage={rowsPerPage}
- *   previous={this.props.previous}
- *   next={this.props.next}
- *   pageNumberClick={this.props.pageNumberClick}
- *   pageNo={pageNo}
- *   handlePaginationChange={this.props.handlePaginationChange}
- *   data = {allChannelPartners}
- *   />
- */
+const rowPerPageOptions = [
+  { value: "10", text: "10" },
+  { value: "20", text: "20" },
+  { value: "50", text: "50" },
+  { value: "100", text: "100" },
+];
 
 class Pagination extends Component<Props, States> {
   constructor(props: any) {
@@ -73,7 +65,7 @@ class Pagination extends Component<Props, States> {
       rowsPerPage,
       totalData,
       data,
-      totalLabel
+      totalLabel,
     } = this.props;
     const pageNumbers = [];
     const pageData = Math.ceil(totalData / rowsPerPage);
@@ -122,13 +114,24 @@ class Pagination extends Component<Props, States> {
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <span style={{ marginRight: "10px" }}>Rows Per Page</span>
                     <span style={{ width: "25%" }}>
-                      <input
+                      {/* <input
                         style={{ width: "100%" }}
                         type="text"
                         className="form-control"
                         name="perpage"
                         value={rowsPerPage}
                         onChange={(e: any) => handlePaginationChange(e)}
+                      /> */}
+                      <Dropdown
+                        name="perpage"
+                        label="Rows Per Page"
+                        options={rowPerPageOptions}
+                        handleChange={(event: any) =>
+                          handlePaginationChange(event)
+                        }
+                        value={rowsPerPage}
+                        isPlaceholder
+                        width={75}
                       />
                     </span>
                   </div>

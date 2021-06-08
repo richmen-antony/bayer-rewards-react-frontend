@@ -245,7 +245,7 @@ class UserList extends Component<Props, States> {
       },
       dateErrMsg: "",
       searchText: "",
-      rowsPerPage: 15,
+      rowsPerPage: 10,
       gotoPage: 1,
       totalData: 0,
       isFiltered: false,

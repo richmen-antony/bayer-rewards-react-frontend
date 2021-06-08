@@ -24,9 +24,13 @@ export interface DropdownProps {
   isLabel?: boolean;
   isDisabled?: boolean;
   isNative?: boolean;
+  width?:number;
 }
-
-const useStyles = makeStyles((theme: Theme) =>
+export interface StyleProps {
+  width?: number;
+  
+ }
+const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) =>
   createStyles({
     root: {
       maxHeight: 100,
@@ -49,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     formControl: {
       margin: "0px !important",
-      minWidth: 215,
+      minWidth: ({ width }) => width ? width :215,
       maxHeight: 100,
     },
     selectEmpty: {
@@ -98,11 +102,12 @@ export const Dropdown = ({
   isLabel,
   isDisabled,
   isNative,
+  width,
   ...props
 }: DropdownProps) => {
-  const classes = useStyles();
+  const classes = useStyles({width});
   const labelId = `${value}-label`;
-  console.log("value=====>", options);
+
 
   return (
     <div>

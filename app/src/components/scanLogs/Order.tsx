@@ -70,7 +70,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
-                ORDER ID <label>{data?.orderid}</label>{" "}
+               <label>#{data?.advisororderid} - {data?.username}</label>
               </p>
             </div>
           </div>
@@ -117,9 +117,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                 </div>
                 <div className="content">
                   <img src={retailerImg} alt="" />
-                  <p>Retailer ID & Name</p>
+                  <p>Fulfilled by ID & Name</p>
                   <span>
-                    {data.username} - {data.staffname}
+                    {data.staffid} - {data.staffname}
                   </span>
                 </div>
               </li>
