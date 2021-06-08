@@ -300,10 +300,10 @@ class ChangeLogs extends Component<Props, States> {
                         <td>{list.oldvalue} </td>
                         <td>{list.newvalue} </td>
                         <td>
-                          {moment(list.lastmodifieddate).format("YYYY-MM-DD")}
+                          {moment(list.lastupdateddate).format("YYYY-MM-DD")}
                         </td>
                         <td>
-                          {moment(list.lastmodifieddate).format("HH-mm-ss")}
+                          {moment(list.lastupdateddate).format("HH-mm-ss")}
                         </td>
                       </tr>
                     </AUX>

@@ -386,7 +386,7 @@ class ChannelPartners extends Component<Props, States> {
                 firstnameErr: "",
                 lastnameErr: "",
                 mobilenumberErr: "",
-                isPhoneEdit: staffInfo.mobilenumber ? false : true
+                isPhoneEdit: staffInfo.mobilenumber ? false : true,
               },
             };
             staffInfo = Object.assign(staffInfo, errObjd);
@@ -400,8 +400,6 @@ class ChannelPartners extends Component<Props, States> {
       }
     );
   };
-
- 
 
   dateValidation = (e: any) => {
     this.setState({ isValidateSuccess: false });
@@ -430,88 +428,86 @@ class ChannelPartners extends Component<Props, States> {
     let newUserList = JSON.parse(JSON.stringify(this.state.userData));
     // let newUserList = [...this.state.userData];
     let formValid = this.checkValidation();
-    if(formValid) {
-
-    if (this.state.isStaff) {
-      newUserList.staffdetails.map((item: any, index: number) => {
-        delete item.errObj;
-      });
-     
-    } else {
-      newUserList.staffdetails = [];
-      this.setState((prevState: any) => ({
-        userData: {
-          ...prevState.userData,
-          staffdetails: newUserList.staffdetails,
-        },
-      }));
-    }
-    this.setState({ isLoader: true });
-    let userData = this.state.userList;
-
-    let data = {
-      countrycode: getStoreData.countryCode,
-      ownerfirstname: newUserList.ownerRows[0].firstname,
-      ownerlastname: newUserList.ownerRows[0].lastname,
-      ownerphonenumber: newUserList.ownerRows[0].mobilenumber,
-      owneremail: newUserList.ownerRows[0].email,
-      locale: "English (Malawi)",
-      usertype:
-        userData.rolename == "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
-      rolename: userData.rolename,
-      username: userData.username,
-      accounttype: userData.rolename,
-      userstatus: newUserList.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
-      storewithmultiuser: this.state.isStaff ? true : false,
-      iscreatedfrommobile: false,
-      whtaccountname: userData.whtaccountname,
-      taxid: userData.taxid,
-      whtownername: userData.whtownername,
-      deliverycountry: getStoreData.countryCode,
-      deliveryregion: userData.deliveryregion,
-      deliverystate: userData.deliverystate,
-      deliverycity: userData.deliverycity,
-      deliverydistrict: userData.deliverydistrict,
-      deliveryvillage: userData.deliveryvillage,
-      deliverystreet: userData.deliverystreet,
-      deliveryzipcode: userData.deliveryzipcode,
-      billingcountry: getStoreData.countryCode,
-      billingregion: userData.billingregion,
-      billingstate: userData.billingstate,
-      billingcity: userData.billingcity,
-      billingdistrict: userData.billingdistrict,
-      billingvillage: userData.billingvillage,
-      billingstreet: userData.billingstreet,
-      billingzipcode: userData.billingzipcode,
-      staffdetails: newUserList.staffdetails,
-    };
-    const userDetails = {
-      isedit: true,
-      lastupdatedby: this.state.userName.toUpperCase(),
-      lastupdateddate: new Date().toJSON(),
-    };
-
-    invokePostAuthService(updateUser, data, userDetails)
-      .then((response: any) => {
-        this.setState({
-          isLoader: false,
+    if (formValid) {
+      if (this.state.isStaff) {
+        newUserList.staffdetails.map((item: any, index: number) => {
+          delete item.errObj;
         });
-        // toastSuccess("User Updated Successfully");
-        Alert("success", "User Updated Successfully");
-        this.handleClosePopup();
-        this.props.callAPI();
-      })
-      .catch((error: any) => {
-        this.setState({ isLoader: false });
-        let message = error.message;
-        if (message === "Retailer with the same Mobilenumber exists") {
-          message = "User with same Mobilenumber exists";
-        }
-        this.setState({ isRendered: true, staffPopup: false }, () => {
-          // toastInfo(message);
-          Alert("info", message);
+      } else {
+        newUserList.staffdetails = [];
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            staffdetails: newUserList.staffdetails,
+          },
+        }));
+      }
+      this.setState({ isLoader: true });
+      let userData = this.state.userList;
+
+      let data = {
+        countrycode: getStoreData.countryCode,
+        ownerfirstname: newUserList.ownerRows[0].firstname,
+        ownerlastname: newUserList.ownerRows[0].lastname,
+        ownerphonenumber: newUserList.ownerRows[0].mobilenumber,
+        owneremail: newUserList.ownerRows[0].email,
+        locale: "English (Malawi)",
+        usertype:
+          userData.rolename == "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+        rolename: userData.rolename,
+        username: userData.username,
+        accounttype: userData.rolename,
+        userstatus: newUserList.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
+        storewithmultiuser: this.state.isStaff ? true : false,
+        iscreatedfrommobile: false,
+        whtaccountname: userData.whtaccountname,
+        taxid: userData.taxid,
+        whtownername: userData.whtownername,
+        deliverycountry: getStoreData.countryCode,
+        deliveryregion: userData.deliveryregion,
+        deliverystate: userData.deliverystate,
+        deliverycity: userData.deliverycity,
+        deliverydistrict: userData.deliverydistrict,
+        deliveryvillage: userData.deliveryvillage,
+        deliverystreet: userData.deliverystreet,
+        deliveryzipcode: userData.deliveryzipcode,
+        billingcountry: getStoreData.countryCode,
+        billingregion: userData.billingregion,
+        billingstate: userData.billingstate,
+        billingcity: userData.billingcity,
+        billingdistrict: userData.billingdistrict,
+        billingvillage: userData.billingvillage,
+        billingstreet: userData.billingstreet,
+        billingzipcode: userData.billingzipcode,
+        staffdetails: newUserList.staffdetails,
+      };
+      const userDetails = {
+        isedit: true,
+        lastupdatedby: this.state.userName.toUpperCase(),
+        lastupdateddate: new Date().toJSON(),
+      };
+
+      invokePostAuthService(updateUser, data, userDetails)
+        .then((response: any) => {
+          this.setState({
+            isLoader: false,
+          });
+          // toastSuccess("User Updated Successfully");
+          Alert("success", "User Updated Successfully");
+          this.handleClosePopup();
+          this.props.callAPI();
+        })
+        .catch((error: any) => {
+          this.setState({ isLoader: false });
+          let message = error.message;
+          if (message === "Retailer with the same Mobilenumber exists") {
+            message = "User with same Mobilenumber exists";
+          }
+          this.setState({ isRendered: true, staffPopup: false }, () => {
+            // toastInfo(message);
+            Alert("info", message);
+          });
         });
-      });
     }
   };
 
@@ -595,17 +591,21 @@ class ChannelPartners extends Component<Props, States> {
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
-    const isOwnerPhoneEists = owners.filter((items: any)=> items.mobilenumber === val)
-    const isStaffPhoneEists = staffs.filter((items: any)=> items.mobilenumber === val);
+    const isOwnerPhoneEists = owners.filter(
+      (items: any) => items.mobilenumber === val
+    );
+    const isStaffPhoneEists = staffs.filter(
+      (items: any) => items.mobilenumber === val
+    );
     if (type === "owner") {
       let owners = this.state.userData.ownerRows;
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9) {
-            owners[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== 9 || val.length !== 10) {
+            owners[idx].errObj.mobilenumberErr = "Please enter 9 Digit";
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             owners[idx].errObj.mobilenumberErr = "";
           }
         } else {
@@ -627,11 +627,11 @@ class ChannelPartners extends Component<Props, States> {
       let staffs = this.state.userData.staffdetails;
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9) {
-            staffs[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== 9 || val.length !== 10) {
+            staffs[idx].errObj.mobilenumberErr = "Please enter 9 Digit";
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             staffs[idx].errObj.mobilenumberErr = "";
           }
         } else {
@@ -674,7 +674,7 @@ class ChannelPartners extends Component<Props, States> {
         lastnameErr: "",
         mobilenumberErr: "",
         emailErr: "",
-        isPhoneEdit:true
+        isPhoneEdit: true,
       },
     };
     let usersObj = this.state.userData;
@@ -712,7 +712,7 @@ class ChannelPartners extends Component<Props, States> {
           lastnameErr: "",
           mobilenumberErr: "",
           emailErr: "",
-          isPhoneEdit:true
+          isPhoneEdit: true,
         },
       });
     } else {
@@ -784,12 +784,21 @@ class ChannelPartners extends Component<Props, States> {
         ? ""
         : "Please enter the last Name";
 
-        if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
-          errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
-        } else {
-          errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
-        }
+      if (
+        userInfo.mobilenumber &&
+        errObj.mobilenumberErr !== "Phone Number Exists"
+      ) {
+        errObj.mobilenumberErr =
+          userInfo.mobilenumber.length == 9 ||
+          userInfo.mobilenumber.length == 10
+            ? ""
+            : "Please enter 9 Digit";
+      } else {
+        errObj.mobilenumberErr =
+          errObj.mobilenumberErr == "Phone Number Exists"
+            ? errObj.mobilenumberErr
+            : "Please enter the mobile number";
+      }
 
       userData.ownerRows[idx].errObj = errObj;
       if (
@@ -812,8 +821,8 @@ class ChannelPartners extends Component<Props, States> {
         firstNameErr: "",
         lastNameErr: "",
         emailNameErr: "",
-        mobilenumberErr:  userInfo.errObj.mobilenumberErr,
-        isPhoneEdit:  userInfo.errObj.isPhoneEdit ? true : false
+        mobilenumberErr: userInfo.errObj.mobilenumberErr,
+        isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
       };
       errObj.firstNameErr = userInfo.firstname
         ? ""
@@ -822,11 +831,20 @@ class ChannelPartners extends Component<Props, States> {
         ? ""
         : "Please enter the last Name";
 
-      if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
+      if (
+        userInfo.mobilenumber &&
+        errObj.mobilenumberErr !== "Phone Number Exists"
+      ) {
         errObj.mobilenumberErr =
-          userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+          userInfo.mobilenumber.length == 9 ||
+          userInfo.mobilenumber.length == 10
+            ? ""
+            : "Please enter 9 Digit";
       } else {
-        errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+        errObj.mobilenumberErr =
+          errObj.mobilenumberErr == "Phone Number Exists"
+            ? errObj.mobilenumberErr
+            : "Please enter the mobile number";
       }
 
       userData.staffdetails[idx].errObj = errObj;

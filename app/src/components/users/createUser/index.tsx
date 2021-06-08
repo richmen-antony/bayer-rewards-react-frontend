@@ -271,13 +271,13 @@ class CreateUser extends Component<any, any> {
                       firstnameErr: "",
                       lastnameErr: "",
                       mobilenumberErr: "",
-                      isPhoneEdit: staffInfo.mobilenumber ? false : true
+                      isPhoneEdit: staffInfo.mobilenumber ? false : true,
                     },
                   };
                   let obj = Object.assign(staffInfo, errObjd);
-                  console.log("testobj", obj);
                 });
               }
+
               if (currentPage === "edit") {
                 this.setState({
                   userData: userinfo,
@@ -298,12 +298,12 @@ class CreateUser extends Component<any, any> {
                   }
                 );
               }
-
-              //Validate and edit User
+              //Dynamic Geo location dropdowns For Validate and edit User
               setTimeout(() => {
                 this.getDynamicOptionFields(userFields);
               }, 0);
             } else {
+              //Dynamic Geo location dropdowns For Validate and Create User
               setTimeout(() => {
                 this.getDynamicOptionFields("");
               }, 0);
@@ -344,6 +344,13 @@ class CreateUser extends Component<any, any> {
       let regionInfo = { text: item.name, code: item.code, value: item.name };
       regionOptions.push(regionInfo);
     });
+    let isSameGeoAddress =
+      data.billingregion === data.deliveryregion &&
+      data.billingstate === data.deliverystate &&
+      data.billingdistrict === data.deliverydistrict &&
+      data.billingcity === data.deliverycity &&
+      data.billingvillage === data.deliveryvillage;
+
     let allRegions = this.state.allRegions;
     if (data) {
       let setFormArray: any = [];
@@ -398,10 +405,15 @@ class CreateUser extends Component<any, any> {
         let addList = filteredAdd[0]?.add.filter(
           (addinfo: any) => addinfo.name === data.deliverystate
         );
-        addList && addList[0]?.district.forEach((item: any) => {
-          let addInfo = { text: item.name, value: item.name, code: item.code };
-          districtoptions.push(addInfo);
-        });
+        addList &&
+          addList[0]?.district.forEach((item: any) => {
+            let addInfo = {
+              text: item.name,
+              value: item.name,
+              code: item.code,
+            };
+            districtoptions.push(addInfo);
+          });
         let selectedDistrict = districtoptions.filter(
           (districtInfo: any) => districtInfo.text === district
         );
@@ -476,6 +488,132 @@ class CreateUser extends Component<any, any> {
         });
       }
       this.setState({ dynamicFields: setFormArray });
+
+      //Incase of delivery and billing address is different
+      if (!isSameGeoAddress) {
+        setFormArray = [];
+        if ("billingregion" in data) {
+          regionoptions = regionOptions;
+          region = data.billingregion;
+          regionoptions.forEach((regionInfo: any) => {
+            if (regionInfo.name === data.billingregion) {
+              geoLocationInfo.region = regionInfo.code;
+            }
+          });
+          this.setState({ regionoptions: regionoptions });
+        }
+        if ("billingstate" in data) {
+          let filteredAdd = allRegions.filter(
+            (region: any) => region.name === data.billingregion
+          );
+          geoLocationInfo.region = filteredAdd[0]?.code;
+          filteredAdd[0]?.add.forEach((item: any) => {
+            let addInfo = {
+              text: item.name,
+              value: item.name,
+              code: item.code,
+            };
+            addoptions.push(addInfo);
+          });
+          let selectedAdd = addoptions.filter(
+            (district: any) => district.text === data.billingstate
+          );
+          geoLocationInfo.add = selectedAdd[0]?.code;
+          add = data.billingstate;
+          this.setState({ addoptions: addoptions });
+        }
+        if ("billingdistrict" in data) {
+          district = data.billingdistrict;
+          let filteredAdd = allRegions.filter(
+            (region: any) => region.name === data.billingregion
+          );
+          let addList = filteredAdd[0]?.add.filter(
+            (addinfo: any) => addinfo.name === data.billingstate
+          );
+          addList &&
+            addList[0]?.district.forEach((item: any) => {
+              let addInfo = {
+                text: item.name,
+                value: item.name,
+                code: item.code,
+              };
+              districtoptions.push(addInfo);
+            });
+          let selectedDistrict = districtoptions.filter(
+            (districtInfo: any) => districtInfo.text === district
+          );
+          geoLocationInfo.district = selectedDistrict[0]?.code;
+          this.setState({ districtoptions: districtoptions });
+        }
+        if ("billingcity" in data) {
+          epaoptions = await this.getEPADetails();
+          epa = data.billingcity;
+          epaoptions?.forEach((city: any) => {
+            if (city.name === epa) {
+              geoLocationInfo.epa = city.code;
+            }
+            city.text = city.name;
+            city.value = city.name;
+          });
+          this.setState({ epaoptions: epaoptions });
+        }
+        if ("billingvillage" in data) {
+          village = data.billingvillage;
+          villageoptions = await this.getVillageDetails();
+          if (villageoptions?.length) {
+            villageoptions?.forEach((village: any) => {
+              if (village.name === village) {
+                geoLocationInfo.village = village.code;
+              }
+              village.text = village.name;
+              village.value = village.name;
+            });
+          }
+          this.setState({ villageoptions: villageoptions });
+
+          this.state.geographicFields.map((list: any, i: number) => {
+            setFormArray.push({
+              name: list,
+              placeHolder: true,
+              value:
+                list === "country"
+                  ? this.getStoreData.country
+                  : list === "region"
+                  ? region
+                  : list === "add"
+                  ? add
+                  : list === "district"
+                  ? district
+                  : list === "epa"
+                  ? epa
+                  : list === "village"
+                  ? village
+                  : "",
+              options:
+                list === "country"
+                  ? this.state.countryList
+                  : list === "country"
+                  ? this.getStoreData.country
+                  : list === "region"
+                  ? regionoptions
+                  : list === "add"
+                  ? addoptions
+                  : list === "district"
+                  ? districtoptions
+                  : list === "epa"
+                  ? epaoptions
+                  : list === "village"
+                  ? villageoptions
+                  : "",
+              error: "",
+            });
+          });
+          this.setState({
+            accInfo: isSameGeoAddress ? true : false,
+            withHolding: setFormArray,
+          });
+        }
+      }
     } else {
       let setFormArray: any = [];
       this.state.geographicFields.map((list: any, i: number) => {
@@ -492,8 +630,7 @@ class CreateUser extends Component<any, any> {
           error: "",
         });
       });
-      this.setState({ dynamicFields: setFormArray });
-      this.setState({ withHolding: setFormArray });
+      this.setState({ dynamicFields: setFormArray, withHolding: setFormArray });
     }
   };
 
@@ -610,7 +747,6 @@ class CreateUser extends Component<any, any> {
           }
         }
       } else if (type === "epa") {
-        // geoLocationInfo.epa = value;
         if (levelFive && levelFive.length) {
           levelFive.forEach((item: any) => {
             if (item.name === value) {
@@ -661,7 +797,6 @@ class CreateUser extends Component<any, any> {
           levelFive = response.body.epa;
           this.setState({ isLoader: false });
           resolve(levelFive);
-          console.log("levelfive", levelFive);
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
@@ -688,7 +823,6 @@ class CreateUser extends Component<any, any> {
         .then((response: any) => {
           levelSix = response.body.village;
           this.setState({ isLoader: false });
-          console.log("levelSix", response.body);
           resolve(levelSix);
         })
         .catch((error: any) => {
@@ -802,7 +936,11 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: userData.whtaccountname
+          ? userData.whtaccountname
+          : userData.ownerRows[0].firstname +
+            " " +
+            userData.ownerRows[0].lastname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
@@ -846,9 +984,17 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: userData.whtaccountname
+          ? userData.whtaccountname
+          : userData.ownerRows[0].firstname +
+            " " +
+            userData.ownerRows[0].lastname,
         taxid: userData.taxid,
-        whtownername: userData.whtownername ? userData.whtownername : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
+        whtownername: userData.whtownername
+          ? userData.whtownername
+          : userData.ownerRows[0].firstname +
+            " " +
+            userData.ownerRows[0].lastname,
         deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
@@ -982,18 +1128,45 @@ class CreateUser extends Component<any, any> {
         errObj.lastNameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
-          // if (userInfo.mobilenumber) {
-          //   errObj.mobilenumberErr =
-          //     userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
-          // } else {
-          //   errObj.mobilenumberErr = "Please enter the mobile number";
-          // }
-          if ((!this.state.isEditPage || !this.state.isValidatePage) && userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
-            errObj.mobilenumberErr =
-              userInfo.mobilenumber.length == 9 || 10 ? "" : "Please enter 9 Digit";
-          } else {
-            errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
-          }
+        // if (userInfo.mobilenumber) {
+        //   errObj.mobilenumberErr =
+        //     userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+        // } else {
+        //   errObj.mobilenumberErr = "Please enter the mobile number";
+        // }
+        if (
+          (!this.state.isEditPage || !this.state.isValidatePage) &&
+          userInfo.mobilenumber &&
+          errObj.mobilenumberErr !== "Phone Number Exists"
+        ) {
+          errObj.mobilenumberErr =
+            userInfo.mobilenumber.length == 9 ||
+            userInfo.mobilenumber.length == 10
+              ? ""
+              : "Please enter 9 Digit";
+        } else {
+          errObj.mobilenumberErr =
+            errObj.mobilenumberErr == "Phone Number Exists"
+              ? errObj.mobilenumberErr
+              : "Please enter the mobile number";
+        }
+
+        if (
+          (!this.state.isEditPage || !this.state.isValidatePage) &&
+          userInfo.mobilenumber &&
+          errObj.mobilenumberErr !== "Phone Number Exists"
+        ) {
+          errObj.mobilenumberErr =
+            userInfo.mobilenumber.length == 9 ||
+            userInfo.mobilenumber.length == 10
+              ? ""
+              : "Please enter 9 Digit";
+        } else {
+          errObj.mobilenumberErr =
+            errObj.mobilenumberErr == "Phone Number Exists"
+              ? errObj.mobilenumberErr
+              : "Please enter the mobile number";
+        }
 
         userData.ownerRows[idx].errObj = errObj;
         if (
@@ -1016,8 +1189,8 @@ class CreateUser extends Component<any, any> {
           firstNameErr: "",
           lastNameErr: "",
           emailNameErr: "",
-          mobilenumberErr:  userInfo.errObj.mobilenumberErr,
-          isPhoneEdit:  userInfo.errObj.isPhoneEdit ? true : false
+          mobilenumberErr: userInfo.errObj.mobilenumberErr,
+          isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
         };
         errObj.firstNameErr = userInfo.firstname
           ? ""
@@ -1026,13 +1199,20 @@ class CreateUser extends Component<any, any> {
           ? ""
           : "Please enter the last Name";
 
-        if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
+        if (
+          userInfo.mobilenumber &&
+          errObj.mobilenumberErr !== "Phone Number Exists"
+        ) {
           errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == 9 || 10
+            userInfo.mobilenumber.length == 9 ||
+            userInfo.mobilenumber.length == 10
               ? ""
               : "Please enter 9 Digit";
         } else {
-          errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+          errObj.mobilenumberErr =
+            errObj.mobilenumberErr == "Phone Number Exists"
+              ? errObj.mobilenumberErr
+              : "Please enter the mobile number";
         }
 
         userData.staffdetails[idx].errObj = errObj;
@@ -1051,7 +1231,12 @@ class CreateUser extends Component<any, any> {
         }));
       });
     } else if (this.state.currentStep === 2) {
-      userData.whtownername =(this.state.isEditPage || this.state.isValidatePage) ? userData.whtownername: userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname ;
+      userData.whtownername =
+        this.state.isEditPage || this.state.isValidatePage
+          ? userData.whtownername
+          : userData.ownerRows[0].firstname +
+            " " +
+            userData.ownerRows[0].lastname;
       let deliverystreet = userData.deliverystreet
         ? ""
         : "Please enter the Street";
@@ -1074,11 +1259,10 @@ class CreateUser extends Component<any, any> {
         }
         this.setState({ isRendered: true });
       });
-      this.setState({userData:userData})
+      this.setState({ userData: userData });
     } else {
       let accInfo = this.state.accInfo;
       let whtaccountname = userData.whtaccountname
-    
         ? ""
         : "Please enter account name";
       let whtownername = userData.whtownername ? "" : "Please enter owner name";
@@ -1119,7 +1303,6 @@ class CreateUser extends Component<any, any> {
       } else {
         formValid = true;
       }
-  
     }
     return formValid;
   }
@@ -1194,7 +1377,7 @@ class CreateUser extends Component<any, any> {
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
       data.map((list: any) => {
-        if(list.name !== 'country'){
+        if (list.name !== "country") {
           list.value = "";
         }
       });
@@ -1209,7 +1392,7 @@ class CreateUser extends Component<any, any> {
     } else {
       let data: any = this.state.withholding;
       data.map((list: any) => {
-        if(list.name !== 'country'){
+        if (list.name !== "country") {
           list.value = "";
         }
       });
@@ -1281,16 +1464,20 @@ class CreateUser extends Component<any, any> {
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
-    const isOwnerPhoneEists = owners.filter((items: any)=> items.mobilenumber === val)
-    const isStaffPhoneEists = staffs.filter((items: any)=> items.mobilenumber === val);
+    const isOwnerPhoneEists = owners.filter(
+      (items: any) => items.mobilenumber === val
+    );
+    const isStaffPhoneEists = staffs.filter(
+      (items: any) => items.mobilenumber === val
+    );
     if (type === "owner") {
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9 || val.length !== 10) {
-            owners[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== 9 || val.length !== 10) {
+            owners[idx].errObj.mobilenumberErr = "Please enter 9 Digit";
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             owners[idx].errObj.mobilenumberErr = "";
           }
         } else {
@@ -1313,11 +1500,11 @@ class CreateUser extends Component<any, any> {
     } else if (type === "staff") {
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9 || val.length !== 10) {
-            staffs[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== 9 || val.length !== 10) {
+            staffs[idx].errObj.mobilenumberErr = "Please enter 9 Digit";
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             staffs[idx].errObj.mobilenumberErr = "";
           }
         } else {
@@ -1338,21 +1525,16 @@ class CreateUser extends Component<any, any> {
       }));
     } else {
       if (e.target.name === "accInfo") {
-        if (!e.target.checked) {
-          this.setState({ isRendered: true }, () => {
+        if (this.state.isEditPage || this.state.isValidatePage) {
+          let userFields = this.props.location?.state.userFields;
+          if (!e.target.checked) {
+            this.getDynamicOptionFields(userFields);
+          } else {
+            this.setState({ withHolding: this.state.dynamicFields });
+          }
+        } else {
+          if (!e.target.checked) {
             let setFormArray: any = [];
-            // this.state.geographicFields.map( (list: any, i: number) => {
-            //   setFormArray.push({
-            //     name: list,
-            //     placeHolder: true,
-            //     value: list === "country" ?  this.getStoreData.country : '' ,
-            //     options:
-            //       list === "country"
-            //         ? this.state.countryList
-            //         : list === "country" ?  this.getStoreData.country : list === 'region' ? this.state.regionoptions : list === 'add' ? this.state.addoptions : list === "district" ? this.state.districtoptions : list === "epa" ? this.state.epaoptions : list === "village" ? this.state.villageoptions : '',
-            //     error: "",
-            //   });
-            // });
             this.state.geographicFields.map((list: any, i: number) => {
               setFormArray.push({
                 name: list,
@@ -1368,15 +1550,13 @@ class CreateUser extends Component<any, any> {
               });
             });
             this.setState({ withHolding: setFormArray });
-          });
-        } else {
-          this.setState({ accInfo: e.target.checked });
-          this.setState({ withHolding: this.state.dynamicFields });
+          } else {
+            this.setState({ withHolding: this.state.dynamicFields });
+          }
         }
         this.setState({ accInfo: e.target.checked });
       } else {
         let datas = JSON.parse(JSON.stringify(this.state.userData));
-        // let datas = this.state.userData;
         let { name, value } = e.target;
         datas[name] = value;
         this.setState({ userData: datas });
@@ -1397,7 +1577,7 @@ class CreateUser extends Component<any, any> {
         lastnameErr: "",
         mobilenumberErr: "",
         emailErr: "",
-        isPhoneEdit:true
+        isPhoneEdit: true,
       },
     };
     let usersObj = this.state.userData;
@@ -1436,7 +1616,7 @@ class CreateUser extends Component<any, any> {
           lastnameErr: "",
           mobilenumberErr: "",
           emailErr: "",
-          isPhoneEdit:true
+          isPhoneEdit: true,
         },
       });
     } else {
@@ -1453,7 +1633,6 @@ class CreateUser extends Component<any, any> {
 
   render() {
     console.log("dynamicfields", this.state.dynamicFields);
-    // let countryCode = (userinfo.countrycode).toLowerCase();
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
     const {
       currentStep,
@@ -1725,7 +1904,7 @@ class CreateUser extends Component<any, any> {
                                             country={countryCodeLower}
                                             value={item.mobilenumber}
                                             disabled={
-                                              (isEditPage || isValidatePage)
+                                              isEditPage || isValidatePage
                                                 ? true
                                                 : false
                                             }
@@ -2004,7 +2183,9 @@ class CreateUser extends Component<any, any> {
                                               country={countryCodeLower}
                                               value={item.mobilenumber}
                                               disabled={
-                                                (isEditPage || isValidatePage)  && (!item.errObj.isPhoneEdit) 
+                                                (isEditPage ||
+                                                  isValidatePage) &&
+                                                !item.errObj.isPhoneEdit
                                                   ? true
                                                   : false
                                               }
@@ -2228,7 +2409,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          onKeyPress={(e: any) => this.isNumberKey(e)}
+                          // onKeyPress={(e: any) => this.isNumberKey(e)}
                         />
                         {deliveryzipcodeErr && (
                           <span className="error">{deliveryzipcodeErr} </span>
@@ -2336,7 +2517,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          onKeyPress={(e: any) => this.isNumberKey(e)}
+                          // onKeyPress={(e: any) => this.isNumberKey(e)}
                           read-only={this.state.accInfo ? true : false}
                           value={
                             this.state.accInfo
