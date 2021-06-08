@@ -1271,7 +1271,7 @@ class ScanLogsTable extends Component<Props, States> {
                   padding: "7px",
                   border: "1px solid  #7eb343",
                 }}
-                handleClick={() => this.filterScans(retailerPopupData.staffid)}
+                handleClick={() => this.filterScans(retailerPopupData.userid)}
               />
             </DialogActions>
           </SimpleDialog>
