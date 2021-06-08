@@ -921,7 +921,7 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: userData.whtaccountname ? userData.whtaccountname : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
@@ -965,7 +965,7 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: userData.whtaccountname ? userData.whtaccountname : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
         taxid: userData.taxid,
         whtownername: userData.whtownername ? userData.whtownername : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
         deliverycountry: this.getStoreData.countryCode,
@@ -1101,6 +1101,18 @@ class CreateUser extends Component<any, any> {
         errObj.lastNameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
+          // if (userInfo.mobilenumber) {
+          //   errObj.mobilenumberErr =
+          //     userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+          // } else {
+          //   errObj.mobilenumberErr = "Please enter the mobile number";
+          // }
+          if ((!this.state.isEditPage || !this.state.isValidatePage) && userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
+            errObj.mobilenumberErr =
+              userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+          } else {
+            errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+          }
 
           if ((!this.state.isEditPage || !this.state.isValidatePage) && userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
             errObj.mobilenumberErr =
