@@ -217,7 +217,7 @@ class ScanLogsTable extends Component<Props, States> {
           const retailerOptions =
             retailers?.length > 0
               ? retailers.map((val: any) => {
-                  return { value: val.staffid, text: val.staffname };
+                  return { value: val.userid, text: val.username };
                 })
               : [];
           this.setState({

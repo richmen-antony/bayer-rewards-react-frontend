@@ -676,7 +676,7 @@ cus-btn-scanlog-filter[disabled] {
 }
 
 .scanlog-container {
-  height: 58vh;
+  height: 75vh;
   overflow: auto;
 }
 .card.order-accordion {
@@ -862,7 +862,9 @@ cus-btn-scanlog-filter[disabled] {
       }
     }
   }
-
+  .scanlog-container {
+    height: 58vh;
+  }
   
 }
 
@@ -920,9 +922,13 @@ cus-btn-scanlog-filter[disabled] {
       }
     }
   }
-  .scanlog-container {
-    height: 480px;
-  }
+  
 }
 
 
+@media only screen and (min-width: 2560px) and (max-width: 2880px) {
+  .scanlog-container {
+   height: 85vh;
+  }
+
+}
