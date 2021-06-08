@@ -386,9 +386,10 @@ class ChannelPartners extends Component<Props, States> {
                 firstnameErr: "",
                 lastnameErr: "",
                 mobilenumberErr: "",
+                isPhoneEdit: staffInfo.mobilenumber ? false : true
               },
             };
-            let obj = Object.assign(staffInfo, errObjd);
+            staffInfo = Object.assign(staffInfo, errObjd);
           });
         }
         this.setState({
@@ -400,26 +401,7 @@ class ChannelPartners extends Component<Props, States> {
     );
   };
 
-  handlePersonalChange = (e: any) => {
-    let val = this.state.userList;
-    if (val) {
-      if (e.target.name === "activateUser") {
-        this.setState({ activateUser: !this.state.activateUser }, () => {
-          val["status"] = this.state.activateUser ? "Active" : "Inactive";
-        });
-      } else {
-        val[e.target.name] = e.target.value;
-      }
-      this.setState({ userList: val, isRendered: true });
-      let dateValid = this.dateValidation(e);
-      let formValid = this.checkValidation();
-      if (dateValid && formValid) {
-        this.setState({ isValidateSuccess: true });
-      } else {
-        this.setState({ isValidateSuccess: false });
-      }
-    }
-  };
+ 
 
   dateValidation = (e: any) => {
     this.setState({ isValidateSuccess: false });
@@ -445,18 +427,16 @@ class ChannelPartners extends Component<Props, States> {
     this.state.dynamicFields.map((list: any, i: number) => {
       geoFields[list.name] = list.value;
     });
+    let newUserList = JSON.parse(JSON.stringify(this.state.userData));
+    // let newUserList = [...this.state.userData];
+    let formValid = this.checkValidation();
+    if(formValid) {
 
-    let newUserList = this.state.userData;
     if (this.state.isStaff) {
       newUserList.staffdetails.map((item: any, index: number) => {
         delete item.errObj;
       });
-      this.setState((prevState: any) => ({
-        userData: {
-          ...prevState.userData,
-          staffdetails: newUserList.staffdetails,
-        },
-      }));
+     
     } else {
       newUserList.staffdetails = [];
       this.setState((prevState: any) => ({
@@ -503,7 +483,7 @@ class ChannelPartners extends Component<Props, States> {
       billingvillage: userData.billingvillage,
       billingstreet: userData.billingstreet,
       billingzipcode: userData.billingzipcode,
-      staffdetails: [...this.state.userData.staffdetails],
+      staffdetails: newUserList.staffdetails,
     };
     const userDetails = {
       isedit: true,
@@ -511,29 +491,27 @@ class ChannelPartners extends Component<Props, States> {
       lastupdateddate: new Date().toJSON(),
     };
 
-    let formValid = this.checkValidation();
-    if (formValid) {
-      invokePostAuthService(updateUser, data, userDetails)
-        .then((response: any) => {
-          this.setState({
-            isLoader: false,
-          });
-          // toastSuccess("User Updated Successfully");
-          Alert("success", "User Updated Successfully");
-          this.handleClosePopup();
-          this.props.callAPI();
-        })
-        .catch((error: any) => {
-          this.setState({ isLoader: false });
-          let message = error.message;
-          if (message === "Retailer with the same Mobilenumber exists") {
-            message = "User with same Mobilenumber exists";
-          }
-          this.setState({ isRendered: true, staffPopup: false }, () => {
-            // toastInfo(message);
-            Alert("info", message);
-          });
+    invokePostAuthService(updateUser, data, userDetails)
+      .then((response: any) => {
+        this.setState({
+          isLoader: false,
         });
+        // toastSuccess("User Updated Successfully");
+        Alert("success", "User Updated Successfully");
+        this.handleClosePopup();
+        this.props.callAPI();
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        if (message === "Retailer with the same Mobilenumber exists") {
+          message = "User with same Mobilenumber exists";
+        }
+        this.setState({ isRendered: true, staffPopup: false }, () => {
+          // toastInfo(message);
+          Alert("info", message);
+        });
+      });
     }
   };
 
@@ -615,10 +593,24 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
+    let owners = this.state.userData.ownerRows;
+    let staffs = this.state.userData.staffdetails;
+    const isOwnerPhoneEists = owners.filter((items: any)=> items.mobilenumber === val)
+    const isStaffPhoneEists = staffs.filter((items: any)=> items.mobilenumber === val);
     if (type === "owner") {
       let owners = this.state.userData.ownerRows;
       if (key === "phone") {
-        owners[idx]["mobilenumber"] = val;
+        if (val) {
+          if(val.length !== 9) {
+            owners[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
+          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
+            owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
+          }else{
+            owners[idx].errObj.mobilenumberErr = "";
+          }
+        } else {
+          owners[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+        }
       } else if (e.target.name === "active") {
         owners[idx][e.target.name] = e.target.checked;
       } else {
@@ -634,6 +626,17 @@ class ChannelPartners extends Component<Props, States> {
     } else if (type === "staff") {
       let staffs = this.state.userData.staffdetails;
       if (key === "phone") {
+        if (val) {
+          if(val.length !== 9) {
+            staffs[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
+          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
+            staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
+          }else{
+            staffs[idx].errObj.mobilenumberErr = "";
+          }
+        } else {
+          staffs[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+        }
         staffs[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
         staffs[idx][e.target.name] = e.target.checked;
@@ -671,6 +674,7 @@ class ChannelPartners extends Component<Props, States> {
         lastnameErr: "",
         mobilenumberErr: "",
         emailErr: "",
+        isPhoneEdit:true
       },
     };
     let usersObj = this.state.userData;
@@ -708,6 +712,7 @@ class ChannelPartners extends Component<Props, States> {
           lastnameErr: "",
           mobilenumberErr: "",
           emailErr: "",
+          isPhoneEdit:true
         },
       });
     } else {
@@ -769,18 +774,23 @@ class ChannelPartners extends Component<Props, States> {
         firstNameErr: "",
         lastNameErr: "",
         emailNameErr: "",
-        mobilenumberErr: "",
+        mobilenumberErr: userInfo.errObj.mobilenumberErr,
       };
+
       errObj.firstNameErr = userInfo.firstname
         ? ""
         : "Please enter the First Name";
       errObj.lastNameErr = userInfo.lastname
         ? ""
         : "Please enter the last Name";
-      // errObj.emailErr=userInfo.email ? '' : "Please enter the email";
-      errObj.mobilenumberErr = userInfo.mobilenumber
-        ? ""
-        : "Please enter the mobile number";
+
+        if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
+          errObj.mobilenumberErr =
+            userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+        } else {
+          errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+        }
+
       userData.ownerRows[idx].errObj = errObj;
       if (
         errObj.firstNameErr !== "" ||
@@ -797,12 +807,13 @@ class ChannelPartners extends Component<Props, States> {
       }));
     });
 
-    userData.staffdetails.map((userInfo: any, idx: number) => {
+    userData.staffdetails?.map((userInfo: any, idx: number) => {
       let errObj: any = {
         firstNameErr: "",
         lastNameErr: "",
         emailNameErr: "",
-        mobilenumberErr: "",
+        mobilenumberErr:  userInfo.errObj.mobilenumberErr,
+        isPhoneEdit:  userInfo.errObj.isPhoneEdit ? true : false
       };
       errObj.firstNameErr = userInfo.firstname
         ? ""
@@ -810,9 +821,14 @@ class ChannelPartners extends Component<Props, States> {
       errObj.lastNameErr = userInfo.lastname
         ? ""
         : "Please enter the last Name";
-      errObj.mobilenumberErr = userInfo.mobilenumber
-        ? ""
-        : "Please enter the mobile number";
+
+      if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
+        errObj.mobilenumberErr =
+          userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+      } else {
+        errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+      }
+
       userData.staffdetails[idx].errObj = errObj;
       if (
         errObj.firstNameErr !== "" ||
@@ -1061,6 +1077,7 @@ class ChannelPartners extends Component<Props, States> {
                                               }}
                                               country={countryCodeLower}
                                               value={item.mobilenumber}
+                                              disabled={true}
                                               onChange={(value, e) =>
                                                 this.handleChange(
                                                   idx,
@@ -1329,6 +1346,11 @@ class ChannelPartners extends Component<Props, States> {
                                                 }}
                                                 country={countryCodeLower}
                                                 value={item.mobilenumber}
+                                                disabled={
+                                                  !item.errObj.isPhoneEdit
+                                                    ? true
+                                                    : false
+                                                }
                                                 onChange={(value, e) =>
                                                   this.handleChange(
                                                     idx,

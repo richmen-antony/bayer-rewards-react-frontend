@@ -194,15 +194,6 @@ class CreateUser extends Component<any, any> {
       type: country,
       id: nextLevel,
     };
-
-    // let stateResponse = [{}];
-    let nextHierarchyResponse = [
-      { text: "Central", value: "Central" },
-      { text: "Northern", value: "Northern" },
-      { text: "Western", value: "Western" },
-      { text: "Eastern", value: "Eastern" },
-    ];
-    this.setState({ hierarchyList: nextHierarchyResponse });
   }
 
   getGeographicFields() {
@@ -228,7 +219,6 @@ class CreateUser extends Component<any, any> {
             geographicFields: levels,
           },
           () => {
-            // this.getNextHierarchy( this.getStoreData.country, this.state.geographicFields[1]);
             if (this.props.location?.page) {
               let currentPage = this.props.location?.page;
               let data: any = getLocalStorageData("userData");
@@ -281,6 +271,7 @@ class CreateUser extends Component<any, any> {
                       firstnameErr: "",
                       lastnameErr: "",
                       mobilenumberErr: "",
+                      isPhoneEdit: staffInfo.mobilenumber ? false : true
                     },
                   };
                   let obj = Object.assign(staffInfo, errObjd);
@@ -387,7 +378,7 @@ class CreateUser extends Component<any, any> {
         let filteredAdd = allRegions.filter(
           (region: any) => region.name === data.deliveryregion
         );
-        geoLocationInfo.region = filteredAdd[0].code;
+        geoLocationInfo.region = filteredAdd[0]?.code;
         filteredAdd[0]?.add.forEach((item: any) => {
           let addInfo = { text: item.name, value: item.name, code: item.code };
           addoptions.push(addInfo);
@@ -395,7 +386,7 @@ class CreateUser extends Component<any, any> {
         let selectedAdd = addoptions.filter(
           (district: any) => district.text === data.deliverystate
         );
-        geoLocationInfo.add = selectedAdd[0].code;
+        geoLocationInfo.add = selectedAdd[0]?.code;
         add = data.deliverystate;
         this.setState({ addoptions: addoptions });
       }
@@ -404,10 +395,10 @@ class CreateUser extends Component<any, any> {
         let filteredAdd = allRegions.filter(
           (region: any) => region.name === data.deliveryregion
         );
-        let addList = filteredAdd[0].add.filter(
+        let addList = filteredAdd[0]?.add.filter(
           (addinfo: any) => addinfo.name === data.deliverystate
         );
-        addList[0].district.forEach((item: any) => {
+        addList && addList[0]?.district.forEach((item: any) => {
           let addInfo = { text: item.name, value: item.name, code: item.code };
           districtoptions.push(addInfo);
         });
@@ -416,14 +407,14 @@ class CreateUser extends Component<any, any> {
         );
 
         // district = 'Mzimba';
-        geoLocationInfo.district = selectedDistrict[0].code;
+        geoLocationInfo.district = selectedDistrict[0]?.code;
         this.setState({ districtoptions: districtoptions });
       }
       if ("deliverycity" in data) {
         epaoptions = await this.getEPADetails();
         epa = data.deliverycity;
         // epa = 'Bwengu';
-        epaoptions.forEach((city: any) => {
+        epaoptions?.forEach((city: any) => {
           if (city.name === epa) {
             geoLocationInfo.epa = city.code;
           }
@@ -435,8 +426,8 @@ class CreateUser extends Component<any, any> {
       if ("deliveryvillage" in data) {
         village = data.deliveryvillage;
         villageoptions = await this.getVillageDetails();
-        if (villageoptions.length) {
-          villageoptions.forEach((village: any) => {
+        if (villageoptions?.length) {
+          villageoptions?.forEach((village: any) => {
             if (village.name === village) {
               geoLocationInfo.village = village.code;
             }
@@ -532,7 +523,7 @@ class CreateUser extends Component<any, any> {
           add.push(regionInfo);
         });
         geoLocationInfo.region =
-          filteredRegion.length && filteredRegion[0].code;
+          filteredRegion.length && filteredRegion[0]?.code;
         if (this.state.currentStep == 2) {
           dynamicFieldVal[index + 1].options = add;
           dynamicFieldVal[index].value = value;
@@ -566,7 +557,7 @@ class CreateUser extends Component<any, any> {
           };
           district.push(districtInfo);
         });
-        geoLocationInfo.add = addList[0].code;
+        geoLocationInfo.add = addList[0]?.code;
         if (this.state.currentStep == 2) {
           dynamicFieldVal[index + 1].options = district;
           dynamicFieldVal[index].value = value;
@@ -811,7 +802,7 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: userData.whtaccountname ? userData.whtaccountname : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
@@ -855,7 +846,7 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: userData.whtaccountname ? userData.whtaccountname : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
@@ -976,30 +967,34 @@ class CreateUser extends Component<any, any> {
   checkValidation() {
     let formValid = true;
     let userData = this.state.userData;
-
     if (this.state.currentStep === 1) {
       userData.ownerRows.map((userInfo: any, idx: number) => {
         let errObj: any = {
           firstNameErr: "",
           lastNameErr: "",
           emailNameErr: "",
-          mobilenumberErr: "",
+          mobilenumberErr: userInfo.errObj.mobilenumberErr,
         };
+
         errObj.firstNameErr = userInfo.firstname
           ? ""
           : "Please enter the First Name";
         errObj.lastNameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
+          // if (userInfo.mobilenumber) {
+          //   errObj.mobilenumberErr =
+          //     userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+          // } else {
+          //   errObj.mobilenumberErr = "Please enter the mobile number";
+          // }
+          if ((!this.state.isEditPage || !this.state.isValidatePage) && userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
+            errObj.mobilenumberErr =
+              userInfo.mobilenumber.length == 9 || 10 ? "" : "Please enter 9 Digit";
+          } else {
+            errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+          }
 
-        if (userInfo.mobilenumber) {
-          errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == 9 || 10
-              ? ""
-              : "Please enter 9 Digit";
-        } else {
-          errObj.mobilenumberErr = "Please enter the mobile number";
-        }
         userData.ownerRows[idx].errObj = errObj;
         if (
           errObj.firstNameErr !== "" ||
@@ -1016,12 +1011,13 @@ class CreateUser extends Component<any, any> {
         }));
       });
 
-      userData.staffdetails.map((userInfo: any, idx: number) => {
+      userData.staffdetails?.map((userInfo: any, idx: number) => {
         let errObj: any = {
           firstNameErr: "",
           lastNameErr: "",
           emailNameErr: "",
-          mobilenumberErr: "",
+          mobilenumberErr:  userInfo.errObj.mobilenumberErr,
+          isPhoneEdit:  userInfo.errObj.isPhoneEdit ? true : false
         };
         errObj.firstNameErr = userInfo.firstname
           ? ""
@@ -1030,14 +1026,15 @@ class CreateUser extends Component<any, any> {
           ? ""
           : "Please enter the last Name";
 
-        if (userInfo.mobilenumber) {
+        if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
           errObj.mobilenumberErr =
             userInfo.mobilenumber.length == 9 || 10
               ? ""
               : "Please enter 9 Digit";
         } else {
-          errObj.mobilenumberErr = "Please enter the mobile number";
+          errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
         }
+
         userData.staffdetails[idx].errObj = errObj;
         if (
           errObj.firstNameErr !== "" ||
@@ -1054,6 +1051,7 @@ class CreateUser extends Component<any, any> {
         }));
       });
     } else if (this.state.currentStep === 2) {
+      userData.whtaccountname =userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname;
       let deliverystreet = userData.deliverystreet
         ? ""
         : "Please enter the Street";
@@ -1076,9 +1074,11 @@ class CreateUser extends Component<any, any> {
         }
         this.setState({ isRendered: true });
       });
+      this.setState({userData:userData})
     } else {
       let accInfo = this.state.accInfo;
       let whtaccountname = userData.whtaccountname
+    
         ? ""
         : "Please enter account name";
       let whtownername = userData.whtownername ? "" : "Please enter owner name";
@@ -1119,6 +1119,7 @@ class CreateUser extends Component<any, any> {
       } else {
         formValid = true;
       }
+  
     }
     return formValid;
   }
@@ -1193,7 +1194,9 @@ class CreateUser extends Component<any, any> {
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
       data.map((list: any) => {
-        list.value = "";
+        if(list.name !== 'country'){
+          list.value = "";
+        }
       });
       this.setState((prevState: any) => ({
         userData: {
@@ -1206,7 +1209,9 @@ class CreateUser extends Component<any, any> {
     } else {
       let data: any = this.state.withholding;
       data.map((list: any) => {
-        list.value = "";
+        if(list.name !== 'country'){
+          list.value = "";
+        }
       });
       this.setState((prevState: any) => ({
         userData: {
@@ -1274,13 +1279,20 @@ class CreateUser extends Component<any, any> {
   };
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
+    let owners = this.state.userData.ownerRows;
+    let staffs = this.state.userData.staffdetails;
+    const isOwnerPhoneEists = owners.filter((items: any)=> items.mobilenumber === val)
+    const isStaffPhoneEists = staffs.filter((items: any)=> items.mobilenumber === val);
     if (type === "owner") {
-      let owners = this.state.userData.ownerRows;
-      let errObj = "";
       if (key === "phone") {
         if (val) {
-          owners[idx].errObj.mobilenumberErr =
-            val.length == 9 || 10 ? "" : "Please enter 9 Digit";
+          if(val.length !== 9 || val.length !== 10) {
+            owners[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
+          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
+            owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
+          }else{
+            owners[idx].errObj.mobilenumberErr = "";
+          }
         } else {
           owners[idx].errObj.mobilenumberErr = "Please enter the mobile number";
         }
@@ -1299,15 +1311,19 @@ class CreateUser extends Component<any, any> {
         },
       }));
     } else if (type === "staff") {
-      let staffs = this.state.userData.staffdetails;
       if (key === "phone") {
-        staffs[idx]["mobilenumber"] = val;
         if (val) {
-          staffs[idx].errObj.mobilenumberErr =
-            val.length == 9 || 10 ? "" : "Please enter 9 Digit";
+          if(val.length !== 9 || val.length !== 10) {
+            staffs[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
+          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
+            staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
+          }else{
+            staffs[idx].errObj.mobilenumberErr = "";
+          }
         } else {
           staffs[idx].errObj.mobilenumberErr = "Please enter the mobile number";
         }
+        staffs[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
         staffs[idx][e.target.name] = e.target.checked;
       } else {
@@ -1359,7 +1375,8 @@ class CreateUser extends Component<any, any> {
         }
         this.setState({ accInfo: e.target.checked });
       } else {
-        let datas = this.state.userData;
+        let datas = JSON.parse(JSON.stringify(this.state.userData));
+        // let datas = this.state.userData;
         let { name, value } = e.target;
         datas[name] = value;
         this.setState({ userData: datas });
@@ -1380,6 +1397,7 @@ class CreateUser extends Component<any, any> {
         lastnameErr: "",
         mobilenumberErr: "",
         emailErr: "",
+        isPhoneEdit:true
       },
     };
     let usersObj = this.state.userData;
@@ -1418,6 +1436,7 @@ class CreateUser extends Component<any, any> {
           lastnameErr: "",
           mobilenumberErr: "",
           emailErr: "",
+          isPhoneEdit:true
         },
       });
     } else {
@@ -1706,7 +1725,7 @@ class CreateUser extends Component<any, any> {
                                             country={countryCodeLower}
                                             value={item.mobilenumber}
                                             disabled={
-                                              isEditPage || isValidatePage
+                                              (isEditPage || isValidatePage)
                                                 ? true
                                                 : false
                                             }
@@ -1985,7 +2004,7 @@ class CreateUser extends Component<any, any> {
                                               country={countryCodeLower}
                                               value={item.mobilenumber}
                                               disabled={
-                                                isEditPage || isValidatePage
+                                                (isEditPage || isValidatePage)  && (!item.errObj.isPhoneEdit) 
                                                   ? true
                                                   : false
                                               }
