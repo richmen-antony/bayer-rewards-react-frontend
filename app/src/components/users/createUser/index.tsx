@@ -846,9 +846,9 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname ? userData.whtaccountname : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
+        whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
-        whtownername: userData.whtownername,
+        whtownername: userData.whtownername ? userData.whtownername : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
         deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
@@ -1051,7 +1051,7 @@ class CreateUser extends Component<any, any> {
         }));
       });
     } else if (this.state.currentStep === 2) {
-      userData.whtaccountname =(this.state.isEditPage || this.state.isValidatePage) ? userData.whtaccountname: userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname ;
+      userData.whtownername =(this.state.isEditPage || this.state.isValidatePage) ? userData.whtownername: userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname ;
       let deliverystreet = userData.deliverystreet
         ? ""
         : "Please enter the Street";
