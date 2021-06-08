@@ -499,9 +499,9 @@ class UserList extends Component<Props, States> {
     const { downloadUserList } = apiURL;
 
     let data = {
-      countrycode: getStoreData.countryCode
-      // usertype: "CHANNEL PARTNER",
-      // partnertype: "Retailer",
+      countrycode: getStoreData.countryCode,
+      usertype: "EXTERNAL",
+      partnertype: "RETAILER",
     };
     let { status, lastmodifieddatefrom, lastmodifieddateto, region, add, district }: any =
       this.state.selectedFilters;
@@ -522,6 +522,7 @@ class UserList extends Component<Props, States> {
 
     invokeGetAuthService(downloadUserList, data)
       .then((response) => {
+        console.log({response})
         const data = response;
         downloadCsvFile(data, "user.csv");
       })
