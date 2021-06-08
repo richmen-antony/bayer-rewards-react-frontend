@@ -53,6 +53,7 @@ let geoLocationInfo = {
 };
 let epa: any = [];
 let levelFive: any = [];
+let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 10 : 9;
 
 class CreateUser extends Component<any, any> {
   loggedUserInfo: any;
@@ -920,7 +921,7 @@ class CreateUser extends Component<any, any> {
           ? "ACTIVE"
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
-        iscreatedfrommobile: false,
+        iscreatedfrommobile: userData.iscreatedfrommobile,
         whtaccountname: userData.whtaccountname ? userData.whtaccountname : userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
@@ -1000,7 +1001,7 @@ class CreateUser extends Component<any, any> {
             lastupdateddate: new Date().toJSON(),
           }
         : "";
-    console.log("all@@@@s", data);
+    console.log("all@@@@s", data, userDetails);
     const url =
       this.state.isValidatePage || this.state.isEditPage
         ? updateUser
@@ -1109,16 +1110,9 @@ class CreateUser extends Component<any, any> {
           // }
           if ((!this.state.isEditPage || !this.state.isValidatePage) && userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
             errObj.mobilenumberErr =
-              userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+              userInfo.mobilenumber.length == phoneLength ? "" : `Please enter ${phoneLength} Digit`;
           } else {
-            errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
-          }
-
-          if ((!this.state.isEditPage || !this.state.isValidatePage) && userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
-            errObj.mobilenumberErr =
-              userInfo.mobilenumber.length == 9 || 10 ? "" : "Please enter 9 Digit";
-          } else {
-            errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
+            errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ? errObj.mobilenumberErr:"Please enter the mobile number";
           }
 
         userData.ownerRows[idx].errObj = errObj;
@@ -1154,9 +1148,9 @@ class CreateUser extends Component<any, any> {
 
         if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
           errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == 9 || 10
+          (userInfo.mobilenumber.length == phoneLength) 
               ? ""
-              : "Please enter 9 Digit";
+              : `Please enter ${phoneLength} Digit`;
         } else {
           errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
         }
@@ -1412,8 +1406,8 @@ class CreateUser extends Component<any, any> {
     if (type === "owner") {
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9 || val.length !== 10) {
-            owners[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
+          if(val.length !== phoneLength ) {
+            owners[idx].errObj.mobilenumberErr =`Please enter ${phoneLength} Digit`;
           } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
             owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
           }else{
@@ -1439,8 +1433,8 @@ class CreateUser extends Component<any, any> {
     } else if (type === "staff") {
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9 || val.length !== 10) {
-            staffs[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
+          if(val.length !== phoneLength ) {
+            staffs[idx].errObj.mobilenumberErr ="`Please enter ${phoneLength} Digit`";
           } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
             staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
           }else{

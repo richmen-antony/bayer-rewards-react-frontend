@@ -88,6 +88,8 @@ const getStoreData = {
   Language: "EN-US",
 };
 
+let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 10 : 9;
+
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(2),
@@ -463,7 +465,7 @@ class ChannelPartners extends Component<Props, States> {
       accounttype: userData.rolename,
       userstatus: newUserList.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
       storewithmultiuser: this.state.isStaff ? true : false,
-      iscreatedfrommobile: false,
+      iscreatedfrommobile: userData.iscreatedfrommobile,
       whtaccountname: userData.whtaccountname,
       taxid: userData.taxid,
       whtownername: userData.whtownername,
@@ -601,7 +603,7 @@ class ChannelPartners extends Component<Props, States> {
       let owners = this.state.userData.ownerRows;
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9) {
+          if(val.length !== phoneLength ) {
             owners[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
           } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
             owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
@@ -627,7 +629,7 @@ class ChannelPartners extends Component<Props, States> {
       let staffs = this.state.userData.staffdetails;
       if (key === "phone") {
         if (val) {
-          if(val.length !== 9) {
+          if(val.length !== phoneLength ) {
             staffs[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
           } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
             staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
@@ -786,7 +788,7 @@ class ChannelPartners extends Component<Props, States> {
 
         if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
           errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+            (userInfo.mobilenumber.length == phoneLength) ? "" : "Please enter 9 Digit";
         } else {
           errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
         }
@@ -824,7 +826,7 @@ class ChannelPartners extends Component<Props, States> {
 
       if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
         errObj.mobilenumberErr =
-          userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+        (userInfo.mobilenumber.length == phoneLength)? "" : "Please enter 9 Digit";
       } else {
         errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
       }
