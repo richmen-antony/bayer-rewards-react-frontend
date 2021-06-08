@@ -2347,7 +2347,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          onKeyPress={(e: any) => this.isNumberKey(e)}
+                          // onKeyPress={(e: any) => this.isNumberKey(e)}
                         />
                         {deliveryzipcodeErr && (
                           <span className="error">{deliveryzipcodeErr} </span>
@@ -2455,7 +2455,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          onKeyPress={(e: any) => this.isNumberKey(e)}
+                          // onKeyPress={(e: any) => this.isNumberKey(e)}
                           read-only={this.state.accInfo ? true : false}
                           value={
                             this.state.accInfo
