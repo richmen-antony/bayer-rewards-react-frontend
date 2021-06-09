@@ -124,11 +124,11 @@
 
     .status.active {
       color: #1ccead;
-      background-color: #E3F8F4
+      background-color: #e3f8f4;
     }
     .status.inactive {
-      color: #FF0000;
-      background-color:  #FF000026;
+      color: #ff0000;
+      background-color: #ff000026;
     }
     .status.pending {
       color: #ff9d00;
@@ -137,7 +137,7 @@
     }
     .status.declined {
       color: #ec0c0c;
-      background-color: #FFB1B1;
+      background-color: #ffb1b1;
     }
     .max-image {
       margin-left: 60px;
@@ -327,7 +327,7 @@
 }
 .partner {
   display: flex;
-  align-items:center;
+  align-items: center;
 }
 
 .add-plus-icon {
@@ -346,78 +346,77 @@
   transition-timing-function: ease-out;
 }
 
-.cus-btn-user{
-  color:#ffffff;
-  background-color: #7EB343;
+.cus-btn-user {
+  color: #ffffff;
+  background-color: #7eb343;
   width: 180px;
-  height:35px;
+  height: 35px;
   border-radius: 20px;
-  border :0;
+  border: 0;
   margin-left: 30px;
- 
-  span{
+
+  span {
     position: absolute;
     right: -7px;
     top: 0px;
   }
-  .arrow-i{
+  .arrow-i {
     position: relative;
     left: 30px;
   }
-  .layout{
+  .layout {
     width: 66%;
     // border-radius: 20px;
     border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px
+    border-bottom-right-radius: 15px;
   }
 }
 
-.dec-btn-user{
-  color:#ffffff;
+.dec-btn-user {
+  color: #ffffff;
   background-color: #e24c4b;
   width: 180px;
-  height:35px;
+  height: 35px;
   border-radius: 20px;
-  border :0;
+  border: 0;
   margin-left: 30px;
 }
 
-.cus-btn-user.reset{
-    background-color: #ffffff ; 
-    border: 1px solid #dee2e6;
-    color: #10384F;
+.cus-btn-user.reset {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  color: #10384f;
 }
 
-.cus-btn-user-filter{
-  color:#ffffff;
-  background-color: #7EB343;
+.cus-btn-user-filter {
+  color: #ffffff;
+  background-color: #7eb343;
   width: 125px;
-  height:35px;
+  height: 35px;
   border-radius: 20px;
-  border :0;
-  box-shadow: 0px 3px 6px #C7C7C729;
- 
-  span{
+  border: 0;
+  box-shadow: 0px 3px 6px #c7c7c729;
+
+  span {
     position: relative;
-    left:38px;
+    left: 38px;
     margin-left: -45px;
   }
-  .arrow-i{
+  .arrow-i {
     position: relative;
     left: 30px;
     width: 10%;
   }
-  .layout{
+  .layout {
     width: 40%;
     border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px
+    border-bottom-right-radius: 15px;
   }
 }
-.cus-btn-user-filter.reset{
-  background-color: #ffffff ; 
+.cus-btn-user-filter.reset {
+  background-color: #ffffff;
   border: 1px solid #dee2e6;
-  color: #10384F;
-  
+  color: #10384f;
 }
 .retailer-id {
   .retailer-icon {
@@ -438,20 +437,24 @@
   }
 }
 
-.change-logs{
-  .table th{
+.change-logs {
+  .table th {
     border: none !important;
     vertical-align: middle !important;
     text-align: inherit;
     padding: 5px;
-  
   }
 }
-.staffcount{
+.staffcount {
   margin-top: -7px !important;
-  position:absolute !important;
+  position: absolute !important;
   right: unset !important;
   top: unset !important;
+}
+
+.ml-3,
+.mx-3 {
+  margin-left: 0.5rem !important;
 }
 @media only screen and (max-width: 1400px) {
   .card-height {
@@ -464,7 +467,7 @@
         tr {
           th {
             padding: 15px 5px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
           }
         }
@@ -510,7 +513,7 @@
         tr {
           th {
             padding: 15px 5px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
           }
         }
@@ -528,6 +531,7 @@
                 margin-right: 5px;
               }
             }
+
             .max-image {
               margin-left: 40px;
             }

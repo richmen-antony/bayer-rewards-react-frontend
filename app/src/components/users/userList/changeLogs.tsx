@@ -14,10 +14,7 @@ import leftArrow from "../../../assets/icons/left_arrow.svg";
 import Download from "../../../assets/icons/download.svg";
 import { SearchInput } from "../../../utility/widgets/input/search-input";
 import { Pagination } from "../../../utility/widgets/pagination";
-import {
-  downloadCsvFile,
-  ErrorMsg,
-} from "../../../utility/helper";
+import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import Validator from "../../../utility/validator";
 
@@ -30,7 +27,7 @@ type Props = {
   next: any;
   pageNumberClick: any;
   handlePaginationChange: any;
-  totalData?: number
+  totalData?: number;
 };
 type States = {
   isLoader: boolean;
@@ -40,7 +37,7 @@ type States = {
   pageNo: number;
   isAsc: Boolean;
   totalData: number;
-  loggedUserInfo:any
+  loggedUserInfo: any;
 };
 
 class ChangeLogs extends Component<Props, States> {
@@ -57,7 +54,6 @@ class ChangeLogs extends Component<Props, States> {
       isAsc: true,
       totalData: 0,
       loggedUserInfo: {},
-
     };
     this.timeOut = 0;
   }
@@ -74,8 +70,6 @@ class ChangeLogs extends Component<Props, States> {
       }
     );
   }
-    
-  
 
   getChangeLogs = () => {
     const { changeLogs } = apiURL;
@@ -89,16 +83,17 @@ class ChangeLogs extends Component<Props, States> {
 
     invokeGetAuthService(changeLogs, data)
       .then((response: any) => {
-        if(response.body){
+        if (response.body) {
           const total = response.body?.totalrows;
           this.setState({
             isLoader: false,
             allChangeLogs:
-              Object.keys(response.body).length !== 0 ? response.body?.rows : [],
+              Object.keys(response.body).length !== 0
+                ? response.body?.rows
+                : [],
             totalData: Number(total),
           });
         }
-       
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
@@ -156,15 +151,18 @@ class ChangeLogs extends Component<Props, States> {
     } else if (e.target.name === "gotopage") {
       const { totalData, rowsPerPage } = this.state;
       const pageData = Math.ceil(totalData / rowsPerPage);
-      value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
+      value =
+        e.target.value === "0" || pageData < e.target.value
+          ? ""
+          : e.target.value;
       let isNumeric = Validator.validateNumeric(e.target.value);
       if (isNumeric) {
         this.setState({ pageNo: value }, () => {
           if (this.state.pageNo && pageData >= this.state.pageNo) {
             setTimeout(() => {
-              this.state.pageNo&&this.getChangeLogs();
+              this.state.pageNo && this.getChangeLogs();
             }, 1000);
-          } 
+          }
         });
       }
     }
@@ -223,8 +221,12 @@ class ChangeLogs extends Component<Props, States> {
                 tolltip="Search applicable for User Name, Field, Old Value and New Value"
               />
               <div>
-                <button className="btn btn-primary" style={{backgroundColor:"#1F445A"}} onClick={this.download}>
-                  <img src={Download} width="17" alt={NoImage}  />
+                <button
+                  className="btn btn-primary"
+                  style={{ backgroundColor: "#1F445A" }}
+                  onClick={this.download}
+                >
+                  <img src={Download} width="17" alt={NoImage} />
                 </button>
               </div>
             </div>
@@ -237,7 +239,7 @@ class ChangeLogs extends Component<Props, States> {
                   <tr>
                     <th
                       onClick={(e) =>
-                        this.handleSort(e, "username", allChangeLogs, isAsc)
+                        this.handleSort(e, "userid", allChangeLogs, isAsc)
                       }
                     >
                       User Name
@@ -255,7 +257,7 @@ class ChangeLogs extends Component<Props, States> {
                     </th>
                     <th
                       onClick={(e) =>
-                        this.handleSort(e, "field", allChangeLogs, isAsc)
+                        this.handleSort(e, "fieldname", allChangeLogs, isAsc)
                       }
                     >
                       Field

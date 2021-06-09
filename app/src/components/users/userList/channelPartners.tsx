@@ -227,6 +227,7 @@ class ChannelPartners extends Component<Props, States> {
     let res = [];
     res.push(
       <th
+        style={{ width: "10%" }}
         onClick={(e) =>
           this.handleSort(e, "username", allChannelPartners, isAsc)
         }
@@ -245,8 +246,9 @@ class ChannelPartners extends Component<Props, States> {
     );
     res.push(
       <th
+        style={{ width: "10%" }}
         onClick={(e) =>
-          this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)
+          this.handleSort(e, "ownerphonenumber", allChannelPartners, isAsc)
         }
       >
         {"MOBILE#"}
@@ -259,6 +261,7 @@ class ChannelPartners extends Component<Props, States> {
     );
     res.push(
       <th
+        style={{ width: "13%" }}
         onClick={(e) =>
           this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)
         }
@@ -273,8 +276,9 @@ class ChannelPartners extends Component<Props, States> {
     );
     res.push(
       <th
+        style={{ textAlign: "left", width: "10%" }}
         onClick={(e) =>
-          this.handleSort(e, "whtownername", allChannelPartners, isAsc)
+          this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)
         }
       >
         {"OWNER NAME"}
@@ -293,10 +297,11 @@ class ChannelPartners extends Component<Props, States> {
         columnname = columnname.toUpperCase();
         res.push(
           <th
+            style={{ textAlign: "left", width: "8%" }}
             onClick={(e) =>
               this.handleSort(
                 e,
-                columnname.toLowerCase(),
+                "delivery" + columnname.toLowerCase(),
                 allChannelPartners,
                 isAsc
               )
@@ -314,8 +319,8 @@ class ChannelPartners extends Component<Props, States> {
     }
     let nextIndex: number =
       staticColumn + (this.state.geographicFields.length - 1);
-    res.push(<th>{"STAFF COUNT"}</th>);
-    res.push(<th>{"STATUS"}</th>);
+    res.push(<th style={{ width: "8%" }}>{"STAFF COUNT"}</th>);
+    res.push(<th style={{ width: "10%" }}>{"STATUS"}</th>);
     res.push(<th>{"UPDATED BY"}</th>);
     res.push(<th></th>);
 
@@ -356,7 +361,8 @@ class ChannelPartners extends Component<Props, States> {
             mobilenumberErr: "",
           },
           firstname: userFields.ownerfirstname,
-          active: userFields.userstatus === "ACTIVE" || "PENDING" ? true : false,
+          active:
+            userFields.userstatus === "ACTIVE" || "PENDING" ? true : false,
           lastname: userFields.ownerlastname,
           mobilenumber: userFields.ownerphonenumber,
           email: userFields.owneremail,
@@ -1622,18 +1628,20 @@ class ChannelPartners extends Component<Props, States> {
                           : { borderLeft: "8px solid #FF0000" }
                       }
                     >
-                      <td>{list.username}</td>
-                      <td>{list.ownerphonenumber} </td>
-                      <td style={{ textAlign: "left" }}>
+                      <td style={{ width: "10%" }}>{list.username}</td>
+                      <td style={{ width: "10%" }}>{list.ownerphonenumber} </td>
+                      <td style={{ textAlign: "left", width: "13%" }}>
                         {list.whtaccountname}{" "}
                       </td>
-                      <td style={{ textAlign: "left" }}>
-                        {list.ownerfirstname+' '+list.ownerlastname}{" "}
+                      <td style={{ textAlign: "left", width: "10%" }}>
+                        {list.ownerfirstname + " " + list.ownerlastname}{" "}
                       </td>
-                      <td>{list.deliveryregion} </td>
-                      <td>{list.deliverystate} </td>
-                      <td>{list.deliverydistrict} </td>
-                      <td style={{ textAlign: "center" }}>
+                      <td style={{ textAlign: "left", width: "7%" }}>
+                        {list.deliveryregion}{" "}
+                      </td>
+                      <td style={{ width: "7%" }}>{list.deliverystate} </td>
+                      <td style={{ width: "10%" }}>{list.deliverydistrict} </td>
+                      <td style={{ textAlign: "center", width: "8%" }}>
                         <div className="retailer-id">
                           <p>
                             {list.staffdetails?.length}
@@ -1647,7 +1655,7 @@ class ChannelPartners extends Component<Props, States> {
                           </p>
                         </div>
                       </td>
-                      <td>
+                      <td style={{ width: "7%" }}>
                         <span
                           onClick={(event: any) => {
                             this.showPopup(event, "deActivatePopup");
@@ -1664,10 +1672,10 @@ class ChannelPartners extends Component<Props, States> {
                               ? "declined"
                               : ""
                           }`}
-                          style={{ fontStyle: "12px", height: "32px" }}
+                          style={{ fontStyle: "12px", height: "30px" }}
                         >
                           <img
-                            style={{ marginRight: "8px" }}
+                            style={{ marginRight: "6px" }}
                             src={
                               list.userstatus === "ACTIVE"
                                 ? Check
@@ -1684,7 +1692,7 @@ class ChannelPartners extends Component<Props, States> {
                           {_.startCase(_.toLower(list.userstatus))}
                         </span>
                       </td>
-                      <td style={{ textAlign: "center" }}>
+                      <td style={{ textAlign: "right", width: "9%" }}>
                         {list.lastupdatedby}
                       </td>
                       <td>
@@ -1692,13 +1700,15 @@ class ChannelPartners extends Component<Props, States> {
                           <img
                             className="edit"
                             src={
-                              (list.userstatus == "DECLINED" ||  list.userstatus == "PENDING")
+                              list.userstatus == "DECLINED" ||
+                              list.userstatus == "PENDING"
                                 ? EditDisabled
                                 : Edit
                             }
                             width="20"
                             onClick={(event) => {
-                              (list.userstatus == "DECLINED" ||  list.userstatus == "PENDING")
+                              list.userstatus == "DECLINED" ||
+                              list.userstatus == "PENDING"
                                 ? event.preventDefault()
                                 : this.editUser(list);
                             }}
