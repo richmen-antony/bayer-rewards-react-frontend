@@ -491,21 +491,21 @@
     }
   }
 
-  .change-logs{
+  .change-logs {
     table {
-     height: 65vh;
-     overflow-y: scroll;
- }
-}
+      height: 65vh;
+      overflow-y: scroll;
+    }
+  }
 }
 
-@media only screen and(min-width:1400px) and (max-width: 1920px)  {
+@media only screen and(min-width:1400px) and (max-width: 1920px) {
   .card-height {
     height: 84vh;
   }
   .userlist-table {
     table {
-      height: 65vh;
+      height: 63vh;
       thead {
         tr {
           th {
@@ -536,24 +536,26 @@
       }
     }
   }
-  .change-logs{
+  .change-logs {
     table {
-      height: 65vh;
-     overflow-y: scroll;
- }
-}
+      height: 72vh;
+      overflow-y: scroll;
+    }
+  }
 }
 
 @media only screen and (min-width: 2560px) and (max-width: 2880px) {
-  .change-logs{
+  .change-logs {
     table {
       height: 80vh;
+      overflow-y: scroll;
     }
-   }
+  }
 
-   .userlist-table {
+  .userlist-table {
     table {
-      height: 80vh;
+      height: 89vh;
+      overflow-y: scroll;
     }
   }
 }
