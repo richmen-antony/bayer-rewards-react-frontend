@@ -240,7 +240,7 @@ class CreateUser extends Component<any, any> {
                   mobilenumberErr: "",
                 },
                 firstname: userFields.ownerfirstname,
-                active: userFields.userstatus === "ACTIVE" ? true : false,
+                active: userFields.userstatus === "ACTIVE" || "PENDING" ? true : false,
                 lastname: userFields.ownerlastname,
                 mobilenumber: userFields.ownerphonenumber,
                 email: userFields.owneremail,
@@ -277,6 +277,7 @@ class CreateUser extends Component<any, any> {
                       mobilenumberErr: "",
                       isPhoneEdit: staffInfo.mobilenumber ? false : true,
                     },
+
                   };
                   let obj = Object.assign(staffInfo, errObjd);
                 });
@@ -926,6 +927,9 @@ class CreateUser extends Component<any, any> {
     this.setState({ isLoader: true });
     let userData = this.state.userData;
     console.log("allDatas", this.state.userData);
+    // userData.staffdetails.forEach((staffInfo:any) => {
+    //   staffInfo.active = staffInfo.active ? 'ACTIVE' : 'INACTIVE'
+    // })
 
     let data = {};
     if (this.state.isEditPage || this.state.isValidatePage) {

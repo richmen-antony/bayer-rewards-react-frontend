@@ -356,7 +356,7 @@ class ChannelPartners extends Component<Props, States> {
             mobilenumberErr: "",
           },
           firstname: userFields.ownerfirstname,
-          active: userFields.userstatus === "ACTIVE" ? true : false,
+          active: userFields.userstatus === "ACTIVE" || "PENDING" ? true : false,
           lastname: userFields.ownerlastname,
           mobilenumber: userFields.ownerphonenumber,
           email: userFields.owneremail,
@@ -438,6 +438,7 @@ class ChannelPartners extends Component<Props, States> {
       if (this.state.isStaff) {
         newUserList.staffdetails.map((item: any, index: number) => {
           delete item.errObj;
+          // item.active = item.active ? 'ACTIVE' : 'INACTIVE'
         });
       } else {
         newUserList.staffdetails = [];
@@ -530,7 +531,7 @@ class ChannelPartners extends Component<Props, States> {
       });
     } else {
       let condUrl;
-      if (userstatus === "INACTIVE") {
+      if (userstatus === "INACTIVE" || userstatus === "DECLINED") {
         condUrl = activateChannelPartner;
       } else if (userstatus === "ACTIVE") {
         condUrl = deactivateChannelPartner;
@@ -1627,7 +1628,7 @@ class ChannelPartners extends Component<Props, States> {
                         {list.whtaccountname}{" "}
                       </td>
                       <td style={{ textAlign: "left" }}>
-                        {list.whtownername}{" "}
+                        {list.ownerfirstname+' '+list.ownerlastname}{" "}
                       </td>
                       <td>{list.deliveryregion} </td>
                       <td>{list.deliverystate} </td>
@@ -1691,13 +1692,13 @@ class ChannelPartners extends Component<Props, States> {
                           <img
                             className="edit"
                             src={
-                              list.userstatus == "DECLINED"
+                              (list.userstatus == "DECLINED" ||  list.userstatus == "PENDING")
                                 ? EditDisabled
                                 : Edit
                             }
                             width="20"
                             onClick={(event) => {
-                              list.userstatus == "DECLINED"
+                              (list.userstatus == "DECLINED" ||  list.userstatus == "PENDING")
                                 ? event.preventDefault()
                                 : this.editUser(list);
                             }}
