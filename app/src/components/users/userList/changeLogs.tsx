@@ -19,7 +19,7 @@ import {
   ErrorMsg,
 } from "../../../utility/helper";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-
+import Validator from "../../../utility/validator";
 
 type Props = {
   location?: any;
@@ -154,11 +154,19 @@ class ChangeLogs extends Component<Props, States> {
         this.getChangeLogs();
       }, 2000);
     } else if (e.target.name === "gotopage") {
-      value = e.target.value;
-      this.setState({ pageNo: value });
-      setTimeout(() => {
-        this.getChangeLogs();
-      }, 2000);
+      const { totalData, rowsPerPage } = this.state;
+      const pageData = Math.ceil(totalData / rowsPerPage);
+      value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
+      let isNumeric = Validator.validateNumeric(e.target.value);
+      if (isNumeric) {
+        this.setState({ pageNo: value }, () => {
+          if (this.state.pageNo && pageData >= this.state.pageNo) {
+            setTimeout(() => {
+              this.state.pageNo&&this.getChangeLogs();
+            }, 1000);
+          } 
+        });
+      }
     }
   };
   download = () => {

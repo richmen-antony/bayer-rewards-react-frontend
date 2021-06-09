@@ -40,6 +40,7 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
+import Validator from "../../utility/validator";
 
 
 interface IProps {
@@ -455,10 +456,23 @@ class ScanLogsTable extends Component<Props, States> {
         this.getScanLogs();
       });
     } else if (e.target.name === "gotopage") {
-      value = e.target.value;
-      this.setState({ pageNo: value }, () => {
-        this.getScanLogs();
-      });
+      // value = e.target.value;
+      // this.setState({ pageNo: value }, () => {
+      //   this.getScanLogs();
+      // });
+      const { totalData, rowsPerPage } = this.state;
+      const pageData = Math.ceil(totalData / rowsPerPage);
+      value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
+      let isNumeric = Validator.validateNumeric(e.target.value);
+      if (isNumeric) {
+        this.setState({ pageNo: value }, () => {
+          if (this.state.pageNo && pageData >= this.state.pageNo) {
+            setTimeout(() => {
+              this.state.pageNo&&this.getScanLogs();
+            }, 1000);
+          } 
+        });
+      }
     }
   };
   download = () => {

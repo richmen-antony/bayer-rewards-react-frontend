@@ -30,14 +30,13 @@ import ThirdPartyUsers from "./thirdPartyUsers";
 import ChangeLogs from "./changeLogs";
 import ArrowIcon from "../../../assets/icons/tick.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
-import {SearchInput} from "../../../utility/widgets/input/search-input";
+import { SearchInput } from "../../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
-
 import moment from "moment";
-
+import Validator from "../../../utility/validator";
 
 type PartnerTypes = {
   type: String;
@@ -184,7 +183,13 @@ interface IProps {
   onClick?: any;
   // any other props that come into the component
 }
-const CalenderInput = ({ onChange, placeholder, value, id, onClick }: IProps) => (
+const CalenderInput = ({
+  onChange,
+  placeholder,
+  value,
+  id,
+  onClick,
+}: IProps) => (
   <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
     <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
     <input
@@ -211,7 +216,6 @@ const getStoreData = {
   Language: "EN-US",
 };
 
-
 class UserList extends Component<Props, States> {
   timeOut: any;
   constructor(props: any) {
@@ -230,15 +234,15 @@ class UserList extends Component<Props, States> {
       pageNo: 1,
       dropDownValue: "Select action",
       productCategories: [],
-      status: ["All", "Valid", "Invalid"],
+      status: ["ALL", "Valid", "Invalid"],
       list: ["Retailer", "Distributor"],
       selectedFilters: {
-        region: "All",
-        add: "All",
-        district: "All",
-        status: "All",
-        lastmodifieddatefrom:new Date().setMonth(new Date().getMonth() - 6),
-        lastmodifieddateto: new Date() ,
+        region: "ALL",
+        add: "ALL",
+        district: "ALL",
+        status: "ALL",
+        lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+        lastmodifieddateto: new Date(),
       },
       partnerType: {
         type: "Retailer",
@@ -264,7 +268,7 @@ class UserList extends Component<Props, States> {
       isdeActivateUser: false,
       isEditUser: false,
       value: 0,
-      userStatus: ["All", "Active", "Inactive", "Not Activated"],
+      userStatus: ["ALL", "Active", "Inactive", "Not Activated"],
       geographicFields: [],
       dynamicFields: [],
       countryList: [],
@@ -274,7 +278,7 @@ class UserList extends Component<Props, States> {
       addoptions: [],
       districtoptions: [],
       epaoptions: [],
-      villageoptions:[]
+      villageoptions: [],
     };
     this.timeOut = 0;
   }
@@ -296,123 +300,158 @@ class UserList extends Component<Props, States> {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: getStoreData.countryCode
-    }
+      countryCode: getStoreData.countryCode,
+    };
     invokeGetAuthService(getTemplateData, data)
       .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
         locationData.map((item: any) => {
           let allLevels = item.locationhierlevel;
-          let levelsSmall = (item.locationhiername).toLowerCase();
-          levels.push(levelsSmall)
-        })
+          let levelsSmall = item.locationhiername.toLowerCase();
+          levels.push(levelsSmall);
+        });
         // levels = ['country','region','add','district','epa','village'];
-        this.setState({ 
-          isLoader: false,
-          geographicFields: levels }, ()=>{
-              setTimeout(() => {
-                this.getDynamicOptionFields();
-              }, 0);
-          });
-    }).catch((error: any) => {
-      this.setState({ isLoader: false });
-      let message = error.message
-      Alert("warning", message);
-    })
+        this.setState(
+          {
+            isLoader: false,
+            geographicFields: levels,
+          },
+          () => {
+            setTimeout(() => {
+              this.getDynamicOptionFields();
+            }, 0);
+          }
+        );
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        Alert("warning", message);
+      });
   }
   getHierarchyDatas() {
     //To get all level datas
     this.setState({ isLoader: true });
     const { getHierarchyLevels } = apiURL;
     let countrycode = {
-      countryCode: getStoreData.countryCode
-    }
+      countryCode: getStoreData.countryCode,
+    };
     invokeGetAuthService(getHierarchyLevels, countrycode)
-    .then((response: any) => {
-      let regions = Object.keys(response.body).length !== 0 ? response.body.regions : [];
-      this.setState({ isLoader: false, allRegions : regions },()=>{
-        console.log('allregions', this.state.allRegions, response);
+      .then((response: any) => {
+        let regions =
+          Object.keys(response.body).length !== 0 ? response.body.regions : [];
+        this.setState({ isLoader: false, allRegions: regions }, () => {
+          console.log("allregions", this.state.allRegions, response);
+        });
       })
-    }).catch((error: any) => {
-      this.setState({ isLoader: false });
-      let message = error.message
-      Alert("warning", message);
-    })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        Alert("warning", message);
+      });
   }
-  getDynamicOptionFields = (reset?:string) => {
-    let regionlist= this.state.allRegions;
-    if(!reset) {
-      let allItem = {code: "All", name:'All',add:[] }
+  getDynamicOptionFields = (reset?: string) => {
+    let regionlist = this.state.allRegions;
+    if (!reset) {
+      let allItem = { code: "ALL", name: "ALL", add: [] };
       regionlist.unshift(allItem);
     }
-    this.setState({allRegions:regionlist})
-    let regionOptions :any=[]
-    this.state.allRegions.forEach((item:any) => {
-      let regionInfo = {text: item.name, code: item.code, value: item.name}
+    this.setState({ allRegions: regionlist });
+    let regionOptions: any = [];
+    this.state.allRegions.forEach((item: any) => {
+      let regionInfo = { text: item.name, code: item.code, value: item.name };
       regionOptions.push(regionInfo);
-    })
+    });
     let setFormArray: any = [];
     this.state.geographicFields.map((list: any, i: number) => {
-        setFormArray.push({
-          name: list,
-          placeHolder: true,
-          value: list === "country" ? getStoreData.country : '',
-          options:
-            list === "country"
-              ? this.state.countryList
-              : list === 'region' ? regionOptions : [{text:'All', name:"All"}],
-          error: "",
-        });
+      setFormArray.push({
+        name: list,
+        placeHolder: true,
+        value: list === "country" ? getStoreData.country : "",
+        options:
+          list === "country"
+            ? this.state.countryList
+            : list === "region"
+            ? regionOptions
+            : [{ text: "ALL", name: "ALL" }],
+        error: "",
+      });
     });
     this.setState({ dynamicFields: setFormArray });
-  }
-  getOptionLists =  (cron: any, type: any, value: any, index: any) => {
+  };
+  getOptionLists = (cron: any, type: any, value: any, index: any) => {
     let allRegions = this.state.allRegions;
-    this.setState({regionoptions:allRegions})
-      let dynamicFieldVal = this.state.dynamicFields;
-      if(type === 'region') {
-        let filteredRegion = allRegions?.filter((region: any)=>region.name === value);
-        let add: any= [];
-        filteredRegion[0]?.add.forEach((item:any)=>{
-          let regionInfo = { text: item.name, value: item.name, code: item.code };
-          add.push(regionInfo)
-        });
-        let addObj ={text:'All',code:'All',name:'All',value:'All',district:[]}
-        add.unshift(addObj)
-        dynamicFieldVal[index+1].options = add;
-        dynamicFieldVal[index].value = value;
-        this.setState({ dynamicFields: dynamicFieldVal });
-     } else if(type === 'add') {
-        let filteredAdd: any = [];
-        filteredAdd = allRegions?.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-        let district: any= [];
-        let addList = filteredAdd[0]?.add.filter((addinfo:any)=>addinfo.name === value)
-        addList[0]?.district.forEach((item:any)=>{
-          let districtInfo = { text: item.name, value: item.name, code: item.code };
-          district.push(districtInfo)
-        });
-        let districtObj ={text:'All',code:'All',name:'All',value:'All'}
-        district.unshift(districtObj)
-        dynamicFieldVal[index+1].options = district;
-        dynamicFieldVal[index].value = value;
-        this.setState({ dynamicFields: dynamicFieldVal });
-        } else if(type === 'district') {
-          // let filteredAdd: any = [];
-          // let districtList: any = [];
-          // filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-          // districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
-          dynamicFieldVal[index].value = value;
-          this.setState({dynamicFields: dynamicFieldVal});
-      }
+    this.setState({ regionoptions: allRegions });
+    let dynamicFieldVal = this.state.dynamicFields;
+    if (type === "region") {
+      let filteredRegion = allRegions?.filter(
+        (region: any) => region.name === value
+      );
+      let add: any = [];
+      filteredRegion[0]?.add.forEach((item: any) => {
+        let regionInfo = { text: item.name, value: item.name, code: item.code };
+        add.push(regionInfo);
+      });
+      let addObj = {
+        text: "ALL",
+        code: "ALL",
+        name: "ALL",
+        value: "ALL",
+        district: [],
+      };
+      add.unshift(addObj);
+      dynamicFieldVal[index + 1].options = add;
+      dynamicFieldVal[index].value = value;
+      this.setState({ dynamicFields: dynamicFieldVal });
+    } else if (type === "add") {
+      let filteredAdd: any = [];
+      filteredAdd = allRegions?.filter(
+        (region: any) => region.name === dynamicFieldVal[1].value
+      );
+      let district: any = [];
+      let addList = filteredAdd[0]?.add.filter(
+        (addinfo: any) => addinfo.name === value
+      );
+      addList[0]?.district.forEach((item: any) => {
+        let districtInfo = {
+          text: item.name,
+          value: item.name,
+          code: item.code,
+        };
+        district.push(districtInfo);
+      });
+      let districtObj = { text: "ALL", code: "ALL", name: "ALL", value: "ALL" };
+      district.unshift(districtObj);
+      dynamicFieldVal[index + 1].options = district;
+      dynamicFieldVal[index].value = value;
+      this.setState({ dynamicFields: dynamicFieldVal });
+    } else if (type === "district") {
+      // let filteredAdd: any = [];
+      // let districtList: any = [];
+      // filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+      // districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+      dynamicFieldVal[index].value = value;
+      this.setState({ dynamicFields: dynamicFieldVal });
+    }
   };
 
   getChannelPartnersList = (condIf?: string) => {
-    this.setState({ allChannelPartners: [], dropdownOpenFilter: false, dateErrMsg: ""})
+    this.setState({
+      allChannelPartners: [],
+      dropdownOpenFilter: false,
+      dateErrMsg: "",
+    });
     const { channelPartnersList } = apiURL;
     this.setState({ isLoader: true });
-    let { status, lastmodifieddatefrom, lastmodifieddateto, region, add, district }: any =
-    this.state.selectedFilters;
+    let {
+      status,
+      lastmodifieddatefrom,
+      lastmodifieddateto,
+      region,
+      add,
+      district,
+    }: any = this.state.selectedFilters;
     let data = {
       countrycode: getStoreData.countryCode,
       page: this.state.pageNo,
@@ -423,19 +462,15 @@ class UserList extends Component<Props, States> {
       partnertype:
         this.state.partnerType.type === "Distributor"
           ? "DISTRIBUTOR"
-          : this.state.partnerType.type === "All"
+          : this.state.partnerType.type === "ALL"
           ? "ALL"
           : "RETAILER",
     };
     if (this.state.isFiltered) {
       let filter = {
         status: status,
-        lastmodifieddatefrom: moment(lastmodifieddatefrom).format(
-          "YYYY-MM-DD"
-        ),
-        lastmodifieddateto: moment(lastmodifieddateto).format(
-          "YYYY-MM-DD"
-        ),
+        lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
+        lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
         region,
         add,
         district,
@@ -481,7 +516,7 @@ class UserList extends Component<Props, States> {
       })
       .catch((error) => {
         this.setState({ isLoader: false });
-        let message = error.message
+        let message = error.message;
         Alert("warning", message);
       });
   };
@@ -503,26 +538,31 @@ class UserList extends Component<Props, States> {
       usertype: "EXTERNAL",
       partnertype: "RETAILER",
     };
-    let { status, lastmodifieddatefrom, lastmodifieddateto, region, add, district }: any =
-      this.state.selectedFilters;
-     if(this.state.isFiltered){
+    let {
+      status,
+      lastmodifieddatefrom,
+      lastmodifieddateto,
+      region,
+      add,
+      district,
+    }: any = this.state.selectedFilters;
+    if (this.state.isFiltered) {
       let filter = {
         isfiltered: true,
-        status: status,
-        effectivefrom: lastmodifieddatefrom,
-        expirydate: lastmodifieddateto,
-        region,
-        add,
-        district,
+        status: status.toUpperCase(),
+        lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
+        lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
+        region: region==="ALL"? null:region,
+        add:add==="ALL"?null:add,
+        district:district==="ALL"?null:district,
         searchtext: this.state.searchText,
       };
       data = { ...data, ...filter };
-     }
-   
+    }
 
     invokeGetAuthService(downloadUserList, data)
       .then((response) => {
-        console.log({response})
+        console.log({ response });
         const data = response;
         downloadCsvFile(data, "user.csv");
       })
@@ -545,7 +585,7 @@ class UserList extends Component<Props, States> {
   //     });
   //     setTimeout(() => {
   //       this.setState({
-  //         productCategories: ["All", ...this.state.productCategories],
+  //         productCategories: ["ALL", ...this.state.productCategories],
   //       });
   //     }, 3000);
   //   };
@@ -603,8 +643,7 @@ class UserList extends Component<Props, States> {
       flag = true;
     }
     if (flag) {
-      this.setState({ selectedFilters: val }, () => {
-      });
+      this.setState({ selectedFilters: val }, () => {});
     }
   };
 
@@ -630,21 +669,20 @@ class UserList extends Component<Props, States> {
     // var date = today.getDate();
     // if (month - 6 <= 0) year = today.getFullYear();
     // var backdate = new Date(year, month - 6, date);
-    this.getDynamicOptionFields('reset');
+    this.getDynamicOptionFields("reset");
     this.setState(
       {
         selectedFilters: {
-          region: "All",
-          add: "All",
-          district: "All",
-          status: "All",
-          lastmodifieddatefrom:new Date().setMonth(new Date().getMonth() - 6),
-          lastmodifieddateto: new Date() ,
+          region: "ALL",
+          add: "ALL",
+          district: "ALL",
+          status: "ALL",
+          lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+          lastmodifieddateto: new Date(),
         },
         isFiltered: false,
       },
-      () => {
-      }
+      () => {}
     );
     setTimeout(() => {
       //   this.getScanLogs();
@@ -714,11 +752,19 @@ class UserList extends Component<Props, States> {
         this.getChannelPartnersList();
       }, 2000);
     } else if (e.target.name === "gotopage") {
-      value = e.target.value;
-      this.setState({ pageNo: value });
-      setTimeout(() => {
-        this.getChannelPartnersList();
-      }, 2000);
+      const { totalData, rowsPerPage } = this.state;
+      const pageData = Math.ceil(totalData / rowsPerPage);
+      value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
+      let isNumeric = Validator.validateNumeric(e.target.value);
+      if (isNumeric) {
+        this.setState({ pageNo: value }, () => {
+          if (this.state.pageNo && pageData >= this.state.pageNo) {
+            setTimeout(() => {
+              this.state.pageNo&&this.getChannelPartnersList();
+            }, 1000);
+          } 
+        });
+      }
     }
   };
 
@@ -739,7 +785,7 @@ class UserList extends Component<Props, States> {
   };
 
   handleUpdateDropdown = (value: string, label: any) => {
-    this.setState((prevState:any)=>({
+    this.setState((prevState: any) => ({
       selectedFilters: {
         ...prevState.selectedFilters,
         [label.toLocaleLowerCase()]: value,
@@ -783,7 +829,7 @@ class UserList extends Component<Props, States> {
         });
       }
     }
-    
+
     this.setState({
       selectedFilters: { ...this.state.selectedFilters, [name]: date },
     });
@@ -834,42 +880,44 @@ class UserList extends Component<Props, States> {
 
     const fields = this.state.dynamicFields;
     const locationList = fields?.map((list: any, index: number) => {
-    let nameCapitalized =
-      list.name.charAt(0).toUpperCase() + list.name.slice(1);
-        return (
-          <>
-            <div className="country" style={{marginBottom:"5px"}}>
-              {index !== 0 && (
-                <div>
-                  {list.name !== "epa" && (
-                    (list.name) !== "village" && (
-                        <NativeDropdown
-                        name={list.name}
-                        label={nameCapitalized}
-                        options={list.options}
-                        handleChange={(e: any) => {
-                          e.stopPropagation();
-                          list.value = e.target.value;
-                          this.getOptionLists("manual", list.name, e.target.value, index);
-                          this.handleUpdateDropdown(e.target.value, list.name);
-                        }}
-                        value={list.value}
-                      />
-                    )
-                  )}
-                </div>
-              )}
-              {/* {list.error && <span className="error">{list.error}</span>} */}
-            </div>
-          </>
-        );
-      }
-    );
+      let nameCapitalized =
+        list.name.charAt(0).toUpperCase() + list.name.slice(1);
+      return (
+        <>
+          <div className="country" style={{ marginBottom: "5px" }}>
+            {index !== 0 && (
+              <div>
+                {list.name !== "epa" && list.name !== "village" && (
+                  <NativeDropdown
+                    name={list.name}
+                    label={nameCapitalized}
+                    options={list.options}
+                    handleChange={(e: any) => {
+                      e.stopPropagation();
+                      list.value = e.target.value;
+                      this.getOptionLists(
+                        "manual",
+                        list.name,
+                        e.target.value,
+                        index
+                      );
+                      this.handleUpdateDropdown(e.target.value, list.name);
+                    }}
+                    value={list.value}
+                  />
+                )}
+              </div>
+            )}
+            {/* {list.error && <span className="error">{list.error}</span>} */}
+          </div>
+        </>
+      );
+    });
 
     return (
       <AUX>
         {isLoader && <Loader />}
-        
+
         <div
           className="container-fluid card card-height"
           style={{ backgroundColor: "#f8f8fa" }}
@@ -906,16 +954,25 @@ class UserList extends Component<Props, States> {
                   </div>
 
                   <div>
-                    <button className="btn btn-primary" onClick={this.download} style={{backgroundColor:"#1F445A"}}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.download}
+                      style={{ backgroundColor: "#1F445A" }}
+                    >
                       <img src={Download} width="17" alt={NoImage} />{" "}
                       <span>Download</span>
                     </button>
                   </div>
                   <i
-        className="fa fa-info-circle"
-        style={{ fontSize: "16px", fontFamily: "appRegular !important" ,marginLeft: "5px",marginTop: "-20px"}}
-        title={"Full extract"}
-      ></i>
+                    className="fa fa-info-circle"
+                    style={{
+                      fontSize: "16px",
+                      fontFamily: "appRegular !important",
+                      marginLeft: "5px",
+                      marginTop: "-20px",
+                    }}
+                    title={"Full extract"}
+                  ></i>
                 </>
               )}
             </div>
@@ -924,16 +981,16 @@ class UserList extends Component<Props, States> {
             <div className="">
               <div
                 className="row align-items-center"
-                style={{ backgroundColor: "#ffffff",padding:"10px 0" }}
+                style={{ backgroundColor: "#ffffff", padding: "10px 0" }}
               >
                 <div className="col-sm-6">
-                  <SearchInput 
-                      placeHolder="Search user (min 3 letters)"
-                      type="text"
-                      onChange={this.handleSearch}
-                      value={searchText} 
-                      tolltip="Search applicable for User Name, Account Name and Owner Name"
-                      />
+                  <SearchInput
+                    placeHolder="Search user (min 3 letters)"
+                    type="text"
+                    onChange={this.handleSearch}
+                    value={searchText}
+                    tolltip="Search applicable for User Name, Account Name and Owner Name"
+                  />
                 </div>
                 <div className="col-sm-6 leftAlign">
                   <div className="partner">
@@ -961,10 +1018,7 @@ class UserList extends Component<Props, States> {
                       ))}
                     </div>
                   </div>
-                  <div
-                    className=""
-                    style={{ marginLeft: "50px" }}
-                  >
+                  <div className="" style={{ marginLeft: "50px" }}>
                     {!changeLogOpen && (
                       <div className="filterRow">
                         <Dropdown
@@ -1032,21 +1086,23 @@ class UserList extends Component<Props, States> {
                                     }
                                   /> */}
                                   <DatePicker
-                                  value={selectedFilters.lastmodifieddatefrom}
-                                  dateFormat="dd-MM-yyyy"
-                                  customInput={<CalenderInput />}
-                                  selected={selectedFilters.lastmodifieddatefrom}
-                                  onChange={(date: any) =>
-                                    this.handleDateChange(
-                                      date,
-                                      "lastmodifieddatefrom"
-                                    )
-                                  }
-                                  showMonthDropdown
-                                  showYearDropdown
-                                  dropdownMode="select"
-                                  maxDate={new Date()}
-                                />
+                                    value={selectedFilters.lastmodifieddatefrom}
+                                    dateFormat="dd-MM-yyyy"
+                                    customInput={<CalenderInput />}
+                                    selected={
+                                      selectedFilters.lastmodifieddatefrom
+                                    }
+                                    onChange={(date: any) =>
+                                      this.handleDateChange(
+                                        date,
+                                        "lastmodifieddatefrom"
+                                      )
+                                    }
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    dropdownMode="select"
+                                    maxDate={new Date()}
+                                  />
                                 </div>
                                 <div className="p-2">-</div>
                                 <div className="user-filter-date-picker">
@@ -1059,21 +1115,23 @@ class UserList extends Component<Props, States> {
                                     }
                                   /> */}
                                   <DatePicker
-                                  value={selectedFilters.lastmodifieddateto}
-                                  dateFormat="dd-MM-yyyy"
-                                  customInput={<CalenderInput />}
-                                  selected={selectedFilters.lastmodifieddateto}
-                                  onChange={(date: any) =>
-                                    this.handleDateChange(
-                                      date,
-                                      "lastmodifieddateto"
-                                    )
-                                  }
-                                  showMonthDropdown
-                                  showYearDropdown
-                                  dropdownMode="select"
-                                  maxDate={new Date()}
-                                />
+                                    value={selectedFilters.lastmodifieddateto}
+                                    dateFormat="dd-MM-yyyy"
+                                    customInput={<CalenderInput />}
+                                    selected={
+                                      selectedFilters.lastmodifieddateto
+                                    }
+                                    onChange={(date: any) =>
+                                      this.handleDateChange(
+                                        date,
+                                        "lastmodifieddateto"
+                                      )
+                                    }
+                                    showMonthDropdown
+                                    showYearDropdown
+                                    dropdownMode="select"
+                                    maxDate={new Date()}
+                                  />
                                 </div>
                               </div>
                               {dateErrMsg && (
@@ -1091,8 +1149,7 @@ class UserList extends Component<Props, States> {
                                   className="cus-btn-user-filter reset"
                                   onClick={(e) => this.resetFilter(e)}
                                 >
-                                   Reset All
-                                  
+                                  Reset All
                                 </button>
                                 {/* <Button
                                   color="btn rounded-pill boxColor applybtn"
@@ -1111,7 +1168,6 @@ class UserList extends Component<Props, States> {
                                   </span>
                                 </button>
                               </div>
-                             
                             </div>
                           </DropdownMenu>
                         </Dropdown>
@@ -1123,7 +1179,6 @@ class UserList extends Component<Props, States> {
             </div>
           )}
           <div className="test">
-         
             {!this.state.changeLogOpen ? (
               <>
                 <TabPanel value={this.state.value} index={0}>
@@ -1149,13 +1204,15 @@ class UserList extends Component<Props, States> {
                 </TabPanel>
               </>
             ) : (
-              <ChangeLogs backToUsersList={this.backToUsersList}
-              state={this.state}
-              previous={this.previous}
-              next={this.next}
-              pageNumberClick={this.pageNumberClick}
-              totalData={totalData}
-              handlePaginationChange={this.handlePaginationChange} />
+              <ChangeLogs
+                backToUsersList={this.backToUsersList}
+                state={this.state}
+                previous={this.previous}
+                next={this.next}
+                pageNumberClick={this.pageNumberClick}
+                totalData={totalData}
+                handlePaginationChange={this.handlePaginationChange}
+              />
             )}
           </div>
         </div>

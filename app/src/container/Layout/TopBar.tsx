@@ -140,9 +140,7 @@ class TopBar extends Component<Props, States> {
                     <div>
                       <span className="mdi mdi-chevron-down "></span>
                     </div>
-                    <div style={{ paddingLeft: "30px", paddingTop: "8px" }}>
-                      <img src={logo} alt="Logo" height="50" />
-                    </div>
+                    
                   </div>
                 </DropdownToggle>
                 <DropdownMenu>
@@ -156,6 +154,9 @@ class TopBar extends Component<Props, States> {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+              <div style={{ paddingLeft: "20px", paddingTop: "8px" }}>
+                      <img src={logo} alt="Logo" height="50" />
+                    </div>
             </div>
           </ul>
         </nav>
