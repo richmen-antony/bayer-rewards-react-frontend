@@ -53,7 +53,10 @@ let geoLocationInfo = {
 };
 let epa: any = [];
 let levelFive: any = [];
-let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 9 : 9;
+let phoneLength =
+  process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int"
+    ? 10
+    : 9;
 
 class CreateUser extends Component<any, any> {
   loggedUserInfo: any;
@@ -1133,18 +1136,27 @@ class CreateUser extends Component<any, any> {
         errObj.lastNameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
-          // if (userInfo.mobilenumber) {
-          //   errObj.mobilenumberErr =
-          //     userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
-          // } else {
-          //   errObj.mobilenumberErr = "Please enter the mobile number";
-          // }
-          if ((!this.state.isEditPage || !this.state.isValidatePage) && userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
-            errObj.mobilenumberErr =
-              userInfo.mobilenumber.length == phoneLength ? "" : `Please enter ${phoneLength} Digit`;
-          } else {
-            errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ? errObj.mobilenumberErr:"Please enter the mobile number";
-          }
+        // if (userInfo.mobilenumber) {
+        //   errObj.mobilenumberErr =
+        //     userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+        // } else {
+        //   errObj.mobilenumberErr = "Please enter the mobile number";
+        // }
+        if (
+          (!this.state.isEditPage || !this.state.isValidatePage) &&
+          userInfo.mobilenumber &&
+          errObj.mobilenumberErr !== "Phone Number Exists"
+        ) {
+          errObj.mobilenumberErr =
+            userInfo.mobilenumber.length == phoneLength
+              ? ""
+              : `Please enter ${phoneLength} Digit`;
+        } else {
+          errObj.mobilenumberErr =
+            errObj.mobilenumberErr == "Phone Number Exists"
+              ? errObj.mobilenumberErr
+              : "Please enter the mobile number";
+        }
 
         userData.ownerRows[idx].errObj = errObj;
         if (
@@ -1182,7 +1194,7 @@ class CreateUser extends Component<any, any> {
           errObj.mobilenumberErr !== "Phone Number Exists"
         ) {
           errObj.mobilenumberErr =
-          (userInfo.mobilenumber.length == phoneLength) 
+            userInfo.mobilenumber.length == phoneLength
               ? ""
               : `Please enter ${phoneLength} Digit`;
         } else {
@@ -1450,11 +1462,13 @@ class CreateUser extends Component<any, any> {
     if (type === "owner") {
       if (key === "phone") {
         if (val) {
-          if(val.length !== phoneLength ) {
-            owners[idx].errObj.mobilenumberErr =`Please enter ${phoneLength} Digit`;
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== phoneLength) {
+            owners[
+              idx
+            ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             owners[idx].errObj.mobilenumberErr = "";
           }
         } else {
@@ -1477,11 +1491,13 @@ class CreateUser extends Component<any, any> {
     } else if (type === "staff") {
       if (key === "phone") {
         if (val) {
-          if(val.length !== phoneLength ) {
-            staffs[idx].errObj.mobilenumberErr ="`Please enter ${phoneLength} Digit`";
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== phoneLength) {
+            staffs[
+              idx
+            ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             staffs[idx].errObj.mobilenumberErr = "";
           }
         } else {

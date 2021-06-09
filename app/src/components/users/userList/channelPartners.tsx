@@ -88,7 +88,10 @@ const getStoreData = {
   Language: "EN-US",
 };
 
-let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 9 : 9;
+let phoneLength =
+  process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int"
+    ? 10
+    : 9;
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -448,47 +451,47 @@ class ChannelPartners extends Component<Props, States> {
       this.setState({ isLoader: true });
       let userData = this.state.userList;
 
-    let data = {
-      countrycode: getStoreData.countryCode,
-      ownerfirstname: newUserList.ownerRows[0].firstname,
-      ownerlastname: newUserList.ownerRows[0].lastname,
-      ownerphonenumber: newUserList.ownerRows[0].mobilenumber,
-      owneremail: newUserList.ownerRows[0].email,
-      locale: "English (Malawi)",
-      usertype:
-        userData.rolename == "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
-      rolename: userData.rolename,
-      username: userData.username,
-      accounttype: userData.rolename,
-      userstatus: newUserList.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
-      storewithmultiuser: this.state.isStaff ? true : false,
-      iscreatedfrommobile: userData.iscreatedfrommobile,
-      whtaccountname: userData.whtaccountname,
-      taxid: userData.taxid,
-      whtownername: userData.whtownername,
-      deliverycountry: getStoreData.countryCode,
-      deliveryregion: userData.deliveryregion,
-      deliverystate: userData.deliverystate,
-      deliverycity: userData.deliverycity,
-      deliverydistrict: userData.deliverydistrict,
-      deliveryvillage: userData.deliveryvillage,
-      deliverystreet: userData.deliverystreet,
-      deliveryzipcode: userData.deliveryzipcode,
-      billingcountry: getStoreData.countryCode,
-      billingregion: userData.billingregion,
-      billingstate: userData.billingstate,
-      billingcity: userData.billingcity,
-      billingdistrict: userData.billingdistrict,
-      billingvillage: userData.billingvillage,
-      billingstreet: userData.billingstreet,
-      billingzipcode: userData.billingzipcode,
-      staffdetails: newUserList.staffdetails,
-    };
-    const userDetails = {
-      isedit: true,
-      lastupdatedby: this.state.userName.toUpperCase(),
-      lastupdateddate: new Date().toJSON(),
-    };
+      let data = {
+        countrycode: getStoreData.countryCode,
+        ownerfirstname: newUserList.ownerRows[0].firstname,
+        ownerlastname: newUserList.ownerRows[0].lastname,
+        ownerphonenumber: newUserList.ownerRows[0].mobilenumber,
+        owneremail: newUserList.ownerRows[0].email,
+        locale: "English (Malawi)",
+        usertype:
+          userData.rolename == "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+        rolename: userData.rolename,
+        username: userData.username,
+        accounttype: userData.rolename,
+        userstatus: newUserList.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
+        storewithmultiuser: this.state.isStaff ? true : false,
+        iscreatedfrommobile: userData.iscreatedfrommobile,
+        whtaccountname: userData.whtaccountname,
+        taxid: userData.taxid,
+        whtownername: userData.whtownername,
+        deliverycountry: getStoreData.countryCode,
+        deliveryregion: userData.deliveryregion,
+        deliverystate: userData.deliverystate,
+        deliverycity: userData.deliverycity,
+        deliverydistrict: userData.deliverydistrict,
+        deliveryvillage: userData.deliveryvillage,
+        deliverystreet: userData.deliverystreet,
+        deliveryzipcode: userData.deliveryzipcode,
+        billingcountry: getStoreData.countryCode,
+        billingregion: userData.billingregion,
+        billingstate: userData.billingstate,
+        billingcity: userData.billingcity,
+        billingdistrict: userData.billingdistrict,
+        billingvillage: userData.billingvillage,
+        billingstreet: userData.billingstreet,
+        billingzipcode: userData.billingzipcode,
+        staffdetails: newUserList.staffdetails,
+      };
+      const userDetails = {
+        isedit: true,
+        lastupdatedby: this.state.userName.toUpperCase(),
+        lastupdateddate: new Date().toJSON(),
+      };
 
       invokePostAuthService(updateUser, data, userDetails)
         .then((response: any) => {
@@ -604,11 +607,13 @@ class ChannelPartners extends Component<Props, States> {
       let owners = this.state.userData.ownerRows;
       if (key === "phone") {
         if (val) {
-          if(val.length !== phoneLength ) {
-            owners[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            owners[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== phoneLength) {
+            owners[
+              idx
+            ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             owners[idx].errObj.mobilenumberErr = "";
           }
         } else {
@@ -630,11 +635,13 @@ class ChannelPartners extends Component<Props, States> {
       let staffs = this.state.userData.staffdetails;
       if (key === "phone") {
         if (val) {
-          if(val.length !== phoneLength ) {
-            staffs[idx].errObj.mobilenumberErr ="Please enter 9 Digit";
-          } else if(isStaffPhoneEists.length || isOwnerPhoneEists.length){
-            staffs[idx].errObj.mobilenumberErr ="Phone Number Exists";
-          }else{
+          if (val.length !== phoneLength) {
+            staffs[
+              idx
+            ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
             staffs[idx].errObj.mobilenumberErr = "";
           }
         } else {
@@ -787,12 +794,20 @@ class ChannelPartners extends Component<Props, States> {
         ? ""
         : "Please enter the last Name";
 
-        if (userInfo.mobilenumber && errObj.mobilenumberErr!=='Phone Number Exists') {
-          errObj.mobilenumberErr =
-            (userInfo.mobilenumber.length == phoneLength) ? "" : "Please enter 9 Digit";
-        } else {
-          errObj.mobilenumberErr = errObj.mobilenumberErr=='Phone Number Exists' ?errObj.mobilenumberErr:"Please enter the mobile number";
-        }
+      if (
+        userInfo.mobilenumber &&
+        errObj.mobilenumberErr !== "Phone Number Exists"
+      ) {
+        errObj.mobilenumberErr =
+          userInfo.mobilenumber.length == phoneLength
+            ? ""
+            : `Please enter ${phoneLength} Digit`;
+      } else {
+        errObj.mobilenumberErr =
+          errObj.mobilenumberErr == "Phone Number Exists"
+            ? errObj.mobilenumberErr
+            : "Please enter the mobile number";
+      }
 
       userData.ownerRows[idx].errObj = errObj;
       if (
@@ -830,7 +845,9 @@ class ChannelPartners extends Component<Props, States> {
         errObj.mobilenumberErr !== "Phone Number Exists"
       ) {
         errObj.mobilenumberErr =
-        (userInfo.mobilenumber.length == phoneLength)? "" : "Please enter 9 Digit";
+          userInfo.mobilenumber.length == phoneLength
+            ? ""
+            : `Please enter ${phoneLength} Digit`;
       } else {
         errObj.mobilenumberErr =
           errObj.mobilenumberErr == "Phone Number Exists"
