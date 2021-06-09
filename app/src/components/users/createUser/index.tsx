@@ -53,7 +53,7 @@ let geoLocationInfo = {
 };
 let epa: any = [];
 let levelFive: any = [];
-let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 10 : 9;
+let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 9 : 9;
 
 class CreateUser extends Component<any, any> {
   loggedUserInfo: any;
@@ -252,8 +252,8 @@ class CreateUser extends Component<any, any> {
                 rolename: userFields.rolename,
                 username: userFields.username,
                 deliverystreet: userFields.deliverystreet,
-                shippingcity: userFields.shippingcity,
-                shippingstate: userFields.shippingstate,
+                shippingcity: userFields.deliverycity,
+                shippingstate: userFields.deliverystate,
                 deliveryzipcode: userFields.deliveryzipcode,
                 taxid: userFields.taxid,
                 whtaccountname: userFields.whtaccountname,
@@ -665,10 +665,12 @@ class CreateUser extends Component<any, any> {
         if (this.state.currentStep == 2) {
           dynamicFieldVal[index + 1].options = add;
           dynamicFieldVal[index].value = value;
+          dynamicFieldVal[index+1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
           withHoldingVal[index + 1].options = add;
           withHoldingVal[index].value = value;
+          withHoldingVal[index+1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
       } else if (type === "add") {
@@ -699,10 +701,12 @@ class CreateUser extends Component<any, any> {
         if (this.state.currentStep == 2) {
           dynamicFieldVal[index + 1].options = district;
           dynamicFieldVal[index].value = value;
+          dynamicFieldVal[index+1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
           withHoldingVal[index + 1].options = district;
           withHoldingVal[index].value = value;
+          withHoldingVal[index+1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
       } else if (type === "district") {
@@ -740,10 +744,12 @@ class CreateUser extends Component<any, any> {
           if (this.state.currentStep == 2) {
             dynamicFieldVal[index + 1].options = levelFive;
             dynamicFieldVal[index].value = value;
+            dynamicFieldVal[index+1].value = "";
             this.setState({ dynamicFields: dynamicFieldVal });
           } else if (this.state.currentStep == 3) {
             withHoldingVal[index + 1].options = levelFive;
             withHoldingVal[index].value = value;
+            withHoldingVal[index+1].value = "";
             this.setState({ withHolding: withHoldingVal });
           }
         }
@@ -764,10 +770,12 @@ class CreateUser extends Component<any, any> {
         if (this.state.currentStep == 2) {
           dynamicFieldVal[index + 1].options = village;
           dynamicFieldVal[index].value = value;
+          dynamicFieldVal[index+1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep == 3) {
           withHoldingVal[index + 1].options = village;
           withHoldingVal[index].value = value;
+          withHoldingVal[index+1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
       } else if (type === "village") {
@@ -875,7 +883,7 @@ class CreateUser extends Component<any, any> {
         // });
         this.submitUserDatas();
       } else {
-        alert("fail");
+        alert("Please enter mandatory fields");
       }
     }
   }
@@ -1360,7 +1368,7 @@ class CreateUser extends Component<any, any> {
       }));
     } else {
       let data: any = this.state.withholding;
-      data.map((list: any) => {
+      data?.map((list: any) => {
         if (list.name !== "country") {
           list.value = "";
         }
@@ -1825,7 +1833,7 @@ class CreateUser extends Component<any, any> {
                                           )
                                         }
                                       />
-                                      {item.errObj.firstNameErr && (
+                                      {item.errObj?.firstNameErr && (
                                         <span className="error">
                                           {item.errObj.firstNameErr}{" "}
                                         </span>
@@ -1848,7 +1856,7 @@ class CreateUser extends Component<any, any> {
                                           )
                                         }
                                       />
-                                      {item.errObj.lastNameErr && (
+                                      {item.errObj?.lastNameErr && (
                                         <span className="error">
                                           {item.errObj.lastNameErr}{" "}
                                         </span>
@@ -1902,7 +1910,7 @@ class CreateUser extends Component<any, any> {
                                             //   }
                                             // }}
                                           />
-                                          {item.errObj.mobilenumberErr && (
+                                          {item.errObj?.mobilenumberErr && (
                                             <span className="error">
                                               {item.errObj.mobilenumberErr}
                                             </span>
@@ -1930,7 +1938,7 @@ class CreateUser extends Component<any, any> {
                                           this.validateEmail(e, idx, "owner")
                                         }
                                       />
-                                      {item.errObj.emailErr && (
+                                      {item.errObj?.emailErr && (
                                         <span className="error">
                                           {item.errObj.emailErr}{" "}
                                         </span>
@@ -2154,7 +2162,7 @@ class CreateUser extends Component<any, any> {
                                               disabled={
                                                 (isEditPage ||
                                                   isValidatePage) &&
-                                                !item.errObj.isPhoneEdit
+                                                !item.errObj?.isPhoneEdit
                                                   ? true
                                                   : false
                                               }

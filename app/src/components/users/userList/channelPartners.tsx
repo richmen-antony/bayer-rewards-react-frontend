@@ -88,7 +88,7 @@ const getStoreData = {
   Language: "EN-US",
 };
 
-let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 10 : 9;
+let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 9 : 9;
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -353,7 +353,7 @@ class ChannelPartners extends Component<Props, States> {
             mobilenumberErr: "",
           },
           firstname: userFields.ownerfirstname,
-          active: true,
+          active: userFields.userstatus === "ACTIVE" ? true : false,
           lastname: userFields.ownerlastname,
           mobilenumber: userFields.ownerphonenumber,
           email: userFields.owneremail,
@@ -379,6 +379,7 @@ class ChannelPartners extends Component<Props, States> {
           billingstate: userFields.billingstate,
           billingzipcode: userFields.billingzipcode,
           staffdetails: userFields.staffdetails,
+          iscreatedfrommobile: userFields.iscreatedfrommobile,
         };
         if (userinfo) {
           userinfo.staffdetails.forEach((staffInfo: any) => {
