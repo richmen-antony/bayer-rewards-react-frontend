@@ -92,6 +92,7 @@ class CreateUser extends Component<any, any> {
         billingcity: "",
         billingstate: "",
         billingzipcode: "",
+        iscreatedfrommobile: false,
         staffdetails: [],
         ownerRows: [
           {
@@ -168,20 +169,6 @@ class CreateUser extends Component<any, any> {
     this.getGeographicFields();
     ///API to get country and language settings
     this.getCountryList();
-  }
-
-  getRegion() {
-    // let newData = [];
-    // newData.push(CountryJson);
-    let regions: any = [];
-    let regionObj: any = {};
-    // let new = newData[region];
-    CountryJson.region.map((list: any, i: number) => {
-      regionObj["value"] = list.id;
-      regionObj["text"] = list.name;
-      regions.push({ ...regionObj });
-    });
-    this.setState({ regionList: regions });
   }
 
   getCountryList() {
@@ -265,6 +252,7 @@ class CreateUser extends Component<any, any> {
                 billingcity: userFields.billingcity,
                 billingstate: userFields.billingstate,
                 billingzipcode: userFields.billingzipcode,
+                iscreatedfrommobile: userFields.iscreatedfrommobile,
                 staffdetails: userFields.staffdetails,
               };
               if (userinfo) {
@@ -863,6 +851,7 @@ class CreateUser extends Component<any, any> {
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
+    formValid = true;
 
     const { currentStep } = this.state;
     let newStep = currentStep;
@@ -951,7 +940,7 @@ class CreateUser extends Component<any, any> {
           ? "ACTIVE"
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
-        iscreatedfrommobile: false,
+        iscreatedfrommobile: userData.iscreatedfrommobile,
         whtaccountname: userData.whtaccountname
           ? userData.whtaccountname
           : userData.ownerRows[0].firstname +
