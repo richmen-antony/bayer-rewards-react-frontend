@@ -4,11 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import Stepper from "../../container/components/stepper/Stepper";
 import { apiURL } from "../../utility/base/utils/config";
-import {
-  invokeGetAuthService,
-  invokeGetAuthServiceTemp,
-  invokePostServiceTemp,
-} from "../../utility/base/service";
+import { invokePostService } from "../../utility/base/service";
 import { Alert } from "../../utility/widgets/toaster";
 import { FormSteps } from "../../utility/constant";
 import { CountrySetup } from "./components/countrysetup";
@@ -504,7 +500,7 @@ class Devconfigurations extends React.Component<
         devconfig.scanpointsandallocation.inputList,
     };
 
-    invokePostServiceTemp(registerTemplateData, data)
+    invokePostService(registerTemplateData, data)
       .then((response: any) => {
         console.log(response);
         // toastSuccess("Country configuration is successfully created");

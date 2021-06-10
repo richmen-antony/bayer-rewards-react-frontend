@@ -168,7 +168,7 @@ class ChannelPartners extends Component<Props, States> {
     this.getGeographicFields();
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-    this.setState({ userName: userData.username });
+    if (userData?.userName) this.setState({ userName: userData.username });
   }
 
   getCountryList() {
@@ -887,7 +887,8 @@ class ChannelPartners extends Component<Props, States> {
 
     let data: any = getLocalStorageData("userData");
     let loggedUserInfo = JSON.parse(data);
-    let countryCodeLower = _.toLower(loggedUserInfo.countrycode);
+    let countryCodeLower =
+      loggedUserInfo?.countrycode && _.toLower(loggedUserInfo.countrycode);
     return (
       <AUX>
         {isLoader && <Loader />}
