@@ -53,21 +53,32 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
       }
     });
 
-    list = setCorrectHierLvlSeed(list, index);
+    list = setCorrectHierLvlSeed(list, index,data);
     setInputList(list);
   };
 
-  const setCorrectHierLvlSeed = (list: any, index: number) => {
+  const setCorrectHierLvlSeed = (list: any, index: number,data:any) => {
+    let i=0;
     const newList = list.map((listItem: any, idx: number) => {
-      return {
-        ...listItem,
-        packaginghierarchylevel: idx,
-        parentpackage:
-          listItem.parentpackage >= index
-            ? listItem.parentpackage - 1
-            : listItem.parentpackage,
-        // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
-      };
+      if (
+        listItem.productcategory === data.productcategory
+      ) {
+      let count = i++;
+      console.log({count});
+        return {
+          ...listItem,
+        packaginghierarchylevel: !count ? 0 : count,
+          parentpackage:
+            listItem.parentpackage >= index
+              ? listItem.parentpackage - 1
+              : listItem.parentpackage,
+          // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
+        };
+      }
+      else{ 
+        return listItem
+      }
+      
     });
     return newList;
   };
@@ -125,7 +136,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
               role="group"
               aria-label="Basic outlined"
             >
-              <span>
+              <span style={{paddingRight:"85px"}}>
                 <label>Product Category</label>
               </span>
               <button
@@ -177,7 +188,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                           </td>
 
                           <td className="tableHeaderStyle">
-                            <select
+                            {/* <select
                               className="dpstyle selectoutline label"
                               defaultValue="NA"
                               name="parentpackage"
@@ -211,7 +222,22 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                                       </option>
                                     )
                                 )}
-                            </select>
+                            </select> */}
+                            <ConfigSelect
+                          defaultValue="NA"
+                          name="parentpackage"
+                          options={parentpackageOptions}
+                          handleChange={(event: any) =>
+                            handleDropdownChange(event, idx, item)
+                          }
+                          value={
+                            Number(item.parentpackage) ===-1 ? "NA"
+                            :item.parentpackage
+                          }
+                          isPlaceholder
+                          parentIndex={idx}
+                          locationHierarchySelected={true}
+                        />
                           </td>
 
                           <td className="tablebtnStyle">

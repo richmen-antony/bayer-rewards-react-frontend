@@ -106,8 +106,6 @@ export const ConfigSelect = ({
 }: DropdownProps) => {
   const classes = useStyles();
   const labelId = `${value}-label`;
-  console.log("value=====>", value);
-  console.log("defaultValue", defaultValue);
   return (
     <div>
       <FormControl

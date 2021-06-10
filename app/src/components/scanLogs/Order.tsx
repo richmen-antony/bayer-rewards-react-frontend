@@ -70,7 +70,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
-               <label>#{data?.advisororderid} - {data?.username}</label>
+               <label>#{data?.advisororderid} - { _.startCase(_.toLower(data?.accountname))}</label>
               </p>
             </div>
           </div>

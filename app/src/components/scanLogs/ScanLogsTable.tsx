@@ -323,7 +323,7 @@ class ScanLogsTable extends Component<Props, States> {
   }
   handleSearch = (e: any) => {
     let searchText = e.target.value;
-    this.setState({ searchText: searchText });
+    this.setState({ searchText: searchText,isFiltered:true });
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
@@ -482,6 +482,7 @@ class ScanLogsTable extends Component<Props, States> {
       region: this.state.loggedUserInfo.geolevel1,
       countrycode: this.state.loggedUserInfo.countrycode,
       isfiltered: this.state.isFiltered,
+      searchtext: this.state.searchText,
     };
     if (this.state.isFiltered) {
       let filter = { ...this.state.selectedFilters };
