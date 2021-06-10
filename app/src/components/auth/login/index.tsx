@@ -180,6 +180,7 @@ class Login extends Component<Props, States> {
                   value={password}
                   onChange={this.handleChange}
                   style={{ height: "40px" }}
+                  maxLength={40}
                 />
                 {/* <Input type={isPwdView ? "text" : "password"} className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeHolder="Enter password" value={password}
                                                     onChange={this.handleChange} /> */}

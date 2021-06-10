@@ -1218,19 +1218,19 @@ class CreateUser extends Component<any, any> {
           : userData.ownerRows[0].firstname +
             " " +
             userData.ownerRows[0].lastname;
-      let deliverystreet = userData.deliverystreet
-        ? ""
-        : "Please enter the Street";
-      let deliveryzipcode = userData.deliveryzipcode
-        ? ""
-        : "Please enter the Postal";
-      if (deliverystreet != "" || deliveryzipcode != "") {
-        formValid = false;
-      }
-      this.setState({
-        deliverystreetErr: deliverystreet,
-        deliveryzipcodeErr: deliveryzipcode,
-      });
+      // let deliverystreet = userData.deliverystreet
+      //   ? ""
+      //   : "Please enter the Street";
+      // let deliveryzipcode = userData.deliveryzipcode
+      //   ? ""
+      //   : "Please enter the Postal";
+      // if (deliverystreet != "" || deliveryzipcode != "") {
+      //   formValid = false;
+      // }
+      // this.setState({
+      //   deliverystreetErr: deliverystreet,
+      //   deliveryzipcodeErr: deliveryzipcode,
+      // });
       this.state.dynamicFields.map((list: any) => {
         if (list.value === "") {
           list.error = "Please enter the " + list.name;
@@ -1256,25 +1256,23 @@ class CreateUser extends Component<any, any> {
       });
 
       if (!accInfo) {
-        let billingstreet = userData.billingstreet
-          ? ""
-          : "Please enter the Street";
-        let billingzipcode = userData.billingzipcode
-          ? ""
-          : "Please enter the Postal";
+        // let billingstreet = userData.billingstreet
+        //   ? ""
+        //   : "Please enter the Street";
+        // let billingzipcode = userData.billingzipcode
+        //   ? ""
+        //   : "Please enter the Postal";
 
         if (
-          billingstreet != "" ||
-          billingzipcode != "" ||
           whtaccountname != "" ||
           whtownername != ""
         ) {
           formValid = false;
         }
-        this.setState({
-          billingstreetErr: billingstreet,
-          billingzipcodeErr: billingzipcode,
-        });
+        // this.setState({
+        //   billingstreetErr: billingstreet,
+        //   billingzipcodeErr: billingzipcode,
+        // });
         this.state.withHolding.map((list: any) => {
           if (list.value === "") {
             list.error = "Please enter the " + list.name;
