@@ -1247,6 +1247,9 @@ class CreateUser extends Component<any, any> {
         ? ""
         : "Please enter account name";
       let whtownername = userData.whtownername ? "" : "Please enter owner name";
+      if(whtaccountname != "" || whtownername!= ""){
+        formValid = false;
+      }
       this.setState({
         accountnameErr: whtaccountname,
         ownernameErr: whtownername,
@@ -1281,8 +1284,6 @@ class CreateUser extends Component<any, any> {
           }
           this.setState({ isRendered: true });
         });
-      } else {
-        formValid = true;
       }
     }
     return formValid;

@@ -133,7 +133,7 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("createUser")}
                       >
                         <img src={addUserIcon} alt="User" width="16" />{" "}
-                        <span> Create a new user </span>
+                        <span> Create a New User </span>
                       </Link>
                     </li>
 
@@ -206,7 +206,7 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("scanlogs")}
                       >
                         <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                        <span> Scan logs </span>
+                        <span> Scan Logs </span>
                       </Link>
                     </li>
                     {/* <li className="d-flex">

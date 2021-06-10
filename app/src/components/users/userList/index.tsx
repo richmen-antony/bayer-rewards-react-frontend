@@ -1030,13 +1030,12 @@ class UserList extends Component<Props, States> {
                               <img src={filterIcon} width="17" alt={NoImage} />
                             )}
                           </DropdownToggle>
-                          <DropdownMenu right>
+                          <DropdownMenu right style={{marginLeft: "95px"}}>
                             <div className="p-3">
                               <DropdownItem>
                                 <i
                                   className="fa fa-filter boxed float-right"
                                   aria-hidden="true"
-                                  onClick={this.toggleFilter}
                                 ></i>
                               </DropdownItem>
                               <div onClick={(e) => e.stopPropagation()}>

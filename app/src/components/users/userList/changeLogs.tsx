@@ -205,7 +205,7 @@ class ChangeLogs extends Component<Props, States> {
             <div className="col-sm-6">
               <span>
                 <img
-                  style={{ marginRight: "8px" }}
+                  style={{ marginRight: "8px", cursor: "pointer" }}
                   src={leftArrow}
                   width="17"
                   alt="leftArrow"
