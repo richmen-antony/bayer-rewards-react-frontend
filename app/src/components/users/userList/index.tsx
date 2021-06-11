@@ -1030,7 +1030,7 @@ class UserList extends Component<Props, States> {
                               <img src={filterIcon} width="17" alt={NoImage} />
                             )}
                           </DropdownToggle>
-                          <DropdownMenu right style={{marginLeft: "95px"}}>
+                          <DropdownMenu right style={{marginLeft: "16px"}}>
                             <div className="p-3">
                               <DropdownItem>
                                 <i

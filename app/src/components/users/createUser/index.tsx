@@ -849,7 +849,6 @@ class CreateUser extends Component<any, any> {
           });
         }
       }
-      formValid=true;
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
