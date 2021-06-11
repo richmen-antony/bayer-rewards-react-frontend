@@ -168,7 +168,7 @@ class ChannelPartners extends Component<Props, States> {
     this.getGeographicFields();
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-    if (userData?.userName) this.setState({ userName: userData.username });
+    if (userData?.username) this.setState({ userName: userData.username });
   }
 
   getCountryList() {
@@ -361,8 +361,7 @@ class ChannelPartners extends Component<Props, States> {
             mobilenumberErr: "",
           },
           firstname: userFields.ownerfirstname,
-          active:
-            userFields.userstatus === "ACTIVE" || "PENDING" ? true : false,
+          active: (userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING") ? true : false,
           lastname: userFields.ownerlastname,
           mobilenumber: userFields.ownerphonenumber,
           email: userFields.owneremail,
@@ -544,7 +543,7 @@ class ChannelPartners extends Component<Props, States> {
       }
 
       let obj: any = {};
-      obj.lastupdatedby = this.state.userName;
+      obj.lastupdatedby = this.state.userName.toUpperCase()
       obj.lastupdateddate = new Date().toJSON();
       obj.username = username;
 
@@ -1648,8 +1647,13 @@ class ChannelPartners extends Component<Props, States> {
                             {list.staffdetails?.length}
                             <img
                               className="retailer-icon"
+                              style={{cursor: (list.userstatus == "DECLINED" ||
+                              list.userstatus == "PENDING") ? 'default': 'pointer'}}
                               onClick={(event) => {
-                                this.editStaff(list);
+                                list.userstatus == "DECLINED" ||
+                                list.userstatus == "PENDING"
+                                  ? event.preventDefault()
+                                  : this.editStaff(list);
                               }}
                               src={ExpandWindowImg}
                             ></img>

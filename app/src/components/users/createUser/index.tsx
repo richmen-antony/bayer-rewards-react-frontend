@@ -227,7 +227,7 @@ class CreateUser extends Component<any, any> {
                   mobilenumberErr: "",
                 },
                 firstname: userFields.ownerfirstname,
-                active: userFields.userstatus === "ACTIVE" || "PENDING" ? true : false,
+                active: (userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING") ? true : false,
                 lastname: userFields.ownerlastname,
                 mobilenumber: userFields.ownerphonenumber,
                 email: userFields.owneremail,
@@ -849,6 +849,7 @@ class CreateUser extends Component<any, any> {
           });
         }
       }
+      formValid=true;
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
     }
@@ -1237,6 +1238,7 @@ class CreateUser extends Component<any, any> {
       let whtaccountname = userData.whtaccountname
         ? ""
         : "Please enter account name";
+     
 
       if(whtaccountname != ""){
         formValid = false;
@@ -1253,13 +1255,18 @@ class CreateUser extends Component<any, any> {
         // let billingzipcode = userData.billingzipcode
         //   ? ""
         //   : "Please enter the Postal";
-
-        if (whtownername != "") {
+    
+        if(whtaccountname != "" || whtownername!=""){
           formValid = false;
         }
         this.setState({
           ownernameErr: whtownername
         });
+      } else {
+        this.setState({
+          ownernameErr: ""
+        });
+      }
         this.state.withHolding.map((list: any) => {
           if (list.value === "") {
             list.error = "Please select the " + list.name;
@@ -1269,7 +1276,7 @@ class CreateUser extends Component<any, any> {
           }
           this.setState({ isRendered: true });
         });
-      }
+      
     }
     return formValid;
   }
@@ -1501,7 +1508,7 @@ class CreateUser extends Component<any, any> {
           if (!e.target.checked) {
             this.getDynamicOptionFields(userFields);
           } else {
-            this.setState({ withHolding: this.state.dynamicFields });
+            this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
           }
         } else {
           if (!e.target.checked) {
@@ -1522,7 +1529,7 @@ class CreateUser extends Component<any, any> {
             });
             this.setState({ withHolding: setFormArray });
           } else {
-            this.setState({ withHolding: this.state.dynamicFields });
+            this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
           }
         }
         this.setState({ accInfo: e.target.checked });
@@ -2348,7 +2355,7 @@ class CreateUser extends Component<any, any> {
                   </div>
                 </>
               )}
-              <div className="geographicLocation" style={{ width: "80%" }}>
+              <div className="geographicLocation" style={{ width: "80%"}} >
                 {currentStep == 2 && (
                   <>
                     <div className="row fieldsAlign">{locationList}</div>
@@ -2423,7 +2430,7 @@ class CreateUser extends Component<any, any> {
                       </div>
                     </div>
 
-                    <div className="row fieldsAlign">
+                    <div className="row" style={{marginTop: ownernameErr != "" || accountnameErr!="" ? '12px' : '32px'}}>
                       <div className="col-sm-3">
                         <Input
                           type="text"
@@ -2455,7 +2462,7 @@ class CreateUser extends Component<any, any> {
                         />
                       </div>
                     </div>
-                    <div className="row fieldsAlign" style={{ width: "80%" }}>
+                    <div className="row" style={{ width: "80%", marginTop: ownernameErr != "" || accountnameErr!="" ? '12px' : '32px'}}>
                       {locationList}
                     </div>
                     <div className="row" style={{ width: "81%" }}>
