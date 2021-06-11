@@ -41,23 +41,19 @@ class Dashboard extends Component<Props, States> {
   componentDidMount() {
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-    this.setState({
-      userRole: userData.role,
-    });
-    if(userData.role ==="ADMIN")
-    this.getAdminDashboardDetails();
-    if(userData.role ==="RSM")
-    this.getrsmDashboardDetails();
-   
+    if (userData?.userRole) this.setState({ userRole: userData.role });
+
+    if (userData?.role === "ADMIN") this.getAdminDashboardDetails();
+    if (userData?.role === "RSM") this.getrsmDashboardDetails();
   }
   getrsmDashboardDetails = () => {
     const { rsmDashboard } = apiURL;
     let obj: any = getLocalStorageData("userData");
     let userData = JSON.parse(obj);
     const data = {
-      region: userData.geolevel1 ,
-      countrycode:userData.countrycode
-    }
+      region: userData.geolevel1,
+      countrycode: userData.countrycode,
+    };
     this.setState({ isLoader: true });
     invokeGetAuthService(rsmDashboard, data).then((response) => {
       let res = Object.keys(response.body).length !== 0 ? response.body : "";

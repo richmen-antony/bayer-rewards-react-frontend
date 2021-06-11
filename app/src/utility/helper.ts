@@ -1,31 +1,35 @@
-import { Alert} from "./widgets/toaster";
+import { Alert } from "./widgets/toaster";
 import _ from "lodash";
+import moment from "moment";
+import { getLocalStorageData } from '../utility/base/localStore';
+
+const sessionDefaultTime: number = 2;
 /**
  * Download excel file 
  * @param tableId 
  * @param fileName 
  */
-export const downloadExcel =(tableId:any,fileName:string)=>{
-        let excelFileName='excel_table_data';
-        let TableDataType = 'application/vnd.ms-excel';
-        let selectTable :any = document.getElementById(tableId);
-        let htmlTable = selectTable.outerHTML.replace(/ /g, '%20');
-        
-        fileName = fileName?fileName+'.xls':excelFileName+'.xls';
-        var excelFileURL = document.createElement("a");
-        document.body.appendChild(excelFileURL);
-        
-        if(navigator.msSaveOrOpenBlob){
-            var blob = new Blob(['\ufeff', htmlTable], {
-                type: TableDataType
-            });
-            navigator.msSaveOrOpenBlob( blob, fileName);
-        }else{
-            
-            excelFileURL.href = 'data:' + TableDataType + ', ' + htmlTable;
-            excelFileURL.download = fileName;
-            excelFileURL.click();
-        }
+export const downloadExcel = (tableId: any, fileName: string) => {
+  let excelFileName = 'excel_table_data';
+  let TableDataType = 'application/vnd.ms-excel';
+  let selectTable: any = document.getElementById(tableId);
+  let htmlTable = selectTable.outerHTML.replace(/ /g, '%20');
+
+  fileName = fileName ? fileName + '.xls' : excelFileName + '.xls';
+  var excelFileURL = document.createElement("a");
+  document.body.appendChild(excelFileURL);
+
+  if (navigator.msSaveOrOpenBlob) {
+    var blob = new Blob(['\ufeff', htmlTable], {
+      type: TableDataType
+    });
+    navigator.msSaveOrOpenBlob(blob, fileName);
+  } else {
+
+    excelFileURL.href = 'data:' + TableDataType + ', ' + htmlTable;
+    excelFileURL.download = fileName;
+    excelFileURL.click();
+  }
 
 }
 
@@ -34,16 +38,16 @@ export const downloadExcel =(tableId:any,fileName:string)=>{
  * @param csv 
  * @param filename 
  */
-export const downloadCsvFile=(csv :any, filename:string)=>{
-  if(!csv){
+export const downloadCsvFile = (csv: any, filename: string) => {
+  if (!csv) {
     // toastWarning("No data available !");
-    Alert('warning',"No data available !")
-  }else{
+    Alert('warning', "No data available !")
+  } else {
     var csvFile;
     var downloadLink;
 
     // CSV FILE
-    csvFile = new Blob([csv], {type: "text/csv"});
+    csvFile = new Blob([csv], { type: "text/csv" });
 
     // Download link
     downloadLink = document.createElement("a");
@@ -63,40 +67,40 @@ export const downloadCsvFile=(csv :any, filename:string)=>{
     // Lanzamos
     downloadLink.click();
   }
-   
+
 
 }
 
-export const isValidDate=(date:any)=>{
-    if (!isNaN(Date.parse(date))) {
-        return true
-      } else {
-        return false
-      }
-      
+export const isValidDate = (date: any) => {
+  if (!isNaN(Date.parse(date))) {
+    return true
+  } else {
+    return false
+  }
+
 }
 
 function objectValues<T extends {}>(obj: T) {
-    return Object.keys(obj).map((objKey) => obj[objKey as keyof T]);
-  }
-  
-  function objectKeys<T extends {}>(obj: T) {
-    return Object.keys(obj).map((objKey) => objKey as keyof T);
-  }
+  return Object.keys(obj).map((objKey) => obj[objKey as keyof T]);
+}
+
+function objectKeys<T extends {}>(obj: T) {
+  return Object.keys(obj).map((objKey) => objKey as keyof T);
+}
 
 
-  export const DownloadCsv = (data:any,fileName:string)=>{
-    if(!data || !data.length){
-      // toastWarning("No data available !");
-      Alert('warning',"No data available !")
-    }else{
-    const rows= data;
+export const DownloadCsv = (data: any, fileName: string) => {
+  if (!data || !data.length) {
+    // toastWarning("No data available !");
+    Alert('warning', "No data available !")
+  } else {
+    const rows = data;
     const separator = ',';
     const keys = Object.keys(rows[0]);
     const csvContent =
       keys.join(separator) +
       '\n' +
-      rows.map((row:any) => {
+      rows.map((row: any) => {
         return keys.map(k => {
           let cell = row[k] === null || row[k] === undefined ? '' : row[k];
           cell = cell instanceof Date
@@ -125,26 +129,44 @@ function objectValues<T extends {}>(obj: T) {
         document.body.removeChild(link);
       }
     }
-  
-  }
 
   }
 
-  export const hasDuplicate=(array:Array<any>,key:string)=> {
-   return true;
-  }
+}
 
-export const handledropdownoption = (array:Array<any>,key:string) => {
-  const data : any = 
-  array?.length > 0 &&
-  array.map((val: any) => {
-      return { value: val[key], text: val[key] }})
-    return data;
+export const hasDuplicate = (array: Array<any>, key: string) => {
+  return true;
+}
+
+export const handledropdownoption = (array: Array<any>, key: string) => {
+  const data: any =
+    array?.length > 0 &&
+    array.map((val: any) => {
+      return { value: val[key], text: val[key] }
+    })
+  return data;
 };
 
 
-export const ErrorMsg=(error:any)=>{
-  let msg= error ? error?.message:"Something went wrong"
-   Alert('error',msg)
-  
+export const ErrorMsg = (error: any) => {
+  let msg = error ? error?.message : "Something went wrong"
+  Alert('error', msg)
+
+}
+
+// SessionTimeout validation
+export const checkSessionTimeOut = () => {
+  let data: any = getLocalStorageData("userData");
+  let userinfo = JSON.parse(data);
+  let login_time = userinfo?.sessionTime;
+  let rememberMe = userinfo?.isRemember;
+
+  let timeStamp = moment.unix(login_time).format("D/M/YYYY hh:mm:ss")
+  let now = moment().format("D/M/YYYY hh:mm:ss")
+  let duration = moment(now).diff(moment(timeStamp), 'minutes')
+
+  if (duration < sessionDefaultTime) {
+    return true
+  }
+  return false
 }

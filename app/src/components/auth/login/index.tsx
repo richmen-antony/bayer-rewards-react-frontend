@@ -8,11 +8,12 @@ import bayerLogo from "../../shared/widgets/icons/bayer_logo.svg";
 import { Link } from "react-router-dom";
 import { Input } from "../../../utility/widgets/input";
 import { apiURL } from "../../../utility/base/utils/config";
-import { invokePostService } from "../../../utility/base/service";
+import { invokePostServiceLogin } from "../../../utility/base/service";
 import { setLocalStorageData } from "../../../utility/base/localStore";
 // import { toastError } from "../../../utility/widgets/toaster";
 import Loaders from "../../../utility/widgets/loader";
 import Cookies from "js-cookie";
+import moment from "moment";
 import { CustomButton } from "../../../utility/widgets/button";
 import "../../../assets/scss/login.scss";
 
@@ -30,6 +31,7 @@ type States = {
   isLoader: boolean;
   validErrorMsg: any;
 };
+
 class Login extends Component<Props, States> {
   constructor(props: any) {
     super(props);
@@ -44,6 +46,7 @@ class Login extends Component<Props, States> {
       validErrorMsg: "",
     };
   }
+
   handleChange = (e: any) => {
     if (e.target.name === "username") {
       if (e.target.value === "" || e.target.value === null) {
@@ -81,9 +84,11 @@ class Login extends Component<Props, States> {
     const { login } = apiURL;
     if (formValid) {
       this.setState({ isLoader: true });
-      invokePostService(login, data)
+      invokePostServiceLogin(login, data)
         .then((response: any) => {
           console.log(response, "response");
+
+          response.body.sessionTime = moment().unix();
           response.body.isRemember = this.state.isRemember;
           setLocalStorageData("userData", JSON.stringify(response.body));
           Cookies.set("userData", JSON.stringify(response.body), {

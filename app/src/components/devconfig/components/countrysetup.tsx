@@ -15,7 +15,7 @@ import {
   setAnticounterfeitSmartLabel,
 } from "../../../redux/actions/devconfig/add";
 import { apiURL } from "../../../utility/base/utils/config";
-import { invokeGetAuthServiceTemp } from "../../../utility/base/service";
+import { invokeGetAuthService } from "../../../utility/base/service";
 import { ContactSupportOutlined } from "@material-ui/icons";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -174,7 +174,7 @@ const CountrySetupComp = (props: ICountryProps) => {
     props.setAnticounterfeitDigitalScan(false);
     props.setAnticounterfeitSmartLabel(false);
 
-    invokeGetAuthServiceTemp(getTemplateData, data)
+    invokeGetAuthService(getTemplateData, data)
       .then((response: any) => {
         newCountry = false;
         let objCountryData = response.body[0];
