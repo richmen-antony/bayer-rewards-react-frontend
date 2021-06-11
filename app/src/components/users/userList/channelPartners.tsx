@@ -227,7 +227,7 @@ class ChannelPartners extends Component<Props, States> {
     let res = [];
     res.push(
       <th
-        style={{ width: "10%" }}
+        style={{ width: "9%" }}
         onClick={(e) =>
           this.handleSort(e, "username", allChannelPartners, isAsc)
         }
@@ -261,7 +261,7 @@ class ChannelPartners extends Component<Props, States> {
     );
     res.push(
       <th
-        style={{ width: "13%" }}
+        style={{ width: "12%" }}
         onClick={(e) =>
           this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)
         }
@@ -276,7 +276,7 @@ class ChannelPartners extends Component<Props, States> {
     );
     res.push(
       <th
-        style={{ textAlign: "left", width: "10%" }}
+        style={{ width: "12%" }}
         onClick={(e) =>
           this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)
         }
@@ -297,7 +297,7 @@ class ChannelPartners extends Component<Props, States> {
         columnname = columnname.toUpperCase();
         res.push(
           <th
-            style={{ textAlign: "left", width: "8%" }}
+            style={{ width: "8%" }}
             onClick={(e) =>
               this.handleSort(
                 e,
@@ -321,8 +321,8 @@ class ChannelPartners extends Component<Props, States> {
       staticColumn + (this.state.geographicFields.length - 1);
     res.push(<th style={{ width: "8%" }}>{"STAFF COUNT"}</th>);
     res.push(<th style={{ width: "10%" }}>{"STATUS"}</th>);
-    res.push(<th>{"UPDATED BY"}</th>);
-    res.push(<th></th>);
+    res.push(<th style={{ width: "9%" }}>{"UPDATED BY"}</th>);
+    res.push(<th style={{ width: "7%" }}></th>);
 
     return res;
   }
@@ -1631,17 +1631,21 @@ class ChannelPartners extends Component<Props, States> {
                     >
                       <td style={{ width: "10%" }}>{list.username}</td>
                       <td style={{ width: "10%" }}>{list.ownerphonenumber} </td>
-                      <td style={{ textAlign: "left", width: "13%" }}>
+                      <td style={{ textAlign: "left", width: "12%" }}>
                         {list.whtaccountname}{" "}
                       </td>
-                      <td style={{ textAlign: "left", width: "10%" }}>
+                      <td style={{ textAlign: "left", width: "12%" }}>
                         {list.ownerfirstname + " " + list.ownerlastname}{" "}
                       </td>
-                      <td style={{ textAlign: "left", width: "7%" }}>
+                      <td style={{ textAlign: "left", width: "8%" }}>
                         {list.deliveryregion}{" "}
                       </td>
-                      <td style={{ width: "7%" }}>{list.deliverystate} </td>
-                      <td style={{ width: "10%" }}>{list.deliverydistrict} </td>
+                      <td style={{ textAlign: "left", width: "8%" }}>
+                        {list.deliverystate}{" "}
+                      </td>
+                      <td style={{ textAlign: "left", width: "8%" }}>
+                        {list.deliverydistrict}{" "}
+                      </td>
                       <td style={{ textAlign: "center", width: "8%" }}>
                         <div className="retailer-id">
                           <p>
@@ -1656,7 +1660,7 @@ class ChannelPartners extends Component<Props, States> {
                           </p>
                         </div>
                       </td>
-                      <td style={{ width: "7%" }}>
+                      <td style={{ width: "9%" }}>
                         <span
                           onClick={(event: any) => {
                             this.showPopup(event, "deActivatePopup");
@@ -1693,10 +1697,10 @@ class ChannelPartners extends Component<Props, States> {
                           {_.startCase(_.toLower(list.userstatus))}
                         </span>
                       </td>
-                      <td style={{ textAlign: "right", width: "9%" }}>
+                      <td style={{ textAlign: "center", width: "8%" }}>
                         {list.lastupdatedby}
                       </td>
-                      <td>
+                      <td style={{ width: "7%" }}>
                         <td>
                           <img
                             className="edit"
