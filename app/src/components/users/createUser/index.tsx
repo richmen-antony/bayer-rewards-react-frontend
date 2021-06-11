@@ -2434,7 +2434,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          disabled={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : false}
                         />
                         <div>
                           {ownernameErr && (
@@ -2473,7 +2473,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          disabled={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : false}
                           width="96%"
                         />
                         {!accInfo && billingstreetErr && (
@@ -2490,7 +2490,7 @@ class CreateUser extends Component<any, any> {
                             this.handleChange("", e, "", "otherSteps", "")
                           }
                           // onKeyPress={(e: any) => this.isNumberKey(e)}
-                          disabled={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : false}
                           value={
                             this.state.accInfo
                               ? userData.deliveryzipcode
@@ -2512,7 +2512,7 @@ class CreateUser extends Component<any, any> {
             className="submit"
             style={{
               position: "absolute",
-              bottom: "0px",
+              bottom: "20px",
               marginLeft:
                 currentStep == 1
                   ? "350px"

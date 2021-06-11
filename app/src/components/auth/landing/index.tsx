@@ -103,7 +103,7 @@ class LandingPage extends Component<any, any> {
                 {/* <div className={ isLogin ? "activeLine" : ""} > </div> */}
                 {/* </h4> */}
                 <h4 className="title" onClick={this.toLogin}>
-                  Sign in
+                  Sign In
                   <div className={isLogin ? "activeLine" : ""}> </div>
                 </h4>
               </div>

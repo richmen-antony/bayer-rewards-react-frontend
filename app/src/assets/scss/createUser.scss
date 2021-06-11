@@ -1,51 +1,51 @@
 @import "./variables.scss";
 
 .personalHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
 
 /* ----React phone input starts -----*/
-  .flagInput .App {
-    font-family: 'appRegular' !important;;
-    text-align: center;
-  }
-  .flagInput .form-control {
-    height: 40px !important;
-    width: 215px !important;
-  }
+.flagInput .App {
+  font-family: "appRegular" !important;
+  text-align: center;
+}
+.flagInput .form-control {
+  height: 40px !important;
+  width: 215px !important;
+}
 //   .flagInput .react-tel-input {
 //     margin-top: 10px !important;
 //     margin-left: 10px !important;
 //   }
 .react-tel-input .country-list {
-    width: 215px !important;
-    max-height : 151px !important;
+  width: 215px !important;
+  max-height: 151px !important;
 }
 .react-tel-input .selected-flag {
-    width: 43px !important;
-    .arrow {
-        left: 27px !important;
-    }
+  width: 43px !important;
+  .arrow {
+    left: 27px !important;
+  }
 }
 .flagInput .country {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 /*-----------React flag ends------------*/
 
 .fieldsAlign {
-  margin-top: 32px
+  margin-top: 32px;
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1366px) {
   .card-main {
     height: 82vh;
   }
 }
 
-@media only screen and (max-width: 1920px) {
+@media only screen and(min-width:1400px) and (max-width: 1920px) {
   .card-main {
-    height: 81vh;
+    height: 84vh;
   }
 }
