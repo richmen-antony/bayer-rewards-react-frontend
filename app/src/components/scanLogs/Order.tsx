@@ -167,20 +167,26 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                               value?.ordered_qrcodes?.length > 0 &&
                               handleExpand(value)
                             }
-                            style={{cursor: `${value?.ordered_qrcodes?.length > 0 &&"pointer"}`}}
+                            style={{
+                              cursor: `${
+                                value?.ordered_qrcodes?.length > 0 && "pointer"
+                              }`,
+                            }}
                           >
                             <th scope="row">
                               {
                                 <img
                                   src={
-                                    value.productgroup === "CORN SEED" || value.productgroup === "HYBRID" 
+                                    value.productgroup === "CORN SEED" ||
+                                    value.productgroup === "HYBRID"
                                       ? CornImg
-                                      : value.productgroup === "FUNGICIDES" || value.productgroup ==="HERBICIDES" || value.productgroup ==="INSECTICIDES"
+                                      : value.productgroup === "FUNGICIDES" ||
+                                        value.productgroup === "HERBICIDES" ||
+                                        value.productgroup === "INSECTICIDES"
                                       ? CpproductImg
                                       : NoImg
                                   }
                                   width={40}
-                                 
                                 />
                               }
                             </th>
@@ -197,10 +203,11 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>{"MK " + value.productprice}</td>
                             {data.orderstatus === "FULFILLED" &&
                               value?.ordered_qrcodes?.length > 0 && (
-                                <td style={{cursor:"pointer"}}>
+                                <td style={{ cursor: "pointer" }}>
                                   <i
                                     className={`fas ${
-                                      value?.orderlineitemid === accordionId &&accordionView
+                                      value?.orderlineitemid === accordionId &&
+                                      accordionView
                                         ? "fa-sort-down"
                                         : "fa-sort-up"
                                     }`}
@@ -247,16 +254,22 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       );
                     })}
                     <tr>
-                      <td colSpan={8} >
+                      <td colSpan={8}>
                         {data.orderstatus === "FULFILLED" && (
                           <div id="accordion">
                             <div className="card order-accordion product-sold-popup">
                               <div
                                 className="card-header"
                                 id="headingOne"
-                                onClick={() => data?.invalidscans?.length > 0&&  handleButton("e")}
-                                style={{cursor: `${data?.invalidscans?.length > 0  &&"pointer"}`}}
-
+                                onClick={() =>
+                                  data?.invalidscans?.length > 0 &&
+                                  handleButton("e")
+                                }
+                                style={{
+                                  cursor: `${
+                                    data?.invalidscans?.length > 0 && "pointer"
+                                  }`,
+                                }}
                               >
                                 <span>
                                   {`Invalid Scans (${
@@ -266,7 +279,6 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   })`}
                                 </span>
                                 <img src={RtArrow} />
-                                {/* <span>Expired Labels (0)</span> */}
                                 <span>
                                   {`Expired Labels (${
                                     data?.invalidscans?.filter(
@@ -277,9 +289,8 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   })`}
                                 </span>
                                 <div>
-                                  {/* <span>Non Bayer Labels (0)</span> */}
                                   <span>
-                                    {`Non Bayer Labels (${
+                                    {`Not part of advisor program (${
                                       data?.invalidscans?.filter(
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
@@ -290,11 +301,22 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 </div>
                                 <div>
                                   <span>
-                                    {`Invalid Labels (${
+                                    {`Non Bayer Labels (${
                                       data?.invalidscans?.filter(
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
                                           "Label not recognized".toLowerCase()
+                                      ).length
+                                    })`}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span>
+                                    {`Duplicate Labels (${
+                                      data?.invalidscans?.filter(
+                                        (i: any) =>
+                                          i.reason.toLowerCase() ===
+                                          "This product is already scanned".toLowerCase()
                                       ).length
                                     })`}
                                   </span>
@@ -363,8 +385,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       </td>
                       <td>
                         <span className="productprice">
-                          {"MK " +
-                            data.totalcost}
+                          {"MK " + data.totalcost}
                         </span>
                       </td>
                       <td></td>
