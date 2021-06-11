@@ -26,12 +26,13 @@ declare global {
 }
 
 function App() {
-  // To enable isRemember Need to logged out
-  let data: any = getLocalStorageData("userData");
-  let userinfo = JSON.parse(data);
-  window.onbeforeunload = function (e: any) {
-    if (userinfo?.isRemember === false) Authorization.logOut();
-  };
+  // To enable isRemember===false Need to logged out
+  // let data: any = getLocalStorageData("userData");
+  // let userinfo = JSON.parse(data);
+
+  // window.onbeforeunload = function (e: any) {
+  //   if (userinfo?.isRemember === false) Authorization.logOut();
+  // };
 
   return (
     <>
