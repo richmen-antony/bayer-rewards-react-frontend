@@ -9,7 +9,7 @@ const MENU_ITEMS = [{
   icon: 'icon_profile',
   subMenus: [
     {
-      name: 'Create a new user',
+      name: 'Create New User',
       path: 'createUser',
       icon: 'icon_profile'
     },

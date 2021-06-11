@@ -98,24 +98,24 @@ class Sidebar extends Component<Props, States> {
             > */}
             <div id="sidebar-menu" className="">
               <ul className="metismenu" id="side-menu">
-              {this.state.userRole != "DEVADMIN"&&
-                <li className="d-flex">
-                  <span
-                    className={
-                      window.location.pathname.indexOf("dashboard") > -1
-                        ? "waves-effect active"
-                        : "waves-effect"
-                    }
-                  ></span>
-                  <Link
-                    to="/dashboard"
-                    onClick={() => this.setActiveTab("dashboard")}
-                  >
-                    <img src={homeIcon} alt="User" width="16" />{" "}
-                    <span> Dashboard </span>
-                  </Link>
-                </li>
-                 }
+                {this.state.userRole != "DEVADMIN" && (
+                  <li className="d-flex">
+                    <span
+                      className={
+                        window.location.pathname.indexOf("dashboard") > -1
+                          ? "waves-effect active"
+                          : "waves-effect"
+                      }
+                    ></span>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => this.setActiveTab("dashboard")}
+                    >
+                      <img src={homeIcon} alt="User" width="16" />{" "}
+                      <span> Dashboard </span>
+                    </Link>
+                  </li>
+                )}
 
                 {this.state.userRole === "ADMIN" && (
                   <>
@@ -133,7 +133,7 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("createUser")}
                       >
                         <img src={addUserIcon} alt="User" width="16" />{" "}
-                        <span> Create a New User </span>
+                        <span> Create New User </span>
                       </Link>
                     </li>
 
@@ -166,14 +166,14 @@ class Sidebar extends Component<Props, States> {
                   <>
                     <li className="menu-title">MANAGEMENT</li>
                     <li className="d-flex">
-                    <span
-                    className={
-                      window.location.pathname.indexOf("devconfig") > -1
-                        ? "waves-effect active"
-                        : "waves-effect"
-                    }
-                  ></span>
-                     
+                      <span
+                        className={
+                          window.location.pathname.indexOf("devconfig") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+
                       <Link
                         to="/devconfig"
                         className={
