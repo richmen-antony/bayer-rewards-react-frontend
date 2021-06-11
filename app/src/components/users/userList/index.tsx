@@ -268,7 +268,7 @@ class UserList extends Component<Props, States> {
       isdeActivateUser: false,
       isEditUser: false,
       value: 0,
-      userStatus: ["ALL", "Active", "Inactive", "Not Activated"],
+      userStatus: ["ALL", "Active", "Inactive", "Pending"],
       geographicFields: [],
       dynamicFields: [],
       countryList: [],

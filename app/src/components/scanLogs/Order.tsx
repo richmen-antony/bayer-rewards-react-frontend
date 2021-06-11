@@ -70,7 +70,10 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
-               <label>#{data?.advisororderid} - { _.startCase(_.toLower(data?.accountname))}</label>
+                <label>
+                  #{data?.advisororderid} -{" "}
+                  {_.startCase(_.toLower(data?.accountname))}
+                </label>
               </p>
             </div>
           </div>
@@ -285,7 +288,13 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                       (i: any) =>
                                         i.reason.toLowerCase() ===
                                         "This product is expired".toLowerCase()
-                                    ).length
+                                    ).length > 0
+                                      ? data?.invalidscans?.filter(
+                                          (i: any) =>
+                                            i.reason.toLowerCase() ===
+                                            "This product is expired".toLowerCase()
+                                        ).length
+                                      : 0
                                   })`}
                                 </span>
                                 <div>
@@ -295,7 +304,13 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
                                           "This product is not part of Advisor program".toLowerCase()
-                                      ).length
+                                      ).length > 0
+                                        ? data?.invalidscans?.filter(
+                                            (i: any) =>
+                                              i.reason.toLowerCase() ===
+                                              "This product is not part of Advisor program".toLowerCase()
+                                          ).length
+                                        : 0
                                     })`}
                                   </span>
                                 </div>
@@ -306,7 +321,13 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
                                           "Label not recognized".toLowerCase()
-                                      ).length
+                                      ).length > 0
+                                        ? data?.invalidscans?.filter(
+                                            (i: any) =>
+                                              i.reason.toLowerCase() ===
+                                              "Label not recognized".toLowerCase()
+                                          ).length
+                                        : 0
                                     })`}
                                   </span>
                                 </div>
@@ -317,7 +338,13 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
                                           "This product is already scanned".toLowerCase()
-                                      ).length
+                                      ).length > 0
+                                        ? data?.invalidscans?.filter(
+                                            (i: any) =>
+                                              i.reason.toLowerCase() ===
+                                              "This product is already scanned".toLowerCase()
+                                          ).length
+                                        : 0
                                     })`}
                                   </span>
                                 </div>

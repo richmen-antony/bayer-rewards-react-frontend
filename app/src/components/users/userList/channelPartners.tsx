@@ -319,10 +319,14 @@ class ChannelPartners extends Component<Props, States> {
     }
     let nextIndex: number =
       staticColumn + (this.state.geographicFields.length - 1);
-    res.push(<th style={{ width: "8%" }}>{"STAFF COUNT"}</th>);
-    res.push(<th style={{ width: "10%" }}>{"STATUS"}</th>);
-    res.push(<th style={{ width: "9%" }}>{"UPDATED BY"}</th>);
-    res.push(<th style={{ width: "7%" }}></th>);
+    res.push(
+      <th style={{ width: "8%", cursor: "default" }}>{"STAFF COUNT"}</th>
+    );
+    res.push(<th style={{ width: "10%", cursor: "default" }}>{"STATUS"}</th>);
+    res.push(
+      <th style={{ width: "9%", cursor: "default" }}>{"UPDATED BY"}</th>
+    );
+    res.push(<th style={{ width: "7%", cursor: "default" }}></th>);
 
     return res;
   }
