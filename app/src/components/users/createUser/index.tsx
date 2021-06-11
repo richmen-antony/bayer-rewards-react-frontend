@@ -874,9 +874,7 @@ class CreateUser extends Component<any, any> {
         //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
         // });
         this.submitUserDatas();
-      } else {
-        alert("Please enter mandatory fields");
-      }
+      } 
     }
   }
   submitUserDatas = () => {

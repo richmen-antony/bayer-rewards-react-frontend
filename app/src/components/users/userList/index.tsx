@@ -471,9 +471,9 @@ class UserList extends Component<Props, States> {
         status: status,
         lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
         lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
-        region,
-        add,
-        district,
+        geolevel1: region,
+        geolevel2: add,
+        geolevel3: district,
       };
       data = { ...data, ...filter };
     }
@@ -552,9 +552,9 @@ class UserList extends Component<Props, States> {
         status: status.toUpperCase(),
         lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
         lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
-        region: region==="ALL"? null:region,
-        add:add==="ALL"?null:add,
-        district:district==="ALL"?null:district,
+        geolevel1: region==="ALL"? null:region,
+        geolevel2:add==="ALL"?null:add,
+        geolevel3:district==="ALL"?null:district,
         searchtext: this.state.searchText,
       };
       data = { ...data, ...filter };
