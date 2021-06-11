@@ -342,7 +342,8 @@ class CreateUser extends Component<any, any> {
       data.billingstate === data.deliverystate &&
       data.billingdistrict === data.deliverydistrict &&
       data.billingcity === data.deliverycity &&
-      data.billingvillage === data.deliveryvillage;
+      data.billingvillage === data.deliveryvillage &&
+      data.whtownername === data.ownerfirstname+' '+data.ownerlastname
 
     let allRegions = this.state.allRegions;
     if (data) {
@@ -938,13 +939,9 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: userData.iscreatedfrommobile,
-        whtaccountname: userData.whtaccountname
-          ? userData.whtaccountname
-          : userData.ownerRows[0].firstname +
-            " " +
-            userData.ownerRows[0].lastname,
+        whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
-        whtownername: userData.whtownername,
+        whtownername: this.state.accInfo ? userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname : userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
@@ -988,11 +985,7 @@ class CreateUser extends Component<any, any> {
         iscreatedfrommobile: false,
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
-        whtownername: userData.whtownername
-          ? userData.whtownername
-          : userData.ownerRows[0].firstname +
-            " " +
-            userData.ownerRows[0].lastname,
+        whtownername: this.state.accInfo ? userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname : userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
@@ -1210,12 +1203,12 @@ class CreateUser extends Component<any, any> {
         }));
       });
     } else if (this.state.currentStep === 2) {
-      userData.whtownername =
-        this.state.isEditPage || this.state.isValidatePage
-          ? userData.whtownername
-          : userData.ownerRows[0].firstname +
-            " " +
-            userData.ownerRows[0].lastname;
+      // userData.whtownername =
+      //   this.state.isEditPage || this.state.isValidatePage
+      //     ? userData.whtownername
+      //     : userData.ownerRows[0].firstname +
+      //       " " +
+      //       userData.ownerRows[0].lastname;
       // let deliverystreet = userData.deliverystreet
       //   ? ""
       //   : "Please enter the Street";
@@ -1231,7 +1224,7 @@ class CreateUser extends Component<any, any> {
       // });
       this.state.dynamicFields.map((list: any) => {
         if (list.value === "") {
-          list.error = "Please enter the " + list.name;
+          list.error = "Please select the " + list.name;
           formValid = false;
         } else {
           list.error = "";
@@ -1244,16 +1237,16 @@ class CreateUser extends Component<any, any> {
       let whtaccountname = userData.whtaccountname
         ? ""
         : "Please enter account name";
-      let whtownername = userData.whtownername ? "" : "Please enter owner name";
-      if(whtaccountname != "" || whtownername!= ""){
+
+      if(whtaccountname != ""){
         formValid = false;
       }
       this.setState({
-        accountnameErr: whtaccountname,
-        ownernameErr: whtownername,
+        accountnameErr: whtaccountname
       });
 
       if (!accInfo) {
+        let whtownername = userData.whtownername ? "" : "Please enter owner name";
         // let billingstreet = userData.billingstreet
         //   ? ""
         //   : "Please enter the Street";
@@ -1261,19 +1254,15 @@ class CreateUser extends Component<any, any> {
         //   ? ""
         //   : "Please enter the Postal";
 
-        if (
-          whtaccountname != "" ||
-          whtownername != ""
-        ) {
+        if (whtownername != "") {
           formValid = false;
         }
-        // this.setState({
-        //   billingstreetErr: billingstreet,
-        //   billingzipcodeErr: billingzipcode,
-        // });
+        this.setState({
+          ownernameErr: whtownername
+        });
         this.state.withHolding.map((list: any) => {
           if (list.value === "") {
-            list.error = "Please enter the " + list.name;
+            list.error = "Please select the " + list.name;
             formValid = false;
           } else {
             list.error = "";
@@ -2441,10 +2430,11 @@ class CreateUser extends Component<any, any> {
                           className="form-control"
                           name="whtownername"
                           placeHolder="Owner Name"
-                          value={userData.whtownername}
+                          value={this.state.accInfo ? userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname : userData.whtownername}
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
+                          disabled={this.state.accInfo ? true : false}
                         />
                         <div>
                           {ownernameErr && (
@@ -2483,7 +2473,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          read-only={this.state.accInfo ? true : false}
+                          disabled={this.state.accInfo ? true : false}
                           width="96%"
                         />
                         {!accInfo && billingstreetErr && (
@@ -2500,7 +2490,7 @@ class CreateUser extends Component<any, any> {
                             this.handleChange("", e, "", "otherSteps", "")
                           }
                           // onKeyPress={(e: any) => this.isNumberKey(e)}
-                          read-only={this.state.accInfo ? true : false}
+                          disabled={this.state.accInfo ? true : false}
                           value={
                             this.state.accInfo
                               ? userData.deliveryzipcode
@@ -2538,6 +2528,9 @@ class CreateUser extends Component<any, any> {
                   style={{ marginRight: "30px" }}
                   onClick={(e) => this.handleClick("back", e)}
                 >
+                  <span>
+                    <img src={ArrowIcon} className="arrow-i" />
+                  </span>
                   Back
                 </button>
               )}
@@ -2553,7 +2546,7 @@ class CreateUser extends Component<any, any> {
                 className="cus-btn-user reset buttonStyle"
                 onClick={() => this.reset()}
               >
-                Reset
+                Reset All
               </button>
               {isValidatePage && currentStep === 3 && (
                 <button
