@@ -258,22 +258,57 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 style={{cursor: `${data?.invalidscans?.length > 0  &&"pointer"}`}}
 
                               >
-                                <span>{"Invalid Scans (0)"}</span>
+                                <span>
+                                  {`Invalid Scans (${
+                                    data?.invalidscans?.length > 0
+                                      ? data?.invalidscans?.length
+                                      : 0
+                                  })`}
+                                </span>
                                 <img src={RtArrow} />
-                                <span>Expired Labels (0)</span>
+                                {/* <span>Expired Labels (0)</span> */}
+                                <span>
+                                  {`Expired Labels (${
+                                    data?.invalidscans?.filter(
+                                      (i: any) =>
+                                        i.reason.toLowerCase() ===
+                                        "This product is expired".toLowerCase()
+                                    ).length
+                                  })`}
+                                </span>
                                 <div>
-                                  <span>Non Bayer Labels (0)</span>
+                                  {/* <span>Non Bayer Labels (0)</span> */}
+                                  <span>
+                                    {`Non Bayer Labels (${
+                                      data?.invalidscans?.filter(
+                                        (i: any) =>
+                                          i.reason.toLowerCase() ===
+                                          "This product is not part of Advisor program".toLowerCase()
+                                      ).length
+                                    })`}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span>
+                                    {`Invalid Labels (${
+                                      data?.invalidscans?.filter(
+                                        (i: any) =>
+                                          i.reason.toLowerCase() ===
+                                          "Label not recognized".toLowerCase()
+                                      ).length
+                                    })`}
+                                  </span>
                                 </div>
                                 <div className="expand-icon">
-                                 {data?.invalidscans?.length > 0&&
-                                  <i
-                                    className={`fa ${
-                                       accordion
-                                        ? "fas fa-caret-down"
-                                        : "fas fa-caret-up"
-                                    } `}
-                                  ></i>
-                                   }
+                                  {data?.invalidscans?.length > 0 && (
+                                    <i
+                                      className={`fa ${
+                                        accordion
+                                          ? "fas fa-caret-down"
+                                          : "fas fa-caret-up"
+                                      } `}
+                                    ></i>
+                                  )}
                                 </div>
                               </div>
 
@@ -293,7 +328,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                       return (
                                         <div className="inner-row">
                                           <p className="qr-val">
-                                            {scan.qrcodeid}
+                                            {scan.scannedlabel}
                                           </p>
                                           <p className="sub-val">
                                             {" "}
