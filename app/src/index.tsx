@@ -12,6 +12,8 @@ import { ROUTE } from './routes/routes'
 import Layout from "./container/Layout";
 import  Loader from './utility/widgets/loader';
 import { ToastContainer } from "react-toastify";
+import { clearLocalStorageData } from './utility/base/localStore';
+import Cookies from 'js-cookie';
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import './assets/scss/index.scss';
@@ -60,7 +62,18 @@ declare global {
     }
   }
 }
+const getLData = localStorage.getItem('userData');
+const getCData = Cookies.get('userData');
+console.log(getCData, 'getCData f');
 
+  let isLoggedIn = false;
+  if(getCData){
+    isLoggedIn = JSON.parse(getCData).isRemember;
+  }
+  if(!isLoggedIn && !getLData){
+    Cookies.remove('userData');
+    clearLocalStorageData('userData');
+  }
 const app = (
   // <React.StrictMode>
   <Provider store={store}>
