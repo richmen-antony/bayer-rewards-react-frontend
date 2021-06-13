@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import moment from "moment";
 import { CustomButton } from "../../../utility/widgets/button";
 import "../../../assets/scss/login.scss";
+import Authorization from "../../../utility/authorization";
 
 type Props = {
   location?: any;
@@ -90,7 +91,8 @@ class Login extends Component<Props, States> {
 
           response.body.sessionTime = moment().unix();
           response.body.isRemember = this.state.isRemember;
-          setLocalStorageData("userData", JSON.stringify(response.body));
+          Authorization.login(response.body)
+          // setLocalStorageData("userData", JSON.stringify(response.body));
           Cookies.set("userData", JSON.stringify(response.body), {
             expires: 7,
           });

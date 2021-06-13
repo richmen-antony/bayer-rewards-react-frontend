@@ -11,9 +11,7 @@ const AppHome = lazy(() =>
 );
 
 const LandingPage = lazy(() =>
-  import('./components/auth/landing')
-    .then(({ LandingPage }) => ({ default: LandingPage }))
-);
+  import('./components/auth/landing'));
 
 const getLData = localStorage.getItem('userData');
 const getCData = Cookies.get('userData');

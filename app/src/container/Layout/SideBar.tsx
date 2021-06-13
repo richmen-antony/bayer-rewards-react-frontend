@@ -47,6 +47,7 @@ class Sidebar extends Component<Props, States> {
   componentDidMount() {
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
+    userData ?.role &&
     this.setState({
       userRole: userData.role,
     });

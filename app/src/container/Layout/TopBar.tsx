@@ -22,7 +22,7 @@ import DropdownArrow from "../../assets/images/down-arrow.svg";
 import BayerRewardsImg from "../../assets/icons/logo.svg";
 import IndiaFLag from "../../assets/icons/india_flag.svg";
 import MalawiFlag from "../../assets/icons/malawi_flag.svg";
-
+import Authorization from "../../utility/authorization";
 
 type Props = {
   history?: any;
@@ -43,6 +43,7 @@ class TopBar extends Component<Props, States> {
   }
   componentDidMount() {
     let data: any = getLocalStorageData("userData");
+    if (data)
     this.setState({
       userData: JSON.parse(data),
     });
@@ -59,11 +60,12 @@ class TopBar extends Component<Props, States> {
     }));
   };
   handleChange = (value: any) => {
-    console.log(this.props.history, "history");
-    setLocalStorageData("isLoggedOut", true);
-    clearLocalStorageData("userData");
-    Cookies.remove("userData");
+    // setLocalStorageData("isLoggedOut", true);
+    // clearLocalStorageData("userData");
+    // Cookies.remove("userData");
+    Authorization.logOut();
     this.props.history.push("/landing");
+  
   };
 
   render() {

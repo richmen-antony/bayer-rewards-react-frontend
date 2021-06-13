@@ -1220,4 +1220,4 @@ class UserList extends Component<Props, States> {
   }
 }
 
-export { UserList };
+export default UserList;

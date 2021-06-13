@@ -7,7 +7,6 @@ import SideBar from './container/Layout/SideBar';
 
 const Dashboard = lazy(() =>
   import('./components/dashboard/index')
-    .then(({ Dashboard }) => ({ default: Dashboard }))
 );
 const ScanLogs = lazy(() =>
   import('./components/scanLogs/index')
@@ -15,19 +14,13 @@ const ScanLogs = lazy(() =>
 
 const Configurations = lazy(() =>
   import('./components/configurations/index')
-    .then(({ Configurations }) => ({ default: Configurations }))
 );
 
 const CreateUser = lazy(() =>
-  import('./components/users/createUser')
-    .then(({ CreateUser }) => ({ default: CreateUser }))
-);
+  import('./components/users/createUser'));
 
 
-const  UserList = lazy(() =>
-  import('./components/users/userList')
-    .then(({ UserList }) => ({ default: UserList }))
-);
+const  UserList = lazy(() =>import('./components/users/userList'));
 
 const Devconfigurations = lazy(() =>
   import('./components/devconfig/index')

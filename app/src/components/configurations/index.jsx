@@ -399,4 +399,4 @@ const stepsArray = [
   "Anti-counterfeit"
 ];
 
-export { Configurations };  
+export default  Configurations;  

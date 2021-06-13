@@ -159,4 +159,4 @@ class Dashboard extends Component<Props, States> {
   }
 }
 
-export { Dashboard };
+export  default  Dashboard ;

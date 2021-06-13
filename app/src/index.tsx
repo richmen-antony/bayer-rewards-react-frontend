@@ -1,19 +1,76 @@
-import React from 'react';
+import React ,{Suspense} from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter,Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import './assets/scss/index.scss';
 // import store from './store/store';
 import { store } from './redux/store/index';
+import PrivateRoute from './routes/privateRoute';
+import PublicRoute from './routes/publicRoute';
+import { ROUTE } from './routes/routes'
+import Layout from "./container/Layout";
+import  Loader from './utility/widgets/loader';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import './assets/scss/index.scss';
+
+/**
+ * Create the routes dynamically
+ *
+ * @return route component
+ */
+ const setRoutes = () => {
+  const routes = ROUTE;
+  return routes.map((route, index) =>
+    route.private ? (
+      <PrivateRoute
+        key={index}
+        path={route.path}
+        meta={route.meta}
+        exact={route.exact}
+        component={route.component}
+        role={route.role}
+      />
+    ) : (
+      <PublicRoute
+        key={index}
+        path={route.path}
+        meta={route.meta}
+        exact={route.exact}
+        component={route.component}
+      />
+    )
+  );
+};
+
+// Define Type html tag section declaration
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      h8: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      h7: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+    }
+  }
+}
 
 const app = (
   // <React.StrictMode>
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+    <Suspense fallback={<Loader />}>
+      <Layout>
+      <ToastContainer />
+        <Switch>{setRoutes()}</Switch>
+      </Layout>
+    </Suspense>
     </BrowserRouter>
   </Provider>
   // </React.StrictMode>

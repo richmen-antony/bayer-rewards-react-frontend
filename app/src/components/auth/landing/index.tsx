@@ -220,4 +220,4 @@ class LandingPage extends Component<any, any> {
   }
 }
 
-export { LandingPage };
+export default  LandingPage;
