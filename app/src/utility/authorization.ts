@@ -78,7 +78,6 @@ class Authorization {
    */
   isUserRole(role :string) {
     let user = this.getAuthUser();
-    console.log({user})
     return (
       user?.role&&
       user.role === role
@@ -90,7 +89,6 @@ class Authorization {
    * @return boolean
    */
     isAdmin() {
-      console.log("called");
       return this.isUserRole(Authorization.ROLE_ADMIN);
     }
     /**
@@ -99,7 +97,6 @@ class Authorization {
    * @return boolean
    */
   isRSMAdmin() {
-    console.log("called")
     return this.isUserRole(Authorization.ROLE_RSM_ADMIN);
   }
   /**

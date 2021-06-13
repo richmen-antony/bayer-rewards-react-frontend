@@ -78,12 +78,13 @@ const app = (
   // <React.StrictMode>
   <Provider store={store}>
     <BrowserRouter>
-    <Suspense fallback={<Loader />}>
       <Layout>
-      <ToastContainer />
+      <Suspense fallback={<Loader />}>
+        <ToastContainer />
         <Switch>{setRoutes()}</Switch>
+        </Suspense>
       </Layout>
-    </Suspense>
+    
     </BrowserRouter>
   </Provider>
   // </React.StrictMode>

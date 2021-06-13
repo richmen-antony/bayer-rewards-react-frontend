@@ -44,9 +44,9 @@ class TopBar extends Component<Props, States> {
   componentDidMount() {
     let data: any = getLocalStorageData("userData");
     if (data)
-    this.setState({
-      userData: JSON.parse(data),
-    });
+      this.setState({
+        userData: JSON.parse(data),
+      });
   }
 
   toggleprofile = () => {
@@ -65,7 +65,6 @@ class TopBar extends Component<Props, States> {
     // Cookies.remove("userData");
     Authorization.logOut();
     this.props.history.push("/landing");
-  
   };
 
   render() {
@@ -124,7 +123,9 @@ class TopBar extends Component<Props, States> {
                   <div className="profileToggle">
                     <div className="profileImg">
                       <img
-                        src={userData.countrycode ==="MW" ? MalawiFlag : IndiaFLag}
+                        src={
+                          userData.countrycode === "MW" ? MalawiFlag : IndiaFLag
+                        }
                         alt="user"
                         className="rounded-circle nav-pro-img"
                       />
@@ -142,7 +143,6 @@ class TopBar extends Component<Props, States> {
                     <div>
                       <span className="mdi mdi-chevron-down "></span>
                     </div>
-                    
                   </div>
                 </DropdownToggle>
                 <DropdownMenu>
@@ -157,8 +157,8 @@ class TopBar extends Component<Props, States> {
                 </DropdownMenu>
               </Dropdown>
               <div style={{ paddingLeft: "20px", paddingTop: "8px" }}>
-                      <img src={logo} alt="Logo" height="50" />
-                    </div>
+                <img src={logo} alt="Logo" height="50" />
+              </div>
             </div>
           </ul>
         </nav>

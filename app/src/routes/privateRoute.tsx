@@ -19,24 +19,22 @@ const PrivateRoute = ({ component: Component, meta, role, ...rest }: any) => {
             Authorization.isRSMAdmin() &&
             (role === "public" || role === "RSM")
           ) {
-            console.log({role})
             return <Component {...props} />;
           } else if (
             Authorization.isAdmin() &&
             (role === "public" ||  role === "ADMIN")
           ) {
-            console.log("admin",role)
             return <Component {...props} />;
           } else if (
             Authorization.isDEVAdmin() &&
             (role === "public" ||  role === "DEVADMIN")
           ) {
-           
             return <Component {...props} />;
           } else {
             setTimeout(() => {
               accessDeniedToaster();
             }, 100);
+            
             return <Redirect to={{ pathname: "/dashboard" }} />;
           }
         } else {
