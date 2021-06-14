@@ -121,6 +121,17 @@ export const ConfigSelect = ({
           displayEmpty={isPlaceholder ? true : false}
           disabled={isDisabled ? true : false}
           native={isNative ? true : false}
+          MenuProps={{
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            getContentAnchorEl: null,
+          }}
         >
           {isPlaceholder && !isNative && parentIndex === 0 ? (
             <MenuItem value={defaultValue} key={defaultValue}>
