@@ -196,7 +196,8 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>
                               {value.productname} <p>{value.materialid}</p>
                             </td>
-                            <td>{value.productgroup}</td>
+                            <td>{ value.productgroup === "CORN SEED" ||
+                                    value.productgroup === "HYBRID"? `Seed - ${_.capitalize(value.productgroup)}` : `CP - ${_.capitalize(value.productgroup)} `}</td>
                             <td className="text-center">
                               {value.intendedquantity}
                             </td>
