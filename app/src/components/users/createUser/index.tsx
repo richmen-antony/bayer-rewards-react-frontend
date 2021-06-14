@@ -2571,4 +2571,4 @@ class CreateUser extends Component<any, any> {
   }
 }
 
-export { CreateUser };
+export default CreateUser ;

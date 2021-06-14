@@ -170,3 +170,12 @@ export const checkSessionTimeOut = () => {
   }
   return false
 }
+
+
+
+
+export const accessDeniedToaster = () => {
+  const message = 'Access denied. You do not have permission to access this page. Please contact your administrator to request access.';
+  return Alert('error', message)
+  
+};
