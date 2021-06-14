@@ -288,7 +288,7 @@ class ScanLogsTable extends Component<Props, States> {
           allScanLogs:
             Object.keys(response.body).length !== 0 ? response.body.rows : [],
         });
-        const total = response.body.rows?.length;
+        const total = response.body?.totalrows;
         this.setState({ totalData: Number(total) });
       })
       .catch((error) => {
