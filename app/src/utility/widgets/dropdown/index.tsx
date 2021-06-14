@@ -24,12 +24,11 @@ export interface DropdownProps {
   isLabel?: boolean;
   isDisabled?: boolean;
   isNative?: boolean;
-  width?:number;
+  width?: number;
 }
 export interface StyleProps {
   width?: number;
-  
- }
+}
 const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) =>
   createStyles({
     root: {
@@ -53,7 +52,7 @@ const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) =>
     },
     formControl: {
       margin: "0px !important",
-      minWidth: ({ width }) => width ? width :215,
+      minWidth: ({ width }) => (width ? width : 215),
       maxHeight: 100,
     },
     selectEmpty: {
@@ -105,9 +104,8 @@ export const Dropdown = ({
   width,
   ...props
 }: DropdownProps) => {
-  const classes = useStyles({width});
+  const classes = useStyles({ width });
   const labelId = `${value}-label`;
-
 
   return (
     <div>
@@ -124,6 +122,17 @@ export const Dropdown = ({
           displayEmpty={isPlaceholder ? true : false}
           disabled={isDisabled ? true : false}
           native={isNative ? true : false}
+          MenuProps={{
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            getContentAnchorEl: null,
+          }}
         >
           {isPlaceholder && !isNative ? (
             <MenuItem value="" disabled>

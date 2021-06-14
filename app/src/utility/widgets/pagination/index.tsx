@@ -9,6 +9,7 @@ import RightArrow from "../../../assets/icons/right_page.svg";
 import LeftArrowDisabled from "../../../assets/icons/left_page_disabled.svg";
 import RightArrowDisabled from "../../../assets/icons/right_page_disabled.svg";
 import Dropdown from "../dropdown";
+import {Alert} from "../toaster";
 
 type Props = {
   pageNo: number;
@@ -55,7 +56,10 @@ class Pagination extends Component<Props, States> {
       endIndex: this.state.endIndex + 3,
     });
   };
+  handleGoToPage=()=>{
+    !this.props.pageNo&& Alert("error","Go to Page should be greater than 0")
 
+  }
   render() {
     const {
       pageNo,
@@ -132,6 +136,7 @@ class Pagination extends Component<Props, States> {
                         value={rowsPerPage}
                         isPlaceholder
                         width={50}
+                        isDisabled={!pageNo}
                       />
                     </span>
                   </div>
@@ -148,6 +153,7 @@ class Pagination extends Component<Props, States> {
                         name="gotopage"
                         value={pageNo}
                         onChange={(e: any) => handlePaginationChange(e)}
+                        onBlur={this.handleGoToPage}
                       />
                     </span>
                   </div>

@@ -16,6 +16,7 @@ import RtArrow from "../../assets/icons/right_arrow.svg";
 import FarmerDenied from "../../assets/icons/farmer_denied.svg";
 import CpproductImg from "../../assets/icons/cp_products.svg";
 import NoImg from "../../assets/images/no-image-circle.jpg";
+import * as myConstClass from "../../utility/constant";
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -196,7 +197,8 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>
                               {value.productname} <p>{value.materialid}</p>
                             </td>
-                            <td>{value.productgroup}</td>
+                            <td>{ value.productgroup === "CORN SEED" ||
+                                    value.productgroup === "HYBRID"? `Seed - ${_.capitalize(value.productgroup)}` : `CP - ${_.capitalize(value.productgroup)} `}</td>
                             <td className="text-center">
                               {value.intendedquantity}
                             </td>
@@ -275,7 +277,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 }}
                               >
                                 <span>
-                                  {`Invalid Scans (${
+                                  {`${myConstClass.INVALID_SCANS} (${
                                     data?.invalidscans?.length > 0
                                       ? data?.invalidscans?.length
                                       : 0
@@ -283,32 +285,32 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 </span>
                                 <img src={RtArrow} />
                                 <span>
-                                  {`Expired Labels (${
+                                  {`${myConstClass.EXPIRED_LABEL} (${
                                     data?.invalidscans?.filter(
                                       (i: any) =>
                                         i.reason.toLowerCase() ===
-                                        "This product is expired".toLowerCase()
+                                        myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
                                     ).length > 0
                                       ? data?.invalidscans?.filter(
                                           (i: any) =>
                                             i.reason.toLowerCase() ===
-                                            "This product is expired".toLowerCase()
+                                            myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
                                         ).length
                                       : 0
                                   })`}
                                 </span>
                                 <div>
                                   <span>
-                                    {`Not part of advisor program (${
+                                    {`${myConstClass.NON_ADVISOR_LABEL} (${
                                       data?.invalidscans?.filter(
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
-                                          "This product is not part of Advisor program".toLowerCase()
+                                          myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
                                       ).length > 0
                                         ? data?.invalidscans?.filter(
                                             (i: any) =>
                                               i.reason.toLowerCase() ===
-                                              "This product is not part of Advisor program".toLowerCase()
+                                              myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
                                           ).length
                                         : 0
                                     })`}
@@ -316,16 +318,16 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 </div>
                                 <div>
                                   <span>
-                                    {`Non Bayer Labels (${
+                                    {`${myConstClass.NON_BAYER_LABEL} (${
                                       data?.invalidscans?.filter(
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
-                                          "Label not recognized".toLowerCase()
+                                          myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
                                       ).length > 0
                                         ? data?.invalidscans?.filter(
                                             (i: any) =>
                                               i.reason.toLowerCase() ===
-                                              "Label not recognized".toLowerCase()
+                                              myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
                                           ).length
                                         : 0
                                     })`}
@@ -333,16 +335,16 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 </div>
                                 <div>
                                   <span>
-                                    {`Duplicate Labels (${
+                                    {`${myConstClass.DUPLICATE_LABEL} (${
                                       data?.invalidscans?.filter(
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
-                                          "This product is already scanned".toLowerCase()
+                                          myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
                                       ).length > 0
                                         ? data?.invalidscans?.filter(
                                             (i: any) =>
                                               i.reason.toLowerCase() ===
-                                              "This product is already scanned".toLowerCase()
+                                              myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
                                           ).length
                                         : 0
                                     })`}
