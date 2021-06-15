@@ -4,8 +4,7 @@ import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
-  invokeGetAuthService,
-  invokeGetService,
+  invokeGetAuthService
 } from "../../../utility/base/service";
 import "../../../assets/scss/users.scss";
 import moment from "moment";
@@ -106,7 +105,7 @@ class ChangeLogs extends Component<Props, States> {
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
-    if (searchText.length >= 3 || searchText.length == 0) {
+    if (searchText.length >= 3 || searchText.length === 0) {
       this.timeOut = setTimeout(() => {
         this.getChangeLogs();
       }, 1000);

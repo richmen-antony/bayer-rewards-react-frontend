@@ -16,8 +16,6 @@ import { apiURL } from "../../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../../utility/base/service";
 import filterIcon from "../../../assets/icons/filter_icon.svg";
 import Download from "../../../assets/icons/download.svg";
-import cross from "../../../assets/icons/cross.svg";
-import SearchIcon from "../../../assets/icons/search_icon.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
 import { Alert } from "../../../utility/widgets/toaster";
@@ -226,7 +224,6 @@ class UserList extends Component<Props, States> {
     var month: any = today.getMonth();
     var date = today.getDate();
     if (month - 6 <= 0) year = today.getFullYear();
-    var backdate = new Date(year, month - 6, date);
     this.state = {
       selectIndex: "",
       isAsc: true,
@@ -291,9 +288,6 @@ class UserList extends Component<Props, States> {
     setTimeout(() => {
       this.getDynamicOptionFields();
     }, 0);
-
-    let data: any = getLocalStorageData("userData");
-    let userData = JSON.parse(data);
   }
 
   getGeographicFields() {
@@ -306,8 +300,7 @@ class UserList extends Component<Props, States> {
       .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
-        locationData.map((item: any) => {
-          let allLevels = item.locationhierlevel;
+        locationData.forEach((item: any) => {
           let levelsSmall = item.locationhiername.toLowerCase();
           levels.push(levelsSmall);
         });
@@ -364,7 +357,7 @@ class UserList extends Component<Props, States> {
       regionOptions.push(regionInfo);
     });
     let setFormArray: any = [];
-    this.state.geographicFields.map((list: any, i: number) => {
+    this.state.geographicFields.forEach((list: any, i: number) => {
       setFormArray.push({
         name: list,
         placeHolder: true,
@@ -681,6 +674,7 @@ class UserList extends Component<Props, States> {
           lastmodifieddateto: new Date(),
         },
         isFiltered: false,
+        dateErrMsg: ""
       },
       () => {}
     );
@@ -696,20 +690,19 @@ class UserList extends Component<Props, States> {
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
-    if (searchText.length >= 3 || searchText.length == 0) {
+    if (searchText.length >= 3 || searchText.length === 0) {
+      this.setState({ isFiltered: true });
       this.timeOut = setTimeout(() => {
         this.getChannelPartnersList();
       }, 1000);
     }
   };
   applyFilter = () => {
-    this.setState({ isFiltered: true }, () => {
-      this.getChannelPartnersList("filter");
-    });
-
-    // this.timeOut = setTimeout(() => {
-    //   this.getScanLogs();
-    // }, 0);
+    if(this.state.dateErrMsg === ''){
+      this.setState({ isFiltered: true }, () => {
+        this.getChannelPartnersList("filter");
+      });
+    }
   };
   previous = (pageNo: any) => {
     this.setState({ pageNo: pageNo - 1 });
@@ -843,40 +836,11 @@ class UserList extends Component<Props, States> {
       isLoader,
       dateErrMsg,
       searchText,
-      pageNo,
-      userRole,
       totalData,
-      rowsPerPage,
       changeLogOpen,
-      isActivateUser,
-      isdeActivateUser,
-      isEditUser,
     } = this.state;
 
     const { classes } = this.props;
-    const btn = {
-      background: "#1F445A 0% 0% no-repeat",
-      borderRadius: "100px",
-      opacity: 1,
-      textalign: "left",
-      font: "normal normal normal 16px/22px Open Sans",
-      color: "#FFFFFF",
-      width: 100,
-      height: 35,
-      margin: "15px",
-    };
-
-    const btnD = {
-      background: "#FFFFFF 0% 0% no-repeat",
-      borderRadius: "100px",
-      opacity: 1,
-      textalign: "left",
-      font: "normal normal normal 16px/22px Open Sans",
-      color: "#000000",
-      width: 100,
-      height: 35,
-      margin: "5px",
-    };
 
     const fields = this.state.dynamicFields;
     const locationList = fields?.map((list: any, index: number) => {
@@ -1162,8 +1126,8 @@ class UserList extends Component<Props, States> {
                                 >
                                   Apply
                                   <span>
-                                    <img src={ArrowIcon} className="arrow-i" />{" "}
-                                    <img src={RtButton} className="layout" />
+                                    <img src={ArrowIcon} alt='' className="arrow-i" />{" "}
+                                    <img src={RtButton} alt='' className="layout" />
                                   </span>
                                 </button>
                               </div>
