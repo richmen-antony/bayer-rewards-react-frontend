@@ -189,8 +189,7 @@ class ChannelPartners extends Component<Props, States> {
       .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
-        locationData.map((item: any) => {
-          let allLevels = item.locationhierlevel;
+        locationData.forEach((item: any) => {
           let levelsSmall = item.locationhiername.toLowerCase();
           levels.push(levelsSmall);
         });
@@ -319,6 +318,7 @@ class ChannelPartners extends Component<Props, States> {
     }
     let nextIndex: number =
       staticColumn + (this.state.geographicFields.length - 1);
+
     res.push(
       <th style={{ width: "8%", cursor: "default" }}>{"STAFF COUNT"}</th>
     );
@@ -419,7 +419,6 @@ class ChannelPartners extends Component<Props, States> {
   dateValidation = (e: any) => {
     this.setState({ isValidateSuccess: false });
     let dateValid = true;
-    let usersState = this.state.userList;
     if (e.target.name === "expirydate") {
       if (e.target.value < new Date().toISOString().substr(0, 10)) {
         this.setState({
@@ -437,7 +436,7 @@ class ChannelPartners extends Component<Props, States> {
     this.setState({ isLoader: true });
     const { updateUser } = apiURL;
     let geoFields: any = {};
-    this.state.dynamicFields.map((list: any, i: number) => {
+    this.state.dynamicFields.forEach((list: any, i: number) => {
       geoFields[list.name] = list.value;
     });
     let newUserList = JSON.parse(JSON.stringify(this.state.userData));
@@ -445,7 +444,7 @@ class ChannelPartners extends Component<Props, States> {
     let formValid = this.checkValidation();
     if (formValid) {
       if (this.state.isStaff) {
-        newUserList.staffdetails.map((item: any, index: number) => {
+        newUserList.staffdetails.forEach((item: any, index: number) => {
           delete item.errObj;
           // item.active = item.active ? 'ACTIVE' : 'INACTIVE'
         });
@@ -469,7 +468,7 @@ class ChannelPartners extends Component<Props, States> {
         owneremail: newUserList.ownerRows[0].email,
         locale: "English (Malawi)",
         usertype:
-          userData.rolename == "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+          userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
         rolename: userData.rolename,
         username: userData.username,
         accounttype: userData.rolename,
@@ -747,21 +746,19 @@ class ChannelPartners extends Component<Props, States> {
     this.setState({ isStaff: isStaff });
   };
 
-  validateEmail = (e: any, idx: number, type: string) => {
-    let emailField = e.target.value;
+  validateEmail = (value: any, idx: number, type: string) => {
     let ownerRows = [...this.state.userData.ownerRows];
     let staffdetails = [...this.state.userData.staffdetails];
 
     if (type === "staff") {
-      // if (!emailField) {
-      //   staffdetails[idx].errObj.emailErr = "Please enter the Email";
-      // } else {
       if (
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-          emailField
+          value
         )
       ) {
         staffdetails[idx].errObj.emailErr = "";
+      } else if(value === '') {
+        ownerRows[idx].errObj.emailErr = "";
       } else {
         staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
@@ -769,14 +766,16 @@ class ChannelPartners extends Component<Props, States> {
     if (type === "owner") {
       if (
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-          emailField
+          value
         )
       ) {
+        ownerRows[idx].errObj.emailErr = "";
+      } else if(value === '') {
         ownerRows[idx].errObj.emailErr = "";
       } else {
         ownerRows[idx].errObj.emailErr = "Please enter a valid email";
       }
-    }
+    } 
     this.setState((prevState: any) => ({
       userData: {
         ...prevState.userData,
@@ -789,11 +788,11 @@ class ChannelPartners extends Component<Props, States> {
   checkValidation = () => {
     let formValid = true;
     let userData = this.state.userData;
-    userData.ownerRows.map((userInfo: any, idx: number) => {
+    userData.ownerRows.forEach((userInfo: any, idx: number) => {
       let errObj: any = {
         firstNameErr: "",
         lastNameErr: "",
-        emailNameErr: "",
+        emailErr: userInfo.errObj.emailErr,
         mobilenumberErr: userInfo.errObj.mobilenumberErr,
       };
 
@@ -809,12 +808,12 @@ class ChannelPartners extends Component<Props, States> {
         errObj.mobilenumberErr !== "Phone Number Exists"
       ) {
         errObj.mobilenumberErr =
-          userInfo.mobilenumber.length == phoneLength
+          userInfo.mobilenumber.length === phoneLength
             ? ""
             : `Please enter ${phoneLength} Digit`;
       } else {
         errObj.mobilenumberErr =
-          errObj.mobilenumberErr == "Phone Number Exists"
+          errObj.mobilenumberErr === "Phone Number Exists"
             ? errObj.mobilenumberErr
             : "Please enter the mobile number";
       }
@@ -823,7 +822,8 @@ class ChannelPartners extends Component<Props, States> {
       if (
         errObj.firstNameErr !== "" ||
         errObj.lastNameErr !== "" ||
-        errObj.mobilenumberErr !== ""
+        errObj.mobilenumberErr !== "" ||
+        errObj.emailErr !== ""
       ) {
         formValid = false;
       }
@@ -835,11 +835,11 @@ class ChannelPartners extends Component<Props, States> {
       }));
     });
 
-    userData.staffdetails?.map((userInfo: any, idx: number) => {
+    userData.staffdetails?.forEach((userInfo: any, idx: number) => {
       let errObj: any = {
         firstNameErr: "",
         lastNameErr: "",
-        emailNameErr: "",
+        emailErr: userInfo.errObj.emailErr,
         mobilenumberErr: userInfo.errObj.mobilenumberErr,
         isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
       };
@@ -855,12 +855,12 @@ class ChannelPartners extends Component<Props, States> {
         errObj.mobilenumberErr !== "Phone Number Exists"
       ) {
         errObj.mobilenumberErr =
-          userInfo.mobilenumber.length == phoneLength
+          userInfo.mobilenumber.length === phoneLength
             ? ""
             : `Please enter ${phoneLength} Digit`;
       } else {
         errObj.mobilenumberErr =
-          errObj.mobilenumberErr == "Phone Number Exists"
+          errObj.mobilenumberErr === "Phone Number Exists"
             ? errObj.mobilenumberErr
             : "Please enter the mobile number";
       }
@@ -869,7 +869,8 @@ class ChannelPartners extends Component<Props, States> {
       if (
         errObj.firstNameErr !== "" ||
         errObj.lastNameErr !== "" ||
-        errObj.mobilenumberErr !== ""
+        errObj.mobilenumberErr !== "" ||
+        errObj.emailErr !== ""
       ) {
         formValid = false;
       }
@@ -884,7 +885,7 @@ class ChannelPartners extends Component<Props, States> {
   };
 
   render() {
-    const { allChannelPartners, isAsc, onSort, totalData } = this.props;
+    const { allChannelPartners, isAsc, totalData } = this.props;
     const { isLoader, pageNo, rowsPerPage } = this.props.state;
     const { userList, userData, isStaff }: any = this.state;
 
@@ -1154,7 +1155,7 @@ class ChannelPartners extends Component<Props, States> {
                                             )
                                           }
                                           onKeyUp={(e: any) =>
-                                            this.validateEmail(e, idx, "owner")
+                                            this.validateEmail(e.target.value, idx, "owner")
                                           }
                                         />
                                         {item.errObj?.emailErr && (
@@ -1228,6 +1229,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         height: "50px",
                                                       }}
                                                       src={AddBtn}
+                                                      alt=''
                                                       onClick={() =>
                                                         this.handleAddRow(
                                                           "owner"
@@ -1249,6 +1251,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         height: "50px",
                                                       }}
                                                       src={RemoveBtn}
+                                                      alt=''
                                                       onClick={this.handleRemoveSpecificRow(
                                                         idx,
                                                         "owner"
@@ -1260,6 +1263,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         height: "50px",
                                                       }}
                                                       src={AddBtn}
+                                                      alt=''
                                                       onClick={() =>
                                                         this.handleAddRow(
                                                           "owner"
@@ -1277,6 +1281,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 height: "50px",
                                               }}
                                               src={RemoveBtn}
+                                              alt=''
                                               onClick={this.handleRemoveSpecificRow(
                                                 idx,
                                                 "owner"
@@ -1430,7 +1435,7 @@ class ChannelPartners extends Component<Props, States> {
                                             }
                                             onKeyUp={(e: any) =>
                                               this.validateEmail(
-                                                e,
+                                                e.target.value,
                                                 idx,
                                                 "staff"
                                               )
@@ -1515,6 +1520,7 @@ class ChannelPartners extends Component<Props, States> {
                                                           height: "50px",
                                                         }}
                                                         src={AddBtn}
+                                                        alt=''
                                                         onClick={() =>
                                                           this.handleAddRow(
                                                             "staff"
@@ -1538,6 +1544,7 @@ class ChannelPartners extends Component<Props, States> {
                                                           height: "50px",
                                                         }}
                                                         src={RemoveBtn}
+                                                        alt=''
                                                         onClick={this.handleRemoveSpecificRow(
                                                           idx,
                                                           "staff"
@@ -1549,6 +1556,7 @@ class ChannelPartners extends Component<Props, States> {
                                                           height: "50px",
                                                         }}
                                                         src={AddBtn}
+                                                        alt=''
                                                         onClick={() =>
                                                           this.handleAddRow(
                                                             "staff"
@@ -1566,6 +1574,7 @@ class ChannelPartners extends Component<Props, States> {
                                                   height: "50px",
                                                 }}
                                                 src={RemoveBtn}
+                                                alt=''
                                                 onClick={this.handleRemoveSpecificRow(
                                                   idx,
                                                   "staff"
@@ -1599,8 +1608,8 @@ class ChannelPartners extends Component<Props, States> {
                   >
                     Update
                     <span className="staffcount">
-                      <img src={ArrowIcon} className="arrow-i" />{" "}
-                      <img src={RtButton} className="layout" />
+                      <img src={ArrowIcon} alt='' className="arrow-i" />{" "}
+                      <img src={RtButton} alt='' className="layout" />
                     </span>
                   </button>
                 </DialogActions>
@@ -1655,11 +1664,12 @@ class ChannelPartners extends Component<Props, States> {
                             {list.staffdetails?.length}
                             <img
                               className="retailer-icon"
-                              style={{cursor: (list.userstatus == "DECLINED" ||
-                              list.userstatus == "PENDING") ? 'default': 'pointer'}}
+                              style={{cursor: (list.userstatus === "DECLINED" ||
+                              list.userstatus === "PENDING") ? 'default': 'pointer'}}
+                              alt=''
                               onClick={(event) => {
-                                list.userstatus == "DECLINED" ||
-                                list.userstatus == "PENDING"
+                                list.userstatus === "DECLINED" ||
+                                list.userstatus === "PENDING"
                                   ? event.preventDefault()
                                   : this.editStaff(list);
                               }}
@@ -1689,6 +1699,7 @@ class ChannelPartners extends Component<Props, States> {
                         >
                           <img
                             style={{ marginRight: "6px" }}
+                            alt=''
                             src={
                               list.userstatus === "ACTIVE"
                                 ? Check
@@ -1713,15 +1724,16 @@ class ChannelPartners extends Component<Props, States> {
                           <img
                             className="edit"
                             src={
-                              list.userstatus == "DECLINED" ||
-                              list.userstatus == "PENDING"
+                              list.userstatus === "DECLINED" ||
+                              list.userstatus === "PENDING"
                                 ? EditDisabled
                                 : Edit
                             }
+                            alt=''
                             width="20"
                             onClick={(event) => {
-                              list.userstatus == "DECLINED" ||
-                              list.userstatus == "PENDING"
+                              list.userstatus === "DECLINED" ||
+                              list.userstatus === "PENDING"
                                 ? event.preventDefault()
                                 : this.editUser(list);
                             }}
@@ -1729,7 +1741,7 @@ class ChannelPartners extends Component<Props, States> {
                         </td>
                         {list.iscreatedfrommobile && (
                           <td>
-                            <img src={blackmockup} width="20" height="25" />
+                            <img src={blackmockup} alt='' width="20" height="25" />
                           </td>
                         )}
                       </td>

@@ -1102,7 +1102,7 @@ class CreateUser extends Component<any, any> {
         let errObj: any = {
           firstNameErr: "",
           lastNameErr: "",
-          emailNameErr: "",
+          emailErr: userInfo.errObj.emailErr,
           mobilenumberErr: userInfo.errObj.mobilenumberErr,
         };
 
@@ -1137,7 +1137,8 @@ class CreateUser extends Component<any, any> {
         if (
           errObj.firstNameErr !== "" ||
           errObj.lastNameErr !== "" ||
-          errObj.mobilenumberErr !== ""
+          errObj.mobilenumberErr !== "" ||
+          errObj.emailErr !== ""
         ) {
           formValid = false;
         }
@@ -1153,7 +1154,7 @@ class CreateUser extends Component<any, any> {
         let errObj: any = {
           firstNameErr: "",
           lastNameErr: "",
-          emailNameErr: "",
+          emailErr: userInfo.errObj.emailErr,
           mobilenumberErr: userInfo.errObj.mobilenumberErr,
           isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
         };
@@ -1183,7 +1184,8 @@ class CreateUser extends Component<any, any> {
         if (
           errObj.firstNameErr !== "" ||
           errObj.lastNameErr !== "" ||
-          errObj.mobilenumberErr !== ""
+          errObj.mobilenumberErr !== "" ||
+          errObj.emailErr !== ""
         ) {
           formValid = false;
         }
@@ -1195,12 +1197,6 @@ class CreateUser extends Component<any, any> {
         }));
       });
     } else if (this.state.currentStep === 2) {
-      // userData.whtownername =
-      //   this.state.isEditPage || this.state.isValidatePage
-      //     ? userData.whtownername
-      //     : userData.ownerRows[0].firstname +
-      //       " " +
-      //       userData.ownerRows[0].lastname;
       // let deliverystreet = userData.deliverystreet
       //   ? ""
       //   : "Please enter the Street";
@@ -1246,7 +1242,6 @@ class CreateUser extends Component<any, any> {
         // let billingzipcode = userData.billingzipcode
         //   ? ""
         //   : "Please enter the Postal";
-    
         if(whtaccountname !== "" || whtownername!==""){
           formValid = false;
         }
@@ -1267,23 +1262,23 @@ class CreateUser extends Component<any, any> {
           }
           this.setState({ isRendered: true });
         });
-      
     }
     return formValid;
   }
 
-  validateEmail = (e: any, idx: number, type: string) => {
-    let emailField = e.target.value;
+  validateEmail = (value: any, idx: number, type: string) => {
     let ownerRows = [...this.state.userData.ownerRows];
     let staffdetails = [...this.state.userData.staffdetails];
 
     if (type === "staff") {
       if (
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-          emailField
+          value
         )
       ) {
         staffdetails[idx].errObj.emailErr = "";
+      } else if(value === '') {
+        ownerRows[idx].errObj.emailErr = "";
       } else {
         staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
@@ -1291,14 +1286,16 @@ class CreateUser extends Component<any, any> {
     if (type === "owner") {
       if (
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-          emailField
+          value
         )
       ) {
+        ownerRows[idx].errObj.emailErr = "";
+      } else if(value === '') {
         ownerRows[idx].errObj.emailErr = "";
       } else {
         ownerRows[idx].errObj.emailErr = "Please enter a valid email";
       }
-    }
+    } 
     this.setState((prevState: any) => ({
       userData: {
         ...prevState.userData,
@@ -1888,7 +1885,7 @@ class CreateUser extends Component<any, any> {
                                           )
                                         }
                                         onKeyUp={(e: any) =>
-                                          this.validateEmail(e, idx, "owner")
+                                          this.validateEmail(e.target.value, idx, "owner")
                                         }
                                       />
                                       {item.errObj?.emailErr && (
@@ -2161,7 +2158,7 @@ class CreateUser extends Component<any, any> {
                                             )
                                           }
                                           onKeyUp={(e: any) =>
-                                            this.validateEmail(e, idx, "staff")
+                                            this.validateEmail(e.target.value, idx, "staff")
                                           }
                                         />
                                         {item.errObj?.emailErr && (
