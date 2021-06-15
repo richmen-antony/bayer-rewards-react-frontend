@@ -653,7 +653,7 @@ class ScanLogsTable extends Component<Props, States> {
                     type="text"
                     onChange={this.handleSearch}
                     value={searchText}
-                    tolltip="Search applicable for Retailer Name/ID, Farmer Name/ID"
+                    tolltip="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
                   />
                   <div className="filter-right-side">
                     <div className="filterRow">
