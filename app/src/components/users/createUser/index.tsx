@@ -126,6 +126,8 @@ class CreateUser extends Component<any, any> {
       geographicFields: [],
       dynamicFields: [],
       withHolding: [],
+      newWithHolding: [],
+      withHoldingSelected: false,
       countryList: [],
       hierarchyList: [],
       isRendered: false,
@@ -140,9 +142,8 @@ class CreateUser extends Component<any, any> {
         "With-Holding tax",
       ],
       phone: "",
-      accInfo: true,
+      accInfo: false,
       regionList: [],
-      isValidatePage: false,
       isEditPage: false,
       name: "",
       isStaff: false,
@@ -271,26 +272,14 @@ class CreateUser extends Component<any, any> {
                 });
               }
 
-              if (currentPage === "edit") {
-                this.setState({
-                  userData: userinfo,
-                  isEditPage: true,
-                  isStaff: userFields.storewithmultiuser,
-                  isRendered: true,
-                });
-              } else if (currentPage === "validate") {
-                this.setState(
-                  {
-                    userData: userinfo,
-                    isValidatePage: true,
-                    isStaff: userFields.storewithmultiuser,
-                    isRendered: true,
-                  },
-                  () => {
-                    console.log("editdatas1", this.state.userData);
-                  }
-                );
-              }
+              this.setState({
+                userData: userinfo,
+                isEditPage: true,
+                isStaff: userFields.storewithmultiuser,
+                isRendered: true,
+              });
+
+              console.log("editdatas1", this.state.userData);
               //Dynamic Geo location dropdowns For Validate and edit User
               setTimeout(() => {
                 this.getDynamicOptionFields(userFields);
@@ -337,16 +326,17 @@ class CreateUser extends Component<any, any> {
       let regionInfo = { text: item.name, code: item.code, value: item.name };
       regionOptions.push(regionInfo);
     });
-    let isSameGeoAddress =
+    let allRegions = this.state.allRegions;
+    if (data) {
+      let isSameGeoAddress =
       data.billingregion === data.deliveryregion &&
       data.billingstate === data.deliverystate &&
       data.billingdistrict === data.deliverydistrict &&
       data.billingcity === data.deliverycity &&
       data.billingvillage === data.deliveryvillage &&
-      data.whtownername === data.ownerfirstname+' '+data.ownerlastname
+      data.whtownername === data.ownerfirstname+' '+data.ownerlastname;
 
-    let allRegions = this.state.allRegions;
-    if (data) {
+      this.setState({ accInfo: isSameGeoAddress ? true : false })
       let setFormArray: any = [];
       let regionoptions: any = [];
       let addoptions: any = [];
@@ -603,7 +593,6 @@ class CreateUser extends Component<any, any> {
             });
           });
           this.setState({
-            accInfo: isSameGeoAddress ? true : false,
             withHolding: setFormArray,
           });
         }
@@ -664,7 +653,8 @@ class CreateUser extends Component<any, any> {
           withHoldingVal[index + 1].options = add;
           withHoldingVal[index].value = value;
           withHoldingVal[index+1].value = "";
-          this.setState({ withHolding: withHoldingVal });
+          this.setState({ withHolding: withHoldingVal, withHoldingSelected: true });
+
         }
       } else if (type === "add") {
         let filteredAdd: any = [];
@@ -780,6 +770,8 @@ class CreateUser extends Component<any, any> {
           this.setState({ withHolding: withHoldingVal });
         }
       }
+      let withHoldingdet = JSON.parse(JSON.stringify(this.state.withHolding));
+      this.setState({newWithHolding: withHoldingdet});
     }
   };
 
@@ -843,11 +835,36 @@ class CreateUser extends Component<any, any> {
     } else if (clickType === "geographicNext") {
       formValid = this.checkValidation();
       if (formValid) {
-        if (this.state.accInfo) {
-          this.setState({ withHolding: this.state.dynamicFields }, () => {
-            console.log("withHoldingvalues", this.state.withHolding);
+        if(!this.state.isEditPage && !this.state.withHoldingSelected) {
+          let regionOptions: any = [];
+          let setFormArray: any = [];
+          this.state.allRegions.forEach((item: any) => {
+            let regionInfo = { text: item.name, code: item.code, value: item.name };
+            regionOptions.push(regionInfo);
           });
+          this.state.geographicFields.map((list: any, i: number) => {
+            setFormArray.push({
+              name: list,
+              placeHolder: true,
+              value: list === "country" ? this.getStoreData.country : "",
+              options:
+                list === "country"
+                  ? this.state.countryList
+                  : list === "region"
+                  ? regionOptions
+                  : "",
+              error: "",
+            });
+          });
+          this.setState({withHolding: setFormArray });
         }
+
+        // let deliveryFields = JSON.parse(JSON.stringify(this.state.dynamicFields))
+        // if (!this.state.isEditPage) {
+        //   this.setState({ withHolding: deliveryFields }, () => {
+        //     console.log("withHoldingvalues", this.state.withHolding);
+        //   });
+        // }
       }
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
@@ -919,7 +936,7 @@ class CreateUser extends Component<any, any> {
     // })
 
     let data = {};
-    if (this.state.isEditPage || this.state.isValidatePage) {
+    if (this.state.isEditPage) {
       data = {
         countrycode: this.getStoreData.countryCode,
         ownerfirstname: userData.ownerRows[0].firstname,
@@ -1007,11 +1024,13 @@ class CreateUser extends Component<any, any> {
           ? userData.deliveryzipcode
           : userData.billingzipcode,
         staffdetails: [...this.state.userData.staffdetails],
+        ismarketingperference: true,
+        isprivacydataconsent: true 
       };
     }
 
     const userDetails =
-      this.state.isValidatePage || this.state.isEditPage
+      this.state.isEditPage
         ? {
             isedit: true,
             lastupdatedby: this.state.username.toUpperCase(),
@@ -1020,11 +1039,11 @@ class CreateUser extends Component<any, any> {
         : "";
     console.log("all@@@@s", data, userDetails);
     const url =
-      this.state.isValidatePage || this.state.isEditPage
+      this.state.isEditPage
         ? updateUser
         : retailerCreation;
     const service =
-      this.state.isValidatePage || this.state.isEditPage
+      this.state.isEditPage
         ? invokePostAuthService
         : invokePostService;
 
@@ -1034,13 +1053,13 @@ class CreateUser extends Component<any, any> {
           isLoader: false,
         });
         let msg = "";
-        if (this.state.isValidatePage) {
+        if (this.props.location?.page === 'validate') {
           if (userData.isDeclineUser) {
             msg = "User Declined Successfully";
           } else {
             msg = "User Validated Successfully";
           }
-        } else if (this.state.isEditPage) {
+        } else if (this.props.location?.page === 'edit') {
           msg = "User Updated Successfully";
         } else {
           msg = "User Created Successfully";
@@ -1126,7 +1145,6 @@ class CreateUser extends Component<any, any> {
         //   errObj.mobilenumberErr = "Please enter the mobile number";
         // }
         if (
-          (!this.state.isEditPage || !this.state.isValidatePage) &&
           userInfo.mobilenumber &&
           errObj.mobilenumberErr !== "Phone Number Exists"
         ) {
@@ -1390,50 +1408,6 @@ class CreateUser extends Component<any, any> {
     this.submitUserDatas();
   };
 
-  handlePersonalChange = (e: any) => {
-    let val = this.state.userData;
-    if (e.target.name === "activateUser") {
-      val[e.target.name] = e.target.checked;
-    } else if (e.target.name === "accInfo") {
-      if (!e.target.checked) {
-        let setFormArray: any = [];
-        this.state.geographicFields.map((list: any, i: number) => {
-          setFormArray.push({
-            name: list,
-            placeHolder: true,
-            value: list === "country" ? this.getStoreData.country : "",
-            options:
-              list === "country"
-                ? this.state.countryList
-                : i == 1
-                ? this.state.regionoptions
-                : "",
-            error: "",
-          });
-        });
-        this.setState({ withHolding: setFormArray });
-      } else {
-        this.setState({ accInfo: e.target.checked });
-        this.setState({ withHolding: this.state.dynamicFields });
-      }
-      this.setState({ accInfo: e.target.checked });
-    } else {
-      val[e.target.name] = e.target.value;
-    }
-    // if (e.target.name === 'role') {
-    //     let steps = this.state.stepsArray;
-    //     this.setState({stepsArray : steps });
-    //     if(e.target.value !== 'salesagent' ) {
-    //         steps.splice(2,1,'With-Holding Tax');
-    //         this.setState({stepsArray : steps });
-    //     } else {
-    //         steps.splice(2,1,'User Mappings');
-    //         this.setState({stepsArray : steps});
-    //     }
-    // }
-    this.setState({ userData: val });
-  };
-
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
@@ -1502,7 +1476,7 @@ class CreateUser extends Component<any, any> {
       }));
     } else {
       if (e.target.name === "accInfo") {
-        if (this.state.isEditPage || this.state.isValidatePage) {
+        if (this.state.isEditPage) {
           let userFields = this.props.location?.state.userFields;
           if (!e.target.checked) {
             this.getDynamicOptionFields(userFields);
@@ -1510,26 +1484,32 @@ class CreateUser extends Component<any, any> {
             this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
           }
         } else {
-          if (!e.target.checked) {
-            let setFormArray: any = [];
-            this.state.geographicFields.map((list: any, i: number) => {
-              setFormArray.push({
-                name: list,
-                placeHolder: true,
-                value: list === "country" ? this.getStoreData.country : "",
-                options:
-                  list === "country"
-                    ? this.state.countryList
-                    : i == 1
-                    ? this.state.regionoptions
-                    : "",
-                error: "",
-              });
-            });
-            this.setState({ withHolding: setFormArray });
-          } else {
+          if (e.target.checked) {
             this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
+          } else {
+
+            this.setState({ withHolding: this.state.newWithHolding, ownernameErr: '' });
           }
+          // if (!e.target.checked) {
+          //   let setFormArray: any = [];
+          //   this.state.geographicFields.map((list: any, i: number) => {
+          //     setFormArray.push({
+          //       name: list,
+          //       placeHolder: true,
+          //       value: list === "country" ? this.getStoreData.country : "",
+          //       options:
+          //         list === "country"
+          //           ? this.state.countryList
+          //           : i == 1
+          //           ? this.state.regionoptions
+          //           : "",
+          //       error: "",
+          //     });
+          //   });
+          //   this.setState({ withHolding: setFormArray });
+          // } else {
+          //   this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
+          // }
         }
         this.setState({ accInfo: e.target.checked });
       } else {
@@ -1615,7 +1595,6 @@ class CreateUser extends Component<any, any> {
       currentStep,
       userData,
       stepsArray,
-      isValidatePage,
       isEditPage,
       isStaff,
       deliverystreetErr,
@@ -1881,7 +1860,7 @@ class CreateUser extends Component<any, any> {
                                             country={countryCodeLower}
                                             value={item.mobilenumber}
                                             disabled={
-                                              isEditPage || isValidatePage
+                                              isEditPage
                                                 ? true
                                                 : false
                                             }
@@ -2160,8 +2139,7 @@ class CreateUser extends Component<any, any> {
                                               country={countryCodeLower}
                                               value={item.mobilenumber}
                                               disabled={
-                                                (isEditPage ||
-                                                  isValidatePage) &&
+                                                (isEditPage) &&
                                                 !item.errObj?.isPhoneEdit
                                                   ? true
                                                   : false
@@ -2522,7 +2500,7 @@ class CreateUser extends Component<any, any> {
               marginLeft:
                 currentStep == 1
                   ? "350px"
-                  : currentStep == 3 && isValidatePage
+                  : currentStep == 3 && (this.props.location?.page === 'validate')
                   ? "200px"
                   : "275px",
             }}
@@ -2540,7 +2518,7 @@ class CreateUser extends Component<any, any> {
                   Back
                 </button>
               )}
-              {(isEditPage || isValidatePage) && currentStep === 1 && (
+              {(isEditPage) && currentStep === 1 && (
                 <button
                   className="cus-btn-user reset buttonStyle"
                   onClick={() => this.props.history.push("/userList")}
@@ -2554,7 +2532,7 @@ class CreateUser extends Component<any, any> {
               >
                 Reset All
               </button>
-              {isValidatePage && currentStep === 3 && (
+              {(this.props.location?.page === 'validate') && currentStep === 3 && (
                 <button
                   className="btn buttonStyle dec-btn-user"
                   onClick={() => this.declineUser()}
