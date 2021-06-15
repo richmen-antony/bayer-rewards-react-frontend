@@ -335,7 +335,6 @@ class UserList extends Component<Props, States> {
         let regions =
           Object.keys(response.body).length !== 0 ? response.body.regions : [];
         this.setState({ isLoader: false, allRegions: regions }, () => {
-          console.log("allregions", this.state.allRegions, response);
         });
       })
       .catch((error: any) => {
@@ -555,7 +554,6 @@ class UserList extends Component<Props, States> {
 
     invokeGetAuthService(downloadUserList, data)
       .then((response) => {
-        console.log({ response });
         const data = response;
         downloadCsvFile(data, "user.csv");
       })
@@ -565,23 +563,6 @@ class UserList extends Component<Props, States> {
         Alert("warning", message);
       });
   };
-
-  //   getProductCategory = () => {
-  //     const { productCategory } = apiURL;
-  //     this.setState({ isLoader: true });
-  //     invokeGetAuthService(productCategory).then((response) => {
-  //       this.setState({
-  //         isLoader: false,
-  //         productCategories:
-  //           Object.keys(response.body).length !== 0 ? response.body.rows : [],
-  //       });
-  //     });
-  //     setTimeout(() => {
-  //       this.setState({
-  //         productCategories: ["ALL", ...this.state.productCategories],
-  //       });
-  //     }, 3000);
-  //   };
 
   handleExpand = (data: any) => {
     data.isExpand = !data.isExpand;
@@ -655,13 +636,6 @@ class UserList extends Component<Props, States> {
 
   resetFilter = (e: any) => {
     e.stopPropagation();
-    // var today = new Date();
-    // var month, day, year;
-    // var year: any = today.getFullYear();
-    // var month: any = today.getMonth();
-    // var date = today.getDate();
-    // if (month - 6 <= 0) year = today.getFullYear();
-    // var backdate = new Date(year, month - 6, date);
     this.getDynamicOptionFields("reset");
     this.setState(
       {
@@ -679,12 +653,10 @@ class UserList extends Component<Props, States> {
       () => {}
     );
     setTimeout(() => {
-      //   this.getScanLogs();
     }, 0);
   };
 
   handleSearch = (e: any) => {
-    // alert('hi');
     let searchText = e.target.value;
     this.setState({ searchText: searchText });
     if (this.timeOut) {
@@ -774,7 +746,6 @@ class UserList extends Component<Props, States> {
 
   handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     this.setState({ value: newValue });
-    // setValue(newValue);
   };
 
   handleUpdateDropdown = (value: string, label: any) => {
@@ -1102,24 +1073,12 @@ class UserList extends Component<Props, States> {
                               )}
 
                               <div className="filterFooter pt-3">
-                                {/* <Button
-                                  color="btn rounded-pill boxColor reset-btn"
-                                  onClick={(e) => this.resetFilter(e)}
-                                >
-                                  Reset All
-                                </Button> */}
                                 <button
                                   className="cus-btn-user-filter reset"
                                   onClick={(e) => this.resetFilter(e)}
                                 >
                                   Reset All
                                 </button>
-                                {/* <Button
-                                  color="btn rounded-pill boxColor applybtn"
-                                  onClick={this.applyFilter}
-                                >
-                                  Apply
-                                </Button> */}
                                 <button
                                   className="cus-btn-user-filter"
                                   onClick={this.applyFilter}

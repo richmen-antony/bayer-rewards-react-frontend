@@ -421,22 +421,6 @@ class ChannelPartners extends Component<Props, States> {
     );
   };
 
-  dateValidation = (e: any) => {
-    this.setState({ isValidateSuccess: false });
-    let dateValid = true;
-    if (e.target.name === "expirydate") {
-      if (e.target.value < new Date().toISOString().substr(0, 10)) {
-        this.setState({
-          toDateErr: "To Date should be greater than todays date",
-        });
-        dateValid = false;
-      } else {
-        this.setState({ toDateErr: "" });
-      }
-    }
-    return dateValid;
-  };
-
   submitUpdateUser = () => {
     this.setState({ isLoader: true });
     const { updateUser } = apiURL;
@@ -445,7 +429,6 @@ class ChannelPartners extends Component<Props, States> {
       geoFields[list.name] = list.value;
     });
     let newUserList = JSON.parse(JSON.stringify(this.state.userData));
-    // let newUserList = [...this.state.userData];
     let formValid = this.checkValidation();
     if (formValid) {
       if (this.state.isStaff) {
@@ -601,13 +584,6 @@ class ChannelPartners extends Component<Props, States> {
     );
   };
 
-  replaceAll(str: any, mapObj: any) {
-    var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
-    return str.replace(re, function (matched: any) {
-      return mapObj[matched.toLowerCase()];
-    });
-  }
-
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
@@ -675,15 +651,10 @@ class ChannelPartners extends Component<Props, States> {
         },
       }));
     } else {
-      // if (e.target.name === "accInfo") {
-      //   this.setState({ accInfo: e.target.checked });
-      //   console.log('@@@', this.state.accInfo)
-      // } else {
       let datas = this.state.userData;
       let { name, value } = e.target;
       datas[name] = value;
       this.setState({ userData: datas });
-      // }
     }
   };
   handleAddRow = (type: string) => {
@@ -1192,33 +1163,6 @@ class ChannelPartners extends Component<Props, States> {
                                           />
                                         </div>
                                         <div style={{ visibility: "hidden" }}>
-                                          {/* {idx ===
-                                            userData.ownerRows.length - 1 &&
-                                          userData.ownerRows.length < 5 ? (
-                                            <img
-                                              style={{
-                                                width: "50px",
-                                                height: "50px",
-                                              }}
-                                              src={AddBtn}
-                                              onClick={() =>
-                                                this.handleAddRow("owner")
-                                              }
-                                            />
-                                          ) : (
-                                            <img
-                                              style={{
-                                                width: "50px",
-                                                height: "50px",
-                                              }}
-                                              src={RemoveBtn}
-                                              onClick={this.handleRemoveSpecificRow(
-                                                idx,
-                                                "owner"
-                                              )}
-                                            />
-                                          )} */}
-
                                           {idx ===
                                             userData.ownerRows.length - 1 &&
                                           userData.ownerRows.length < 4 ? (

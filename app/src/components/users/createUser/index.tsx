@@ -145,12 +145,6 @@ class CreateUser extends Component<any, any> {
   }
 
   componentDidMount() {
-    // let data: any = getLocalStorageData("userData");
-
-    // let userDetails = JSON.parse(data);
-    // this.setState({ userName: userDetails.username},()=>{
-    //   console.log("userData", this.state.userData);
-    // });
     this.getHierarchyDatas();
     this.getGeographicFields();
     ///API to get country and language settings
@@ -192,7 +186,6 @@ class CreateUser extends Component<any, any> {
               let data: any = getLocalStorageData("userData");
               let userDetails = JSON.parse(data);
               this.setState({ username: userDetails.username }, () => {
-                console.log("userData", this.state.userData);
               });
               let userFields = this.props.location.state.userFields;
 
@@ -255,7 +248,6 @@ class CreateUser extends Component<any, any> {
                 isRendered: true,
               });
 
-              console.log("editdatas1", this.state.userData);
               //Dynamic Geo location dropdowns For Validate and edit User
               setTimeout(() => {
                 this.getDynamicOptionFields(userFields);
@@ -834,13 +826,6 @@ class CreateUser extends Component<any, any> {
           });
           this.setState({withHolding: setFormArray });
         }
-
-        // let deliveryFields = JSON.parse(JSON.stringify(this.state.dynamicFields))
-        // if (!this.state.isEditPage) {
-        //   this.setState({ withHolding: deliveryFields }, () => {
-        //     console.log("withHoldingvalues", this.state.withHolding);
-        //   });
-        // }
       }
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
@@ -906,7 +891,6 @@ class CreateUser extends Component<any, any> {
     }
     this.setState({ isLoader: true });
     let userData = this.state.userData;
-    console.log("allDatas", this.state.userData);
     // userData.staffdetails.forEach((staffInfo:any) => {
     //   staffInfo.active = staffInfo.active ? 'ACTIVE' : 'INACTIVE'
     // })
@@ -1013,7 +997,6 @@ class CreateUser extends Component<any, any> {
             lastupdateddate: new Date().toJSON(),
           }
         : "";
-    console.log("all@@@@s", data, userDetails);
     const url =
       this.state.isEditPage
         ? updateUser
@@ -1057,45 +1040,6 @@ class CreateUser extends Component<any, any> {
       });
   };
 
-  dateValidation = (e: any) => {
-    let dateValid = true;
-    let usersState = this.state.userData;
-    if (e.target.name === "fromdate") {
-      if (e.target.value < new Date().toISOString().substr(0, 10)) {
-        this.setState({
-          fromDateErr: "From Date should be greater than todays date",
-        });
-        dateValid = false;
-      } else if (e.target.value > usersState.expirydate) {
-        this.setState({
-          fromDateErr: "From Date should be lesser than To date",
-        });
-        dateValid = false;
-      } else if (e.target.value < usersState.expirydate) {
-        this.setState({ toDateErr: "", fromDateErr: "" });
-      } else {
-        this.setState({ fromDateErr: "" });
-      }
-    }
-    if (e.target.name === "expirydate") {
-      if (e.target.value < new Date().toISOString().substr(0, 10)) {
-        this.setState({
-          toDateErr: "To Date should be greater than todays date",
-        });
-        dateValid = false;
-      } else if (e.target.value < usersState.fromdate) {
-        this.setState({
-          toDateErr: "To Date should be greater than From date",
-        });
-        dateValid = false;
-      } else if (e.target.value > usersState.fromdate) {
-        this.setState({ fromDateErr: "", toDateErr: "" });
-      } else {
-        this.setState({ toDateErr: "" });
-      }
-    }
-    return dateValid;
-  };
   checkValidation() {
     let formValid = true;
     let userData = this.state.userData;
@@ -1228,7 +1172,6 @@ class CreateUser extends Component<any, any> {
         ? ""
         : "Please enter account name";
      
-
       if(whtaccountname !== ""){
         formValid = false;
       }
@@ -1453,7 +1396,6 @@ class CreateUser extends Component<any, any> {
           if (e.target.checked) {
             this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
           } else {
-
             this.setState({ withHolding: this.state.newWithHolding, ownernameErr: '' });
           }
           // if (!e.target.checked) {
@@ -1555,7 +1497,6 @@ class CreateUser extends Component<any, any> {
   };
 
   render() {
-    console.log("dynamicfields", this.state.dynamicFields);
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
     const {
       currentStep,

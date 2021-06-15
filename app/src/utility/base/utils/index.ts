@@ -31,3 +31,10 @@ export const allowAlphabetsNumbers = (e: any) => {
     return e.preventDefault();
   }
 }
+
+export const replaceAll = (str: any, mapObj: any) => {
+  var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
+  return str.replace(re, function (matched: any) {
+    return mapObj[matched.toLowerCase()];
+  });
+}
