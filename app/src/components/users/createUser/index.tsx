@@ -13,6 +13,8 @@ import {
   invokePostAuthService,
 } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
+import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
+import { patterns } from "../../../utility/base/utils/patterns";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import PhoneInput from "react-phone-input-2";
@@ -1272,7 +1274,7 @@ class CreateUser extends Component<any, any> {
 
     if (type === "staff") {
       if (
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        (patterns.emailFormat).test(
           value
         )
       ) {
@@ -1285,7 +1287,7 @@ class CreateUser extends Component<any, any> {
     }
     if (type === "owner") {
       if (
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        (patterns.emailFormat).test(
           value
         )
       ) {
@@ -1305,24 +1307,7 @@ class CreateUser extends Component<any, any> {
       isRendered: true,
     }));
   };
-  //Allow only numbers
-  isNumberKey = (e: any) => {
-    var code = e.which ? e.which : e.keyCode;
-    if (code > 31 && (code < 48 || code > 57)) {
-      e.preventDefault();
-    }
-  };
-  //Allow only numbers and alphabets
-  allowAlphabetsNumbers = (e: any) => {
-    var code = ('charCode' in e) ? e.charCode : e.keyCode;
-    if (!(code === 32) && // space
-      !(code > 47 && code < 58) && // numeric (0-9)
-      !(code > 64 && code < 91) && // upper alpha (A-Z)
-      !(code > 96 && code < 123)) { // lower alpha (a-z)
-      e.preventDefault();
-    }
-  }
-
+ 
   reset = () => {
     let currentStep = this.state.currentStep;
     let userData = this.state.userData;
@@ -1792,7 +1777,7 @@ class CreateUser extends Component<any, any> {
                                             ""
                                           )
                                         }
-                                        onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                       />
                                       {item.errObj?.firstNameErr && (
                                         <span className="error">
@@ -1816,7 +1801,7 @@ class CreateUser extends Component<any, any> {
                                             ""
                                           )
                                         }
-                                        onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                       />
                                       {item.errObj?.lastNameErr && (
                                         <span className="error">
@@ -2076,7 +2061,7 @@ class CreateUser extends Component<any, any> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.firstNameErr && (
                                           <span className="error">
@@ -2100,7 +2085,7 @@ class CreateUser extends Component<any, any> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.lastNameErr && (
                                           <span className="error">
@@ -2357,7 +2342,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                         />
                         {deliveryzipcodeErr && (
                           <span className="error">{deliveryzipcodeErr} </span>
@@ -2393,7 +2378,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                         />
                         {accountnameErr && (
                           <span className="error">{accountnameErr} </span>
@@ -2413,7 +2398,7 @@ class CreateUser extends Component<any, any> {
                             this.handleChange("", e, "", "otherSteps", "")
                           }
                           read-only={this.state.accInfo ? true : false}
-                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                         />
                         <div>
                           {ownernameErr && (
@@ -2468,7 +2453,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                           read-only={this.state.accInfo ? true : false}
                           value={
                             this.state.accInfo

@@ -22,12 +22,14 @@ import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import { apiURL } from "../../../utility/base/utils/config";
+import { patterns } from "../../../utility/base/utils/patterns";
 import {
   invokeGetAuthService,
   invokePostAuthService,
 } from "../../../utility/base/service";
 import { Alert } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
+import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
 import { Input } from "../../../utility/widgets/input";
 import CustomSwitch from "../../../container/components/switch";
 import Table from "react-bootstrap/Table";
@@ -755,7 +757,7 @@ class ChannelPartners extends Component<Props, States> {
 
     if (type === "staff") {
       if (
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        (patterns.emailFormat).test(
           value
         )
       ) {
@@ -768,7 +770,7 @@ class ChannelPartners extends Component<Props, States> {
     }
     if (type === "owner") {
       if (
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        (patterns.emailFormat).test(
           value
         )
       ) {
@@ -886,23 +888,6 @@ class ChannelPartners extends Component<Props, States> {
     });
     return formValid;
   };
-  //Allow only numbers
-  isNumberKey = (e: any) => {
-    var code = e.which ? e.which : e.keyCode;
-    if (code > 31 && (code < 48 || code > 57)) {
-      e.preventDefault();
-    }
-  };
-  //Allow only numbers and alphabets
-  allowAlphabetsNumbers = (e: any) => {
-    var code = ('charCode' in e) ? e.charCode : e.keyCode;
-    if (!(code === 32) && // space
-      !(code > 47 && code < 58) && // numeric (0-9)
-      !(code > 64 && code < 91) && // upper alpha (A-Z)
-      !(code > 96 && code < 123)) { // lower alpha (a-z)
-      e.preventDefault();
-    }
-  }
 
   render() {
     const { allChannelPartners, isAsc, totalData } = this.props;
@@ -1086,7 +1071,7 @@ class ChannelPartners extends Component<Props, States> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.firstNameErr && (
                                           <span className="error">
@@ -1110,7 +1095,7 @@ class ChannelPartners extends Component<Props, States> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.lastNameErr && (
                                           <span className="error">
@@ -1361,7 +1346,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 ""
                                               )
                                             }
-                                            onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                           />
                                           {item.errObj.firstNameErr && (
                                             <span className="error">
@@ -1385,7 +1370,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 ""
                                               )
                                             }
-                                            onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
+                                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                           />
                                           {item.errObj.lastNameErr && (
                                             <span className="error">
