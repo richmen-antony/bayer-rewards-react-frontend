@@ -16,6 +16,7 @@ import RtArrow from "../../assets/icons/right_arrow.svg";
 import FarmerDenied from "../../assets/icons/farmer_denied.svg";
 import CpproductImg from "../../assets/icons/cp_products.svg";
 import NoImg from "../../assets/images/no-image-circle.jpg";
+import * as myConstClass from "../../utility/constant";
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -70,7 +71,10 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
-               <label>#{data?.advisororderid} - { _.startCase(_.toLower(data?.accountname))}</label>
+                <label>
+                  #{data?.advisororderid} -{" "}
+                  {_.startCase(_.toLower(data?.accountname))}
+                </label>
               </p>
             </div>
           </div>
@@ -167,27 +171,34 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                               value?.ordered_qrcodes?.length > 0 &&
                               handleExpand(value)
                             }
-                            style={{cursor: `${value?.ordered_qrcodes?.length > 0 &&"pointer"}`}}
+                            style={{
+                              cursor: `${
+                                value?.ordered_qrcodes?.length > 0 && "pointer"
+                              }`,
+                            }}
                           >
                             <th scope="row">
                               {
                                 <img
                                   src={
-                                    value.productgroup === "CORN SEED" || value.productgroup === "HYBRID" 
+                                    value.productgroup === "CORN SEED" ||
+                                    value.productgroup === "HYBRID"
                                       ? CornImg
-                                      : value.productgroup === "FUNGICIDES" || value.productgroup ==="HERBICIDES" || value.productgroup ==="INSECTICIDES"
+                                      : value.productgroup === "FUNGICIDES" ||
+                                        value.productgroup === "HERBICIDES" ||
+                                        value.productgroup === "INSECTICIDES"
                                       ? CpproductImg
                                       : NoImg
                                   }
                                   width={40}
-                                 
                                 />
                               }
                             </th>
                             <td>
                               {value.productname} <p>{value.materialid}</p>
                             </td>
-                            <td>{value.productgroup}</td>
+                            <td>{ value.productgroup === "CORN SEED" ||
+                                    value.productgroup === "HYBRID"? `Seed - ${_.capitalize(value.productgroup)}` : `CP - ${_.capitalize(value.productgroup)} `}</td>
                             <td className="text-center">
                               {value.intendedquantity}
                             </td>
@@ -197,10 +208,11 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                             <td>{"MK " + value.productprice}</td>
                             {data.orderstatus === "FULFILLED" &&
                               value?.ordered_qrcodes?.length > 0 && (
-                                <td style={{cursor:"pointer"}}>
+                                <td style={{ cursor: "pointer" }}>
                                   <i
                                     className={`fas ${
-                                      value?.orderlineitemid === accordionId &&accordionView
+                                      value?.orderlineitemid === accordionId &&
+                                      accordionView
                                         ? "fa-sort-down"
                                         : "fa-sort-up"
                                     }`}
@@ -247,55 +259,94 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       );
                     })}
                     <tr>
-                      <td colSpan={8} >
+                      <td colSpan={8}>
                         {data.orderstatus === "FULFILLED" && (
                           <div id="accordion">
                             <div className="card order-accordion product-sold-popup">
                               <div
                                 className="card-header"
                                 id="headingOne"
-                                onClick={() => data?.invalidscans?.length > 0&&  handleButton("e")}
-                                style={{cursor: `${data?.invalidscans?.length > 0  &&"pointer"}`}}
-
+                                onClick={() =>
+                                  data?.invalidscans?.length > 0 &&
+                                  handleButton("e")
+                                }
+                                style={{
+                                  cursor: `${
+                                    data?.invalidscans?.length > 0 && "pointer"
+                                  }`,
+                                }}
                               >
                                 <span>
-                                  {`Invalid Scans (${
+                                  {`${myConstClass.INVALID_SCANS} (${
                                     data?.invalidscans?.length > 0
                                       ? data?.invalidscans?.length
                                       : 0
                                   })`}
                                 </span>
                                 <img src={RtArrow} />
-                                {/* <span>Expired Labels (0)</span> */}
                                 <span>
-                                  {`Expired Labels (${
+                                  {`${myConstClass.EXPIRED_LABEL} (${
                                     data?.invalidscans?.filter(
                                       (i: any) =>
                                         i.reason.toLowerCase() ===
-                                        "This product is expired".toLowerCase()
-                                    ).length
+                                        myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
+                                    ).length > 0
+                                      ? data?.invalidscans?.filter(
+                                          (i: any) =>
+                                            i.reason.toLowerCase() ===
+                                            myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
+                                        ).length
+                                      : 0
                                   })`}
                                 </span>
                                 <div>
-                                  {/* <span>Non Bayer Labels (0)</span> */}
                                   <span>
-                                    {`Non Bayer Labels (${
+                                    {`${myConstClass.NON_ADVISOR_LABEL} (${
                                       data?.invalidscans?.filter(
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
-                                          "This product is not part of Advisor program".toLowerCase()
-                                      ).length
+                                          myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
+                                      ).length > 0
+                                        ? data?.invalidscans?.filter(
+                                            (i: any) =>
+                                              i.reason.toLowerCase() ===
+                                              myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
+                                          ).length
+                                        : 0
                                     })`}
                                   </span>
                                 </div>
                                 <div>
                                   <span>
-                                    {`Invalid Labels (${
+                                    {`${myConstClass.NON_BAYER_LABEL} (${
                                       data?.invalidscans?.filter(
                                         (i: any) =>
                                           i.reason.toLowerCase() ===
-                                          "Label not recognized".toLowerCase()
-                                      ).length
+                                          myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
+                                      ).length > 0
+                                        ? data?.invalidscans?.filter(
+                                            (i: any) =>
+                                              i.reason.toLowerCase() ===
+                                              myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
+                                          ).length
+                                        : 0
+                                    })`}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span>
+                                    {`${myConstClass.DUPLICATE_LABEL} (${
+                                      data?.invalidscans?.filter(
+                                        (i: any) =>
+                                          i.reason.toLowerCase() ===
+                                          myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
+                                      ).length > 0
+                                        ? data?.invalidscans?.filter(
+                                            (i: any) =>
+                                              i.reason.toLowerCase() ===
+                                              myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
+                                          ).length
+                                        : 0
                                     })`}
                                   </span>
                                 </div>
@@ -363,8 +414,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                       </td>
                       <td>
                         <span className="productprice">
-                          {"MK " +
-                            data.totalcost}
+                          {"MK " + data.totalcost}
                         </span>
                       </td>
                       <td></td>

@@ -6,7 +6,6 @@ import Stepper from "../../container/components/stepper/Stepper";
 import { apiURL } from "../../utility/base/utils/config";
 import { invokePostService } from "../../utility/base/service";
 import { Alert } from "../../utility/widgets/toaster";
-import { FormSteps } from "../../utility/constant";
 import { CountrySetup } from "./components/countrysetup";
 import LocationHierarchy from "./components/LocationHierarchy";
 import RoleHierarchy from "./components/RoleHierarchy"; // Step 1

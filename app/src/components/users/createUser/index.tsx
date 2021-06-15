@@ -2496,7 +2496,7 @@ class CreateUser extends Component<any, any> {
             className="submit"
             style={{
               position: "absolute",
-              bottom: "20px",
+              bottom: "10px",
               marginLeft:
                 currentStep == 1
                   ? "350px"
@@ -2549,4 +2549,4 @@ class CreateUser extends Component<any, any> {
   }
 }
 
-export { CreateUser };
+export default CreateUser ;
