@@ -883,6 +883,23 @@ class ChannelPartners extends Component<Props, States> {
     });
     return formValid;
   };
+  //Allow only numbers
+  isNumberKey = (e: any) => {
+    var code = e.which ? e.which : e.keyCode;
+    if (code > 31 && (code < 48 || code > 57)) {
+      e.preventDefault();
+    }
+  };
+  //Allow only numbers and alphabets
+  allowAlphabetsNumbers = (e: any) => {
+    var code = ('charCode' in e) ? e.charCode : e.keyCode;
+    if (!(code === 32) && // space
+      !(code > 47 && code < 58) && // numeric (0-9)
+      !(code > 64 && code < 91) && // upper alpha (A-Z)
+      !(code > 96 && code < 123)) { // lower alpha (a-z)
+      e.preventDefault();
+    }
+  }
 
   render() {
     const { allChannelPartners, isAsc, totalData } = this.props;
@@ -1066,6 +1083,7 @@ class ChannelPartners extends Component<Props, States> {
                                               ""
                                             )
                                           }
+                                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.firstNameErr && (
                                           <span className="error">
@@ -1089,6 +1107,7 @@ class ChannelPartners extends Component<Props, States> {
                                               ""
                                             )
                                           }
+                                          onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.lastNameErr && (
                                           <span className="error">
@@ -1339,6 +1358,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 ""
                                               )
                                             }
+                                            onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
                                           />
                                           {item.errObj.firstNameErr && (
                                             <span className="error">
@@ -1362,6 +1382,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 ""
                                               )
                                             }
+                                            onKeyPress={(e: any) => this.allowAlphabetsNumbers(e)}
                                           />
                                           {item.errObj.lastNameErr && (
                                             <span className="error">
@@ -1723,6 +1744,8 @@ class ChannelPartners extends Component<Props, States> {
                         <td>
                           <img
                             className="edit"
+                            style={{cursor: (list.userstatus === "DECLINED" ||
+                            list.userstatus === "PENDING") ? 'default': 'pointer'}}
                             src={
                               list.userstatus === "DECLINED" ||
                               list.userstatus === "PENDING"

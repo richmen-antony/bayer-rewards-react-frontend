@@ -674,6 +674,7 @@ class UserList extends Component<Props, States> {
           lastmodifieddateto: new Date(),
         },
         isFiltered: false,
+        dateErrMsg: ""
       },
       () => {}
     );
@@ -697,13 +698,11 @@ class UserList extends Component<Props, States> {
     }
   };
   applyFilter = () => {
-    this.setState({ isFiltered: true }, () => {
-      this.getChannelPartnersList("filter");
-    });
-
-    // this.timeOut = setTimeout(() => {
-    //   this.getScanLogs();
-    // }, 0);
+    if(this.state.dateErrMsg === ''){
+      this.setState({ isFiltered: true }, () => {
+        this.getChannelPartnersList("filter");
+      });
+    }
   };
   previous = (pageNo: any) => {
     this.setState({ pageNo: pageNo - 1 });
