@@ -41,52 +41,67 @@ export function invokePostServiceLogin(path, reqObj, params) {
 export function invokePostAuthService(path, reqObj, params) {
   let token = getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')) : ""
   return new Promise(function (resolve, reject) {
-    let headers = {
-      'Content-Type': 'application/json',
-      'x-access-token': token.accessToken
+    if (checkSessionTimeOut()) {
 
-    };
-    const apiEndPoint = configApp.env;
-    const config = {
-      method: 'POST',
-      headers,
-      data: reqObj,
-      params: params
-    };
-    axios.create({
-      baseURL: apiEndPoint + path
-    })(config)
-      .then((response) => {
-        resolve(response.data)
-      })
-      .catch((err) => {
-        if (err.response) {
-          reject(err.response.data);
-        }
-      });
+      let headers = {
+        'Content-Type': 'application/json',
+        'x-access-token': token.accessToken
+
+      };
+      const apiEndPoint = configApp.env;
+      const config = {
+        method: 'POST',
+        headers,
+        data: reqObj,
+        params: params
+      };
+      axios.create({
+        baseURL: apiEndPoint + path
+      })(config)
+        .then((response) => {
+          setLocalStorageData("sessionTime", moment().unix());
+          resolve(response.data)
+        })
+        .catch((err) => {
+          if (err.response) {
+            reject(err.response.data);
+          }
+        });
+
+    }
+    else {
+      console.log('Logout getData')
+      Authorization.logOut()
+    }
+
   });
 };
 
 //Get method without auth
 export function invokeGetService(path) {
   return new Promise(function (resolve, reject) {
-    const URL = configApp.env;
-    const config = {
-      method: 'GET',
-    };
-    axios.create({
-      baseURL: URL + path,
-    })(config)
-      .then((response) => {
-        // response.data.body.sessionTime = moment().unix();
-        // setLocalStorageData("userData", JSON.stringify(response.body));
-        resolve(response.data);
-      })
-      .catch((err) => {
-        if (err.response) {
-          reject(err.response.data);
-        }
-      });
+    if (checkSessionTimeOut()) {
+      const URL = configApp.env;
+      const config = {
+        method: 'GET',
+      };
+      axios.create({
+        baseURL: URL + path,
+      })(config)
+        .then((response) => {
+          setLocalStorageData("sessionTime", moment().unix());
+          resolve(response.data);
+        })
+        .catch((err) => {
+          if (err.response) {
+            reject(err.response.data);
+          }
+        });
+    }
+    else {
+      console.log('Logout getData')
+      Authorization.logOut()
+    }
   });
 };
 
@@ -94,27 +109,32 @@ export function invokeGetService(path) {
 //Get method with auth
 export function invokeGetAuthService(path, formData) {
   return new Promise(function (resolve, reject) {
-    const URL = configApp.env;
-    const config = {
-      method: 'GET',
-      params: {
-        ...formData
-      },
-    };
+    if (checkSessionTimeOut()) {
+      const URL = configApp.env;
+      const config = {
+        method: 'GET',
+        params: {
+          ...formData
+        },
+      };
 
-    axios.create({
-      baseURL: URL + path,
-    })(config)
-      .then((response) => {
-        // response.data.body.sessionTime = moment().unix();
-        // setLocalStorageData("userData", JSON.stringify(response.body));
-        resolve(response.data);
-      })
-      .catch((err) => {
-        if (err.response) {
-          reject(err.response.data);
-        }
-      });
+      axios.create({
+        baseURL: URL + path,
+      })(config)
+        .then((response) => {
+          setLocalStorageData("sessionTime", moment().unix());
+          resolve(response.data);
+        })
+        .catch((err) => {
+          if (err.response) {
+            reject(err.response.data);
+          }
+        });
+
+    } else {
+      console.log('Logout getData')
+      Authorization.logOut()
+    }
   });
 };
 
@@ -122,29 +142,36 @@ export function invokeGetAuthService(path, formData) {
 //Post method without auth
 export function invokePostService(path, reqObj, params) {
   return new Promise(function (resolve, reject) {
-    let headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      "Access-Control-Allow-Origin": true
-    };
-    const apiEndPoint = configApp.env;
-    const config = {
-      method: 'POST',
-      data: reqObj,
-      params: params,
-      headers
-    };
-    axios.create({
-      baseURL: apiEndPoint + path,
-    })(config)
-      .then((response) => {
-        resolve(response.data)
-      })
-      .catch((err) => {
-        console.log(err, 'error')
-        if (err.response) {
-          reject(err.response.data);
-        }
-      });
+    if (checkSessionTimeOut()) {
+      let headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "Access-Control-Allow-Origin": true
+      };
+      const apiEndPoint = configApp.env;
+      const config = {
+        method: 'POST',
+        data: reqObj,
+        params: params,
+        headers
+      };
+      axios.create({
+        baseURL: apiEndPoint + path,
+      })(config)
+        .then((response) => {
+          setLocalStorageData("sessionTime", moment().unix());
+          resolve(response.data)
+        })
+        .catch((err) => {
+          console.log(err, 'error')
+          if (err.response) {
+            reject(err.response.data);
+          }
+        });
+    }
+    else {
+      console.log('Logout getData')
+      Authorization.logOut()
+    }
   });
 };

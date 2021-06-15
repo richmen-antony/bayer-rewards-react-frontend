@@ -4,6 +4,8 @@ import {
   setLocalStorageData,
 } from "../utility/base/localStore";
 import Cookies from "js-cookie";
+import { Alert } from "./widgets/toaster";
+import moment from "moment";
 
 type Props = {
   history?: any;
@@ -24,10 +26,11 @@ class Authorization {
   logOut(): void {
     setLocalStorageData("isLoggedOut", true);
     clearLocalStorageData("userData");
+    clearLocalStorageData("sessionTime");
     Cookies.remove("userData");
     this.authUser = null;
     window.location.reload();
-   
+
   }
 
   /**
@@ -65,6 +68,7 @@ class Authorization {
     if (typeof Storage !== "undefined") {
       clearLocalStorageData(this.authUserKey);
       setLocalStorageData(this.authUserKey, JSON.stringify(data));
+      setLocalStorageData("sessionTime", moment().unix());
     } else {
       console.error("local storage is not supported");
     }
@@ -76,26 +80,26 @@ class Authorization {
    * @param role
    * @return boolean
    */
-  isUserRole(role :string) {
+  isUserRole(role: string) {
     let user = this.getAuthUser();
     return (
-      user?.role&&
+      user?.role &&
       user.role === role
     );
   }
-   /**
-   * check logged user is admin
-   *
-   * @return boolean
-   */
-    isAdmin() {
-      return this.isUserRole(Authorization.ROLE_ADMIN);
-    }
-    /**
-   * check logged user is RSM Admin
-   *
-   * @return boolean
-   */
+  /**
+  * check logged user is admin
+  *
+  * @return boolean
+  */
+  isAdmin() {
+    return this.isUserRole(Authorization.ROLE_ADMIN);
+  }
+  /**
+ * check logged user is RSM Admin
+ *
+ * @return boolean
+ */
   isRSMAdmin() {
     return this.isUserRole(Authorization.ROLE_RSM_ADMIN);
   }
@@ -104,10 +108,10 @@ class Authorization {
    *
    * @return boolean
    */
-   isDEVAdmin() {
+  isDEVAdmin() {
     return this.isUserRole(Authorization.ROLE_DEV_ADMIN);
   }
-  
+
 
 
 

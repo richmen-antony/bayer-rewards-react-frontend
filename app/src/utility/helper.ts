@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import { getLocalStorageData } from '../utility/base/localStore';
 
-const sessionDefaultTime: number = 6000;
+const sessionDefaultTime: number = 60;
 /**
  * Download excel file 
  * @param tableId 
@@ -156,15 +156,13 @@ export const ErrorMsg = (error: any) => {
 
 // SessionTimeout validation
 export const checkSessionTimeOut = () => {
-  let data: any = getLocalStorageData("userData");
-  let userinfo = JSON.parse(data);
-  let login_time = userinfo?.sessionTime;
-  let rememberMe = userinfo?.isRemember;
+  let data: any = getLocalStorageData("sessionTime");
+  let login_time = data;
 
   let timeStamp = moment.unix(login_time).format("D/M/YYYY hh:mm:ss")
   let now = moment().format("D/M/YYYY hh:mm:ss")
-  let duration = moment(now).diff(moment(timeStamp), 'minutes')
-
+  // let duration = moment(now).diff(moment(timeStamp), 'minute')
+  let duration: any = moment(now, "DD/MM/YYYY HH:mm:ss").diff(moment(timeStamp, "DD/MM/YYYY HH:mm:ss"), 'minute')
   if (duration < sessionDefaultTime) {
     return true
   }
@@ -177,5 +175,5 @@ export const checkSessionTimeOut = () => {
 export const accessDeniedToaster = () => {
   const message = 'Access denied. You do not have permission to access this page. Please contact your administrator to request access.';
   return Alert('error', message)
-  
+
 };

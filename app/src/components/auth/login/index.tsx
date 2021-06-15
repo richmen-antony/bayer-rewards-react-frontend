@@ -88,21 +88,18 @@ class Login extends Component<Props, States> {
       invokePostServiceLogin(login, data)
         .then((response: any) => {
           console.log(response, "response");
-
-          response.body.sessionTime = moment().unix();
           response.body.isRemember = this.state.isRemember;
-          Authorization.login(response.body)
-          // setLocalStorageData("userData", JSON.stringify(response.body));
+          Authorization.login(response.body);
           Cookies.set("userData", JSON.stringify(response.body), {
             expires: 7,
           });
-          const currentUser=response.body;
-         if(currentUser.role==="DEVADMIN"){
-          this.props.history.push("/devconfig");
-         }else{
-          this.props.history.push("/dashboard");
-         }
-         
+          const currentUser = response.body;
+          if (currentUser.role === "DEVADMIN") {
+            this.props.history.push("/devconfig");
+          } else {
+            this.props.history.push("/dashboard");
+          }
+
           this.setState({ isLoader: false, validErrorMsg: "" });
         })
         .catch((error) => {
