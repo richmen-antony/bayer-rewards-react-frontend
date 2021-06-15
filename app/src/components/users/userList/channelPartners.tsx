@@ -293,15 +293,18 @@ class ChannelPartners extends Component<Props, States> {
     for (var i = 1; i < this.state.geographicFields.length; i++) {
       if (i <= staticColumn) {
         let columnname: string = "";
-        columnname = this.state.geographicFields[i];
+        columnname =  this.state.geographicFields[i] ;
+        
         columnname = columnname.toUpperCase();
+        let condName=columnname ==="ADD" ? "state":columnname.toLowerCase();
+        
         res.push(
           <th
             style={{ width: "8%" }}
             onClick={(e) =>
               this.handleSort(
                 e,
-                "delivery" + columnname.toLowerCase(),
+                "delivery" + condName,
                 allChannelPartners,
                 isAsc
               )
@@ -1644,7 +1647,7 @@ class ChannelPartners extends Component<Props, States> {
                         {list.deliveryregion}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.deliverystate}{" "}
+                        {list.deliverystate}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
                         {list.deliverydistrict}{" "}

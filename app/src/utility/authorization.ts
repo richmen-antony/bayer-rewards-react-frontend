@@ -27,6 +27,7 @@ class Authorization {
     setLocalStorageData("isLoggedOut", true);
     clearLocalStorageData("userData");
     clearLocalStorageData("sessionTime");
+    sessionStorage.removeItem("userLoggedIn");
     Cookies.remove("userData");
     this.authUser = null;
     window.location.reload();
@@ -39,6 +40,7 @@ class Authorization {
   isLoggedIn(): boolean {
     const data :any =getLocalStorageData(this.authUserKey);
     const ls= data;
+    console.log({ls})
     return  ls&&ls.role !=="" ? true : false;
     // return true;
   }
@@ -69,6 +71,7 @@ class Authorization {
       clearLocalStorageData(this.authUserKey);
       setLocalStorageData(this.authUserKey, JSON.stringify(data));
       setLocalStorageData("sessionTime", moment().unix());
+      sessionStorage.userLoggedIn = true;
     } else {
       console.error("local storage is not supported");
     }

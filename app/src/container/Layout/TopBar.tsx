@@ -112,6 +112,18 @@ class TopBar extends Component<Props, States> {
             </li>
 
             <div className="profileSettings">
+              <div className="flag-img">
+              <img
+                        src={
+                          userData.countrycode === "MW" ? MalawiFlag : IndiaFLag
+                        }
+                        alt="user"
+                        className="rounded-circle nav-pro-img"
+                        width={50}
+                        height={50}
+                      />
+              </div>
+                  
               <Dropdown
                 isOpen={dropdownOpenprofile}
                 toggle={this.toggleprofile}
@@ -122,13 +134,6 @@ class TopBar extends Component<Props, States> {
                 >
                   <div className="profileToggle">
                     <div className="profileImg">
-                      <img
-                        src={
-                          userData.countrycode === "MW" ? MalawiFlag : IndiaFLag
-                        }
-                        alt="user"
-                        className="rounded-circle nav-pro-img"
-                      />
                       <div className="content">
                         <h4 className="title">{userData.username}</h4>
 
@@ -136,7 +141,7 @@ class TopBar extends Component<Props, States> {
                       </div>
                       <img
                         src={DropdownArrow}
-                        style={{ width: "10%", height: "10%" }}
+                        style={{ width: "20%", height: "20%" }}
                       />
                     </div>
 

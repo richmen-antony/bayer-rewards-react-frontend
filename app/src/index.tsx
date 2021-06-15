@@ -28,43 +28,43 @@ import Authorization from "./utility/authorization";
  * @return route component
  */
 const setRoutes = () => {
-  const routes = ROUTE;
-  return routes.map((route, index) =>
-    route.private ? (
-      <PrivateRoute
-        key={index}
-        path={route.path}
-        meta={route.meta}
-        exact={route.exact}
-        component={route.component}
-        role={route.role}
-      />
-    ) : (
-      <PublicRoute
-        key={index}
-        path={route.path}
-        meta={route.meta}
-        exact={route.exact}
-        component={route.component}
-      />
-    )
-  );
+	const routes = ROUTE;
+	return routes.map((route, index) =>
+		route.private ? (
+			<PrivateRoute
+				key={index}
+				path={route.path}
+				meta={route.meta}
+				exact={route.exact}
+				component={route.component}
+				role={route.role}
+			/>
+		) : (
+			<PublicRoute
+				key={index}
+				path={route.path}
+				meta={route.meta}
+				exact={route.exact}
+				component={route.component}
+			/>
+		)
+	);
 };
 
 // Define Type html tag section declaration
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      h8: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
-      h7: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
-    }
-  }
+	namespace JSX {
+		interface IntrinsicElements {
+			h8: React.DetailedHTMLProps<
+				React.HTMLAttributes<HTMLElement>,
+				HTMLElement
+			>;
+			h7: React.DetailedHTMLProps<
+				React.HTMLAttributes<HTMLElement>,
+				HTMLElement
+			>;
+		}
+	}
 }
 
 // const getLData = localStorage.getItem("userData");
@@ -80,27 +80,32 @@ declare global {
 //   clearLocalStorageData("userData");
 // }
 
-window.onbeforeunload = function (e: any) {
-  // To enable isRemember===false Need to logged out
+/**
+ * To handle remember me options
+ */
+function isRemember(){
   let data: any = getLocalStorageData("userData");
   let userinfo = JSON.parse(data);
-  console.log("userinfo-1", userinfo);
-  if (userinfo?.isRemember === false) Authorization.logOut();
-};
+  if (!sessionStorage.userLoggedIn) {
+    if (userinfo?.isRemember === false) Authorization.logOut();
+  }
+
+}
+isRemember();
 
 const app = (
-  // <React.StrictMode>
-  <Provider store={store}>
-    <BrowserRouter>
-      <Layout>
-        <Suspense fallback={<Loader />}>
-          <ToastContainer />
-          <Switch>{setRoutes()}</Switch>
-        </Suspense>
-      </Layout>
-    </BrowserRouter>
-  </Provider>
-  // </React.StrictMode>
+	// <React.StrictMode>
+	<Provider store={store}>
+		<BrowserRouter>
+			<Layout>
+				<Suspense fallback={<Loader />}>
+					<ToastContainer />
+					<Switch>{setRoutes()}</Switch>
+				</Suspense>
+			</Layout>
+		</BrowserRouter>
+	</Provider>
+	// </React.StrictMode>
 );
 
 ReactDOM.render(app, document.getElementById("root"));
