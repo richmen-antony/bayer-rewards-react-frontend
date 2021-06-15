@@ -6,15 +6,12 @@ import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import { Alert } from "../../../utility/widgets/toaster";
 import CustomSwitch from "../../../container/components/switch";
-import CountryJson from "../../../utility/lib/country.json";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
   invokeGetAuthService,
-  invokeGetService,
   invokePostService,
   invokePostAuthService,
 } from "../../../utility/base/service";
-import moment from "moment";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
@@ -26,24 +23,12 @@ import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
 import _ from "lodash";
 
-let data: any = getLocalStorageData("userData");
-let userinfo = JSON.parse(data);
-
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
   { value: "DISTRIBUTOR", text: "Distributor" },
 ];
 
-const shippingcity = [
-  { value: "Chengalpattu", text: "Chengalpattu" },
-  { value: "Kancheepuram", text: "Kancheepuram" },
-];
-
-const shippingstate = [
-  { value: "tamilnadu", text: "tamilnadu" },
-  { value: "kerala", text: "kerala" },
-];
 let geoLocationInfo = {
   region: "",
   add: "",
@@ -51,7 +36,6 @@ let geoLocationInfo = {
   epa: "",
   village: "",
 };
-let epa: any = [];
 let levelFive: any = [];
 let phoneLength =
   process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int"
@@ -64,7 +48,6 @@ class CreateUser extends Component<any, any> {
   constructor(props: any) {
     super(props);
     let oneYearFromNow = new Date();
-    let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
     this.getStoreData = {
@@ -180,13 +163,6 @@ class CreateUser extends Component<any, any> {
     ];
     this.setState({ countryList: res });
   }
-  getNextHierarchyold(country: any, nextLevel: any) {
-    //API to get region options for initial set since mal is default option in country
-    const data = {
-      type: country,
-      id: nextLevel,
-    };
-  }
 
   getGeographicFields() {
     this.setState({ isLoader: true });
@@ -198,8 +174,7 @@ class CreateUser extends Component<any, any> {
       .then((response: any) => {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
-        locationData.map((item: any) => {
-          let allLevels = item.locationhierlevel;
+        locationData.forEach((item: any) => {
           let levelsSmall = item.locationhiername.toLowerCase();
           levels.push(levelsSmall);
         });
@@ -212,7 +187,6 @@ class CreateUser extends Component<any, any> {
           },
           () => {
             if (this.props.location?.page) {
-              let currentPage = this.props.location?.page;
               let data: any = getLocalStorageData("userData");
               let userDetails = JSON.parse(data);
               this.setState({ username: userDetails.username }, () => {
@@ -433,7 +407,7 @@ class CreateUser extends Component<any, any> {
         }
         this.setState({ villageoptions: villageoptions });
 
-        this.state.geographicFields.map((list: any, i: number) => {
+        this.state.geographicFields.forEach((list: any, i: number) => {
           setFormArray.push({
             name: list,
             placeHolder: true,
@@ -555,7 +529,7 @@ class CreateUser extends Component<any, any> {
           }
           this.setState({ villageoptions: villageoptions });
 
-          this.state.geographicFields.map((list: any, i: number) => {
+          this.state.geographicFields.forEach((list: any, i: number) => {
             setFormArray.push({
               name: list,
               placeHolder: true,
@@ -599,7 +573,7 @@ class CreateUser extends Component<any, any> {
       }
     } else {
       let setFormArray: any = [];
-      this.state.geographicFields.map((list: any, i: number) => {
+      this.state.geographicFields.forEach((list: any, i: number) => {
         setFormArray.push({
           name: list,
           placeHolder: true,
@@ -644,12 +618,12 @@ class CreateUser extends Component<any, any> {
         });
         geoLocationInfo.region =
           filteredRegion.length && filteredRegion[0]?.code;
-        if (this.state.currentStep == 2) {
+        if (this.state.currentStep === 2) {
           dynamicFieldVal[index + 1].options = add;
           dynamicFieldVal[index].value = value;
           dynamicFieldVal[index+1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
+        } else if (this.state.currentStep === 3) {
           withHoldingVal[index + 1].options = add;
           withHoldingVal[index].value = value;
           withHoldingVal[index+1].value = "";
@@ -681,12 +655,12 @@ class CreateUser extends Component<any, any> {
           district.push(districtInfo);
         });
         geoLocationInfo.add = addList[0]?.code;
-        if (this.state.currentStep == 2) {
+        if (this.state.currentStep === 2) {
           dynamicFieldVal[index + 1].options = district;
           dynamicFieldVal[index].value = value;
           dynamicFieldVal[index+1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
+        } else if (this.state.currentStep === 3) {
           withHoldingVal[index + 1].options = district;
           withHoldingVal[index].value = value;
           withHoldingVal[index+1].value = "";
@@ -724,12 +698,12 @@ class CreateUser extends Component<any, any> {
             item.text = item.name;
             item.value = item.name;
           });
-          if (this.state.currentStep == 2) {
+          if (this.state.currentStep === 2) {
             dynamicFieldVal[index + 1].options = levelFive;
             dynamicFieldVal[index].value = value;
             dynamicFieldVal[index+1].value = "";
             this.setState({ dynamicFields: dynamicFieldVal });
-          } else if (this.state.currentStep == 3) {
+          } else if (this.state.currentStep === 3) {
             withHoldingVal[index + 1].options = levelFive;
             withHoldingVal[index].value = value;
             withHoldingVal[index+1].value = "";
@@ -750,22 +724,22 @@ class CreateUser extends Component<any, any> {
           villageInfo.text = villageInfo.name;
           villageInfo.value = villageInfo.name;
         });
-        if (this.state.currentStep == 2) {
+        if (this.state.currentStep === 2) {
           dynamicFieldVal[index + 1].options = village;
           dynamicFieldVal[index].value = value;
           dynamicFieldVal[index+1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
+        } else if (this.state.currentStep === 3) {
           withHoldingVal[index + 1].options = village;
           withHoldingVal[index].value = value;
           withHoldingVal[index+1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
       } else if (type === "village") {
-        if (this.state.currentStep == 2) {
+        if (this.state.currentStep === 2) {
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep == 3) {
+        } else if (this.state.currentStep === 3) {
           withHoldingVal[index].value = value;
           this.setState({ withHolding: withHoldingVal });
         }
@@ -842,7 +816,7 @@ class CreateUser extends Component<any, any> {
             let regionInfo = { text: item.name, code: item.code, value: item.name };
             regionOptions.push(regionInfo);
           });
-          this.state.geographicFields.map((list: any, i: number) => {
+          this.state.geographicFields.forEach((list: any, i: number) => {
             setFormArray.push({
               name: list,
               placeHolder: true,
@@ -872,7 +846,7 @@ class CreateUser extends Component<any, any> {
 
     const { currentStep } = this.state;
     let newStep = currentStep;
-    if (clickType == "personalNext" || clickType == "geographicNext") {
+    if (clickType === "personalNext" || clickType === "geographicNext") {
       newStep = newStep + 1;
     } else {
       newStep = newStep - 1;
@@ -902,15 +876,15 @@ class CreateUser extends Component<any, any> {
     const { retailerCreation, updateUser } = apiURL;
     let geoFields: any = {};
     let shippingFields: any = {};
-    this.state.dynamicFields.map((list: any, i: number) => {
+    this.state.dynamicFields.forEach((list: any, i: number) => {
       geoFields[list.name] = list.value;
     });
-    this.state.withHolding.map((list: any, i: number) => {
+    this.state.withHolding.forEach((list: any, i: number) => {
       shippingFields[list.name] = list.value;
     });
     let newUserList = this.state.userData;
     if (this.state.isStaff) {
-      newUserList.staffdetails.map((item: any, index: number) => {
+      newUserList.staffdetails.forEach((item: any, index: number) => {
         delete item.errObj;
       });
       this.setState((prevState: any) => ({
@@ -945,7 +919,7 @@ class CreateUser extends Component<any, any> {
         owneremail: userData.ownerRows[0].email,
         locale: "English (Malawi)",
         usertype:
-          userData.rolename == "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+          userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
         rolename: userData.rolename,
         username: userData.username,
         accounttype: userData.rolename,
@@ -990,7 +964,7 @@ class CreateUser extends Component<any, any> {
         owneremail: userData.ownerRows[0].email,
         locale: "English (Malawi)",
         usertype:
-          userData.rolename == "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+          userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
         rolename: userData.rolename,
         accounttype: userData.rolename,
         userstatus: userData.isDeclineUser
@@ -1124,7 +1098,7 @@ class CreateUser extends Component<any, any> {
     let formValid = true;
     let userData = this.state.userData;
     if (this.state.currentStep === 1) {
-      userData.ownerRows.map((userInfo: any, idx: number) => {
+      userData.ownerRows.forEach((userInfo: any, idx: number) => {
         let errObj: any = {
           firstNameErr: "",
           lastNameErr: "",
@@ -1149,12 +1123,12 @@ class CreateUser extends Component<any, any> {
           errObj.mobilenumberErr !== "Phone Number Exists"
         ) {
           errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == phoneLength
+            userInfo.mobilenumber.length === phoneLength
               ? ""
               : `Please enter ${phoneLength} Digit`;
         } else {
           errObj.mobilenumberErr =
-            errObj.mobilenumberErr == "Phone Number Exists"
+            errObj.mobilenumberErr === "Phone Number Exists"
               ? errObj.mobilenumberErr
               : "Please enter the mobile number";
         }
@@ -1175,7 +1149,7 @@ class CreateUser extends Component<any, any> {
         }));
       });
 
-      userData.staffdetails?.map((userInfo: any, idx: number) => {
+      userData.staffdetails?.forEach((userInfo: any, idx: number) => {
         let errObj: any = {
           firstNameErr: "",
           lastNameErr: "",
@@ -1195,12 +1169,12 @@ class CreateUser extends Component<any, any> {
           errObj.mobilenumberErr !== "Phone Number Exists"
         ) {
           errObj.mobilenumberErr =
-            userInfo.mobilenumber.length == phoneLength
+            userInfo.mobilenumber.length === phoneLength
               ? ""
               : `Please enter ${phoneLength} Digit`;
         } else {
           errObj.mobilenumberErr =
-            errObj.mobilenumberErr == "Phone Number Exists"
+            errObj.mobilenumberErr === "Phone Number Exists"
               ? errObj.mobilenumberErr
               : "Please enter the mobile number";
         }
@@ -1240,7 +1214,7 @@ class CreateUser extends Component<any, any> {
       //   deliverystreetErr: deliverystreet,
       //   deliveryzipcodeErr: deliveryzipcode,
       // });
-      this.state.dynamicFields.map((list: any) => {
+      this.state.dynamicFields.forEach((list: any) => {
         if (list.value === "") {
           list.error = "Please select the " + list.name;
           formValid = false;
@@ -1257,7 +1231,7 @@ class CreateUser extends Component<any, any> {
         : "Please enter account name";
      
 
-      if(whtaccountname != ""){
+      if(whtaccountname !== ""){
         formValid = false;
       }
       this.setState({
@@ -1273,7 +1247,7 @@ class CreateUser extends Component<any, any> {
         //   ? ""
         //   : "Please enter the Postal";
     
-        if(whtaccountname != "" || whtownername!=""){
+        if(whtaccountname !== "" || whtownername!==""){
           formValid = false;
         }
         this.setState({
@@ -1284,7 +1258,7 @@ class CreateUser extends Component<any, any> {
           ownernameErr: ""
         });
       }
-        this.state.withHolding.map((list: any) => {
+        this.state.withHolding.forEach((list: any) => {
           if (list.value === "") {
             list.error = "Please select the " + list.name;
             formValid = false;
@@ -1367,7 +1341,7 @@ class CreateUser extends Component<any, any> {
       }));
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
-      data.map((list: any) => {
+      data.forEach((list: any) => {
         if (list.name !== "country") {
           list.value = "";
         }
@@ -1382,7 +1356,7 @@ class CreateUser extends Component<any, any> {
       }));
     } else {
       let data: any = this.state.withholding;
-      data?.map((list: any) => {
+      data?.forEach((list: any) => {
         if (list.name !== "country") {
           list.value = "";
         }
@@ -1609,7 +1583,7 @@ class CreateUser extends Component<any, any> {
 
     let currentPage = this.props.location?.page;
     const fields =
-      currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
+      currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized =
         list.name.charAt(0).toUpperCase() + list.name.slice(1);
@@ -1635,7 +1609,7 @@ class CreateUser extends Component<any, any> {
               isPlaceholder
               isDisabled={
                 (this.state.currentStep === 3 && this.state.accInfo) ||
-                list.name == "country"
+                list.name === "country"
                   ? true
                   : false
               }
@@ -1655,8 +1629,8 @@ class CreateUser extends Component<any, any> {
         >
           Next
           <span>
-            <img src={ArrowIcon} className="arrow-i" />{" "}
-            <img src={RtButton} className="layout" />
+            <img src={ArrowIcon}alt=""  className="arrow-i" />{" "}
+            <img src={RtButton} alt="" className="layout" />
           </span>
         </button>
       );
@@ -1668,8 +1642,8 @@ class CreateUser extends Component<any, any> {
         >
           Next
           <span>
-            <img src={ArrowIcon} className="arrow-i" />{" "}
-            <img src={RtButton} className="layout" />
+            <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
+            <img src={RtButton} alt="" className="layout" />
           </span>
         </button>
       );
@@ -1685,8 +1659,8 @@ class CreateUser extends Component<any, any> {
             ? "Approve"
             : "Create"}
           <span>
-            <img src={ArrowIcon} className="arrow-i" />{" "}
-            <img src={RtButton} className="layout" />
+            <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
+            <img src={RtButton} alt="" className="layout" />
           </span>
         </button>
       );
@@ -1706,7 +1680,7 @@ class CreateUser extends Component<any, any> {
           </div>
           <div
             className="col-md-10"
-            style={{ marginTop: currentStep == 3 ? "-30px" : "0px" }}
+            style={{ marginTop: currentStep === 3 ? "-30px" : "0px" }}
           >
             <label
               className="font-weight-bold"
@@ -1714,13 +1688,13 @@ class CreateUser extends Component<any, any> {
                 fontSize: "17px",
                 color: "#10384F",
                 marginTop:
-                  currentStep == 1 ? "0px" : currentStep == 2 ? "28px" : "-3px",
+                  currentStep === 1 ? "0px" : currentStep === 2 ? "28px" : "-3px",
               }}
             >
               {stepsArray[currentStep - 1]}
             </label>
             <div className="container">
-              {currentStep == 1 && (
+              {currentStep === 1 && (
                 <>
                   <div className="personal">
                     <>
@@ -1987,6 +1961,7 @@ class CreateUser extends Component<any, any> {
                                                       height: "50px",
                                                     }}
                                                     src={AddBtn}
+                                                    alt=""
                                                     onClick={() =>
                                                       this.handleAddRow("owner")
                                                     }
@@ -2006,6 +1981,7 @@ class CreateUser extends Component<any, any> {
                                                       height: "50px",
                                                     }}
                                                     src={RemoveBtn}
+                                                    alt=""
                                                     onClick={this.handleRemoveSpecificRow(
                                                       idx,
                                                       "owner"
@@ -2017,6 +1993,7 @@ class CreateUser extends Component<any, any> {
                                                       height: "50px",
                                                     }}
                                                     src={AddBtn}
+                                                    alt=""
                                                     onClick={() =>
                                                       this.handleAddRow("owner")
                                                     }
@@ -2032,6 +2009,7 @@ class CreateUser extends Component<any, any> {
                                               height: "50px",
                                             }}
                                             src={RemoveBtn}
+                                            alt=""
                                             onClick={this.handleRemoveSpecificRow(
                                               idx,
                                               "owner"
@@ -2262,6 +2240,7 @@ class CreateUser extends Component<any, any> {
                                                         height: "50px",
                                                       }}
                                                       src={AddBtn}
+                                                      alt=""
                                                       onClick={() =>
                                                         this.handleAddRow(
                                                           "staff"
@@ -2284,6 +2263,7 @@ class CreateUser extends Component<any, any> {
                                                         height: "50px",
                                                       }}
                                                       src={RemoveBtn}
+                                                      alt=""
                                                       onClick={this.handleRemoveSpecificRow(
                                                         idx,
                                                         "staff"
@@ -2296,6 +2276,7 @@ class CreateUser extends Component<any, any> {
                                                         height: "50px",
                                                       }}
                                                       src={AddBtn}
+                                                      alt=""
                                                       onClick={() =>
                                                         this.handleAddRow(
                                                           "staff"
@@ -2313,6 +2294,7 @@ class CreateUser extends Component<any, any> {
                                                 height: "50px",
                                               }}
                                               src={RemoveBtn}
+                                              alt=""
                                               onClick={this.handleRemoveSpecificRow(
                                                 idx,
                                                 "staff"
@@ -2333,7 +2315,7 @@ class CreateUser extends Component<any, any> {
                 </>
               )}
               <div className="geographicLocation" style={{ width: "80%"}} >
-                {currentStep == 2 && (
+                {currentStep === 2 && (
                   <>
                     <div className="row fieldsAlign">{locationList}</div>
                     <div className="row">
@@ -2375,7 +2357,7 @@ class CreateUser extends Component<any, any> {
                 )}
               </div>
               <div style={{ marginTop: "-28px" }}>
-                {currentStep == 3 && (
+                {currentStep === 3 && (
                   <>
                     <div className="row fieldsAlign">
                       <div className="col-sm-3">
@@ -2407,7 +2389,7 @@ class CreateUser extends Component<any, any> {
                       </div>
                     </div>
 
-                    <div className="row" style={{marginTop: ownernameErr != "" || accountnameErr!="" ? '12px' : '32px'}}>
+                    <div className="row" style={{marginTop: ownernameErr !== "" || accountnameErr!=="" ? '12px' : '32px'}}>
                       <div className="col-sm-3">
                         <Input
                           type="text"
@@ -2439,7 +2421,7 @@ class CreateUser extends Component<any, any> {
                         />
                       </div>
                     </div>
-                    <div className="row" style={{ width: "80%", marginTop: ownernameErr != "" || accountnameErr!="" ? '12px' : '32px'}}>
+                    <div className="row" style={{ width: "80%", marginTop: ownernameErr !== "" || accountnameErr!=="" ? '12px' : '32px'}}>
                       {locationList}
                     </div>
                     <div className="row" style={{ width: "81%" }}>
@@ -2498,9 +2480,9 @@ class CreateUser extends Component<any, any> {
               position: "absolute",
               bottom: "10px",
               marginLeft:
-                currentStep == 1
+                currentStep === 1
                   ? "350px"
-                  : currentStep == 3 && (this.props.location?.page === 'validate')
+                  : currentStep === 3 && (this.props.location?.page === 'validate')
                   ? "200px"
                   : "275px",
             }}
@@ -2513,7 +2495,7 @@ class CreateUser extends Component<any, any> {
                   onClick={(e) => this.handleClick("back", e)}
                 >
                   <span>
-                    <img src={ArrowIcon} className="arrow-i" />
+                    <img src={ArrowIcon} alt="" className="arrow-i" />
                   </span>
                   Back
                 </button>
