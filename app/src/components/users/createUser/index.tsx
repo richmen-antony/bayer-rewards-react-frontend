@@ -826,6 +826,11 @@ class CreateUser extends Component<any, any> {
           });
           this.setState({withHolding: setFormArray });
         }
+
+        if(this.state.isEditPage && this.state.accInfo) {
+          let dynamicFieldsdet = this.state.dynamicFields;
+          this.setState({withHolding: dynamicFieldsdet})
+        }
       }
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
