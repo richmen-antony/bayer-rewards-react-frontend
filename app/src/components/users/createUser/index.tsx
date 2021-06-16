@@ -1622,7 +1622,7 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
-        {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && <Prompt
+        {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && !isEditPage && <Prompt
           when={this.state.shouldBlockNavigation}
           message="You have unsaved changes, are you sure you want to leave?"
         />}
