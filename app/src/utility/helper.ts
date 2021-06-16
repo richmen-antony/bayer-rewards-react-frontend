@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import { getLocalStorageData } from '../utility/base/localStore';
 
-const sessionDefaultTime: number = 60;
+const sessionDefaultTime: number = 30;
 /**
  * Download excel file 
  * @param tableId 
