@@ -23,14 +23,14 @@ class Authorization {
     this.authUserKey = "userData";
   }
   //function
-  logOut(): void {
+  logOut(isReload?:boolean): void {
     setLocalStorageData("isLoggedOut", true);
     clearLocalStorageData("userData");
     clearLocalStorageData("sessionTime");
     sessionStorage.removeItem("userLoggedIn");
     Cookies.remove("userData");
     this.authUser = null;
-    window.location.reload();
+    isReload &&window.location.reload();
 
   }
 

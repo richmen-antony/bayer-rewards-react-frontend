@@ -14,6 +14,10 @@ const headers={
   "client-tz":Intl.DateTimeFormat().resolvedOptions().timeZone,
   "client-tz-offset":new Date().getTimezoneOffset()
 }
+
+// reload page when session finished 
+const  isReload= true;
+
 //Post method without auth
 export function invokePostServiceLogin(path, reqObj, params) {
   return new Promise(function (resolve, reject) {
@@ -66,8 +70,7 @@ export function invokePostAuthService(path, reqObj, params) {
 
     }
     else {
-      console.log('Logout getData')
-      Authorization.logOut()
+      Authorization.logOut(isReload)
     }
 
   });
@@ -97,8 +100,7 @@ export function invokeGetService(path) {
         });
     }
     else {
-      console.log('Logout getData')
-      Authorization.logOut()
+      Authorization.logOut(isReload)
     }
   });
 };
@@ -131,8 +133,7 @@ export function invokeGetAuthService(path, formData) {
         });
 
     } else {
-      console.log('Logout getData')
-      Authorization.logOut()
+      Authorization.logOut(isReload)
     }
   });
 };
@@ -164,8 +165,7 @@ export function invokePostService(path, reqObj, params) {
         });
     }
     else {
-      console.log('Logout getData')
-      Authorization.logOut()
+      Authorization.logOut(isReload)
     }
   });
 };

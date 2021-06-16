@@ -19,7 +19,7 @@ import {
   clearLocalStorageData,
 } from "../../utility/base/localStore";
 import Cookies from "js-cookie";
-import { Scrollbars } from "react-custom-scrollbars";
+import Authorization from "../../utility/authorization";
 
 type Props = {
   history?: any;
@@ -60,9 +60,7 @@ class Sidebar extends Component<Props, States> {
     this.setState({ activeTab: tab });
   };
   logout = () => {
-    setLocalStorageData("isLoggedOut", true);
-    clearLocalStorageData("userData");
-    Cookies.remove("userData");
+    Authorization.logOut();
     this.props.history.push("/landing");
   };
 
