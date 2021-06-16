@@ -1,19 +1,22 @@
 
 import axios from 'axios';
 import { configApp } from '../utils/config';
-import { getLocalStorageData, setLocalStorageData } from '../../base/localStore';
+import { setLocalStorageData } from '../../base/localStore';
 import { checkSessionTimeOut } from '../../../utility/helper';
 import Authorization from '../../../utility/authorization';
 import moment from "moment";
 
+// Request headers
+const headers={
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+  "Access-Control-Allow-Origin": true,
+  "client-tz":Intl.DateTimeFormat().resolvedOptions().timeZone,
+  "client-tz-offset":new Date().getTimezoneOffset()
+}
 //Post method without auth
 export function invokePostServiceLogin(path, reqObj, params) {
   return new Promise(function (resolve, reject) {
-    let headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      "Access-Control-Allow-Origin": true
-    };
     const apiEndPoint = configApp.env;
     const config = {
       method: 'POST',
@@ -39,15 +42,8 @@ export function invokePostServiceLogin(path, reqObj, params) {
 
 //Post method with auth
 export function invokePostAuthService(path, reqObj, params) {
-  let token = getLocalStorageData('userData') ? JSON.parse(getLocalStorageData('userData')) : ""
   return new Promise(function (resolve, reject) {
     if (checkSessionTimeOut()) {
-
-      let headers = {
-        'Content-Type': 'application/json',
-        'x-access-token': token.accessToken
-
-      };
       const apiEndPoint = configApp.env;
       const config = {
         method: 'POST',
@@ -84,6 +80,8 @@ export function invokeGetService(path) {
       const URL = configApp.env;
       const config = {
         method: 'GET',
+        headers
+
       };
       axios.create({
         baseURL: URL + path,
@@ -116,6 +114,7 @@ export function invokeGetAuthService(path, formData) {
         params: {
           ...formData
         },
+        headers
       };
 
       axios.create({
@@ -143,11 +142,6 @@ export function invokeGetAuthService(path, formData) {
 export function invokePostService(path, reqObj, params) {
   return new Promise(function (resolve, reject) {
     if (checkSessionTimeOut()) {
-      let headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        "Access-Control-Allow-Origin": true
-      };
       const apiEndPoint = configApp.env;
       const config = {
         method: 'POST',
