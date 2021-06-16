@@ -374,20 +374,22 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                     <p>Label ID</p>
                                     <p className="sub-val">Reason</p>
                                   </div>
+                                  <div className="invalid-list">
                                   {data?.invalidscans?.length > 0 &&
                                     data?.invalidscans.map((scan: any) => {
                                       return (
                                         <div className="inner-row">
                                           <p className="qr-val">
-                                            {scan.scannedlabel}
+                                            {scan.scannedlabel || "-"}
                                           </p>
                                           <p className="sub-val">
-                                            {" "}
                                             {scan.reason}
                                           </p>
                                         </div>
+                                       
                                       );
                                     })}
+                                     </div>
                                 </div>
                               </div>
                             </div>
