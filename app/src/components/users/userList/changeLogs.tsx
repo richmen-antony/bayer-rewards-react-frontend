@@ -72,17 +72,17 @@ class ChangeLogs extends Component<Props, States> {
 
   getChangeLogs = () => {
     const { changeLogs } = apiURL;
-    this.setState({ isLoader: true });
+    this.setState({ isLoader: true, allChangeLogs: [] });
     let data = {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       countrycode: this.state.loggedUserInfo.countrycode,
+      isFiltered: true
     };
 
     invokeGetAuthService(changeLogs, data)
       .then((response: any) => {
-        if (response.body) {
           const total = response.body?.totalrows;
           this.setState({
             isLoader: false,
@@ -92,7 +92,6 @@ class ChangeLogs extends Component<Props, States> {
                 : [],
             totalData: Number(total),
           });
-        }
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
@@ -230,8 +229,6 @@ class ChangeLogs extends Component<Props, States> {
               </div>
             </div>
           </div>
-
-          {allChangeLogs.length > 0 ? (
             <div className="table-responsive change-logs">
               <table className="table" id="tableData">
                 <thead>
@@ -301,7 +298,8 @@ class ChangeLogs extends Component<Props, States> {
                   </tr>
                 </thead>
                 <tbody>
-                  {allChangeLogs.map((list: any, i: number) => (
+                {allChangeLogs.length > 0 ? (
+                  allChangeLogs.map((list: any, i: number) => (
                     <AUX key={i}>
                       <tr>
                         <td>{list.userid}</td>
@@ -316,19 +314,22 @@ class ChangeLogs extends Component<Props, States> {
                         </td>
                       </tr>
                     </AUX>
-                  ))}
+                  ))
+                  ) : (
+                    <>
+                      <div className="col-12 card mt-4">
+                        <div className="card-body ">
+                          <div className="text-red py-4 text-center">
+                            No Data Found
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </tbody>
               </table>
             </div>
-          ) : this.state.isLoader ? (
-            <Loaders />
-          ) : (
-            <div className="col-12 card mt-4">
-              <div className="card-body ">
-                <div className="text-red py-4 text-center">No Data Found</div>
-              </div>
-            </div>
-          )}
+
           <div>
             <Pagination
               totalData={totalData}

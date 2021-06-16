@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+// import {
+//   Prompt
+// } from "react-router-dom";
+import { Prompt } from 'react-router'
+
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
@@ -140,6 +145,7 @@ class CreateUser extends Component<any, any> {
       epaoptions: [],
       villageoptions: [],
       mobileLimit: true,
+      shouldBlockNavigation: true
     };
     this.loggedUserInfo = loggedUserInfo;
   }
@@ -149,6 +155,11 @@ class CreateUser extends Component<any, any> {
     this.getGeographicFields();
     ///API to get country and language settings
     this.getCountryList();
+  }
+  componentDidUpdate() {
+      if (this.state.shouldBlockNavigation) {
+      window.onbeforeunload = () => true
+    }
   }
 
   getCountryList() {
@@ -202,6 +213,10 @@ class CreateUser extends Component<any, any> {
                 mobilenumber: userFields.ownerphonenumber,
                 email: userFields.owneremail,
               };
+
+              userFields.staffdetails.forEach((items:any)=>{
+                items.active = (userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING") ? true : false
+              })
 
               let userDataList = this.state.userData;
               userDataList.ownerRows[0] = ownerInfo;
@@ -1607,6 +1622,10 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
+        {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && <Prompt
+          when={this.state.shouldBlockNavigation}
+          message="You have unsaved changes, are you sure you want to leave?"
+        />}
         <div className="card card-main">
           <div className="stepper-container-horizontal">
             <Stepper
