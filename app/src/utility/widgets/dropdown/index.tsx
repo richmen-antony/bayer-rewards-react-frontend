@@ -51,12 +51,16 @@ const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) =>
       },
     },
     formControl: {
-      margin: "0px !important",
+      // margin: "0px !important",
+      margin: theme.spacing(1),
       minWidth: ({ width }) => (width ? width : 215),
       maxHeight: 100,
     },
     selectEmpty: {
       marginTop: theme.spacing(2),
+    },
+    menuPaper: {
+      maxHeight: 150,
     },
   })
 );
@@ -132,6 +136,7 @@ export const Dropdown = ({
               horizontal: "left",
             },
             getContentAnchorEl: null,
+            classes: { paper: classes.menuPaper },
           }}
         >
           {isPlaceholder && !isNative ? (
