@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-// import {
-//   Prompt
-// } from "react-router-dom";
-import { Prompt } from 'react-router'
+// import { Prompt } from 'react-router'
 import swal from 'sweetalert';
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";

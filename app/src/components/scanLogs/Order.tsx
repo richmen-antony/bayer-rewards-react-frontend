@@ -163,8 +163,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </thead>
                   <tbody>
                     {data.products_ordered.map((value: any, index: number) => {
-                      return (
+                      return (                  
                         <>
+                        {value.intendedquantity || value.orderedquantity ?
                           <tr
                             key={index}
                             onClick={() =>
@@ -219,7 +220,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   />
                                 </td>
                               )}
-                          </tr>
+                          </tr> : ""}
                           {accordionView &&
                             value?.orderlineitemid === accordionId &&
                             data.orderstatus === "FULFILLED" && (
@@ -255,6 +256,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 </td>
                               </tr>
                             )}
+                          
                         </>
                       );
                     })}
@@ -374,20 +376,22 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                     <p>Label ID</p>
                                     <p className="sub-val">Reason</p>
                                   </div>
+                                  <div className="invalid-list">
                                   {data?.invalidscans?.length > 0 &&
                                     data?.invalidscans.map((scan: any) => {
                                       return (
                                         <div className="inner-row">
                                           <p className="qr-val">
-                                            {scan.scannedlabel}
+                                            {scan.scannedlabel || "-"}
                                           </p>
                                           <p className="sub-val">
-                                            {" "}
                                             {scan.reason}
                                           </p>
                                         </div>
+                                       
                                       );
                                     })}
+                                     </div>
                                 </div>
                               </div>
                             </div>

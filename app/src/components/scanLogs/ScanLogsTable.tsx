@@ -403,6 +403,9 @@ class ScanLogsTable extends Component<Props, States> {
           retailer: "ALL",
         },
         isFiltered: false,
+        dateErrMsg:"",
+        lastUpdatedDateErr:""
+
       },
       () => {
         this.getScanLogs();
@@ -524,11 +527,11 @@ class ScanLogsTable extends Component<Props, States> {
         });
       } else if (date <= val.ordereddatefrom) {
         this.setState({
-          dateErrMsg: "Order End Date should be greater than  Order Start Date",
+          dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
         });
       } else {
         this.setState({
-          dateErrMsg: "Order Start Date should be lesser than  Order End Date",
+          dateErrMsg: "Ordered Start Date should be lesser than  Ordered End Date",
         });
       }
     }
@@ -540,11 +543,11 @@ class ScanLogsTable extends Component<Props, States> {
         });
       } else if (date >= val.ordereddateto) {
         this.setState({
-          dateErrMsg: " Order Start Date should be lesser than Order End Date",
+          dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
         });
       } else {
         this.setState({
-          dateErrMsg: "Order Start Date should be greater than Order End Date",
+          dateErrMsg: "Ordered Start Date should be greater than Ordered End Date",
         });
       }
     }
