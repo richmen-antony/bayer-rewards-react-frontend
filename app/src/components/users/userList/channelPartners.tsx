@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import swal from 'sweetalert';
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -421,7 +422,8 @@ class ChannelPartners extends Component<Props, States> {
     );
   };
 
-  submitUpdateUser = () => {
+  submitUpdateUser = (e: any) => {
+    e.target.disabled=true;
     this.setState({ isLoader: true });
     const { updateUser } = apiURL;
     let geoFields: any = {};
@@ -702,6 +704,7 @@ class ChannelPartners extends Component<Props, States> {
         mobilenumber: "",
         email: "",
         active: true,
+        isowner: false,
         errObj: {
           firstnameErr: "",
           lastnameErr: "",
@@ -710,16 +713,39 @@ class ChannelPartners extends Component<Props, States> {
           isPhoneEdit: true,
         },
       });
+      this.setState((prevState: any) => ({
+        isStaff: isStaff,
+        userData: {
+          ...prevState.userData,
+          staffdetails: userData.staffdetails,
+        },
+      }));
     } else {
-      userData.staffdetails = [];
+      swal({
+         // title: "Are you sure you want to delete store's staff",
+         text: "Are you sure you want to delete store's staff?",
+        icon: "warning",
+        dangerMode: true,
+        buttons: ["Cancel", "Delete"],
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          // swal("Poof! Added Staff's has been deleted!", {
+          //   icon: "success",
+          // });
+          userData.staffdetails = [];
+          this.setState((prevState: any) => ({
+            isStaff: isStaff,
+            userData: {
+              ...prevState.userData,
+              staffdetails: userData.staffdetails,
+            },
+          }));
+        } else {
+          // swal("Your added staff's are safe!");
+        }
+      });
     }
-    this.setState((prevState: any) => ({
-      userData: {
-        ...prevState.userData,
-        staffdetails: userData.staffdetails,
-      },
-    }));
-    this.setState({ isStaff: isStaff });
   };
 
   validateEmail = (value: any, idx: number, type: string) => {
@@ -864,6 +890,7 @@ class ChannelPartners extends Component<Props, States> {
     const { allChannelPartners, isAsc, totalData } = this.props;
     const { isLoader, pageNo, rowsPerPage } = this.props.state;
     const { userList, userData, isStaff }: any = this.state;
+    console.log('Staffdet', isStaff )
 
     let data: any = getLocalStorageData("userData");
     let loggedUserInfo = JSON.parse(data);
@@ -986,7 +1013,7 @@ class ChannelPartners extends Component<Props, States> {
                               <input
                                 type="checkbox"
                                 style={{ marginLeft: "10px" }}
-                                defaultChecked={isStaff}
+                                checked={isStaff}
                                 onClick={(e: any) => {
                                   this.enableStoreStaff(e);
                                 }}
@@ -1555,10 +1582,10 @@ class ChannelPartners extends Component<Props, States> {
                   >
                     Cancel
                   </button>
-                  <button
-                    onClick={this.submitUpdateUser}
-                    className="cus-btn-user buttonStyle "
-                  >
+                  <button onClick={(e: any) => {
+                    this.submitUpdateUser(e)
+                  }}
+                    className="cus-btn-user buttonStyle">
                     Update
                     <span className="staffcount">
                       <img src={ArrowIcon} alt='' className="arrow-i" />{" "}

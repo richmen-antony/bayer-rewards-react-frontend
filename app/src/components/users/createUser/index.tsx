@@ -3,7 +3,7 @@ import React, { Component } from "react";
 //   Prompt
 // } from "react-router-dom";
 import { Prompt } from 'react-router'
-
+import swal from 'sweetalert';
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
@@ -145,7 +145,6 @@ class CreateUser extends Component<any, any> {
       epaoptions: [],
       villageoptions: [],
       mobileLimit: true,
-      shouldBlockNavigation: true
     };
     this.loggedUserInfo = loggedUserInfo;
   }
@@ -156,11 +155,11 @@ class CreateUser extends Component<any, any> {
     ///API to get country and language settings
     this.getCountryList();
   }
-  componentDidUpdate() {
-      if (this.state.shouldBlockNavigation) {
-      window.onbeforeunload = () => true
-    }
-  }
+  // componentDidUpdate() {
+  //     if (this.state.shouldBlockNavigation) {
+  //     window.onbeforeunload = () => true
+  //   }
+  // }
 
   getCountryList() {
     //service call
@@ -849,6 +848,9 @@ class CreateUser extends Component<any, any> {
       }
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
+      if(formValid) {
+        this.setState({shouldBlockNavigation: false})
+      }
     }
 
     const { currentStep } = this.state;
@@ -1504,16 +1506,39 @@ class CreateUser extends Component<any, any> {
           isPhoneEdit: true,
         },
       });
+      this.setState((prevState: any) => ({
+        isStaff: isStaff,
+        userData: {
+          ...prevState.userData,
+          staffdetails: userData.staffdetails,
+        },
+      }));
     } else {
-      userData.staffdetails = [];
+      swal({
+        // title: "Are you sure you want to delete store's staff",
+        text: "Are you sure you want to delete store's staff?",
+        icon: "warning",
+        dangerMode: true,
+        buttons: ["Cancel", "Delete"],
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          // swal("Poof! Added Staff's has been deleted!", {
+          //   icon: "success",
+          // });
+          userData.staffdetails = [];
+          this.setState((prevState: any) => ({
+            isStaff: isStaff,
+            userData: {
+              ...prevState.userData,
+              staffdetails: userData.staffdetails,
+            },
+          }));
+        } else {
+          // swal("Your added staff's are safe!");
+        }
+      });
     }
-    this.setState((prevState: any) => ({
-      userData: {
-        ...prevState.userData,
-        staffdetails: userData.staffdetails,
-      },
-    }));
-    this.setState({ isStaff: isStaff });
   };
 
   render() {
@@ -1622,10 +1647,10 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
-        {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && !isEditPage && <Prompt
+        {/* {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && !isEditPage && <Prompt
           when={this.state.shouldBlockNavigation}
           message="You have unsaved changes, are you sure you want to leave?"
-        />}
+        />} */}
         <div className="card card-main">
           <div className="stepper-container-horizontal">
             <Stepper
@@ -1684,7 +1709,6 @@ class CreateUser extends Component<any, any> {
                             <input
                               type="checkbox"
                               style={{ marginLeft: "10px" }}
-                              defaultChecked={isStaff}
                               onClick={(e: any) => {
                                 this.enableStoreStaff(e);
                               }}

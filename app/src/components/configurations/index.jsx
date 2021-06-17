@@ -41,8 +41,8 @@ class Configurations extends Component {
       country: '',
       countrycode: '',
       currency: '',
-      currencyname: ''
-
+      currencyname: '',
+      shouldBlockNavigation: true
     };
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
     this.handleDropdownChangeRegion = this.handleDropdownChangeRegion.bind(this);
@@ -112,6 +112,9 @@ class Configurations extends Component {
     console.log("setSelectedCluster", this.state.setSelectedCluster);
     if (this.state.setSelectedCluster) {
       this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
+    }
+    if (this.state.shouldBlockNavigation) {
+      window.onbeforeunload = () => true
     }
   }
 
