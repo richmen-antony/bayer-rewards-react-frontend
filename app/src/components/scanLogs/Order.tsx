@@ -163,8 +163,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </thead>
                   <tbody>
                     {data.products_ordered.map((value: any, index: number) => {
-                      return (
+                      return (                  
                         <>
+                        {value.intendedquantity || value.orderedquantity ?
                           <tr
                             key={index}
                             onClick={() =>
@@ -219,7 +220,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   />
                                 </td>
                               )}
-                          </tr>
+                          </tr> : ""}
                           {accordionView &&
                             value?.orderlineitemid === accordionId &&
                             data.orderstatus === "FULFILLED" && (
@@ -255,6 +256,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                 </td>
                               </tr>
                             )}
+                          
                         </>
                       );
                     })}

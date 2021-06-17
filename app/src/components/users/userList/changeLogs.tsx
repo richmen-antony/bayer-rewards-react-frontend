@@ -83,7 +83,7 @@ class ChangeLogs extends Component<Props, States> {
 
     invokeGetAuthService(changeLogs, data)
       .then((response: any) => {
-          const total = response.body?.totalrows;
+          const total = response?.totalrows;
           this.setState({
             isLoader: false,
             allChangeLogs:
