@@ -822,3 +822,9 @@ label {
 .Toastify__toast--error {
   background: red;
 }
+
+@media only screen and (max-width: 1366px) {
+.error{
+  font-size: 11px;
+}
+}
