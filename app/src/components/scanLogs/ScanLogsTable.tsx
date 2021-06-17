@@ -197,6 +197,10 @@ class ScanLogsTable extends Component<Props, States> {
       }
     );
   }
+  /**
+   * Retailer and Farmer dropdown list value
+   * @param condIf 
+   */
   getRetailerList = (condIf?: any) => {
     const { rsmRetailerList } = apiURL;
     const { selectedFilters } = this.state;
@@ -409,6 +413,7 @@ class ScanLogsTable extends Component<Props, States> {
       },
       () => {
         this.getScanLogs();
+        this.toggleFilter();
       }
     );
   };
@@ -612,9 +617,11 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   filterScans = (filterValue: any) => {
-    this.setState({ isFiltered: true }, () => {
-      this.getScanLogs(filterValue);
+    this.setState({ isFiltered: true ,selectedFilters:{...this.state.selectedFilters,retailer:filterValue}}, () => {
+      this.getScanLogs();
       this.handleClosePopup();
+      let condIf = "retailer";
+      this.getRetailerList(condIf);
     });
   };
 
