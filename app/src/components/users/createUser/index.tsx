@@ -2,7 +2,7 @@ import React, { Component } from "react";
 // import {
 //   Prompt
 // } from "react-router-dom";
-import { Prompt } from 'react-router'
+// import { Prompt } from "react-router";
 
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
@@ -1622,10 +1622,10 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
-        {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && !isEditPage && <Prompt
+        {/* {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && !isEditPage && <Prompt
           when={this.state.shouldBlockNavigation}
           message="You have unsaved changes, are you sure you want to leave?"
-        />}
+        />} */}
         <div className="card card-main">
           <div className="stepper-container-horizontal">
             <Stepper
