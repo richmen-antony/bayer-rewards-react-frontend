@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Prompt } from 'react-router';
+import { Prompt } from "react-router";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -170,7 +170,7 @@ class CreateUser extends Component<any, any> {
       villageoptions: [],
       mobileLimit: true,
       cloneduserData: {},
-      deleteStaffPopup: false
+      deleteStaffPopup: false,
     };
     this.loggedUserInfo = loggedUserInfo;
   }
@@ -221,9 +221,8 @@ class CreateUser extends Component<any, any> {
             if (this.props.location?.page) {
               let data: any = getLocalStorageData("userData");
               let userDetails = JSON.parse(data);
-              this.setState({ username: userDetails.username }, () => {
-              });
-              let userFields = this.props.location.state.userFields;
+              this.setState({ username: userDetails.username }, () => {});
+              let userFields = this.props.location.state?.userFields;
 
               let ownerInfo = {
                 errObj: {
@@ -233,15 +232,23 @@ class CreateUser extends Component<any, any> {
                   mobilenumberErr: "",
                 },
                 firstname: userFields.ownerfirstname,
-                active: (userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING") ? true : false,
+                active:
+                  userFields.userstatus === "ACTIVE" ||
+                  userFields.userstatus === "PENDING"
+                    ? true
+                    : false,
                 lastname: userFields.ownerlastname,
                 mobilenumber: userFields.ownerphonenumber,
                 email: userFields.owneremail,
               };
 
-              userFields.staffdetails.forEach((items:any)=>{
-                items.active = (userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING") ? true : false
-              })
+              userFields.staffdetails.forEach((items: any) => {
+                items.active =
+                  userFields.userstatus === "ACTIVE" ||
+                  userFields.userstatus === "PENDING"
+                    ? true
+                    : false;
+              });
 
               let userDataList = this.state.userData;
               userDataList.ownerRows[0] = ownerInfo;
@@ -275,7 +282,6 @@ class CreateUser extends Component<any, any> {
                       mobilenumberErr: "",
                       isPhoneEdit: staffInfo.mobilenumber ? false : true,
                     },
-
                   };
                   let obj = Object.assign(staffInfo, errObjd);
                 });
@@ -288,7 +294,7 @@ class CreateUser extends Component<any, any> {
                 isRendered: true,
               });
               let cloneduserData = JSON.parse(JSON.stringify(userinfo));
-              this.setState({cloneduserData: cloneduserData });
+              this.setState({ cloneduserData: cloneduserData });
 
               //Dynamic Geo location dropdowns For Validate and edit User
               setTimeout(() => {
@@ -339,14 +345,14 @@ class CreateUser extends Component<any, any> {
     let allRegions = this.state.allRegions;
     if (data) {
       let isSameGeoAddress =
-      data.billingregion === data.deliveryregion &&
-      data.billingstate === data.deliverystate &&
-      data.billingdistrict === data.deliverydistrict &&
-      data.billingcity === data.deliverycity &&
-      data.billingvillage === data.deliveryvillage &&
-      data.whtownername === data.ownerfirstname+' '+data.ownerlastname;
+        data.billingregion === data.deliveryregion &&
+        data.billingstate === data.deliverystate &&
+        data.billingdistrict === data.deliverydistrict &&
+        data.billingcity === data.deliverycity &&
+        data.billingvillage === data.deliveryvillage &&
+        data.whtownername === data.ownerfirstname + " " + data.ownerlastname;
 
-      this.setState({ accInfo: isSameGeoAddress ? true : false })
+      this.setState({ accInfo: isSameGeoAddress ? true : false });
       let setFormArray: any = [];
       let regionoptions: any = [];
       let addoptions: any = [];
@@ -657,14 +663,16 @@ class CreateUser extends Component<any, any> {
         if (this.state.currentStep === 2) {
           dynamicFieldVal[index + 1].options = add;
           dynamicFieldVal[index].value = value;
-          dynamicFieldVal[index+1].value = "";
+          dynamicFieldVal[index + 1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep === 3) {
           withHoldingVal[index + 1].options = add;
           withHoldingVal[index].value = value;
-          withHoldingVal[index+1].value = "";
-          this.setState({ withHolding: withHoldingVal, withHoldingSelected: true });
-
+          withHoldingVal[index + 1].value = "";
+          this.setState({
+            withHolding: withHoldingVal,
+            withHoldingSelected: true,
+          });
         }
       } else if (type === "add") {
         let filteredAdd: any = [];
@@ -694,12 +702,12 @@ class CreateUser extends Component<any, any> {
         if (this.state.currentStep === 2) {
           dynamicFieldVal[index + 1].options = district;
           dynamicFieldVal[index].value = value;
-          dynamicFieldVal[index+1].value = "";
+          dynamicFieldVal[index + 1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep === 3) {
           withHoldingVal[index + 1].options = district;
           withHoldingVal[index].value = value;
-          withHoldingVal[index+1].value = "";
+          withHoldingVal[index + 1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
       } else if (type === "district") {
@@ -737,12 +745,12 @@ class CreateUser extends Component<any, any> {
           if (this.state.currentStep === 2) {
             dynamicFieldVal[index + 1].options = levelFive;
             dynamicFieldVal[index].value = value;
-            dynamicFieldVal[index+1].value = "";
+            dynamicFieldVal[index + 1].value = "";
             this.setState({ dynamicFields: dynamicFieldVal });
           } else if (this.state.currentStep === 3) {
             withHoldingVal[index + 1].options = levelFive;
             withHoldingVal[index].value = value;
-            withHoldingVal[index+1].value = "";
+            withHoldingVal[index + 1].value = "";
             this.setState({ withHolding: withHoldingVal });
           }
         }
@@ -763,12 +771,12 @@ class CreateUser extends Component<any, any> {
         if (this.state.currentStep === 2) {
           dynamicFieldVal[index + 1].options = village;
           dynamicFieldVal[index].value = value;
-          dynamicFieldVal[index+1].value = "";
+          dynamicFieldVal[index + 1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep === 3) {
           withHoldingVal[index + 1].options = village;
           withHoldingVal[index].value = value;
-          withHoldingVal[index+1].value = "";
+          withHoldingVal[index + 1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
       } else if (type === "village") {
@@ -781,7 +789,7 @@ class CreateUser extends Component<any, any> {
         }
       }
       let withHoldingdet = JSON.parse(JSON.stringify(this.state.withHolding));
-      this.setState({newWithHolding: withHoldingdet});
+      this.setState({ newWithHolding: withHoldingdet });
     }
   };
 
@@ -845,11 +853,15 @@ class CreateUser extends Component<any, any> {
     } else if (clickType === "geographicNext") {
       formValid = this.checkValidation();
       if (formValid) {
-        if(!this.state.isEditPage && !this.state.withHoldingSelected) {
+        if (!this.state.isEditPage && !this.state.withHoldingSelected) {
           let regionOptions: any = [];
           let setFormArray: any = [];
           this.state.allRegions.forEach((item: any) => {
-            let regionInfo = { text: item.name, code: item.code, value: item.name };
+            let regionInfo = {
+              text: item.name,
+              code: item.code,
+              value: item.name,
+            };
             regionOptions.push(regionInfo);
           });
           this.state.geographicFields.forEach((list: any, i: number) => {
@@ -866,18 +878,18 @@ class CreateUser extends Component<any, any> {
               error: "",
             });
           });
-          this.setState({withHolding: setFormArray });
+          this.setState({ withHolding: setFormArray });
         }
 
-        if(this.state.isEditPage && this.state.accInfo) {
+        if (this.state.isEditPage && this.state.accInfo) {
           let dynamicFieldsdet = this.state.dynamicFields;
-          this.setState({withHolding: dynamicFieldsdet})
+          this.setState({ withHolding: dynamicFieldsdet });
         }
       }
     } else if (clickType === "createUser") {
       formValid = this.checkValidation();
-      if(formValid) {
-        this.setState({shouldBlockNavigation: false})
+      if (formValid) {
+        this.setState({ shouldBlockNavigation: false });
       }
     }
 
@@ -903,7 +915,7 @@ class CreateUser extends Component<any, any> {
         //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
         // });
         this.submitUserDatas();
-      } 
+      }
     }
   }
   submitUserDatas = () => {
@@ -968,7 +980,11 @@ class CreateUser extends Component<any, any> {
         iscreatedfrommobile: userData.iscreatedfrommobile,
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
-        whtownername: this.state.accInfo ? userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname : userData.whtownername,
+        whtownername: this.state.accInfo
+          ? userData.ownerRows[0].firstname +
+            " " +
+            userData.ownerRows[0].lastname
+          : userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
@@ -1012,7 +1028,11 @@ class CreateUser extends Component<any, any> {
         iscreatedfrommobile: false,
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
-        whtownername: this.state.accInfo ? userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname : userData.whtownername,
+        whtownername: this.state.accInfo
+          ? userData.ownerRows[0].firstname +
+            " " +
+            userData.ownerRows[0].lastname
+          : userData.whtownername,
         deliverycountry: this.getStoreData.countryCode,
         deliveryregion: geoFields.region,
         deliverystate: geoFields.add,
@@ -1035,26 +1055,21 @@ class CreateUser extends Component<any, any> {
           : userData.billingzipcode,
         staffdetails: [...this.state.userData.staffdetails],
         ismarketingperference: true,
-        isprivacydataconsent: true 
+        isprivacydataconsent: true,
       };
     }
 
-    const userDetails =
-      this.state.isEditPage
-        ? {
-            isedit: true,
-            lastupdatedby: this.state.username.toUpperCase(),
-            lastupdateddate: new Date().toJSON(),
-          }
-        : "";
-    const url =
-      this.state.isEditPage
-        ? updateUser
-        : retailerCreation;
-    const service =
-      this.state.isEditPage
-        ? invokePostAuthService
-        : invokePostService;
+    const userDetails = this.state.isEditPage
+      ? {
+          isedit: true,
+          lastupdatedby: this.state.username.toUpperCase(),
+          lastupdateddate: new Date().toJSON(),
+        }
+      : "";
+    const url = this.state.isEditPage ? updateUser : retailerCreation;
+    const service = this.state.isEditPage
+      ? invokePostAuthService
+      : invokePostService;
 
     service(url, data, userDetails)
       .then((response: any) => {
@@ -1062,13 +1077,13 @@ class CreateUser extends Component<any, any> {
           isLoader: false,
         });
         let msg = "";
-        if (this.props.location?.page === 'validate') {
+        if (this.props.location?.page === "validate") {
           if (userData.isDeclineUser) {
             msg = "User Declined Successfully";
           } else {
             msg = "User Validated Successfully";
           }
-        } else if (this.props.location?.page === 'edit') {
+        } else if (this.props.location?.page === "edit") {
           msg = "User Updated Successfully";
         } else {
           msg = "User Created Successfully";
@@ -1221,42 +1236,44 @@ class CreateUser extends Component<any, any> {
       let whtaccountname = userData.whtaccountname
         ? ""
         : "Please enter account name";
-     
-      if(whtaccountname !== ""){
+
+      if (whtaccountname !== "") {
         formValid = false;
       }
       this.setState({
-        accountnameErr: whtaccountname
+        accountnameErr: whtaccountname,
       });
 
       if (!accInfo) {
-        let whtownername = userData.whtownername ? "" : "Please enter owner name";
+        let whtownername = userData.whtownername
+          ? ""
+          : "Please enter owner name";
         // let billingstreet = userData.billingstreet
         //   ? ""
         //   : "Please enter the Street";
         // let billingzipcode = userData.billingzipcode
         //   ? ""
         //   : "Please enter the Postal";
-        if(whtaccountname !== "" || whtownername!==""){
+        if (whtaccountname !== "" || whtownername !== "") {
           formValid = false;
         }
         this.setState({
-          ownernameErr: whtownername
+          ownernameErr: whtownername,
         });
       } else {
         this.setState({
-          ownernameErr: ""
+          ownernameErr: "",
         });
       }
-        this.state.withHolding.forEach((list: any) => {
-          if (list.value === "") {
-            list.error = "Please select the " + list.name;
-            formValid = false;
-          } else {
-            list.error = "";
-          }
-          this.setState({ isRendered: true });
-        });
+      this.state.withHolding.forEach((list: any) => {
+        if (list.value === "") {
+          list.error = "Please select the " + list.name;
+          formValid = false;
+        } else {
+          list.error = "";
+        }
+        this.setState({ isRendered: true });
+      });
     }
     return formValid;
   }
@@ -1266,31 +1283,23 @@ class CreateUser extends Component<any, any> {
     let staffdetails = [...this.state.userData.staffdetails];
 
     if (type === "staff") {
-      if (
-        (patterns.emailFormat).test(
-          value
-        )
-      ) {
+      if (patterns.emailFormat.test(value)) {
         staffdetails[idx].errObj.emailErr = "";
-      } else if(value === '') {
+      } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
         staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
     if (type === "owner") {
-      if (
-        (patterns.emailFormat).test(
-          value
-        )
-      ) {
+      if (patterns.emailFormat.test(value)) {
         ownerRows[idx].errObj.emailErr = "";
-      } else if(value === '') {
+      } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
         ownerRows[idx].errObj.emailErr = "Please enter a valid email";
       }
-    } 
+    }
     this.setState((prevState: any) => ({
       userData: {
         ...prevState.userData,
@@ -1300,7 +1309,7 @@ class CreateUser extends Component<any, any> {
       isRendered: true,
     }));
   };
- 
+
   reset = () => {
     let currentStep = this.state.currentStep;
     let userData = this.state.userData;
@@ -1440,13 +1449,22 @@ class CreateUser extends Component<any, any> {
           if (!e.target.checked) {
             this.getDynamicOptionFields(userFields);
           } else {
-            this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
+            this.setState({
+              withHolding: this.state.dynamicFields,
+              ownernameErr: "",
+            });
           }
         } else {
           if (e.target.checked) {
-            this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
+            this.setState({
+              withHolding: this.state.dynamicFields,
+              ownernameErr: "",
+            });
           } else {
-            this.setState({ withHolding: this.state.newWithHolding, ownernameErr: '' });
+            this.setState({
+              withHolding: this.state.newWithHolding,
+              ownernameErr: "",
+            });
           }
           // if (!e.target.checked) {
           //   let setFormArray: any = [];
@@ -1542,7 +1560,7 @@ class CreateUser extends Component<any, any> {
         },
       }));
     } else {
-      this.setState({deleteStaffPopup: true})
+      this.setState({ deleteStaffPopup: true });
       // swal({
       //   // title: "Are you sure you want to delete store's staff",
       //   text: "Are you sure you want to delete store's staff?",
@@ -1570,90 +1588,144 @@ class CreateUser extends Component<any, any> {
     }
   };
   checkCreateFilled = () => {
+    isFilledAllFields = false;
     let userValues = this.state.userData;
     let isDeliveryFieldsFilled = false;
     let isWHTFieldsFilled = false;
     let isStaffFieldsFilled = false;
-    if(!this.state.isEditPage){
-      this.state.dynamicFields?.forEach((item:any)=>{
-        if(item.name !== 'country' && item.value !== ''){
+    if (!this.state.isEditPage) {
+      this.state.dynamicFields?.forEach((item: any) => {
+        if (item.name !== "country" && item.value !== "") {
           isDeliveryFieldsFilled = true;
         }
-      })
-      this.state.withHolding?.forEach((item:any)=>{
-        if(item.name !== 'country' && item.value !== ''){
+      });
+      this.state.withHolding?.forEach((item: any) => {
+        if (item.name !== "country" && item.value !== "") {
           isWHTFieldsFilled = true;
         }
-      })
-      userValues.staffdetails?.forEach((item:any)=>{
-        if(item.firstname !== '' || item.lastname!=='' || item.mobilenumber !== ''){
-          isStaffFieldsFilled = true
+      });
+      userValues.staffdetails?.forEach((item: any) => {
+        if (
+          item.firstname !== "" ||
+          item.lastname !== "" ||
+          item.mobilenumber !== ""
+        ) {
+          isStaffFieldsFilled = true;
         }
-      })
+      });
 
-      if(userValues.ownerRows[0].firstname !== '' || userValues.ownerRows[0].lastname !== '' || userValues.ownerRows[0].mobilenumber !== '' || userValues.whtaccountname !== '' || userValues.whtownername !== '' || isDeliveryFieldsFilled || isWHTFieldsFilled || isStaffFieldsFilled){
+      if (
+        userValues.ownerRows[0].firstname !== "" ||
+        userValues.ownerRows[0].lastname !== "" ||
+        userValues.ownerRows[0].mobilenumber !== "" ||
+        userValues.whtaccountname !== "" ||
+        userValues.whtownername !== "" ||
+        isDeliveryFieldsFilled ||
+        isWHTFieldsFilled ||
+        isStaffFieldsFilled
+      ) {
         isFilledAllFields = true;
       }
-    } 
-    // else {
-    //   let editDatas = this.state.cloneduserData;
-     
-    //   userValues.staffdetails?.forEach((useritem:any, index: number)=>{
-    //     editDatas.staffdetails?.forEach((edititem:any)=>{
-    //       if((useritem.firstname !== edititem[index].firstname) || (useritem.lastname !== edititem[index].lastname) || (useritem.mobilenumber !== edititem[index].mobilenumber)){
-    //         isStaffFieldsFilled = true
-    //       }
-    //     })
-    //   })
-    //   let userFields = this.props.location.state.userFields;
-    //   this.state.dynamicFields?.forEach((item:any)=>{
-    //     if(item.name !== 'country'){
-    //       if((item.name === 'region') && (item.value !== userFields.deliveryregion)){
-    //         isDeliveryFieldsFilled = true;
-    //       }
-    //       if((item.name === 'add') && (item.value !== userFields.deliverystate)){
-    //         isDeliveryFieldsFilled = true;
-    //       }
-    //       if((item.name === 'district') && (item.value !== userFields.deliverydistrict)){
-    //         isDeliveryFieldsFilled = true;
-    //       }
-    //       if((item.name === 'epa') && (item.value !== userFields.deliverycity)){
-    //         isDeliveryFieldsFilled = true;
-    //       }
-    //       if((item.name === 'village') && (item.value !== userFields.deliveryvillage)){
-    //         isDeliveryFieldsFilled = true;
-    //       }
-    //     }
-    //   })
-    //   this.state.withHolding?.forEach((item:any)=>{
-    //     if(item.name !== 'country'){
-    //       if((item.name === 'region') && (item.value !== userFields.billingregion)){
-    //         isWHTFieldsFilled = true;
-    //       }
-    //       if((item.name === 'add') && (item.value !== userFields.billingstate)){
-    //         isWHTFieldsFilled = true;
-    //       }
-    //       if((item.name === 'district') && (item.value !== userFields.billingdistrict)){
-    //         isWHTFieldsFilled = true;
-    //       }
-    //       if((item.name === 'epa') && (item.value !== userFields.billingcity)){
-    //         isWHTFieldsFilled = true;
-    //       }
-    //       if((item.name === 'village') && (item.value !== userFields.billingvillage)){
-    //         isWHTFieldsFilled = true;
-    //       }
-    //     }
-    //   })
-    //   if((userValues.ownerRows[0].firstname !==  editDatas.ownerRows[0].firstname) || (userValues.ownerRows[0].lastname !==editDatas.ownerRows[0].lastname) || (userValues.ownerRows[0].mobilenumber !== editDatas.ownerRows[0].mobilenumber) || (userValues.whtaccountname !== editDatas.whtaccountname) ||  (userValues.whtownername !==  editDatas.whtownername) || isStaffFieldsFilled || isDeliveryFieldsFilled || isWHTFieldsFilled){
-    //     isFilledAllFields = true;
-    //   } else {
-    //     isFilledAllFields = false;
-    //   }
-    // }
+    } else {
+      let editDatas = this.state.cloneduserData;
+
+      // userValues.staffdetails?.forEach((useritem:any, index: number)=>{
+      //   editDatas.staffdetails?.forEach((edititem:any)=>{
+      //     if((useritem.firstname !== edititem[index].firstname) || (useritem.lastname !== edititem[index].lastname) || (useritem.mobilenumber !== edititem[index].mobilenumber)){
+      //       isStaffFieldsFilled = true
+      //     }
+      //   })
+      // })
+      if (_.isEqual(editDatas, userValues)) {
+        isStaffFieldsFilled = false;
+      } else {
+        isStaffFieldsFilled = true;
+      }
+
+      let userFields = this.props.location.state?.userFields;
+      if (userFields) {
+        this.state.dynamicFields?.forEach((item: any) => {
+          if (item.name !== "country") {
+            if (
+              item.name === "region" &&
+              item.value !== userFields.deliveryregion
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (
+              item.name === "add" &&
+              item.value !== userFields.deliverystate
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (
+              item.name === "district" &&
+              item.value !== userFields.deliverydistrict
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "epa" && item.value !== userFields.deliverycity) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (
+              item.name === "village" &&
+              item.value !== userFields.deliveryvillage
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+          }
+        });
+        this.state.withHolding?.forEach((item: any) => {
+          if (item.name !== "country") {
+            if (
+              item.name === "region" &&
+              item.value !== userFields.billingregion
+            ) {
+              isWHTFieldsFilled = true;
+            }
+            if (item.name === "add" && item.value !== userFields.billingstate) {
+              isWHTFieldsFilled = true;
+            }
+            if (
+              item.name === "district" &&
+              item.value !== userFields.billingdistrict
+            ) {
+              isWHTFieldsFilled = true;
+            }
+            if (item.name === "epa" && item.value !== userFields.billingcity) {
+              isWHTFieldsFilled = true;
+            }
+            if (
+              item.name === "village" &&
+              item.value !== userFields.billingvillage
+            ) {
+              isWHTFieldsFilled = true;
+            }
+          }
+        });
+      }
+
+      if (
+        userValues.ownerRows[0].firstname !==
+          editDatas.ownerRows[0].firstname ||
+        userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname ||
+        userValues.ownerRows[0].mobilenumber !==
+          editDatas.ownerRows[0].mobilenumber ||
+        userValues.whtaccountname !== editDatas.whtaccountname ||
+        userValues.whtownername !== editDatas.whtownername ||
+        isStaffFieldsFilled ||
+        isDeliveryFieldsFilled ||
+        isWHTFieldsFilled
+      ) {
+        isFilledAllFields = true;
+      } else {
+        isFilledAllFields = false;
+      }
+    }
     return isFilledAllFields;
-  }
+  };
   handleClosePopup = () => {
-    this.setState({ deleteStaffPopup: false});
+    this.setState({ deleteStaffPopup: false });
   };
 
   deleteStaff = () => {
@@ -1665,10 +1737,9 @@ class CreateUser extends Component<any, any> {
         ...prevState.userData,
         staffdetails: userData.staffdetails,
       },
-      deleteStaffPopup: false
+      deleteStaffPopup: false,
     }));
-  }
-
+  };
 
   render() {
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
@@ -1736,7 +1807,7 @@ class CreateUser extends Component<any, any> {
         >
           Next
           <span>
-            <img src={ArrowIcon}alt=""  className="arrow-i" />{" "}
+            <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
             <img src={RtButton} alt="" className="layout" />
           </span>
         </button>
@@ -1776,10 +1847,12 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
-        {this.checkCreateFilled() && <Prompt
-          when={this.state.shouldBlockNavigation}
-          message="You have unsaved changes, are you sure you want to leave?"
-        />}
+        {this.checkCreateFilled() && (
+          <Prompt
+            when={this.state.shouldBlockNavigation}
+            message="You have unsaved changes, are you sure you want to leave?"
+          />
+        )}
         {this.state.deleteStaffPopup ? (
           <AdminPopup
             open={this.state.deleteStaffPopup}
@@ -1789,11 +1862,10 @@ class CreateUser extends Component<any, any> {
             <DialogContent>
               <div className="popup-container">
                 <div className="popup-content">
-                  <div className={`popup-title`}>
-                  </div>
+                  <div className={`popup-title`}></div>
                 </div>
                 <div style={{ textAlign: "center" }}>
-                <label style={{fontSize: '16px',marginTop: '11px'}}>
+                  <label style={{ fontSize: "16px", marginTop: "11px" }}>
                     Are you sure you want to delete store's staff?
                   </label>
                 </div>
@@ -1838,7 +1910,11 @@ class CreateUser extends Component<any, any> {
                 fontSize: "17px",
                 color: "#10384F",
                 marginTop:
-                  currentStep === 1 ? "0px" : currentStep === 2 ? "28px" : "-3px",
+                  currentStep === 1
+                    ? "0px"
+                    : currentStep === 2
+                    ? "28px"
+                    : "-3px",
               }}
             >
               {stepsArray[currentStep - 1]}
@@ -1881,7 +1957,13 @@ class CreateUser extends Component<any, any> {
                                 this.enableStoreStaff(e);
                               }}
                               checked={isStaff}
-                              disabled= {(isEditPage && this.props.location.state.userFields.storewithmultiuser) ? true : false}
+                              disabled={
+                                isEditPage &&
+                                this.props.location.state?.userFields
+                                  .storewithmultiuser
+                                  ? true
+                                  : false
+                              }
                             />
                             <span className="checkmark"></span>
                           </label>
@@ -1935,7 +2017,9 @@ class CreateUser extends Component<any, any> {
                                             ""
                                           )
                                         }
-                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                        onKeyPress={(e: any) =>
+                                          allowAlphabetsNumbers(e)
+                                        }
                                       />
                                       {item.errObj?.firstNameErr && (
                                         <span className="error">
@@ -1959,7 +2043,9 @@ class CreateUser extends Component<any, any> {
                                             ""
                                           )
                                         }
-                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                        onKeyPress={(e: any) =>
+                                          allowAlphabetsNumbers(e)
+                                        }
                                       />
                                       {item.errObj?.lastNameErr && (
                                         <span className="error">
@@ -1985,11 +2071,7 @@ class CreateUser extends Component<any, any> {
                                             }}
                                             country={countryCodeLower}
                                             value={item.mobilenumber}
-                                            disabled={
-                                              isEditPage
-                                                ? true
-                                                : false
-                                            }
+                                            disabled={isEditPage ? true : false}
                                             onChange={(value, e) =>
                                               this.handleChange(
                                                 idx,
@@ -2040,7 +2122,11 @@ class CreateUser extends Component<any, any> {
                                           )
                                         }
                                         onKeyUp={(e: any) =>
-                                          this.validateEmail(e.target.value, idx, "owner")
+                                          this.validateEmail(
+                                            e.target.value,
+                                            idx,
+                                            "owner"
+                                          )
                                         }
                                       />
                                       {item.errObj?.emailErr && (
@@ -2131,7 +2217,13 @@ class CreateUser extends Component<any, any> {
                                                     style={{
                                                       width: "50px",
                                                       height: "50px",
-                                                      visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
+                                                      visibility:
+                                                        isEditPage &&
+                                                        this.props.location
+                                                          .state.userFields
+                                                          .storewithmultiuser
+                                                          ? "hidden"
+                                                          : "visible",
                                                     }}
                                                     src={RemoveBtn}
                                                     alt=""
@@ -2160,7 +2252,13 @@ class CreateUser extends Component<any, any> {
                                             style={{
                                               width: "50px",
                                               height: "50px",
-                                              visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
+                                              visibility:
+                                                isEditPage &&
+                                                this.props.location.state
+                                                  ?.userFields
+                                                  .storewithmultiuser
+                                                  ? "hidden"
+                                                  : "visible",
                                             }}
                                             src={RemoveBtn}
                                             alt=""
@@ -2221,7 +2319,9 @@ class CreateUser extends Component<any, any> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) =>
+                                            allowAlphabetsNumbers(e)
+                                          }
                                         />
                                         {item.errObj?.firstNameErr && (
                                           <span className="error">
@@ -2245,7 +2345,9 @@ class CreateUser extends Component<any, any> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) =>
+                                            allowAlphabetsNumbers(e)
+                                          }
                                         />
                                         {item.errObj?.lastNameErr && (
                                           <span className="error">
@@ -2273,7 +2375,7 @@ class CreateUser extends Component<any, any> {
                                               country={countryCodeLower}
                                               value={item.mobilenumber}
                                               disabled={
-                                                (isEditPage) &&
+                                                isEditPage &&
                                                 !item.errObj?.isPhoneEdit
                                                   ? true
                                                   : false
@@ -2317,7 +2419,11 @@ class CreateUser extends Component<any, any> {
                                             )
                                           }
                                           onKeyUp={(e: any) =>
-                                            this.validateEmail(e.target.value, idx, "staff")
+                                            this.validateEmail(
+                                              e.target.value,
+                                              idx,
+                                              "staff"
+                                            )
                                           }
                                         />
                                         {item.errObj?.emailErr && (
@@ -2417,7 +2523,13 @@ class CreateUser extends Component<any, any> {
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
-                                                        visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
+                                                        visibility:
+                                                          isEditPage &&
+                                                          this.props.location
+                                                            .state?.userFields
+                                                            .storewithmultiuser
+                                                            ? "hidden"
+                                                            : "visible",
                                                       }}
                                                       src={RemoveBtn}
                                                       alt=""
@@ -2449,7 +2561,13 @@ class CreateUser extends Component<any, any> {
                                               style={{
                                                 width: "50px",
                                                 height: "50px",
-                                                visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
+                                                visibility:
+                                                  isEditPage &&
+                                                  this.props.location.state
+                                                    ?.userFields
+                                                    .storewithmultiuser
+                                                    ? "hidden"
+                                                    : "visible",
                                               }}
                                               src={RemoveBtn}
                                               alt=""
@@ -2472,7 +2590,7 @@ class CreateUser extends Component<any, any> {
                   </div>
                 </>
               )}
-              <div className="geographicLocation" style={{ width: "80%"}} >
+              <div className="geographicLocation" style={{ width: "80%" }}>
                 {currentStep === 2 && (
                   <>
                     <div className="row fieldsAlign">{locationList}</div>
@@ -2548,14 +2666,28 @@ class CreateUser extends Component<any, any> {
                       </div>
                     </div>
 
-                    <div className="row" style={{marginTop: ownernameErr !== "" || accountnameErr!=="" ? '12px' : '32px'}}>
+                    <div
+                      className="row"
+                      style={{
+                        marginTop:
+                          ownernameErr !== "" || accountnameErr !== ""
+                            ? "12px"
+                            : "32px",
+                      }}
+                    >
                       <div className="col-sm-3">
                         <Input
                           type="text"
                           className="form-control"
                           name="whtownername"
                           placeHolder="Owner Name"
-                          value={this.state.accInfo ? userData.ownerRows[0].firstname+' '+userData.ownerRows[0].lastname : userData.whtownername}
+                          value={
+                            this.state.accInfo
+                              ? userData.ownerRows[0].firstname +
+                                " " +
+                                userData.ownerRows[0].lastname
+                              : userData.whtownername
+                          }
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
@@ -2581,7 +2713,16 @@ class CreateUser extends Component<any, any> {
                         />
                       </div>
                     </div>
-                    <div className="row" style={{ width: "80%", marginTop: ownernameErr !== "" || accountnameErr!=="" ? '12px' : '32px'}}>
+                    <div
+                      className="row"
+                      style={{
+                        width: "80%",
+                        marginTop:
+                          ownernameErr !== "" || accountnameErr !== ""
+                            ? "12px"
+                            : "32px",
+                      }}
+                    >
                       {locationList}
                     </div>
                     <div className="row" style={{ width: "81%" }}>
@@ -2642,7 +2783,8 @@ class CreateUser extends Component<any, any> {
               marginLeft:
                 currentStep === 1
                   ? "350px"
-                  : currentStep === 3 && (this.props.location?.page === 'validate')
+                  : currentStep === 3 &&
+                    this.props.location?.page === "validate"
                   ? "200px"
                   : "275px",
             }}
@@ -2660,7 +2802,7 @@ class CreateUser extends Component<any, any> {
                   Back
                 </button>
               )}
-              {(isEditPage) && currentStep === 1 && (
+              {isEditPage && currentStep === 1 && (
                 <button
                   className="cus-btn-user reset buttonStyle"
                   onClick={() => this.props.history.push("/userList")}
@@ -2674,7 +2816,7 @@ class CreateUser extends Component<any, any> {
               >
                 Reset All
               </button>
-              {(this.props.location?.page === 'validate') && currentStep === 3 && (
+              {this.props.location?.page === "validate" && currentStep === 3 && (
                 <button
                   className="btn buttonStyle dec-btn-user"
                   onClick={() => this.declineUser()}
@@ -2691,4 +2833,4 @@ class CreateUser extends Component<any, any> {
   }
 }
 
-export default CreateUser ;
+export default CreateUser;
