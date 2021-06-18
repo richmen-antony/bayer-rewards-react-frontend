@@ -56,6 +56,9 @@ const useStyles = makeStyles((theme: Theme) =>
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
+    menuPaper: {
+      maxHeight: 150,
+    },
   })
 );
 
@@ -131,6 +134,7 @@ export const ConfigSelect = ({
               horizontal: "left",
             },
             getContentAnchorEl: null,
+            classes: { paper: classes.menuPaper },
           }}
         >
           {isPlaceholder && !isNative && parentIndex === 0 ? (
