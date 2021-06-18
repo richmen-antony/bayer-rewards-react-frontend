@@ -5,6 +5,7 @@ import successIcon from "../../../assets/icons/success.svg";
 import errorIcon from "../../../assets/icons/error.svg";
 import infoIcon from "../../../assets/icons/info.svg";
 import warningIcon from "../../../assets/icons/warning.svg";
+import NoImageCircle from "../../../assets/images/no-image-circle.jpg";
 
 export const toastError = (msg: any) =>
   toast.error(msg, {
@@ -38,7 +39,7 @@ export const Alert = (type: any, message: any) => {
     case "warning":
       return toast.warning(
         <div>
-          <img src={warningIcon} width="30" />
+          <img src={warningIcon} width="30" alt={NoImageCircle} />
           &nbsp;&nbsp;
           {message}
         </div>,
@@ -51,7 +52,7 @@ export const Alert = (type: any, message: any) => {
     case "error":
       return toast.error(
         <div>
-          <img src={errorIcon} width="30" />
+          <img src={errorIcon} width="30" alt={NoImageCircle} />
           &nbsp;&nbsp;
           {message}
         </div>,
@@ -64,7 +65,7 @@ export const Alert = (type: any, message: any) => {
     case "success":
       return toast.success(
         <div>
-          <img src={successIcon} width="30" />
+          <img src={successIcon} width="30" alt={NoImageCircle} />
           &nbsp;&nbsp;
           {message}
         </div>,
@@ -77,7 +78,7 @@ export const Alert = (type: any, message: any) => {
     case "info":
       return toast.info(
         <div>
-          <img src={infoIcon} width="30" />
+          <img src={infoIcon} width="30" alt={NoImageCircle} />
           &nbsp;&nbsp;
           {message}
         </div>,

@@ -30,7 +30,7 @@ import _ from "lodash";
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
-  { value: "DISTRIBUTOR", text: "Distributor" },
+  // { value: "DISTRIBUTOR", text: "Distributor" },
 ];
 
 let geoLocationInfo = {
