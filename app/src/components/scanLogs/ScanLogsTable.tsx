@@ -414,6 +414,7 @@ class ScanLogsTable extends Component<Props, States> {
       () => {
         this.getScanLogs();
         this.toggleFilter();
+        this.getRetailerList();
       }
     );
   };
@@ -422,6 +423,7 @@ class ScanLogsTable extends Component<Props, States> {
     this.setState({ isFiltered: true }, () => {
       this.getScanLogs();
       this.toggleFilter();
+      
       // this.resetFilter();
     });
   };
