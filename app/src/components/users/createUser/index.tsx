@@ -1594,60 +1594,62 @@ class CreateUser extends Component<any, any> {
       if(userValues.ownerRows[0].firstname !== '' || userValues.ownerRows[0].lastname !== '' || userValues.ownerRows[0].mobilenumber !== '' || userValues.whtaccountname !== '' || userValues.whtownername !== '' || isDeliveryFieldsFilled || isWHTFieldsFilled || isStaffFieldsFilled){
         isFilledAllFields = true;
       }
-    } else {
-      let editDatas = this.state.cloneduserData;
-      userValues.staffdetails?.forEach((useritem:any)=>{
-        editDatas.staffdetails?.forEach((edititem:any)=>{
-          if((useritem.firstname !== edititem.firstname) || (useritem.lastname !== edititem.lastname) || (useritem.mobilenumber !== edititem.mobilenumber)){
-            isStaffFieldsFilled = true
-          }
-        })
-      })
-      let userFields = this.props.location.state.userFields;
-      this.state.dynamicFields?.forEach((item:any)=>{
-        if(item.name !== 'country'){
-          if((item.name === 'region') && (item.value !== userFields.deliveryregion)){
-            isDeliveryFieldsFilled = true;
-          }
-          if((item.name === 'add') && (item.value !== userFields.deliverystate)){
-            isDeliveryFieldsFilled = true;
-          }
-          if((item.name === 'district') && (item.value !== userFields.deliverydistrict)){
-            isDeliveryFieldsFilled = true;
-          }
-          if((item.name === 'epa') && (item.value !== userFields.deliverycity)){
-            isDeliveryFieldsFilled = true;
-          }
-          if((item.name === 'village') && (item.value !== userFields.deliveryvillage)){
-            isDeliveryFieldsFilled = true;
-          }
-        }
-      })
-      this.state.withHolding?.forEach((item:any)=>{
-        if(item.name !== 'country'){
-          if((item.name === 'region') && (item.value !== userFields.billingregion)){
-            isWHTFieldsFilled = true;
-          }
-          if((item.name === 'add') && (item.value !== userFields.billingstate)){
-            isWHTFieldsFilled = true;
-          }
-          if((item.name === 'district') && (item.value !== userFields.billingdistrict)){
-            isWHTFieldsFilled = true;
-          }
-          if((item.name === 'epa') && (item.value !== userFields.billingcity)){
-            isWHTFieldsFilled = true;
-          }
-          if((item.name === 'village') && (item.value !== userFields.billingvillage)){
-            isWHTFieldsFilled = true;
-          }
-        }
-      })
-      if((userValues.ownerRows[0].firstname !==  editDatas.ownerRows[0].firstname) || (userValues.ownerRows[0].lastname !==editDatas.ownerRows[0].lastname) || (userValues.ownerRows[0].mobilenumber !== editDatas.ownerRows[0].mobilenumber) || (userValues.whtaccountname !== editDatas.whtaccountname) ||  (userValues.whtownername !==  editDatas.whtownername) || isStaffFieldsFilled || isDeliveryFieldsFilled || isWHTFieldsFilled){
-        isFilledAllFields = true;
-      } else {
-        isFilledAllFields = false;
-      }
-    }
+    } 
+    // else {
+    //   let editDatas = this.state.cloneduserData;
+     
+    //   userValues.staffdetails?.forEach((useritem:any, index: number)=>{
+    //     editDatas.staffdetails?.forEach((edititem:any)=>{
+    //       if((useritem.firstname !== edititem[index].firstname) || (useritem.lastname !== edititem[index].lastname) || (useritem.mobilenumber !== edititem[index].mobilenumber)){
+    //         isStaffFieldsFilled = true
+    //       }
+    //     })
+    //   })
+    //   let userFields = this.props.location.state.userFields;
+    //   this.state.dynamicFields?.forEach((item:any)=>{
+    //     if(item.name !== 'country'){
+    //       if((item.name === 'region') && (item.value !== userFields.deliveryregion)){
+    //         isDeliveryFieldsFilled = true;
+    //       }
+    //       if((item.name === 'add') && (item.value !== userFields.deliverystate)){
+    //         isDeliveryFieldsFilled = true;
+    //       }
+    //       if((item.name === 'district') && (item.value !== userFields.deliverydistrict)){
+    //         isDeliveryFieldsFilled = true;
+    //       }
+    //       if((item.name === 'epa') && (item.value !== userFields.deliverycity)){
+    //         isDeliveryFieldsFilled = true;
+    //       }
+    //       if((item.name === 'village') && (item.value !== userFields.deliveryvillage)){
+    //         isDeliveryFieldsFilled = true;
+    //       }
+    //     }
+    //   })
+    //   this.state.withHolding?.forEach((item:any)=>{
+    //     if(item.name !== 'country'){
+    //       if((item.name === 'region') && (item.value !== userFields.billingregion)){
+    //         isWHTFieldsFilled = true;
+    //       }
+    //       if((item.name === 'add') && (item.value !== userFields.billingstate)){
+    //         isWHTFieldsFilled = true;
+    //       }
+    //       if((item.name === 'district') && (item.value !== userFields.billingdistrict)){
+    //         isWHTFieldsFilled = true;
+    //       }
+    //       if((item.name === 'epa') && (item.value !== userFields.billingcity)){
+    //         isWHTFieldsFilled = true;
+    //       }
+    //       if((item.name === 'village') && (item.value !== userFields.billingvillage)){
+    //         isWHTFieldsFilled = true;
+    //       }
+    //     }
+    //   })
+    //   if((userValues.ownerRows[0].firstname !==  editDatas.ownerRows[0].firstname) || (userValues.ownerRows[0].lastname !==editDatas.ownerRows[0].lastname) || (userValues.ownerRows[0].mobilenumber !== editDatas.ownerRows[0].mobilenumber) || (userValues.whtaccountname !== editDatas.whtaccountname) ||  (userValues.whtownername !==  editDatas.whtownername) || isStaffFieldsFilled || isDeliveryFieldsFilled || isWHTFieldsFilled){
+    //     isFilledAllFields = true;
+    //   } else {
+    //     isFilledAllFields = false;
+    //   }
+    // }
     return isFilledAllFields;
   }
   handleClosePopup = () => {
