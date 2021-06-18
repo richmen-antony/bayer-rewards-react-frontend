@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import swal from 'sweetalert';
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -62,6 +61,7 @@ type States = {
   isLoader: boolean;
   deActivatePopup: boolean;
   staffPopup: boolean;
+  deleteStaffPopup: boolean;
   userList: any;
   status: String;
   geographicFields: Array<any>;
@@ -127,6 +127,7 @@ class ChannelPartners extends Component<Props, States> {
       isLoader: false,
       deActivatePopup: false,
       staffPopup: false,
+      deleteStaffPopup: false,
       status: "",
       geographicFields: [],
       dynamicFields: [],
@@ -338,8 +339,11 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   handleClosePopup = () => {
-    this.setState({ deActivatePopup: false, staffPopup: false });
+    this.setState({ deActivatePopup: false, staffPopup: false});
   };
+  handleCloseStaffPopup = () => {
+    this.setState({ deleteStaffPopup: false });
+  }
 
   showPopup = (e: any, key: keyof States) => {
     e.stopPropagation();
@@ -721,30 +725,7 @@ class ChannelPartners extends Component<Props, States> {
         },
       }));
     } else {
-      swal({
-         // title: "Are you sure you want to delete store's staff",
-         text: "Are you sure you want to delete store's staff?",
-        icon: "warning",
-        dangerMode: true,
-        buttons: ["Cancel", "Delete"],
-      })
-      .then((willDelete) => {
-        if (willDelete) {
-          // swal("Poof! Added Staff's has been deleted!", {
-          //   icon: "success",
-          // });
-          userData.staffdetails = [];
-          this.setState((prevState: any) => ({
-            isStaff: isStaff,
-            userData: {
-              ...prevState.userData,
-              staffdetails: userData.staffdetails,
-            },
-          }));
-        } else {
-          // swal("Your added staff's are safe!");
-        }
-      });
+      this.setState({deleteStaffPopup: true});
     }
   };
 
@@ -885,6 +866,19 @@ class ChannelPartners extends Component<Props, States> {
     });
     return formValid;
   };
+  
+  deleteStaff = () => {
+    let userData = this.state.userData;
+    userData.staffdetails = [];
+    this.setState((prevState: any) => ({
+      isStaff: false,
+      userData: {
+        ...prevState.userData,
+        staffdetails: userData.staffdetails,
+      },
+      deleteStaffPopup: false
+    }));
+  }
 
   render() {
     const { allChannelPartners, isAsc, totalData } = this.props;
@@ -899,6 +893,45 @@ class ChannelPartners extends Component<Props, States> {
     return (
       <AUX>
         {isLoader && <Loader />}
+        {this.state.deleteStaffPopup ? (
+          <AdminPopup
+            open={this.state.deleteStaffPopup}
+            onClose={this.handleCloseStaffPopup}
+            maxWidth={"600px"}
+          >
+            <DialogContent>
+              <div className="popup-container">
+                <div className="popup-content">
+                  <div className={`popup-title`}>
+                  </div>
+                </div>
+                <div style={{ textAlign: "center", }}>
+                  <label style={{fontSize: '16px',marginTop: '11px'}}>
+                    Are you sure you want to delete store's staff?
+                  </label>
+                </div>
+                <DialogActions>
+                  <Button
+                    autoFocus
+                    onClick={this.handleCloseStaffPopup}
+                    className="admin-popup-btn close-btn"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={this.deleteStaff}
+                    className="admin-popup-btn delete"
+                    autoFocus
+                  >
+                    DELETE
+                  </Button>
+                </DialogActions>
+              </div>
+            </DialogContent>
+          </AdminPopup>
+        ) : (
+          ""
+        )}
         {this.state.deActivatePopup ? (
           <AdminPopup
             open={this.state.deActivatePopup}

@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { Prompt } from 'react-router'
+import { Prompt } from 'react-router';
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import { Theme, withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import swal from 'sweetalert';
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
@@ -25,9 +29,8 @@ import ArrowIcon from "../../../assets/icons/dark bg.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
+import AdminPopup from "../../../container/components/dialog/AdminPopup";
 import _ from "lodash";
-import { userInfo } from "os";
-import { FlashOffRounded } from "@material-ui/icons";
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -49,6 +52,26 @@ let phoneLength =
   process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int"
     ? 10
     : 9;
+
+const DialogContent = withStyles((theme: Theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme: Theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+    justifyContent: "center",
+    marginTop: "30px",
+  },
+  button: {
+    boxShadow: "0px 3px 6px #c7c7c729",
+    border: "1px solid #89D329",
+    borderRadius: "50px",
+  },
+}))(MuiDialogActions);
 
 class CreateUser extends Component<any, any> {
   loggedUserInfo: any;
@@ -146,7 +169,8 @@ class CreateUser extends Component<any, any> {
       epaoptions: [],
       villageoptions: [],
       mobileLimit: true,
-      cloneduserData: {}
+      cloneduserData: {},
+      deleteStaffPopup: false
     };
     this.loggedUserInfo = loggedUserInfo;
   }
@@ -1518,30 +1542,31 @@ class CreateUser extends Component<any, any> {
         },
       }));
     } else {
-      swal({
-        // title: "Are you sure you want to delete store's staff",
-        text: "Are you sure you want to delete store's staff?",
-        icon: "warning",
-        dangerMode: true,
-        buttons: ["Cancel", "Delete"],
-      })
-      .then((willDelete) => {
-        if (willDelete) {
-          // swal("Poof! Added Staff's has been deleted!", {
-          //   icon: "success",
-          // });
-          userData.staffdetails = [];
-          this.setState((prevState: any) => ({
-            isStaff: isStaff,
-            userData: {
-              ...prevState.userData,
-              staffdetails: userData.staffdetails,
-            },
-          }));
-        } else {
-          // swal("Your added staff's are safe!");
-        }
-      });
+      this.setState({deleteStaffPopup: true})
+      // swal({
+      //   // title: "Are you sure you want to delete store's staff",
+      //   text: "Are you sure you want to delete store's staff?",
+      //   icon: "warning",
+      //   dangerMode: true,
+      //   buttons: ["Cancel", "Delete"],
+      // })
+      // .then((willDelete) => {
+      //   if (willDelete) {
+      //     // swal("Poof! Added Staff's has been deleted!", {
+      //     //   icon: "success",
+      //     // });
+      //     userData.staffdetails = [];
+      //     this.setState((prevState: any) => ({
+      //       isStaff: isStaff,
+      //       userData: {
+      //         ...prevState.userData,
+      //         staffdetails: userData.staffdetails,
+      //       },
+      //     }));
+      //   } else {
+      //     // swal("Your added staff's are safe!");
+      //   }
+      // });
     }
   };
   checkCreateFilled = () => {
@@ -1625,6 +1650,23 @@ class CreateUser extends Component<any, any> {
     }
     return isFilledAllFields;
   }
+  handleClosePopup = () => {
+    this.setState({ deleteStaffPopup: false});
+  };
+
+  deleteStaff = () => {
+    let userData = this.state.userData;
+    userData.staffdetails = [];
+    this.setState((prevState: any) => ({
+      isStaff: false,
+      userData: {
+        ...prevState.userData,
+        staffdetails: userData.staffdetails,
+      },
+      deleteStaffPopup: false
+    }));
+  }
+
 
   render() {
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
@@ -1736,6 +1778,45 @@ class CreateUser extends Component<any, any> {
           when={this.state.shouldBlockNavigation}
           message="You have unsaved changes, are you sure you want to leave?"
         />}
+        {this.state.deleteStaffPopup ? (
+          <AdminPopup
+            open={this.state.deleteStaffPopup}
+            onClose={this.handleClosePopup}
+            maxWidth={"600px"}
+          >
+            <DialogContent>
+              <div className="popup-container">
+                <div className="popup-content">
+                  <div className={`popup-title`}>
+                  </div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                <label style={{fontSize: '16px',marginTop: '11px'}}>
+                    Are you sure you want to delete store's staff?
+                  </label>
+                </div>
+                <DialogActions>
+                  <Button
+                    autoFocus
+                    onClick={this.handleClosePopup}
+                    className="admin-popup-btn close-btn"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={this.deleteStaff}
+                    className="admin-popup-btn delete"
+                    autoFocus
+                  >
+                    DELETE
+                  </Button>
+                </DialogActions>
+              </div>
+            </DialogContent>
+          </AdminPopup>
+        ) : (
+          ""
+        )}
         <div className="card card-main">
           <div className="stepper-container-horizontal">
             <Stepper
