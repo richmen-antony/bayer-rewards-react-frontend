@@ -563,4 +563,15 @@
       overflow-y: scroll;
     }
   }
+
+  .add-plus-icon {
+    position: absolute;
+    right: 0.15rem;
+    bottom: 5rem;
+    cursor: pointer;
+    img {
+      width: 50px;
+      height: 50px;
+    }
+  }
 }
