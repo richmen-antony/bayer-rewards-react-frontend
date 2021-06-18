@@ -1017,7 +1017,7 @@ class ChannelPartners extends Component<Props, States> {
                                 onClick={(e: any) => {
                                   this.enableStoreStaff(e);
                                 }}
-                                disabled={true}
+                                disabled={this.state.userList?.storewithmultiuser ? true: false}
                               />
                               <span className="checkmark"></span>
                             </label>
@@ -1228,7 +1228,7 @@ class ChannelPartners extends Component<Props, States> {
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
-                                                        display: 'none'
+                                                        display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
                                                       }}
                                                       src={RemoveBtn}
                                                       alt=''
@@ -1259,7 +1259,7 @@ class ChannelPartners extends Component<Props, States> {
                                               style={{
                                                 width: "50px",
                                                 height: "50px",
-                                                display: 'none'
+                                                display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
                                               }}
                                               src={RemoveBtn}
                                               alt=''
@@ -1525,7 +1525,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         style={{
                                                           width: "50px",
                                                           height: "50px",
-                                                          display: 'none'
+                                                          display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
                                                         }}
                                                         src={RemoveBtn}
                                                         alt=''
@@ -1556,7 +1556,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 style={{
                                                   width: "50px",
                                                   height: "50px",
-                                                  display: 'none'
+                                                  display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
                                                 }}
                                                 src={RemoveBtn}
                                                 alt=''

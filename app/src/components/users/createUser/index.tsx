@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import { Prompt } from 'react-router'
+import { Prompt } from 'react-router'
 import swal from 'sweetalert';
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
@@ -26,12 +26,16 @@ import RtButton from "../../../assets/icons/right_btn.svg";
 import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
 import _ from "lodash";
+import { userInfo } from "os";
+import { FlashOffRounded } from "@material-ui/icons";
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
   // { value: "DISTRIBUTOR", text: "Distributor" },
 ];
+
+let isFilledAllFields = false;
 
 let geoLocationInfo = {
   region: "",
@@ -142,6 +146,7 @@ class CreateUser extends Component<any, any> {
       epaoptions: [],
       villageoptions: [],
       mobileLimit: true,
+      cloneduserData: {}
     };
     this.loggedUserInfo = loggedUserInfo;
   }
@@ -258,6 +263,8 @@ class CreateUser extends Component<any, any> {
                 isStaff: userFields.storewithmultiuser,
                 isRendered: true,
               });
+              let cloneduserData = JSON.parse(JSON.stringify(userinfo));
+              this.setState({cloneduserData: cloneduserData });
 
               //Dynamic Geo location dropdowns For Validate and edit User
               setTimeout(() => {
@@ -1537,6 +1544,87 @@ class CreateUser extends Component<any, any> {
       });
     }
   };
+  checkCreateFilled = () => {
+    let userValues = this.state.userData;
+    let isDeliveryFieldsFilled = false;
+    let isWHTFieldsFilled = false;
+    let isStaffFieldsFilled = false;
+    if(!this.state.isEditPage){
+      this.state.dynamicFields?.forEach((item:any)=>{
+        if(item.name !== 'country' && item.value !== ''){
+          isDeliveryFieldsFilled = true;
+        }
+      })
+      this.state.withHolding?.forEach((item:any)=>{
+        if(item.name !== 'country' && item.value !== ''){
+          isWHTFieldsFilled = true;
+        }
+      })
+      userValues.staffdetails?.forEach((item:any)=>{
+        if(item.firstname !== '' || item.lastname!=='' || item.mobilenumber !== ''){
+          isStaffFieldsFilled = true
+        }
+      })
+
+      if(userValues.ownerRows[0].firstname !== '' || userValues.ownerRows[0].lastname !== '' || userValues.ownerRows[0].mobilenumber !== '' || userValues.whtaccountname !== '' || userValues.whtownername !== '' || isDeliveryFieldsFilled || isWHTFieldsFilled || isStaffFieldsFilled){
+        isFilledAllFields = true;
+      }
+    } else {
+      let editDatas = this.state.cloneduserData;
+      userValues.staffdetails?.forEach((useritem:any)=>{
+        editDatas.staffdetails?.forEach((edititem:any)=>{
+          if((useritem.firstname !== edititem.firstname) || (useritem.lastname !== edititem.lastname) || (useritem.mobilenumber !== edititem.mobilenumber)){
+            isStaffFieldsFilled = true
+          }
+        })
+      })
+      let userFields = this.props.location.state.userFields;
+      this.state.dynamicFields?.forEach((item:any)=>{
+        if(item.name !== 'country'){
+          if((item.name === 'region') && (item.value !== userFields.deliveryregion)){
+            isDeliveryFieldsFilled = true;
+          }
+          if((item.name === 'add') && (item.value !== userFields.deliverystate)){
+            isDeliveryFieldsFilled = true;
+          }
+          if((item.name === 'district') && (item.value !== userFields.deliverydistrict)){
+            isDeliveryFieldsFilled = true;
+          }
+          if((item.name === 'epa') && (item.value !== userFields.deliverycity)){
+            isDeliveryFieldsFilled = true;
+          }
+          if((item.name === 'village') && (item.value !== userFields.deliveryvillage)){
+            isDeliveryFieldsFilled = true;
+          }
+        }
+      })
+      this.state.withHolding?.forEach((item:any)=>{
+        if(item.name !== 'country'){
+          if((item.name === 'region') && (item.value !== userFields.billingregion)){
+            isWHTFieldsFilled = true;
+          }
+          if((item.name === 'add') && (item.value !== userFields.billingstate)){
+            isWHTFieldsFilled = true;
+          }
+          if((item.name === 'district') && (item.value !== userFields.billingdistrict)){
+            isWHTFieldsFilled = true;
+          }
+          if((item.name === 'epa') && (item.value !== userFields.billingcity)){
+            isWHTFieldsFilled = true;
+          }
+          if((item.name === 'village') && (item.value !== userFields.billingvillage)){
+            isWHTFieldsFilled = true;
+          }
+        }
+      })
+      if((userValues.ownerRows[0].firstname !==  editDatas.ownerRows[0].firstname) || (userValues.ownerRows[0].lastname !==editDatas.ownerRows[0].lastname) || (userValues.ownerRows[0].mobilenumber !== editDatas.ownerRows[0].mobilenumber) || (userValues.whtaccountname !== editDatas.whtaccountname) ||  (userValues.whtownername !==  editDatas.whtownername) || isStaffFieldsFilled || isDeliveryFieldsFilled || isWHTFieldsFilled){
+        isFilledAllFields = true;
+      } else {
+        isFilledAllFields = false;
+      }
+    }
+    return isFilledAllFields;
+  }
 
   render() {
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
@@ -1644,10 +1732,10 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
-        {/* {(userData.ownerRows[0].firstname !== "" || userData.ownerRows[0].lastname !== "" || userData.ownerRows[0].mobilenumber !== "" || isStaff ) && !isEditPage && <Prompt
+        {this.checkCreateFilled() && <Prompt
           when={this.state.shouldBlockNavigation}
           message="You have unsaved changes, are you sure you want to leave?"
-        />} */}
+        />}
         <div className="card card-main">
           <div className="stepper-container-horizontal">
             <Stepper
@@ -1710,7 +1798,7 @@ class CreateUser extends Component<any, any> {
                                 this.enableStoreStaff(e);
                               }}
                               checked={isStaff}
-                              disabled= {isEditPage ? true : false}
+                              disabled= {(isEditPage && this.props.location.state.userFields.storewithmultiuser) ? true : false}
                             />
                             <span className="checkmark"></span>
                           </label>
@@ -1960,7 +2048,7 @@ class CreateUser extends Component<any, any> {
                                                     style={{
                                                       width: "50px",
                                                       height: "50px",
-                                                      visibility: isEditPage ? 'hidden' : 'visible'
+                                                      visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
                                                     }}
                                                     src={RemoveBtn}
                                                     alt=""
@@ -1989,7 +2077,7 @@ class CreateUser extends Component<any, any> {
                                             style={{
                                               width: "50px",
                                               height: "50px",
-                                              visibility: isEditPage ? 'hidden' : 'visible'
+                                              visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
                                             }}
                                             src={RemoveBtn}
                                             alt=""
@@ -2246,7 +2334,7 @@ class CreateUser extends Component<any, any> {
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
-                                                        visibility: isEditPage ? 'hidden' : 'visible'
+                                                        visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
                                                       }}
                                                       src={RemoveBtn}
                                                       alt=""
@@ -2278,7 +2366,7 @@ class CreateUser extends Component<any, any> {
                                               style={{
                                                 width: "50px",
                                                 height: "50px",
-                                                visibility: isEditPage ? 'hidden' : 'visible'
+                                                visibility: (isEditPage && this.props.location.state.userFields.storewithmultiuser) ? 'hidden' : 'visible'
                                               }}
                                               src={RemoveBtn}
                                               alt=""
