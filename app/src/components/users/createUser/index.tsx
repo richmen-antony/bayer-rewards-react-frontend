@@ -30,7 +30,7 @@ import _ from "lodash";
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
-  { value: "DISTRIBUTOR", text: "Distributor" },
+  // { value: "DISTRIBUTOR", text: "Distributor" },
 ];
 
 let geoLocationInfo = {
@@ -1710,6 +1710,7 @@ class CreateUser extends Component<any, any> {
                                 this.enableStoreStaff(e);
                               }}
                               checked={isStaff}
+                              disabled= {isEditPage ? true : false}
                             />
                             <span className="checkmark"></span>
                           </label>
@@ -1959,6 +1960,7 @@ class CreateUser extends Component<any, any> {
                                                     style={{
                                                       width: "50px",
                                                       height: "50px",
+                                                      visibility: isEditPage ? 'hidden' : 'visible'
                                                     }}
                                                     src={RemoveBtn}
                                                     alt=""
@@ -1987,6 +1989,7 @@ class CreateUser extends Component<any, any> {
                                             style={{
                                               width: "50px",
                                               height: "50px",
+                                              visibility: isEditPage ? 'hidden' : 'visible'
                                             }}
                                             src={RemoveBtn}
                                             alt=""
@@ -2243,6 +2246,7 @@ class CreateUser extends Component<any, any> {
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
+                                                        visibility: isEditPage ? 'hidden' : 'visible'
                                                       }}
                                                       src={RemoveBtn}
                                                       alt=""
@@ -2274,6 +2278,7 @@ class CreateUser extends Component<any, any> {
                                               style={{
                                                 width: "50px",
                                                 height: "50px",
+                                                visibility: isEditPage ? 'hidden' : 'visible'
                                               }}
                                               src={RemoveBtn}
                                               alt=""
