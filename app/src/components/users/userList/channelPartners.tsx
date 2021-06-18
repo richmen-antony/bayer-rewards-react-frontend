@@ -1017,6 +1017,7 @@ class ChannelPartners extends Component<Props, States> {
                                 onClick={(e: any) => {
                                   this.enableStoreStaff(e);
                                 }}
+                                disabled={true}
                               />
                               <span className="checkmark"></span>
                             </label>
@@ -1227,6 +1228,7 @@ class ChannelPartners extends Component<Props, States> {
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
+                                                        display: 'none'
                                                       }}
                                                       src={RemoveBtn}
                                                       alt=''
@@ -1257,6 +1259,7 @@ class ChannelPartners extends Component<Props, States> {
                                               style={{
                                                 width: "50px",
                                                 height: "50px",
+                                                display: 'none'
                                               }}
                                               src={RemoveBtn}
                                               alt=''
@@ -1522,6 +1525,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         style={{
                                                           width: "50px",
                                                           height: "50px",
+                                                          display: 'none'
                                                         }}
                                                         src={RemoveBtn}
                                                         alt=''
@@ -1552,6 +1556,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 style={{
                                                   width: "50px",
                                                   height: "50px",
+                                                  display: 'none'
                                                 }}
                                                 src={RemoveBtn}
                                                 alt=''
