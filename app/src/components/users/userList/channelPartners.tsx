@@ -1257,7 +1257,7 @@ class ChannelPartners extends Component<Props, States> {
                                               ) {
                                                 return (
                                                   <div>
-                                                    {/* <img
+                                                    <img
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
@@ -1269,7 +1269,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         idx,
                                                         "owner"
                                                       )}
-                                                    /> */}
+                                                    />
                                                     <img
                                                       style={{
                                                         width: "50px",
@@ -1288,20 +1288,19 @@ class ChannelPartners extends Component<Props, States> {
                                               }
                                             })()
                                           ) : (
-                                            // <img
-                                            //   style={{
-                                            //     width: "50px",
-                                            //     height: "50px",
-                                            //     display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
-                                            //   }}
-                                            //   src={RemoveBtn}
-                                            //   alt=''
-                                            //   onClick={this.handleRemoveSpecificRow(
-                                            //     idx,
-                                            //     "owner"
-                                            //   )}
-                                            // />
-                                            <h1></h1>
+                                            <img
+                                              style={{
+                                                width: "50px",
+                                                height: "50px",
+                                                display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
+                                              }}
+                                              src={RemoveBtn}
+                                              alt=''
+                                              onClick={this.handleRemoveSpecificRow(
+                                                idx,
+                                                "owner"
+                                              )}
+                                            />
                                           )}
                                         </div>
                                       </td>
@@ -1555,23 +1554,19 @@ class ChannelPartners extends Component<Props, States> {
                                                 ) {
                                                   return (
                                                     <div>
-                                                      {/* <img
+                                                      <img
                                                         style={{
                                                           width: "50px",
                                                           height: "50px",
-                                                          display: !this.state
-                                                            .userList
-                                                            ?.storewithmultiuser
-                                                            ? "block"
-                                                            : "none",
+                                                          display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
                                                         }}
                                                         src={RemoveBtn}
-                                                        alt=""
+                                                        alt=''
                                                         onClick={this.handleRemoveSpecificRow(
                                                           idx,
                                                           "staff"
                                                         )}
-                                                      /> */}
+                                                      />
                                                       <img
                                                         style={{
                                                           width: "50px",
@@ -1590,23 +1585,19 @@ class ChannelPartners extends Component<Props, States> {
                                                 }
                                               })()
                                             ) : (
-                                              // <img
-                                              //   style={{
-                                              //     width: "50px",
-                                              //     height: "50px",
-                                              //     display: !this.state.userList
-                                              //       ?.storewithmultiuser
-                                              //       ? "block"
-                                              //       : "none",
-                                              //   }}
-                                              //   src={RemoveBtn}
-                                              //   alt=""
-                                              //   onClick={this.handleRemoveSpecificRow(
-                                              //     idx,
-                                              //     "staff"
-                                              //   )}
-                                              // />
-                                              <h1></h1>
+                                              <img
+                                                style={{
+                                                  width: "50px",
+                                                  height: "50px",
+                                                  display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
+                                                }}
+                                                src={RemoveBtn}
+                                                alt=''
+                                                onClick={this.handleRemoveSpecificRow(
+                                                  idx,
+                                                  "staff"
+                                                )}
+                                              />
                                             )}
                                           </div>
                                         </td>

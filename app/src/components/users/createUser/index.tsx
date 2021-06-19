@@ -2213,14 +2213,14 @@ class CreateUser extends Component<any, any> {
                                             ) {
                                               return (
                                                 <div>
-                                                  {/* <img
+                                                  <img
                                                     style={{
                                                       width: "50px",
                                                       height: "50px",
                                                       visibility:
                                                         isEditPage &&
                                                         this.props.location
-                                                          .state?.userFields
+                                                          .state.userFields
                                                           .storewithmultiuser
                                                           ? "hidden"
                                                           : "visible",
@@ -2231,7 +2231,7 @@ class CreateUser extends Component<any, any> {
                                                       idx,
                                                       "owner"
                                                     )}
-                                                  /> */}
+                                                  />
                                                   <img
                                                     style={{
                                                       width: "50px",
@@ -2248,26 +2248,25 @@ class CreateUser extends Component<any, any> {
                                             }
                                           })()
                                         ) : (
-                                          // <img
-                                          //   style={{
-                                          //     width: "50px",
-                                          //     height: "50px",
-                                          //     visibility:
-                                          //       isEditPage &&
-                                          //       this.props.location.state
-                                          //         ?.userFields
-                                          //         .storewithmultiuser
-                                          //         ? "hidden"
-                                          //         : "visible",
-                                          //   }}
-                                          //   src={RemoveBtn}
-                                          //   alt=""
-                                          //   onClick={this.handleRemoveSpecificRow(
-                                          //     idx,
-                                          //     "owner"
-                                          //   )}
-                                          // />
-                                          <h1></h1>
+                                          <img
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                              visibility:
+                                                isEditPage &&
+                                                this.props.location.state
+                                                  ?.userFields
+                                                  .storewithmultiuser
+                                                  ? "hidden"
+                                                  : "visible",
+                                            }}
+                                            src={RemoveBtn}
+                                            alt=""
+                                            onClick={this.handleRemoveSpecificRow(
+                                              idx,
+                                              "owner"
+                                            )}
+                                          />
                                         )}
                                       </div>
                                     </td>
@@ -2520,7 +2519,7 @@ class CreateUser extends Component<any, any> {
                                               ) {
                                                 return (
                                                   <div>
-                                                    {/* <img
+                                                    <img
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
@@ -2538,7 +2537,7 @@ class CreateUser extends Component<any, any> {
                                                         idx,
                                                         "staff"
                                                       )}
-                                                    /> */}
+                                                    />
 
                                                     <img
                                                       style={{
@@ -2558,26 +2557,25 @@ class CreateUser extends Component<any, any> {
                                               }
                                             })()
                                           ) : (
-                                            // <img
-                                            //   style={{
-                                            //     width: "50px",
-                                            //     height: "50px",
-                                            //     visibility:
-                                            //       isEditPage &&
-                                            //       this.props.location.state
-                                            //         ?.userFields
-                                            //         .storewithmultiuser
-                                            //         ? "hidden"
-                                            //         : "visible",
-                                            //   }}
-                                            //   src={RemoveBtn}
-                                            //   alt=""
-                                            //   onClick={this.handleRemoveSpecificRow(
-                                            //     idx,
-                                            //     "staff"
-                                            //   )}
-                                            // />
-                                            <h1></h1>
+                                            <img
+                                              style={{
+                                                width: "50px",
+                                                height: "50px",
+                                                visibility:
+                                                  isEditPage &&
+                                                  this.props.location.state
+                                                    ?.userFields
+                                                    .storewithmultiuser
+                                                    ? "hidden"
+                                                    : "visible",
+                                              }}
+                                              src={RemoveBtn}
+                                              alt=""
+                                              onClick={this.handleRemoveSpecificRow(
+                                                idx,
+                                                "staff"
+                                              )}
+                                            />
                                           )}
                                         </div>
                                       </td>
