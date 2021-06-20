@@ -1372,7 +1372,7 @@ class CreateUser extends Component<any, any> {
   declineUser = () => {
     let userData = this.state.userData;
     userData["isDeclineUser"] = true;
-    this.setState({ userData: userData });
+    this.setState({ userData: userData,shouldBlockNavigation: false });
     this.submitUserDatas();
   };
 
@@ -1706,13 +1706,13 @@ class CreateUser extends Component<any, any> {
       }
 
       if (
-        userValues.ownerRows[0].firstname !==
-          editDatas.ownerRows[0].firstname ||
-        userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname ||
-        userValues.ownerRows[0].mobilenumber !==
-          editDatas.ownerRows[0].mobilenumber ||
-        userValues.whtaccountname !== editDatas.whtaccountname ||
-        userValues.whtownername !== editDatas.whtownername ||
+        (userValues.ownerRows[0].firstname !==
+          editDatas.ownerRows[0].firstname) ||
+        (userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname) ||
+        (userValues.ownerRows[0].mobilenumber !==
+          editDatas.ownerRows[0].mobilenumber) ||
+        (userValues.whtaccountname !== editDatas.whtaccountname) ||
+        (userValues.whtownername !== editDatas.whtownername) ||
         isStaffFieldsFilled ||
         isDeliveryFieldsFilled ||
         isWHTFieldsFilled
