@@ -296,11 +296,12 @@ class ChannelPartners extends Component<Props, States> {
     for (var i = 1; i < this.state.geographicFields.length; i++) {
       if (i <= staticColumn) {
         let columnname: string = "";
-        columnname =  this.state.geographicFields[i] ;
-        
+        columnname = this.state.geographicFields[i];
+
         columnname = columnname.toUpperCase();
-        let condName=columnname ==="ADD" ? "state":columnname.toLowerCase();
-        
+        let condName =
+          columnname === "ADD" ? "state" : columnname.toLowerCase();
+
         res.push(
           <th
             style={{ width: "8%" }}
@@ -339,11 +340,11 @@ class ChannelPartners extends Component<Props, States> {
   }
 
   handleClosePopup = () => {
-    this.setState({ deActivatePopup: false, staffPopup: false});
+    this.setState({ deActivatePopup: false, staffPopup: false });
   };
   handleCloseStaffPopup = () => {
     this.setState({ deleteStaffPopup: false });
-  }
+  };
 
   showPopup = (e: any, key: keyof States) => {
     e.stopPropagation();
@@ -375,7 +376,11 @@ class ChannelPartners extends Component<Props, States> {
             mobilenumberErr: "",
           },
           firstname: userFields.ownerfirstname,
-          active: (userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING") ? true : false,
+          active:
+            userFields.userstatus === "ACTIVE" ||
+            userFields.userstatus === "PENDING"
+              ? true
+              : false,
           lastname: userFields.ownerlastname,
           mobilenumber: userFields.ownerphonenumber,
           email: userFields.owneremail,
@@ -427,7 +432,7 @@ class ChannelPartners extends Component<Props, States> {
   };
 
   submitUpdateUser = (e: any) => {
-    e.target.disabled=true;
+    e.target.disabled = true;
     this.setState({ isLoader: true });
     const { updateUser } = apiURL;
     let geoFields: any = {};
@@ -540,7 +545,7 @@ class ChannelPartners extends Component<Props, States> {
       }
 
       let obj: any = {};
-      obj.lastupdatedby = this.state.userName.toUpperCase()
+      obj.lastupdatedby = this.state.userName.toUpperCase();
       obj.lastupdateddate = new Date().toJSON();
       obj.username = username;
 
@@ -592,16 +597,16 @@ class ChannelPartners extends Component<Props, States> {
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
     const { allChannelPartners } = this.props;
-    // let owners = this.state.userData.ownerRows;
-    // let staffs = this.state.userData.staffdetails;
+    let owners = this.state.userData.ownerRows;
+    let staffs = this.state.userData.staffdetails;
 
-    let owners = allChannelPartners;
-    let staffs = _(owners).flatMap("staffdetails").value();
+    let allowners = allChannelPartners;
+    let allstaffs = _(owners).flatMap("staffdetails").value();
 
-    const isOwnerPhoneEists = owners.filter(
+    const isOwnerPhoneEists = allowners.filter(
       (items: any) => items.ownerphonenumber === val
     );
-    const isStaffPhoneEists = staffs.filter(
+    const isStaffPhoneEists = allstaffs.filter(
       (items: any) => items.mobilenumber === val
     );
 
@@ -731,7 +736,7 @@ class ChannelPartners extends Component<Props, States> {
         },
       }));
     } else {
-      this.setState({deleteStaffPopup: true});
+      this.setState({ deleteStaffPopup: true });
     }
   };
 
@@ -740,31 +745,23 @@ class ChannelPartners extends Component<Props, States> {
     let staffdetails = [...this.state.userData.staffdetails];
 
     if (type === "staff") {
-      if (
-        (patterns.emailFormat).test(
-          value
-        )
-      ) {
+      if (patterns.emailFormat.test(value)) {
         staffdetails[idx].errObj.emailErr = "";
-      } else if(value === '') {
+      } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
         staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
     if (type === "owner") {
-      if (
-        (patterns.emailFormat).test(
-          value
-        )
-      ) {
+      if (patterns.emailFormat.test(value)) {
         ownerRows[idx].errObj.emailErr = "";
-      } else if(value === '') {
+      } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
         ownerRows[idx].errObj.emailErr = "Please enter a valid email";
       }
-    } 
+    }
     this.setState((prevState: any) => ({
       userData: {
         ...prevState.userData,
@@ -872,7 +869,7 @@ class ChannelPartners extends Component<Props, States> {
     });
     return formValid;
   };
-  
+
   deleteStaff = () => {
     let userData = this.state.userData;
     userData.staffdetails = [];
@@ -882,15 +879,15 @@ class ChannelPartners extends Component<Props, States> {
         ...prevState.userData,
         staffdetails: userData.staffdetails,
       },
-      deleteStaffPopup: false
+      deleteStaffPopup: false,
     }));
-  }
+  };
 
   render() {
     const { allChannelPartners, isAsc, totalData } = this.props;
     const { isLoader, pageNo, rowsPerPage } = this.props.state;
     const { userList, userData, isStaff }: any = this.state;
-    console.log('Staffdet', isStaff )
+    console.log("Staffdet", isStaff);
 
     let data: any = getLocalStorageData("userData");
     let loggedUserInfo = JSON.parse(data);
@@ -908,11 +905,10 @@ class ChannelPartners extends Component<Props, States> {
             <DialogContent>
               <div className="popup-container">
                 <div className="popup-content">
-                  <div className={`popup-title`}>
-                  </div>
+                  <div className={`popup-title`}></div>
                 </div>
-                <div style={{ textAlign: "center", }}>
-                  <label style={{fontSize: '16px',marginTop: '11px'}}>
+                <div style={{ textAlign: "center" }}>
+                  <label style={{ fontSize: "16px", marginTop: "11px" }}>
                     Are you sure you want to delete store's staff?
                   </label>
                 </div>
@@ -1056,7 +1052,11 @@ class ChannelPartners extends Component<Props, States> {
                                 onClick={(e: any) => {
                                   this.enableStoreStaff(e);
                                 }}
-                                disabled={this.state.userList?.storewithmultiuser ? true: false}
+                                disabled={
+                                  this.state.userList?.storewithmultiuser
+                                    ? true
+                                    : false
+                                }
                               />
                               <span className="checkmark"></span>
                             </label>
@@ -1109,7 +1109,9 @@ class ChannelPartners extends Component<Props, States> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) =>
+                                            allowAlphabetsNumbers(e)
+                                          }
                                         />
                                         {item.errObj?.firstNameErr && (
                                           <span className="error">
@@ -1133,7 +1135,9 @@ class ChannelPartners extends Component<Props, States> {
                                               ""
                                             )
                                           }
-                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                          onKeyPress={(e: any) =>
+                                            allowAlphabetsNumbers(e)
+                                          }
                                         />
                                         {item.errObj?.lastNameErr && (
                                           <span className="error">
@@ -1200,7 +1204,11 @@ class ChannelPartners extends Component<Props, States> {
                                             )
                                           }
                                           onKeyUp={(e: any) =>
-                                            this.validateEmail(e.target.value, idx, "owner")
+                                            this.validateEmail(
+                                              e.target.value,
+                                              idx,
+                                              "owner"
+                                            )
                                           }
                                         />
                                         {item.errObj?.emailErr && (
@@ -1247,7 +1255,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         height: "50px",
                                                       }}
                                                       src={AddBtn}
-                                                      alt=''
+                                                      alt=""
                                                       onClick={() =>
                                                         this.handleAddRow(
                                                           "owner"
@@ -1267,10 +1275,14 @@ class ChannelPartners extends Component<Props, States> {
                                                       style={{
                                                         width: "50px",
                                                         height: "50px",
-                                                        display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
+                                                        display: !this.state
+                                                          .userList
+                                                          ?.storewithmultiuser
+                                                          ? "block"
+                                                          : "none",
                                                       }}
                                                       src={RemoveBtn}
-                                                      alt=''
+                                                      alt=""
                                                       onClick={this.handleRemoveSpecificRow(
                                                         idx,
                                                         "owner"
@@ -1282,7 +1294,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         height: "50px",
                                                       }}
                                                       src={AddBtn}
-                                                      alt=''
+                                                      alt=""
                                                       onClick={() =>
                                                         this.handleAddRow(
                                                           "owner"
@@ -1298,10 +1310,13 @@ class ChannelPartners extends Component<Props, States> {
                                               style={{
                                                 width: "50px",
                                                 height: "50px",
-                                                display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
+                                                display: !this.state.userList
+                                                  ?.storewithmultiuser
+                                                  ? "block"
+                                                  : "none",
                                               }}
                                               src={RemoveBtn}
-                                              alt=''
+                                              alt=""
                                               onClick={this.handleRemoveSpecificRow(
                                                 idx,
                                                 "owner"
@@ -1359,7 +1374,9 @@ class ChannelPartners extends Component<Props, States> {
                                                 ""
                                               )
                                             }
-                                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                            onKeyPress={(e: any) =>
+                                              allowAlphabetsNumbers(e)
+                                            }
                                           />
                                           {item.errObj.firstNameErr && (
                                             <span className="error">
@@ -1383,7 +1400,9 @@ class ChannelPartners extends Component<Props, States> {
                                                 ""
                                               )
                                             }
-                                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                            onKeyPress={(e: any) =>
+                                              allowAlphabetsNumbers(e)
+                                            }
                                           />
                                           {item.errObj.lastNameErr && (
                                             <span className="error">
@@ -1542,7 +1561,7 @@ class ChannelPartners extends Component<Props, States> {
                                                           height: "50px",
                                                         }}
                                                         src={AddBtn}
-                                                        alt=''
+                                                        alt=""
                                                         onClick={() =>
                                                           this.handleAddRow(
                                                             "staff"
@@ -1564,10 +1583,14 @@ class ChannelPartners extends Component<Props, States> {
                                                         style={{
                                                           width: "50px",
                                                           height: "50px",
-                                                          display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
+                                                          display: !this.state
+                                                            .userList
+                                                            ?.storewithmultiuser
+                                                            ? "block"
+                                                            : "none",
                                                         }}
                                                         src={RemoveBtn}
-                                                        alt=''
+                                                        alt=""
                                                         onClick={this.handleRemoveSpecificRow(
                                                           idx,
                                                           "staff"
@@ -1579,7 +1602,7 @@ class ChannelPartners extends Component<Props, States> {
                                                           height: "50px",
                                                         }}
                                                         src={AddBtn}
-                                                        alt=''
+                                                        alt=""
                                                         onClick={() =>
                                                           this.handleAddRow(
                                                             "staff"
@@ -1595,10 +1618,13 @@ class ChannelPartners extends Component<Props, States> {
                                                 style={{
                                                   width: "50px",
                                                   height: "50px",
-                                                  display: !this.state.userList?.storewithmultiuser ? 'block' : 'none'
+                                                  display: !this.state.userList
+                                                    ?.storewithmultiuser
+                                                    ? "block"
+                                                    : "none",
                                                 }}
                                                 src={RemoveBtn}
-                                                alt=''
+                                                alt=""
                                                 onClick={this.handleRemoveSpecificRow(
                                                   idx,
                                                   "staff"
@@ -1626,14 +1652,16 @@ class ChannelPartners extends Component<Props, States> {
                   >
                     Cancel
                   </button>
-                  <button onClick={(e: any) => {
-                    this.submitUpdateUser(e)
-                  }}
-                    className="cus-btn-user buttonStyle">
+                  <button
+                    onClick={(e: any) => {
+                      this.submitUpdateUser(e);
+                    }}
+                    className="cus-btn-user buttonStyle"
+                  >
                     Update
                     <span className="staffcount">
-                      <img src={ArrowIcon} alt='' className="arrow-i" />{" "}
-                      <img src={RtButton} alt='' className="layout" />
+                      <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
+                      <img src={RtButton} alt="" className="layout" />
                     </span>
                   </button>
                 </DialogActions>
@@ -1688,9 +1716,14 @@ class ChannelPartners extends Component<Props, States> {
                             {list.staffdetails?.length}
                             <img
                               className="retailer-icon"
-                              style={{cursor: (list.userstatus === "DECLINED" ||
-                              list.userstatus === "PENDING") ? 'default': 'pointer'}}
-                              alt=''
+                              style={{
+                                cursor:
+                                  list.userstatus === "DECLINED" ||
+                                  list.userstatus === "PENDING"
+                                    ? "default"
+                                    : "pointer",
+                              }}
+                              alt=""
                               onClick={(event) => {
                                 list.userstatus === "DECLINED" ||
                                 list.userstatus === "PENDING"
@@ -1723,7 +1756,7 @@ class ChannelPartners extends Component<Props, States> {
                         >
                           <img
                             style={{ marginRight: "6px" }}
-                            alt=''
+                            alt=""
                             src={
                               list.userstatus === "ACTIVE"
                                 ? Check
@@ -1747,15 +1780,20 @@ class ChannelPartners extends Component<Props, States> {
                         <td>
                           <img
                             className="edit"
-                            style={{cursor: (list.userstatus === "DECLINED" ||
-                            list.userstatus === "PENDING") ? 'default': 'pointer'}}
+                            style={{
+                              cursor:
+                                list.userstatus === "DECLINED" ||
+                                list.userstatus === "PENDING"
+                                  ? "default"
+                                  : "pointer",
+                            }}
                             src={
                               list.userstatus === "DECLINED" ||
                               list.userstatus === "PENDING"
                                 ? EditDisabled
                                 : Edit
                             }
-                            alt=''
+                            alt=""
                             width="20"
                             onClick={(event) => {
                               list.userstatus === "DECLINED" ||
@@ -1767,7 +1805,12 @@ class ChannelPartners extends Component<Props, States> {
                         </td>
                         {list.iscreatedfrommobile && (
                           <td>
-                            <img src={blackmockup} alt='' width="20" height="25" />
+                            <img
+                              src={blackmockup}
+                              alt=""
+                              width="20"
+                              height="25"
+                            />
                           </td>
                         )}
                       </td>

@@ -340,7 +340,7 @@ class CreateUser extends Component<any, any> {
         );
       })
       .catch((error: any) => {
-        this.setState({ isLoader: false});
+        this.setState({ isLoader: false });
         let message = error.message;
         Alert("warning", message);
       });
@@ -1410,18 +1410,19 @@ class CreateUser extends Component<any, any> {
   };
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
-    // let owners = this.state.userData.ownerRows;
-    // let staffs = this.state.userData.staffdetails;
+    let owners = this.state.userData.ownerRows;
+    let staffs = this.state.userData.staffdetails;
 
-    let owners = this.state.allChannelPartners;
-    let staffs = _(owners).flatMap("staffdetails").value();
+    let allowners = this.state.allChannelPartners;
+    let allstaffs = _(owners).flatMap("staffdetails").value();
 
-    const isOwnerPhoneEists = owners.filter(
+    const isOwnerPhoneEists = allowners.filter(
       (items: any) => items.ownerphonenumber === val
     );
-    const isStaffPhoneEists = staffs.filter(
+    const isStaffPhoneEists = allstaffs.filter(
       (items: any) => items.mobilenumber === val
     );
+
     if (type === "owner") {
       if (key === "phone") {
         if (val) {
