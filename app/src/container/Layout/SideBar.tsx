@@ -129,7 +129,7 @@ class Sidebar extends Component<Props, States> {
                       ></span>
                       <Link
                         to="/createUser"
-                        onClick={() => this.setActiveTab("createUser")}
+                        onClick={(e:any) => (window.location.pathname.indexOf("createUser") > -1) ? e.preventDefault(): this.setActiveTab("createUser")}
                       >
                         <img src={addUserIcon} alt="User" width="16" />{" "}
                         <span> Create New User </span>

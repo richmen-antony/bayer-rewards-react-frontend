@@ -310,7 +310,7 @@ class CreateUser extends Component<any, any> {
         );
       })
       .catch((error: any) => {
-        this.setState({ isLoader: false });
+        this.setState({ isLoader: false});
         let message = error.message;
         Alert("warning", message);
       });
@@ -1096,9 +1096,9 @@ class CreateUser extends Component<any, any> {
         this.setState({ isLoader: false });
         let message = error.message;
         if (message === "Retailer with the same Mobilenumber exists") {
-          message = "User with same Mobilenumber exists";
+          message = "User with same Mobilenumber already exists";
         }
-        this.setState({ isRendered: true, currentStep: 1 }, () => {
+        this.setState({ isRendered: true, currentStep: 1,shouldBlockNavigation: true}, () => {
           // toastInfo(message);
           Alert("warning", message);
         });
@@ -1743,6 +1743,7 @@ class CreateUser extends Component<any, any> {
 
   render() {
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
+    console.log('shouldBlockNavigation', this.state.shouldBlockNavigation)
     const {
       currentStep,
       userData,
