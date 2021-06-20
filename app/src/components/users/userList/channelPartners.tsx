@@ -591,14 +591,20 @@ class ChannelPartners extends Component<Props, States> {
   };
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
-    let owners = this.state.userData.ownerRows;
-    let staffs = this.state.userData.staffdetails;
+    const { allChannelPartners } = this.props;
+    // let owners = this.state.userData.ownerRows;
+    // let staffs = this.state.userData.staffdetails;
+
+    let owners = allChannelPartners;
+    let staffs = _(owners).flatMap("staffdetails").value();
+
     const isOwnerPhoneEists = owners.filter(
-      (items: any) => items.mobilenumber === val
+      (items: any) => items.ownerphonenumber === val
     );
     const isStaffPhoneEists = staffs.filter(
       (items: any) => items.mobilenumber === val
     );
+
     if (type === "owner") {
       let owners = this.state.userData.ownerRows;
       if (key === "phone") {

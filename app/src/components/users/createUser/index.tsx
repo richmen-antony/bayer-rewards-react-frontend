@@ -89,6 +89,7 @@ class CreateUser extends Component<any, any> {
 
     this.state = {
       userData: {
+        allChannelPartners: [],
         countrycode: this.getStoreData.countryCode,
         locale: "English (Malawi)",
         rolename: role[0].value,
@@ -180,12 +181,41 @@ class CreateUser extends Component<any, any> {
     this.getGeographicFields();
     ///API to get country and language settings
     this.getCountryList();
+    this.getChannelPartnersList();
   }
   // componentDidUpdate() {
   //     if (this.state.shouldBlockNavigation) {
   //     window.onbeforeunload = () => true
   //   }
   // }
+
+  getChannelPartnersList = () => {
+    this.setState({
+      allChannelPartners: [],
+    });
+    const { channelPartnersList } = apiURL;
+    this.setState({ isLoader: true });
+    let data = {
+      countrycode: this.getStoreData.countryCode,
+      page: 1,
+      searchtext: "",
+      isfiltered: false,
+      rowsperpage: 1000,
+      usertype: "EXTERNAL",
+      partnertype: "RETAILER",
+    };
+    invokeGetAuthService(channelPartnersList, data)
+      .then((response) => {
+        this.setState({
+          isLoader: false,
+          allChannelPartners:
+            Object.keys(response.body).length !== 0 ? response.body.rows : [],
+        });
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+      });
+  };
 
   getCountryList() {
     //service call
@@ -1098,10 +1128,13 @@ class CreateUser extends Component<any, any> {
         if (message === "Retailer with the same Mobilenumber exists") {
           message = "User with same Mobilenumber already exists";
         }
-        this.setState({ isRendered: true, currentStep: 1,shouldBlockNavigation: true}, () => {
-          // toastInfo(message);
-          Alert("warning", message);
-        });
+        this.setState(
+          { isRendered: true, currentStep: 1, shouldBlockNavigation: true },
+          () => {
+            // toastInfo(message);
+            Alert("warning", message);
+          }
+        );
       });
   };
 
@@ -1377,10 +1410,14 @@ class CreateUser extends Component<any, any> {
   };
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
-    let owners = this.state.userData.ownerRows;
-    let staffs = this.state.userData.staffdetails;
+    // let owners = this.state.userData.ownerRows;
+    // let staffs = this.state.userData.staffdetails;
+
+    let owners = this.state.allChannelPartners;
+    let staffs = _(owners).flatMap("staffdetails").value();
+
     const isOwnerPhoneEists = owners.filter(
-      (items: any) => items.mobilenumber === val
+      (items: any) => items.ownerphonenumber === val
     );
     const isStaffPhoneEists = staffs.filter(
       (items: any) => items.mobilenumber === val
@@ -1743,7 +1780,6 @@ class CreateUser extends Component<any, any> {
 
   render() {
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
-    console.log('shouldBlockNavigation', this.state.shouldBlockNavigation)
     const {
       currentStep,
       userData,
