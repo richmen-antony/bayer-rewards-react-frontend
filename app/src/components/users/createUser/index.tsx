@@ -1414,7 +1414,7 @@ class CreateUser extends Component<any, any> {
     let staffs = this.state.userData.staffdetails;
 
     let allowners = this.state.allChannelPartners;
-    let allstaffs = _(owners).flatMap("staffdetails").value();
+    let allstaffs = _(allowners).flatMap("staffdetails").value();
 
     const isOwnerPhoneEists = allowners.filter(
       (items: any) => items.ownerphonenumber === val

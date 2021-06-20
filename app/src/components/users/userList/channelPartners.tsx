@@ -601,7 +601,7 @@ class ChannelPartners extends Component<Props, States> {
     let staffs = this.state.userData.staffdetails;
 
     let allowners = allChannelPartners;
-    let allstaffs = _(owners).flatMap("staffdetails").value();
+    let allstaffs = _(allowners).flatMap("staffdetails").value();
 
     const isOwnerPhoneEists = allowners.filter(
       (items: any) => items.ownerphonenumber === val
