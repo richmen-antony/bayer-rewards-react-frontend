@@ -1156,26 +1156,21 @@ class CreateUser extends Component<any, any> {
         errObj.lastNameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
-        // if (userInfo.mobilenumber) {
+
+        // if (
+        //   userInfo.mobilenumber &&
+        //   errObj.mobilenumberErr !== "Phone Number Exists"
+        // ) {
         //   errObj.mobilenumberErr =
-        //     userInfo.mobilenumber.length == 9 ? "" : "Please enter 9 Digit";
+        //     userInfo.mobilenumber.length === phoneLength
+        //       ? ""
+        //       : `Please enter ${phoneLength} Digit`;
         // } else {
-        //   errObj.mobilenumberErr = "Please enter the mobile number";
+        //   errObj.mobilenumberErr =
+        //     errObj.mobilenumberErr === "Phone Number Exists"
+        //       ? errObj.mobilenumberErr
+        //       : "Please enter the mobile number";
         // }
-        if (
-          userInfo.mobilenumber &&
-          errObj.mobilenumberErr !== "Phone Number Exists"
-        ) {
-          errObj.mobilenumberErr =
-            userInfo.mobilenumber.length === phoneLength
-              ? ""
-              : `Please enter ${phoneLength} Digit`;
-        } else {
-          errObj.mobilenumberErr =
-            errObj.mobilenumberErr === "Phone Number Exists"
-              ? errObj.mobilenumberErr
-              : "Please enter the mobile number";
-        }
 
         userData.ownerRows[idx].errObj = errObj;
         if (
@@ -1413,13 +1408,20 @@ class CreateUser extends Component<any, any> {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
 
+    const isOwnerPhoneEists = owners.filter(
+      (items: any) => items.mobilenumber === val
+    );
+    const isStaffPhoneEists = staffs.filter(
+      (items: any) => items.mobilenumber === val
+    );
+
     let allowners = this.state.allChannelPartners;
     let allstaffs = _(allowners).flatMap("staffdetails").value();
 
-    const isOwnerPhoneEists = allowners.filter(
+    const isOwnerPhoneEistsInDB = allowners.filter(
       (items: any) => items.ownerphonenumber === val
     );
-    const isStaffPhoneEists = allstaffs.filter(
+    const isStaffPhoneEistsInDB = allstaffs.filter(
       (items: any) => items.mobilenumber === val
     );
 
@@ -1430,7 +1432,7 @@ class CreateUser extends Component<any, any> {
             owners[
               idx
             ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isOwnerPhoneEistsInDB.length || isStaffPhoneEistsInDB.length) {
             owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
           } else {
             owners[idx].errObj.mobilenumberErr = "";
@@ -1459,7 +1461,7 @@ class CreateUser extends Component<any, any> {
             staffs[
               idx
             ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isOwnerPhoneEistsInDB.length || isStaffPhoneEistsInDB.length) {
             staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
           } else {
             staffs[idx].errObj.mobilenumberErr = "";

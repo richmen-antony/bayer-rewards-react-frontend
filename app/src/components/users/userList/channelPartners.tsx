@@ -600,13 +600,20 @@ class ChannelPartners extends Component<Props, States> {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
 
+    const isOwnerPhoneEists = owners.filter(
+      (items: any) => items.mobilenumber === val
+    );
+    const isStaffPhoneEists = staffs.filter(
+      (items: any) => items.mobilenumber === val
+    );
+
     let allowners = allChannelPartners;
     let allstaffs = _(allowners).flatMap("staffdetails").value();
 
-    const isOwnerPhoneEists = allowners.filter(
+    const isOwnerPhoneEistsInDB = allowners.filter(
       (items: any) => items.ownerphonenumber === val
     );
-    const isStaffPhoneEists = allstaffs.filter(
+    const isStaffPhoneEistsInDB = allstaffs.filter(
       (items: any) => items.mobilenumber === val
     );
 
@@ -618,7 +625,7 @@ class ChannelPartners extends Component<Props, States> {
             owners[
               idx
             ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isOwnerPhoneEistsInDB.length || isStaffPhoneEistsInDB.length) {
             owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
           } else {
             owners[idx].errObj.mobilenumberErr = "";
@@ -646,7 +653,7 @@ class ChannelPartners extends Component<Props, States> {
             staffs[
               idx
             ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length) {
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isOwnerPhoneEistsInDB.length || isStaffPhoneEistsInDB.length) {
             staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
           } else {
             staffs[idx].errObj.mobilenumberErr = "";
@@ -789,20 +796,20 @@ class ChannelPartners extends Component<Props, States> {
         ? ""
         : "Please enter the last Name";
 
-      if (
-        userInfo.mobilenumber &&
-        errObj.mobilenumberErr !== "Phone Number Exists"
-      ) {
-        errObj.mobilenumberErr =
-          userInfo.mobilenumber.length === phoneLength
-            ? ""
-            : `Please enter ${phoneLength} Digit`;
-      } else {
-        errObj.mobilenumberErr =
-          errObj.mobilenumberErr === "Phone Number Exists"
-            ? errObj.mobilenumberErr
-            : "Please enter the mobile number";
-      }
+      // if (
+      //   userInfo.mobilenumber &&
+      //   errObj.mobilenumberErr !== "Phone Number Exists"
+      // ) {
+      //   errObj.mobilenumberErr =
+      //     userInfo.mobilenumber.length === phoneLength
+      //       ? ""
+      //       : `Please enter ${phoneLength} Digit`;
+      // } else {
+      //   errObj.mobilenumberErr =
+      //     errObj.mobilenumberErr === "Phone Number Exists"
+      //       ? errObj.mobilenumberErr
+      //       : "Please enter the mobile number";
+      // }
 
       userData.ownerRows[idx].errObj = errObj;
       if (
