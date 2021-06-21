@@ -18,6 +18,12 @@ const headers={
 // reload page when session finished 
 const  isReload= true;
 
+ const handleSessionLogout =()=>{
+  setTimeout(() => {
+    Authorization.logOut(isReload)
+  }, 3000);
+}
+
 //Post method without auth
 export function invokePostServiceLogin(path, reqObj, params) {
   return new Promise(function (resolve, reject) {
@@ -70,7 +76,7 @@ export function invokePostAuthService(path, reqObj, params) {
 
     }
     else {
-      Authorization.logOut(isReload)
+     handleSessionLogout();
     }
 
   });
@@ -100,7 +106,7 @@ export function invokeGetService(path) {
         });
     }
     else {
-      Authorization.logOut(isReload)
+     handleSessionLogout();
     }
   });
 };
@@ -133,7 +139,7 @@ export function invokeGetAuthService(path, formData) {
         });
 
     } else {
-      Authorization.logOut(isReload)
+     handleSessionLogout();
     }
   });
 };
@@ -165,7 +171,7 @@ export function invokePostService(path, reqObj, params) {
         });
     }
     else {
-      Authorization.logOut(isReload)
+     handleSessionLogout();
     }
   });
 };

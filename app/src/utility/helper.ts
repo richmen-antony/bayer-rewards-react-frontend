@@ -4,6 +4,7 @@ import moment from "moment";
 import { getLocalStorageData } from '../utility/base/localStore';
 
 const sessionDefaultTime: number = 30;
+let oneTimeCall= false;
 /**
  * Download excel file 
  * @param tableId 
@@ -166,7 +167,9 @@ export const checkSessionTimeOut = () => {
   if (duration < sessionDefaultTime) {
     return true
   }
+  if(!oneTimeCall)
   Alert('warning', 'You have been ideal for more than 30 minutes, please log back in to proceed further');
+  oneTimeCall= true;
   return false
 }
 
