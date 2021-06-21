@@ -272,14 +272,13 @@ class CreateUser extends Component<any, any> {
                 email: userFields.owneremail,
               };
 
-              userFields.staffdetails.forEach((items: any) => {
-                items.active =
-                  userFields.userstatus === "ACTIVE" ||
-                  userFields.userstatus === "PENDING"
-                    ? true
-                    : false;
-              });
-
+              // userFields.staffdetails.forEach((items: any) => {
+              //   items.active =
+              //     userFields.userstatus === "ACTIVE" ||
+              //     userFields.userstatus === "PENDING"
+              //       ? true
+              //       : false;
+              // });
               let userDataList = this.state.userData;
               userDataList.ownerRows[0] = ownerInfo;
               let userinfo = {
@@ -316,7 +315,6 @@ class CreateUser extends Component<any, any> {
                   let obj = Object.assign(staffInfo, errObjd);
                 });
               }
-
               this.setState({
                 userData: userinfo,
                 isEditPage: true,
@@ -1883,7 +1881,7 @@ class CreateUser extends Component<any, any> {
         </button>
       );
     }
-
+      
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -2478,6 +2476,7 @@ class CreateUser extends Component<any, any> {
                                         }}
                                       >
                                         <div>
+                                          
                                           <CustomSwitch
                                             checked={
                                               userData.ownerRows[0].active

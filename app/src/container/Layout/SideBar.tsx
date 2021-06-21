@@ -60,8 +60,9 @@ class Sidebar extends Component<Props, States> {
     this.setState({ activeTab: tab });
   };
   logout = () => {
+    // this.props.history.push("/landing");
     Authorization.logOut();
-    this.props.history.push("/landing");
+    
   };
 
   render() {

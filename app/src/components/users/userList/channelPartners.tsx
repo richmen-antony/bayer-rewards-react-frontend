@@ -409,6 +409,7 @@ class ChannelPartners extends Component<Props, States> {
           iscreatedfrommobile: userFields.iscreatedfrommobile,
         };
         if (userinfo) {
+         
           userinfo.staffdetails.forEach((staffInfo: any) => {
             let errObjd = {
               errObj: {
@@ -568,10 +569,12 @@ class ChannelPartners extends Component<Props, States> {
     }
   };
   editUser = (list: any) => {
+    console.log({list})
     this.getCurrentUserData(list, true);
   };
 
   getCurrentUserData = (data: any, edit?: boolean) => {
+    console.log({data});
     let passData: any = { ...data };
     let activeStatus =
       passData.userstatus === "INACTIVE" || passData.userstatus === "DECLINED"
@@ -900,6 +903,7 @@ class ChannelPartners extends Component<Props, States> {
     let loggedUserInfo = JSON.parse(data);
     let countryCodeLower =
       loggedUserInfo?.countrycode && _.toLower(loggedUserInfo.countrycode);
+      console.log({allChannelPartners});
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -1687,7 +1691,9 @@ class ChannelPartners extends Component<Props, States> {
             </thead>
             <tbody>
               {allChannelPartners.length > 0 ? (
-                allChannelPartners.map((list: any, i: number) => (
+                allChannelPartners.map((list: any, i: number) => {
+                  console.log("lust",list)
+                  return (
                   <AUX key={i}>
                     <tr
                       style={
@@ -1823,7 +1829,7 @@ class ChannelPartners extends Component<Props, States> {
                       </td>
                     </tr>
                   </AUX>
-                ))
+                )})
               ) : (
                 <>
                   <div className="col-12 card mt-4">

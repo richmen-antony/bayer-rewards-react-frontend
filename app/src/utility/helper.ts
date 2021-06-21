@@ -166,6 +166,7 @@ export const checkSessionTimeOut = () => {
   if (duration < sessionDefaultTime) {
     return true
   }
+  Alert('warning', 'You have been ideal for more than 30 minutes, please log back in to proceed further');
   return false
 }
 
