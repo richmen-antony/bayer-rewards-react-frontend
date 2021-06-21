@@ -7,21 +7,21 @@ import Authorization from '../../../utility/authorization';
 import moment from "moment";
 
 // Request headers
-const headers={
+const headers = {
   'Content-Type': 'application/json',
   'Accept': 'application/json',
   "Access-Control-Allow-Origin": true,
-  "client-tz":Intl.DateTimeFormat().resolvedOptions().timeZone,
-  "client-tz-offset":new Date().getTimezoneOffset()
+  "client-tz": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  "client-tz-offset": new Date().getTimezoneOffset()
 }
 
 // reload page when session finished 
-const  isReload= true;
+const isReload = true;
 
- const handleSessionLogout =()=>{
+const handleSessionLogout = () => {
   setTimeout(() => {
     Authorization.logOut(isReload)
-  }, 3000);
+  }, 5000);
 }
 
 //Post method without auth
@@ -76,7 +76,7 @@ export function invokePostAuthService(path, reqObj, params) {
 
     }
     else {
-     handleSessionLogout();
+      handleSessionLogout();
     }
 
   });
@@ -106,7 +106,7 @@ export function invokeGetService(path) {
         });
     }
     else {
-     handleSessionLogout();
+      handleSessionLogout();
     }
   });
 };
@@ -139,7 +139,7 @@ export function invokeGetAuthService(path, formData) {
         });
 
     } else {
-     handleSessionLogout();
+      handleSessionLogout();
     }
   });
 };
@@ -171,7 +171,7 @@ export function invokePostService(path, reqObj, params) {
         });
     }
     else {
-     handleSessionLogout();
+      handleSessionLogout();
     }
   });
 };
