@@ -796,20 +796,20 @@ class ChannelPartners extends Component<Props, States> {
         ? ""
         : "Please enter the last Name";
 
-      // if (
-      //   userInfo.mobilenumber &&
-      //   errObj.mobilenumberErr !== "Phone Number Exists"
-      // ) {
-      //   errObj.mobilenumberErr =
-      //     userInfo.mobilenumber.length === phoneLength
-      //       ? ""
-      //       : `Please enter ${phoneLength} Digit`;
-      // } else {
-      //   errObj.mobilenumberErr =
-      //     errObj.mobilenumberErr === "Phone Number Exists"
-      //       ? errObj.mobilenumberErr
-      //       : "Please enter the mobile number";
-      // }
+      if (
+        userInfo.mobilenumber &&
+        errObj.mobilenumberErr !== "Phone Number Exists"
+      ) {
+        errObj.mobilenumberErr =
+          userInfo.mobilenumber.length === phoneLength
+            ? ""
+            : `Please enter ${phoneLength} Digit`;
+      } else {
+        errObj.mobilenumberErr =
+          errObj.mobilenumberErr === "Phone Number Exists"
+            ? errObj.mobilenumberErr
+            : "Please enter the mobile number";
+      }
 
       userData.ownerRows[idx].errObj = errObj;
       if (
