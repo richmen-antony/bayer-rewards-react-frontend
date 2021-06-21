@@ -1343,13 +1343,13 @@ class CreateUser extends Component<any, any> {
       userData.ownerRows.forEach((item: any, index: number) => {
         item.firstname = "";
         item.lastname = "";
-        item.mobilenumber = "";
+        if (this.state.isEditPage === false) item.mobilenumber = "";
         item.email = "";
       });
       userData.staffdetails.forEach((item: any, index: number) => {
         item.firstname = "";
         item.lastname = "";
-        item.mobilenumber = "";
+        if (this.state.isEditPage === false) item.mobilenumber = "";
         item.email = "";
       });
       this.setState((prevState: any) => ({
