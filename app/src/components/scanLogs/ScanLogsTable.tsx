@@ -394,6 +394,7 @@ class ScanLogsTable extends Component<Props, States> {
 
   resetFilter = (e?: any) => {
     let today = new Date();
+    let conditionIsFilter = this.state.searchText ? true : false
     this.setState(
       {
         selectedFilters: {
@@ -406,7 +407,7 @@ class ScanLogsTable extends Component<Props, States> {
           farmer: "ALL",
           retailer: "ALL",
         },
-        isFiltered: false,
+        isFiltered: conditionIsFilter,
         dateErrMsg:"",
         lastUpdatedDateErr:""
 

@@ -272,13 +272,13 @@ class CreateUser extends Component<any, any> {
                 email: userFields.owneremail,
               };
 
-              // userFields.staffdetails.forEach((items: any) => {
-              //   items.active =
-              //     userFields.userstatus === "ACTIVE" ||
-              //     userFields.userstatus === "PENDING"
-              //       ? true
-              //       : false;
-              // });
+              userFields.staffdetails.forEach((items: any) => {
+                items.active =
+                  userFields.userstatus === "PENDING"
+                    ? true
+                    : items.active;
+              });
+
               let userDataList = this.state.userData;
               userDataList.ownerRows[0] = ownerInfo;
               let userinfo = {
