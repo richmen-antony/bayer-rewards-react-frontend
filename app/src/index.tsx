@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -12,8 +11,8 @@ import { ROUTE } from "./routes/routes";
 import Layout from "./container/Layout";
 import Loader from "./utility/widgets/loader";
 import { ToastContainer } from "react-toastify";
-import { clearLocalStorageData } from "./utility/base/localStore";
-import Cookies from "js-cookie";
+// import { clearLocalStorageData } from "./utility/base/localStore";
+// import Cookies from "js-cookie";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/scss/index.scss";
@@ -96,7 +95,9 @@ isRemember();
 const app = (
 	// <React.StrictMode>
 	<Provider store={store}>
-		<BrowserRouter>
+		<BrowserRouter getUserConfirmation={() => {
+          /* Empty callback to block the default browser prompt */
+        }}>
 			<Layout>
 				<Suspense fallback={<Loader />}>
 					<ToastContainer />
@@ -110,12 +111,7 @@ const app = (
 
 ReactDOM.render(app, document.getElementById("root"));
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>,
-//   document.getElementById('root')
-// );
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
