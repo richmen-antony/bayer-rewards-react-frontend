@@ -178,7 +178,7 @@ class CreateUser extends Component<any, any> {
 
   componentDidMount() {
     this.getHierarchyDatas();
-    this.getGeographicFields();
+    
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
@@ -330,9 +330,7 @@ class CreateUser extends Component<any, any> {
               }, 0);
             } else {
               //Dynamic Geo location dropdowns For Validate and Create User
-              setTimeout(() => {
-                this.getDynamicOptionFields("");
-              }, 0);
+              this.getDynamicOptionFields("");
             }
           }
         );
@@ -355,7 +353,9 @@ class CreateUser extends Component<any, any> {
       .then((response: any) => {
         let regions =
           Object.keys(response.body).length !== 0 ? response.body.regions : [];
-        this.setState({ isLoader: false, allRegions: regions }, () => {});
+        this.setState({ isLoader: false, allRegions: regions }, () => {
+          this.getGeographicFields();
+        });
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
@@ -1800,6 +1800,7 @@ class CreateUser extends Component<any, any> {
     let currentPage = this.props.location?.page;
     const fields =
       currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
+      
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized =
         list.name.charAt(0).toUpperCase() + list.name.slice(1);

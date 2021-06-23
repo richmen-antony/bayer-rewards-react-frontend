@@ -89,10 +89,7 @@ class Pagination extends Component<Props, States> {
     !this.props.pageNo&& Alert("error","Go to Page should be greater than 0")
 
   }
-  handleChange=(e:any)=>{
-    console.log({e})
-    // pageNumberClick()
-  }
+ 
   render() {
     const {
       pageNo,
@@ -130,7 +127,6 @@ class Pagination extends Component<Props, States> {
         </>
       );
     });
-     console.log({pageNo})
     return (
       <>
         {data.length > 0 && (

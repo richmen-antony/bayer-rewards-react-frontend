@@ -39,7 +39,6 @@ class Sidebar extends Component<Props, States> {
       activeTab: "dashboard",
       userRole: "",
     };
-    console.log(this.props, "test");
     // $("body").toggleClass("");
     $("body").addClass("enlarged");
   }
@@ -66,7 +65,6 @@ class Sidebar extends Component<Props, States> {
   };
 
   render() {
-    console.log(this.state, "state");
     const { activeTab } = this.state;
     const scrollHeight = {
       height: `calc(100vh - 156px)`,

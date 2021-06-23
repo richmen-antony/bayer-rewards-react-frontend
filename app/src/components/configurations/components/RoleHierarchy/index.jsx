@@ -35,9 +35,6 @@ class RoleHierarchy extends React.Component {
       rows: [...this.state.rows, item],
       dpList: [...this.state.rows, item],
     });
-
-    console.log(this.state.rows);
-    console.log(this.state.dpList);
   };
 
   handleRemoveSpecificRow = (idx) => () => {

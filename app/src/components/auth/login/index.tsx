@@ -87,7 +87,6 @@ class Login extends Component<Props, States> {
       this.setState({ isLoader: true });
       invokePostServiceLogin(login, data)
         .then((response: any) => {
-          console.log(response, "response");
           response.body.isRemember = this.state.isRemember;
           Authorization.login(response.body);
           Cookies.set("userData", JSON.stringify(response.body), {

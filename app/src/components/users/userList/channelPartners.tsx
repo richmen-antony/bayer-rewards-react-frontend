@@ -569,12 +569,10 @@ class ChannelPartners extends Component<Props, States> {
     }
   };
   editUser = (list: any) => {
-    console.log({list})
     this.getCurrentUserData(list, true);
   };
 
   getCurrentUserData = (data: any, edit?: boolean) => {
-    console.log({data});
     let passData: any = { ...data };
     let activeStatus =
       passData.userstatus === "INACTIVE" || passData.userstatus === "DECLINED"
@@ -897,13 +895,11 @@ class ChannelPartners extends Component<Props, States> {
     const { allChannelPartners, isAsc, totalData } = this.props;
     const { isLoader, pageNo, rowsPerPage } = this.props.state;
     const { userList, userData, isStaff }: any = this.state;
-    console.log("Staffdet", isStaff);
 
     let data: any = getLocalStorageData("userData");
     let loggedUserInfo = JSON.parse(data);
     let countryCodeLower =
       loggedUserInfo?.countrycode && _.toLower(loggedUserInfo.countrycode);
-      console.log({allChannelPartners});
     return (
       <AUX>
         {isLoader && <Loader />}

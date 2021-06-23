@@ -40,7 +40,6 @@ class Authorization {
   isLoggedIn(): boolean {
     const data :any =getLocalStorageData(this.authUserKey);
     const ls= data;
-    console.log({ls})
     return  ls&&ls.role !=="" ? true : false;
     // return true;
   }
