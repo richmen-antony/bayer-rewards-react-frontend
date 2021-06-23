@@ -12,7 +12,7 @@ import NoImage from "../../../assets/images/no_image.svg";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import Download from "../../../assets/icons/download.svg";
 import { SearchInput } from "../../../utility/widgets/input/search-input";
-import { Pagination } from "../../../utility/widgets/pagination";
+import Pagination  from "../../../utility/widgets/pagination";
 import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import Validator from "../../../utility/validator";

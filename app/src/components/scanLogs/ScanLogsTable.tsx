@@ -3,7 +3,7 @@ import AUX from "../../hoc/Aux_";
 import Loaders from "../../utility/widgets/loader";
 import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
-import { Pagination } from "../../utility/widgets/pagination";
+import Pagination from "../../utility/widgets/pagination";
 import moment from "moment";
 import SimpleDialog from "../../container/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";

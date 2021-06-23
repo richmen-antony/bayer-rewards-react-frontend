@@ -1,17 +1,35 @@
-import React, { Component, Fragment } from "react";
-
-import AUX from "../../../hoc/Aux_";
+import React, { Component } from "react";
 import "../../../assets/scss/pagination.scss";
-import { Input } from "../../../utility/widgets/input";
-import NoImage from "../../../assets/images/no_image.svg";
-import LeftArrow from "../../../assets/icons/left_page.svg";
-import RightArrow from "../../../assets/icons/right_page.svg";
-import LeftArrowDisabled from "../../../assets/icons/left_page_disabled.svg";
-import RightArrowDisabled from "../../../assets/icons/right_page_disabled.svg";
 import Dropdown from "../dropdown";
 import {Alert} from "../toaster";
+import {withStyles,Theme ,WithStyles } from '@material-ui/core/styles';
+import PaginationMUI from '@material-ui/lab/Pagination';
 
-type Props = {
+const useStyles = (theme: Theme) => ({
+  root: {
+    '& > *': {
+      marginTop: theme.spacing(2),
+    },
+    '& .Mui-selected': {
+      background: "transparent linear-gradient(90deg, #03BCFB 0%, #025E7E 100%) 0% 0% no-repeat padding-box",
+      color:'#FFFFFF',
+     },
+     '& button':{
+      "[aria-label=Go to previous page]": {
+        background:" #FFFFFF 0% 0% no-repeat padding-box !important",
+        boxShadow: "0px 3px 6px #00000029",
+        border:" 0.5px solid #BFBFBF",
+        borderRadius: "5px",
+      },
+     }
+      
+    
+    
+  },
+});
+
+
+type PropsTypes = {
   pageNo: number;
   totalData: any;
   rowsPerPage: number;
@@ -21,6 +39,7 @@ type Props = {
   handlePaginationChange: Function;
   data: any;
   totalLabel?: any;
+  classes?:any
 };
 type States = {
   startIndex: number;
@@ -34,7 +53,17 @@ const rowPerPageOptions = [
   { value: "50", text: "50" }
  
 ];
-
+interface Props extends WithStyles<typeof useStyles> {
+  pageNo: number;
+  totalData: any;
+  rowsPerPage: number;
+  previous: Function;
+  next: Function;
+  pageNumberClick: Function;
+  handlePaginationChange: Function;
+  data: any;
+  totalLabel?: any;
+}
 class Pagination extends Component<Props, States> {
   constructor(props: any) {
     super(props);
@@ -60,6 +89,10 @@ class Pagination extends Component<Props, States> {
     !this.props.pageNo&& Alert("error","Go to Page should be greater than 0")
 
   }
+  handleChange=(e:any)=>{
+    console.log({e})
+    // pageNumberClick()
+  }
   render() {
     const {
       pageNo,
@@ -71,6 +104,7 @@ class Pagination extends Component<Props, States> {
       totalData,
       data,
       totalLabel,
+      classes,
     } = this.props;
     const pageNumbers = [];
     const pageData = Math.ceil(totalData / rowsPerPage);
@@ -96,6 +130,7 @@ class Pagination extends Component<Props, States> {
         </>
       );
     });
+     console.log({pageNo})
     return (
       <>
         {data.length > 0 && (
@@ -168,7 +203,8 @@ class Pagination extends Component<Props, States> {
                 }}
               >
                 <div className="paginationNumber">
-                  <div style={{ marginTop: "8px" }}>
+                <PaginationMUI className={classes?.root}  count={pageData} shape="rounded" page={Number(pageNo)}  onChange={(event,val)=> pageNumberClick(val)}/>
+                  {/* <div style={{ marginTop: "8px" }}>
                     <a
                       href="#"
                       className=""
@@ -222,7 +258,7 @@ class Pagination extends Component<Props, States> {
                   {/* <div style={{ pointerEvents : (pageData != this.state.endIndex) && (pageData > 5) ? 'auto' : 'none'}}>
                             <i className="fa fa-fast-forward" onClick={()=>this.fastForward()}></i>
                         </div> */}
-                  <div style={{ marginTop: "8px", marginRight: "-10px" }}>
+                  {/* <div style={{ marginTop: "8px", marginRight: "-10px" }}>
                     <a
                       href="#"
                       onClick={() => next(pageNo)}
@@ -237,7 +273,7 @@ class Pagination extends Component<Props, States> {
                         alt={NoImage}
                       />
                     </a>
-                  </div>
+                  </div> */} 
                 </div>
               </div>
             </div>
@@ -247,5 +283,5 @@ class Pagination extends Component<Props, States> {
     );
   }
 }
+export default withStyles(useStyles)(Pagination)
 
-export { Pagination };

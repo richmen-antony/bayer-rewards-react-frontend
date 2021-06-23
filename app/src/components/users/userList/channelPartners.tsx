@@ -5,7 +5,7 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import AUX from "../../../hoc/Aux_";
-import { Pagination } from "../../../utility/widgets/pagination";
+import Pagination from "../../../utility/widgets/pagination";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
 import Edit from "../../../assets/images/edit.svg";
 import EditDisabled from "../../../assets/icons/edit_disabled.svg";
@@ -1692,7 +1692,6 @@ class ChannelPartners extends Component<Props, States> {
             <tbody>
               {allChannelPartners.length > 0 ? (
                 allChannelPartners.map((list: any, i: number) => {
-                  console.log("lust",list)
                   return (
                   <AUX key={i}>
                     <tr

@@ -34,7 +34,7 @@ import {
   clearLocalStorageData,
 } from "../../../utility/base/localStore";
 import CustomTable from "../../../container/grid/CustomTable";
-import { Pagination } from "../../../utility/widgets/pagination";
+import Pagination from "../../../utility/widgets/pagination";
 import SimpleDialog from "../../../container/components/dialog";
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import '../../../assets/scss/users.scss';
