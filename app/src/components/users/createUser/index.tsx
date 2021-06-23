@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Prompt } from "react-router";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-// import swal from 'sweetalert';
 import Dropdown from "../../../utility/widgets/dropdown";
 import Stepper from "../../../container/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
@@ -31,6 +29,7 @@ import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
 import _ from "lodash";
+import RouterPrompt from "../../../container/prompt";
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -1887,10 +1886,14 @@ class CreateUser extends Component<any, any> {
       <AUX>
         {isLoader && <Loader />}
         {this.checkCreateFilled() && (
-          <Prompt
-            when={this.state.shouldBlockNavigation}
-            message="You have unsaved changes, are you sure you want to leave?"
-          />
+          <RouterPrompt
+        when={this.checkCreateFilled()}
+        title="Leave this page"
+        cancelText="Cancel"
+        okText="Confirm"
+        onOK={() => true}
+        onCancel={() => false}
+      />
         )}
         {this.state.deleteStaffPopup ? (
           <AdminPopup
