@@ -815,17 +815,16 @@ label {
   color: #aaa;
 }
 .Toastify__toast--info {
-  background: purple;
+  background:  #3276b1;
 }
 .Toastify__toast--success {
-  background: green;
+  background: #51a351;
 }
 .Toastify__toast--warning {
   background: #f89406;
-  color: #000000;
 }
 .Toastify__toast--error {
-  background: red;
+  background: #bd362f;
 }
 
 @media only screen and (max-width: 1366px) {
