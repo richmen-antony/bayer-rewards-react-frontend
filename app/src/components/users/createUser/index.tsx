@@ -30,6 +30,7 @@ import AUX from "../../../hoc/Aux_";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
 import _ from "lodash";
 import RouterPrompt from "../../../container/prompt";
+import { AppContext } from "../../../container/context";
 
 const role = [
   // { value: "salesagent", text: "Area Sales Agent" },
@@ -73,6 +74,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 class CreateUser extends Component<any, any> {
+  static contextType = AppContext
   loggedUserInfo: any;
   getStoreData: any;
   constructor(props: any) {
@@ -181,12 +183,10 @@ class CreateUser extends Component<any, any> {
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
+   
+ 
   }
-  // componentDidUpdate() {
-  //     if (this.state.shouldBlockNavigation) {
-  //     window.onbeforeunload = () => true
-  //   }
-  // }
+
 
   getChannelPartnersList = () => {
     this.setState({
@@ -1759,6 +1759,9 @@ class CreateUser extends Component<any, any> {
         isFilledAllFields = false;
       }
     }
+    const {setPromptMode} =this.context;
+     setPromptMode(isFilledAllFields);
+   
     return isFilledAllFields;
   };
   handleClosePopup = () => {

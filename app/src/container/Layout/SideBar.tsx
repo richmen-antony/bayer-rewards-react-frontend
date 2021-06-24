@@ -6,20 +6,14 @@ import homeIcon from "../../assets/icons/home_icon.svg";
 import addUserIcon from "../../assets/icons/add_user_icon.svg";
 import userListIcon from "../../assets/icons/list_user_icon.svg";
 import scanLogsIcon from "../../assets/icons/scan_logs_icon.svg";
-import pointLogsIcon from "../../assets/icons/points_log_icon.svg";
-import coachIcon from "../../assets/icons/coach_walker_icon.svg";
-import helpCenterIcon from "../../assets/icons/help_icon.svg";
 import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
-import leftArrow from "../../assets/icons/left_arrow.svg";
 import country from "../../assets/images/country.svg";
 import {
-  setLocalStorageData,
   getLocalStorageData,
-  clearLocalStorageData,
 } from "../../utility/base/localStore";
-import Cookies from "js-cookie";
 import Authorization from "../../utility/authorization";
+import { AppContext } from "../../container/context";
 
 type Props = {
   history?: any;
@@ -33,6 +27,7 @@ interface IProps {
 }
 
 class Sidebar extends Component<Props, States> {
+  static contextType = AppContext
   constructor(props: any) {
     super(props);
     this.state = {
@@ -58,8 +53,12 @@ class Sidebar extends Component<Props, States> {
   setActiveTab = (tab: any) => {
     this.setState({ activeTab: tab });
   };
+  /**
+   * To logout page and check the unsaved change value for Prompt 
+   */
   logout = () => {
-    // this.props.history.push("/landing");
+    const {promptMode} =this.context;
+    if(!promptMode)
     Authorization.logOut();
     
   };
@@ -275,7 +274,7 @@ class Sidebar extends Component<Props, States> {
                       : "waves-effect"
                   }
                 ></span>
-                <Link to="" onClick={this.logout}>
+                <Link to="/landing" onClick={this.logout}>
                   <img src={logoutIcon} alt="Help Center" width="16" />{" "}
                   <span> Logout </span>
                 </Link>

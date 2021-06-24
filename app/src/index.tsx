@@ -20,6 +20,7 @@ import "./assets/scss/index.scss";
 // To enable isRemember Need to logged out
 import { getLocalStorageData } from "./utility/base/localStore";
 import Authorization from "./utility/authorization";
+import AppProvider from "./container/context";
 
 /**
  * Create the routes dynamically
@@ -95,15 +96,17 @@ isRemember();
 const app = (
 	// <React.StrictMode>
 	<Provider store={store}>
-		<BrowserRouter getUserConfirmation={() => {
+		<BrowserRouter getUserConfirmation={(e:any,cb:any) => {
           /* Empty callback to block the default browser prompt */
         }}>
+			<AppProvider>
 			<Layout>
 				<Suspense fallback={<Loader />}>
 					<ToastContainer />
 					<Switch>{setRoutes()}</Switch>
 				</Suspense>
 			</Layout>
+			</AppProvider>
 		</BrowserRouter>
 	</Provider>
 	// </React.StrictMode>

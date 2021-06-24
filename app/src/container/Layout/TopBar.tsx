@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import {
   Dropdown,
   DropdownToggle,
@@ -8,14 +7,9 @@ import {
 } from "reactstrap";
 import logo from "../../assets/icons/bayer_logo.svg";
 import menuIcon from "../../assets/icons/menu_icon.svg";
-import bell from "../../assets/icons/bell_icon.svg";
-import userImg from "../../assets/images/user.png";
-
 import "../../assets/scss/layout.scss";
 import {
-  setLocalStorageData,
   getLocalStorageData,
-  clearLocalStorageData,
 } from "../../utility/base/localStore";
 import Cookies from "js-cookie";
 import DropdownArrow from "../../assets/images/down-arrow.svg";
@@ -23,6 +17,7 @@ import BayerRewardsImg from "../../assets/icons/logo.svg";
 import IndiaFLag from "../../assets/icons/india_flag.svg";
 import MalawiFlag from "../../assets/icons/malawi_flag.svg";
 import Authorization from "../../utility/authorization";
+import { AppContext } from "../../container/context";
 
 type Props = {
   history?: any;
@@ -33,6 +28,7 @@ type States = {
   userData: any;
 };
 class TopBar extends Component<Props, States> {
+  static contextType = AppContext
   constructor(props: any) {
     super(props);
     this.state = {
@@ -59,12 +55,19 @@ class TopBar extends Component<Props, States> {
       dropdownOpenNotification: !prevState.dropdownOpenNotification,
     }));
   };
+  /**
+   * To logout page and check the unsaved change value for Prompt 
+   * @param value 
+   */
   handleChange = (value: any) => {
-    // setLocalStorageData("isLoggedOut", true);
-    // clearLocalStorageData("userData");
-    // Cookies.remove("userData");
-    Authorization.logOut();
+    //accessed context api values are given
+    const {promptMode} =this.context;
     this.props.history.push("/landing");
+    if(!promptMode){
+      Authorization.logOut();
+     
+    }
+   
   };
 
   render() {

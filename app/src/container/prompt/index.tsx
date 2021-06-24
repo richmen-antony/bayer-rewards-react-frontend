@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState ,useContext} from "react";
 import { useHistory } from "react-router";
 import AdminPopup from "../../container/components/dialog/AdminPopup";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { AppContext } from "../context";
+import Authorization from "../../utility/authorization";
 
 const DialogContent = withStyles((theme: Theme) => ({
     root: {
@@ -36,18 +38,22 @@ interface Props {
     cancelText: any;
   }
   /**
-   * To handle the router prompt  when notify popup
+   * To handle the router prompt  when user leaving unsaved page and notify confirmation popup
    * @param props 
    * @returns 
    */
 const RouterPrompt :React.FC<Props>=(props:Props)=> {
   const { when, onOK, onCancel, title, okText, cancelText } = props;
-
   const history = useHistory();
-
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
+  const {setPromptMode} =useContext(AppContext);
 
+  /**
+   * To handle life cycle while updating values
+   * @param when
+   * @param history
+   */
   useEffect(() => {
     if (when) {
       history.block((prompt) => {
@@ -63,17 +69,29 @@ const RouterPrompt :React.FC<Props>=(props:Props)=> {
       history.block(() => {});
     };
   }, [history, when]);
-
+  /**
+   * To handle ok button action event
+   */
   const handleOK = useCallback(async () => {
     if (onOK) {
       const canRoute = await Promise.resolve(onOK());
-      if (canRoute) {
+      // to inactive prompt mode value in context api
+      setPromptMode(false);
+      if (canRoute ) {
         history.block(() => {});
-        history.push(currentPath);
+        if(currentPath==="/landing"){
+          Authorization.logOut();
+          history.push(currentPath);
+        }else{
+          history.push(currentPath);
+        }
       }
     }
   }, [currentPath, history, onOK]);
 
+  /**
+   * To handle cancel button action event
+   */
   const handleCancel = useCallback(async () => {
     if (onCancel) {
       const canRoute = await Promise.resolve(onCancel());
@@ -85,6 +103,7 @@ const RouterPrompt :React.FC<Props>=(props:Props)=> {
     setShowPrompt(false);
   }, [currentPath, history, onCancel]);
  
+  // show up the confirmation popup 
   return showPrompt ? (
     <AdminPopup
     open={showPrompt}
