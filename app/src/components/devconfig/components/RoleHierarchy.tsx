@@ -68,7 +68,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
       setInputList([
         ...inputList,
         {
-          rolehierarchylevel: inputList.length + 1,
+          rolehierarchylevel: inputList.length,
           rolecode: "",
           rolehierarchyname: "",
           roletype: "",
@@ -99,13 +99,13 @@ export const RoleHierarchy = (props: IRoleProps) => {
       return {
         ...listItem,
         rolehierarchylevel: idx,
-        parentrole:
-          listItem.parentrole >= index
-            ? listItem.parentrole - 1
-            : listItem.parentrole,
+        // parentrole:
+        //   listItem.parentrole >= index
+        //     ? listItem.parentrole - 1
+        //     : listItem.parentrole,
 
         // rolehierarchylevel: idx,
-        // parentrole: idx >= index ? list[idx - 1].parentrole : listItem.parentrole,
+        parentrole: idx >= index ? list[idx - 1].rolecode : listItem.parentrole,
       };
     });
     return newList;

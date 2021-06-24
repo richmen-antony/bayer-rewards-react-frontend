@@ -61,7 +61,7 @@ const LocationHierarchy = (props: ILocationProps) => {
       setInputList([
         ...inputList,
         {
-          locationhierlevel: inputList.length + 1,
+          locationhierlevel: inputList.length,
           locationhiername: "",
           parentlocation: -1,
         },

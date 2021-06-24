@@ -28,8 +28,9 @@ export const TnTFlow = (props: ITnTProps) => {
 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
-    const list = [...inputList];
+    let list = [...inputList];
     list.splice(index, 1);
+    list = setCorrectHierLvl(list, index);
     setInputList(list);
   };
 
@@ -38,8 +39,18 @@ export const TnTFlow = (props: ITnTProps) => {
     const data = inputList[index];
     getValidation();
     if (data.code && data.position) {
-      setInputList([...inputList, { level: 0, code: "", position: "" }]);
+      setInputList([...inputList, { level: inputList.length, code: "", position: "" }]);
     }
+  };
+
+  const setCorrectHierLvl = (list: any, index: number) => {
+    const newList = list.map((listItem: any, idx: number) => {
+      return {
+        ...listItem,
+        level: idx,
+      };
+    });
+    return newList;
   };
 
   const handleDropdownChange = (event: any, index: any) => {
