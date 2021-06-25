@@ -52,6 +52,10 @@ import check from "../../assets/images/check.png";
 import tickIcon from "../../assets/icons/tick.svg";
 
 import { hasDuplicate } from "../../utility/helper";
+import { getLocalStorageData } from "../../utility/base/localStore";
+
+let data: any = getLocalStorageData("userData");
+let userData = JSON.parse(data);
 
 export interface IFormValue {
   id: string;
@@ -485,12 +489,12 @@ class Devconfigurations extends React.Component<
       currencycode: devconfig.currencyCode,
       currency: devconfig.currencyName,
       country: devconfig.countryCode,
-      cluster: "AFRICA", //this.state.cluster,
-      region: "EMEA", //this.state.region,
+      cluster: this.state.setSelectedCluster, 
+      region: this.state.setSelectedRegion, 
       smsauthentication: devconfig.anticounterfeit.sms_authentication,
       digitalscan: devconfig.anticounterfeit.digital_scan,
       smartlabel: devconfig.anticounterfeit.smart_label,
-      createdby: "demo",
+      createdby: userData.username,
       locationhierarchy: devconfig.location.inputList,
       rolehierarchy: devconfig.role.inputList,
       trackntraceflow: devconfig.tntflow.inputList,
@@ -918,7 +922,7 @@ class Devconfigurations extends React.Component<
                 <div className="col-md-10">
                   <div className="container">
                     <div className="row rm-group">
-                      <div className="col-sm-3">
+                      <div className="col-sm-6">
                         <div>
                           <label className="font-weight-bold pt-4"></label>
                         </div>
@@ -927,13 +931,15 @@ class Devconfigurations extends React.Component<
                             separator={<NavigateNextIcon fontSize="small" />}
                             aria-label="breadcrumb"
                           >
-                            <Link color="inherit" href="/">
+                            {/* <Link color="inherit" href="/">
                               {this.state.setSelectedRegion}
                             </Link>
-                            <Link color="inherit" href="/">
+                            <Link color="inherit">
                               {this.state.setSelectedCluster}
-                            </Link>
-                            <Typography color="textPrimary">Malawi</Typography>
+                            </Link> */}
+                            <Typography color="textPrimary">{this.state.setSelectedRegion}</Typography>
+                            <Typography color="textPrimary">{this.state.setSelectedCluster}</Typography>
+                            <Typography color="textPrimary">{this.props.devconfig.countryCode}</Typography>
                           </Breadcrumbs>
                           {/* <p>{"EMEA >  Africa  >Malawi"}</p> */}
                         </div>

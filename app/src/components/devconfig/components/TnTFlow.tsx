@@ -62,7 +62,7 @@ export const TnTFlow = (props: ITnTProps) => {
   };
   console.log("tnt", inputList);
   return (
-    <div className="col-md-10">
+    <div className="col-md-12">
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">

@@ -88,7 +88,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     setInputList([
       ...inputList,
       {
-        packaginghierarchylevel: inputList.length,
+        packaginghierarchylevel: activeButton === "SEED" ? inputList.length : inputListData.length,
         packaginghierarchyname: "",
         parentpackage: "",
         productcategory: activeButton,
@@ -127,7 +127,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const parentpackageOptions = handledropdownoption(inputListData, "packaginghierarchyname");
 
   return (
-    <div className="col-md-10">
+    <div className="col-md-12">
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">
