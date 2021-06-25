@@ -173,6 +173,7 @@ class CreateUser extends Component<any, any> {
       mobileLimit: true,
       cloneduserData: {},
       deleteStaffPopup: false,
+      shouldBlockNavigation:true,
     };
     this.loggedUserInfo = loggedUserInfo;
   }
@@ -186,7 +187,12 @@ class CreateUser extends Component<any, any> {
    
  
   }
-
+componentDidUpdate(){
+  //To handle unsaved changes navigation routes
+  if (this.state.shouldBlockNavigation) {
+    window.onbeforeunload = () => true
+  }
+}
 
   getChannelPartnersList = () => {
     this.setState({
@@ -1884,13 +1890,12 @@ class CreateUser extends Component<any, any> {
         </button>
       );
     }
-      
     return (
       <AUX>
         {isLoader && <Loader />}
         {this.checkCreateFilled() && (
           <RouterPrompt
-        when={this.checkCreateFilled()}
+        when={this.state.shouldBlockNavigation}
         title="Leave this page"
         cancelText="Cancel"
         okText="Confirm"
