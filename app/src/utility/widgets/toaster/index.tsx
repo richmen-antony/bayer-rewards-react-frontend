@@ -39,8 +39,8 @@ export const Alert = (type: any, message: any) => {
     case "warning":
       return toast.warning(
         <div>
-          <td style={{ verticalAlign:'middle', textAlign: 'center'}}><img src={warningIcon} width="30" alt={NoImageCircle} /></td>
-          <td style={{ paddingLeft: '10px'}}>{message}</td>
+          <td style={{ verticalAlign:'middle', height: 'auto'}}><img src={warningIcon} width="30" alt={NoImageCircle} /></td>
+          <td style={{ paddingLeft: '10px',verticalAlign:'middle'}}>{message}</td>
         </div>,
         {
           position: toast.POSITION.TOP_CENTER,
@@ -51,8 +51,8 @@ export const Alert = (type: any, message: any) => {
     case "error":
       return toast.error(
         <div>
-          <td style={{ verticalAlign:'middle', textAlign: 'center'}}><img src={errorIcon} width="30" alt={NoImageCircle} /></td>
-          <td style={{ paddingLeft: '10px'}}>{message}</td>
+          <td style={{ verticalAlign:'middle', height: 'auto'}}><img src={errorIcon} width="30" alt={NoImageCircle} /></td>
+          <td style={{ paddingLeft: '10px', verticalAlign:'middle'}}>{message}</td>
         </div>,
         {
           position: toast.POSITION.TOP_CENTER,
@@ -63,8 +63,8 @@ export const Alert = (type: any, message: any) => {
     case "success":
       return toast.success(
         <div>
-          <td style={{ verticalAlign:'middle', textAlign: 'center' }}><img src={successIcon} width="30" alt={NoImageCircle} /></td>
-          <td style={{ paddingLeft: '10px'}}>{message}</td>
+          <td style={{ verticalAlign:'middle', height: 'auto'}}><img src={successIcon} width="30" alt={NoImageCircle} /></td>
+          <td style={{ paddingLeft: '10px',verticalAlign:'middle'}}>{message}</td>
         </div>,
         {
           position: toast.POSITION.TOP_CENTER,
@@ -75,8 +75,8 @@ export const Alert = (type: any, message: any) => {
     case "info":
       return toast.info(
         <div>
-          <td style={{ verticalAlign:'middle', textAlign: 'center'}}><img src={infoIcon} width="30" alt={NoImageCircle} /></td>
-          <td style={{ paddingLeft: '10px'}}>{message}</td>
+          <td style={{verticalAlign:'middle', height: 'auto'}}><img src={infoIcon} width="30" alt={NoImageCircle} /></td>
+          <td style={{ paddingLeft: '10px', verticalAlign:'middle'}}>{message}</td>
         </div>,
         {
           position: toast.POSITION.TOP_CENTER,
