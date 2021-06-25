@@ -99,7 +99,9 @@ class Dashboard extends Component<Props, States> {
   totalUserClick = () => {
     this.props.history.push("./userList");
   };
-
+  handleNavigateOrder=()=>{
+    this.props.history.push("./order");
+ }
   render() {
     return (
       <AUX>
@@ -130,7 +132,7 @@ class Dashboard extends Component<Props, States> {
             </div>
           ) : (
             <div className="dashboard">
-              <div style={{ marginRight: "30px" }}>
+              <div className="card-list">
                 <CustomCard
                   icon={adduser}
                   border="1px solid #FFA343"
@@ -140,7 +142,7 @@ class Dashboard extends Component<Props, States> {
                   <div className="title">Create New User</div>
                 </CustomCard>
               </div>
-              <div>
+              <div className="card-list">
                 <CustomCard
                   icon={userlist}
                   border="1px solid #206BDD"
@@ -149,6 +151,17 @@ class Dashboard extends Component<Props, States> {
                 >
                   <div className="count">{this.state.adminUsersCount}</div>
                   <div className="title">Total Users</div>
+                </CustomCard>
+              </div>
+              <div className="card-list">
+                <CustomCard
+                  icon={BarCodeIcon}
+                  border="1px solid #206BDD"
+                  background="#DFE8FA"
+                  cardClick={() => this.handleNavigateOrder()}
+                >
+                  <div className="count">{this.state.adminUsersCount}</div>
+                  <div className="title">Order</div>
                 </CustomCard>
               </div>
             </div>

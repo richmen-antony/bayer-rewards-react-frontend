@@ -150,6 +150,22 @@ class Sidebar extends Component<Props, States> {
                         <span> User List </span>
                       </Link>
                     </li>
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("order") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/order"
+                        onClick={() => this.setActiveTab("order")}
+                      >
+                        <img src={scanLogsIcon} alt="User" width="16" />{" "}
+                        <span> Order History </span>
+                      </Link>
+                    </li>
                     {/* <li className="d-flex">
                                                 <span className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'}></span>
                                                 <Link to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
