@@ -1,8 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-
-import { Input } from '../../../../utility/widgets/input';
-import Button from 'react-bootstrap/esm/Button'
 
 class ScanPointsAndAllocation extends React.Component {
 
@@ -75,14 +71,14 @@ class ScanPointsAndAllocation extends React.Component {
       color: "white", background: "#89D329 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     }
 
     const btnStyleRemove = {
       color: "white", background: "#C1C1C1 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     }
     const tableScrollStyle = {
       maxHeight: "280px",

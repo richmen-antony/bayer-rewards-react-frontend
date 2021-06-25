@@ -49,8 +49,6 @@ class RoleHierarchy extends React.Component {
 
   render() {
     const dpstyle = { width: 185, height: 35 };
-    const btncircle = { width: 40, height: 40, borderRadius: 20, marginTop: 10, marginLeft: 20 };
-
     const tableStyle = { border: "none", textAlign: "center", width: 185, height: 35 };
     const tableHeaderStyle = { border: "none", textAlign: "Left", width: 185 };
     const tablebtnStyle = { border: "none", width: 35, height: 35 };

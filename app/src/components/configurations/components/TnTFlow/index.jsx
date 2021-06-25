@@ -1,18 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-
-import { Input } from '../../../../utility/widgets/input';
-import Button from 'react-bootstrap/esm/Button'
-const dpstyle = {
-  width: 185,
-  height: 35
-};
-const btncircle = {
-  width: 40,
-  height: 40,
-  borderRadius: 20,
-  marginTop: 10,
-}
 
 class TnTFlow extends React.Component {
   state = {
@@ -73,44 +59,18 @@ class TnTFlow extends React.Component {
       height: 35
     };
 
-    // const btnStyleAdd = {
-    //   background: "#89D329 0% 0% no-repeat padding-box",
-    //   boxshadow: " 0px 3px 6px #00000029",
-    //   opacity: 1,
-    //   width: "35px",
-    //   height: "35px",
-    //   borderradius: "50%",
-    //   fontSize: "17px",
-    //   fontweight: "bold",
-    //   textalign: "center",
-    //   color: "white"
-    // }
-
-    // const btnStyleRemove = {
-    //   background: "#C1C1C1 0% 0% no-repeat padding-box",
-    //   boxshadow: " 0px 3px 6px #00000029",
-    //   opacity: 1,
-    //   width: "35px",
-    //   height: "35px",
-    //   borderradius: "50%",
-    //   fontSize: "17px",
-    //   fontweight: "bold",
-    //   textalign: "center",
-    //   color: "white"
-    // }
-
     const btnStyleAdd = {
       color: "white", background: "#89D329 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     };
 
     const btnStyleRemove = {
       color: "white", background: "#C1C1C1 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     };
 
 

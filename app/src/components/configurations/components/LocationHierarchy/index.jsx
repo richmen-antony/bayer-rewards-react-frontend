@@ -1,6 +1,4 @@
 import React from "react";
-import { render } from "react-dom";
-
 
 class LocationHierarchy extends React.Component {
   state = {
@@ -80,14 +78,14 @@ class LocationHierarchy extends React.Component {
       color: "white", background: "#89D329 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     }
 
     const btnStyleRemove = {
       color: "white", background: "#C1C1C1 0% 0% no-repeat padding-box",
       boxshadow: " 0px 3px 6px #00000029", opacity: 1,
       fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20, color: "white"
+      width: 35, height: 35, borderRadius: 20
     }
     const tableScrollStyle = {
       maxHeight: "280px",

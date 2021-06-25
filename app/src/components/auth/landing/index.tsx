@@ -5,7 +5,6 @@ import content1 from "../../../assets/icons/image_1.svg";
 import content2 from "../../../assets/icons/image_2.svg";
 import rewardsLogo from "../../../assets/icons/logo.svg";
 import bayerLogo from "../../../assets/icons/bayer_logo.svg";
-import { Link } from "react-router-dom";
 import "../../../assets/scss/landing.scss";
 import {
   getLocalStorageData,
@@ -19,7 +18,6 @@ import {
   CarouselItem,
   CarouselControl,
   CarouselIndicators,
-  CarouselCaption,
 } from "reactstrap";
 
 const items = [

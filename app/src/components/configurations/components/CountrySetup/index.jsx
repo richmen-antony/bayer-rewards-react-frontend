@@ -16,36 +16,10 @@ export const CountrySetup = (props) => {
 
   const countryDetails = selectedCountryDetails.length > 0 ? selectedCountryDetails : [];
 
-  const _onChangeActiveStep = nextActiveStep => {
-    const { onChangeActiveStep } = props;
-
-    if (onChangeActiveStep && typeof onChangeActiveStep === "function") {
-      onChangeActiveStep(nextActiveStep);
-    }
-
-  }
-
-  const handleDropdownChangeCurrency = (event) => {
-    const countryName = countryDetails.filter(function (result) {
-      return result.name === event.target.value;
-    });
-    const currencyDesc = countryName[0].currencyDesc;
-    setcurrencyDesc(currencyDesc);
-  }
-
   const handleDropdownChange = (event) => {
     _retriveCountryCode(event.target.value);
   }
 
-  const getUnique = (arr, comp) => {
-    //store the comparison  values in array
-    const unique = arr.map(e => e[comp]).
-      // store the indexes of the unique objects
-      map((e, i, final) => final.indexOf(e) === i && i)
-      // eliminate the false indexes & return unique objects
-      .filter((e) => arr[e]).map(e => arr[e]);
-    return unique
-  }
 
   const _retriveCountryCode = (countryValue) => {
     const countryName = countryDetails.filter(function (result) {

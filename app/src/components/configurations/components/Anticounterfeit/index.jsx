@@ -9,20 +9,6 @@ const tableStyle = {
 };
 
 export const Anticounterfeit = (props) => {
-  const _onChangeActiveStep = nextActiveStep => {
-    const { onChangeActiveStep } = props;
-
-    if (onChangeActiveStep && typeof onChangeActiveStep === "function") {
-      onChangeActiveStep(nextActiveStep);
-    }
-    // this.handleDropdownChange = this.handleDropdownChange.bind(this);
-  }
-
-  // handleDropdownChange(e) {
-  //   this.setState({ selectValue: e.target.value });
-  // }
-
-
   return (
     <div className="col-md-10">
       <div className="container">
