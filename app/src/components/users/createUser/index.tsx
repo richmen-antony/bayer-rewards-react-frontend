@@ -187,12 +187,12 @@ class CreateUser extends Component<any, any> {
    
  
   }
-componentDidUpdate(){
-  //To handle unsaved changes navigation routes
-  if (this.state.shouldBlockNavigation) {
-    window.onbeforeunload = () => true
-  }
-}
+// componentDidUpdate(){
+//   //To handle unsaved changes navigation routes
+//   if (this.state.shouldBlockNavigation) {
+//     window.onbeforeunload = () => true
+//   }
+// }
 
   getChannelPartnersList = () => {
     this.setState({
