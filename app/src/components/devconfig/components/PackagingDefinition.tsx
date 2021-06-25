@@ -85,13 +85,16 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
+    const inputListSeedOrCP = inputList
+    .filter((pc: any) => pc.productcategory == activeButton)
+    
     setInputList([
       ...inputList,
       {
-        packaginghierarchylevel: activeButton === "SEED" ? inputList.length : inputListData.length,
+        productcategory: activeButton, 
+        packaginghierarchylevel: inputListSeedOrCP.length,
         packaginghierarchyname: "",
         parentpackage: "",
-        productcategory: activeButton,
       },
     ]);
   };
