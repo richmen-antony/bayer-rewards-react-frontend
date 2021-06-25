@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxHeight: 100,
       "& .MuiOutlinedInput-root": {
         height: "40px",
-        fontSize: "14px",
+        fontSize: "12px",
         width: "185px",
       },
       "&.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {

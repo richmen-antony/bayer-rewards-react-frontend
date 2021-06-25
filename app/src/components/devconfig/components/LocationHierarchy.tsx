@@ -63,7 +63,7 @@ const LocationHierarchy = (props: ILocationProps) => {
         {
           locationhierlevel: inputList.length,
           locationhiername: "",
-          parentlocation: -1,
+          parentlocation: inputList.length -1,
         },
       ]);
     }
@@ -71,6 +71,7 @@ const LocationHierarchy = (props: ILocationProps) => {
 
   const handleDropdownChange = (event: any, index: any) => {
     const { name, value } = event.target;
+    console.log({name,value});
     const list: any = [...inputList];
     list[index].parentlocation = value;
     setInputList(list);
@@ -96,6 +97,7 @@ const LocationHierarchy = (props: ILocationProps) => {
     inputList,
     "locationhiername"
   );
+  console.log({LocationDetailsOption})
 
   return (
     <div className="col-md-12">
@@ -180,6 +182,11 @@ const LocationHierarchy = (props: ILocationProps) => {
                           parentIndex={idx}
                           locationHierarchySelected={true}
                         />
+                        {/* {!item.parentlocation&& isValidNext&&(
+                          <span className="error">
+                            {"Please select the Role type"}
+                          </span>
+                        )} */}
                       </td>
                       <td className="tablebtnStyle">
                         {idx === inputList.length - 1 ? (

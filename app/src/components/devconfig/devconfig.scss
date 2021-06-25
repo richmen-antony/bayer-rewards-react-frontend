@@ -70,7 +70,7 @@
 }
 
 .tableScrollStyle {
-  max-height: 280px;
+  max-height: 42vh;
   overflow-y: auto;
 }
 
@@ -95,7 +95,7 @@
 /* width */
 ::-webkit-scrollbar {
   height: 4px;
-  width: 4px;
+  width: 5px;
 }
 
 /* Track */
@@ -138,7 +138,8 @@ input:read-only {
     padding-top: 5px;
     padding-bottom: 5px;
     text-align: left;
-    background-color: white;
+    background-color: #ffffff;
+    z-index: 1;
   }
 
   // th {

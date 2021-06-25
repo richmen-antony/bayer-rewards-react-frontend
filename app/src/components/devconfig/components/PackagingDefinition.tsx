@@ -94,7 +94,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         productcategory: activeButton, 
         packaginghierarchylevel: inputListSeedOrCP.length,
         packaginghierarchyname: "",
-        parentpackage: "",
+        parentpackage: inputListSeedOrCP.length-1,
       },
     ]);
   };

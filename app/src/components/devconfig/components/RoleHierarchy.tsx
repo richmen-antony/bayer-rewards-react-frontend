@@ -71,8 +71,8 @@ export const RoleHierarchy = (props: IRoleProps) => {
           rolehierarchylevel: inputList.length,
           rolecode: "",
           rolehierarchyname: "",
-          roletype: "",
-          parentrole: "NONE",
+          roletype: "INTERNAL",
+          parentrole: inputList[inputList.length-1].rolecode,
         },
       ]);
     }
@@ -199,6 +199,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           value={item.roletype}
                           isPlaceholder
                           commonSelectType={true}
+                          // defaultValue={'INTERNAL'}
                         />
                       </td>
                       <td className="tableHeaderStyle">
