@@ -88,7 +88,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     setInputList([
       ...inputList,
       {
-        packaginghierarchylevel: inputList.length + 1,
+        packaginghierarchylevel: inputList.length,
         packaginghierarchyname: "",
         parentpackage: "",
         productcategory: activeButton,
