@@ -3,9 +3,7 @@ import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
-
 import { addLocationInputList } from "../../../redux/actions";
-import Dropdown from "../../../utility/widgets/dropdown";
 import { handledropdownoption } from "../../../utility/helper";
 import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
 
@@ -19,8 +17,6 @@ interface ILocationProps {
 
 const LocationHierarchy = (props: ILocationProps) => {
   const { inputList, setInputList, getValidation, isValidNext } = props;
-  console.log({ inputList });
-
   const [valSelected, setValSelected] = useState("NA");
 
   // handle input change
@@ -49,7 +45,6 @@ const LocationHierarchy = (props: ILocationProps) => {
     let list = [...inputList];
     list.splice(index, 1);
     list = setCorrectHierLvl(list, index);
-    console.log(list);
     setInputList(list);
   };
 
@@ -71,7 +66,6 @@ const LocationHierarchy = (props: ILocationProps) => {
 
   const handleDropdownChange = (event: any, index: any) => {
     const { name, value } = event.target;
-    console.log({name,value});
     const list: any = [...inputList];
     list[index].parentlocation = value;
     setInputList(list);
@@ -97,7 +91,7 @@ const LocationHierarchy = (props: ILocationProps) => {
     inputList,
     "locationhiername"
   );
-  console.log({LocationDetailsOption})
+
 
   return (
     <div className="col-md-12">

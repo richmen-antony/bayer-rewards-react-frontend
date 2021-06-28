@@ -116,8 +116,10 @@ function getStyles(name: string, packageLevelName: string[], theme: Theme) {
 
 
 interface IScanPointsAndAllocationProps {
-  scanpointsandallocation: any;
+  inputList: any;
   setInputList: (data: any) => void;
+  getValidation: () => void;
+  isValidNext: boolean;
   tntflow: any;
   packagingdefinition: any;
 }
@@ -137,10 +139,11 @@ export const ScanPointsAndAllocation = (
   props: IScanPointsAndAllocationProps
 ) => {
   const {
-    scanpointsandallocation: { inputList },
+     inputList,
     setInputList,
+    getValidation,
+    isValidNext,
   } = props;
-  console.log({inputList})
   const [valSelected, setValSelected] = useState("NA");
   const classes = useStyles();
   const theme = useTheme();
@@ -153,7 +156,6 @@ export const ScanPointsAndAllocation = (
     "packaginghierarchyname"
   );
   const packageLevelOption=paackaginglevelList?.length>0&&paackaginglevelList.map((value:any)=>{ return (value.packaginghierarchyname&& value.packaginghierarchyname)});
-   console.log({packageLevelOption,paackaginglevelList})
   
    
 
@@ -174,23 +176,29 @@ export const ScanPointsAndAllocation = (
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-    setInputList([
-      ...inputList,
-      //   {
-      //     position: { id: 0, value: "NA" },
-      //     scannedby: { id: 0, value: "NA" },
-      //     scantype: { id: 0, value: "NA" },
-      //     packaginglevel: { id: 0, value: "NA" },
-      //     pointallocated: { id: 0, value: "NA" },
-      //   },
-      {
-        position: 0,
-        scannedby: "",
-        scantype: "",
-        packaginglevel: "",
-        pointallocated: false,
-      },
-    ]);
+    getValidation();
+    const data = inputList[index];
+    if(!Object.values(data).some(el=>el==="")){
+      setInputList([
+        ...inputList,
+        //   {
+        //     position: { id: 0, value: "NA" },
+        //     scannedby: { id: 0, value: "NA" },
+        //     scantype: { id: 0, value: "NA" },
+        //     packaginglevel: { id: 0, value: "NA" },
+        //     pointallocated: { id: 0, value: "NA" },
+        //   },
+        {
+          position: 0,
+          scannedby: "",
+          scantype: "",
+          packaginglevel: "",
+          pointallocated: false,
+        },
+      ]);
+    }
+
+    
   };
 
   const handleDropdownPostionChange = (event: any, index: any) => {
@@ -220,44 +228,34 @@ export const ScanPointsAndAllocation = (
   const handlePackaginglevelChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    list[index].packaginglevel = value.join(",");
+     // remove empty string from array
+     const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
+    list[index].packaginglevel = result.join(",");
     setInputList(list);
-    setValSelected(event.target.value);
+    setValSelected(result);
   };
 
   const handlePointsallocatedChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
-    console.log("value : ", value);
     list[index].pointallocated = value;
     setInputList(list);
     setValSelected(event.target.value);
   };
  
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>,i:number) => {
-    console.log("calue",event.target.value);
-    setPackageDropdown(event.target.value as string[]);
+  const handleChange = (event: React.ChangeEvent<{ value: any }>,i:number) => {
+   // remove empty string from array
+    const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
+    setPackageDropdown(result as string[]);
     handlePackaginglevelChange(event,i)
   };
 
-  const handleChangeMultiple = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    const { options } = event.target as HTMLSelectElement;
-    const value: string[] = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setPackageDropdown(value);
-  };
+
   useEffect(() => {
     if(packageLevelOption){
       setPackageLevelList(packageLevelOption)
     }
   },[]);
-  console.log({packageLevelList,packageLevelName})
   const packaginglevelOptions = handledropdownoption(
     paackaginglevelList,
     "packaginghierarchyname"
@@ -315,6 +313,11 @@ export const ScanPointsAndAllocation = (
                         isPlaceholder
                         commonSelectType={true}
                       />
+                      {item?.position_error && isValidNext && (
+                          <span className="error">
+                            {"Please select the position"}
+                          </span>
+                        )}
                     </td>
                     <td className="tableHeaderStyle">
                       {/* <select
@@ -342,6 +345,12 @@ export const ScanPointsAndAllocation = (
                         isPlaceholder
                         commonSelectType={true}
                       />
+                      
+                      {item?.scannedby_error && isValidNext && (
+                          <span className="error">
+                            {"Please select the scanned by"}
+                          </span>
+                        )}
                     </td>
 
                     <td className="tableHeaderStyle">
@@ -378,6 +387,11 @@ export const ScanPointsAndAllocation = (
                         isPlaceholder
                         commonSelectType={true}
                       />
+                      {item?.scantype_error && isValidNext && (
+                          <span className="error">
+                            {"Please select the scan type"}
+                          </span>
+                        )}
                     </td>
                     <td className="tableHeaderStyle">
                       {/* <select
@@ -421,6 +435,7 @@ export const ScanPointsAndAllocation = (
                           onChange={(e:any)=>handleChange(e,idx)}
                           input={<BootstrapInput />}
                           renderValue={(selected) =>
+                            
                             (selected as string[]).join(", ")
                           }
                           MenuProps={MenuProps}
@@ -442,6 +457,11 @@ export const ScanPointsAndAllocation = (
                           )}
                         </Select>
                       </FormControl>
+                      {item?.packaginglevel_error && isValidNext && (
+                          <span className="error">
+                            {"Please select the package level"}
+                          </span>
+                        )}
                     </td>
 
                     <td className="tableHeaderStyle">
@@ -472,6 +492,11 @@ export const ScanPointsAndAllocation = (
                         isPlaceholder
                         commonSelectType={true}
                       />
+                       {item?.pointallocated_error && isValidNext && (
+                          <span className="error">
+                            {"Please select the points allocated"}
+                          </span>
+                        )}
                     </td>
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (

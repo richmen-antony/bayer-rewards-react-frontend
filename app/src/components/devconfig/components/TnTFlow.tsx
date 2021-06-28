@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../devconfig/devconfig.scss";
-import plus_icon from "../../../assets/icons/plus_icon.svg";
-import minus from "../../../assets/icons/minus.svg";
 import { connect } from "react-redux";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
@@ -22,6 +20,18 @@ export const TnTFlow = (props: ITnTProps) => {
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
+    if (value) {
+      const isDuplicate = list.find(
+        (duplicate: any) =>
+          duplicate[name].toLowerCase() === value.toLowerCase()
+      );
+      if (isDuplicate) {
+        //  getValidation();
+        list[index][name + "IsDuplicate"] = true;
+      } else {
+        list[index][name + "IsDuplicate"] = false;
+      }
+    }
     list[index][name] = value;
     setInputList(list);
   };
@@ -38,7 +48,7 @@ export const TnTFlow = (props: ITnTProps) => {
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
-    if (data.code && data.position) {
+    if (data.code && data.position &&!data.codeIsDuplicate && !data.positionIsDuplicate) {
       setInputList([...inputList, { level: inputList.length, code: "", position: "" }]);
     }
   };
@@ -60,7 +70,6 @@ export const TnTFlow = (props: ITnTProps) => {
     setInputList(list);
     setValSelected(event.target.value);
   };
-  console.log("tnt", inputList);
   return (
     <div className="col-md-12">
       <div className="container">
@@ -88,11 +97,24 @@ export const TnTFlow = (props: ITnTProps) => {
                           value={item.code}
                           onChange={(e) => handleInputChange(e, idx)}
                         />
-                        {item?.code_error && isValidNext && (
+                        {isValidNext && item?.code_error ?  
+                         <span className="error">
+                         {"Please enter the code"}
+                       </span> :item?.codeIsDuplicate && (
+                          <span className="error">
+                            {item.code + " is unavailable"}
+                          </span>
+                        )  }
+                        {/* {item?.code_error && isValidNext && (
                           <span className="error">
                             {"Please enter the code"}{" "}
                           </span>
                         )}
+                        {!item?.code_error&&item?.codeIsDuplicate && isValidNext && (
+                          <span className="error">
+                            {item.code + " is unavailable"}
+                          </span>
+                        )} */}
                       </td>
 
                       <td className="tableHeaderStyle">
@@ -103,11 +125,27 @@ export const TnTFlow = (props: ITnTProps) => {
                           value={item.position}
                           onChange={(e) => handleInputChange(e, idx)}
                         />
-                        {item?.position_error && isValidNext && (
+                        {isValidNext && item?.position_error ? 
+                        <span className="error">
+                        {"Please enter the position"}
+                      </span> :item?.positionIsDuplicate &&(
                           <span className="error">
-                            {"Please enter the position"}{" "}
+                            {item.position + " is unavailable"}
+                          </span>
+                        )
+
+
+                        }
+                        {/* {item?.position_error && isValidNext && (
+                          <span className="error">
+                            {"Please enter the position"}
                           </span>
                         )}
+                         {item?.positionIsDuplicate && isValidNext && (
+                          <span className="error">
+                            {item.position + " is unavailable"}
+                          </span>
+                        )} */}
                       </td>
 
                       <td className="tablebtnStyle ">

@@ -1,6 +1,5 @@
 import React from "react";
 import "../../assets/scss/configurations.scss";
-import { compose } from "redux";
 import { connect } from "react-redux";
 import Stepper from "../../container/components/stepper/Stepper";
 import { apiURL } from "../../utility/base/utils/config";
@@ -13,10 +12,8 @@ import TnTFlow from "./components/TnTFlow";
 import PackagingDefinition from "./components/PackagingDefinition";
 import ScanPointsAndAllocation from "./components/ScanPointsAndAllocation";
 import { Anticounterfeit } from "./components/Anticounterfeit";
-
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import {
 	addLocationInputList,
@@ -37,12 +34,10 @@ import {
 	withStyles,
 	Theme,
 	createStyles,
-	WithStyles,
 } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import left_arrow from "../../assets/icons/left_arrow.svg";
 import right_arrow from "../../assets/icons/left-arrow.svg";
 import reset from "../../assets/icons/reset.svg";
 import check from "../../assets/images/check.png";
@@ -50,6 +45,7 @@ import tickIcon from "../../assets/icons/tick.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import Dropdown from "../../utility/widgets/dropdown";
 import { handledropdownoption } from "../../utility/helper";
+import _ from 'lodash'
 
 let data: any = getLocalStorageData("userData");
 let userData = JSON.parse(data);
@@ -109,6 +105,8 @@ type MyComponentState = {
 	roleHierarchy: Array<any>;
 	tntflowData: Array<any>;
 	countryDetails: any;
+	packageDefintionData: Array<any>;
+	scanPtsAllocationData: Array<any>;
 };
 
 const AntTabs = withStyles({
@@ -229,6 +227,8 @@ class Devconfigurations extends React.Component<
 			roleHierarchy: [],
 			tntflowData: [],
 			countryDetails: [],
+			packageDefintionData: [],
+			scanPtsAllocationData:[]
 		};
 		this.handleDropdownChange = this.handleDropdownChange.bind(this);
 		this.handleDropdownChangeRegion =
@@ -251,8 +251,6 @@ class Devconfigurations extends React.Component<
 		const { currentStep } = this.state;
 		const { loacationinputList } = this.props;
 		if (currentStep === 2) {
-			console.log({ loacationinputList });
-			console.log("called");
 			const isValid = loacationinputList.filter(
 				(value: any) => value.locationhiername === ""
 			);
@@ -280,7 +278,6 @@ class Devconfigurations extends React.Component<
 		}
 
 		if (newStep === 1) {
-			console.log("currentStep : ", currentStep);
 			this.setState({
 				isActive: false,
 			});
@@ -388,7 +385,6 @@ class Devconfigurations extends React.Component<
 		}
 
 		if (newStep === 1) {
-			console.log("currentStep : ", currentStep);
 			this.setState({
 				isActive: false,
 			});
@@ -433,23 +429,34 @@ class Devconfigurations extends React.Component<
 				tntflowData: this.props.tntflowinputList,
 			});
 		}
+		if (
+			this.props.packagingdefinitionList !== prevProps.packagingdefinitionList
+		) {
+			this.setState({
+				packageDefintionData: this.props.packagingdefinitionList,
+			});
+		}
+		if (
+			this.props.scanpointsandallocationinputList !== prevProps.scanpointsandallocationinputList
+		) {
+			this.setState({
+				scanPtsAllocationData: this.props.scanpointsandallocationinputList,
+			});
+		}
 	}
 
 	_retrieveSelectedContryofCluster = async (setSelectedCluster: any) => {
 		try {
-			console.log("setSelectedCluster ", setSelectedCluster);
 			let selectedCountryDetails = [];
 			const regions = cluster_json;
 			const filterCuntryDropdown = regions.filter(function (result) {
 				return result.cluster === setSelectedCluster;
 			});
 			const countryUnique = this.getUnique(filterCuntryDropdown, "name");
-			console.log(countryUnique);
 			selectedCountryDetails = countryUnique;
 
 			this.setState({ selectedCountryDetails });
 		} catch (error) {
-			console.log(error);
 		}
 	};
 
@@ -479,7 +486,6 @@ class Devconfigurations extends React.Component<
 				return (value = { ...value });
 			}
 		});
-		console.log({ tntflowDataData, locationHierarchyData, roleHierarchyData });
 		this.setState({ isLoader: true });
 		let data = {
 			countrycode: devconfig.countryName,
@@ -502,7 +508,6 @@ class Devconfigurations extends React.Component<
 
 		invokePostService(registerTemplateData, data)
 			.then((response: any) => {
-				console.log(response);
 				// toastSuccess("Country configuration is successfully created");
 				Alert("success", "Country configuration is successfully created");
 				this.props.history.push("./dashboard");
@@ -512,7 +517,6 @@ class Devconfigurations extends React.Component<
 			})
 			.catch((error: any) => {
 				this.setState({ isLoader: false });
-				console.log(error, "error");
 				let message = error.message;
 				if (
 					message ===
@@ -581,7 +585,6 @@ class Devconfigurations extends React.Component<
 	//     });
 	// };
 	handleValidation = (condIf: any) => {
-		console.log({ condIf });
 	};
 
 	getCountryDetails = () => {};
@@ -595,6 +598,8 @@ class Devconfigurations extends React.Component<
 			roleHierarchy,
 			tntflowData,
 			countryDetails,
+			packageDefintionData,
+			scanPtsAllocationData
 		} = this.state;
 
 		switch (currentStep) {
@@ -632,9 +637,18 @@ class Devconfigurations extends React.Component<
 					/>
 				);
 			case 5:
-				return <PackagingDefinition />;
+				return (
+					<PackagingDefinition
+						inputList={packageDefintionData}
+						isValidNext={isError}
+						getValidation={this.handleInputValidation}
+					/>
+				);
 			case 6:
-				return <ScanPointsAndAllocation />;
+				return <ScanPointsAndAllocation 
+				        inputList={scanPtsAllocationData}
+						isValidNext={isError}
+						getValidation={this.handleInputValidation}/>;
 			case 7:
 				return <Anticounterfeit />;
 			default:
@@ -661,9 +675,18 @@ class Devconfigurations extends React.Component<
 		return unique;
 	}
 
+	/**
+	 * Validate fields
+	 */
 	handleInputValidation = () => {
 		const { currentStep } = this.state;
-		const { loacationinputList, roleinputList, tntflowinputList } = this.props;
+		const {
+			loacationinputList,
+			roleinputList,
+			tntflowinputList,
+			packagingdefinitionList,
+			scanpointsandallocationinputList
+		} = this.props;
 		if (currentStep === 2) {
 			const data = loacationinputList.map((value: any) => {
 				if (!value.locationhiername) {
@@ -748,7 +771,6 @@ class Devconfigurations extends React.Component<
 					} else if (!value.position) {
 						value = { ...value, position_error: true, code_error: false };
 					}
-
 					this.setState({
 						isError: true,
 						currentStep: 4,
@@ -759,9 +781,78 @@ class Devconfigurations extends React.Component<
 						isError: false,
 					});
 				}
+				if (value?.codeIsDuplicate || value?.positionIsDuplicate) {
+					this.setState({
+						isError: true,
+						currentStep: 4,
+					});
+				}
+
 				return value;
 			});
 			this.setState({ tntflowData: data });
+		}
+
+		if (currentStep === 5) {
+			const data = packagingdefinitionList.map((value: any) => {
+				if (!value.packaginghierarchyname) {
+					value = { ...value, error: true };
+					this.setState({
+						isError: true,
+						currentStep: 5,
+					});
+				} else {
+					value = { ...value, error: false };
+					this.setState({
+						isError: false,
+					});
+				}
+
+				if (value?.isDuplicate) {
+					this.setState({
+						isError: true,
+						currentStep: 5,
+					});
+				}
+				return value;
+			});
+
+			this.setState({ packageDefintionData: data }, () => {
+			});
+		}
+		if(currentStep===6){
+			const data = scanpointsandallocationinputList.map((value: any) => {
+					for (let key in value) {
+						if (value[key]==="" || value[key]===0) {
+							this.setState({
+								isError: true,
+								currentStep: 6,
+							});
+					     value={...value,[key+"_error"]:true}
+						}else{
+						if(value[key]!=false){
+							value={...value,[key+"_error"]:false}
+							this.setState({
+								isError: false,
+							
+							});
+						}
+						 
+						
+						}
+						
+					  }
+					  return value;
+
+				
+					
+				  
+				 
+
+			});
+			this.setState({ scanPtsAllocationData: data }, () => {
+			});
+
 		}
 	};
 	render() {

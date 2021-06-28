@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
-import plus_icon from "../../../assets/icons/plus_icon.svg";
-import minus from "../../../assets/icons/minus.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addRoleInputList } from "../../../redux/actions";
@@ -42,16 +40,15 @@ export const RoleHierarchy = (props: IRoleProps) => {
     }
     list[index][name] = value;
     setInputList(list);
-    getValidation();
+    // getValidation();
   };
-  console.log("inputlist : ", inputList);
+
 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
     list.splice(index, 1);
     list = setCorrectHierLvl(list, index);
-    console.log(list);
     setInputList(list);
   };
 
@@ -142,16 +139,15 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           value={item.rolecode}
                           onChange={(e) => handleInputChange(e, idx)}
                         />
-                        {item?.rolecode_error && isValidNext && (
-                          <span className="error">
-                            {"Please enter Role Code"}{" "}
-                          </span>
-                        )}
-                        {item?.rolecodeIsDuplicate && isValidNext && (
+                        {isValidNext && item?.rolecode_error ? 
+                        <span className="error">
+                        {"Please enter the Role Code"}
+                      </span> :item?.rolecodeIsDuplicate &&(
                           <span className="error">
                             {item.rolecode + " is unavailable"}
                           </span>
                         )}
+                        
                       </td>
                       <td className="tableHeaderStyle">
                         <input
@@ -161,16 +157,15 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           value={item.rolehierarchyname}
                           onChange={(e) => handleInputChange(e, idx)}
                         />
-                        {item?.rolehierarchyname_error && isValidNext && (
-                          <span className="error">
-                            {"Please enter Role Hierarchy"}
-                          </span>
-                        )}
-                        {item?.rolehierarchynameIsDuplicate && (
+                        {isValidNext && item?.rolehierarchyname_error ? 
+                        <span className="error">
+                        {"Please enter the Role Hierarchy"}
+                      </span> :item?.rolehierarchynameIsDuplicate &&(
                           <span className="error">
                             {item.rolehierarchyname + " is unavailable"}
                           </span>
                         )}
+                        
                       </td>
                       <td className="tableHeaderStyle">
                         {/* <select

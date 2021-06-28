@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../devconfig/devconfig.scss";
-import plus_icon from "../../../assets/icons/plus_icon.svg";
-import minus from "../../../assets/icons/minus.svg";
 import { connect } from "react-redux";
-
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
-
 import { addPackagingDefinitionInputList } from "../../../redux/actions";
 import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
 import { handledropdownoption } from "../../../utility/helper";
 
 interface IPackagingDefinitionProps {
-  packagingdefinition: any;
+  inputList: any;
   setInputList: (data: any) => void;
+  getValidation: () => void;
+  isValidNext: boolean;
 }
 
 export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const {
-    packagingdefinition: { inputList },
+     inputList,
     setInputList,
+    isValidNext,
+    getValidation
   } = props;
   const [valSelected, setValSelected] = useState("NA");
   const [activeButton, SetActiveButton] = React.useState("SEED");
@@ -28,16 +28,23 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const handleInputChange = (e: any, index: any, data: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
+    let isDuplicate:boolean=false
     const arr = list.map((val: any) => {
+      if(val.productcategory === data.productcategory){
+        if(val[name].toLowerCase() === value.toLowerCase()){
+          isDuplicate=true
+        }
+      }
       if (
         val.productcategory === data.productcategory &&
         val.packaginghierarchylevel === data.packaginghierarchylevel
       ) {
-        return (val = { ...val, [name]: value });
+        return (val = { ...val, [name]: value ,isDuplicate});
       } else {
         return val;
       }
     });
+    
     setInputList(arr);
   };
 
@@ -64,7 +71,6 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         listItem.productcategory === data.productcategory
       ) {
       let count = i++;
-      console.log({count});
         return {
           ...listItem,
         packaginghierarchylevel: !count ? 0 : count,
@@ -85,9 +91,11 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
+    getValidation();
     const inputListSeedOrCP = inputList
     .filter((pc: any) => pc.productcategory == activeButton)
-    
+    const data = inputListSeedOrCP[index];
+     if(data.packaginghierarchyname && !data.isDuplicate)
     setInputList([
       ...inputList,
       {
@@ -128,6 +136,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     .map((item: any, idx: number) => item);
 
   const parentpackageOptions = handledropdownoption(inputListData, "packaginghierarchyname");
+
 
   return (
     <div className="col-md-12">
@@ -188,6 +197,24 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               value={item.packaginghierarchyname}
                               onChange={(e) => handleInputChange(e, idx, item)}
                             />
+                             {isValidNext && item?.error ?  
+                         <span className="error">
+                         {"Please enter the name"}
+                       </span> :item?.isDuplicate && (
+                          <span className="error">
+                            {item.packaginghierarchyname + " is unavailable"}
+                          </span>
+                        )  }
+                          {/* {item?.error && isValidNext && (
+                          <span className="error">
+                            {"Please enter the name"}
+                          </span>
+                        )}
+                        {item?.isDuplicate && isValidNext && (
+                          <span className="error">
+                            {item.packaginghierarchyname + " is unavailable"}
+                          </span>
+                        )} */}
                           </td>
 
                           <td className="tableHeaderStyle">
