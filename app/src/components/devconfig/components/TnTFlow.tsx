@@ -16,17 +16,23 @@ export const TnTFlow = (props: ITnTProps) => {
   const { inputList, setInputList, getValidation, isValidNext } = props;
   const [valSelected, setValSelected] = useState("NA");
 
-  // handle input change
+  /**
+   * To handle input change fields
+   * @param e 
+   * @param index 
+   */
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
+      // check for duplicate values from previous list array
       const isDuplicate = list.find(
         (duplicate: any) =>
           duplicate[name].toLowerCase() === value.toLowerCase()
       );
       if (isDuplicate) {
         //  getValidation();
+        //append the value for duplicate(show up error )
         list[index][name + "IsDuplicate"] = true;
       } else {
         list[index][name + "IsDuplicate"] = false;
@@ -36,7 +42,11 @@ export const TnTFlow = (props: ITnTProps) => {
     setInputList(list);
   };
 
-  // handle click event of the Remove button
+  
+  /**
+   * handle click event of the Remove button
+   * @param index 
+   */
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
     list.splice(index, 1);
@@ -44,7 +54,11 @@ export const TnTFlow = (props: ITnTProps) => {
     setInputList(list);
   };
 
-  // handle click event of the Add button
+
+  /**
+   * handle click event of the Add button
+   * @param index 
+   */
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
@@ -53,6 +67,12 @@ export const TnTFlow = (props: ITnTProps) => {
     }
   };
 
+  /**
+   * To set the hiearchy level order list
+   * @param list 
+   * @param index 
+   * @returns 
+   */
   const setCorrectHierLvl = (list: any, index: number) => {
     const newList = list.map((listItem: any, idx: number) => {
       return {
@@ -63,13 +83,13 @@ export const TnTFlow = (props: ITnTProps) => {
     return newList;
   };
 
-  const handleDropdownChange = (event: any, index: any) => {
-    const { name, value } = event.target;
-    const list: any = [...inputList];
-    list[index].parentlocation = value;
-    setInputList(list);
-    setValSelected(event.target.value);
-  };
+  // const handleDropdownChange = (event: any, index: any) => {
+  //   const { name, value } = event.target;
+  //   const list: any = [...inputList];
+  //   list[index].parentlocation = value;
+  //   setInputList(list);
+  //   setValSelected(event.target.value);
+  // };
   return (
     <div className="col-md-12">
       <div className="container">

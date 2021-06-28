@@ -24,17 +24,25 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
   const [valSelected, setValSelected] = useState("NA");
   const [activeButton, SetActiveButton] = React.useState("SEED");
 
-  // handle input change
+  
+  /**
+   * handle input change
+   * @param e 
+   * @param index 
+   * @param data 
+   */
   const handleInputChange = (e: any, index: any, data: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     let isDuplicate:boolean=false
     const arr = list.map((val: any) => {
+      //check for duplicate values
       if(val.productcategory === data.productcategory){
         if(val[name].toLowerCase() === value.toLowerCase()){
           isDuplicate=true
         }
       }
+      // assign the values for current change list values
       if (
         val.productcategory === data.productcategory &&
         val.packaginghierarchylevel === data.packaginghierarchylevel
@@ -44,11 +52,16 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         return val;
       }
     });
-    
+    // add list 
     setInputList(arr);
   };
 
-  // handle click event of the Remove button
+  
+  /**
+   * handle click event of the Remove button
+   * @param index 
+   * @param data 
+   */
   const handleRemoveClick = (index: any, data: any) => {
     let list = [...inputList];
     let arr = list.map((val: any, i: number) => {
@@ -63,7 +76,13 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     list = setCorrectHierLvlSeed(list, index,data);
     setInputList(list);
   };
-
+ /**
+  * To set the hiearachy level for array list
+  * @param list 
+  * @param index 
+  * @param data 
+  * @returns 
+  */
   const setCorrectHierLvlSeed = (list: any, index: number,data:any) => {
     let i=0;
     const newList = list.map((listItem: any, idx: number) => {
@@ -89,8 +108,13 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     return newList;
   };
 
-  // handle click event of the Add button
+  
+  /**
+   * handle click event of the Add button
+   * @param index 
+   */
   const handleAddClick = (index: any) => {
+    // validate the fields
     getValidation();
     const inputListSeedOrCP = inputList
     .filter((pc: any) => pc.productcategory == activeButton)
@@ -107,6 +131,12 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     ]);
   };
 
+  /**
+   * To handle the dropdown values 
+   * @param event 
+   * @param index 
+   * @param data 
+   */
   const handleDropdownChange = (event: any, index: any, data: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];

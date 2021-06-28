@@ -418,17 +418,19 @@ class Devconfigurations extends React.Component<
 				locationHierarchy: this.props.loacationinputList,
 			});
 		}
-
+         // update the role hiearchy data in state
 		if (this.props.roleinputList !== prevProps.roleinputList) {
 			this.setState({
 				roleHierarchy: this.props.roleinputList,
 			});
 		}
+		// update the t and t flow  data in state
 		if (this.props.tntflowinputList !== prevProps.tntflowinputList) {
 			this.setState({
 				tntflowData: this.props.tntflowinputList,
 			});
 		}
+	   // update the package defintion data in state
 		if (
 			this.props.packagingdefinitionList !== prevProps.packagingdefinitionList
 		) {
@@ -436,6 +438,7 @@ class Devconfigurations extends React.Component<
 				packageDefintionData: this.props.packagingdefinitionList,
 			});
 		}
+		// update the scan points allocation data in state
 		if (
 			this.props.scanpointsandallocationinputList !== prevProps.scanpointsandallocationinputList
 		) {
@@ -584,8 +587,6 @@ class Devconfigurations extends React.Component<
 	//       console.log(error, "error");
 	//     });
 	// };
-	handleValidation = (condIf: any) => {
-	};
 
 	getCountryDetails = () => {};
 
@@ -687,6 +688,7 @@ class Devconfigurations extends React.Component<
 			packagingdefinitionList,
 			scanpointsandallocationinputList
 		} = this.props;
+		// validate location hierarchy data
 		if (currentStep === 2) {
 			const data = loacationinputList.map((value: any) => {
 				if (!value.locationhiername) {
@@ -713,7 +715,7 @@ class Devconfigurations extends React.Component<
 
 			this.setState({ locationHierarchy: data });
 		}
-
+// validate role hierarchy data
 		if (currentStep === 3) {
 			const data = roleinputList.map((value: any) => {
 				if (!value.rolehierarchyname || !value.rolecode) {
@@ -760,7 +762,7 @@ class Devconfigurations extends React.Component<
 			});
 			this.setState({ roleHierarchy: data });
 		}
-
+// validate T and T Flow data
 		if (currentStep === 4) {
 			const data = tntflowinputList.map((value: any) => {
 				if (!value.code || !value.position) {
@@ -792,7 +794,7 @@ class Devconfigurations extends React.Component<
 			});
 			this.setState({ tntflowData: data });
 		}
-
+// validate package defintion data
 		if (currentStep === 5) {
 			const data = packagingdefinitionList.map((value: any) => {
 				if (!value.packaginghierarchyname) {
@@ -820,6 +822,7 @@ class Devconfigurations extends React.Component<
 			this.setState({ packageDefintionData: data }, () => {
 			});
 		}
+		// validate the scan points allocation data
 		if(currentStep===6){
 			const data = scanpointsandallocationinputList.map((value: any) => {
 					for (let key in value) {
@@ -836,19 +839,11 @@ class Devconfigurations extends React.Component<
 								isError: false,
 							
 							});
-						}
-						 
-						
+						} 
 						}
 						
 					  }
-					  return value;
-
-				
-					
-				  
-				 
-
+					  return value;	 
 			});
 			this.setState({ scanPtsAllocationData: data }, () => {
 			});

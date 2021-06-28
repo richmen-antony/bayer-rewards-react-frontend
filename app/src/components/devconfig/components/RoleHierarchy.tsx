@@ -23,11 +23,17 @@ export const RoleHierarchy = (props: IRoleProps) => {
   const { inputList, setInputList, isValidNext, getValidation } = props;
   const [valSelected, setValSelected] = useState("NA");
 
-  // handle input change
+  
+  /**
+   * handle input change
+   * @param e 
+   * @param index 
+   */
   const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
+       // check for duplicate values from previous list array
       const isDuplicate = list.find(
         (duplicate: any) =>
           duplicate[name].toLowerCase() === value.toLowerCase()
@@ -44,7 +50,11 @@ export const RoleHierarchy = (props: IRoleProps) => {
   };
 
 
-  // handle click event of the Remove button
+  
+  /**
+   *  handle click event of the Remove button
+   * @param index 
+   */
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
     list.splice(index, 1);
@@ -52,7 +62,11 @@ export const RoleHierarchy = (props: IRoleProps) => {
     setInputList(list);
   };
 
-  // handle click event of the Add button
+  
+  /**
+   * handle click event of the Add button
+   * @param index 
+   */
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
@@ -74,7 +88,11 @@ export const RoleHierarchy = (props: IRoleProps) => {
       ]);
     }
   };
-
+  /**
+   * To handle drop down values
+   * @param event 
+   * @param index 
+   */
   const handleDropdownChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
@@ -82,7 +100,11 @@ export const RoleHierarchy = (props: IRoleProps) => {
     setInputList(list);
     setValSelected(event.target.value);
   };
-
+/**
+ * To handle drop down values for roles
+ * @param event 
+ * @param index 
+ */
   const handleDropdownRoleChange = (event: any, index: any) => {
     const { name, value } = event.target;
     const list: any = [...inputList];
@@ -90,7 +112,12 @@ export const RoleHierarchy = (props: IRoleProps) => {
     setInputList(list);
     setValSelected(event.target.value);
   };
-
+/**
+ * To set the hiearchy order wise level
+ * @param list 
+ * @param index 
+ * @returns 
+ */
   const setCorrectHierLvl = (list: any, index: number) => {
     const newList = list.map((listItem: any, idx: number) => {
       return {
@@ -107,7 +134,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
     });
     return newList;
   };
-
+  // role dropdown list
   const roleOptions = handledropdownoption(inputList, "rolecode");
 
   return (

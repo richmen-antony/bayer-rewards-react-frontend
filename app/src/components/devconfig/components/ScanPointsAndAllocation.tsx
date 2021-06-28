@@ -176,8 +176,11 @@ export const ScanPointsAndAllocation = (
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
+    // to call validate fn from parent component 
     getValidation();
+    // get current list of array
     const data = inputList[index];
+    // check and validate fields is not empty string
     if(!Object.values(data).some(el=>el==="")){
       setInputList([
         ...inputList,
