@@ -8,12 +8,10 @@ import CustomCard from "../../container/components/card";
 import "../../assets/scss/rsmDashboard.scss";
 import {
   getLocalStorageData,
-  clearLocalStorageData,
 } from "../../utility/base/localStore";
 import { apiURL } from "../../utility/base/utils/config";
 import {
   invokeGetAuthService,
-  invokeGetService,
 } from "../../utility/base/service";
 import BarCodeIcon from "../../assets/icons/barcode.svg";
 

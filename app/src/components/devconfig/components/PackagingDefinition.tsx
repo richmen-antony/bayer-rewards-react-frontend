@@ -117,7 +117,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     // validate the fields
     getValidation();
     const inputListSeedOrCP = inputList
-    .filter((pc: any) => pc.productcategory == activeButton)
+    .filter((pc: any) => pc.productcategory === activeButton)
     const data = inputListSeedOrCP[index];
      if(data.packaginghierarchyname && !data.isDuplicate)
     setInputList([
@@ -162,7 +162,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     SetActiveButton(value);
   };
   const inputListData = inputList
-    .filter((pc: any) => pc.productcategory == activeButton)
+    .filter((pc: any) => pc.productcategory === activeButton)
     .map((item: any, idx: number) => item);
 
   const parentpackageOptions = handledropdownoption(inputListData, "packaginghierarchyname");
@@ -214,7 +214,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
               <tbody>
                 {inputListData.length > 0 &&
                   inputListData
-                    .filter((pc: any) => pc.productcategory == activeButton)
+                    .filter((pc: any) => pc.productcategory === activeButton)
                     .map((item: any, idx: number) => {
                       return (
                         <tr id="addr0" key={idx}>
@@ -310,6 +310,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                                   return (
                                     <div>
                                       <img
+                                        alt=""
                                         style={{
                                           width: "50px",
                                           height: "50px",
@@ -327,6 +328,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                                     <div>
                                       <td style={{ border: "none" }}>
                                         <img
+                                          alt=""
                                           style={{
                                             width: "50px",
                                             height: "50px",
@@ -340,6 +342,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
                                       <td style={{ border: "none" }}>
                                         <img
+                                          alt=""
                                           style={{
                                             width: "50px",
                                             height: "50px",
@@ -354,6 +357,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               })()
                             ) : (
                               <img
+                                alt=""
                                 style={{ width: "50px", height: "50px" }}
                                 src={RemoveBtn}
                                 onClick={() => handleRemoveClick(idx, item)}

@@ -16,10 +16,6 @@ import {
 } from "../../../redux/actions/devconfig/add";
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../../utility/base/service";
-import { ContactSupportOutlined } from "@material-ui/icons";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import Input from "@material-ui/core/Input";
 import Dropdown from "../../../utility/widgets/dropdown";
 import { handledropdownoption } from "../../../utility/helper";
 
@@ -46,11 +42,11 @@ type ICountryProps = {
   devconfig: any;
 };
 
-type State = {
-  foo: number;
-  bar: string;
-  baz: number;
-};
+// type State = {
+//   foo: number;
+//   bar: string;
+//   baz: number;
+// };
 
 interface cDetails {
   region: string;
@@ -105,16 +101,16 @@ const mapStateToProps = ({
   };
 };
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// };
 
 const CountrySetupComp = (props: ICountryProps) => {
   const {
@@ -244,17 +240,17 @@ const CountrySetupComp = (props: ICountryProps) => {
     }
   };
 
-  const getUnique = (arr: any, comp: any) => {
-    //store the comparison  values in array
-    const unique = arr
-      .map((e: any) => e[comp])
-      // store the indexes of the unique objects
-      .map((e: any, i: any, final: any) => final.indexOf(e) === i && i)
-      // eliminate the false indexes & return unique objects
-      .filter((e: any) => arr[e])
-      .map((e: any) => arr[e]);
-    return unique;
-  };
+  // const getUnique = (arr: any, comp: any) => {
+  //   //store the comparison  values in array
+  //   const unique = arr
+  //     .map((e: any) => e[comp])
+  //     // store the indexes of the unique objects
+  //     .map((e: any, i: any, final: any) => final.indexOf(e) === i && i)
+  //     // eliminate the false indexes & return unique objects
+  //     .filter((e: any) => arr[e])
+  //     .map((e: any) => arr[e]);
+  //   return unique;
+  // };
 
   const _retriveCountryCode = (countryValue: any) => {
     const countryName: any = countryDetails.filter(function (result: any) {

@@ -45,7 +45,7 @@ import tickIcon from "../../assets/icons/tick.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import Dropdown from "../../utility/widgets/dropdown";
 import { handledropdownoption } from "../../utility/helper";
-import _ from 'lodash'
+// import _ from 'lodash'
 
 let data: any = getLocalStorageData("userData");
 let userData = JSON.parse(data);
@@ -467,28 +467,29 @@ class Devconfigurations extends React.Component<
 		const { registerTemplateData } = apiURL;
 		const { devconfig } = this.props;
 		const { locationHierarchy, roleHierarchy, tntflowData } = this.state;
-		let locationHierarchyData = locationHierarchy.map((value: any) => {
-			if (value?.error || !value?.error) {
-				delete value.error;
-				return (value = { ...value });
-			}
-		});
+		// let locationHierarchyData = locationHierarchy.map((value: any) => {
+		// 	if (value?.error || !value?.error) {
+		// 		delete value.error;
+		// 		return (value = { ...value });
+		// 	}
+		// });
 
-		let roleHierarchyData = roleHierarchy.map((value: any) => {
-			if (value?.rolehierarchyname_error || !value?.rolecode_error) {
-				delete value?.rolehierarchyname_error;
-				delete value?.rolecode_error;
-				return (value = { ...value });
-			}
-		});
+		// let roleHierarchyData = roleHierarchy.map((value: any) => {
+		// 	if (value?.rolehierarchyname_error || !value?.rolecode_error) {
+		// 		delete value?.rolehierarchyname_error;
+		// 		delete value?.rolecode_error;
+		// 		return (value = { ...value });
+		// 	}
+		// });
 
-		let tntflowDataData = tntflowData.map((value: any) => {
-			if (value?.code_error || !value?.position_error) {
-				delete value?.code_error;
-				delete value?.position_error;
-				return (value = { ...value });
-			}
-		});
+		// let tntflowDataData = tntflowData.map((value: any) => {
+		// 	if (value?.code_error || !value?.position_error) {
+		// 		delete value?.code_error;
+		// 		delete value?.position_error;
+		// 		return (value = { ...value });
+		// 	}
+		// });
+
 		this.setState({ isLoader: true });
 		let data = {
 			countrycode: devconfig.countryName,
@@ -855,33 +856,33 @@ class Devconfigurations extends React.Component<
 
 		const { region, cluster, country, countrycode, currency, currencyname } =
 			this.state;
-		const values = {
-			region,
-			cluster,
-			country,
-			countrycode,
-			currency,
-			currencyname,
-		};
+		// const values = {
+		// 	region,
+		// 	cluster,
+		// 	country,
+		// 	countrycode,
+		// 	currency,
+		// 	currencyname,
+		// };
 
-		const btnStyle = {
-			width: 185,
-			height: 35,
-			background: "#FFFFFF 0% 0% no-repeat",
-			boxshadow: "0px 1px 3px #0000004D",
-			border: "0.5px solid #006CF8",
-			opacity: 1,
-			color: "black",
-		};
-		const btnNextSubmit = {
-			background: "#89D329 0% 0% no-repeat padding-box",
-			boxshadow: "0px 1px 3px #0000004D",
-			// borderRadius: 10,
-			opacity: 1,
-			color: "white",
-			width: 185,
-			height: 35,
-		};
+		// const btnStyle = {
+		// 	width: 185,
+		// 	height: 35,
+		// 	background: "#FFFFFF 0% 0% no-repeat",
+		// 	boxshadow: "0px 1px 3px #0000004D",
+		// 	border: "0.5px solid #006CF8",
+		// 	opacity: 1,
+		// 	color: "black",
+		// };
+		// const btnNextSubmit = {
+		// 	background: "#89D329 0% 0% no-repeat padding-box",
+		// 	boxshadow: "0px 1px 3px #0000004D",
+		// 	// borderRadius: 10,
+		// 	opacity: 1,
+		// 	color: "white",
+		// 	width: 185,
+		// 	height: 35,
+		// };
 
 		let button;
 		if (currentStep === stepsArray.length) {
@@ -891,7 +892,7 @@ class Devconfigurations extends React.Component<
 					onClick={() => this.handleClick("next", "")}
 				>
 					Apply
-					<img src={check} />
+					<img src={check}  alt="" />
 				</button>
 			);
 		} else {
@@ -900,7 +901,7 @@ class Devconfigurations extends React.Component<
 					className="btnNextSubmit cus-btn-dev"
 					onClick={(e) => this.handleClick("next", e)}
 				>
-					Next <img src={right_arrow} />
+					Next <img src={right_arrow} alt="" />
 				</button>
 			);
 		}
@@ -933,7 +934,7 @@ class Devconfigurations extends React.Component<
 							<Typography />
 						</div>
 						<TabPanel value={this.state.value} index={0} classes={classes}>
-							{currentStep == 1 ? (
+							{currentStep === 1 ? (
 								<div className="col-md-10">
 									<div className="container">
 										<div className="row rm-group">
@@ -1076,7 +1077,7 @@ class Devconfigurations extends React.Component<
 										className="cus-btn-dev reset"
 										onClick={() => this.handleClick()}
 									>
-										<img src={left} width="7" style={{ marginRight: "8px" }} />{" "}
+										<img src={left}  alt=""  width="7" style={{ marginRight: "8px" }} />{" "}
 										Back
 									</button>
 								)}
@@ -1085,7 +1086,7 @@ class Devconfigurations extends React.Component<
 									onClick={() => this.handleReset()}
 								>
 									Reset{" "}
-									<img src={reset} width="12" style={{ marginLeft: "5px" }} />
+									<img src={reset}  alt=""  width="12" style={{ marginLeft: "5px" }} />
 								</button>
 								<button
 									className="btnNextSubmit cus-btn-dev"
@@ -1095,12 +1096,12 @@ class Devconfigurations extends React.Component<
 									{currentStep === stepsArray.length ? (
 										// <img src={check} />
 										<span>
-											<img src={tickIcon} className="arrow-i" width="12" />{" "}
-											<img src={RtButton} className="layout" />
+											<img src={tickIcon}  alt="" className="arrow-i" width="12" />{" "}
+											<img src={RtButton}  alt="" className="layout" />
 										</span>
 									) : (
 										<span>
-											<img src={ArrowIcon} className="arrow-i" />{" "}
+											<img src={ArrowIcon}  alt=""  className="arrow-i" />{" "}
 											{/* <img src={RtButton} className="layout" /> */}
 										</span>
 									)}{" "}
