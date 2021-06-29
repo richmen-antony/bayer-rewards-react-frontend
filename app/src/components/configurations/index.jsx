@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component } from "react";
 import "../../assets/scss/configurations.scss";
 import Stepper from "../../container/components/stepper/Stepper";
 import { TabProvider, Tab, TabPanel, TabList } from 'react-web-tabs';
@@ -168,12 +168,6 @@ class Configurations extends Component {
     const {
       currentStep,
       selectedCountryDetails,
-      selectedCluster,
-      selectedLocationHierarchyDetails,
-      selectedRoleHierarchyDetails,
-      selectedTnTFlowDetails,
-      selectedScanPointsAndAllocationDetails,
-      selectedAnticounterfeitDetails,
       values
     } = this.state;
 
@@ -219,9 +213,9 @@ class Configurations extends Component {
 
   getUnique(arr, comp) {
     //store the comparison  values in array
-    const unique = arr.map(e => e[comp]).
+    const unique = arr.map(e => e[comp])
       // store the indexes of the unique objects
-      map((e, i, final) => final.indexOf(e) === i && i)
+      .map((e, i, final) => final.indexOf(e) === i && i)
       // eliminate the false indexes & return unique objects
       .filter((e) => arr[e]).map(e => arr[e]);
     return unique
@@ -289,7 +283,7 @@ class Configurations extends Component {
 
             <div className="wrapper">
               <TabPanel tabId="one">
-                {currentStep == 1 ? (
+                {currentStep === 1 ? (
                   <div className="col-md-10">
                     <div className="container">
                       <div className="row rm-group">

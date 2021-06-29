@@ -189,6 +189,7 @@ export const TnTFlow = (props: ITnTProps) => {
                               return (
                                 <div>
                                   <img
+                                    alt=""
                                     style={{ width: "50px", height: "50px" }}
                                     src={AddBtn}
                                     onClick={() => handleAddClick(idx)}
@@ -203,6 +204,7 @@ export const TnTFlow = (props: ITnTProps) => {
                                 <div>
                                   <td style={{ border: "none" }}>
                                     <img
+                                      alt=""
                                       style={{ width: "50px", height: "50px" }}
                                       src={RemoveBtn}
                                       onClick={() => handleRemoveClick(idx)}
@@ -211,6 +213,7 @@ export const TnTFlow = (props: ITnTProps) => {
 
                                   <td style={{ border: "none" }}>
                                     <img
+                                      alt=""
                                       style={{ width: "50px", height: "50px" }}
                                       src={AddBtn}
                                       onClick={() => handleAddClick(idx)}
@@ -222,6 +225,7 @@ export const TnTFlow = (props: ITnTProps) => {
                           })()
                         ) : (
                           <img
+                            alt=""
                             style={{ width: "50px", height: "50px" }}
                             src={RemoveBtn}
                             onClick={() => handleRemoveClick(idx)}

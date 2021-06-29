@@ -511,6 +511,7 @@ export const ScanPointsAndAllocation = (
                             return (
                               <div>
                                 <img
+                                  alt=""  
                                   style={{ width: "50px", height: "50px" }}
                                   src={AddBtn}
                                   onClick={() => handleAddClick(idx)}
@@ -522,6 +523,7 @@ export const ScanPointsAndAllocation = (
                               <div>
                                 <td style={{ border: "none" }}>
                                   <img
+                                    alt=""
                                     style={{ width: "50px", height: "50px" }}
                                     src={RemoveBtn}
                                     onClick={() => handleRemoveClick(idx)}
@@ -530,6 +532,7 @@ export const ScanPointsAndAllocation = (
 
                                 <td style={{ border: "none" }}>
                                   <img
+                                    alt=""
                                     style={{ width: "50px", height: "50px" }}
                                     src={AddBtn}
                                     onClick={() => handleAddClick(idx)}
@@ -541,6 +544,7 @@ export const ScanPointsAndAllocation = (
                         })()
                       ) : (
                         <img
+                          alt=""
                           style={{ width: "50px", height: "50px" }}
                           src={RemoveBtn}
                           onClick={() => handleRemoveClick(idx)}
