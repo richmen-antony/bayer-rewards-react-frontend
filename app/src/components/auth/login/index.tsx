@@ -84,11 +84,12 @@ class Login extends Component<Props, States> {
             expires: 7,
           });
           const currentUser = response.body;
-          if (currentUser.role === "DEVADMIN") {
-            this.props.history.push("/devconfig");
-          } else {
-            this.props.history.push("/dashboard");
-          }
+          this.props.history.push("/dashboard");
+          // if (currentUser.role === "DEVADMIN") {
+          //   this.props.history.push("/devconfig");
+          // } else {
+          //   this.props.history.push("/dashboard");
+          // }
 
           this.setState({ isLoader: false, validErrorMsg: "" });
         })

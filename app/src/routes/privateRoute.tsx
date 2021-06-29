@@ -34,8 +34,8 @@ const PrivateRoute = ({ component: Component, meta, role, ...rest }: any) => {
             setTimeout(() => {
               accessDeniedToaster();
             }, 100);
-            let pathName= Authorization.isDEVAdmin() ? "devconfig"  :"dashboard";
-            return <Redirect to={{ pathname: `/${pathName}` }} />;
+            // let pathName= Authorization.isDEVAdmin() ? "devconfig"  :"dashboard";'
+            return <Redirect to={{ pathname: `/${"dashboard"}` }} />;
           }
         } else {
           return <Redirect to={{ pathname: "/landing" }} />;

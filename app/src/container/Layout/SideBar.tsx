@@ -95,7 +95,6 @@ class Sidebar extends Component<Props, States> {
             > */}
             <div id="sidebar-menu" className="">
               <ul className="metismenu" id="side-menu">
-                {this.state.userRole != "DEVADMIN" && (
                   <li className="d-flex">
                     <span
                       className={
@@ -112,7 +111,7 @@ class Sidebar extends Component<Props, States> {
                       <span> Dashboard </span>
                     </Link>
                   </li>
-                )}
+             
 
                 {this.state.userRole === "ADMIN" && (
                   <>

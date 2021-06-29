@@ -218,10 +218,9 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           handleChange={(event: any) =>
                             handleDropdownRoleChange(event, idx)
                           }
-                          value={item.roletype}
+                          value={item.roletype || "INTERNAL"}
                           isPlaceholder
                           commonSelectType={true}
-                          // defaultValue={'INTERNAL'}
                         />
                       </td>
                       <td className="tableHeaderStyle">

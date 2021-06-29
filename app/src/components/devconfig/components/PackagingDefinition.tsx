@@ -291,7 +291,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                             handleDropdownChange(event, idx, item)
                           }
                           value={
-                            Number(item.parentpackage) ===-1 ? "NA"
+                            Number(item.parentpackage) ===-1 || item.parentpackage==="" ? "NA"
                             :item.parentpackage
                           }
                           isPlaceholder

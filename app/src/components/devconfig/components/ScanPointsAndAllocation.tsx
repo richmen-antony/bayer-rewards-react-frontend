@@ -450,6 +450,9 @@ export const ScanPointsAndAllocation = (
                             return (
                               <MenuItem key={packaginghierarchyname} value={packaginghierarchyname}>
                               <Checkbox
+                               style ={{
+                                color: "#7EB343",
+                              }}
                                 checked={item.packaginglevel.trim().split(",").indexOf(packaginghierarchyname) > -1}
                               />
                               <ListItemText primary={packaginghierarchyname} />

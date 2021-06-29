@@ -1094,9 +1094,9 @@ class Devconfigurations extends React.Component<
 									{currentStep === stepsArray.length ? "Apply" : "Next"}{" "}
 									{currentStep === stepsArray.length ? (
 										// <img src={check} />
-										<span>
+										<span style={{margin:0}}>
 											<img src={tickIcon} className="arrow-i" width="12" />{" "}
-											<img src={RtButton} className="layout" />
+											{/* <img src={RtButton} className="layout" /> */}
 										</span>
 									) : (
 										<span>
