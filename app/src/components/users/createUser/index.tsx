@@ -95,7 +95,6 @@ class CreateUser extends Component<any, any> {
         locale: "English (Malawi)",
         rolename: role[0].value,
         username: "",
-        shippingcountrycode: this.getStoreData.country,
         deliverystreet: "",
         shippingcity: "",
         shippingstate: "",
@@ -103,10 +102,9 @@ class CreateUser extends Component<any, any> {
         taxid: "",
         whtaccountname: "",
         whtownername: "",
-        billingcountrycode: this.getStoreData.country,
         billingstreet: "",
-        billingcity: "",
-        billingstate: "",
+        billinggeolevel4: "",
+        billinggeolevel2: "",
         billingzipcode: "",
         iscreatedfrommobile: false,
         staffdetails: [],
@@ -126,14 +124,12 @@ class CreateUser extends Component<any, any> {
           },
         ],
       },
-      shippingcountrycodeErr: "",
       deliverystreetErr: "",
       shippingcityErr: "",
       shippingstateErr: "",
       deliveryzipcodeErr: "",
       accountnameErr: "",
       ownernameErr: "",
-      billingcountrycodeErr: "",
       billingstreetErr: "",
       billingcityErr: "",
       billingstateErr: "",
@@ -293,15 +289,15 @@ class CreateUser extends Component<any, any> {
                 rolename: userFields.rolename,
                 username: userFields.username,
                 deliverystreet: userFields.deliverystreet,
-                shippingcity: userFields.deliverycity,
-                shippingstate: userFields.deliverystate,
+                shippingcity: userFields.deliverygeolevel4,
+                shippingstate: userFields.deliverygeolevel2,
                 deliveryzipcode: userFields.deliveryzipcode,
                 taxid: userFields.taxid,
                 whtaccountname: userFields.whtaccountname,
                 whtownername: userFields.whtownername,
                 billingstreet: userFields.billingstreet,
-                billingcity: userFields.billingcity,
-                billingstate: userFields.billingstate,
+                billinggeolevel4: userFields.billinggeolevel4,
+                billinggeolevel2: userFields.billinggeolevel2,
                 billingzipcode: userFields.billingzipcode,
                 iscreatedfrommobile: userFields.iscreatedfrommobile,
                 staffdetails: userFields.staffdetails,
@@ -378,11 +374,11 @@ class CreateUser extends Component<any, any> {
     let allRegions = this.state.allRegions;
     if (data) {
       let isSameGeoAddress =
-        data.billingregion === data.deliveryregion &&
-        data.billingstate === data.deliverystate &&
-        data.billingdistrict === data.deliverydistrict &&
-        data.billingcity === data.deliverycity &&
-        data.billingvillage === data.deliveryvillage &&
+        data.billinggeolevel1 === data.deliverygeolevel1 &&
+        data.billinggeolevel2 === data.deliverygeolevel2 &&
+        data.billinggeolevel3 === data.deliverygeolevel3 &&
+        data.billinggeolevel4 === data.deliverygeolevel4 &&
+        data.billinggeolevel5 === data.deliverygeolevel5 &&
         data.whtownername === data.ownerfirstname + " " + data.ownerlastname;
 
       this.setState({ accInfo: isSameGeoAddress ? true : false });
@@ -404,19 +400,19 @@ class CreateUser extends Component<any, any> {
       let district = "";
       let epa = "";
       let village = "";
-      if ("deliveryregion" in data) {
+      if ("deliverygeolevel1" in data) {
         regionoptions = regionOptions;
-        region = data.deliveryregion;
+        region = data.deliverygeolevel1;
         regionoptions.forEach((regionInfo: any) => {
-          if (regionInfo.name === data.deliveryregion) {
+          if (regionInfo.name === data.deliverygeolevel1) {
             geoLocationInfo.region = regionInfo.code;
           }
         });
         this.setState({ regionoptions: regionoptions });
       }
-      if ("deliverystate" in data) {
+      if ("deliverygeolevel2" in data) {
         let filteredAdd = allRegions.filter(
-          (region: any) => region.name === data.deliveryregion
+          (region: any) => region.name === data.deliverygeolevel1
         );
         geoLocationInfo.region = filteredAdd[0]?.code;
         filteredAdd[0]?.add.forEach((item: any) => {
@@ -424,19 +420,19 @@ class CreateUser extends Component<any, any> {
           addoptions.push(addInfo);
         });
         let selectedAdd = addoptions.filter(
-          (district: any) => district.text === data.deliverystate
+          (district: any) => district.text === data.deliverygeolevel2
         );
         geoLocationInfo.add = selectedAdd[0]?.code;
-        add = data.deliverystate;
+        add = data.deliverygeolevel2;
         this.setState({ addoptions: addoptions });
       }
-      if ("deliverydistrict" in data) {
-        district = data.deliverydistrict;
+      if ("deliverygeolevel3" in data) {
+        district = data.deliverygeolevel3;
         let filteredAdd = allRegions.filter(
-          (region: any) => region.name === data.deliveryregion
+          (region: any) => region.name === data.deliverygeolevel1
         );
         let addList = filteredAdd[0]?.add.filter(
-          (addinfo: any) => addinfo.name === data.deliverystate
+          (addinfo: any) => addinfo.name === data.deliverygeolevel2
         );
         addList &&
           addList[0]?.district.forEach((item: any) => {
@@ -455,9 +451,9 @@ class CreateUser extends Component<any, any> {
         geoLocationInfo.district = selectedDistrict[0]?.code;
         this.setState({ districtoptions: districtoptions });
       }
-      if ("deliverycity" in data) {
+      if ("deliverygeolevel4" in data) {
         epaoptions = await this.getEPADetails();
-        epa = data.deliverycity;
+        epa = data.deliverygeolevel4;
         // epa = 'Bwengu';
         epaoptions?.forEach((city: any) => {
           if (city.name === epa) {
@@ -468,8 +464,8 @@ class CreateUser extends Component<any, any> {
         });
         this.setState({ epaoptions: epaoptions });
       }
-      if ("deliveryvillage" in data) {
-        village = data.deliveryvillage;
+      if ("deliverygeolevel5" in data) {
+        village = data.deliverygeolevel5;
         villageoptions = await this.getVillageDetails();
         if (villageoptions?.length) {
           villageoptions?.forEach((village: any) => {
@@ -525,19 +521,19 @@ class CreateUser extends Component<any, any> {
       //Incase of delivery and billing address is different
       if (!isSameGeoAddress) {
         setFormArray = [];
-        if ("billingregion" in data) {
+        if ("billinggeolevel1" in data) {
           regionoptions = regionOptions;
-          region = data.billingregion;
+          region = data.billinggeolevel1;
           regionoptions.forEach((regionInfo: any) => {
-            if (regionInfo.name === data.billingregion) {
+            if (regionInfo.name === data.billinggeolevel1) {
               geoLocationInfo.region = regionInfo.code;
             }
           });
           this.setState({ regionoptions: regionoptions });
         }
-        if ("billingstate" in data) {
+        if ("billinggeolevel2" in data) {
           let filteredAdd = allRegions.filter(
-            (region: any) => region.name === data.billingregion
+            (region: any) => region.name === data.billinggeolevel1
           );
           geoLocationInfo.region = filteredAdd[0]?.code;
           filteredAdd[0]?.add.forEach((item: any) => {
@@ -549,19 +545,19 @@ class CreateUser extends Component<any, any> {
             addoptions.push(addInfo);
           });
           let selectedAdd = addoptions.filter(
-            (district: any) => district.text === data.billingstate
+            (district: any) => district.text === data.billinggeolevel2
           );
           geoLocationInfo.add = selectedAdd[0]?.code;
-          add = data.billingstate;
+          add = data.billinggeolevel2;
           this.setState({ addoptions: addoptions });
         }
-        if ("billingdistrict" in data) {
-          district = data.billingdistrict;
+        if ("billinggeolevel3" in data) {
+          district = data.billinggeolevel3;
           let filteredAdd = allRegions.filter(
-            (region: any) => region.name === data.billingregion
+            (region: any) => region.name === data.billinggeolevel1
           );
           let addList = filteredAdd[0]?.add.filter(
-            (addinfo: any) => addinfo.name === data.billingstate
+            (addinfo: any) => addinfo.name === data.billinggeolevel2
           );
           addList &&
             addList[0]?.district.forEach((item: any) => {
@@ -578,9 +574,9 @@ class CreateUser extends Component<any, any> {
           geoLocationInfo.district = selectedDistrict[0]?.code;
           this.setState({ districtoptions: districtoptions });
         }
-        if ("billingcity" in data) {
+        if ("billinggeolevel4" in data) {
           epaoptions = await this.getEPADetails();
-          epa = data.billingcity;
+          epa = data.billinggeolevel4;
           epaoptions?.forEach((city: any) => {
             if (city.name === epa) {
               geoLocationInfo.epa = city.code;
@@ -590,8 +586,8 @@ class CreateUser extends Component<any, any> {
           });
           this.setState({ epaoptions: epaoptions });
         }
-        if ("billingvillage" in data) {
-          village = data.billingvillage;
+        if ("billinggeolevel5" in data) {
+          village = data.billinggeolevel5;
           villageoptions = await this.getVillageDetails();
           if (villageoptions?.length) {
             villageoptions?.forEach((village: any) => {
@@ -673,10 +669,40 @@ class CreateUser extends Component<any, any> {
         region.text = region.name;
         region.value = region.name;
       });
+      this.state.dynamicFields.forEach((list: any) => {
+        if (type === list.name) {
+          if (list.value === "") {
+            list.error = "Please select the " + list.name;
+          } else {
+            list.error = "";
+          }
+        }
+        this.setState({ isRendered: true });
+      });
+      this.state.withHolding.forEach((list: any) => {
+        if (type === list.name) {
+          if (list.value === "") {
+            list.error = "Please select the " + list.name;
+          } else {
+            list.error = "";
+          }
+        }
+        this.setState({ isRendered: true });
+      });
       let currentStep = this.state.currentStep;
       this.setState({ regionoptions: allRegions });
-      let dynamicFieldVal = this.state.dynamicFields;
-      let withHoldingVal = this.state.withHolding;
+      let dynamicFieldVal = JSON.parse(JSON.stringify(this.state.dynamicFields));
+      let withHoldingVal = JSON.parse(JSON.stringify(this.state.withHolding));
+      dynamicFieldVal.forEach((list:any, fieldIndex:number)=>{
+        if(fieldIndex > index) {
+          list.value = "";
+        }
+      });
+      withHoldingVal.forEach((list:any, fieldIndex:number)=>{
+        if(fieldIndex > index) {
+          list.value = "";
+        }
+      });
       if (type === "region") {
         let filteredRegion = allRegions?.filter(
           (region: any) => region.name === value
@@ -1018,20 +1044,20 @@ class CreateUser extends Component<any, any> {
             " " +
             userData.ownerRows[0].lastname
           : userData.whtownername,
-        deliverycountry: this.getStoreData.countryCode,
-        deliveryregion: geoFields.region,
-        deliverystate: geoFields.add,
-        deliverycity: geoFields.epa,
-        deliverydistrict: geoFields.district,
-        deliveryvillage: geoFields.village,
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.region,
+        deliverygeolevel2: geoFields.add,
+        deliverygeolevel4: geoFields.epa,
+        deliverygeolevel3: geoFields.district,
+        deliverygeolevel5: geoFields.village,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billingcountry: this.getStoreData.countryCode,
-        billingregion: shippingFields.region,
-        billingstate: shippingFields.add,
-        billingcity: shippingFields.epa,
-        billingdistrict: shippingFields.district,
-        billingvillage: shippingFields.village,
+        billinggeolevel0: this.getStoreData.countryCode,
+        billinggeolevel1: shippingFields.region,
+        billinggeolevel2: shippingFields.add,
+        billinggeolevel4: shippingFields.epa,
+        billinggeolevel3: shippingFields.district,
+        billinggeolevel5: shippingFields.village,
         billingstreet: this.state.accInfo
           ? userData.deliverystreet
           : userData.billingstreet,
@@ -1066,20 +1092,20 @@ class CreateUser extends Component<any, any> {
             " " +
             userData.ownerRows[0].lastname
           : userData.whtownername,
-        deliverycountry: this.getStoreData.countryCode,
-        deliveryregion: geoFields.region,
-        deliverystate: geoFields.add,
-        deliverycity: geoFields.epa,
-        deliverydistrict: geoFields.district,
-        deliveryvillage: geoFields.village,
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.region,
+        deliverygeolevel2: geoFields.add,
+        deliverygeolevel4: geoFields.epa,
+        deliverygeolevel3: geoFields.district,
+        deliverygeolevel5: geoFields.village,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billingcountry: this.getStoreData.countryCode,
-        billingregion: shippingFields.region,
-        billingstate: shippingFields.add,
-        billingcity: shippingFields.epa,
-        billingdistrict: shippingFields.district,
-        billingvillage: shippingFields.village,
+        billinggeolevel0: this.getStoreData.countryCode,
+        billinggeolevel1: shippingFields.region,
+        billinggeolevel2: shippingFields.add,
+        billinggeolevel4: shippingFields.epa,
+        billinggeolevel3: shippingFields.district,
+        billinggeolevel5: shippingFields.village,
         billingstreet: this.state.accInfo
           ? userData.deliverystreet
           : userData.billingstreet,
@@ -1449,6 +1475,15 @@ class CreateUser extends Component<any, any> {
       } else {
         let { name, value } = e.target;
         owners[idx][name] = value;
+
+        let errObj: any = {
+          firstNameErr: "",
+          lastNameErr: "",
+          emailErr: owners[idx].errObj.emailErr,
+          mobilenumberErr: owners[idx].errObj.mobilenumberErr,
+        };
+
+
       }
       this.setState((prevState: any) => ({
         userData: {
@@ -1457,6 +1492,17 @@ class CreateUser extends Component<any, any> {
           ownerRows: owners,
         },
       }));
+      if(e.target?.name){
+        if(e.target?.name ==='firstname'){
+          owners[idx].errObj.firstNameErr = owners[idx].firstname
+          ? ""
+          : "Please enter the First Name";
+        } else if(e.target?.name ==='lastname'){
+          owners[idx].errObj.lastNameErr = owners[idx].lastname
+          ? ""
+          : "Please enter the last Name";
+        }
+      }
     } else if (type === "staff") {
       if (key === "phone") {
         if (val) {
@@ -1485,6 +1531,17 @@ class CreateUser extends Component<any, any> {
           staffdetails: staffs,
         },
       }));
+      if(e.target?.name){
+        if(e.target?.name ==='firstname'){
+          staffs[idx].errObj.firstNameErr = staffs[idx].firstname
+          ? ""
+          : "Please enter the First Name";
+        } else if(e.target?.name ==='lastname'){
+          staffs[idx].errObj.lastNameErr = staffs[idx].lastname
+          ? ""
+          : "Please enter the last Name";
+        }
+      }
     } else {
       if (e.target.name === "accInfo") {
         if (this.state.isEditPage) {
@@ -1535,7 +1592,19 @@ class CreateUser extends Component<any, any> {
         let datas = JSON.parse(JSON.stringify(this.state.userData));
         let { name, value } = e.target;
         datas[name] = value;
-        this.setState({ userData: datas });
+        if(e.target?.name){ 
+          let whtaccountname, whtownername = '';
+          if(e.target?.name ==='whtaccountname'){
+            whtaccountname = datas.whtaccountname
+            ? ""
+            : "Please enter account name";
+          } else if( e.target?.name ==='whtownername') {
+            whtownername = datas.whtownername
+            ? ""
+            : "Please enter owner name";
+          }
+          this.setState({ userData: datas,accountnameErr: whtaccountname, ownernameErr: whtownername});
+        }
       }
     }
   };
@@ -1691,28 +1760,28 @@ class CreateUser extends Component<any, any> {
           if (item.name !== "country") {
             if (
               item.name === "region" &&
-              item.value !== userFields.deliveryregion
+              item.value !== userFields.deliverygeolevel1
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "add" &&
-              item.value !== userFields.deliverystate
+              item.value !== userFields.deliverygeolevel2
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "district" &&
-              item.value !== userFields.deliverydistrict
+              item.value !== userFields.deliverygeolevel3
             ) {
               isDeliveryFieldsFilled = true;
             }
-            if (item.name === "epa" && item.value !== userFields.deliverycity) {
+            if (item.name === "epa" && item.value !== userFields.deliverygeolevel4) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "village" &&
-              item.value !== userFields.deliveryvillage
+              item.value !== userFields.deliverygeolevel5
             ) {
               isDeliveryFieldsFilled = true;
             }
@@ -1722,25 +1791,25 @@ class CreateUser extends Component<any, any> {
           if (item.name !== "country") {
             if (
               item.name === "region" &&
-              item.value !== userFields.billingregion
+              item.value !== userFields.billinggeolevel1
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "add" && item.value !== userFields.billingstate) {
+            if (item.name === "add" && item.value !== userFields.billinggeolevel2) {
               isWHTFieldsFilled = true;
             }
             if (
               item.name === "district" &&
-              item.value !== userFields.billingdistrict
+              item.value !== userFields.billinggeolevel3
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "epa" && item.value !== userFields.billingcity) {
+            if (item.name === "epa" && item.value !== userFields.billinggeolevel4) {
               isWHTFieldsFilled = true;
             }
             if (
               item.name === "village" &&
-              item.value !== userFields.billingvillage
+              item.value !== userFields.billinggeolevel5
             ) {
               isWHTFieldsFilled = true;
             }
@@ -2348,7 +2417,7 @@ class CreateUser extends Component<any, any> {
                                     <tr>
                                       {idx === 0 ? (
                                         <td className="font-weight-bold">
-                                          Store Staffs
+                                          Store <br/> Staffs
                                         </td>
                                       ) : (
                                         <td></td>

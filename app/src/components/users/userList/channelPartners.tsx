@@ -402,8 +402,8 @@ class ChannelPartners extends Component<Props, States> {
           whtaccountname: userFields.whtaccountname,
           whtownername: userFields.whtownername,
           billingstreet: userFields.billingstreet,
-          billingcity: userFields.billingcity,
-          billingstate: userFields.billingstate,
+          billinggeolevel4: userFields.billinggeolevel4,
+          billinggeolevel2: userFields.billinggeolevel2,
           billingzipcode: userFields.billingzipcode,
           staffdetails: userFields.staffdetails,
           iscreatedfrommobile: userFields.iscreatedfrommobile,
@@ -478,20 +478,20 @@ class ChannelPartners extends Component<Props, States> {
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
-        deliverycountry: getStoreData.countryCode,
-        deliveryregion: userData.deliveryregion,
-        deliverystate: userData.deliverystate,
-        deliverycity: userData.deliverycity,
-        deliverydistrict: userData.deliverydistrict,
-        deliveryvillage: userData.deliveryvillage,
+        deliverygeolevel0: getStoreData.countryCode,
+        deliverygeolevel1: userData.deliverygeolevel1,
+        deliverygeolevel2: userData.deliverygeolevel2,
+        deliverygeolevel4: userData.deliverygeolevel4,
+        deliverygeolevel3: userData.deliverygeolevel3,
+        deliverygeolevel5: userData.deliverygeolevel5,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billingcountry: getStoreData.countryCode,
-        billingregion: userData.billingregion,
-        billingstate: userData.billingstate,
-        billingcity: userData.billingcity,
-        billingdistrict: userData.billingdistrict,
-        billingvillage: userData.billingvillage,
+        billinggeolevel0: getStoreData.countryCode,
+        billinggeolevel1: userData.billinggeolevel1,
+        billinggeolevel2: userData.billinggeolevel2,
+        billinggeolevel4: userData.billinggeolevel4,
+        billinggeolevel3: userData.billinggeolevel3,
+        billinggeolevel5: userData.billinggeolevel5,
         billingstreet: userData.billingstreet,
         billingzipcode: userData.billingzipcode,
         staffdetails: newUserList.staffdetails,
@@ -646,6 +646,17 @@ class ChannelPartners extends Component<Props, States> {
           ownerRows: owners,
         },
       }));
+      if(e.target?.name){
+        if(e.target?.name ==='firstname'){
+          owners[idx].errObj.firstNameErr = owners[idx].firstname
+          ? ""
+          : "Please enter the First Name";
+        } else if(e.target?.name ==='lastname'){
+          owners[idx].errObj.lastNameErr = owners[idx].lastname
+          ? ""
+          : "Please enter the last Name";
+        }
+      }
     } else if (type === "staff") {
       let staffs = this.state.userData.staffdetails;
       if (key === "phone") {
@@ -675,6 +686,17 @@ class ChannelPartners extends Component<Props, States> {
           staffdetails: staffs,
         },
       }));
+      if(e.target?.name){
+        if(e.target?.name ==='firstname'){
+          staffs[idx].errObj.firstNameErr = staffs[idx].firstname
+          ? ""
+          : "Please enter the First Name";
+        } else if(e.target?.name ==='lastname'){
+          staffs[idx].errObj.lastNameErr = staffs[idx].lastname
+          ? ""
+          : "Please enter the last Name";
+        }
+      }
     } else {
       let datas = this.state.userData;
       let { name, value } = e.target;
@@ -1710,13 +1732,13 @@ class ChannelPartners extends Component<Props, States> {
                         {list.ownerfirstname + " " + list.ownerlastname}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.deliveryregion}{" "}
+                        {list.deliverygeolevel1}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.deliverystate}
+                        {list.deliverygeolevel2}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.deliverydistrict}{" "}
+                        {list.deliverygeolevel3}{" "}
                       </td>
                       <td style={{ textAlign: "center", width: "8%" }}>
                         <div className="retailer-id">

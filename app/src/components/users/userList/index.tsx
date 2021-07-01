@@ -392,8 +392,10 @@ class UserList extends Component<Props, States> {
         value: "ALL",
         district: [],
       };
+      let districtObj = [{text: "ALL", code: "ALL", name: "ALL", value: "ALL"}]
       add.unshift(addObj);
       dynamicFieldVal[index + 1].options = add;
+      dynamicFieldVal[index + 2].options = districtObj;
       dynamicFieldVal[index].value = value;
       this.setState({ dynamicFields: dynamicFieldVal });
     } else if (type === "add") {
