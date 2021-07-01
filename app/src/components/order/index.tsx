@@ -4,13 +4,10 @@ import "../../assets/scss/scanLogs.scss";
 import { apiURL } from "../../utility/base/utils/config";
 import {
   invokeGetAuthService,
-  invokeGetService,
 } from "../../utility/base/service";
 import Loader from "../../utility/widgets/loader";
 import {
-  setLocalStorageData,
   getLocalStorageData,
-  clearLocalStorageData,
 } from "../../utility/base/localStore";
 
 import {
@@ -29,10 +26,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import ScanLogsTable from "./ScanLogsTable";
-import NoImage from "../../assets/images/no_image.svg";
-import Download from "../../assets/icons/download.svg";
-import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
+import OrderHistory from "./OrderHistroyTable";
+import "../../assets/scss/orderHistory.scss";
 
 type SelectedFiltersTypes = {
   type: string;
@@ -153,7 +148,10 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 interface Props extends WithStyles<typeof useStyles> {}
-class OrderHistroy extends Component<Props, States> {
+
+
+const statusList=["Pending","Fulfiled","Cancelled","Expired"];
+class Order extends Component<Props, States> {
   timeOut: any;
   constructor(props: any) {
     super(props);
@@ -277,7 +275,7 @@ class OrderHistroy extends Component<Props, States> {
                   onChange={this.handleChange}
                   aria-label="ant example"
                 >
-                  <AntTab label="Order History" />
+                  <AntTab label="Advisor Sales" />
                   {/* <AntTab label="Walk-In Sales"/>
                   <AntTab label="Send Goods" /> */}
                 </AntTabs>
@@ -288,7 +286,7 @@ class OrderHistroy extends Component<Props, States> {
               <Typography />
             </div>
             <TabPanel value={this.state.value} index={0} classes={classes}>
-              <ScanLogsTable/>
+              <OrderHistory/>
             </TabPanel>
             <TabPanel value={this.state.value} index={1} classes={classes} >
               Item Two
@@ -302,4 +300,4 @@ class OrderHistroy extends Component<Props, States> {
     );
   }
 }
-export default withStyles(useStyles)(OrderHistroy);
+export default withStyles(useStyles)(Order);

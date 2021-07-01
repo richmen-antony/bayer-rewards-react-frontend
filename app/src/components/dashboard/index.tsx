@@ -160,12 +160,12 @@ class Dashboard extends Component<Props, States> {
 								<div className="card-list">
 									<CustomCard
 										icon={BarCodeIcon}
-										border="1px solid #206BDD"
-										background="#DFE8FA"
+										border="1px solid #078dffdb"
+										background="#078dffdb"
 										cardClick={() => this.handleNavigateOrder()}
 									>
 										<div className="count">{this.state.adminUsersCount}</div>
-										<div className="title">Order</div>
+										<div className="title">Total Orders</div>
 									</CustomCard>
 								</div>
 							</div>

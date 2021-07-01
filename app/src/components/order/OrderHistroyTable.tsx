@@ -9,7 +9,6 @@ import SimpleDialog from "../../container/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import MaterialUIButton from "@material-ui/core/Button";
 import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
@@ -23,15 +22,12 @@ import filterIcon from "../../assets/icons/filter_icon.svg";
 import Download from "../../assets/icons/download.svg";
 import _ from "lodash";
 import {
-  downloadExcel,
   downloadCsvFile,
-  DownloadCsv,
   ErrorMsg,
 } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import {
   invokeGetAuthService,
-  invokeGetService,
 } from "../../utility/base/service";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -118,7 +114,9 @@ type States = {
   isAsc: Boolean;
 };
 
-class ScanLogsTable extends Component<Props, States> {
+const statusList=["Pending","Fulfiled","Cancelled","Expired"];
+
+class OrderHistory extends Component<Props, States> {
   tableCellIndex: any;
   timeOut: any;
   constructor(props: any) {
@@ -149,8 +147,7 @@ class ScanLogsTable extends Component<Props, States> {
         "FUNGICIDES",
         "INSECTICIDES",
       ],
-      status: ["ALL", "FULFILLED"],
-      // status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
+      status: ["ALL", "PENDING","FULFILLED", "EXPIRED", "CANCELLED"],
       list: ["ALL", "Distributor", "Retailer"],
       selectedFilters: {
         productgroup: "ALL",
@@ -192,8 +189,8 @@ class ScanLogsTable extends Component<Props, States> {
         loggedUserInfo: userData,
       },
       () => {
-        this.getScanLogs();
-        this.getRetailerList();
+        // this.getScanLogs();
+        // this.getRetailerList();
       }
     );
   }
@@ -611,6 +608,7 @@ class ScanLogsTable extends Component<Props, States> {
         },
       },
       () => {
+        console.log("e",this.state.selectedFilters,"test",event.target.value)
         if (name === "retailer") {
           let condIf = "retailer";
           this.getRetailerList(condIf);
@@ -658,7 +656,7 @@ class ScanLogsTable extends Component<Props, States> {
         {isLoader && <Loader />}
         <div>
           <div>
-            <div className="scanlog-table">
+            <div className="scanlog-table order-history-table">
               <div className="advisor-filter">
                 <div className="filter-left-side">
                   <SearchInput
@@ -669,6 +667,39 @@ class ScanLogsTable extends Component<Props, States> {
                     tolltip="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
                   />
                   <div className="filter-right-side">
+                  <div className="filter-status">
+                    <label
+                      className="font-weight-bold pt-2"
+                      style={{ color: "#363636", fontSize: "12px" }}
+                    >
+                      STATUS
+                    </label>
+                    <div className="status-list">
+                      {this.state.status.map((item:any) =>{
+                        return item !="ALL" &&(
+                         <span className="mr-2">
+                         <Button
+                           color={
+                             selectedFilters.status === item
+                               ? "btn activeColor rounded-pill"
+                               : "btn rounded-pill boxColor"
+                           }
+                           size="md"
+                           onClick={(e:any) => this.handleFilterChange(
+                             e,
+                             "status",
+                             item
+                           )
+                         }
+                         >
+                           {item}
+                         </Button>
+                       </span>
+                      )}
+                       
+                      )}
+                    </div>
+                  </div>
                     <div className="filterRow">
                       <Dropdown
                         isOpen={dropdownOpenFilter}
@@ -1008,7 +1039,7 @@ class ScanLogsTable extends Component<Props, States> {
                           this.handleSort(e, "username", allScanLogs, isAsc)
                         }
                       >
-                        RETAILER NAME/ID
+                        ADVISOR NAME/ID
                         {this.tableCellIndex === 1 ? (
                           <i
                             className={`fas ${
@@ -1037,26 +1068,7 @@ class ScanLogsTable extends Component<Props, States> {
                           ></i>
                         ) : null}
                       </th>
-                      <th
-                        style={{ width: "13%", textAlign: "center" }}
-                        onClick={(e) =>
-                          this.handleSort(
-                            e,
-                            "totalorderedquantity",
-                            allScanLogs,
-                            isAsc
-                          )
-                        }
-                      >
-                        ORDERED QTY
-                        {this.tableCellIndex === 3 ? (
-                          <i
-                            className={`fas ${
-                              isAsc ? "fa-sort-down" : "fa-sort-up"
-                            } ml-2`}
-                          ></i>
-                        ) : null}
-                      </th>
+                      
                       <th
                         style={{ width: "12%" }}
                         onClick={(e) =>
@@ -1065,21 +1077,6 @@ class ScanLogsTable extends Component<Props, States> {
                       >
                         TOTAL COST
                         {this.tableCellIndex === 4 ? (
-                          <i
-                            className={`fas ${
-                              isAsc ? "fa-sort-down" : "fa-sort-up"
-                            } ml-2`}
-                          ></i>
-                        ) : null}
-                      </th>
-                      <th
-                        style={{ width: "16%" }}
-                        onClick={(e) =>
-                          this.handleSort(e, "advisorname", allScanLogs, isAsc)
-                        }
-                      >
-                        ADVISOR NAME/ID
-                        {this.tableCellIndex === 5 ? (
                           <i
                             className={`fas ${
                               isAsc ? "fa-sort-down" : "fa-sort-up"
@@ -1109,6 +1106,21 @@ class ScanLogsTable extends Component<Props, States> {
                         }
                       >
                         STATUS
+                        {this.tableCellIndex === 7 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
+                      <th
+                        style={{ width: "10%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "orderstatus", allScanLogs, isAsc)
+                        }
+                      >
+                        REASON
                         {this.tableCellIndex === 7 ? (
                           <i
                             className={`fas ${
@@ -1180,22 +1192,15 @@ class ScanLogsTable extends Component<Props, States> {
                             <td style={{ textAlign: "center" }}>
                               {value.totalintendedquantity}
                             </td>
-                            <td style={{ textAlign: "center" }}>
-                              {value.totalorderedquantity}
-                            </td>
                             <td>{"MK " + value.totalcost}</td>
-                            <td>
-                              <div className="farmer-id">
-                                <p>{value.advisorname}</p>
-                                <label>{value.advisorid}</label>
-                              </div>
-                            </td>
+                            
                             <td>
                               <div className="farmer-id">
                                 <p>{value.farmername}</p>
                                 <label>{value.farmerid}</label>
                               </div>
                             </td>
+                            <td>{"NA"}</td>
                             <td>
                               <span
                                 className={`status ${
@@ -1345,4 +1350,4 @@ class ScanLogsTable extends Component<Props, States> {
   }
 }
 
-export default ScanLogsTable;
+export default OrderHistory;

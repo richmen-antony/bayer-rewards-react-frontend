@@ -1,0 +1,16 @@
+.order-history-table{
+    .filter-status{
+        display: flex;
+        align-items: center;
+        .status-list{
+            margin-left: 12px;
+            button{
+                font-size: 12px;
+            }
+        }
+    }
+
+    .filterRow {
+        margin-right: 15px;
+    }
+}
