@@ -387,17 +387,27 @@ class UserList extends Component<Props, States> {
       });
       let addObj = {
         text: "ALL",
-        code: "ALL",
-        name: "ALL",
         value: "ALL",
-        district: [],
+        code: "ALL",
+        
       };
       let districtObj = [{text: "ALL", code: "ALL", name: "ALL", value: "ALL"}]
       add.unshift(addObj);
       dynamicFieldVal[index + 1].options = add;
+      this.setState({dynamicFields:dynamicFieldVal})
       dynamicFieldVal[index + 2].options = districtObj;
       dynamicFieldVal[index].value = value;
-      this.setState({ dynamicFields: dynamicFieldVal });
+      dynamicFieldVal[index+1].value = "ALL";
+      dynamicFieldVal[index+2].value = "ALL";
+      this.setState((prevState:any)=>({ 
+        dynamicFields: dynamicFieldVal,
+        selectedFilters: {
+          ...prevState.selectedFilters,
+          add: "ALL",
+          district: "ALL",
+        },
+      }));
+
     } else if (type === "add") {
       let filteredAdd: any = [];
       filteredAdd = allRegions?.filter(
@@ -419,7 +429,14 @@ class UserList extends Component<Props, States> {
       district.unshift(districtObj);
       dynamicFieldVal[index + 1].options = district;
       dynamicFieldVal[index].value = value;
-      this.setState({ dynamicFields: dynamicFieldVal });
+      dynamicFieldVal[index+1].value = "ALL";
+      this.setState((prevState:any)=>({  
+        dynamicFields: dynamicFieldVal,
+        selectedFilters: {
+          ...prevState.selectedFilters,
+          district: "ALL",
+        }
+       }));
     } else if (type === "district") {
       // let filteredAdd: any = [];
       // let districtList: any = [];
