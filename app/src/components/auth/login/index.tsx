@@ -143,7 +143,7 @@ class Login extends Component<Props, States> {
           </div>
           <form className="form-horizontal">
             <div className="form-group">
-              <label>Username</label>
+              <label  htmlFor="usernameInput">Username</label>
               <input
                 type="text"
                 className={
@@ -156,13 +156,14 @@ class Login extends Component<Props, States> {
                 value={username}
                 onChange={this.handleChange}
                 style={{ height: "40px" }}
+                id="usernameInput"
               />
               {usernameError && <span className="error">{usernameError} </span>}
               {/* <Input type="text" className={!usernameError ? "form-control" : "form-control invalid loginStyle"} name="username" placeHolder="Enter username" value={username} onChange={this.handleChange} />
                                             {usernameError && <span className="error">{ usernameError } </span>} */}
             </div>
             <div className="form-group">
-              <label>Password</label>
+              <label htmlFor="passwordInput">Password</label>
               <div className="withIcon">
                 <input
                   type={isPwdView ? "text" : "password"}
@@ -176,6 +177,7 @@ class Login extends Component<Props, States> {
                   onChange={this.handleChange}
                   style={{ height: "40px" }}
                   maxLength={40}
+                  id="passwordInput"
                 />
                 {/* <Input type={isPwdView ? "text" : "password"} className={!passwordError ? "form-control" : "form-control invalid"} name="password" placeHolder="Enter password" value={password}
                                                     onChange={this.handleChange} /> */}
