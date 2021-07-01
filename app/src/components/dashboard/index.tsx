@@ -180,7 +180,7 @@ class Dashboard extends Component<Props, States> {
 									background="#FFF4E7"
 									cardClick={() => this.handleNavigateDevConfig()}
 								>
-									<div className="title">Country</div>
+									<div className="title">Dev Admin</div>
 								</CustomCard>
 							</div>
 						</div>
