@@ -53,7 +53,7 @@
 }
 
 .table-responsive {
-  overflow-x: hidden !important;
+  overflow : hidden !important;
   table {
     display: flex;
     flex-flow: column;
