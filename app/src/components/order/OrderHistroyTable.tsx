@@ -71,17 +71,7 @@ const popupHeader = {
   title: "Maria Joseph",
   sub: "Retailer",
 };
-const dialogStyles = {
-  paperWidthSm: {
-    width: "800px",
-    maxWidth: "800px",
-    background: "transparent",
-    boxShadow: "none",
-  },
-  // title: {
-  //   right: "150px",
-  // },
-};
+
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -113,9 +103,6 @@ type States = {
   [key: string]: any;
   isAsc: Boolean;
 };
-
-const statusList=["Pending","Fulfiled","Cancelled","Expired"];
-
 class OrderHistory extends Component<Props, States> {
   tableCellIndex: any;
   timeOut: any;
@@ -721,17 +708,6 @@ class OrderHistory extends Component<Props, States> {
                               className="form-group"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              {/* <select
-                              className="form-control filterDropdown"
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "type", "")
-                              }
-                              value={selectedFilters.type}
-                            >
-                              <option>All</option>
-                              <option>Distributor</option>
-                              <option>Retailer</option>
-                            </select> */}
                               <NativeDropdown
                                 name="retailer"
                                 value={selectedFilters.retailer}
@@ -748,17 +724,6 @@ class OrderHistory extends Component<Props, States> {
                               className="form-group"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              {/* <select
-                              className="form-control filterDropdown"
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "type", "")
-                              }
-                              value={selectedFilters.type}
-                            >
-                              <option>All</option>
-                              <option>Farmer Name</option>
-                              <option>Farmer Name3</option>
-                            </select> */}
                               <NativeDropdown
                                 name="farmer"
                                 value={selectedFilters.farmer}
@@ -829,19 +794,6 @@ class OrderHistory extends Component<Props, States> {
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
-                                {/* <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.startDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(
-                                        e,
-                                        "startDate",
-                                        ""
-                                      )
-                                    }
-                                  /> */}
-
                                 <DatePicker
                                   value={selectedFilters.ordereddatefrom}
                                   dateFormat="dd-MM-yyyy"
@@ -861,15 +813,6 @@ class OrderHistory extends Component<Props, States> {
                               </div>
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
-                                {/* <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.endDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(e, "endDate", "")
-                                    }
-                                  /> */}
-
                                 <DatePicker
                                   value={selectedFilters.ordereddateto}
                                   dateFormat="dd-MM-yyyy"
@@ -938,24 +881,12 @@ class OrderHistory extends Component<Props, States> {
                             )}
 
                             <div className="filterFooter pt-3">
-                              {/* <Button
-                                color="btn rounded-pill boxColor reset-btn"
-                                onClick={(e) => this.resetFilter(e)}
-                              >
-                                Reset All
-                              </Button> */}
                               <button
                                 className="cus-btn-scanlog-filter reset"
                                 onClick={(e) => this.resetFilter(e)}
                               >
                                 Reset All
                               </button>
-                              {/* <Button
-                                color="btn rounded-pill boxColor applybtn"
-                                onClick={() => this.applyFilter()}
-                              >
-                                Apply
-                              </Button> */}
                               <button
                                 className="cus-btn-scanlog-filter"
                                 onClick={this.applyFilter}
@@ -972,9 +903,6 @@ class OrderHistory extends Component<Props, States> {
                                 </span>
                               </button>
                             </div>
-                            {/* {dateErrMsg && (
-                              <span className="error">{dateErrMsg} </span>
-                            )} */}
                           </div>
                         </DropdownMenu>
                       </Dropdown>
@@ -1099,6 +1027,21 @@ class OrderHistory extends Component<Props, States> {
                           ></i>
                         ) : null}
                       </th>
+                       <th
+                        style={{ width: "10%" }}
+                        onClick={(e) =>
+                          this.handleSort(e, "farmername", allScanLogs, isAsc)
+                        }
+                      >
+                        Region
+                        {this.tableCellIndex === 6 ? (
+                          <i
+                            className={`fas ${
+                              isAsc ? "fa-sort-down" : "fa-sort-up"
+                            } ml-2`}
+                          ></i>
+                        ) : null}
+                      </th>
                       <th
                         style={{ width: "10%" }}
                         onClick={(e) =>
@@ -1200,6 +1143,7 @@ class OrderHistory extends Component<Props, States> {
                                 <label>{value.farmerid}</label>
                               </div>
                             </td>
+                            <td>{"Region"}</td>
                             <td>{"NA"}</td>
                             <td>
                               <span
