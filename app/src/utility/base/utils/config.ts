@@ -23,5 +23,7 @@ export const apiURL = {
     getHierarchyLevels: "geographical/getRegionLocationHierLevelByCountry",
     getLevelFive: "geographical/getEPA",
     getLevelSix: "geographical/getVillage",
-    downloadChanglogs:"user/changelogsdownload"
+    downloadChanglogs:"user/changelogsdownload",
+    adminOrderList:"admin/orderlist",
+    downloadAdminOrderList:"admin/downloadorderlist"
 }
