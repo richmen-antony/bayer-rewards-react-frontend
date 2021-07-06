@@ -43,11 +43,11 @@ interface Props {
   data: any;
 }
 /**
- *OrderTable Functional Component
+ *OrderProductPopup Functional Component
  * @param props
  * @returns
  */
-const OrderTable: React.FC<Props> = ({ open, close, data }) => {
+const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
   const [accordionView, handleAccordion] = React.useState(false);
   const [accordionId, setAccordionId] = React.useState("");
   const [accordion, setAccordion] = useState(false);
@@ -108,17 +108,14 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
               >
                 <div className="line-cnt-expiry-date">
                   <p>
-                    {data.orderstatus === "FULFILLED"
-                      ? "Fulfilled date"
-                      : data.orderstatus === "EXPIRED"
-                      ? "Expiry date"
-                      : ""}
+                    {_.capitalize(data.orderstatus)+" date"}
                   </p>
                   <label>
                     {data.lastupdateddate &&
                       moment(data.lastupdateddate).format("Do MMM, YYYY")}
                   </label>
                 </div>
+                {data.orderstatus === "FULFILLED" &&
                 <div className="content">
                   <img src={retailerImg} alt="" />
                   <p>Fulfilled by ID & Name</p>
@@ -126,6 +123,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                     {data.staffid} - {data.staffname}
                   </span>
                 </div>
+                }
               </li>
               <li>
                 <div className="content">
@@ -458,4 +456,4 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
   );
 };
 
-export default OrderTable;
+export default OrderProductPopup;

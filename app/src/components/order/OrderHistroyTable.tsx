@@ -10,7 +10,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import NoImage from "../../assets/images/Group_4736.svg";
-import OrderTable from "./Order";
+import OrderProductPopup from "./OrderProductPopup";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
 import maxImg from "../../assets/images/maximize.svg";
 import CalenderIcon from "../../assets/icons/calendar.svg";
@@ -21,7 +21,7 @@ import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import Download from "../../assets/icons/download.svg";
 import _ from "lodash";
-import { downloadCsvFile, ErrorMsg } from "../../utility/helper";
+import { downloadCsvFile, ErrorMsg, handledropdownoption } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../utility/base/service";
 import DatePicker from "react-datepicker";
@@ -78,9 +78,6 @@ const DialogActions = withStyles((theme: Theme) => ({
 		margin: 0,
 		padding: theme.spacing(1),
 		justifyContent: "center",
-		// boxShadow: "0px 3px 6px #c7c7c729",
-		// border: "1px solid #89D329",
-		// borderRadius: "50px",
 	},
 	button: {
 		boxShadow: "0px 3px 6px #c7c7c729",
@@ -102,13 +99,6 @@ class OrderHistory extends Component<Props, States> {
 	timeOut: any;
 	constructor(props: any) {
 		super(props);
-		var today = new Date();
-		var month, day, year;
-		var year: any = today.getFullYear();
-		var month: any = today.getMonth();
-		var date = today.getDate();
-		if (month - 6 <= 0) year = today.getFullYear();
-		var backdate = new Date(year, month - 6, date);
 		this.state = {
 			showPopup: false,
 			showProductPopup: false,
@@ -121,17 +111,15 @@ class OrderHistory extends Component<Props, States> {
 			dropDownValue: "Select action",
 			scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
 			productCategories: ["ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
-			status: ["PENDING", "FULFILLED", "EXPIRED", "CANCELLED"],
+			status: ["FULFILLED", "PENDING", "CANCELLED", "EXPIRED"],
 			list: ["ALL", "Distributor", "Retailer"],
 			selectedFilters: {
-				// productgroup: "ALL",
 				status: "FULFILLED",
 				ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
 				ordereddateto: new Date(),
 				lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
 				lastmodifiedto: new Date(),
-				// farmer: "ALL",
-				// retailer: "ALL",
+				geolevel1: "ALL",
 			},
 			dateErrMsg: "",
 			searchText: "",
@@ -146,12 +134,10 @@ class OrderHistory extends Component<Props, States> {
 			dropdownOpenFilter: false,
 			accordionView: false,
 			accordionId: "",
-			// value: 0,
 			value: moment(),
 			lastUpdatedDateErr: "",
-			farmerOptions: [],
-			retailerOptions: [],
 			loggedUserInfo: {},
+			regionOptions: [],
 		};
 		this.timeOut = 0;
 	}
@@ -164,65 +150,19 @@ class OrderHistory extends Component<Props, States> {
 			},
 			() => {
 				this.getAdminOrderList();
-				this.getRetailerList();
 			}
 		);
 	}
-	/**
-	 * Retailer and Farmer dropdown list value
-	 * @param condIf
-	 */
-	getRetailerList = (condIf?: any) => {
-		const { rsmRetailerList } = apiURL;
-		const { selectedFilters } = this.state;
-		let queryParams = {
-			region: this.state.loggedUserInfo.geolevel1,
-			countrycode: this.state.loggedUserInfo.countrycode,
-			retailerid: selectedFilters.retailer === "ALL" ? null : selectedFilters.retailer,
-		};
-		let oneTimeUpdate = selectedFilters.retailer !== "ALL" && condIf ? true : false;
-		invokeGetAuthService(rsmRetailerList, queryParams)
-			.then((response) => {
-				if (response.data) {
-					const { farmers, retailers } = response.data;
-					const farmerOptions =
-						farmers?.length > 0
-							? farmers.map((val: any) => {
-									return { value: val.farmerid, text: val.farmername };
-							  })
-							: [];
 
-					const retailerOptions =
-						retailers?.length > 0
-							? retailers.map((val: any) => {
-									return { value: val.userid, text: val.username };
-							  })
-							: [];
-					const retailerList =
-						oneTimeUpdate && this.state.retailerOptions.length ? this.state.retailerOptions : retailerOptions;
-					this.setState({
-						isLoader: false,
-						farmerOptions,
-						retailerOptions: retailerList,
-					});
-				}
-			})
-			.catch((error) => {
-				this.setState({ isLoader: false });
-				ErrorMsg(error);
-				console.log("error", error);
-			});
-	};
 	getAdminOrderList = (filterScan?: any) => {
 		const { adminOrderList } = apiURL;
 		this.setState({ isLoader: true });
-		const { selectedFilters, isFiltered } = this.state;
+		const { selectedFilters, isFiltered, regionOptions } = this.state;
 		let data = {
 			page: this.state.pageNo,
 			searchtext: this.state.searchText || null,
 			rowsperpage: this.state.rowsPerPage,
-			isfiltered: true,
-			region: this.state.loggedUserInfo.geolevel1,
+			isfiltered: isFiltered,
 			countrycode: this.state.loggedUserInfo.countrycode,
 			status: selectedFilters.status === "ALL" ? null : selectedFilters.status,
 		};
@@ -233,19 +173,25 @@ class OrderHistory extends Component<Props, States> {
 			filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
 			filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
 			// filter.retailer = filterScan ? filterScan : filter.retailer;
-			// filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			// filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
-			// filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-
+			filter.geolevel1 =
+				selectedFilters.status === "FULFILLED" ? (filter.geolevel1 === "ALL" ? null : filter.geolevel1) : null;
 			data = { ...data, ...filter };
 		}
-
+		// regionOption list update one time only using with geolevel1 === "ALL"
+		let oneTimeUpdate = selectedFilters.geolevel1 === "ALL" ? true : false;
 		invokeGetAuthService(adminOrderList, data)
 			.then((response) => {
 				let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
+				// unique by geolevel1 region list
+				const regionList =
+					data?.length > 0 && oneTimeUpdate && selectedFilters.status === "FULFILLED" ? _.uniqBy(data, "geolevel1") : [];
+				const regionOptionsList = regionList?.length > 0 ? handledropdownoption(regionList, "geolevel1") : [];
+				const regionValues = oneTimeUpdate ? regionOptionsList : regionOptions;
+				console.log({ regionValues, regionOptionsList });
 				this.setState({
 					isLoader: false,
 					allScanLogs: data,
+					regionOptions: regionValues,
 				});
 				const total = response?.totalrows || 0;
 				this.setState({ totalData: Number(total) });
@@ -305,7 +251,12 @@ class OrderHistory extends Component<Props, States> {
 			dropdownOpenFilter: !prevState.dropdownOpenFilter,
 		}));
 	};
-
+	/**
+	 * To handle filter change
+	 * @param e
+	 * @param name
+	 * @param item
+	 */
 	handleFilterChange = (e: any, name: string, item: any) => {
 		e.stopPropagation();
 		let val = { ...this.state.selectedFilters };
@@ -327,21 +278,21 @@ class OrderHistory extends Component<Props, States> {
 			});
 		}
 	};
-
-	resetFilter = (e?: any) => {
+	/**
+	 * To reset selected filter values
+	 */
+	resetFilter = () => {
 		let today = new Date();
 		let conditionIsFilter = this.state.searchText ? true : false;
 		this.setState(
 			{
 				selectedFilters: {
-					// productgroup: "ALL",
 					status: "FULFILLED",
 					ordereddatefrom: today.setMonth(today.getMonth() - 3),
 					ordereddateto: new Date(),
 					lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
 					lastmodifiedto: new Date(),
-					// farmer: "ALL",
-					// retailer: "ALL",
+					geolevel1: "ALL",
 				},
 				isFiltered: conditionIsFilter,
 				dateErrMsg: "",
@@ -350,11 +301,12 @@ class OrderHistory extends Component<Props, States> {
 			() => {
 				this.getAdminOrderList();
 				this.toggleFilter();
-				this.getRetailerList();
 			}
 		);
 	};
-
+	/**
+	 * To applicable filter selection after filter the matching values
+	 */
 	applyFilter = () => {
 		this.setState({ isFiltered: true }, () => {
 			this.getAdminOrderList();
@@ -428,7 +380,7 @@ class OrderHistory extends Component<Props, States> {
 		let data = {
 			region: this.state.loggedUserInfo.geolevel1,
 			countrycode: this.state.loggedUserInfo.countrycode,
-			isfiltered: true,
+			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
 			status: filter.status,
 		};
@@ -527,29 +479,18 @@ class OrderHistory extends Component<Props, States> {
 	};
 
 	handleSelect = (event: any, name: string) => {
-		this.setState(
-			{
-				selectedFilters: {
-					...this.state.selectedFilters,
-					[name]: event.target.value,
-				},
+		this.setState({
+			selectedFilters: {
+				...this.state.selectedFilters,
+				[name]: event.target.value,
 			},
-			() => {
-				console.log("e", this.state.selectedFilters, "test", event.target.value);
-				if (name === "retailer") {
-					let condIf = "retailer";
-					this.getRetailerList(condIf);
-				}
-			}
-		);
+		});
 	};
 
 	filterScans = (filterValue: any) => {
 		this.setState({ isFiltered: true, selectedFilters: { ...this.state.selectedFilters, retailer: filterValue } }, () => {
 			this.getAdminOrderList();
 			this.handleClosePopup();
-			let condIf = "retailer";
-			this.getRetailerList(condIf);
 		});
 	};
 
@@ -565,12 +506,10 @@ class OrderHistory extends Component<Props, States> {
 			dateErrMsg,
 			searchText,
 			pageNo,
-			userRole,
 			totalData,
 			rowsPerPage,
 			lastUpdatedDateErr,
-			farmerOptions,
-			retailerOptions,
+			regionOptions,
 		} = this.state;
 
 		const pageNumbers = [];
@@ -600,7 +539,7 @@ class OrderHistory extends Component<Props, States> {
 												STATUS
 											</label>
 											<div className="status-list">
-												{this.state.status.map((item: any,index:number) => {
+												{this.state.status.map((item: any, index: number) => {
 													return (
 														item != "ALL" && (
 															<span className="mr-2" key={index}>
@@ -633,11 +572,11 @@ class OrderHistory extends Component<Props, States> {
 														{selectedFilters.status === "FULFILLED" && (
 															<div className="form-group" onClick={(e) => e.stopPropagation()}>
 																<NativeDropdown
-																	name="region"
-																	value={selectedFilters.region}
+																	name="geolevel1"
+																	value={selectedFilters.geolevel1}
 																	label={"Region"}
-																	handleChange={(e: any) => this.handleSelect(e, "region")}
-																	options={retailerOptions}
+																	handleChange={(e: any) => this.handleSelect(e, "geolevel1")}
+																	options={regionOptions}
 																	defaultValue="ALL"
 																/>
 															</div>
@@ -707,7 +646,7 @@ class OrderHistory extends Component<Props, States> {
 														{lastUpdatedDateErr && <span className="error">{lastUpdatedDateErr} </span>}
 
 														<div className="filterFooter pt-3">
-															<button className="cus-btn-scanlog-filter reset" onClick={(e) => this.resetFilter(e)}>
+															<button className="cus-btn-scanlog-filter reset" onClick={this.resetFilter}>
 																Reset All
 															</button>
 															<button
@@ -944,10 +883,14 @@ class OrderHistory extends Component<Props, States> {
 														key={i}
 													>
 														{OrderHistroyHeader[`${selectedFilters.status}`].map((list: any, index: number) => {
-												            const statusColor=value.orderstatus === "FULFILLED" ? "active" :
-															value.orderstatus === "EXPIRED" ?  "inactive"  : 
-															value.orderstatus === "PENDING" ? "pending" :
-															 "cancelled" 
+															const statusColor =
+																value.orderstatus === "FULFILLED"
+																	? "active"
+																	: value.orderstatus === "EXPIRED"
+																	? "inactive"
+																	: value.orderstatus === "PENDING"
+																	? "pending"
+																	: "cancelled";
 															return (
 																<td
 																	onClick={(event: any) => {
@@ -987,7 +930,7 @@ class OrderHistory extends Component<Props, States> {
 																			{_.startCase(_.toLower(value.orderstatus))}
 																		</span>
 																	) : list?.type === "date" ? (
-																		<>{moment(value.lastupdateddate).format("DD/MM/YYYY")}</>
+																		<>{moment(value[list.key]).format("DD/MM/YYYY")}</>
 																	) : !list.label && !list.key ? (
 																		<img className="max-image" src={maxImg} />
 																	) : list.key === "totalcost" ? (
@@ -1159,7 +1102,7 @@ class OrderHistory extends Component<Props, States> {
 				)}
 
 				{showProductPopup ? (
-					<OrderTable open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
+					<OrderProductPopup open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
 				) : (
 					""
 				)}
