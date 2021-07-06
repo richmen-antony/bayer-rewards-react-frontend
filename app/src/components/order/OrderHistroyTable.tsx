@@ -187,7 +187,6 @@ class OrderHistory extends Component<Props, States> {
 					data?.length > 0 && oneTimeUpdate && selectedFilters.status === "FULFILLED" ? _.uniqBy(data, "geolevel1") : [];
 				const regionOptionsList = regionList?.length > 0 ? handledropdownoption(regionList, "geolevel1") : [];
 				const regionValues = oneTimeUpdate ? regionOptionsList : regionOptions;
-				console.log({ regionValues, regionOptionsList });
 				this.setState({
 					isLoader: false,
 					allScanLogs: data,
@@ -389,6 +388,7 @@ class OrderHistory extends Component<Props, States> {
 			filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
 			filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
 			filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
+			filter.geolevel1 =filter.status === "FULFILLED" ? (filter.geolevel1 === "ALL" ? null : filter.geolevel1) : null;
 			// filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			// filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
 			// filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
@@ -401,7 +401,7 @@ class OrderHistory extends Component<Props, States> {
 				downloadCsvFile(data, "order-history.csv");
 			})
 			.catch((error) => {
-				console.log({ error });
+
 			});
 	};
 	handleDateChange = (date: any, name: string) => {
