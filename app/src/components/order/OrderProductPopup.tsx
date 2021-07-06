@@ -17,6 +17,7 @@ import FarmerDenied from "../../assets/icons/farmer_denied.svg";
 import CpproductImg from "../../assets/icons/cp_products.svg";
 import NoImg from "../../assets/images/no-image-circle.jpg";
 import * as myConstClass from "../../utility/constant";
+
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -67,21 +68,21 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
       header={popupHeader}
     >
       <DialogContent>
-        <div className="popup-container ordered-table">
+        <div className="popup-container ordered-table order-product-popup">
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
                 <label>
-                  #{data?.advisororderid} -{" "}
-                  {_.startCase(_.toLower(data?.accountname))}
+                  #{data?.advisororderid} 
+                  { data.orderstatus === "FULFILLED"&& " - " + _.startCase(_.toLower(data?.accountname))}
                 </label>
               </p>
             </div>
           </div>
           <div className="wrapper-progressBar">
             <ul className="progressBar">
-              <li className="active">
-                <div className="line-cnt">
+              <li className={`active ${data.orderstatus === "EXPIRED" || data.orderstatus === "CANCELLED"? "join" : data.orderstatus === "PENDING"? "dotline-pending":""}`}>
+                <div className={`line-cnt ${data.orderstatus === "PENDING" ? "pending-center" :""}`}>
                   <p>Ordered date</p>
                   <label>
                     {data.ordereddate &&
@@ -97,11 +98,12 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                   </span>
                 </div>
               </li>
+              { data.orderstatus !== "PENDING"&&
               <li
                 className={`${
                   data.orderstatus === "FULFILLED"
                     ? "active"
-                    : data.orderstatus === "EXPIRED"
+                    : data.orderstatus === "EXPIRED" || data.orderstatus === "CANCELLED" 
                     ? "inactive"
                     : ""
                 } `}
@@ -125,6 +127,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                 </div>
                 }
               </li>
+             }
               <li>
                 <div className="content">
                   <img

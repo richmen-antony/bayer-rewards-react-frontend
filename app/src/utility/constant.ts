@@ -44,12 +44,12 @@ const FULFILLED = [
 	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
 	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
 	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
-	{ label: "UPDATED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
+	{ label: "UPDATED DATE", key: "lastupdateddate", style: { width: "12%" }, type: "date" },
 	{ label: "", key: "", style: { width: "10%" } },
 ];
 const PENDING = [
 	{ label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
-	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
+	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
 	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
 	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
@@ -60,7 +60,7 @@ const PENDING = [
 ];
 const EXPIRED = [
 	{ label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
-	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
+	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
 	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
 	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
@@ -71,7 +71,7 @@ const EXPIRED = [
 ];
 const CANCELLED = [
 	{ label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
-	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
+	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
 	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
 	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
