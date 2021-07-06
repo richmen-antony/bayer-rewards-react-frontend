@@ -33,6 +33,8 @@ import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
 import Validator from "../../utility/validator";
 import { OrderHistroyHeader } from "../../utility/constant";
+import Cancel from "../../assets/images/cancel.svg";
+import PendingImg from "../../assets/images/not_activated.svg";
 
 interface IProps {
 	onChange?: any;
@@ -891,6 +893,15 @@ class OrderHistory extends Component<Props, States> {
 																	: value.orderstatus === "PENDING"
 																	? "pending"
 																	: "cancelled";
+															 const statusImg =
+																value.orderstatus === "FULFILLED"
+																	? ActiveIcon
+																	// : value.orderstatus === "EXPIRED"
+																	// ? "inactive"
+																	: value.orderstatus === "PENDING"
+																	? PendingImg
+																	: Cancel;
+																	
 															return (
 																<td
 																	onClick={(event: any) => {
@@ -922,8 +933,8 @@ class OrderHistory extends Component<Props, States> {
 																		</div>
 																	) : list.key === "orderstatus" ? (
 																		<span className={`status ${statusColor}`}>
-																			{value.orderstatus === "FULFILLED" ? (
-																				<img src={ActiveIcon} style={{ marginRight: "8px" }} width="17" />
+																			{value.orderstatus !== "EXPIRED" ? (
+																				<img src={statusImg} style={{ marginRight: "8px" }} width="17" />
 																			) : (
 																				<i className="fas fa-clock"></i>
 																			)}
