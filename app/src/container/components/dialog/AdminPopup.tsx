@@ -92,12 +92,12 @@ export default function AdminPopup({
       open={open}
       fullWidth
     >
-      <DialogTitle
+      {/* <DialogTitle
         id="customized-dialog-title"
         onClose={() => onClose()}
         header={header}
         style={classes}
-      ></DialogTitle>
+      ></DialogTitle> */}
       {children}
     </Dialog>
   );
