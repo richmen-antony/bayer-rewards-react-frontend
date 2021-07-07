@@ -47,8 +47,7 @@ import Dropdown from "../../utility/widgets/dropdown";
 import { handledropdownoption } from "../../utility/helper";
 // import _ from 'lodash'
 
-let data: any = getLocalStorageData("userData");
-let userData = JSON.parse(data);
+
 
 export interface IFormValue {
 	id: string;
@@ -467,6 +466,8 @@ class Devconfigurations extends React.Component<
 		const { registerTemplateData } = apiURL;
 		const { devconfig } = this.props;
 		const { locationHierarchy, roleHierarchy, tntflowData } = this.state;
+		let getUserdata: any = getLocalStorageData("userData");
+         let userData = JSON.parse(getUserdata);
 		// let locationHierarchyData = locationHierarchy.map((value: any) => {
 		// 	if (value?.error || !value?.error) {
 		// 		delete value.error;
