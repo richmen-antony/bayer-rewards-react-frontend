@@ -490,7 +490,7 @@ class OrderHistory extends Component<Props, States> {
 	};
 
 	filterScans = (filterValue: any) => {
-		this.setState({ isFiltered: true, selectedFilters: { ...this.state.selectedFilters, retailer: filterValue } }, () => {
+		this.setState({ isFiltered: true, searchText:filterValue }, () => {
 			this.getAdminOrderList();
 			this.handleClosePopup();
 		});
@@ -1104,7 +1104,7 @@ class OrderHistory extends Component<Props, States> {
 									padding: "7px",
 									border: "1px solid  #7eb343",
 								}}
-								handleClick={() => this.filterScans(retailerPopupData.userid)}
+								handleClick={() => this.filterScans(retailerPopupData.username)}
 							/>
 						</DialogActions>
 					</SimpleDialog>
