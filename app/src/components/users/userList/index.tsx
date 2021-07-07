@@ -208,15 +208,13 @@ const CalenderInput = ({
 const obj: any = getLocalStorageData("userData");
 const userData = JSON.parse(obj);
 
-const getStoreData = {
-  country: userData.geolevel0,
-  countryCode: userData.countrycode,
-  Language: "EN-US",
-};
+
 
 class UserList extends Component<Props, States> {
   timeOut: any;
-  constructor(props: any) {
+  loggedUserInfo: any;
+  getStoreData: any;
+   constructor(props: any) {
     super(props);
     var today = new Date();
     var month, day, year;
@@ -224,6 +222,13 @@ class UserList extends Component<Props, States> {
     var month: any = today.getMonth();
     var date = today.getDate();
     if (month - 6 <= 0) year = today.getFullYear();
+    const dataObj: any = getLocalStorageData("userData");
+    const loggedUserInfo = JSON.parse(dataObj);
+    this.getStoreData = {
+      country: loggedUserInfo.geolevel0,
+      countryCode: loggedUserInfo.countrycode,
+      Language: "EN-US",
+    };
     this.state = {
       selectIndex: "",
       isAsc: true,
@@ -294,7 +299,7 @@ class UserList extends Component<Props, States> {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: getStoreData.countryCode,
+      countryCode: this.getStoreData.countryCode,
     };
     invokeGetAuthService(getTemplateData, data)
       .then((response: any) => {
@@ -328,7 +333,7 @@ class UserList extends Component<Props, States> {
     this.setState({ isLoader: true });
     const { getHierarchyLevels } = apiURL;
     let countrycode = {
-      countryCode: getStoreData.countryCode,
+      countryCode: this.getStoreData.countryCode,
     };
     invokeGetAuthService(getHierarchyLevels, countrycode)
       .then((response: any) => {
@@ -360,7 +365,7 @@ class UserList extends Component<Props, States> {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value: list === "country" ? getStoreData.country : "",
+        value: list === "country" ? this.getStoreData.country : "",
         options:
           list === "country"
             ? this.state.countryList
@@ -464,7 +469,7 @@ class UserList extends Component<Props, States> {
       district,
     }: any = this.state.selectedFilters;
     let data = {
-      countrycode: getStoreData.countryCode,
+      countrycode: this.getStoreData.countryCode,
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       isfiltered: this.state.isFiltered,
@@ -545,7 +550,7 @@ class UserList extends Component<Props, States> {
     const { downloadUserList } = apiURL;
 
     let data = {
-      countrycode: getStoreData.countryCode,
+      countrycode: this.getStoreData.countryCode,
       usertype: "EXTERNAL",
       partnertype: "RETAILER",
     };
