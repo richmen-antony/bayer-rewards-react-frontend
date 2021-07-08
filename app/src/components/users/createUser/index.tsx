@@ -1682,17 +1682,18 @@ class CreateUser extends Component<any, any> {
         let { name, value } = e.target;
         datas[name] = value;
         if(e.target?.name){ 
-          let whtaccountname, whtownername = '';
-          if(e.target?.name ==='whtaccountname'){
-            whtaccountname = datas.whtaccountname
+           if(e.target?.name ==='whtaccountname'){
+            let whtaccountname = datas.whtaccountname
             ? ""
             : "Please enter account name";
+            this.setState({accountnameErr: whtaccountname});
           } else if( e.target?.name ==='whtownername') {
-            whtownername = datas.whtownername
+            let whtownername = datas.whtownername
             ? ""
             : "Please enter owner name";
+            this.setState({ ownernameErr: whtownername});
           }
-          this.setState({ userData: datas,accountnameErr: whtaccountname, ownernameErr: whtownername});
+         this.setState({userData: datas });
         }
       }
     }
@@ -1946,6 +1947,7 @@ class CreateUser extends Component<any, any> {
   };
 
   render() {
+    console.log('oenererr', this.state.ownernameErr, this.state.accountnameErr)
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
     const {
       currentStep,
@@ -2880,9 +2882,9 @@ class CreateUser extends Component<any, any> {
                       className="row"
                       style={{
                         marginTop:
-                          (ownernameErr !== "" || accountnameErr !== "")
-                            ? "12px"
-                            : "32px",
+                          (ownernameErr === "" || ownernameErr === 'undefined' || accountnameErr === "" ||  accountnameErr === 'undefined')
+                            ? "32px"
+                            : "12px",
                       }}
                     >
                       <div className="col-sm-3">
@@ -2928,9 +2930,9 @@ class CreateUser extends Component<any, any> {
                       style={{
                         width: "80%",
                         marginTop:
-                          ownernameErr !== "" || accountnameErr !== ""
-                            ? "12px"
-                            : "32px",
+                        (ownernameErr === "" || ownernameErr === 'undefined' || accountnameErr === "" ||  accountnameErr === 'undefined')
+                            ? "32px"
+                            : "12px",
                       }}
                     >
                       {locationList}
