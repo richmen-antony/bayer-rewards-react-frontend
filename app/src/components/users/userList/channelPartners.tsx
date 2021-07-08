@@ -84,6 +84,7 @@ type States = {
 
 let data: any = getLocalStorageData("userData");
 let userinfo = JSON.parse(data);
+let levelsName: any = [];
 
 const getStoreData = {
   country: userinfo.geolevel0,
@@ -190,13 +191,15 @@ class ChannelPartners extends Component<Props, States> {
       countryCode: getStoreData.countryCode,
     };
     invokeGetAuthService(getTemplateData, data)
-      .then((response: any) => {
-        let locationData = response.body[0].locationhierarchy;
-        let levels: any = [];
-        locationData.forEach((item: any) => {
-          let levelsSmall = item.locationhiername.toLowerCase();
-          levels.push(levelsSmall);
-        });
+    .then((response: any) => {
+      let locationData = response.body[0].locationhierarchy;
+      let levels: any = [];
+      locationData.forEach((item: any) => {
+        levelsName.push(item.locationhiername.toLowerCase());
+        let locationhierlevel = item.locationhierlevel;
+        let geolevels = 'geolevel'+locationhierlevel;
+        levels.push(geolevels);
+      });
         // levels = ['country','region','add','district','epa','village'];
         this.setState({
           isLoader: false,
@@ -296,11 +299,11 @@ class ChannelPartners extends Component<Props, States> {
     for (var i = 1; i < this.state.geographicFields.length; i++) {
       if (i <= staticColumn) {
         let columnname: string = "";
-        columnname = this.state.geographicFields[i];
+        columnname = levelsName[i].charAt(0).toUpperCase() + levelsName[i].slice(1);
 
         columnname = columnname.toUpperCase();
         let condName =
-          columnname === "ADD" ? "state" : columnname.toLowerCase();
+          columnname === "geolevel2" ? "state" : columnname.toLowerCase();
 
         res.push(
           <th
@@ -481,16 +484,16 @@ class ChannelPartners extends Component<Props, States> {
         deliverygeolevel0: getStoreData.countryCode,
         deliverygeolevel1: userData.deliverygeolevel1,
         deliverygeolevel2: userData.deliverygeolevel2,
-        deliverygeolevel4: userData.deliverygeolevel4,
         deliverygeolevel3: userData.deliverygeolevel3,
+        deliverygeolevel4: userData.deliverygeolevel4,
         deliverygeolevel5: userData.deliverygeolevel5,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
         billinggeolevel0: getStoreData.countryCode,
         billinggeolevel1: userData.billinggeolevel1,
         billinggeolevel2: userData.billinggeolevel2,
-        billinggeolevel4: userData.billinggeolevel4,
         billinggeolevel3: userData.billinggeolevel3,
+        billinggeolevel4: userData.billinggeolevel4,
         billinggeolevel5: userData.billinggeolevel5,
         billingstreet: userData.billingstreet,
         billingzipcode: userData.billingzipcode,

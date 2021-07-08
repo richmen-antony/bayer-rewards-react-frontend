@@ -82,12 +82,12 @@ type States = {
   countryList: Array<any>;
   hierarchyList: Array<any>;
   partnerType: PartnerTypes;
-  allRegions: Array<any>;
-  regionoptions: Array<any>;
-  addoptions: Array<any>;
-  districtoptions: Array<any>;
-  epaoptions: Array<any>;
-  villageoptions: Array<any>;
+  geolevel1List: Array<any>;
+  level1Options: Array<any>;
+  level2Options: Array<any>;
+  level3Options: Array<any>;
+  level4Options: Array<any>;
+  level5Options: Array<any>;
 };
 
 const AntTabs = withStyles({
@@ -207,6 +207,7 @@ const CalenderInput = ({
 );
 const obj: any = getLocalStorageData("userData");
 const userData = JSON.parse(obj);
+let levelsName: any = [];
 
 const getStoreData = {
   country: userData.geolevel0,
@@ -234,9 +235,9 @@ class UserList extends Component<Props, States> {
       status: ["ALL", "Valid", "Invalid"],
       list: ["Retailer", "Distributor"],
       selectedFilters: {
-        region: "ALL",
-        add: "ALL",
-        district: "ALL",
+        geolevel1: "ALL",
+        geolevel2: "ALL",
+        geolevel3: "ALL",
         status: "ALL",
         lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
         lastmodifieddateto: new Date(),
@@ -265,17 +266,17 @@ class UserList extends Component<Props, States> {
       isdeActivateUser: false,
       isEditUser: false,
       value: 0,
-      userStatus: ["ALL", "Active", "Inactive", "Pending"],
+      userStatus: ["ALL", "Active", "Inactive", "Pending", "Delined"],
       geographicFields: [],
       dynamicFields: [],
       countryList: [],
       hierarchyList: [],
-      allRegions: [],
-      regionoptions: [],
-      addoptions: [],
-      districtoptions: [],
-      epaoptions: [],
-      villageoptions: [],
+      geolevel1List: [],
+      level1Options: [],
+      level2Options: [],
+      level3Options: [],
+      level4Options: [],
+      level5Options: [],
     };
     this.timeOut = 0;
   }
@@ -285,9 +286,9 @@ class UserList extends Component<Props, States> {
     ///API to get country and language settings
     this.getHierarchyDatas();
     this.getGeographicFields();
-    setTimeout(() => {
-      this.getDynamicOptionFields();
-    }, 0);
+    // setTimeout(() => {
+    //   this.getDynamicOptionFields();
+    // }, 0);
   }
 
   getGeographicFields() {
@@ -301,8 +302,10 @@ class UserList extends Component<Props, States> {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
         locationData.forEach((item: any) => {
-          let levelsSmall = item.locationhiername.toLowerCase();
-          levels.push(levelsSmall);
+          levelsName.push(item.locationhiername.toLowerCase());
+          let locationhierlevel = item.locationhierlevel;
+          let geolevels = 'geolevel'+locationhierlevel;
+          levels.push(geolevels);
         });
         // levels = ['country','region','add','district','epa','village'];
         this.setState(
@@ -311,9 +314,7 @@ class UserList extends Component<Props, States> {
             geographicFields: levels,
           },
           () => {
-            setTimeout(() => {
               this.getDynamicOptionFields();
-            }, 0);
           }
         );
       })
@@ -332,10 +333,9 @@ class UserList extends Component<Props, States> {
     };
     invokeGetAuthService(getHierarchyLevels, countrycode)
       .then((response: any) => {
-        let regions =
-          Object.keys(response.body).length !== 0 ? response.body.regions : [];
-        this.setState({ isLoader: false, allRegions: regions }, () => {
-        });
+        let geolevel1 =
+          Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
+        this.setState({ isLoader: false, geolevel1List: geolevel1 });
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
@@ -344,28 +344,30 @@ class UserList extends Component<Props, States> {
       });
   }
   getDynamicOptionFields = (reset?: string) => {
-    let regionlist = this.state.allRegions;
+    let level1List = this.state.geolevel1List;
     if (!reset) {
-      let allItem = { code: "ALL", name: "ALL", add: [] };
-      regionlist.unshift(allItem);
+      let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
+      level1List.unshift(allItem);
     }
-    this.setState({ allRegions: regionlist });
-    let regionOptions: any = [];
-    this.state.allRegions.forEach((item: any) => {
-      let regionInfo = { text: item.name, code: item.code, value: item.name };
-      regionOptions.push(regionInfo);
+    console.log('level1List', level1List)
+    this.setState({ geolevel1List: level1List });
+    console.log('geolevel1List', this.state.geolevel1List)
+    let level1Options: any = [];
+    this.state.geolevel1List?.forEach((item: any) => {
+      let level1Info = { text: item.name, code: item.code, value: item.name };
+      level1Options.push(level1Info);
     });
     let setFormArray: any = [];
-    this.state.geographicFields.forEach((list: any, i: number) => {
+    this.state.geographicFields?.forEach((list: any, i: number) => {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value: list === "country" ? getStoreData.country : "",
+        value: list === "geolevel0" ? getStoreData.country : "",
         options:
-          list === "country"
+          list === "geolevel0"
             ? this.state.countryList
-            : list === "region"
-            ? regionOptions
+            : list === "geolevel1"
+            ? level1Options
             : [{ text: "ALL", name: "ALL" }],
         error: "",
       });
@@ -373,29 +375,29 @@ class UserList extends Component<Props, States> {
     this.setState({ dynamicFields: setFormArray });
   };
   getOptionLists = (cron: any, type: any, value: any, index: any) => {
-    let allRegions = this.state.allRegions;
-    this.setState({ regionoptions: allRegions });
+    let geolevel1List = this.state.geolevel1List;
+    this.setState({ level1Options: geolevel1List });
     let dynamicFieldVal = this.state.dynamicFields;
-    if (type === "region") {
-      let filteredRegion = allRegions?.filter(
-        (region: any) => region.name === value
+    if (type === "geolevel1") {
+      let filteredLevel1 = geolevel1List?.filter(
+        (level1: any) => level1.name === value
       );
-      let add: any = [];
-      filteredRegion[0]?.add.forEach((item: any) => {
-        let regionInfo = { text: item.name, value: item.name, code: item.code };
-        add.push(regionInfo);
+      let level2Options: any = [];
+      filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+        let level1Info = { text: item.name, value: item.name, code: item.code };
+        level2Options.push(level1Info);
       });
-      let addObj = {
+      let geolevel1Obj = {
         text: "ALL",
         value: "ALL",
         code: "ALL",
         
       };
-      let districtObj = [{text: "ALL", code: "ALL", name: "ALL", value: "ALL"}]
-      add.unshift(addObj);
-      dynamicFieldVal[index + 1].options = add;
+      let geolevel3Obj = [{text: "ALL", code: "ALL", name: "ALL", value: "ALL"}]
+      level2Options.unshift(geolevel1Obj);
+      dynamicFieldVal[index + 1].options = level2Options;
       this.setState({dynamicFields:dynamicFieldVal})
-      dynamicFieldVal[index + 2].options = districtObj;
+      dynamicFieldVal[index + 2].options = geolevel3Obj;
       dynamicFieldVal[index].value = value;
       dynamicFieldVal[index+1].value = "ALL";
       dynamicFieldVal[index+2].value = "ALL";
@@ -403,45 +405,45 @@ class UserList extends Component<Props, States> {
         dynamicFields: dynamicFieldVal,
         selectedFilters: {
           ...prevState.selectedFilters,
-          add: "ALL",
-          district: "ALL",
+          geolevel2: "ALL",
+          geolevel3: "ALL",
         },
       }));
 
-    } else if (type === "add") {
-      let filteredAdd: any = [];
-      filteredAdd = allRegions?.filter(
-        (region: any) => region.name === dynamicFieldVal[1].value
+    } else if (type === "geolevel2") {
+      let filteredLevel2: any = [];
+      filteredLevel2 = geolevel1List?.filter(
+        (level1: any) => level1.name === dynamicFieldVal[1].value
       );
-      let district: any = [];
-      let addList = filteredAdd[0]?.add.filter(
-        (addinfo: any) => addinfo.name === value
+      let geolevel3: any = [];
+      let level2List = filteredLevel2[0]?.geolevel2.filter(
+        (level2Info: any) => level2Info.name === value
       );
-      addList[0]?.district.forEach((item: any) => {
-        let districtInfo = {
+      level2List[0]?.geolevel3?.forEach((item: any) => {
+        let geolevel3Info = {
           text: item.name,
           value: item.name,
           code: item.code,
         };
-        district.push(districtInfo);
+        geolevel3.push(geolevel3Info);
       });
-      let districtObj = { text: "ALL", code: "ALL", name: "ALL", value: "ALL" };
-      district.unshift(districtObj);
-      dynamicFieldVal[index + 1].options = district;
+      let geolevel3Obj = { text: "ALL", code: "ALL", name: "ALL", value: "ALL" };
+      geolevel3.unshift(geolevel3Obj);
+      dynamicFieldVal[index + 1].options = geolevel3;
       dynamicFieldVal[index].value = value;
       dynamicFieldVal[index+1].value = "ALL";
       this.setState((prevState:any)=>({  
         dynamicFields: dynamicFieldVal,
         selectedFilters: {
           ...prevState.selectedFilters,
-          district: "ALL",
+          geolevel3: "ALL",
         }
        }));
-    } else if (type === "district") {
-      // let filteredAdd: any = [];
-      // let districtList: any = [];
-      // filteredAdd = allRegions.filter((region: any)=>region.name === dynamicFieldVal[1].value);
-      // districtList = filteredAdd[0].add.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+    } else if (type === "geolevel3") {
+      // let filteredLevel2: any = [];
+      // let level3List: any = [];
+      // filteredLevel2 = geolevel1List.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+      // level3List = filteredLevel2[0].level2Options.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
       dynamicFieldVal[index].value = value;
       this.setState({ dynamicFields: dynamicFieldVal });
     }
@@ -459,9 +461,9 @@ class UserList extends Component<Props, States> {
       status,
       lastmodifieddatefrom,
       lastmodifieddateto,
-      region,
-      add,
-      district,
+      geolevel1,
+      geolevel2,
+      geolevel3,
     }: any = this.state.selectedFilters;
     let data = {
       countrycode: getStoreData.countryCode,
@@ -482,9 +484,9 @@ class UserList extends Component<Props, States> {
         status: status,
         lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
         lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
-        geolevel1: region,
-        geolevel2: add,
-        geolevel3: district,
+        geolevel1: geolevel1,
+        geolevel2: geolevel2,
+        geolevel3: geolevel3,
       };
       data = { ...data, ...filter };
     }
@@ -553,9 +555,9 @@ class UserList extends Component<Props, States> {
       status,
       lastmodifieddatefrom,
       lastmodifieddateto,
-      region,
-      add,
-      district,
+      geolevel1,
+      geolevel2,
+      geolevel3,
     }: any = this.state.selectedFilters;
     if (this.state.isFiltered) {
       let filter = {
@@ -563,9 +565,9 @@ class UserList extends Component<Props, States> {
         status: status.toUpperCase(),
         lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
         lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
-        geolevel1: region==="ALL"? null:region,
-        geolevel2:add==="ALL"?null:add,
-        geolevel3:district==="ALL"?null:district,
+        geolevel1: geolevel1==="ALL"? null:geolevel1,
+        geolevel2:geolevel2==="ALL"?null:geolevel2,
+        geolevel3:geolevel3==="ALL"?null:geolevel3,
         searchtext: this.state.searchText,
       };
       data = { ...data, ...filter };
@@ -659,9 +661,9 @@ class UserList extends Component<Props, States> {
     this.setState(
       {
         selectedFilters: {
-          region: "ALL",
-          add: "ALL",
-          district: "ALL",
+          geolevel1: "ALL",
+          geolevel2: "ALL",
+          geolevel3: "ALL",
           status: "ALL",
           lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
           lastmodifieddateto: new Date(),
@@ -834,14 +836,13 @@ class UserList extends Component<Props, States> {
 
     const fields = this.state.dynamicFields;
     const locationList = fields?.map((list: any, index: number) => {
-      let nameCapitalized =
-        list.name.charAt(0).toUpperCase() + list.name.slice(1);
+      let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       return (
         <>
           <div className="country" style={{ marginBottom: "5px" }}>
             {index !== 0 && (
               <div>
-                {list.name !== "epa" && list.name !== "village" && (
+                {list.name !== "geolevel4" && list.name !== "geolevel5" && (
                   <NativeDropdown
                     name={list.name}
                     label={nameCapitalized}

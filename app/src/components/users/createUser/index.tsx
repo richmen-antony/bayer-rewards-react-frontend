@@ -41,13 +41,14 @@ const role = [
 let isFilledAllFields = false;
 
 let geoLocationInfo = {
-  region: "",
-  add: "",
-  district: "",
-  epa: "",
-  village: "",
+  geolevel1: "",
+  geolevel2: "",
+  geolevel3: "",
+  geolevel4: "",
+  geolevel5: "",
 };
-let levelFive: any = [];
+let levelFour: any = [];
+let levelsName: any = [];
 let phoneLength =
   process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int"
     ? 10
@@ -155,17 +156,16 @@ class CreateUser extends Component<any, any> {
       ],
       phone: "",
       accInfo: false,
-      regionList: [],
       isEditPage: false,
       name: "",
       isStaff: false,
       isLoader: false,
-      allRegions: [],
-      regionoptions: [],
-      addoptions: [],
-      districtoptions: [],
-      epaoptions: [],
-      villageoptions: [],
+      geolevel1List: [],
+      level1Options: [],
+      level2Options: [],
+      level3Options: [],
+      level4Options: [],
+      level5Options: [],
       mobileLimit: true,
       cloneduserData: {},
       deleteStaffPopup: false,
@@ -176,12 +176,9 @@ class CreateUser extends Component<any, any> {
 
   componentDidMount() {
     this.getHierarchyDatas();
-    
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
-   
- 
   }
 // componentDidUpdate(){
 //   //To handle unsaved changes navigation routes
@@ -189,7 +186,6 @@ class CreateUser extends Component<any, any> {
 //     window.onbeforeunload = () => true
 //   }
 // }
-
   getChannelPartnersList = () => {
     this.setState({
       allChannelPartners: [],
@@ -238,8 +234,10 @@ class CreateUser extends Component<any, any> {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
         locationData.forEach((item: any) => {
-          let levelsSmall = item.locationhiername.toLowerCase();
-          levels.push(levelsSmall);
+          levelsName.push(item.locationhiername.toLowerCase());
+          let locationhierlevel = item.locationhierlevel;
+          let geolevels = 'geolevel'+locationhierlevel;
+          levels.push(geolevels);
         });
         // levels = ['country','region','add','district','epa','village'];
 
@@ -352,9 +350,9 @@ class CreateUser extends Component<any, any> {
     };
     invokeGetAuthService(getHierarchyLevels, countrycode)
       .then((response: any) => {
-        let regions =
-          Object.keys(response.body).length !== 0 ? response.body.regions : [];
-        this.setState({ isLoader: false, allRegions: regions }, () => {
+        let geolevel1 =
+          Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
+        this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
           this.getGeographicFields();
         });
       })
@@ -366,12 +364,12 @@ class CreateUser extends Component<any, any> {
   }
 
   getDynamicOptionFields = async (data: any) => {
-    let regionOptions: any = [];
-    this.state.allRegions.forEach((item: any) => {
-      let regionInfo = { text: item.name, code: item.code, value: item.name };
-      regionOptions.push(regionInfo);
+    let level1Datas: any = [];
+    this.state.geolevel1List?.forEach((item: any) => {
+      let level1Info = { text: item.name, code: item.code, value: item.name };
+      level1Datas.push(level1Info);
     });
-    let allRegions = this.state.allRegions;
+    let geolevel1List = this.state.geolevel1List;
     if (data) {
       let isSameGeoAddress =
         data.billinggeolevel1 === data.deliverygeolevel1 &&
@@ -383,134 +381,134 @@ class CreateUser extends Component<any, any> {
 
       this.setState({ accInfo: isSameGeoAddress ? true : false });
       let setFormArray: any = [];
-      let regionoptions: any = [];
-      let addoptions: any = [];
-      let districtoptions: any = [];
-      let epaoptions: any = [];
-      let villageoptions: any = [];
+      let level1Options: any = [];
+      let level2Options: any = [];
+      let level3Options: any = [];
+      let level4Options: any = [];
+      let level5Options: any = [];
       geoLocationInfo = {
-        region: "",
-        add: "",
-        district: "",
-        epa: "",
-        village: "",
+        geolevel1: "",
+        geolevel2: "",
+        geolevel3: "",
+        geolevel4: "",
+        geolevel5: "",
       };
-      let region = "";
-      let add = "";
-      let district = "";
-      let epa = "";
-      let village = "";
+      let geolevel1 = "";
+      let geolevel2 = "";
+      let geolevel3 = "";
+      let geolevel4 = "";
+      let geolevel5 = "";
       if ("deliverygeolevel1" in data) {
-        regionoptions = regionOptions;
-        region = data.deliverygeolevel1;
-        regionoptions.forEach((regionInfo: any) => {
-          if (regionInfo.name === data.deliverygeolevel1) {
-            geoLocationInfo.region = regionInfo.code;
-          }
+        level1Options = level1Datas;
+        geolevel1 = data.deliverygeolevel1;
+        level1Options.forEach((level1Info: any) => {
+          if (level1Info.name === data.deliverygeolevel1) {
+            geoLocationInfo.geolevel1 = level1Info.code;
+           }
         });
-        this.setState({ regionoptions: regionoptions });
+        this.setState({ level1Options: level1Options });
       }
       if ("deliverygeolevel2" in data) {
-        let filteredAdd = allRegions.filter(
-          (region: any) => region.name === data.deliverygeolevel1
+        let filteredLevel2 = geolevel1List.filter(
+          (level1: any) => level1.name === data.deliverygeolevel1
         );
-        geoLocationInfo.region = filteredAdd[0]?.code;
-        filteredAdd[0]?.add.forEach((item: any) => {
-          let addInfo = { text: item.name, value: item.name, code: item.code };
-          addoptions.push(addInfo);
+        geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
+        filteredLevel2[0]?.geolevel2.forEach((item: any) => {
+          let level2Info = { text: item.name, value: item.name, code: item.code };
+          level2Options.push(level2Info);
         });
-        let selectedAdd = addoptions.filter(
-          (district: any) => district.text === data.deliverygeolevel2
+        let selectedLevel2 = level2Options.filter(
+          (level3: any) => level3.text === data.deliverygeolevel2
         );
-        geoLocationInfo.add = selectedAdd[0]?.code;
-        add = data.deliverygeolevel2;
-        this.setState({ addoptions: addoptions });
+        geoLocationInfo.geolevel2 = selectedLevel2[0]?.code;
+        geolevel2 = data.deliverygeolevel2;
+        this.setState({ level2Options: level2Options });
       }
       if ("deliverygeolevel3" in data) {
-        district = data.deliverygeolevel3;
-        let filteredAdd = allRegions.filter(
-          (region: any) => region.name === data.deliverygeolevel1
+        geolevel3 = data.deliverygeolevel3;
+        let filteredLevel2 = geolevel1List.filter(
+          (level1: any) => level1.name === data.deliverygeolevel1
         );
-        let addList = filteredAdd[0]?.add.filter(
-          (addinfo: any) => addinfo.name === data.deliverygeolevel2
+        let level2List = filteredLevel2[0]?.geolevel2.filter(
+          (level2Info: any) => level2Info.name === data.deliverygeolevel2
         );
-        addList &&
-          addList[0]?.district.forEach((item: any) => {
-            let addInfo = {
+        level2List &&
+        level2List[0]?.geolevel3?.forEach((item: any) => {
+            let level2Info = {
               text: item.name,
               value: item.name,
               code: item.code,
             };
-            districtoptions.push(addInfo);
+            level3Options.push(level2Info);
           });
-        let selectedDistrict = districtoptions.filter(
-          (districtInfo: any) => districtInfo.text === district
+        let selectedLevel3 = level3Options.filter(
+          (level3Info: any) => level3Info.text === geolevel3
         );
-
-        // district = 'Mzimba';
-        geoLocationInfo.district = selectedDistrict[0]?.code;
-        this.setState({ districtoptions: districtoptions });
+        geoLocationInfo.geolevel3 = selectedLevel3[0]?.code;
+        this.setState({ level3Options: level3Options });
       }
       if ("deliverygeolevel4" in data) {
-        epaoptions = await this.getEPADetails();
-        epa = data.deliverygeolevel4;
-        // epa = 'Bwengu';
-        epaoptions?.forEach((city: any) => {
-          if (city.name === epa) {
-            geoLocationInfo.epa = city.code;
-          }
-          city.text = city.name;
-          city.value = city.name;
-        });
-        this.setState({ epaoptions: epaoptions });
+        if(this.state.geographicFields[4]){
+          level4Options = await this.getLevelFourDetails();
+          geolevel4 = data.deliverygeolevel4;
+          level4Options?.forEach((level4: any) => {
+            if (level4.name === geolevel4) {
+              geoLocationInfo.geolevel4 = level4.code;
+            }
+            level4.text = level4.name;
+            level4.value = level4.name;
+          });
+          this.setState({ level4Options: level4Options });
+        }
       }
       if ("deliverygeolevel5" in data) {
-        village = data.deliverygeolevel5;
-        villageoptions = await this.getVillageDetails();
-        if (villageoptions?.length) {
-          villageoptions?.forEach((village: any) => {
-            if (village.name === village) {
-              geoLocationInfo.village = village.code;
-            }
-            village.text = village.name;
-            village.value = village.name;
-          });
+        if(this.state.geographicFields[5]){
+          geolevel5 = data.deliverygeolevel5;
+          level5Options = await this.getLevelFiveDetails();
+          if (level5Options?.length) {
+            level5Options?.forEach((level5: any) => {
+              if (level5.name === geolevel4) {
+                geoLocationInfo.geolevel5 = level5.code;
+              }
+              level5.text = level5.name;
+              level5.value = level5.name;
+            });
+          }
+          this.setState({ level5Options: level5Options });
         }
-        this.setState({ villageoptions: villageoptions });
-
         this.state.geographicFields.forEach((list: any, i: number) => {
           setFormArray.push({
             name: list,
             placeHolder: true,
             value:
-              list === "country"
+              list === "geolevel0"
                 ? this.getStoreData.country
-                : list === "region"
-                ? region
-                : list === "add"
-                ? add
-                : list === "district"
-                ? district
-                : list === "epa"
-                ? epa
-                : list === "village"
-                ? village
+                : list === "geolevel1"
+                ? geolevel1
+                : list === "geolevel2"
+                ? geolevel2
+                : list === "geolevel3"
+                ? geolevel3
+                : list === "geolevel4"
+                ? geolevel4
+                : list === "geolevel5"
+                ? geolevel5
                 : "",
             options:
-              list === "country"
+              list === "geolevel0"
                 ? this.state.countryList
-                : list === "country"
+                : list === "geolevel0"
                 ? this.getStoreData.country
-                : list === "region"
-                ? regionoptions
-                : list === "add"
-                ? addoptions
-                : list === "district"
-                ? districtoptions
-                : list === "epa"
-                ? epaoptions
-                : list === "village"
-                ? villageoptions
+                : list === "geolevel1"
+                ? level1Options
+                : list === "geolevel2"
+                ? level2Options
+                : list === "geolevel3"
+                ? level3Options
+                : list === "geolevel4"
+                ? level4Options
+                : list === "geolevel5"
+                ? level5Options
                 : "",
             error: "",
           });
@@ -521,118 +519,132 @@ class CreateUser extends Component<any, any> {
       //Incase of delivery and billing address is different
       if (!isSameGeoAddress) {
         setFormArray = [];
+        level2Options = [];
+        level3Options = [];
+        level4Options = [];
+        level5Options = [];
+        geoLocationInfo = {
+          geolevel1: "",
+          geolevel2: "",
+          geolevel3: "",
+          geolevel4: "",
+          geolevel5: "",
+        };
         if ("billinggeolevel1" in data) {
-          regionoptions = regionOptions;
-          region = data.billinggeolevel1;
-          regionoptions.forEach((regionInfo: any) => {
-            if (regionInfo.name === data.billinggeolevel1) {
-              geoLocationInfo.region = regionInfo.code;
+          level1Options = level1Options;
+          geolevel1 = data.billinggeolevel1;
+          level1Options.forEach((level1Info: any) => {
+            if (level1Info.name === data.billinggeolevel1) {
+              geoLocationInfo.geolevel1 = level1Info.code;
             }
           });
-          this.setState({ regionoptions: regionoptions });
+          this.setState({ level1Options: level1Options });
         }
         if ("billinggeolevel2" in data) {
-          let filteredAdd = allRegions.filter(
-            (region: any) => region.name === data.billinggeolevel1
+          let filteredLevel2 = geolevel1List.filter(
+            (level1: any) => level1.name === data.billinggeolevel1
           );
-          geoLocationInfo.region = filteredAdd[0]?.code;
-          filteredAdd[0]?.add.forEach((item: any) => {
-            let addInfo = {
+          geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
+          filteredLevel2[0]?.geolevel2.forEach((item: any) => {
+            let level2Info = {
               text: item.name,
               value: item.name,
               code: item.code,
             };
-            addoptions.push(addInfo);
+            level2Options.push(level2Info);
           });
-          let selectedAdd = addoptions.filter(
-            (district: any) => district.text === data.billinggeolevel2
+          let selectedLevel2 = level2Options.filter(
+            (level3: any) => level3.text === data.billinggeolevel2
           );
-          geoLocationInfo.add = selectedAdd[0]?.code;
-          add = data.billinggeolevel2;
-          this.setState({ addoptions: addoptions });
+          geoLocationInfo.geolevel2 = selectedLevel2[0]?.code;
+          geolevel2 = data.billinggeolevel2;
+          this.setState({ level2Options: level2Options });
         }
         if ("billinggeolevel3" in data) {
-          district = data.billinggeolevel3;
-          let filteredAdd = allRegions.filter(
-            (region: any) => region.name === data.billinggeolevel1
+          geolevel3 = data.billinggeolevel3;
+          let filteredLevel2 = geolevel1List.filter(
+            (level1: any) => level1.name === data.billinggeolevel1
           );
-          let addList = filteredAdd[0]?.add.filter(
-            (addinfo: any) => addinfo.name === data.billinggeolevel2
+          let level2List = filteredLevel2[0]?.geolevel2.filter(
+            (level2Info: any) => level2Info.name === data.billinggeolevel2
           );
-          addList &&
-            addList[0]?.district.forEach((item: any) => {
-              let addInfo = {
+          level2List &&
+          level2List[0]?.geolevel3?.forEach((item: any) => {
+              let level2Info = {
                 text: item.name,
                 value: item.name,
                 code: item.code,
               };
-              districtoptions.push(addInfo);
+              level3Options.push(level2Info);
             });
-          let selectedDistrict = districtoptions.filter(
-            (districtInfo: any) => districtInfo.text === district
+          let selectedLevel3 = level3Options.filter(
+            (level3Info: any) => level3Info.text === geolevel3
           );
-          geoLocationInfo.district = selectedDistrict[0]?.code;
-          this.setState({ districtoptions: districtoptions });
+          geoLocationInfo.geolevel3 = selectedLevel3[0]?.code;
+          this.setState({ level3Options: level3Options });
         }
         if ("billinggeolevel4" in data) {
-          epaoptions = await this.getEPADetails();
-          epa = data.billinggeolevel4;
-          epaoptions?.forEach((city: any) => {
-            if (city.name === epa) {
-              geoLocationInfo.epa = city.code;
-            }
-            city.text = city.name;
-            city.value = city.name;
-          });
-          this.setState({ epaoptions: epaoptions });
+          if(this.state.geographicFields[4]){
+            level4Options = await this.getLevelFourDetails();
+            geolevel4 = data.billinggeolevel4;
+            level4Options?.forEach((level4: any) => {
+              if (level4.name === geolevel4) {
+                geoLocationInfo.geolevel4 = level4.code;
+              }
+              level4.text = level4.name;
+              level4.value = level4.name;
+            });
+            this.setState({ level4Options: level4Options });
+          }
         }
         if ("billinggeolevel5" in data) {
-          village = data.billinggeolevel5;
-          villageoptions = await this.getVillageDetails();
-          if (villageoptions?.length) {
-            villageoptions?.forEach((village: any) => {
-              if (village.name === village) {
-                geoLocationInfo.village = village.code;
-              }
-              village.text = village.name;
-              village.value = village.name;
-            });
+          if(this.state.geographicFields[5]){
+            geolevel5 = data.billinggeolevel5;
+            level5Options = await this.getLevelFiveDetails();
+            if (level5Options?.length) {
+              level5Options?.forEach((level5: any) => {
+                if (level5.name === geolevel5) {
+                  geoLocationInfo.geolevel5 = level5.code;
+                }
+                level5.text = level5.name;
+                level5.value = level5.name;
+              });
+            }
+            this.setState({ level5Options: level5Options });
           }
-          this.setState({ villageoptions: villageoptions });
-
           this.state.geographicFields.forEach((list: any, i: number) => {
             setFormArray.push({
               name: list,
               placeHolder: true,
               value:
-                list === "country"
+                list === "geolevel0"
                   ? this.getStoreData.country
-                  : list === "region"
-                  ? region
-                  : list === "add"
-                  ? add
-                  : list === "district"
-                  ? district
-                  : list === "epa"
-                  ? epa
-                  : list === "village"
-                  ? village
+                  : list === "geolevel1"
+                  ? geolevel1
+                  : list === "geolevel2"
+                  ? geolevel2
+                  : list === "geolevel3"
+                  ? geolevel3
+                  : list === "geolevel4"
+                  ? geolevel4
+                  : list === "geolevel5"
+                  ? geolevel5
                   : "",
               options:
-                list === "country"
+                list === "geolevel0"
                   ? this.state.countryList
-                  : list === "country"
+                  : list === "geolevel0"
                   ? this.getStoreData.country
-                  : list === "region"
-                  ? regionoptions
-                  : list === "add"
-                  ? addoptions
-                  : list === "district"
-                  ? districtoptions
-                  : list === "epa"
-                  ? epaoptions
-                  : list === "village"
-                  ? villageoptions
+                  : list === "geolevel1"
+                  ? level1Options
+                  : list === "geolevel2"
+                  ? level2Options
+                  : list === "geolevel3"
+                  ? level3Options
+                  : list === "geolevel4"
+                  ? level4Options
+                  : list === "geolevel5"
+                  ? level5Options
                   : "",
               error: "",
             });
@@ -648,12 +660,12 @@ class CreateUser extends Component<any, any> {
         setFormArray.push({
           name: list,
           placeHolder: true,
-          value: list === "country" ? this.getStoreData.country : "",
+          value: list === "geolevel0" ? this.getStoreData.country : "",
           options:
-            list === "country"
+            list === "geolevel0"
               ? this.state.countryList
-              : list === "region"
-              ? regionOptions
+              : list === "geolevel1"
+              ? level1Datas
               : "",
           error: "",
         });
@@ -663,26 +675,26 @@ class CreateUser extends Component<any, any> {
   };
 
   getOptionLists = async (cron: any, type: any, value: any, index: any) => {
-    let allRegions = this.state.allRegions;
-    if (allRegions.length) {
-      allRegions.forEach((region: any) => {
-        region.text = region.name;
-        region.value = region.name;
+    let geolevel1List = this.state.geolevel1List;
+    if (geolevel1List.length) {
+      geolevel1List.forEach((level1: any) => {
+        level1.text = level1.name;
+        level1.value = level1.name;
       });
-      this.state.dynamicFields.forEach((list: any) => {
+      this.state.dynamicFields.forEach((list: any, index:number) => {
         if (type === list.name) {
           if (list.value === "") {
-            list.error = "Please select the " + list.name;
+            list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
           }
         }
         this.setState({ isRendered: true });
       });
-      this.state.withHolding.forEach((list: any) => {
+      this.state.withHolding.forEach((list: any, index: number) => {
         if (type === list.name) {
           if (list.value === "") {
-            list.error = "Please select the " + list.name;
+            list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
           }
@@ -690,7 +702,7 @@ class CreateUser extends Component<any, any> {
         this.setState({ isRendered: true });
       });
       let currentStep = this.state.currentStep;
-      this.setState({ regionoptions: allRegions });
+      this.setState({ level1Options: geolevel1List });
       let dynamicFieldVal = JSON.parse(JSON.stringify(this.state.dynamicFields));
       let withHoldingVal = JSON.parse(JSON.stringify(this.state.withHolding));
       dynamicFieldVal.forEach((list:any, fieldIndex:number)=>{
@@ -703,142 +715,216 @@ class CreateUser extends Component<any, any> {
           list.value = "";
         }
       });
-      if (type === "region") {
-        let filteredRegion = allRegions?.filter(
-          (region: any) => region.name === value
+      if (type === "geolevel1") {
+        let filteredLevel1 = geolevel1List?.filter(
+          (level1: any) => level1.name === value
         );
-        let add: any = [];
+        let level2Options: any = [];
 
-        filteredRegion[0]?.add.forEach((item: any) => {
-          let regionInfo = {
+        filteredLevel1[0]?.geolevel2.forEach((item: any) => {
+          let level1Info = {
             text: item.name,
             value: item.name,
             code: item.code,
           };
-          add.push(regionInfo);
+          level2Options.push(level1Info);
         });
-        geoLocationInfo.region =
-          filteredRegion.length && filteredRegion[0]?.code;
         if (this.state.currentStep === 2) {
-          dynamicFieldVal[index + 1].options = add;
+          dynamicFieldVal[index + 1].options = level2Options;
           dynamicFieldVal[index].value = value;
           dynamicFieldVal[index + 1].value = "";
-          this.setState({ dynamicFields: dynamicFieldVal });
+          this.setState({  dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep === 3) {
-          withHoldingVal[index + 1].options = add;
+          withHoldingVal[index + 1].options = level2Options;
           withHoldingVal[index].value = value;
           withHoldingVal[index + 1].value = "";
-          this.setState({
+          this.setState({   
             withHolding: withHoldingVal,
-            withHoldingSelected: true,
+            withHoldingSelected: true
           });
         }
-      } else if (type === "add") {
-        let filteredAdd: any = [];
+      } else if (type === "geolevel2") {
+        let filteredLevel2: any = [];
         if (currentStep === 2) {
-          filteredAdd = allRegions?.filter(
-            (region: any) => region.name === dynamicFieldVal[1].value
+          filteredLevel2 = geolevel1List?.filter(
+            (level1: any) => level1.name === dynamicFieldVal[1].value
           );
         }
         if (currentStep === 3) {
-          filteredAdd = allRegions?.filter(
-            (region: any) => region.name === withHoldingVal[1].value
+          filteredLevel2 = geolevel1List?.filter(
+            (level1: any) => level1.name === withHoldingVal[1].value
           );
         }
-        let addList = filteredAdd[0]?.add.filter(
-          (addinfo: any) => addinfo.name === value
+        let level2List = filteredLevel2[0]?.geolevel2.filter(
+          (level2Info: any) => level2Info.name === value
         );
-        let district: any = [];
-        addList[0]?.district.forEach((item: any) => {
-          let districtInfo = {
+        let geolevel3: any = [];
+        level2List[0]?.geolevel3?.forEach((item: any) => {
+          let level3Info = {
             text: item.name,
             value: item.name,
             code: item.code,
           };
-          district.push(districtInfo);
+          geolevel3.push(level3Info);
         });
-        geoLocationInfo.add = addList[0]?.code;
         if (this.state.currentStep === 2) {
-          dynamicFieldVal[index + 1].options = district;
+          dynamicFieldVal[index + 1].options = geolevel3;
           dynamicFieldVal[index].value = value;
           dynamicFieldVal[index + 1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep === 3) {
-          withHoldingVal[index + 1].options = district;
+          withHoldingVal[index + 1].options = geolevel3;
           withHoldingVal[index].value = value;
           withHoldingVal[index + 1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
-      } else if (type === "district") {
-        let filteredAdd: any = [];
-        let districtList: any = [];
+      } else if (type === "geolevel3") {
+        let filteredLevel2: any = [];
+        let level3List: any = [];
         if (currentStep === 2) {
-          filteredAdd = allRegions?.filter(
-            (region: any) => region.name === dynamicFieldVal[1].value
+          filteredLevel2 = geolevel1List?.filter(
+            (level1: any) => level1.name === dynamicFieldVal[1].value
           );
-          districtList = filteredAdd[0]?.add.filter(
-            (addinfo: any) => addinfo.name === dynamicFieldVal[2].value
+          level3List = filteredLevel2[0]?.geolevel2.filter(
+            (level2Info: any) => level2Info.name === dynamicFieldVal[2].value
           );
+         dynamicFieldVal[1]?.options.filter((option:any) => {
+          if(dynamicFieldVal[1].value === option.text){
+            geoLocationInfo.geolevel1 = option.code
+          }
+         })
+         dynamicFieldVal[2]?.options.filter((option:any) => {
+          if(dynamicFieldVal[2].value === option.text){
+            geoLocationInfo.geolevel2 = option.code
+          }
+         })
+         dynamicFieldVal[3]?.options.filter((option:any) => {
+          if(dynamicFieldVal[3].value === option.text){
+            geoLocationInfo.geolevel3 = option.code
+          }
+         })
+          if(this.state.geographicFields[4]){
+            levelFour = await this.getLevelFourDetails();
+            if (levelFour.length) {
+              levelFour.forEach((item: any) => {
+                item.text = item.name;
+                item.value = item.name;
+              });
+              dynamicFieldVal[index + 1].options = levelFour;
+              dynamicFieldVal[index + 1].value = "";
+            }
+          }
+          dynamicFieldVal[index].value = value;
+          this.setState({ dynamicFields: dynamicFieldVal });
         }
         if (currentStep === 3) {
-          filteredAdd = allRegions?.filter(
-            (region: any) => region.name === withHoldingVal[1].value
+          filteredLevel2 = geolevel1List?.filter(
+            (level1: any) => level1.name === withHoldingVal[1].value
           );
-          districtList = filteredAdd[0]?.add.filter(
-            (addinfo: any) => addinfo.name === withHoldingVal[2].value
+          level3List = filteredLevel2[0]?.geolevel2.filter(
+            (level2Info: any) => level2Info.name === withHoldingVal[2].value
           );
-        }
-        districtList[0]?.district.forEach((item: any) => {
-          if (item.name === value) {
-            geoLocationInfo.district = item.code;
+          withHoldingVal[1]?.options.filter((option:any) => {
+            if(withHoldingVal[1].value === option.text){
+              geoLocationInfo.geolevel1 = option.code
+            }
+           })
+           withHoldingVal[2]?.options.filter((option:any) => {
+            if(withHoldingVal[2].value === option.text){
+              geoLocationInfo.geolevel2 = option.code
+            }
+           })
+           withHoldingVal[3]?.options.filter((option:any) => {
+            if(withHoldingVal[3].value === option.text){
+              geoLocationInfo.geolevel3 = option.code
+            }
+           })
+          if(this.state.geographicFields[4]){
+            levelFour = await this.getLevelFourDetails();
+            levelFour.forEach((item: any) => {
+              item.text = item.name;
+              item.value = item.name;
+            });
+            if (levelFour.length) {
+              withHoldingVal[index + 1].options = levelFour;
+              withHoldingVal[index + 1].value = "";
+            }
           }
-        });
-
-        levelFive = await this.getEPADetails();
-
-        if (levelFive.length) {
-          levelFive.forEach((item: any) => {
-            item.text = item.name;
-            item.value = item.name;
-          });
-          if (this.state.currentStep === 2) {
-            dynamicFieldVal[index + 1].options = levelFive;
-            dynamicFieldVal[index].value = value;
-            dynamicFieldVal[index + 1].value = "";
-            this.setState({ dynamicFields: dynamicFieldVal });
-          } else if (this.state.currentStep === 3) {
-            withHoldingVal[index + 1].options = levelFive;
-            withHoldingVal[index].value = value;
-            withHoldingVal[index + 1].value = "";
-            this.setState({ withHolding: withHoldingVal });
-          }
+          withHoldingVal[index].value = value;
+          this.setState({ withHolding: withHoldingVal });
         }
-      } else if (type === "epa") {
-        if (levelFive && levelFive.length) {
-          levelFive.forEach((item: any) => {
-            if (item.name === value) {
-              geoLocationInfo.epa = item.code;
+      } else if (type === "geolevel4") {
+        let levelFive: any = [];
+        if(this.state.currentStep === 2){
+          dynamicFieldVal[1]?.options.filter((option:any) => {
+            if(dynamicFieldVal[1].value === option.text){
+              geoLocationInfo.geolevel1 = option.code
+            }
+           })
+           dynamicFieldVal[2]?.options.filter((option:any) => {
+            if(dynamicFieldVal[2].value === option.text){
+              geoLocationInfo.geolevel2 = option.code
+            }
+           })
+           dynamicFieldVal[3]?.options.filter((option:any) => {
+            if(dynamicFieldVal[3].value === option.text){
+              geoLocationInfo.geolevel3 = option.code
+            }
+           })
+          dynamicFieldVal[4]?.options.filter((option:any) => {
+            if(dynamicFieldVal[4].value === option.text){
+              geoLocationInfo.geolevel4 = option.code
             }
           });
-        }
-        let village: any = [];
-        village = await this.getVillageDetails();
-        village.forEach((villageInfo: any) => {
-          villageInfo.text = villageInfo.name;
-          villageInfo.value = villageInfo.name;
-        });
-        if (this.state.currentStep === 2) {
-          dynamicFieldVal[index + 1].options = village;
+          if(this.state.geographicFields[5]){
+            levelFive = await this.getLevelFiveDetails();
+            if (levelFive.length) {
+              levelFive.forEach((level5Info: any) => {
+                level5Info.text = level5Info.name;
+                level5Info.value = level5Info.name;
+              });
+            dynamicFieldVal[index + 1].options = levelFive;
+            dynamicFieldVal[index + 1].value = "";
+            }
+          }
           dynamicFieldVal[index].value = value;
-          dynamicFieldVal[index + 1].value = "";
           this.setState({ dynamicFields: dynamicFieldVal });
-        } else if (this.state.currentStep === 3) {
-          withHoldingVal[index + 1].options = village;
+        } else if(this.state.currentStep === 3){
+          withHoldingVal[1]?.options.filter((option:any) => {
+            if(withHoldingVal[1].value === option.text){
+              geoLocationInfo.geolevel1 = option.code
+            }
+           })
+           withHoldingVal[2]?.options.filter((option:any) => {
+            if(withHoldingVal[2].value === option.text){
+              geoLocationInfo.geolevel2 = option.code
+            }
+           })
+           withHoldingVal[3]?.options.filter((option:any) => {
+            if(withHoldingVal[3].value === option.text){
+              geoLocationInfo.geolevel3 = option.code
+            }
+           })
+          withHoldingVal[4]?.options.filter((option:any) => {
+            if(withHoldingVal[4].value === option.text){
+              geoLocationInfo.geolevel4 = option.code
+            }
+          });
+          if(this.state.geographicFields[5]){
+            levelFive = await this.getLevelFiveDetails();
+            if (levelFive.length) {
+              levelFive.forEach((level5Info: any) => {
+                level5Info.text = level5Info.name;
+                level5Info.value = level5Info.name;
+              });
+              withHoldingVal[index + 1].options = levelFive;
+              withHoldingVal[index + 1].value = "";
+            }
+          }
           withHoldingVal[index].value = value;
-          withHoldingVal[index + 1].value = "";
           this.setState({ withHolding: withHoldingVal });
         }
-      } else if (type === "village") {
+      } else if (type === "geolevel5") {
         if (this.state.currentStep === 2) {
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
@@ -847,27 +933,29 @@ class CreateUser extends Component<any, any> {
           this.setState({ withHolding: withHoldingVal });
         }
       }
-      let withHoldingdet = JSON.parse(JSON.stringify(this.state.withHolding));
+      let withHoldingdet = (withHoldingVal[2]?.value !== '') ? withHoldingVal : dynamicFieldVal;
+      withHoldingdet = JSON.parse(JSON.stringify(withHoldingdet));
       this.setState({ newWithHolding: withHoldingdet });
     }
   };
 
-  getEPADetails = () => {
+  getLevelFourDetails = () => {
     this.setState({ isLoader: true });
-    const { getLevelFive } = apiURL;
-    let data = {
-      countrycode: this.getStoreData.countryCode,
-      region: geoLocationInfo.region,
-      add: geoLocationInfo.add,
-      district: geoLocationInfo.district,
-    };
-    let levelFive: any = [];
+    const { getLevelFour } = apiURL;
+    let data ={
+        geolevel0: this.getStoreData.countryCode,
+        geolevel1: geoLocationInfo.geolevel1,
+        geolevel2: geoLocationInfo.geolevel2,
+        geolevel3: geoLocationInfo.geolevel3
+    }
+    let levelFour: any = [];
     return new Promise((resolve, reject) => {
-      invokeGetAuthService(getLevelFive, data)
+      invokeGetAuthService(getLevelFour, data)
         .then((response: any) => {
-          levelFive = response.body.epa;
+          levelFour = response.body?.geolevel4 && response.body.geolevel4;
+          // levelFour = (levelFour.length !== 0) ? response.body.geolevel4 : [],
           this.setState({ isLoader: false });
-          resolve(levelFive);
+          resolve(levelFour);
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
@@ -878,23 +966,24 @@ class CreateUser extends Component<any, any> {
     });
   };
 
-  getVillageDetails = () => {
+  getLevelFiveDetails = () => {
     this.setState({ isLoader: true });
-    const { getLevelSix } = apiURL;
-    let data = {
-      countrycode: this.getStoreData.countryCode,
-      region: geoLocationInfo.region,
-      add: geoLocationInfo.add,
-      district: geoLocationInfo.district,
-      epa: geoLocationInfo.epa,
-    };
-    let levelSix: any = [];
+    const { getLevelFive } = apiURL;
+    let data ={
+      geolevel0: this.getStoreData.countryCode,
+      geolevel1: geoLocationInfo.geolevel1,
+      geolevel2: geoLocationInfo.geolevel2,
+      geolevel3: geoLocationInfo.geolevel3,
+      geolevel4: geoLocationInfo.geolevel4
+    }
+    let levelFive: any = [];
     return new Promise((resolve, reject) => {
-      invokeGetAuthService(getLevelSix, data)
+      invokeGetAuthService(getLevelFive, data)
         .then((response: any) => {
-          levelSix = response.body.village;
+          levelFive = response.body?.geolevel5 && response.body.geolevel5;
+          // levelFive = Object.keys(response.body.geolevel5).length !== 0 ? response.body.geolevel5 : [],
           this.setState({ isLoader: false });
-          resolve(levelSix);
+          resolve(levelFive);
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
@@ -913,26 +1002,26 @@ class CreateUser extends Component<any, any> {
       formValid = this.checkValidation();
       if (formValid) {
         if (!this.state.isEditPage && !this.state.withHoldingSelected) {
-          let regionOptions: any = [];
+          let level1Options: any = [];
           let setFormArray: any = [];
-          this.state.allRegions.forEach((item: any) => {
-            let regionInfo = {
+          this.state.geolevel1List.forEach((item: any) => {
+            let level1Info = {
               text: item.name,
               code: item.code,
               value: item.name,
             };
-            regionOptions.push(regionInfo);
+            level1Options.push(level1Info);
           });
           this.state.geographicFields.forEach((list: any, i: number) => {
             setFormArray.push({
               name: list,
               placeHolder: true,
-              value: list === "country" ? this.getStoreData.country : "",
+              value: list === "geolevel0" ? this.getStoreData.country : "",
               options:
-                list === "country"
+                list === "geolevel0"
                   ? this.state.countryList
-                  : list === "region"
-                  ? regionOptions
+                  : list === "geolevel1"
+                  ? level1Options
                   : "",
               error: "",
             });
@@ -1045,19 +1134,19 @@ class CreateUser extends Component<any, any> {
             userData.ownerRows[0].lastname
           : userData.whtownername,
         deliverygeolevel0: this.getStoreData.countryCode,
-        deliverygeolevel1: geoFields.region,
-        deliverygeolevel2: geoFields.add,
-        deliverygeolevel4: geoFields.epa,
-        deliverygeolevel3: geoFields.district,
-        deliverygeolevel5: geoFields.village,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
         billinggeolevel0: this.getStoreData.countryCode,
-        billinggeolevel1: shippingFields.region,
-        billinggeolevel2: shippingFields.add,
-        billinggeolevel4: shippingFields.epa,
-        billinggeolevel3: shippingFields.district,
-        billinggeolevel5: shippingFields.village,
+        billinggeolevel1: shippingFields.geolevel1,
+        billinggeolevel2: shippingFields.geolevel2,
+        billinggeolevel3: shippingFields.geolevel3,
+        billinggeolevel4: shippingFields.geolevel4,
+        billinggeolevel5: shippingFields.geolevel5,
         billingstreet: this.state.accInfo
           ? userData.deliverystreet
           : userData.billingstreet,
@@ -1093,19 +1182,19 @@ class CreateUser extends Component<any, any> {
             userData.ownerRows[0].lastname
           : userData.whtownername,
         deliverygeolevel0: this.getStoreData.countryCode,
-        deliverygeolevel1: geoFields.region,
-        deliverygeolevel2: geoFields.add,
-        deliverygeolevel4: geoFields.epa,
-        deliverygeolevel3: geoFields.district,
-        deliverygeolevel5: geoFields.village,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
         billinggeolevel0: this.getStoreData.countryCode,
-        billinggeolevel1: shippingFields.region,
-        billinggeolevel2: shippingFields.add,
-        billinggeolevel4: shippingFields.epa,
-        billinggeolevel3: shippingFields.district,
-        billinggeolevel5: shippingFields.village,
+        billinggeolevel1: shippingFields.geolevel1,
+        billinggeolevel2: shippingFields.geolevel2,
+        billinggeolevel3: shippingFields.geolevel3,
+        billinggeolevel4: shippingFields.geolevel4,
+        billinggeolevel5: shippingFields.geolevel5,
         billingstreet: this.state.accInfo
           ? userData.deliverystreet
           : userData.billingstreet,
@@ -1278,9 +1367,9 @@ class CreateUser extends Component<any, any> {
       //   deliverystreetErr: deliverystreet,
       //   deliveryzipcodeErr: deliveryzipcode,
       // });
-      this.state.dynamicFields.forEach((list: any) => {
+      this.state.dynamicFields.forEach((list: any, index: number) => {
         if (list.value === "") {
-          list.error = "Please select the " + list.name;
+          list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           formValid = false;
         } else {
           list.error = "";
@@ -1322,9 +1411,9 @@ class CreateUser extends Component<any, any> {
           ownernameErr: "",
         });
       }
-      this.state.withHolding.forEach((list: any) => {
+      this.state.withHolding.forEach((list: any, index: number) => {
         if (list.value === "") {
-          list.error = "Please select the " + list.name;
+          list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           formValid = false;
         } else {
           list.error = "";
@@ -1393,7 +1482,7 @@ class CreateUser extends Component<any, any> {
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
       data.forEach((list: any) => {
-        if (list.name !== "country") {
+        if (list.name !== "geolevel0") {
           list.value = "";
         }
       });
@@ -1408,7 +1497,7 @@ class CreateUser extends Component<any, any> {
     } else {
       let data: any = this.state.withholding;
       data?.forEach((list: any) => {
-        if (list.name !== "country") {
+        if (list.name !== "geolevel0") {
           list.value = "";
         }
       });
@@ -1577,7 +1666,7 @@ class CreateUser extends Component<any, any> {
           //         list === "country"
           //           ? this.state.countryList
           //           : i == 1
-          //           ? this.state.regionoptions
+          //           ? this.state.level1Options
           //           : "",
           //       error: "",
           //     });
@@ -1707,12 +1796,12 @@ class CreateUser extends Component<any, any> {
     let isStaffFieldsFilled = false;
     if (!this.state.isEditPage) {
       this.state.dynamicFields?.forEach((item: any) => {
-        if (item.name !== "country" && item.value !== "") {
+        if (item.name !== "geolevel0" && item.value !== "") {
           isDeliveryFieldsFilled = true;
         }
       });
       this.state.withHolding?.forEach((item: any) => {
-        if (item.name !== "country" && item.value !== "") {
+        if (item.name !== "geolevel0" && item.value !== "") {
           isWHTFieldsFilled = true;
         }
       });
@@ -1757,30 +1846,30 @@ class CreateUser extends Component<any, any> {
       let userFields = this.props.location.state?.userFields;
       if (userFields) {
         this.state.dynamicFields?.forEach((item: any) => {
-          if (item.name !== "country") {
+          if (item.name !== "geolevel0") {
             if (
-              item.name === "region" &&
+              item.name === "geolevel1" &&
               item.value !== userFields.deliverygeolevel1
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
-              item.name === "add" &&
+              item.name === "geolevel2" &&
               item.value !== userFields.deliverygeolevel2
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
-              item.name === "district" &&
+              item.name === "geolevel3" &&
               item.value !== userFields.deliverygeolevel3
             ) {
               isDeliveryFieldsFilled = true;
             }
-            if (item.name === "epa" && item.value !== userFields.deliverygeolevel4) {
+            if (item.name === "geolevel4" && item.value !== userFields.deliverygeolevel4) {
               isDeliveryFieldsFilled = true;
             }
             if (
-              item.name === "village" &&
+              item.name === "geolevel5" &&
               item.value !== userFields.deliverygeolevel5
             ) {
               isDeliveryFieldsFilled = true;
@@ -1788,27 +1877,27 @@ class CreateUser extends Component<any, any> {
           }
         });
         this.state.withHolding?.forEach((item: any) => {
-          if (item.name !== "country") {
+          if (item.name !== "geolevel0") {
             if (
-              item.name === "region" &&
+              item.name === "geolevel1" &&
               item.value !== userFields.billinggeolevel1
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "add" && item.value !== userFields.billinggeolevel2) {
+            if (item.name === "geolevel2" && item.value !== userFields.billinggeolevel2) {
               isWHTFieldsFilled = true;
             }
             if (
-              item.name === "district" &&
+              item.name === "geolevel3" &&
               item.value !== userFields.billinggeolevel3
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "epa" && item.value !== userFields.billinggeolevel4) {
+            if (item.name === "geolevel4" && item.value !== userFields.billinggeolevel4) {
               isWHTFieldsFilled = true;
             }
             if (
-              item.name === "village" &&
+              item.name === "geolevel5" &&
               item.value !== userFields.billinggeolevel5
             ) {
               isWHTFieldsFilled = true;
@@ -1879,8 +1968,7 @@ class CreateUser extends Component<any, any> {
       currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
       
     const locationList = fields?.map((list: any, index: number) => {
-      let nameCapitalized =
-        list.name.charAt(0).toUpperCase() + list.name.slice(1);
+      let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       return (
         <>
           <div
@@ -1903,7 +1991,7 @@ class CreateUser extends Component<any, any> {
               isPlaceholder
               isDisabled={
                 (this.state.currentStep === 3 && this.state.accInfo) ||
-                list.name === "country"
+                list.name === "geolevel0"
                   ? true
                   : false
               }
@@ -1913,6 +2001,7 @@ class CreateUser extends Component<any, any> {
         </>
       );
     });
+  
 
     let nextButton;
     if (currentStep === 1) {
@@ -2088,13 +2177,14 @@ class CreateUser extends Component<any, any> {
                           </label>
                         </div>
                       </div>
-                      <div
+                      <div className="personal-information-table"
                         style={{
                           width: "124%",
                           maxHeight: "280px",
                           overflowY: "auto",
                           overflowX: "auto",
                         }}
+                        
                       >
                         <div style={{ marginRight: "10px" }}>
                           {/* <Table borderless> */}
@@ -2790,7 +2880,7 @@ class CreateUser extends Component<any, any> {
                       className="row"
                       style={{
                         marginTop:
-                          ownernameErr !== "" || accountnameErr !== ""
+                          (ownernameErr !== "" || accountnameErr !== "")
                             ? "12px"
                             : "32px",
                       }}

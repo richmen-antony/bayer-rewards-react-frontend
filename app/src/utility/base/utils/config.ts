@@ -9,7 +9,7 @@ export const apiURL = {
     productCategory: "user/getproductcategory",
     rsmDashboard: "rsm/dashboard/",
     channelPartnersList: "user/userlist",
-    retailerCreation: "user/createexternaluser",
+    retailerCreation: "user/createexternaluserweb",
     deactivateChannelPartner:"user/deactivate",
     activateChannelPartner:"user/activate",
     updateUser: "user/update",
@@ -20,8 +20,8 @@ export const apiURL = {
     getTemplateData:"template/getTemplateByCountry",
     registerTemplateData: "template/templateForCountryRegister",
     rsmRetailerList:"order/users",
-    getHierarchyLevels: "geographical/getRegionLocationHierLevelByCountry",
-    getLevelFive: "geographical/getEPA",
-    getLevelSix: "geographical/getVillage",
+    getHierarchyLevels: "geographical/getRegLocHierLevelForWeb",
+    getLevelFour: "geographical/getGeolevel4",
+    getLevelFive: "geographical/getGeolevel5",
     downloadChanglogs:"user/changelogsdownload"
 }
