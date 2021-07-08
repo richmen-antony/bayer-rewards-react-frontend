@@ -353,6 +353,14 @@
             color: #ff6397;
             background-color: #ffecf2;
           }
+          .status.pending{
+            color: #FF9D00;
+            background-color: #FF9D0033;
+          }
+          .status.cancelled{
+            color: #FF0000;
+            background-color: #FF000026;
+          }
           .max-image {
             margin-left: 60px;
             cursor: pointer;

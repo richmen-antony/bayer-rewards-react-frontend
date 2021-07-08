@@ -194,6 +194,7 @@ class ScanLogsTable extends Component<Props, States> {
       () => {
         this.getScanLogs();
         this.getRetailerList();
+        this.getLocationHierachyOrder();
       }
     );
   }
@@ -302,6 +303,33 @@ class ScanLogsTable extends Component<Props, States> {
         console.log("error", error);
       });
   };
+
+  /**
+	 * To get location hierachy data order list
+	 */
+	getLocationHierachyOrder = () => {
+		const { getTemplateData } = apiURL;
+		let data = {
+			countryCode: this.state.loggedUserInfo.countrycode,
+		};
+		invokeGetAuthService(getTemplateData, data).then((response: any) => {
+			let locationData = response.body[0].locationhierarchy;
+			let levels: any = [];
+			locationData?.length > 0 &&
+				locationData.forEach((item: any,index:number) => {
+					if(index>0){
+						let locationhierlevel = item.locationhierlevel;
+						let geolevels = "geolevel" + locationhierlevel;
+						let obj = { name: item.locationhiername, geolevels };
+						levels.push(obj);
+					}
+					
+				});
+			this.setState({
+				locationData: levels,
+			});
+		});
+	};
   handleClosePopup = () => {
     this.setState({ showPopup: false });
   };
@@ -1286,18 +1314,15 @@ class ScanLogsTable extends Component<Props, States> {
                       <label>Phone Number</label>
                       <p>{retailerPopupData.phonenumber}</p>
                     </div>
-                    <div className="content-list">
-                      <label>Region</label>
-                      <p>{retailerPopupData.geolevel1}</p>
-                    </div>
-                    <div className="content-list">
-                      <label>District</label>
-                      <p>{retailerPopupData.geolevel3}</p>
-                    </div>
-                    <div className="content-list">
-                      <label>EPA</label>
-                      <p>{retailerPopupData.geolevel4}</p>
-                    </div>
+                    {this.state.locationData?.length > 0 &&
+											this.state.locationData.map((location: any) => {
+												return (
+													<div className="content-list">
+														<label>{_.capitalize(location.name)}</label>
+														<p>{retailerPopupData[location.geolevels]}</p>
+													</div>
+												);
+											})}
                     <div className="content-list">
                       <label>Postal Code</label>
                       <p>{retailerPopupData.billingzipcode}</p>

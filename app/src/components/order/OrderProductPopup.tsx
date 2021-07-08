@@ -17,6 +17,7 @@ import FarmerDenied from "../../assets/icons/farmer_denied.svg";
 import CpproductImg from "../../assets/icons/cp_products.svg";
 import NoImg from "../../assets/images/no-image-circle.jpg";
 import * as myConstClass from "../../utility/constant";
+
 const popupHeader = {
   title: "Order ID",
   sub: "1538",
@@ -43,11 +44,11 @@ interface Props {
   data: any;
 }
 /**
- *OrderTable Functional Component
+ *OrderProductPopup Functional Component
  * @param props
  * @returns
  */
-const OrderTable: React.FC<Props> = ({ open, close, data }) => {
+const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
   const [accordionView, handleAccordion] = React.useState(false);
   const [accordionId, setAccordionId] = React.useState("");
   const [accordion, setAccordion] = useState(false);
@@ -67,21 +68,21 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
       header={popupHeader}
     >
       <DialogContent>
-        <div className="popup-container ordered-table">
+        <div className="popup-container ordered-table order-product-popup">
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
                 <label>
-                  #{data?.advisororderid} -{" "}
-                  {_.startCase(_.toLower(data?.accountname))}
+                  #{data?.advisororderid} 
+                  { data.orderstatus === "FULFILLED"&& " - " + _.startCase(_.toLower(data?.accountname))}
                 </label>
               </p>
             </div>
           </div>
           <div className="wrapper-progressBar">
             <ul className="progressBar">
-              <li className="active">
-                <div className="line-cnt">
+              <li className={`active ${data.orderstatus === "EXPIRED" || data.orderstatus === "CANCELLED"? "join" : data.orderstatus === "PENDING"? "dotline-pending":""}`}>
+                <div className={`line-cnt ${data.orderstatus === "PENDING" ? "pending-center" :""}`}>
                   <p>Ordered date</p>
                   <label>
                     {data.ordereddate &&
@@ -97,28 +98,26 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </span>
                 </div>
               </li>
+              { data.orderstatus !== "PENDING"&&
               <li
                 className={`${
                   data.orderstatus === "FULFILLED"
                     ? "active"
-                    : data.orderstatus === "EXPIRED"
+                    : data.orderstatus === "EXPIRED" || data.orderstatus === "CANCELLED" 
                     ? "inactive"
                     : ""
                 } `}
               >
                 <div className="line-cnt-expiry-date">
                   <p>
-                    {data.orderstatus === "FULFILLED"
-                      ? "Fulfilled date"
-                      : data.orderstatus === "EXPIRED"
-                      ? "Expiry date"
-                      : ""}
+                    {_.capitalize(data.orderstatus)+" date"}
                   </p>
                   <label>
                     {data.lastupdateddate &&
                       moment(data.lastupdateddate).format("Do MMM, YYYY")}
                   </label>
                 </div>
+                {data.orderstatus === "FULFILLED" &&
                 <div className="content">
                   <img src={retailerImg} alt="" />
                   <p>Fulfilled by ID & Name</p>
@@ -126,7 +125,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                     {data.staffid} - {data.staffname}
                   </span>
                 </div>
+                }
               </li>
+             }
               <li>
                 <div className="content">
                   <img
@@ -458,4 +459,4 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
   );
 };
 
-export default OrderTable;
+export default OrderProductPopup;

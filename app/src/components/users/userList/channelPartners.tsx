@@ -119,8 +119,17 @@ const DialogActions = withStyles((theme: Theme) => ({
 
 class ChannelPartners extends Component<Props, States> {
   tableCellIndex: any;
+  loggedUserInfo: any;
+  getStoreData: any;
   constructor(props: any) {
     super(props);
+    const dataObj: any = getLocalStorageData("userData");
+    const loggedUserInfo = JSON.parse(dataObj);
+    this.getStoreData = {
+      country: loggedUserInfo.geolevel0,
+      countryCode: loggedUserInfo.countrycode,
+      Language: "EN-US",
+    };
     this.state = {
       dialogOpen: false,
       isActivateUser: false,
@@ -188,7 +197,7 @@ class ChannelPartners extends Component<Props, States> {
     this.setState({ isLoader: true });
     const { getTemplateData } = apiURL;
     let data = {
-      countryCode: getStoreData.countryCode,
+      countryCode:  this.getStoreData.countryCode,
     };
     invokeGetAuthService(getTemplateData, data)
     .then((response: any) => {
@@ -464,7 +473,7 @@ class ChannelPartners extends Component<Props, States> {
       let userData = this.state.userList;
 
       let data = {
-        countrycode: getStoreData.countryCode,
+        countrycode:  this.getStoreData.countryCode,
         ownerfirstname: newUserList.ownerRows[0].firstname,
         ownerlastname: newUserList.ownerRows[0].lastname,
         ownerphonenumber: newUserList.ownerRows[0].mobilenumber,
@@ -481,7 +490,7 @@ class ChannelPartners extends Component<Props, States> {
         whtaccountname: userData.whtaccountname,
         taxid: userData.taxid,
         whtownername: userData.whtownername,
-        deliverygeolevel0: getStoreData.countryCode,
+        deliverygeolevel0:  this.getStoreData.countryCode,
         deliverygeolevel1: userData.deliverygeolevel1,
         deliverygeolevel2: userData.deliverygeolevel2,
         deliverygeolevel3: userData.deliverygeolevel3,
@@ -489,7 +498,7 @@ class ChannelPartners extends Component<Props, States> {
         deliverygeolevel5: userData.deliverygeolevel5,
         deliverystreet: userData.deliverystreet,
         deliveryzipcode: userData.deliveryzipcode,
-        billinggeolevel0: getStoreData.countryCode,
+        billinggeolevel0:  this.getStoreData.countryCode,
         billinggeolevel1: userData.billinggeolevel1,
         billinggeolevel2: userData.billinggeolevel2,
         billinggeolevel3: userData.billinggeolevel3,

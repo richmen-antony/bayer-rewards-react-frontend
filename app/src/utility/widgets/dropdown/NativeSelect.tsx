@@ -43,7 +43,7 @@ export const NativeDropdown = ({
         </option>
          }
 
-        {options &&
+        { options?.length>0 &&
           options.map((person: any) => (
             <option key={person.value} value={person.value}>
               {person.text}

@@ -21,6 +21,7 @@ type States = {
 	isLoader: boolean;
 	userRole: any;
 	adminUsersCount: number;
+	adminOrderHistoryCount:number;
 };
 
 class Dashboard extends Component<Props, States> {
@@ -32,6 +33,8 @@ class Dashboard extends Component<Props, States> {
 			usersCount: 0,
 			isLoader: false,
 			adminUsersCount: 0,
+			adminOrderHistoryCount:0
+
 		};
 	}
 	componentDidMount() {
@@ -75,6 +78,7 @@ class Dashboard extends Component<Props, States> {
 				});
 				this.setState({
 					adminUsersCount: res.usercount,
+					adminOrderHistoryCount:res.scanlogscount
 				});
 			})
 			.catch((error: any) => {
@@ -160,11 +164,11 @@ class Dashboard extends Component<Props, States> {
 								<div className="card-list">
 									<CustomCard
 										icon={BarCodeIcon}
-										border="1px solid #078dffdb"
-										background="#078dffdb"
+										border="1px solid #b6d0ea"
+										background="#f8f9fa"
 										cardClick={() => this.handleNavigateOrder()}
 									>
-										<div className="count">{this.state.adminUsersCount}</div>
+										<div className="count">{this.state.adminOrderHistoryCount}</div>
 										<div className="title">Total Orders</div>
 									</CustomCard>
 								</div>
