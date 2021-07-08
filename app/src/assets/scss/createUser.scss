@@ -49,3 +49,25 @@
     height: 84vh;
   }
 }
+@media only screen and(min-width:1400px) and (max-width: 1920px) {
+  .card-main {
+    height: 84vh;
+  }
+  .personal-information-table {
+    max-height: 410px !important;
+  }
+}
+@media only screen and (min-width: 1025px) {
+  .table-borderless > .table td,
+  .table th {
+    padding: 18px 0px;
+  }
+  .table td {
+    padding: 3px;
+  }
+  tbody tr > td {
+    width: 7%;
+  }
+  
+}
+

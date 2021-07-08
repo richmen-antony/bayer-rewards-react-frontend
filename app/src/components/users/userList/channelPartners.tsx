@@ -1375,7 +1375,7 @@ class ChannelPartners extends Component<Props, States> {
                           <div style={{ marginTop: "-10px" }}>
                             {isStaff ? <hr /> : <></>}
                           </div>
-                          <div style={{ marginRight: "0px" }}>
+                          <div style={{ marginRight: "0px", marginLeft: "35px"}}>
                             <table className="table table-borderless">
                               <thead style={{ display: "none" }}>
                                 <tr>
@@ -1394,7 +1394,7 @@ class ChannelPartners extends Component<Props, States> {
                                       <tr>
                                         {idx === 0 ? (
                                           <td className="font-weight-bold">
-                                            Store Staffs
+                                            Store <br />Staffs
                                           </td>
                                         ) : (
                                           <td></td>
