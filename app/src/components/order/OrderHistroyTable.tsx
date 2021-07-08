@@ -152,10 +152,14 @@ class OrderHistory extends Component<Props, States> {
 			},
 			() => {
 				this.getAdminOrderList();
+				this.getLocationHierachyOrder();
 			}
 		);
 	}
-
+	/**
+	 * To get all admin order histroy list
+	 * @param filterScan
+	 */
 	getAdminOrderList = (filterScan?: any) => {
 		const { adminOrderList } = apiURL;
 		this.setState({ isLoader: true });
@@ -201,6 +205,32 @@ class OrderHistory extends Component<Props, States> {
 				this.setState({ isLoader: false, allScanLogs: [] }, () => {});
 				ErrorMsg(error);
 			});
+	};
+	/**
+	 * To get location hierachy data order list
+	 */
+	getLocationHierachyOrder = () => {
+		const { getTemplateData } = apiURL;
+		let data = {
+			countryCode: this.state.loggedUserInfo.countrycode,
+		};
+		invokeGetAuthService(getTemplateData, data).then((response: any) => {
+			let locationData = response.body[0].locationhierarchy;
+			let levels: any = [];
+			locationData?.length > 0 &&
+				locationData.forEach((item: any,index:number) => {
+					if(index>0){
+						let locationhierlevel = item.locationhierlevel;
+						let geolevels = "geolevel" + locationhierlevel;
+						let obj = { name: item.locationhiername, geolevels };
+						levels.push(obj);
+					}
+					
+				});
+			this.setState({
+				locationData: levels,
+			});
+		});
 	};
 	handleClosePopup = () => {
 		this.setState({ showPopup: false });
@@ -390,7 +420,7 @@ class OrderHistory extends Component<Props, States> {
 			filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
 			filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
 			filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
-			filter.geolevel1 =filter.status === "FULFILLED" ? (filter.geolevel1 === "ALL" ? null : filter.geolevel1) : null;
+			filter.geolevel1 = filter.status === "FULFILLED" ? (filter.geolevel1 === "ALL" ? null : filter.geolevel1) : null;
 			// filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			// filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
 			// filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
@@ -402,9 +432,7 @@ class OrderHistory extends Component<Props, States> {
 				const data = response;
 				downloadCsvFile(data, "order-history.csv");
 			})
-			.catch((error) => {
-
-			});
+			.catch((error) => {});
 	};
 	handleDateChange = (date: any, name: string) => {
 		let val = this.state.selectedFilters;
@@ -490,7 +518,7 @@ class OrderHistory extends Component<Props, States> {
 	};
 
 	filterScans = (filterValue: any) => {
-		this.setState({ isFiltered: true, searchText:filterValue }, () => {
+		this.setState({ isFiltered: true, searchText: filterValue }, () => {
 			this.getAdminOrderList();
 			this.handleClosePopup();
 		});
@@ -893,15 +921,15 @@ class OrderHistory extends Component<Props, States> {
 																	: value.orderstatus === "PENDING"
 																	? "pending"
 																	: "cancelled";
-															 const statusImg =
+															const statusImg =
 																value.orderstatus === "FULFILLED"
 																	? ActiveIcon
-																	// : value.orderstatus === "EXPIRED"
+																	: // : value.orderstatus === "EXPIRED"
 																	// ? "inactive"
-																	: value.orderstatus === "PENDING"
+																	value.orderstatus === "PENDING"
 																	? PendingImg
 																	: Cancel;
-																	
+
 															return (
 																<td
 																	onClick={(event: any) => {
@@ -1067,22 +1095,19 @@ class OrderHistory extends Component<Props, States> {
 											<label>Phone Number</label>
 											<p>{retailerPopupData.phonenumber}</p>
 										</div>
-										<div className="content-list">
-											<label>Region</label>
-											<p>{retailerPopupData.geolevel1}</p>
-										</div>
-										<div className="content-list">
-											<label>District</label>
-											<p>{retailerPopupData.geolevel3}</p>
-										</div>
-										<div className="content-list">
-											<label>EPA</label>
-											<p>{retailerPopupData.geolevel4}</p>
-										</div>
+										{this.state.locationData?.length > 0 &&
+											this.state.locationData.map((location: any) => {
+												return (
+													<div className="content-list">
+														<label>{_.capitalize(location.name)}</label>
+														<p>{retailerPopupData[location.geolevels]}</p>
+													</div>
+												);
+											})}
 										<div className="content-list">
 											<label>Postal Code</label>
 											<p>{retailerPopupData.billingzipcode}</p>
-										</div>
+										</div> 
 									</div>
 								</div>
 							</div>
