@@ -81,17 +81,6 @@ export const ROUTE = [
   {
     private: true,
     exact: true,
-    path: '/configurations',
-    meta: {
-      title: siteTitle,
-      description: siteMetaDescription
-    },
-    component: React.lazy(() => import('../components/configurations')),
-    role:"DEVADMIN"
-  },
-  {
-    private: true,
-    exact: true,
     path: '/devconfig',
     meta: {
       title: siteTitle,
