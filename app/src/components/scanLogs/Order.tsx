@@ -164,7 +164,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   <tbody>
                     {data.products_ordered.map((value: any, index: number) => {
                       return (                  
-                        <>
+                        <React.Fragment key={index}>
                         {value.intendedquantity || value.orderedquantity ?
                           <tr
                             key={index}
@@ -220,7 +220,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   />
                                 </td>
                               )}
-                          </tr> : ""}
+                          </tr> : null}
                           {accordionView &&
                             value?.orderlineitemid === accordionId &&
                             data.orderstatus === "FULFILLED" && (
@@ -237,9 +237,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                       </div>
                                       {value?.ordered_qrcodes?.length > 0 &&
                                         value.ordered_qrcodes.map(
-                                          (list: any) => {
+                                          (list: any ,qrIndex:number) => {
                                             return (
-                                              <div className="inner-row">
+                                              <div className="inner-row" key={qrIndex}>
                                                 <p className="qr-val">
                                                   {list.labelid}
                                                 </p>
@@ -257,7 +257,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                               </tr>
                             )}
                           
-                        </>
+                        </React.Fragment>
                       );
                     })}
                     <tr>
@@ -378,9 +378,9 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                   </div>
                                   <div className="invalid-list">
                                   {data?.invalidscans?.length > 0 &&
-                                    data?.invalidscans.map((scan: any) => {
+                                    data?.invalidscans.map((scan: any,scanIndex:number) => {
                                       return (
-                                        <div className="inner-row">
+                                        <div className="inner-row" key={scanIndex}>
                                           <p className="qr-val">
                                             {scan.scannedlabel || "-"}
                                           </p>
@@ -426,24 +426,6 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                   </tfoot>
                 </table>
               </div>
-
-              {/* <div className="sum-total">
-                <p className="total">Total</p>
-
-                <span className="intendedquantity">
-                  {_.sumBy(data.products_ordered, "intendedquantity")}
-                </span>
-
-                <span className="orderedquantity">
-                  {_.sumBy(data.products_ordered, "orderedquantity")}
-                </span>
-                <span className="productprice">
-                  {"MK " +
-                    _.sumBy(data.products_ordered, (item: any) =>
-                      Number(item.productprice)
-                    )}
-                </span>
-              </div> */}
             </>
           ) : (
             <div className="col-12 card mt-4">

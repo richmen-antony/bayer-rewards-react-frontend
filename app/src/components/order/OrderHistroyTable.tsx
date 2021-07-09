@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import AUX from "../../hoc/Aux_";
-import Loaders from "../../utility/widgets/loader";
 import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
 import Pagination from "../../utility/widgets/pagination";
@@ -44,8 +43,8 @@ interface IProps {
 	onClick?: any;
 	// any other props that come into the component
 }
-
-const Input = ({ onChange, placeholder, value, id, onClick }: IProps) => (
+const ref = React.createRef()
+const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps,ref:any) => (
 	<div style={{ border: "1px solid grey", borderRadius: "4px" }}>
 		<img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
 		<input
@@ -60,9 +59,11 @@ const Input = ({ onChange, placeholder, value, id, onClick }: IProps) => (
 			value={value}
 			id={id}
 			onClick={onClick}
+			ref={ref} 
+			
 		/>
 	</div>
-);
+));
 
 const popupHeader = {
 	title: "Maria Joseph",
@@ -81,11 +82,11 @@ const DialogActions = withStyles((theme: Theme) => ({
 		padding: theme.spacing(1),
 		justifyContent: "center",
 	},
-	button: {
-		boxShadow: "0px 3px 6px #c7c7c729",
-		border: "1px solid #89D329",
-		borderRadius: "50px",
-	},
+	// button: {
+	// 	boxShadow: "0px 3px 6px #c7c7c729",
+	// 	border: "1px solid #89D329",
+	// 	borderRadius: "50px",
+	// },
 }))(MuiDialogActions);
 
 type Props = {};
@@ -169,7 +170,7 @@ class OrderHistory extends Component<Props, States> {
 			searchtext: this.state.searchText || null,
 			rowsperpage: this.state.rowsPerPage,
 			isfiltered: isFiltered,
-			countrycode: this.state.loggedUserInfo.countrycode,
+			countrycode: this.state.loggedUserInfo?.countrycode,
 			status: selectedFilters.status === "ALL" ? null : selectedFilters.status,
 		};
 		if (isFiltered) {
@@ -212,7 +213,7 @@ class OrderHistory extends Component<Props, States> {
 	getLocationHierachyOrder = () => {
 		const { getTemplateData } = apiURL;
 		let data = {
-			countryCode: this.state.loggedUserInfo.countrycode,
+			countryCode: this.state.loggedUserInfo?.countrycode,
 		};
 		invokeGetAuthService(getTemplateData, data).then((response: any) => {
 			let locationData = response.body[0].locationhierarchy;
@@ -410,7 +411,7 @@ class OrderHistory extends Component<Props, States> {
 
 		let data = {
 			region: this.state.loggedUserInfo.geolevel1,
-			countrycode: this.state.loggedUserInfo.countrycode,
+			countrycode: this.state.loggedUserInfo?.countrycode,
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
 			status: filter.status,
@@ -547,7 +548,6 @@ class OrderHistory extends Component<Props, States> {
 		for (let i = 1; i <= pageData; i++) {
 			pageNumbers.push(i);
 		}
-		const condHeaderName = selectedFilters.status === "FULFILLED" ? "FulfilledHeader" : "NotFulfilledHeader";
 		return (
 			<AUX>
 				{isLoader && <Loader />}
@@ -557,6 +557,8 @@ class OrderHistory extends Component<Props, States> {
 							<div className="advisor-filter">
 								<div className="filter-left-side">
 									<SearchInput
+									  data-testid="search-input"
+									    name="searchText"
 										placeHolder="Search (min 3 letters)"
 										type="text"
 										onChange={this.handleSearch}
@@ -617,7 +619,7 @@ class OrderHistory extends Component<Props, States> {
 																<DatePicker
 																	value={selectedFilters.ordereddatefrom}
 																	dateFormat="dd-MM-yyyy"
-																	customInput={<Input />}
+																	customInput={<Input ref={ref} />}
 																	selected={selectedFilters.ordereddatefrom}
 																	onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
 																	showMonthDropdown
@@ -631,7 +633,7 @@ class OrderHistory extends Component<Props, States> {
 																<DatePicker
 																	value={selectedFilters.ordereddateto}
 																	dateFormat="dd-MM-yyyy"
-																	customInput={<Input />}
+																	customInput={<Input  ref={ref}/>}
 																	selected={selectedFilters.ordereddateto}
 																	onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
 																	showMonthDropdown
@@ -648,7 +650,7 @@ class OrderHistory extends Component<Props, States> {
 																<DatePicker
 																	value={selectedFilters.lastmodifiedfrom}
 																	dateFormat="dd-MM-yyyy"
-																	customInput={<Input />}
+																	customInput={<Input  ref={ref}/>}
 																	selected={selectedFilters.lastmodifiedfrom}
 																	onChange={(date: any) => this.handleDateChange(date, "lastmodifiedfrom")}
 																	showMonthDropdown
@@ -663,7 +665,7 @@ class OrderHistory extends Component<Props, States> {
 																<DatePicker
 																	value={selectedFilters.lastmodifiedto}
 																	dateFormat="dd-MM-yyyy"
-																	customInput={<Input />}
+																	customInput={<Input ref={ref} />}
 																	selected={selectedFilters.lastmodifiedto}
 																	onChange={(date: any) => this.handleDateChange(date, "lastmodifiedto")}
 																	showMonthDropdown
@@ -1041,9 +1043,7 @@ class OrderHistory extends Component<Props, States> {
 												// 	</tr>
 												// );
 											})
-										) : isLoader ? (
-											<Loaders />
-										) : (
+										) :  (
 											<tr style={{ height: "250px" }}>
 												<td colSpan={10} className="no-records">
 													No records found
@@ -1096,9 +1096,9 @@ class OrderHistory extends Component<Props, States> {
 											<p>{retailerPopupData.phonenumber}</p>
 										</div>
 										{this.state.locationData?.length > 0 &&
-											this.state.locationData.map((location: any) => {
+											this.state.locationData.map((location: any,index:number) => {
 												return (
-													<div className="content-list">
+													<div className="content-list" key={index}>
 														<label>{_.capitalize(location.name)}</label>
 														<p>{retailerPopupData[location.geolevels]}</p>
 													</div>
@@ -1113,13 +1113,6 @@ class OrderHistory extends Component<Props, States> {
 							</div>
 						</DialogContent>
 						<DialogActions>
-							{/* <MaterialUIButton
-                onClick={() => this.filterScans(retailerPopupData.username)}
-                className="popup-btn filter-scan"
-                autoFocus
-              >
-                Filter scans
-              </MaterialUIButton> */}
 							<CustomButton
 								label="Filter scans"
 								style={{

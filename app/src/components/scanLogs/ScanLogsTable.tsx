@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import AUX from "../../hoc/Aux_";
-import Loaders from "../../utility/widgets/loader";
 import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
 import Pagination from "../../utility/widgets/pagination";
@@ -9,7 +8,6 @@ import SimpleDialog from "../../container/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import MaterialUIButton from "@material-ui/core/Button";
 import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
@@ -23,15 +21,12 @@ import filterIcon from "../../assets/icons/filter_icon.svg";
 import Download from "../../assets/icons/download.svg";
 import _ from "lodash";
 import {
-  downloadExcel,
   downloadCsvFile,
-  DownloadCsv,
   ErrorMsg,
 } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import {
   invokeGetAuthService,
-  invokeGetService,
 } from "../../utility/base/service";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -52,24 +47,27 @@ interface IProps {
   // any other props that come into the component
 }
 
-const Input = ({ onChange, placeholder, value, id, onClick }: IProps) => (
-  <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
-    <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
-    <input
-      style={{
-        border: "none",
-        width: "120px",
-        height: "31px",
-        outline: "none",
-      }}
-      onChange={onChange}
-      placeholder={placeholder}
-      value={value}
-      id={id}
-      onClick={onClick}
-    />
-  </div>
-);
+const ref = React.createRef()
+const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps,ref:any) => (
+	<div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+		<img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+		<input
+			style={{
+				border: "none",
+				width: "120px",
+				height: "31px",
+				outline: "none",
+			}}
+			onChange={onChange}
+			placeholder={placeholder}
+			value={value}
+			id={id}
+			onClick={onClick}
+			ref={ref} 
+			
+		/>
+	</div>
+))
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -102,11 +100,11 @@ const DialogActions = withStyles((theme: Theme) => ({
     // border: "1px solid #89D329",
     // borderRadius: "50px",
   },
-  button: {
-    boxShadow: "0px 3px 6px #c7c7c729",
-    border: "1px solid #89D329",
-    borderRadius: "50px",
-  },
+  // button: {
+  //   boxShadow: "0px 3px 6px #c7c7c729",
+  //   border: "1px solid #89D329",
+  //   borderRadius: "50px",
+  // },
 }))(MuiDialogActions);
 
 type Props = {};
@@ -206,8 +204,8 @@ class ScanLogsTable extends Component<Props, States> {
     const { rsmRetailerList } = apiURL;
     const { selectedFilters } = this.state;
     let queryParams = {
-      region: this.state.loggedUserInfo.geolevel1,
-      countrycode: this.state.loggedUserInfo.countrycode,
+      region: this.state.loggedUserInfo?.geolevel1,
+      countrycode: this.state.loggedUserInfo?.countrycode,
       retailerid:
         selectedFilters.retailer === "ALL" ? null : selectedFilters.retailer,
     };
@@ -262,8 +260,8 @@ class ScanLogsTable extends Component<Props, States> {
       isfiltered: this.state.isFiltered,
       // startdate: this.state.selectedFilters.startDate,
       // enddate: this.state.selectedFilters.endDate,
-      region: this.state.loggedUserInfo.geolevel1,
-      countrycode: this.state.loggedUserInfo.countrycode,
+      region: this.state.loggedUserInfo?.geolevel1,
+      countrycode: this.state.loggedUserInfo?.countrycode,
     };
     if (isFiltered) {
       let filter = { ...selectedFilters };
@@ -310,7 +308,7 @@ class ScanLogsTable extends Component<Props, States> {
 	getLocationHierachyOrder = () => {
 		const { getTemplateData } = apiURL;
 		let data = {
-			countryCode: this.state.loggedUserInfo.countrycode,
+			countryCode: this.state.loggedUserInfo?.countrycode,
 		};
 		invokeGetAuthService(getTemplateData, data).then((response: any) => {
 			let locationData = response.body[0].locationhierarchy;
@@ -518,8 +516,8 @@ class ScanLogsTable extends Component<Props, States> {
     const { downloadScanlogs } = apiURL;
 
     let data = {
-      region: this.state.loggedUserInfo.geolevel1,
-      countrycode: this.state.loggedUserInfo.countrycode,
+      region: this.state.loggedUserInfo?.geolevel1,
+      countrycode: this.state.loggedUserInfo?.countrycode,
       isfiltered: this.state.isFiltered,
       searchtext: this.state.searchText,
     };
@@ -690,6 +688,8 @@ class ScanLogsTable extends Component<Props, States> {
               <div className="advisor-filter">
                 <div className="filter-left-side">
                   <SearchInput
+                    name="searchText"
+                    data-testid="search-input"
                     placeHolder="Search (min 3 letters)"
                     type="text"
                     onChange={this.handleSearch}
@@ -718,17 +718,6 @@ class ScanLogsTable extends Component<Props, States> {
                               className="form-group"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              {/* <select
-                              className="form-control filterDropdown"
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "type", "")
-                              }
-                              value={selectedFilters.type}
-                            >
-                              <option>All</option>
-                              <option>Distributor</option>
-                              <option>Retailer</option>
-                            </select> */}
                               <NativeDropdown
                                 name="retailer"
                                 value={selectedFilters.retailer}
@@ -745,17 +734,6 @@ class ScanLogsTable extends Component<Props, States> {
                               className="form-group"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              {/* <select
-                              className="form-control filterDropdown"
-                              onChange={(e) =>
-                                this.handleFilterChange(e, "type", "")
-                              }
-                              value={selectedFilters.type}
-                            >
-                              <option>All</option>
-                              <option>Farmer Name</option>
-                              <option>Farmer Name3</option>
-                            </select> */}
                               <NativeDropdown
                                 name="farmer"
                                 value={selectedFilters.farmer}
@@ -802,8 +780,8 @@ class ScanLogsTable extends Component<Props, States> {
                               Status
                             </label>
                             <div className="pt-1">
-                              {this.state.status.map((item: any) => (
-                                <span className="mr-2">
+                              {this.state.status.map((item: any,statusIndex:number) => (
+                                <span className="mr-2" key={statusIndex}>
                                   <Button
                                     color={
                                       selectedFilters.status === item
@@ -826,23 +804,10 @@ class ScanLogsTable extends Component<Props, States> {
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
-                                {/* <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.startDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(
-                                        e,
-                                        "startDate",
-                                        ""
-                                      )
-                                    }
-                                  /> */}
-
                                 <DatePicker
                                   value={selectedFilters.ordereddatefrom}
                                   dateFormat="dd-MM-yyyy"
-                                  customInput={<Input />}
+                                  customInput={<Input ref={ref} />}
                                   selected={selectedFilters.ordereddatefrom}
                                   onChange={(date: any) =>
                                     this.handleDateChange(
@@ -858,19 +823,10 @@ class ScanLogsTable extends Component<Props, States> {
                               </div>
                               <div className="p-2">-</div>
                               <div className="user-filter-date-picker">
-                                {/* <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.endDate}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(e, "endDate", "")
-                                    }
-                                  /> */}
-
                                 <DatePicker
                                   value={selectedFilters.ordereddateto}
                                   dateFormat="dd-MM-yyyy"
-                                  customInput={<Input />}
+                                  customInput={<Input ref={ref} />}
                                   selected={selectedFilters.ordereddateto}
                                   onChange={(date: any) =>
                                     this.handleDateChange(date, "ordereddateto")
@@ -893,7 +849,7 @@ class ScanLogsTable extends Component<Props, States> {
                                 <DatePicker
                                   value={selectedFilters.lastmodifiedfrom}
                                   dateFormat="dd-MM-yyyy"
-                                  customInput={<Input />}
+                                  customInput={<Input ref={ref} />}
                                   selected={selectedFilters.lastmodifiedfrom}
                                   onChange={(date: any) =>
                                     this.handleDateChange(
@@ -913,7 +869,7 @@ class ScanLogsTable extends Component<Props, States> {
                                 <DatePicker
                                   value={selectedFilters.lastmodifiedto}
                                   dateFormat="dd-MM-yyyy"
-                                  customInput={<Input />}
+                                  customInput={<Input ref={ref} />}
                                   selected={selectedFilters.lastmodifiedto}
                                   onChange={(date: any) =>
                                     this.handleDateChange(
@@ -935,24 +891,12 @@ class ScanLogsTable extends Component<Props, States> {
                             )}
 
                             <div className="filterFooter pt-3">
-                              {/* <Button
-                                color="btn rounded-pill boxColor reset-btn"
-                                onClick={(e) => this.resetFilter(e)}
-                              >
-                                Reset All
-                              </Button> */}
                               <button
                                 className="cus-btn-scanlog-filter reset"
                                 onClick={(e) => this.resetFilter(e)}
                               >
                                 Reset All
                               </button>
-                              {/* <Button
-                                color="btn rounded-pill boxColor applybtn"
-                                onClick={() => this.applyFilter()}
-                              >
-                                Apply
-                              </Button> */}
                               <button
                                 className="cus-btn-scanlog-filter"
                                 onClick={this.applyFilter}
@@ -969,9 +913,6 @@ class ScanLogsTable extends Component<Props, States> {
                                 </span>
                               </button>
                             </div>
-                            {/* {dateErrMsg && (
-                              <span className="error">{dateErrMsg} </span>
-                            )} */}
                           </div>
                         </DropdownMenu>
                       </Dropdown>
@@ -1177,6 +1118,7 @@ class ScanLogsTable extends Component<Props, States> {
                               this.updateOrderData(value);
                             }}
                             style={{ cursor: "pointer" }}
+                            key={i}
                           >
                             <td>{value.advisororderid}</td>
                             <td
@@ -1254,9 +1196,7 @@ class ScanLogsTable extends Component<Props, States> {
                           </tr>
                         );
                       })
-                    ) : isLoader ? (
-                      <Loaders />
-                    ) : (
+                    ) :  (
                       <tr style={{ height: "250px" }}>
                         <td colSpan={10} className="no-records">
                           No records found
@@ -1315,9 +1255,9 @@ class ScanLogsTable extends Component<Props, States> {
                       <p>{retailerPopupData.phonenumber}</p>
                     </div>
                     {this.state.locationData?.length > 0 &&
-											this.state.locationData.map((location: any) => {
+											this.state.locationData.map((location: any,locationIndex:number) => {
 												return (
-													<div className="content-list">
+													<div className="content-list"  key={locationIndex}>
 														<label>{_.capitalize(location.name)}</label>
 														<p>{retailerPopupData[location.geolevels]}</p>
 													</div>
@@ -1332,13 +1272,6 @@ class ScanLogsTable extends Component<Props, States> {
               </div>
             </DialogContent>
             <DialogActions>
-              {/* <MaterialUIButton
-                onClick={() => this.filterScans(retailerPopupData.username)}
-                className="popup-btn filter-scan"
-                autoFocus
-              >
-                Filter scans
-              </MaterialUIButton> */}
               <CustomButton
                 label="Filter scans"
                 style={{

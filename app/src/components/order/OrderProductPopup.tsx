@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import SimpleDialog from "../../container/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import advisorImg from "../../assets/images/advisor.svg";
 import farmerImg from "../../assets/images/farmer.svg";
 import retailerImg from "../../assets/images/retailer.svg";
@@ -30,13 +28,7 @@ const DialogContent = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogContent);
 
-const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-    justifyContent: "center",
-  },
-}))(MuiDialogActions);
+
 
 interface Props {
   open: boolean;
@@ -165,10 +157,9 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                   <tbody>
                     {data.products_ordered.map((value: any, index: number) => {
                       return (                  
-                        <>
-                        {value.intendedquantity || value.orderedquantity ?
+                        <React.Fragment key={index}>
+                          {value.intendedquantity || value.orderedquantity ?
                           <tr
-                            key={index}
                             onClick={() =>
                               value?.ordered_qrcodes?.length > 0 &&
                               handleExpand(value)
@@ -221,7 +212,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                   />
                                 </td>
                               )}
-                          </tr> : ""}
+                          </tr> : null}
                           {accordionView &&
                             value?.orderlineitemid === accordionId &&
                             data.orderstatus === "FULFILLED" && (
@@ -238,14 +229,13 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                       </div>
                                       {value?.ordered_qrcodes?.length > 0 &&
                                         value.ordered_qrcodes.map(
-                                          (list: any) => {
+                                          (list: any,i:number) => {
                                             return (
-                                              <div className="inner-row">
+                                              <div className="inner-row" key={i}>
                                                 <p className="qr-val">
                                                   {list.labelid}
                                                 </p>
                                                 <p className="sub-val">
-                                                  {" "}
                                                   {list.batchno}
                                                 </p>
                                               </div>
@@ -258,7 +248,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                               </tr>
                             )}
                           
-                        </>
+                        </React.Fragment>
                       );
                     })}
                     <tr>
@@ -379,9 +369,9 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                   </div>
                                   <div className="invalid-list">
                                   {data?.invalidscans?.length > 0 &&
-                                    data?.invalidscans.map((scan: any) => {
+                                    data?.invalidscans.map((scan: any,scanIndex:number) => {
                                       return (
-                                        <div className="inner-row">
+                                        <div className="inner-row" key={scanIndex}>
                                           <p className="qr-val">
                                             {scan.scannedlabel || "-"}
                                           </p>

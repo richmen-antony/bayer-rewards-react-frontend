@@ -29,18 +29,7 @@ const useStyles = (theme: Theme) => ({
 });
 
 
-type PropsTypes = {
-  pageNo: number;
-  totalData: any;
-  rowsPerPage: number;
-  previous: Function;
-  next: Function;
-  pageNumberClick: Function;
-  handlePaginationChange: Function;
-  data: any;
-  totalLabel?: any;
-  classes?:any
-};
+
 type States = {
   startIndex: number;
   endIndex: number;
@@ -93,8 +82,6 @@ class Pagination extends Component<Props, States> {
   render() {
     const {
       pageNo,
-      previous,
-      next,
       pageNumberClick,
       handlePaginationChange,
       rowsPerPage,
@@ -108,25 +95,25 @@ class Pagination extends Component<Props, States> {
     for (let i = 1; i <= pageData; i++) {
       pageNumbers.push(i);
     }
-    const renderPageNumbers = pageNumbers?.map((number, index) => {
-      return (
-        <>
-          {index >= this.state.startIndex &&
-            index <= this.state.endIndex &&
-            index != pageData - 1 && (
-              <span>
-                <a
-                  href="#"
-                  className={pageNo == number ? "active" : ""}
-                  onClick={() => pageNumberClick(number)}
-                >
-                  {number}
-                </a>
-              </span>
-            )}
-        </>
-      );
-    });
+    // const renderPageNumbers = pageNumbers?.map((number, index) => {
+    //   return (
+    //     <>
+    //       {index >= this.state.startIndex &&
+    //         index <= this.state.endIndex &&
+    //         index != pageData - 1 && (
+    //           <span>
+    //             <a
+    //               href="#"
+    //               className={pageNo == number ? "active" : ""}
+    //               onClick={() => pageNumberClick(number)}
+    //             >
+    //               {number}
+    //             </a>
+    //           </span>
+    //         )}
+    //     </>
+    //   );
+    // });
     return (
       <>
         {data.length > 0 && (
