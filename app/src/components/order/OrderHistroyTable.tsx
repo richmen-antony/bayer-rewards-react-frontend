@@ -410,7 +410,7 @@ class OrderHistory extends Component<Props, States> {
 		let filter = { ...this.state.selectedFilters };
 
 		let data = {
-			region: this.state.loggedUserInfo.geolevel1,
+			region: this.state.loggedUserInfo?.geolevel1,
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
@@ -557,7 +557,7 @@ class OrderHistory extends Component<Props, States> {
 							<div className="advisor-filter">
 								<div className="filter-left-side">
 									<SearchInput
-									  data-testid="search-input"
+									    data-testid="search-input"
 									    name="searchText"
 										placeHolder="Search (min 3 letters)"
 										type="text"
@@ -613,7 +613,7 @@ class OrderHistory extends Component<Props, States> {
 																/>
 															</div>
 														)}
-														<label className="font-weight-bold pt-2">Ordered Date</label>
+														<label className="font-weight-bold pt-2">Ordered Date <span>(6 months interval)</span></label>
 														<div className="d-flex">
 															<div className="user-filter-date-picker">
 																<DatePicker
@@ -644,7 +644,7 @@ class OrderHistory extends Component<Props, States> {
 															</div>
 														</div>
 														{dateErrMsg && <span className="error">{dateErrMsg} </span>}
-														<label className="font-weight-bold pt-2">Last Updated Date</label>
+														<label className="font-weight-bold pt-2">Last Updated Date <span>(6 months interval)</span></label>
 														<div className="d-flex">
 															<div className="user-filter-date-picker">
 																<DatePicker
@@ -951,14 +951,14 @@ class OrderHistory extends Component<Props, States> {
 																					alignItems: "center",
 																				}}
 																			>
-																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>{value.username}</span>
+																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>{_.startCase(_.toLower(value.username))}</span>
 																				<img className="retailer-icon" src={ExpandWindowImg} />
 																			</p>
 																			<label>{value.userid}</label>
 																		</div>
 																	) : list.key === "farmername" || list.key === "advisorname" ? (
 																		<div className="farmer-id">
-																			<p>{value[list.key]}</p>
+																			<p>{_.startCase(_.toLower(value[list.key]))}</p>
 																			<label>{list.key === "farmername" ? value.farmerid : value.advisorid}</label>
 																		</div>
 																	) : list.key === "orderstatus" ? (
@@ -971,13 +971,13 @@ class OrderHistory extends Component<Props, States> {
 																			{_.startCase(_.toLower(value.orderstatus))}
 																		</span>
 																	) : list?.type === "date" ? (
-																		<>{moment(value[list.key]).format("DD/MM/YYYY")}</>
+																		<>{value[list.key] &&moment(value[list.key]).format("DD/MM/YYYY")}</>
 																	) : !list.label && !list.key ? (
 																		<img className="max-image" src={maxImg} />
 																	) : list.key === "totalcost" ? (
 																		"MK " + value.totalcost
 																	) : (
-																		value[list.key]
+																		value[list.key]&&_.startCase(_.toLower(value[list.key]))  || ""
 																	)}
 																</td>
 															);
@@ -1099,7 +1099,7 @@ class OrderHistory extends Component<Props, States> {
 											this.state.locationData.map((location: any,index:number) => {
 												return (
 													<div className="content-list" key={index}>
-														<label>{_.capitalize(location.name)}</label>
+														<label>{_.startCase(_.toLower(location.name))}</label>
 														<p>{retailerPopupData[location.geolevels]}</p>
 													</div>
 												);

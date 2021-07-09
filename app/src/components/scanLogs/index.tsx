@@ -84,7 +84,6 @@ interface TabPanelProps {
 }
 function TabPanel(props: TabPanelProps) {
 	const { children, value, index, classes, ...other } = props;
-
 	return (
 		<div
 			role="tabpanel"
@@ -95,7 +94,7 @@ function TabPanel(props: TabPanelProps) {
 		>
 			{value === index && (
 				<Box p={3} className={classes.padding}>
-					<Typography component={'span'} >{children}</Typography>
+					<Typography component={'span'}>{children}</Typography>
 				</Box>
 			)}
 		</div>

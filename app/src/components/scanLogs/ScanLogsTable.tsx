@@ -1258,7 +1258,7 @@ class ScanLogsTable extends Component<Props, States> {
 											this.state.locationData.map((location: any,locationIndex:number) => {
 												return (
 													<div className="content-list"  key={locationIndex}>
-														<label>{_.capitalize(location.name)}</label>
+                            <label>{_.startCase(_.toLower(location.name))}</label>
 														<p>{retailerPopupData[location.geolevels]}</p>
 													</div>
 												);
