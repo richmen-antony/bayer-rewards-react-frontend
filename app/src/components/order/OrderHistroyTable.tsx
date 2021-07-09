@@ -951,8 +951,9 @@ class OrderHistory extends Component<Props, States> {
 																					alignItems: "center",
 																				}}
 																			>
-																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>{_.startCase(_.toLower(value.username))}</span>
-																				<img className="retailer-icon" src={ExpandWindowImg} />
+																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>{_.startCase(_.toLower(value.username))}<img className="retailer-icon" src={ExpandWindowImg} />
+																				</span>
+																				
 																			</p>
 																			<label>{value.userid}</label>
 																		</div>

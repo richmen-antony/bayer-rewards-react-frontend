@@ -1137,12 +1137,12 @@ class ScanLogsTable extends Component<Props, States> {
                                   <span
                                     style={{ flex: "1", whiteSpace: "nowrap" }}
                                   >
-                                    {value.username}
-                                  </span>
-                                  <img
+                                    {value.username}<img
                                     className="retailer-icon"
                                     src={ExpandWindowImg}
                                   />
+                                  </span>
+                                 
                                 </p>
                                 <label>{value.userid}</label>
                               </div>
