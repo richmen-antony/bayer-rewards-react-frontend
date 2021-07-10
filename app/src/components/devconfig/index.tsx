@@ -192,6 +192,7 @@ function TabPanel(props: TabPanelProps) {
 	);
 }
 
+
 // class Devconfigurations extends Component<MyComponentProps, MyComponentState> {
 class Devconfigurations extends React.Component<
 	IDevConfigProps,
@@ -229,6 +230,7 @@ class Devconfigurations extends React.Component<
 			packageDefintionData: [],
 			scanPtsAllocationData:[]
 		};
+		
 		this.handleDropdownChange = this.handleDropdownChange.bind(this);
 		this.handleDropdownChangeRegion =
 			this.handleDropdownChangeRegion.bind(this);
@@ -396,15 +398,35 @@ class Devconfigurations extends React.Component<
 		}
 	}
 
-	componentWillMount() {
+	// componentWillMount() {
+	// 	let getUserdata: any = getLocalStorageData("userData");
+    //     let userData = JSON.parse(getUserdata);
+	// 	const setData = cluster_json;
+	// 	this.setState({ setData: setData });
+
+	// 	if (this.state.setSelectedCluster) {
+	// 		this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
+	// 	}
+	// }
+	
+	componentWillMount(){
+		let getUserdata: any = getLocalStorageData("userData");
+        let userData = JSON.parse(getUserdata);
 		const setData = cluster_json;
 		this.setState({ setData: setData });
+		let setSelectedClusterName:string;
 
-		if (this.state.setSelectedCluster) {
-			this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
+		if (userData.countrycode === "IN") {
+			setSelectedClusterName =  "South Asia"
+			this.setState({ setSelectedRegion: "APAC" });
+			this.setState({ setSelectedCluster: "South Asia" });
+			this._retrieveSelectedContryofCluster(setSelectedClusterName);
 		}
+		else if (this.state.setSelectedCluster) {
+			this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
+		}	
 	}
-
+	
 	componentDidUpdate(prevProps: any, prevState: any) {
 		if (this.state.currentStep !== prevState.currentStep) {
 			window.scrollTo(0, 0);

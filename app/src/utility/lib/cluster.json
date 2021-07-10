@@ -65,22 +65,6 @@
     },
     {
         "region":"APAC",
-        "cluster":"Asia",
-        "isoCode": "CN",
-        "name": "China",
-        "currency": "CNY",
-        "currencyDesc": "Chinese Yuan"
-    },
-    {
-        "region":"APAC",
-        "cluster":"Asia",
-        "isoCode": "JP",
-        "name": "Japan",
-        "currency": "JPY",
-        "currencyDesc": "Japanese Yen"
-    },
-    {
-        "region":"APAC",
         "cluster":"South Asia",
         "isoCode": "IN",
         "name": "India",
