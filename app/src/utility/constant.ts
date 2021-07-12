@@ -66,7 +66,7 @@ const EXPIRED = [
 	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
 	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
 	{ label: "ORDERED DATE", key: "ordereddate", style: { width: "10%" }, type: "date" },
-	{ label: "EXPIRED DATE", key: "expirydate", style: { width: "10%" }, type: "date" },
+	{ label: "EXPIRED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
 	{ label: "", key: "", style: { width: "10%" } },
 ];
 const CANCELLED = [

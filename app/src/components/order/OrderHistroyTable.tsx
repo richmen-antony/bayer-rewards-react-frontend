@@ -43,8 +43,8 @@ interface IProps {
 	onClick?: any;
 	// any other props that come into the component
 }
-const ref = React.createRef()
-const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps,ref:any) => (
+const ref = React.createRef();
+const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
 	<div style={{ border: "1px solid grey", borderRadius: "4px" }}>
 		<img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
 		<input
@@ -59,8 +59,7 @@ const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: I
 			value={value}
 			id={id}
 			onClick={onClick}
-			ref={ref} 
-			
+			ref={ref}
 		/>
 	</div>
 ));
@@ -219,14 +218,13 @@ class OrderHistory extends Component<Props, States> {
 			let locationData = response.body[0].locationhierarchy;
 			let levels: any = [];
 			locationData?.length > 0 &&
-				locationData.forEach((item: any,index:number) => {
-					if(index>0){
+				locationData.forEach((item: any, index: number) => {
+					if (index > 0) {
 						let locationhierlevel = item.locationhierlevel;
 						let geolevels = "geolevel" + locationhierlevel;
 						let obj = { name: item.locationhiername, geolevels };
 						levels.push(obj);
 					}
-					
 				});
 			this.setState({
 				locationData: levels,
@@ -319,7 +317,7 @@ class OrderHistory extends Component<Props, States> {
 		this.setState(
 			{
 				selectedFilters: {
-					status: "FULFILLED",
+					 ...this.state.selectedFilters,
 					ordereddatefrom: today.setMonth(today.getMonth() - 3),
 					ordereddateto: new Date(),
 					lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
@@ -557,8 +555,8 @@ class OrderHistory extends Component<Props, States> {
 							<div className="advisor-filter">
 								<div className="filter-left-side">
 									<SearchInput
-									    data-testid="search-input"
-									    name="searchText"
+										data-testid="search-input"
+										name="searchText"
 										placeHolder="Search (min 3 letters)"
 										type="text"
 										onChange={this.handleSearch}
@@ -613,7 +611,9 @@ class OrderHistory extends Component<Props, States> {
 																/>
 															</div>
 														)}
-														<label className="font-weight-bold pt-2">Ordered Date <span>(6 months interval)</span></label>
+														<label className="font-weight-bold pt-2">
+															Ordered Date <span>(6 months interval)</span>
+														</label>
 														<div className="d-flex">
 															<div className="user-filter-date-picker">
 																<DatePicker
@@ -633,7 +633,7 @@ class OrderHistory extends Component<Props, States> {
 																<DatePicker
 																	value={selectedFilters.ordereddateto}
 																	dateFormat="dd-MM-yyyy"
-																	customInput={<Input  ref={ref}/>}
+																	customInput={<Input ref={ref} />}
 																	selected={selectedFilters.ordereddateto}
 																	onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
 																	showMonthDropdown
@@ -644,13 +644,15 @@ class OrderHistory extends Component<Props, States> {
 															</div>
 														</div>
 														{dateErrMsg && <span className="error">{dateErrMsg} </span>}
-														<label className="font-weight-bold pt-2">Last Updated Date <span>(6 months interval)</span></label>
+														<label className="font-weight-bold pt-2">
+															Last Updated Date <span>(6 months interval)</span>
+														</label>
 														<div className="d-flex">
 															<div className="user-filter-date-picker">
 																<DatePicker
 																	value={selectedFilters.lastmodifiedfrom}
 																	dateFormat="dd-MM-yyyy"
-																	customInput={<Input  ref={ref}/>}
+																	customInput={<Input ref={ref} />}
 																	selected={selectedFilters.lastmodifiedfrom}
 																	onChange={(date: any) => this.handleDateChange(date, "lastmodifiedfrom")}
 																	showMonthDropdown
@@ -735,11 +737,11 @@ class OrderHistory extends Component<Props, States> {
 															key={index}
 														>
 															{value.label}
-															{this.tableCellIndex !== undefined ? (
+															{value.label&&this.tableCellIndex !== undefined ? (
 																this.tableCellIndex === index ? (
 																	<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 																) : null
-															) : (
+															) : value.label&& (
 																<i className={"fas fa-sort-up ml-2"}></i>
 															)}
 														</th>
@@ -951,9 +953,10 @@ class OrderHistory extends Component<Props, States> {
 																					alignItems: "center",
 																				}}
 																			>
-																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>{_.startCase(_.toLower(value.username))}<img className="retailer-icon" src={ExpandWindowImg} />
+																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>
+																					{_.startCase(_.toLower(value.username))}
+																					<img className="retailer-icon" src={ExpandWindowImg} />
 																				</span>
-																				
 																			</p>
 																			<label>{value.userid}</label>
 																		</div>
@@ -972,13 +975,13 @@ class OrderHistory extends Component<Props, States> {
 																			{_.startCase(_.toLower(value.orderstatus))}
 																		</span>
 																	) : list?.type === "date" ? (
-																		<>{value[list.key] &&moment(value[list.key]).format("DD/MM/YYYY")}</>
+																		<>{value[list.key] && moment(value[list.key]).format("DD/MM/YYYY")}</>
 																	) : !list.label && !list.key ? (
 																		<img className="max-image" src={maxImg} />
 																	) : list.key === "totalcost" ? (
 																		"MK " + value.totalcost
 																	) : (
-																		value[list.key]&&_.startCase(_.toLower(value[list.key]))  || ""
+																		(value[list.key] && _.startCase(_.toLower(value[list.key]))) || ""
 																	)}
 																</td>
 															);
@@ -1044,7 +1047,7 @@ class OrderHistory extends Component<Props, States> {
 												// 	</tr>
 												// );
 											})
-										) :  (
+										) : (
 											<tr style={{ height: "250px" }}>
 												<td colSpan={10} className="no-records">
 													No records found
@@ -1097,7 +1100,7 @@ class OrderHistory extends Component<Props, States> {
 											<p>{retailerPopupData.phonenumber}</p>
 										</div>
 										{this.state.locationData?.length > 0 &&
-											this.state.locationData.map((location: any,index:number) => {
+											this.state.locationData.map((location: any, index: number) => {
 												return (
 													<div className="content-list" key={index}>
 														<label>{_.startCase(_.toLower(location.name))}</label>
@@ -1108,7 +1111,7 @@ class OrderHistory extends Component<Props, States> {
 										<div className="content-list">
 											<label>Postal Code</label>
 											<p>{retailerPopupData.billingzipcode}</p>
-										</div> 
+										</div>
 									</div>
 								</div>
 							</div>

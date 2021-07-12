@@ -105,10 +105,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                     { _.startCase(_.toLower(data.orderstatus))+" date"}
                   </p>
                   <label>
-                    {data.orderstatus === "EXPIRED" ? 
-                    data.expirydate &&
-                    moment(data.expirydate).format("Do MMM, YYYY")
-                   :  data.lastupdateddate &&
+                    {data.lastupdateddate &&
                       moment(data.lastupdateddate).format("Do MMM, YYYY")}
                   </label>
                 </div>
