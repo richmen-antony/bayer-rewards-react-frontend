@@ -65,7 +65,7 @@ const LocationHierarchy = (props: ILocationProps) => {
   };
 
   const handleDropdownChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
     list[index].parentlocation = value;
     setInputList(list);

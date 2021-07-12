@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../../devconfig/devconfig.scss";
 import { connect } from "react-redux";
 import AddBtn from "../../../assets/icons/add_btn.svg";
@@ -14,7 +14,7 @@ interface ITnTProps {
 
 export const TnTFlow = (props: ITnTProps) => {
   const { inputList, setInputList, getValidation, isValidNext } = props;
-  const [valSelected, setValSelected] = useState("NA");
+  // const [valSelected, setValSelected] = useState("NA");
 
   /**
    * To handle input change fields

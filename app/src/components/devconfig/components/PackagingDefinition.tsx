@@ -64,7 +64,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
    */
   const handleRemoveClick = (index: any, data: any) => {
     let list = [...inputList];
-    let arr = list.map((val: any, i: number) => {
+       list.map((val: any, i: number) => {
       if (
         val.productcategory === data.productcategory &&
         val.packaginghierarchylevel === data.packaginghierarchylevel
@@ -138,7 +138,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
    * @param data 
    */
   const handleDropdownChange = (event: any, index: any, data: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
     activeButton === data.productcategory &&
       list.map((val: any, i: number) => {

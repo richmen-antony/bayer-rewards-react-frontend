@@ -94,7 +94,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
    * @param index 
    */
   const handleDropdownChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
     list[index].parentrole = value;
     setInputList(list);
@@ -106,7 +106,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
  * @param index 
  */
   const handleDropdownRoleChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
     list[index].roletype = value;
     setInputList(list);

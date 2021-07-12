@@ -27,7 +27,6 @@ import {
 } from "../../redux/actions/devconfig/add";
 import left from "../../assets/icons/left.svg";
 import ArrowIcon from "../../assets/icons/dark bg.svg";
-import RtButton from "../../assets/icons/right_btn.svg";
 import cluster_json from "../../utility/lib/cluster.json";
 import AUX from "../../hoc/Aux_";
 import {
@@ -487,9 +486,10 @@ class Devconfigurations extends React.Component<
 	registerTemplateByCountry = () => {
 		const { registerTemplateData } = apiURL;
 		const { devconfig } = this.props;
-		const { locationHierarchy, roleHierarchy, tntflowData } = this.state;
+	
 		let getUserdata: any = getLocalStorageData("userData");
          let userData = JSON.parse(getUserdata);
+		 	// const { locationHierarchy, roleHierarchy, tntflowData } = this.state;
 		// let locationHierarchyData = locationHierarchy.map((value: any) => {
 		// 	if (value?.error || !value?.error) {
 		// 		delete value.error;

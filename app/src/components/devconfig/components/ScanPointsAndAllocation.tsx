@@ -92,27 +92,7 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
 
-function getStyles(name: string, packageLevelName: string[], theme: Theme) {
-  return {
-    fontWeight:
-      packageLevelName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 
 
 interface IScanPointsAndAllocationProps {
@@ -213,7 +193,7 @@ export const ScanPointsAndAllocation = (
   };
 
   const handleScannedbyChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
     list[index].scannedby = value;
     setInputList(list);
@@ -221,7 +201,7 @@ export const ScanPointsAndAllocation = (
   };
 
   const handleScannedtypeChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const {value } = event.target;
     const list: any = [...inputList];
     list[index].scantype = value;
     setInputList(list);
@@ -229,7 +209,7 @@ export const ScanPointsAndAllocation = (
   };
 
   const handlePackaginglevelChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
      // remove empty string from array
      const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
@@ -239,7 +219,7 @@ export const ScanPointsAndAllocation = (
   };
 
   const handlePointsallocatedChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const {  value } = event.target;
     const list: any = [...inputList];
     list[index].pointallocated = value;
     setInputList(list);
@@ -259,10 +239,10 @@ export const ScanPointsAndAllocation = (
       setPackageLevelList(packageLevelOption)
     }
   },[]);
-  const packaginglevelOptions = handledropdownoption(
-    paackaginglevelList,
-    "packaginghierarchyname"
-  );
+  // const packaginglevelOptions = handledropdownoption(
+  //   paackaginglevelList,
+  //   "packaginghierarchyname"
+  // );
 
   const positionOptions = handledropdownoption(
     props.tntflow.inputList,
