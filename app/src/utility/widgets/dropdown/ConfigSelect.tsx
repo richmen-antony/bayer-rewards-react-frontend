@@ -152,7 +152,7 @@ export const ConfigSelect = ({
               !isNative ? (
                 commonSelectType === true ? (
                   <MenuItem
-                    key={person.value}
+                    key={person.value+index}
                     value={
                       locationHierarchySelected === true ? index : person.value
                     }

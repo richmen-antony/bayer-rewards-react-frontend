@@ -100,7 +100,7 @@ export default class Stepper extends Component {
               }`}
             style={{ background: `${step.selected ? stepColor : "none"}` }}
           >
-            {step.completed ? <img src={tick_icon} alt="tick-icon" class="logo-img" /> : index + 1}
+            {step.completed ? <img src={tick_icon} alt="tick-icon" className="logo-img" /> : index + 1}
           </div>
           <div
             className={`step-description ${step.highlighted &&

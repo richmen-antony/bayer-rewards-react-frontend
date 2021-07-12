@@ -86,12 +86,6 @@ let data: any = getLocalStorageData("userData");
 let userinfo = JSON.parse(data);
 let levelsName: any = [];
 
-const getStoreData = {
-  country: userinfo.geolevel0,
-  countryCode: userinfo.countrycode,
-  Language: "EN-US",
-};
-
 let phoneLength =
   process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int"
     ? 10
@@ -126,8 +120,8 @@ class ChannelPartners extends Component<Props, States> {
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
     this.getStoreData = {
-      country: loggedUserInfo.geolevel0,
-      countryCode: loggedUserInfo.countrycode,
+      country: loggedUserInfo?.geolevel0,
+      countryCode: loggedUserInfo?.countrycode,
       Language: "EN-US",
     };
     this.state = {
@@ -308,19 +302,17 @@ class ChannelPartners extends Component<Props, States> {
     for (var i = 1; i < this.state.geographicFields.length; i++) {
       if (i <= staticColumn) {
         let columnname: string = "";
-        columnname = levelsName[i].charAt(0).toUpperCase() + levelsName[i].slice(1);
-
-        columnname = columnname.toUpperCase();
-        let condName =
-          columnname === "geolevel2" ? "state" : columnname.toLowerCase();
-
+        let geolevelsname: string = "";
+        columnname = levelsName[i].toUpperCase();
+        geolevelsname = this.state.geographicFields[i].toLowerCase();
         res.push(
           <th
+            key ={`geolevels`+i}
             style={{ width: "8%" }}
             onClick={(e) =>
               this.handleSort(
                 e,
-                "delivery" + condName,
+                "delivery" + geolevelsname,
                 allChannelPartners,
                 isAsc
               )
@@ -1090,7 +1082,7 @@ class ChannelPartners extends Component<Props, States> {
                                 type="checkbox"
                                 style={{ marginLeft: "10px" }}
                                 checked={isStaff}
-                                onClick={(e: any) => {
+                                onChange={(e: any) => {
                                   this.enableStoreStaff(e);
                                 }}
                                 disabled={
@@ -1126,13 +1118,13 @@ class ChannelPartners extends Component<Props, States> {
                               <tbody>
                                 {userData.ownerRows?.map(
                                   (item: any, idx: number) => (
-                                    <tr>
+                                    <tr key={`ownerRows`+idx}>
                                       {idx === 0 ? (
                                         <td className="font-weight-bold">
                                           Owner
                                         </td>
                                       ) : (
-                                        <td></td>
+                                        <td>{null}</td>
                                       )}
                                       <td>
                                         <Input
@@ -1390,14 +1382,14 @@ class ChannelPartners extends Component<Props, States> {
                               <tbody>
                                 {isStaff &&
                                   userData.staffdetails?.map(
-                                    (item: any, idx: number) => (
-                                      <tr>
-                                        {idx === 0 ? (
+                                    (item: any, staffidx: number) => (
+                                      <tr key={`staffRows`+staffidx}>
+                                        {staffidx === 0 ? (
                                           <td className="font-weight-bold">
                                             Store <br />Staffs
                                           </td>
                                         ) : (
-                                          <td></td>
+                                          <td>{null}</td>
                                         )}
                                         <td>
                                           <Input
@@ -1408,7 +1400,7 @@ class ChannelPartners extends Component<Props, States> {
                                             value={item.firstname}
                                             onChange={(e: any) =>
                                               this.handleChange(
-                                                idx,
+                                                staffidx,
                                                 e,
                                                 "",
                                                 "staff",
@@ -1434,7 +1426,7 @@ class ChannelPartners extends Component<Props, States> {
                                             value={item.lastname}
                                             onChange={(e: any) =>
                                               this.handleChange(
-                                                idx,
+                                                staffidx,
                                                 e,
                                                 "",
                                                 "staff",
@@ -1477,7 +1469,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 }
                                                 onChange={(value, e) =>
                                                   this.handleChange(
-                                                    idx,
+                                                    staffidx,
                                                     e,
                                                     "phone",
                                                     "staff",
@@ -1508,7 +1500,7 @@ class ChannelPartners extends Component<Props, States> {
                                             value={item.email}
                                             onChange={(e: any) =>
                                               this.handleChange(
-                                                idx,
+                                                staffidx,
                                                 e,
                                                 "",
                                                 "staff",
@@ -1518,7 +1510,7 @@ class ChannelPartners extends Component<Props, States> {
                                             onKeyUp={(e: any) =>
                                               this.validateEmail(
                                                 e.target.value,
-                                                idx,
+                                                staffidx,
                                                 "staff"
                                               )
                                             }
@@ -1543,7 +1535,7 @@ class ChannelPartners extends Component<Props, States> {
                                               }
                                               onChange={(e: any) =>
                                                 this.handleChange(
-                                                  idx,
+                                                  staffidx,
                                                   e,
                                                   "",
                                                   "staff",
@@ -1582,14 +1574,14 @@ class ChannelPartners extends Component<Props, States> {
                                               />
                                             )} */}
 
-                                            {idx ===
+                                            {staffidx ===
                                               userData.staffdetails.length -
                                                 1 &&
                                             userData.staffdetails.length < 4 ? (
                                               (() => {
                                                 if (
-                                                  idx === 0 &&
-                                                  idx ===
+                                                  staffidx === 0 &&
+                                                  staffidx ===
                                                     userData.staffdetails
                                                       .length -
                                                       1
@@ -1612,8 +1604,8 @@ class ChannelPartners extends Component<Props, States> {
                                                     </div>
                                                   );
                                                 } else if (
-                                                  idx > 0 &&
-                                                  idx ===
+                                                  staffidx > 0 &&
+                                                  staffidx ===
                                                     userData.staffdetails
                                                       .length -
                                                       1
@@ -1633,7 +1625,7 @@ class ChannelPartners extends Component<Props, States> {
                                                         src={RemoveBtn}
                                                         alt=""
                                                         onClick={this.handleRemoveSpecificRow(
-                                                          idx,
+                                                          staffidx,
                                                           "staff"
                                                         )}
                                                       />
@@ -1667,7 +1659,7 @@ class ChannelPartners extends Component<Props, States> {
                                                 src={RemoveBtn}
                                                 alt=""
                                                 onClick={this.handleRemoveSpecificRow(
-                                                  idx,
+                                                  staffidx,
                                                   "staff"
                                                 )}
                                               />
@@ -1723,9 +1715,9 @@ class ChannelPartners extends Component<Props, States> {
               {allChannelPartners.length > 0 ? (
                 allChannelPartners.map((list: any, i: number) => {
                   return (
-                  <AUX key={i}>
+                  <AUX key={`channelpartners`+i}>
                     <tr
-                      style={
+                        style={
                         list.userstatus === "ACTIVE"
                           ? { borderLeft: "8px solid #89D329" }
                           : list.userstatus === "INACTIVE"
@@ -1819,7 +1811,6 @@ class ChannelPartners extends Component<Props, States> {
                         {list.lastupdatedby}
                       </td>
                       <td style={{ width: "7%" }}>
-                        <td>
                           <img
                             className="edit"
                             style={{
@@ -1844,31 +1835,24 @@ class ChannelPartners extends Component<Props, States> {
                                 : this.editUser(list);
                             }}
                           />
-                        </td>
                         {list.iscreatedfrommobile && (
-                          <td>
                             <img
                               src={blackmockup}
                               alt=""
                               width="20"
                               height="25"
                             />
-                          </td>
                         )}
                       </td>
                     </tr>
                   </AUX>
                 )})
               ) : (
-                <>
-                  <div className="col-12 card mt-4">
-                    <div className="card-body ">
-                      <div className="text-red py-4 text-center">
-                        No Data Found
-                      </div>
-                    </div>
-                  </div>
-                </>
+                <tr style={{ height: "250px" }}>
+                  <td colSpan={10} className="no-records">
+                    No records found
+                  </td>
+                </tr>
               )}
             </tbody>
           </Table>
@@ -1895,4 +1879,4 @@ class ChannelPartners extends Component<Props, States> {
   }
 }
 
-export default withRouter(ChannelPartners);
+export default ChannelPartners;

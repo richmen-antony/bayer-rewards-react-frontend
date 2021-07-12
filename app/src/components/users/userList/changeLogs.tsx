@@ -316,15 +316,11 @@ class ChangeLogs extends Component<Props, States> {
                     </AUX>
                   ))
                   ) : (
-                    <>
-                      <div className="col-12 card mt-4">
-                        <div className="card-body ">
-                          <div className="text-red py-4 text-center">
-                            No Data Found
-                          </div>
-                        </div>
-                      </div>
-                    </>
+                    <tr style={{ height: "250px" }}>
+                      <td colSpan={10} className="no-records">
+                        No records found
+                      </td>
+                  </tr>
                   )}
                 </tbody>
               </table>

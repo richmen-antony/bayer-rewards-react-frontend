@@ -1947,7 +1947,6 @@ class CreateUser extends Component<any, any> {
   };
 
   render() {
-    console.log('oenererr', this.state.ownernameErr, this.state.accountnameErr)
     let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
     const {
       currentStep,
@@ -1972,7 +1971,7 @@ class CreateUser extends Component<any, any> {
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       return (
-        <>
+        <React.Fragment key={`geolevels`+index}>
           <div
             className={
               list.error && currentStep === 3
@@ -2000,7 +1999,7 @@ class CreateUser extends Component<any, any> {
             />
             {list.error && <span className="error">{list.error}</span>}
           </div>
-        </>
+        </React.Fragment>
       );
     });
   
@@ -2163,7 +2162,7 @@ class CreateUser extends Component<any, any> {
                             <input
                               type="checkbox"
                               style={{ marginLeft: "10px" }}
-                              onClick={(e: any) => {
+                              onChange={(e: any) => {
                                 this.enableStoreStaff(e);
                               }}
                               checked={isStaff}
@@ -2204,7 +2203,7 @@ class CreateUser extends Component<any, any> {
                             <tbody>
                               {userData.ownerRows?.map(
                                 (item: any, idx: number) => (
-                                  <tr>
+                                  <tr key={`ownerRow`+idx}>
                                     {idx === 0 ? (
                                       <td className="font-weight-bold">
                                         Owner
@@ -2506,7 +2505,7 @@ class CreateUser extends Component<any, any> {
                               {isStaff &&
                                 userData.staffdetails?.map(
                                   (item: any, idx: number) => (
-                                    <tr>
+                                    <tr key={`staffRow`+idx}>
                                       {idx === 0 ? (
                                         <td className="font-weight-bold">
                                           Store <br/> Staffs
@@ -2903,7 +2902,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          read-only={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : undefined}
                           onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                         />
                         <div>
@@ -2952,7 +2951,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          read-only={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : undefined}
                           width="96%"
                         />
                         {!accInfo && billingstreetErr && (
@@ -2969,7 +2968,7 @@ class CreateUser extends Component<any, any> {
                             this.handleChange("", e, "", "otherSteps", "")
                           }
                           onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                          read-only={this.state.accInfo ? true : false}
+                          read-only={this.state.accInfo ? true : undefined}
                           value={
                             this.state.accInfo
                               ? userData.deliveryzipcode

@@ -181,30 +181,27 @@ interface IProps {
   onClick?: any;
   // any other props that come into the component
 }
-const CalenderInput = ({
-  onChange,
-  placeholder,
-  value,
-  id,
-  onClick,
-}: IProps) => (
-  <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
-    <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
-    <input
-      style={{
-        border: "none",
-        width: "120px",
-        height: "31px",
-        outline: "none",
-      }}
-      onChange={onChange}
-      placeholder={placeholder}
-      value={value}
-      id={id}
-      onClick={onClick}
-    />
-  </div>
-);
+const ref = React.createRef()
+const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps,ref:any) => (
+	<div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+		<img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+		<input
+			style={{
+				border: "none",
+				width: "120px",
+				height: "31px",
+				outline: "none",
+			}}
+			onChange={onChange}
+			placeholder={placeholder}
+			value={value}
+			id={id}
+			onClick={onClick}
+			ref={ref} 
+			
+		/>
+	</div>
+));
 const obj: any = getLocalStorageData("userData");
 const userData = JSON.parse(obj);
 let levelsName: any = [];
@@ -226,8 +223,8 @@ class UserList extends Component<Props, States> {
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
     this.getStoreData = {
-      country: loggedUserInfo.geolevel0,
-      countryCode: loggedUserInfo.countrycode,
+      country: loggedUserInfo?.geolevel0,
+      countryCode: loggedUserInfo?.countrycode,
       Language: "EN-US",
     };
     this.state = {
@@ -354,9 +351,7 @@ class UserList extends Component<Props, States> {
       let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
       level1List.unshift(allItem);
     }
-    console.log('level1List', level1List)
     this.setState({ geolevel1List: level1List });
-    console.log('geolevel1List', this.state.geolevel1List)
     let level1Options: any = [];
     this.state.geolevel1List?.forEach((item: any) => {
       let level1Info = { text: item.name, code: item.code, value: item.name };
@@ -843,8 +838,8 @@ class UserList extends Component<Props, States> {
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       return (
-        <>
-          <div className="country" style={{ marginBottom: "5px" }}>
+        <React.Fragment key={`geolevels`+index}>
+          <div className="country" style={{ marginBottom: "5px" }} >
             {index !== 0 && (
               <div>
                 {list.name !== "geolevel4" && list.name !== "geolevel5" && (
@@ -870,7 +865,7 @@ class UserList extends Component<Props, States> {
             )}
             {/* {list.error && <span className="error">{list.error}</span>} */}
           </div>
-        </>
+        </React.Fragment>
       );
     });
 
@@ -945,6 +940,7 @@ class UserList extends Component<Props, States> {
               >
                 <div className="col-sm-6">
                   <SearchInput
+                    data-testid="search-input"
                     placeHolder="Search user (min 3 letters)"
                     type="text"
                     onChange={this.handleSearch}
@@ -961,8 +957,8 @@ class UserList extends Component<Props, States> {
                       Partner Type
                     </label>
                     <div className="partnerType">
-                      {this.state.list.map((item) => (
-                        <span className="mr-2">
+                      {this.state.list.map((item, index) => (
+                        <span className="mr-2" key={item+index}>
                           <Button
                             color={
                               this.state.partnerType.type === item
@@ -1003,8 +999,8 @@ class UserList extends Component<Props, States> {
                                   Status
                                 </label>
                                 <div className="pt-1">
-                                  {this.state.userStatus.map((item) => (
-                                    <span className="mr-2">
+                                  {this.state.userStatus.map((item, index) => (
+                                    <span className="mr-2" key={`status`+index}>
                                       <Button
                                         color={
                                           selectedFilters.status === item
@@ -1047,7 +1043,7 @@ class UserList extends Component<Props, States> {
                                   <DatePicker
                                     value={selectedFilters.lastmodifieddatefrom}
                                     dateFormat="dd-MM-yyyy"
-                                    customInput={<CalenderInput />}
+                                    customInput={<Input ref={ref} />}
                                     selected={
                                       selectedFilters.lastmodifieddatefrom
                                     }
@@ -1076,7 +1072,7 @@ class UserList extends Component<Props, States> {
                                   <DatePicker
                                     value={selectedFilters.lastmodifieddateto}
                                     dateFormat="dd-MM-yyyy"
-                                    customInput={<CalenderInput />}
+                                    customInput={<Input ref={ref} />}
                                     selected={
                                       selectedFilters.lastmodifieddateto
                                     }

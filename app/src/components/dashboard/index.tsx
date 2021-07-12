@@ -126,14 +126,14 @@ class Dashboard extends Component<Props, States> {
 									background="#FFF4E7"
 									cardClick={() => this.cardClick()}
 								>
-									<div className="count">{this.state.scanLogCount}</div>
-									<div className="title">Scan Logs</div>
+									<span className="count">{this.state.scanLogCount}</span><br />
+									<span className="title">Scan Logs</span>
 								</CustomCard>
 							</div>
 							<div>
 								<CustomCard icon={userlist} border="1px solid #206BDD" background="#DFE8FA">
-									<div className="count">{this.state.usersCount}</div>
-									<div className="title">Total Users</div>
+									<span className="count">{this.state.usersCount}</span><br/>
+									<span className="title">Total Users</span>
 								</CustomCard>
 							</div>
 						</div>
@@ -147,7 +147,7 @@ class Dashboard extends Component<Props, States> {
 										background="#FFF4E7"
 										cardClick={() => this.cardCreateUserClick()}
 									>
-										<div className="title">Create New User</div>
+										<span className="title">Create New User</span>
 									</CustomCard>
 								</div>
 								<div className="card-list">
@@ -157,8 +157,8 @@ class Dashboard extends Component<Props, States> {
 										background="#DFE8FA"
 										cardClick={() => this.totalUserClick()}
 									>
-										<div className="count">{this.state.adminUsersCount}</div>
-										<div className="title">Total Users</div>
+										<span className="count">{this.state.adminUsersCount}</span><br />
+										<span className="title">Total Users</span>
 									</CustomCard>
 								</div>
 								<div className="card-list">
@@ -168,8 +168,8 @@ class Dashboard extends Component<Props, States> {
 										background="#f8f9fa"
 										cardClick={() => this.handleNavigateOrder()}
 									>
-										<div className="count">{this.state.adminOrderHistoryCount}</div>
-										<div className="title">Total Orders</div>
+										<span className="count">{this.state.adminOrderHistoryCount}</span>
+										<span className="title">Total Orders</span>
 									</CustomCard>
 								</div>
 							</div>
@@ -184,7 +184,7 @@ class Dashboard extends Component<Props, States> {
 									background="#FFF4E7"
 									cardClick={() => this.handleNavigateDevConfig()}
 								>
-									<div className="title">Dev Admin</div>
+									<span className="title">Dev Admin</span>
 								</CustomCard>
 							</div>
 						</div>

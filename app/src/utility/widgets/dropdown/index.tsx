@@ -149,9 +149,9 @@ export const Dropdown = ({
             </option>
           )}
           {options &&
-            options.map((person: any) =>
+            options.map((person: any, index:number) =>
               !isNative ? (
-                <MenuItem key={person.value} value={person.value}>
+                <MenuItem key={person.value+index} value={person.value}>
                   {person.text}
                 </MenuItem>
               ) : (
