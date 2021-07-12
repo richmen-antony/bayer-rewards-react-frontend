@@ -239,6 +239,7 @@ class ChannelPartners extends Component<Props, States> {
         onClick={(e) =>
           this.handleSort(e, "username", allChannelPartners, isAsc)
         }
+        key="username"
       >
         {"USER NAME"}
         {this.tableCellIndex !== undefined ? (
@@ -258,6 +259,7 @@ class ChannelPartners extends Component<Props, States> {
         onClick={(e) =>
           this.handleSort(e, "ownerphonenumber", allChannelPartners, isAsc)
         }
+        key="ownerphonenumber"
       >
         {"MOBILE#"}
         {this.tableCellIndex === 1 ? (
@@ -273,6 +275,7 @@ class ChannelPartners extends Component<Props, States> {
         onClick={(e) =>
           this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)
         }
+        key="whtaccountname"
       >
         {"ACCOUNT NAME"}
         {this.tableCellIndex === 2 ? (
@@ -288,6 +291,7 @@ class ChannelPartners extends Component<Props, States> {
         onClick={(e) =>
           this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)
         }
+        key="ownerfirstname"
       >
         {"OWNER NAME"}
         {this.tableCellIndex === 3 ? (
@@ -331,13 +335,13 @@ class ChannelPartners extends Component<Props, States> {
     //   staticColumn + (this.state.geographicFields.length - 1);
 
     res.push(
-      <th style={{ width: "8%", cursor: "default" }}>{"STAFF COUNT"}</th>
+      <th style={{ width: "8%", cursor: "default" }} key="staff">{"STAFF COUNT"}</th>
     );
-    res.push(<th style={{ width: "10%", cursor: "default" }}>{"STATUS"}</th>);
+    res.push(<th style={{ width: "10%", cursor: "default" }} key="status">{"STATUS"}</th>);
     res.push(
-      <th style={{ width: "9%", cursor: "default" }}>{"UPDATED BY"}</th>
+      <th style={{ width: "9%", cursor: "default" }} key="updatedBy">{"UPDATED BY"}</th>
     );
-    res.push(<th style={{ width: "7%", cursor: "default" }}></th>);
+    res.push(<th style={{ width: "7%", cursor: "default" }} key="default"></th>);
 
     return res;
   }

@@ -42,7 +42,7 @@ const FULFILLED = [
 	{ label: "ORDERED QTY", key: "totalorderedquantity", style: { width: "16%", textAlign: "center" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "12%" } },
 	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
-	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
+	{ label: "FARMER NAME/MOBILE", key: "farmername", style: { width: "16%" } },
 	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
 	{ label: "UPDATED DATE", key: "lastupdateddate", style: { width: "12%" }, type: "date" },
 	{ label: "", key: "", style: { width: "10%" } },
@@ -52,33 +52,33 @@ const PENDING = [
 	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
 	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
-	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
+	{ label: "FARMER NAME/MOBILE", key: "farmername", style: { width: "16%" } },
 	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
 	{ label: "ORDERED DATE", key: "ordereddate", style: { width: "10%" }, type: "date" },
 	{ label: "UPDATED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
-	{ label: "", key: "", style: { width: "10%" } },
+	{ label: "", key: "", style: { width: "12%" } },
 ];
 const EXPIRED = [
 	{ label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
 	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
 	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
-	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
+	{ label: "FARMER NAME/MOBILE", key: "farmername", style: { width: "16%" } },
 	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
 	{ label: "ORDERED DATE", key: "ordereddate", style: { width: "10%" }, type: "date" },
 	{ label: "EXPIRED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
-	{ label: "", key: "", style: { width: "10%" } },
+	{ label: "", key: "", style: { width: "12%" } },
 ];
 const CANCELLED = [
 	{ label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
 	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
 	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
-	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
+	{ label: "FARMER NAME/MOBILE", key: "farmername", style: { width: "16%" } },
 	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
 	{ label: "ORDERED DATE", key: "ordereddate", style: { width: "10%" }, type: "date" },
 	{ label: "CANCELLED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
-	{ label: "", key: "", style: { width: "10%" } },
+	{ label: "", key: "", style: { width: "12%" } },
 ];
 
 const OrderHistroyHeader: any = {

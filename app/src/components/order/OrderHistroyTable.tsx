@@ -561,7 +561,7 @@ class OrderHistory extends Component<Props, States> {
 										type="text"
 										onChange={this.handleSearch}
 										value={searchText}
-										tolltip="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
+										tolltip={`Search applicable for Order ID, ${selectedFilters.status === "FULFILLED" ? "Retailer Name/ID,":""} Farmer Name/Mobile, Advisor Name/ID.`}
 									/>
 									<div className="filter-right-side">
 										<div className="filter-status">
@@ -963,7 +963,7 @@ class OrderHistory extends Component<Props, States> {
 																	) : list.key === "farmername" || list.key === "advisorname" ? (
 																		<div className="farmer-id">
 																			<p>{_.startCase(_.toLower(value[list.key]))}</p>
-																			<label>{list.key === "farmername" ? value.farmerid : value.advisorid}</label>
+																			<label>{list.key === "farmername" ? value.farmerphonenumber : value.advisorid}</label>
 																		</div>
 																	) : list.key === "orderstatus" ? (
 																		<span className={`status ${statusColor}`}>
