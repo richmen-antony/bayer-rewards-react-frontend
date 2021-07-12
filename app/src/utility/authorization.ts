@@ -4,12 +4,9 @@ import {
   setLocalStorageData,
 } from "../utility/base/localStore";
 import Cookies from "js-cookie";
-import { Alert } from "./widgets/toaster";
 import moment from "moment";
 
-type Props = {
-  history?: any;
-};
+
 
 class Authorization {
   authUser: any;

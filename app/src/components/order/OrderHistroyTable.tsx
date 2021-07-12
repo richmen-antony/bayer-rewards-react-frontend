@@ -260,7 +260,7 @@ class OrderHistory extends Component<Props, States> {
 		if (this.timeOut) {
 			clearTimeout(this.timeOut);
 		}
-		if (searchText.length >= 3 || searchText.length == 0) {
+		if (searchText.length >= 3 || searchText.length === 0) {
 			this.timeOut = setTimeout(() => {
 				this.getAdminOrderList();
 			}, 1000);
@@ -571,7 +571,7 @@ class OrderHistory extends Component<Props, States> {
 											<div className="status-list">
 												{this.state.status.map((item: any, index: number) => {
 													return (
-														item != "ALL" && (
+														item !== "ALL" && (
 															<span className="mr-2" key={index}>
 																<Button
 																	color={
@@ -690,7 +690,7 @@ class OrderHistory extends Component<Props, States> {
 															>
 																Apply
 																<span>
-																	<img src={ArrowIcon} className="arrow-i" /> <img src={RtButton} className="layout" />
+																	<img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
 																</span>
 															</button>
 														</div>
@@ -955,7 +955,7 @@ class OrderHistory extends Component<Props, States> {
 																			>
 																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>
 																					{_.startCase(_.toLower(value.username))}
-																					<img className="retailer-icon" src={ExpandWindowImg} />
+																					<img className="retailer-icon" src={ExpandWindowImg} alt="" />
 																				</span>
 																			</p>
 																			<label>{value.userid}</label>
@@ -968,7 +968,7 @@ class OrderHistory extends Component<Props, States> {
 																	) : list.key === "orderstatus" ? (
 																		<span className={`status ${statusColor}`}>
 																			{value.orderstatus !== "EXPIRED" ? (
-																				<img src={statusImg} style={{ marginRight: "8px" }} width="17" />
+																				<img src={statusImg} style={{ marginRight: "8px" }} width="17" alt="" />
 																			) : (
 																				<i className="fas fa-clock"></i>
 																			)}
@@ -977,7 +977,7 @@ class OrderHistory extends Component<Props, States> {
 																	) : list?.type === "date" ? (
 																		<>{value[list.key] && moment(value[list.key]).format("DD/MM/YYYY")}</>
 																	) : !list.label && !list.key ? (
-																		<img className="max-image" src={maxImg} />
+																		<img className="max-image" src={maxImg} alt="" />
 																	) : list.key === "totalcost" ? (
 																		"MK " + value.totalcost
 																	) : (
@@ -1078,7 +1078,7 @@ class OrderHistory extends Component<Props, States> {
 						<DialogContent>
 							<div className="popup-container popup-retailer">
 								<div className="img">
-									<img src={NoImage} />
+									<img src={NoImage} alt="" />
 								</div>
 								<div className="popup-content">
 									<div className={`popup-title`}>

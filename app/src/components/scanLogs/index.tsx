@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import AUX from "../../hoc/Aux_";
 import Loader from "../../utility/widgets/loader";
-import { getLocalStorageData } from "../../utility/base/localStore";
 import { withStyles, Theme, createStyles, WithStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";

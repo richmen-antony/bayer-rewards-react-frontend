@@ -11,7 +11,6 @@ import "../../assets/scss/layout.scss";
 import {
   getLocalStorageData,
 } from "../../utility/base/localStore";
-import Cookies from "js-cookie";
 import DropdownArrow from "../../assets/images/down-arrow.svg";
 import BayerRewardsImg from "../../assets/icons/logo.svg";
 import IndiaFLag from "../../assets/icons/india_flag.svg";
@@ -71,7 +70,7 @@ class TopBar extends Component<Props, States> {
   };
 
   render() {
-    const { dropdownOpenprofile, dropdownOpenNotification, userData } =
+    const { dropdownOpenprofile, userData } =
       this.state;
     return (
       <div className="topbar">
@@ -145,6 +144,7 @@ class TopBar extends Component<Props, States> {
                       <img
                         src={DropdownArrow}
                         style={{ width: "20%", height: "20%" }}
+                        alt=""
                       />
                     </div>
 

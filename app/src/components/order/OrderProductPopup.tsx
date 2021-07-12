@@ -184,6 +184,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                       : NoImg
                                   }
                                   width={40}
+                                  alt=""
                                 />
                               }
                             </th>
@@ -276,7 +277,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                       : 0
                                   })`}
                                 </span>
-                                <img src={RtArrow} />
+                                <img src={RtArrow} alt=""/>
                                 <span>
                                   {`${myConstClass.EXPIRED_LABEL} (${
                                     data?.invalidscans?.filter(

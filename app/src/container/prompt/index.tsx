@@ -42,7 +42,7 @@ interface Props {
  * @returns
  */
 const RouterPrompt: React.FC<Props> = (props: Props) => {
-  const { when, onOK, onCancel, title, okText, cancelText } = props;
+  const { when, onOK, onCancel} = props;
   const history = useHistory();
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentPath, setCurrentPath] = useState("");

@@ -1,8 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import SearchIcon from "../../../assets/icons/search_icon.svg";
-import NoImage from "../../../assets/images/no_image.svg";
-import RtButton from "../../../assets/icons/right_btn.svg";
 import Layout from "../../../assets/icons/Search wth bg.svg";
 
 function SearchInput(props: any) {
@@ -35,7 +32,7 @@ function SearchInput(props: any) {
         onKeyUp={props.onKeyUp}
       />
 
-      <img src={Layout} className="layout" />
+      <img src={Layout} className="layout" alt=""/>
       <i
         className="fa fa-info-circle"
         style={{ fontSize: "16px", fontFamily: "appRegular !important" }}

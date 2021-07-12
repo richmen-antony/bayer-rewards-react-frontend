@@ -1,6 +1,6 @@
 import * as ReactDOM from 'react-dom';
 import React from 'react';
-import { fireEvent, screen ,getByRole,within,cleanup} from '@testing-library/react';
+import {screen ,within,cleanup} from '@testing-library/react';
 import OrderHistroy from "../components/order";
 import userEvent from '@testing-library/user-event';
 describe('Order Histroy component tests', () => { 

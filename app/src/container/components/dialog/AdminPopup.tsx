@@ -2,14 +2,13 @@ import React from "react";
 import {
   createStyles,
   Theme,
-  withStyles,
   WithStyles,
   makeStyles,
 } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import IconButton from "@material-ui/core/IconButton";
-import CancelIcon from "../../../assets/images/cancel-1.svg";
+// import MuiDialogTitle from "@material-ui/core/DialogTitle";
+// import IconButton from "@material-ui/core/IconButton";
+// import CancelIcon from "../../../assets/images/cancel-1.svg";
 
 type Props = {
   open: boolean;
@@ -41,22 +40,22 @@ export interface DialogTitleProps extends WithStyles<typeof styles> {
   style?: any;
 }
 
-const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { header, classes, onClose, style, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <img src={CancelIcon} className="close-popup-icon" />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
+// const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
+//   const { header, classes, onClose, style, ...other } = props;
+//   return (
+//     <MuiDialogTitle disableTypography className={classes.root} {...other}>
+//       {onClose ? (
+//         <IconButton
+//           aria-label="close"
+//           className={classes.closeButton}
+//           onClick={onClose}
+//         >
+//           <img src={CancelIcon} className="close-popup-icon" />
+//         </IconButton>
+//       ) : null}
+//     </MuiDialogTitle>
+//   );
+// });
 
 export interface DialogProps {
   children: React.ReactNode;
