@@ -80,7 +80,6 @@ class CreateUser extends Component<any, any> {
   getStoreData: any;
   constructor(props: any) {
     super(props);
-    let oneYearFromNow = new Date();
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
     this.getStoreData = {
@@ -311,7 +310,7 @@ class CreateUser extends Component<any, any> {
                       isPhoneEdit: staffInfo.mobilenumber ? false : true,
                     },
                   };
-                  let obj = Object.assign(staffInfo, errObjd);
+                  Object.assign(staffInfo, errObjd);
                 });
               }
               this.setState({
@@ -780,27 +779,26 @@ class CreateUser extends Component<any, any> {
         }
       } else if (type === "geolevel3") {
         let filteredLevel2: any = [];
-        let level3List: any = [];
         if (currentStep === 2) {
           filteredLevel2 = geolevel1List?.filter(
             (level1: any) => level1.name === dynamicFieldVal[1].value
           );
-          level3List = filteredLevel2[0]?.geolevel2.filter(
+          filteredLevel2[0]?.geolevel2.filter(
             (level2Info: any) => level2Info.name === dynamicFieldVal[2].value
           );
-         dynamicFieldVal[1]?.options.filter((option:any) => {
+         dynamicFieldVal[1]?.options.forEach((option:any) => {
           if(dynamicFieldVal[1].value === option.text){
-            geoLocationInfo.geolevel1 = option.code
+            return geoLocationInfo.geolevel1 = option.code
           }
          })
-         dynamicFieldVal[2]?.options.filter((option:any) => {
+         dynamicFieldVal[2]?.options.forEach((option:any) => {
           if(dynamicFieldVal[2].value === option.text){
-            geoLocationInfo.geolevel2 = option.code
+            return geoLocationInfo.geolevel2 = option.code
           }
          })
-         dynamicFieldVal[3]?.options.filter((option:any) => {
+         dynamicFieldVal[3]?.options.forEach((option:any) => {
           if(dynamicFieldVal[3].value === option.text){
-            geoLocationInfo.geolevel3 = option.code
+            return geoLocationInfo.geolevel3 = option.code
           }
          })
           if(this.state.geographicFields[4]){
@@ -821,20 +819,20 @@ class CreateUser extends Component<any, any> {
           filteredLevel2 = geolevel1List?.filter(
             (level1: any) => level1.name === withHoldingVal[1].value
           );
-          level3List = filteredLevel2[0]?.geolevel2.filter(
+          filteredLevel2[0]?.geolevel2.filter(
             (level2Info: any) => level2Info.name === withHoldingVal[2].value
           );
-          withHoldingVal[1]?.options.filter((option:any) => {
+          withHoldingVal[1]?.options.forEach((option:any) => {
             if(withHoldingVal[1].value === option.text){
               geoLocationInfo.geolevel1 = option.code
             }
            })
-           withHoldingVal[2]?.options.filter((option:any) => {
+           withHoldingVal[2]?.options.forEach((option:any) => {
             if(withHoldingVal[2].value === option.text){
               geoLocationInfo.geolevel2 = option.code
             }
            })
-           withHoldingVal[3]?.options.filter((option:any) => {
+           withHoldingVal[3]?.options.forEach((option:any) => {
             if(withHoldingVal[3].value === option.text){
               geoLocationInfo.geolevel3 = option.code
             }
@@ -856,22 +854,22 @@ class CreateUser extends Component<any, any> {
       } else if (type === "geolevel4") {
         let levelFive: any = [];
         if(this.state.currentStep === 2){
-          dynamicFieldVal[1]?.options.filter((option:any) => {
+          dynamicFieldVal[1]?.options.forEach((option:any) => {
             if(dynamicFieldVal[1].value === option.text){
               geoLocationInfo.geolevel1 = option.code
             }
            })
-           dynamicFieldVal[2]?.options.filter((option:any) => {
+           dynamicFieldVal[2]?.options.forEach((option:any) => {
             if(dynamicFieldVal[2].value === option.text){
               geoLocationInfo.geolevel2 = option.code
             }
            })
-           dynamicFieldVal[3]?.options.filter((option:any) => {
+           dynamicFieldVal[3]?.options.forEach((option:any) => {
             if(dynamicFieldVal[3].value === option.text){
               geoLocationInfo.geolevel3 = option.code
             }
            })
-          dynamicFieldVal[4]?.options.filter((option:any) => {
+          dynamicFieldVal[4]?.options.forEach((option:any) => {
             if(dynamicFieldVal[4].value === option.text){
               geoLocationInfo.geolevel4 = option.code
             }
@@ -890,22 +888,22 @@ class CreateUser extends Component<any, any> {
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
         } else if(this.state.currentStep === 3){
-          withHoldingVal[1]?.options.filter((option:any) => {
+          withHoldingVal[1]?.options.forEach((option:any) => {
             if(withHoldingVal[1].value === option.text){
               geoLocationInfo.geolevel1 = option.code
             }
            })
-           withHoldingVal[2]?.options.filter((option:any) => {
+           withHoldingVal[2]?.options.forEach((option:any) => {
             if(withHoldingVal[2].value === option.text){
               geoLocationInfo.geolevel2 = option.code
             }
            })
-           withHoldingVal[3]?.options.filter((option:any) => {
+           withHoldingVal[3]?.options.forEach((option:any) => {
             if(withHoldingVal[3].value === option.text){
               geoLocationInfo.geolevel3 = option.code
             }
            })
-          withHoldingVal[4]?.options.filter((option:any) => {
+          withHoldingVal[4]?.options.forEach((option:any) => {
             if(withHoldingVal[4].value === option.text){
               geoLocationInfo.geolevel4 = option.code
             }
@@ -1565,15 +1563,6 @@ class CreateUser extends Component<any, any> {
       } else {
         let { name, value } = e.target;
         owners[idx][name] = value;
-
-        let errObj: any = {
-          firstNameErr: "",
-          lastNameErr: "",
-          emailErr: owners[idx].errObj.emailErr,
-          mobilenumberErr: owners[idx].errObj.mobilenumberErr,
-        };
-
-
       }
       this.setState((prevState: any) => ({
         userData: {

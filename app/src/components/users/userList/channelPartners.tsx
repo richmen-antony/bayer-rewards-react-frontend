@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -1877,4 +1878,4 @@ class ChannelPartners extends Component<Props, States> {
   }
 }
 
-export default ChannelPartners;
+export default withRouter(ChannelPartners);
