@@ -99,17 +99,7 @@ const AntTabs = withStyles({
     height: "4px",
   },
 })(Tabs);
-const useStyles = (theme: Theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  // padding: {
-  //   padding: theme.spacing(3),
-  // },
-  demo1: {
-    backgroundColor: theme.palette.background.paper,
-  },
-});
+
 const AntTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -202,8 +192,6 @@ const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: I
 		/>
 	</div>
 ));
-const obj: any = getLocalStorageData("userData");
-const userData = JSON.parse(obj);
 let levelsName: any = [];
 
 
@@ -214,12 +202,6 @@ class UserList extends Component<Props, States> {
   getStoreData: any;
    constructor(props: any) {
     super(props);
-    var today = new Date();
-    var month, day, year;
-    var year: any = today.getFullYear();
-    var month: any = today.getMonth();
-    var date = today.getDate();
-    if (month - 6 <= 0) year = today.getFullYear();
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
     this.getStoreData = {

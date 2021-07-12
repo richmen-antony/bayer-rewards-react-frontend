@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -82,8 +81,7 @@ type States = {
   isEditRedirect: boolean;
 };
 
-let data: any = getLocalStorageData("userData");
-let userinfo = JSON.parse(data);
+
 let levelsName: any = [];
 
 let phoneLength =
@@ -328,8 +326,8 @@ class ChannelPartners extends Component<Props, States> {
         );
       }
     }
-    let nextIndex: number =
-      staticColumn + (this.state.geographicFields.length - 1);
+    // let nextIndex: number =
+    //   staticColumn + (this.state.geographicFields.length - 1);
 
     res.push(
       <th style={{ width: "8%", cursor: "default" }}>{"STAFF COUNT"}</th>
