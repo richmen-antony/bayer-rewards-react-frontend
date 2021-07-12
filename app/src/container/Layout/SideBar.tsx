@@ -22,9 +22,9 @@ type States = {
   activeTab: any;
   userRole: any;
 };
-interface IProps {
-  style: any;
-}
+// interface IProps {
+//   style: any;
+// }
 
 class Sidebar extends Component<Props, States> {
   static contextType = AppContext
@@ -41,7 +41,7 @@ class Sidebar extends Component<Props, States> {
   componentDidMount() {
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-    userData ?.role &&
+    userData?.role &&
     this.setState({
       userRole: userData.role,
     });
@@ -65,9 +65,9 @@ class Sidebar extends Component<Props, States> {
 
   render() {
     const { activeTab } = this.state;
-    const scrollHeight = {
-      height: `calc(100vh - 156px)`,
-    };
+    // const scrollHeight = {
+    //   height: `calc(100vh - 156px)`,
+    // };
     return (
       <AUX>
         <div className="left side-menu ">

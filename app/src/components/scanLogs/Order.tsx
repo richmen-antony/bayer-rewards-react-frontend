@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import SimpleDialog from "../../container/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import advisorImg from "../../assets/images/advisor.svg";
 import farmerImg from "../../assets/images/farmer.svg";
 import retailerImg from "../../assets/images/retailer.svg";
@@ -29,13 +27,6 @@ const DialogContent = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogContent);
 
-const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-    justifyContent: "center",
-  },
-}))(MuiDialogActions);
 
 interface Props {
   open: boolean;
@@ -192,6 +183,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                       : NoImg
                                   }
                                   width={40}
+                                  alt=""
                                 />
                               }
                             </th>
@@ -199,7 +191,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                               {value.productname} <p>{value.materialid}</p>
                             </td>
                             <td>{ value.productgroup === "CORN SEED" ||
-                                    value.productgroup === "HYBRID"? `Seed - ${_.capitalize(value.productgroup)}` : `CP - ${_.capitalize(value.productgroup)} `}</td>
+                                    value.productgroup === "HYBRID"? `Seed - ${_.startCase(_.toLower(value.productgroup))}` : `CP - ${_.startCase(_.toLower(value.productgroup))} `}</td>
                             <td className="text-center">
                               {value.intendedquantity}
                             </td>
@@ -285,7 +277,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
                                       : 0
                                   })`}
                                 </span>
-                                <img src={RtArrow} />
+                                <img src={RtArrow}  alt=""/>
                                 <span>
                                   {`${myConstClass.EXPIRED_LABEL} (${
                                     data?.invalidscans?.filter(

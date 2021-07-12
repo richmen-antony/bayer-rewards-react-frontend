@@ -129,10 +129,11 @@ const CountrySetupComp = (props: ICountryProps) => {
   let countryDetails: cDetails[] =
     selectedCountryDetails.length > 0 ? selectedCountryDetails : [];
 
+
   useEffect(() => {
-    if (countryCode) {
-      _retriveCountryCode(countryCode);
-    }
+    // if (countryCode) {
+    //   _retriveCountryCode(countryCode);
+    // }
     if (countryDetails.length) {
       _retriveCountryCode(countryDetails[0].name);
     }
@@ -271,7 +272,8 @@ const CountrySetupComp = (props: ICountryProps) => {
   };
 
   const countryDetailsOption = handledropdownoption(countryDetails, "name");
-  console.log(countryDetailsOption);
+  
+  // console.log(countryDetailsOption);
   // countryDetails?.length > 0 &&
   // countryDetails.map((val: any) => {
   //   return { value: val.name, text: val.name };

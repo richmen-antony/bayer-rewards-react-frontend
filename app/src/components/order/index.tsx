@@ -11,41 +11,15 @@ import Box from "@material-ui/core/Box";
 import OrderHistory from "./OrderHistroyTable";
 import "../../assets/scss/orderHistory.scss";
 
-type SelectedFiltersTypes = {
-	type: string;
-	scanType: string;
-	productCategory: string;
-	status: string;
-	startDate: any;
-	endDate: any;
-	[key: string]: string;
-};
-// type Props = {
-//   classes: {
-//     root: string;
-//     paper: string;
-//     button: string;
-//     demo1:string
-//   };
-// };
+
 
 type States = {
-	selectedFilters: SelectedFiltersTypes;
 	userRole: string;
 	isLoader: boolean;
 	value: number;
 };
 
-const headers = [
-	{ label: "description", key: "description" },
-	{ label: "firstname", key: "firstname" },
-	{ label: "lastname", key: "lastname" },
-	{ label: "prodgroupname", key: "prodgroupname" },
-	{ label: "productlabelid", key: "productlabelid" },
-	{ label: "productname", key: "productname" },
-];
 
-var mockdata;
 
 const AntTabs = withStyles({
 	root: {
@@ -135,22 +109,7 @@ class Order extends Component<Props, States> {
 	timeOut: any;
 	constructor(props: any) {
 		super(props);
-		var today = new Date();
-		var month, day, year;
-		var year: any = today.getFullYear();
-		var month: any = today.getMonth();
-		var date = today.getDate();
-		if (month - 6 <= 0) year = today.getFullYear();
-		var backdate = new Date(year, month - 6, date);
 		this.state = {
-			selectedFilters: {
-				type: "All",
-				scanType: "All",
-				productCategory: "All",
-				status: "All",
-				startDate: backdate.toISOString().substr(0, 10),
-				endDate: new Date().toISOString().substr(0, 10),
-			},
 			userRole: "",
 			isLoader: false,
 			value: 0,

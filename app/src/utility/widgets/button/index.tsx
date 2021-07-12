@@ -6,7 +6,7 @@ function CustomButton(props: any) {
     <button className="cus-btn" style={style} onClick={handleClick}>
       {label}
       <span>
-        <img src={ArrowIcon}  className="arrow-i"/> 
+        <img src={ArrowIcon}  className="arrow-i" alt=""/> 
       </span>
     </button>
   );

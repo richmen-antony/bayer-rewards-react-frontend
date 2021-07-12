@@ -51,7 +51,7 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
           className={classes.closeButton}
           onClick={onClose}
         >
-          <img src={CancelIcon} className="close-popup-icon" />
+          <img src={CancelIcon} className="close-popup-icon" alt="" />
         </IconButton>
       ) : null}
     </MuiDialogTitle>

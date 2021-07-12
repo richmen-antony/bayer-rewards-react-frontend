@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import AUX from "../../hoc/Aux_";
 import Loader from "../../utility/widgets/loader";
-import { getLocalStorageData } from "../../utility/base/localStore";
 import { withStyles, Theme, createStyles, WithStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -84,7 +83,6 @@ interface TabPanelProps {
 }
 function TabPanel(props: TabPanelProps) {
 	const { children, value, index, classes, ...other } = props;
-
 	return (
 		<div
 			role="tabpanel"
@@ -95,7 +93,7 @@ function TabPanel(props: TabPanelProps) {
 		>
 			{value === index && (
 				<Box p={3} className={classes.padding}>
-					<Typography component={'span'} >{children}</Typography>
+					<Typography component={'span'}>{children}</Typography>
 				</Box>
 			)}
 		</div>

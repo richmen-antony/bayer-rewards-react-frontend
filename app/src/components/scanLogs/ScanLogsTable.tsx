@@ -73,17 +73,7 @@ const popupHeader = {
   title: "Maria Joseph",
   sub: "Retailer",
 };
-const dialogStyles = {
-  paperWidthSm: {
-    width: "800px",
-    maxWidth: "800px",
-    background: "transparent",
-    boxShadow: "none",
-  },
-  // title: {
-  //   right: "150px",
-  // },
-};
+
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -121,13 +111,6 @@ class ScanLogsTable extends Component<Props, States> {
   timeOut: any;
   constructor(props: any) {
     super(props);
-    var today = new Date();
-    var month, day, year;
-    var year: any = today.getFullYear();
-    var month: any = today.getMonth();
-    var date = today.getDate();
-    if (month - 6 <= 0) year = today.getFullYear();
-    var backdate = new Date(year, month - 6, date);
     this.state = {
       showPopup: false,
       showProductPopup: false,
@@ -253,13 +236,7 @@ class ScanLogsTable extends Component<Props, States> {
       page: this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
-      // role: this.state.selectedFilters.type,
-      // scantype: this.state.selectedFilters.scanType,
-      // productgroup: this.state.selectedFilters.productgroup,
-      // scanstatus: this.state.selectedFilters.status,
       isfiltered: this.state.isFiltered,
-      // startdate: this.state.selectedFilters.startDate,
-      // enddate: this.state.selectedFilters.endDate,
       region: this.state.loggedUserInfo?.geolevel1,
       countrycode: this.state.loggedUserInfo?.countrycode,
     };
@@ -357,7 +334,7 @@ class ScanLogsTable extends Component<Props, States> {
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
-    if (searchText.length >= 3 || searchText.length == 0) {
+    if (searchText.length >= 3 || searchText.length === 0) {
       this.timeOut = setTimeout(() => {
         this.getScanLogs();
       }, 1000);
@@ -493,10 +470,6 @@ class ScanLogsTable extends Component<Props, States> {
         this.getScanLogs();
       });
     } else if (e.target.name === "gotopage") {
-      // value = e.target.value;
-      // this.setState({ pageNo: value }, () => {
-      //   this.getScanLogs();
-      // });
       const { totalData, rowsPerPage } = this.state;
       const pageData = Math.ceil(totalData / rowsPerPage);
       value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
@@ -666,7 +639,6 @@ class ScanLogsTable extends Component<Props, States> {
       dateErrMsg,
       searchText,
       pageNo,
-      userRole,
       totalData,
       rowsPerPage,
       lastUpdatedDateErr,
@@ -908,8 +880,8 @@ class ScanLogsTable extends Component<Props, States> {
                               >
                                 Apply
                                 <span>
-                                  <img src={ArrowIcon} className="arrow-i" />{" "}
-                                  <img src={RtButton} className="layout" />
+                                  <img src={ArrowIcon} className="arrow-i"  alt="" />{" "}
+                                  <img src={RtButton} className="layout" alt="" />
                                 </span>
                               </button>
                             </div>
@@ -1137,12 +1109,13 @@ class ScanLogsTable extends Component<Props, States> {
                                   <span
                                     style={{ flex: "1", whiteSpace: "nowrap" }}
                                   >
-                                    {value.username}
-                                  </span>
-                                  <img
+                                    {value.username}<img
                                     className="retailer-icon"
                                     src={ExpandWindowImg}
+                                    alt=""
                                   />
+                                  </span>
+                                 
                                 </p>
                                 <label>{value.userid}</label>
                               </div>
@@ -1179,6 +1152,7 @@ class ScanLogsTable extends Component<Props, States> {
                                     src={ActiveIcon}
                                     style={{ marginRight: "8px" }}
                                     width="17"
+                                    alt=""
                                   />
                                 ) : (
                                   <i className="fas fa-clock"></i>
@@ -1191,7 +1165,7 @@ class ScanLogsTable extends Component<Props, States> {
                               {moment(value.lastupdateddate).format(
                                 "DD/MM/YYYY"
                               )}
-                              <img className="max-image" src={maxImg} />
+                              <img className="max-image" src={maxImg}  alt=""/>
                             </td>
                           </tr>
                         );
@@ -1232,7 +1206,7 @@ class ScanLogsTable extends Component<Props, States> {
             <DialogContent>
               <div className="popup-container popup-retailer">
                 <div className="img">
-                  <img src={NoImage} />
+                  <img src={NoImage}  alt=""/>
                 </div>
                 <div className="popup-content">
                   <div className={`popup-title`}>
@@ -1258,7 +1232,7 @@ class ScanLogsTable extends Component<Props, States> {
 											this.state.locationData.map((location: any,locationIndex:number) => {
 												return (
 													<div className="content-list"  key={locationIndex}>
-														<label>{_.capitalize(location.name)}</label>
+                            <label>{_.startCase(_.toLower(location.name))}</label>
 														<p>{retailerPopupData[location.geolevels]}</p>
 													</div>
 												);

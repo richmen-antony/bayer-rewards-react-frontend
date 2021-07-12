@@ -1523,6 +1523,7 @@ class CreateUser extends Component<any, any> {
   };
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
+    
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
 
@@ -1697,6 +1698,7 @@ class CreateUser extends Component<any, any> {
         }
       }
     }
+    this.checkCreateFilled();
   };
 
   handleAddRow = (type: string) => {
@@ -1925,6 +1927,7 @@ class CreateUser extends Component<any, any> {
       }
     }
     const {setPromptMode} =this.context;
+    console.log({isFilledAllFields});
      setPromptMode(isFilledAllFields);
    
     return isFilledAllFields;
@@ -2052,7 +2055,7 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
-        {this.checkCreateFilled() && (
+        { isFilledAllFields &&
           <RouterPrompt
         when={this.state.shouldBlockNavigation}
         title="Leave this page"
@@ -2061,7 +2064,7 @@ class CreateUser extends Component<any, any> {
         onOK={() => true}
         onCancel={() => false}
       />
-        )}
+        }
         {this.state.deleteStaffPopup ? (
           <AdminPopup
             open={this.state.deleteStaffPopup}

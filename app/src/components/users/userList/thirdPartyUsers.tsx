@@ -1,50 +1,7 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-} from "reactstrap";
-import { Tooltip } from "reactstrap";
-// import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
+import '../../../assets/scss/users.scss';
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
-import { sortBy } from "../../../utility/base/utils/tableSort";
-// import "../../../assets/scss/scanLogs.scss";
-import { apiURL } from "../../../utility/base/utils/config";
-import {
-  invokeGetAuthService,
-  invokeGetService,
-} from "../../../utility/base/service";
-import filterIcon from "../../../assets/icons/filter_icon.svg";
-import downloadIcon from "../../../assets/icons/download_icon.svg";
-import cross from "../../../assets/icons/cross.svg";
-import Loader from "../../../utility/widgets/loader";
-import {
-  setLocalStorageData,
-  getLocalStorageData,
-  clearLocalStorageData,
-} from "../../../utility/base/localStore";
-import CustomTable from "../../../container/grid/CustomTable";
-import Pagination from "../../../utility/widgets/pagination";
-import SimpleDialog from "../../../container/components/dialog";
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-import '../../../assets/scss/users.scss';
-import moment from 'moment';
-import { downloadExcel, downloadCsvFile } from "../../../utility/helper";
-import leftArrow from "../../../assets/icons/left_arrow.svg";
-import { Input } from '../../../utility/widgets/input';
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
 
 type Props = {
     location?: any;

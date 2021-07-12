@@ -102,7 +102,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
               >
                 <div className="line-cnt-expiry-date">
                   <p>
-                    {_.capitalize(data.orderstatus)+" date"}
+                    { _.startCase(_.toLower(data.orderstatus))+" date"}
                   </p>
                   <label>
                     {data.lastupdateddate &&
@@ -184,6 +184,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                       : NoImg
                                   }
                                   width={40}
+                                  alt=""
                                 />
                               }
                             </th>
@@ -191,7 +192,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                               {value.productname} <p>{value.materialid}</p>
                             </td>
                             <td>{ value.productgroup === "CORN SEED" ||
-                                    value.productgroup === "HYBRID"? `Seed - ${_.capitalize(value.productgroup)}` : `CP - ${_.capitalize(value.productgroup)} `}</td>
+                                    value.productgroup === "HYBRID"? `Seed - ${_.startCase(_.toLower(value.productgroup))}` : `CP - ${ _.startCase(_.toLower(value.productgroup))} `}</td>
                             <td className="text-center">
                               {value.intendedquantity}
                             </td>
@@ -276,7 +277,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                       : 0
                                   })`}
                                 </span>
-                                <img src={RtArrow} />
+                                <img src={RtArrow} alt=""/>
                                 <span>
                                   {`${myConstClass.EXPIRED_LABEL} (${
                                     data?.invalidscans?.filter(
