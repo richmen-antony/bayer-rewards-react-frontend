@@ -9,7 +9,7 @@ var validator = {
       },
       validatePassword: function(element:any) {
         return element && element.trim()
-          ? /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
+          ? /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/.test(
               element
             )
           : true;

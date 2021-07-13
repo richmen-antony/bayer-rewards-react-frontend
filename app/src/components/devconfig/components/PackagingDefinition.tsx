@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../../devconfig/devconfig.scss";
 import { connect } from "react-redux";
 import AddBtn from "../../../assets/icons/add_btn.svg";
@@ -21,7 +21,6 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     isValidNext,
     getValidation
   } = props;
-  const [valSelected, setValSelected] = useState("NA");
   const [activeButton, SetActiveButton] = React.useState("SEED");
 
   
@@ -71,6 +70,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
       ) {
         list.splice(i, 1);
       }
+      return list;
     });
 
     list = setCorrectHierLvlSeed(list, index,data);
@@ -148,8 +148,8 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
         ) {
           list[i].parentpackage = value;
           setInputList(list);
-          setValSelected(event.target.value);
         }
+        return list;
       });
   };
 

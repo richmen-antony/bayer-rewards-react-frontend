@@ -408,7 +408,7 @@ class Devconfigurations extends React.Component<
 	// 	}
 	// }
 	
-	componentWillMount(){
+	UNSAFE_componentWillMount (){
 		let getUserdata: any = getLocalStorageData("userData");
         let userData = JSON.parse(getUserdata);
 		const setData = cluster_json;
@@ -622,7 +622,6 @@ class Devconfigurations extends React.Component<
 			isError,
 			roleHierarchy,
 			tntflowData,
-			countryDetails,
 			packageDefintionData,
 			scanPtsAllocationData
 		} = this.state;
@@ -857,7 +856,7 @@ class Devconfigurations extends React.Component<
 							});
 					     value={...value,[key+"_error"]:true}
 						}else{
-						if(value[key]!=false){
+						if(value[key]!==false){
 							value={...value,[key+"_error"]:false}
 							this.setState({
 								isError: false,
@@ -875,10 +874,10 @@ class Devconfigurations extends React.Component<
 		}
 	};
 	render() {
-		const { currentStep, isError } = this.state;
+		const { currentStep } = this.state;
 
-		const { region, cluster, country, countrycode, currency, currencyname } =
-			this.state;
+		// const { region, cluster, country, countrycode, currency, currencyname } =
+		// 	this.state;
 		// const values = {
 		// 	region,
 		// 	cluster,
@@ -1119,7 +1118,7 @@ class Devconfigurations extends React.Component<
 									{currentStep === stepsArray.length ? (
 										// <img src={check} />
 										<span style={{margin:0}}>
-											<img src={tickIcon} className="arrow-i" width="12" />{" "}
+											<img src={tickIcon} className="arrow-i" width="12"  alt=""/>{" "}
 											{/* <img src={RtButton} className="layout" /> */}
 										</span>
 									) : (

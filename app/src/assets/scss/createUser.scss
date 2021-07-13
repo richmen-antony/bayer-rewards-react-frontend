@@ -59,14 +59,17 @@
 }
 @media only screen and (min-width: 1025px) {
   .table-borderless > .table td,
-  .table th {
-    padding: 18px 0px;
-  }
-  .table td {
-    padding: 3px;
-  }
-  tbody tr > td {
-    width: 7%;
+ 
+  .table.table-borderless{
+    .table th {
+      padding: 18px 0px;
+    }
+    .table td {
+      padding: 3px;
+    }
+    tbody tr > td {
+      width: 7%;
+    }
   }
   
 }

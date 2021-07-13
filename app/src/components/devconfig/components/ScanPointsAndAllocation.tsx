@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "../../devconfig/devconfig.scss";
 import { connect } from "react-redux";
 import AddBtn from "../../../assets/icons/add_btn.svg";
@@ -8,7 +8,6 @@ import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
 import {
   createStyles,
   makeStyles,
-  useTheme,
   Theme,
   withStyles,
 } from "@material-ui/core/styles";
@@ -124,10 +123,9 @@ export const ScanPointsAndAllocation = (
     getValidation,
     isValidNext,
   } = props;
-  const [valSelected, setValSelected] = useState("NA");
   const classes = useStyles();
-  const theme = useTheme();
-  const [packageLevelName, setPackageDropdown] = React.useState<string[]>([]);
+  // const theme = useTheme();
+  // const [packageLevelName, setPackageDropdown] = React.useState<string[]>([]);
   const [packageLevelList,setPackageLevelList]=React.useState<string[]>([]);
 
 
@@ -140,12 +138,12 @@ export const ScanPointsAndAllocation = (
    
 
   // handle input change
-  const handleInputChange = (e: any, index: any) => {
-    const { name, value } = e.target;
-    const list: any = [...inputList];
-    list[index][name] = value;
-    setInputList(list);
-  };
+  // const handleInputChange = (e: any, index: any) => {
+  //   const { name, value } = e.target;
+  //   const list: any = [...inputList];
+  //   list[index][name] = value;
+  //   setInputList(list);
+  // };
 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
@@ -185,11 +183,10 @@ export const ScanPointsAndAllocation = (
   };
 
   const handleDropdownPostionChange = (event: any, index: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
     list[index].position = value;
     setInputList(list);
-    setValSelected(event.target.value);
   };
 
   const handleScannedbyChange = (event: any, index: any) => {
@@ -197,7 +194,6 @@ export const ScanPointsAndAllocation = (
     const list: any = [...inputList];
     list[index].scannedby = value;
     setInputList(list);
-    setValSelected(event.target.value);
   };
 
   const handleScannedtypeChange = (event: any, index: any) => {
@@ -205,17 +201,14 @@ export const ScanPointsAndAllocation = (
     const list: any = [...inputList];
     list[index].scantype = value;
     setInputList(list);
-    setValSelected(event.target.value);
   };
 
   const handlePackaginglevelChange = (event: any, index: any) => {
-    const { value } = event.target;
     const list: any = [...inputList];
      // remove empty string from array
      const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
     list[index].packaginglevel = result.join(",");
     setInputList(list);
-    setValSelected(result);
   };
 
   const handlePointsallocatedChange = (event: any, index: any) => {
@@ -223,21 +216,21 @@ export const ScanPointsAndAllocation = (
     const list: any = [...inputList];
     list[index].pointallocated = value;
     setInputList(list);
-    setValSelected(event.target.value);
   };
  
   const handleChange = (event: React.ChangeEvent<{ value: any }>,i:number) => {
    // remove empty string from array
-    const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
-    setPackageDropdown(result as string[]);
+    // const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
+    // setPackageDropdown(result as string[]);
     handlePackaginglevelChange(event,i)
   };
 
-
+ 
   useEffect(() => {
     if(packageLevelOption){
       setPackageLevelList(packageLevelOption)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
   // const packaginglevelOptions = handledropdownoption(
   //   paackaginglevelList,

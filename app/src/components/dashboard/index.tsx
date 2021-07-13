@@ -169,6 +169,7 @@ class Dashboard extends Component<Props, States> {
 										cardClick={() => this.handleNavigateOrder()}
 									>
 										<span className="count">{this.state.adminOrderHistoryCount}</span>
+										<br />
 										<span className="title">Total Orders</span>
 									</CustomCard>
 								</div>

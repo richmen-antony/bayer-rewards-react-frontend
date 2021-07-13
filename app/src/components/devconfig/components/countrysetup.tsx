@@ -140,6 +140,7 @@ const CountrySetupComp = (props: ICountryProps) => {
     return () => {
       setCountryDetails(countryDetails);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // const handleDropdownChangeCurrency = (event: any) => {
@@ -197,7 +198,7 @@ const CountrySetupComp = (props: ICountryProps) => {
         console.log(error, "error");
       });
 
-    if (newCountry == true) {
+    if (newCountry === true) {
       props.addLocationInputList([
         { locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
       ]);

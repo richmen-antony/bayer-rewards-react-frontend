@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
 import AddBtn from "../../../assets/icons/add_btn.svg";
@@ -20,10 +20,7 @@ const roleTypeOptions = [
 ];
 
 export const RoleHierarchy = (props: IRoleProps) => {
-  const { inputList, setInputList, isValidNext, getValidation } = props;
-  const [valSelected, setValSelected] = useState("NA");
-
-  
+  const { inputList, setInputList, isValidNext, getValidation } = props;  
   /**
    * handle input change
    * @param e 
@@ -98,7 +95,6 @@ export const RoleHierarchy = (props: IRoleProps) => {
     const list: any = [...inputList];
     list[index].parentrole = value;
     setInputList(list);
-    setValSelected(event.target.value);
   };
 /**
  * To handle drop down values for roles
@@ -110,7 +106,6 @@ export const RoleHierarchy = (props: IRoleProps) => {
     const list: any = [...inputList];
     list[index].roletype = value;
     setInputList(list);
-    setValSelected(event.target.value);
   };
 /**
  * To set the hiearchy order wise level

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
 import AddBtn from "../../../assets/icons/add_btn.svg";
@@ -17,7 +17,6 @@ interface ILocationProps {
 
 const LocationHierarchy = (props: ILocationProps) => {
   const { inputList, setInputList, getValidation, isValidNext } = props;
-  const [valSelected, setValSelected] = useState("NA");
 
   // handle input change
   const handleInputChange = (e: any, index: any) => {
@@ -69,7 +68,6 @@ const LocationHierarchy = (props: ILocationProps) => {
     const list: any = [...inputList];
     list[index].parentlocation = value;
     setInputList(list);
-    setValSelected(event.target.value);
   };
 
   const setCorrectHierLvl = (list: any, index: number) => {
