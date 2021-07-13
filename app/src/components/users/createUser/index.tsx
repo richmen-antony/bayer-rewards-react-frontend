@@ -707,11 +707,13 @@ class CreateUser extends Component<any, any> {
       dynamicFieldVal.forEach((list:any, fieldIndex:number)=>{
         if(fieldIndex > index) {
           list.value = "";
+          list.options = "";
         }
       });
       withHoldingVal.forEach((list:any, fieldIndex:number)=>{
         if(fieldIndex > index) {
           list.value = "";
+          list.options = "";
         }
       });
       if (type === "geolevel1") {
@@ -1463,12 +1465,24 @@ class CreateUser extends Component<any, any> {
         item.lastname = "";
         if (this.state.isEditPage === false) item.mobilenumber = "";
         item.email = "";
+        item.errObj = {
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: "",
+            emailErr: "",
+        }
       });
       userData.staffdetails.forEach((item: any, index: number) => {
         item.firstname = "";
         item.lastname = "";
         if (this.state.isEditPage === false) item.mobilenumber = "";
         item.email = "";
+        item.errObj = {
+          firstnameErr: "",
+          lastnameErr: "",
+          mobilenumberErr: "",
+          emailErr: "",
+      }
       });
       this.setState((prevState: any) => ({
         userData: {
@@ -1481,8 +1495,13 @@ class CreateUser extends Component<any, any> {
       let data: any = this.state.dynamicFields;
       data.forEach((list: any) => {
         if (list.name !== "geolevel0") {
-          list.value = "";
+          list.value = ""
+          if (list.name !== "geolevel1") {
+            list.options = ""
+          }
+          list.error = ""
         }
+       
       });
       this.setState((prevState: any) => ({
         userData: {
@@ -1493,10 +1512,14 @@ class CreateUser extends Component<any, any> {
         dynamicFields: data,
       }));
     } else {
-      let data: any = this.state.withholding;
+      let data: any = this.state.withHolding;
       data?.forEach((list: any) => {
         if (list.name !== "geolevel0") {
           list.value = "";
+          list.error = ""
+          if (list.name !== "geolevel1") {
+            list.options = ""
+          }
         }
       });
       this.setState((prevState: any) => ({
@@ -1508,7 +1531,9 @@ class CreateUser extends Component<any, any> {
           billingstreet: "",
           billingzipcode: "",
         },
-        withholding: data,
+        withHolding: data,
+        accountnameErr: "",
+        ownernameErr: "",
       }));
     }
   };
@@ -1916,7 +1941,6 @@ class CreateUser extends Component<any, any> {
       }
     }
     const {setPromptMode} =this.context;
-    console.log({isFilledAllFields});
      setPromptMode(isFilledAllFields);
    
     return isFilledAllFields;
@@ -2903,7 +2927,7 @@ class CreateUser extends Component<any, any> {
                           )}
                         </div>
                       </div>
-                      <div className="col-sm-3">
+                      <div className="col-sm-6">
                         <label className="font-weight-bold">
                           Same as Personal Info
                         </label>
