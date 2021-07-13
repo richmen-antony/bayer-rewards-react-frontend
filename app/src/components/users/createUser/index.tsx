@@ -530,7 +530,7 @@ class CreateUser extends Component<any, any> {
           geolevel5: "",
         };
         if ("billinggeolevel1" in data) {
-          level1Options = level1Options;
+          level1Options = level1Datas;
           geolevel1 = data.billinggeolevel1;
           level1Options.forEach((level1Info: any) => {
             if (level1Info.name === data.billinggeolevel1) {
@@ -2918,7 +2918,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          read-only={this.state.accInfo ? true : undefined}
+                          read-only={this.state.accInfo ? "true" : "false"}
                           onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                         />
                         <div>
@@ -2967,7 +2967,7 @@ class CreateUser extends Component<any, any> {
                           onChange={(e: any) =>
                             this.handleChange("", e, "", "otherSteps", "")
                           }
-                          read-only={this.state.accInfo ? true : undefined}
+                          read-only={this.state.accInfo ? "true" : "false"}
                           width="96%"
                         />
                         {!accInfo && billingstreetErr && (
@@ -2984,7 +2984,7 @@ class CreateUser extends Component<any, any> {
                             this.handleChange("", e, "", "otherSteps", "")
                           }
                           onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                          read-only={this.state.accInfo ? true : undefined}
+                          read-only={this.state.accInfo ? "true" : "false"}
                           value={
                             this.state.accInfo
                               ? userData.deliveryzipcode
