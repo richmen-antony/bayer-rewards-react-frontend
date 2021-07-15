@@ -66,12 +66,7 @@ const DialogActions = withStyles((theme: Theme) => ({
     padding: theme.spacing(1),
     justifyContent: "center",
     marginTop: "30px",
-  },
-  button: {
-    boxShadow: "0px 3px 6px #c7c7c729",
-    border: "1px solid #89D329",
-    borderRadius: "50px",
-  },
+  }
 }))(MuiDialogActions);
 
 class CreateUser extends Component<any, any> {
@@ -1512,16 +1507,20 @@ class CreateUser extends Component<any, any> {
         dynamicFields: data,
       }));
     } else {
-      let data: any = this.state.withHolding;
-      data?.forEach((list: any) => {
-        if (list.name !== "geolevel0") {
-          list.value = "";
-          list.error = ""
-          if (list.name !== "geolevel1") {
-            list.options = ""
+
+      if(!this.state.accInfo){
+        let data: any = this.state.withHolding;
+        data?.forEach((list: any) => {
+          if (list.name !== "geolevel0") {
+            list.value = "";
+            list.error = ""
+            if (list.name !== "geolevel1") {
+              list.options = ""
+            }
           }
-        }
-      });
+        });
+        this.setState({  withHolding: data})
+      }
       this.setState((prevState: any) => ({
         userData: {
           ...prevState.userData,
@@ -1531,7 +1530,6 @@ class CreateUser extends Component<any, any> {
           billingstreet: "",
           billingzipcode: "",
         },
-        withHolding: data,
         accountnameErr: "",
         ownernameErr: "",
       }));
@@ -2099,6 +2097,7 @@ class CreateUser extends Component<any, any> {
                     autoFocus
                     onClick={this.handleClosePopup}
                     className="admin-popup-btn close-btn"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     Cancel
                   </Button>
@@ -2106,6 +2105,7 @@ class CreateUser extends Component<any, any> {
                     onClick={this.deleteStaff}
                     className="admin-popup-btn delete"
                     autoFocus
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     DELETE
                   </Button>

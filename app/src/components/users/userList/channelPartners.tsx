@@ -102,12 +102,12 @@ const DialogActions = withStyles((theme: Theme) => ({
     padding: theme.spacing(1),
     justifyContent: "center",
     marginTop: "30px",
-  },
-  button: {
-    boxShadow: "0px 3px 6px #c7c7c729",
-    border: "1px solid #89D329",
-    borderRadius: "50px",
-  },
+  }
+  // button: {
+  //   boxShadow: "0px 3px 6px #c7c7c729",
+  //   border: "1px solid #89D329",
+  //   borderRadius: "50px",
+  // },
 }))(MuiDialogActions);
 
 class ChannelPartners extends Component<Props, States> {
@@ -953,6 +953,7 @@ class ChannelPartners extends Component<Props, States> {
                     autoFocus
                     onClick={this.handleCloseStaffPopup}
                     className="admin-popup-btn close-btn"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     Cancel
                   </Button>
@@ -960,6 +961,7 @@ class ChannelPartners extends Component<Props, States> {
                     onClick={this.deleteStaff}
                     className="admin-popup-btn delete"
                     autoFocus
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     DELETE
                   </Button>
@@ -1025,6 +1027,7 @@ class ChannelPartners extends Component<Props, States> {
                     autoFocus
                     onClick={this.handleClosePopup}
                     className="admin-popup-btn close-btn"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     Cancel
                   </Button>
@@ -1032,6 +1035,7 @@ class ChannelPartners extends Component<Props, States> {
                     onClick={this.changeStatus}
                     className="admin-popup-btn filter-scan"
                     autoFocus
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     {userList.userstatus === "ACTIVE" ||
                     userList.userstatus === "INACTIVE" ||
@@ -1685,6 +1689,7 @@ class ChannelPartners extends Component<Props, States> {
                   <button
                     onClick={this.handleClosePopup}
                     className="cus-btn-user reset buttonStyle"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     Cancel
                   </button>
@@ -1693,6 +1698,7 @@ class ChannelPartners extends Component<Props, States> {
                       this.submitUpdateUser(e);
                     }}
                     className="cus-btn-user buttonStyle"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
                   >
                     Update
                     <span className="staffcount">
