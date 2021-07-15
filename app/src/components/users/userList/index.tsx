@@ -449,7 +449,7 @@ class UserList extends Component<Props, States> {
     }: any = this.state.selectedFilters;
     let data = {
       countrycode: this.getStoreData.countryCode,
-      page: this.state.pageNo,
+      page: this.state.searchText !== "" ? 1 : this.state.pageNo,
       searchtext: this.state.searchText,
       isfiltered: this.state.isFiltered,
       rowsperpage: this.state.rowsPerPage,

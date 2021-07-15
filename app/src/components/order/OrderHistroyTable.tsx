@@ -165,7 +165,7 @@ class OrderHistory extends Component<Props, States> {
 		this.setState({ isLoader: true });
 		const { selectedFilters, isFiltered, regionOptions } = this.state;
 		let data = {
-			page: this.state.pageNo,
+			page: this.state.searchText !== "" ? 1 : this.state.pageNo,
 			searchtext: this.state.searchText || null,
 			rowsperpage: this.state.rowsPerPage,
 			isfiltered: isFiltered,

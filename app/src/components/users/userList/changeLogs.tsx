@@ -74,7 +74,7 @@ class ChangeLogs extends Component<Props, States> {
     const { changeLogs } = apiURL;
     this.setState({ isLoader: true, allChangeLogs: [] });
     let data = {
-      page: this.state.pageNo,
+      page: this.state.searchText !== "" ? 1 : this.state.pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       countrycode: this.state.loggedUserInfo.countrycode,
