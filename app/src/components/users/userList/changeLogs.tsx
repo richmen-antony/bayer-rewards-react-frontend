@@ -103,7 +103,7 @@ class ChangeLogs extends Component<Props, States> {
   };
   handleSearch = (e: any) => {
     let searchText = e.target.value;
-    this.setState({ searchText: searchText });
+    this.setState({ searchText: searchText,inActiveFilter:false });
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
@@ -123,19 +123,19 @@ class ChangeLogs extends Component<Props, States> {
     this.onSort(columnname, allChangeLogs, isAsc);
   }
   previous = (pageNo: any) => {
-    this.setState({ pageNo: pageNo - 1 ,inActiveFilter:false });
+    this.setState({ pageNo: pageNo - 1 ,inActiveFilter:true });
     setTimeout(() => {
       this.getChangeLogs();
     }, 0);
   };
   next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 ,inActiveFilter:false });
+    this.setState({ pageNo: pageNo + 1 ,inActiveFilter:true });
     setTimeout(() => {
       this.getChangeLogs();
     }, 0);
   };
   pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number ,inActiveFilter:false });
+    this.setState({ pageNo: number ,inActiveFilter:true });
     setTimeout(() => {
       this.getChangeLogs();
     }, 0);
@@ -145,7 +145,7 @@ class ChangeLogs extends Component<Props, States> {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value ,inActiveFilter:false });
+      this.setState({ rowsPerPage: value ,inActiveFilter:true });
       setTimeout(() => {
         this.getChangeLogs();
       }, 2000);
@@ -158,7 +158,7 @@ class ChangeLogs extends Component<Props, States> {
           : e.target.value;
       let isNumeric = Validator.validateNumeric(e.target.value);
       if (isNumeric) {
-        this.setState({ pageNo: value ,inActiveFilter:false }, () => {
+        this.setState({ pageNo: value ,inActiveFilter:true }, () => {
           if (this.state.pageNo && pageData >= this.state.pageNo) {
             setTimeout(() => {
               this.state.pageNo && this.getChangeLogs();
