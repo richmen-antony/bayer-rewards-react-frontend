@@ -129,13 +129,10 @@ const CountrySetupComp = (props: ICountryProps) => {
   let countryDetails: cDetails[] =
     selectedCountryDetails.length > 0 ? selectedCountryDetails : [];
 
-
   useEffect(() => {
-    // if (countryCode) {
-    //   _retriveCountryCode(countryCode);
-    // }
     if (countryDetails.length) {
-      _retriveCountryCode(countryDetails[0].name);
+      let countryName = countryCode ?countryCode:countryDetails[0].name;
+      _retriveCountryCode(countryName)
     }
     return () => {
       setCountryDetails(countryDetails);
@@ -264,7 +261,6 @@ const CountrySetupComp = (props: ICountryProps) => {
     setcurrencyDesc(currencyDesc);
     setCountryISO(countryISO);
     setcountryCurrency(countryName);
-
     setCountryCode(countryValue);
     setCountryName(countryISO);
     setCurrencyCode(countryName[0].currency);

@@ -516,7 +516,7 @@ class OrderHistory extends Component<Props, States> {
 	};
 
 	filterScans = (filterValue: any) => {
-		this.setState({ isFiltered: true, searchText: filterValue }, () => {
+		this.setState({ isFiltered: true, searchText: filterValue ,inActiveFilter:false}, () => {
 			this.getAdminOrderList();
 			this.handleClosePopup();
 		});

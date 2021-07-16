@@ -77,6 +77,9 @@ const useStyles = makeStyles((theme: Theme) =>
     noLabel: {
       marginTop: theme.spacing(3),
     },
+    menuPaper: {
+      maxHeight: 150,
+    },
   })
 );
 
@@ -429,7 +432,20 @@ export const ScanPointsAndAllocation = (
                             
                             (selected as string[]).join(", ")
                           }
-                          MenuProps={MenuProps}
+                          // MenuProps={MenuProps}
+
+                          MenuProps={{
+                            anchorOrigin: {
+                              vertical: "bottom",
+                              horizontal: "left",
+                            },
+                            transformOrigin: {
+                              vertical: "top",
+                              horizontal: "left",
+                            },
+                            getContentAnchorEl: null,
+                            classes: { paper: classes.menuPaper },
+                          }}
                           
                         >
                           {packageLevelList.length > 0 &&

@@ -623,7 +623,7 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   filterScans = (filterValue: any) => {
-    this.setState({ isFiltered: true ,selectedFilters:{...this.state.selectedFilters,retailer:filterValue}}, () => {
+    this.setState({ isFiltered: true ,inActiveFilter:false,selectedFilters:{...this.state.selectedFilters,retailer:filterValue}}, () => {
       this.getScanLogs();
       this.handleClosePopup();
       let condIf = "retailer";
