@@ -207,7 +207,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
               </button>
             </div>
 
-            <table className="devconfig table" id="tab_logic">
+            <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
                   <th className="tableStyle text-center">Level</th>

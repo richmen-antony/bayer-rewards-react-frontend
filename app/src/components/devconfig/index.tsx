@@ -24,6 +24,7 @@ import {
 	setAnticounterfeitSmsAuthentication,
 	setAnticounterfeitDigitalScan,
 	setAnticounterfeitSmartLabel,
+	setCountryCode
 } from "../../redux/actions/devconfig/add";
 import left from "../../assets/icons/left.svg";
 import ArrowIcon from "../../assets/icons/dark bg.svg";
@@ -55,7 +56,6 @@ interface IDevConfigProps {
 	tntflowinputList: any;
 	packagingdefinitionList: any;
 	scanpointsandallocationinputList: any;
-
 	addLocationInputList: any;
 	addRoleInputList: any;
 	addTnTFlowInputList: any;
@@ -65,9 +65,9 @@ interface IDevConfigProps {
 	setAnticounterfeitDigitalScan: any;
 	setAnticounterfeitSmartLabel: any;
 	devconfig: any;
-
 	location?: any;
 	history?: any;
+	setCountryCode: (data: any) => void;
 }
 
 type MyComponentState = {
@@ -288,16 +288,18 @@ class Devconfigurations extends React.Component<IDevConfigProps, MyComponentStat
 	}
 
 	handleReset() {
-		const { currentStep } = this.state;
+		const { currentStep,selectedCountryDetails } = this.state;
 		let newStep: number = 1;
 		// let newStep = 1;
 		// this.setState({
 		//   currentStep: newStep,
 		//   isActive: false,
 		// });
-
+		let defalutCountry:string=selectedCountryDetails?.length>0 &&selectedCountryDetails[0].name;
+     
 		switch (currentStep) {
 			case 1:
+				this.props.setCountryCode(defalutCountry)
 				break;
 			case 2:
 				this.props.addLocationInputList({});
@@ -1099,6 +1101,7 @@ const mapDispatchToProps = {
 	setAnticounterfeitSmsAuthentication,
 	setAnticounterfeitDigitalScan,
 	setAnticounterfeitSmartLabel,
+	setCountryCode
 };
 
 // const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);

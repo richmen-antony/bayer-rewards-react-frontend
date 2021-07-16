@@ -33,7 +33,7 @@ const BootstrapInput = withStyles((theme: Theme) =>
       position: 'relative',
       backgroundColor: theme.palette.background.paper,
       border: '1px solid #ced4da',
-      fontSize: 16,
+      fontSize: 14,
       padding: '10px 26px 10px 12px',
       transition: theme.transitions.create(['border-color', 'box-shadow']),
       // Use the system font instead of the default Roboto font.
@@ -63,8 +63,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     formControl: {
       // margin: theme.spacing(1),
-      minWidth: 175,
-      maxWidth: 300,
+      minWidth: 185,
+      // maxWidth: 185,
       marginTop: -12,
     },
     chips: {

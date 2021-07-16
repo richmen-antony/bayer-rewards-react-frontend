@@ -13,6 +13,7 @@ import {
   setAnticounterfeitSmsAuthentication,
   setAnticounterfeitDigitalScan,
   setAnticounterfeitSmartLabel,
+  
 } from "../../../redux/actions/devconfig/add";
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../../utility/base/service";
@@ -128,7 +129,6 @@ const CountrySetupComp = (props: ICountryProps) => {
 
   let countryDetails: cDetails[] =
     selectedCountryDetails.length > 0 ? selectedCountryDetails : [];
-
   useEffect(() => {
     if (countryDetails.length) {
       let countryName = countryCode ?countryCode:countryDetails[0].name;
@@ -138,7 +138,7 @@ const CountrySetupComp = (props: ICountryProps) => {
       setCountryDetails(countryDetails);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [countryCode]);
 
   // const handleDropdownChangeCurrency = (event: any) => {
   //   const countryName: any = countryDetails.filter(function (result: any) {
