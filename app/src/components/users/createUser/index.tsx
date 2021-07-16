@@ -939,6 +939,7 @@ class CreateUser extends Component<any, any> {
       withHoldingdet = JSON.parse(JSON.stringify(withHoldingdet));
       this.setState({ newWithHolding: withHoldingdet });
     }
+    this.checkUnsavedData();
   };
 
   getLevelFourDetails = () => {
@@ -1513,6 +1514,7 @@ class CreateUser extends Component<any, any> {
         },
         dynamicFields: data,
       }));
+      console.log('aaa', this.state.dynamicFields);
     } else {
       if(!this.state.accInfo){
         let data: any = this.state.withHolding;
@@ -1540,6 +1542,7 @@ class CreateUser extends Component<any, any> {
         ownernameErr: "",
       }));
     }
+    this.checkUnsavedData();
   };
 
   declineUser = () => {
@@ -1716,7 +1719,7 @@ class CreateUser extends Component<any, any> {
         }
       }
     }
-    this.checkCreateFilled();
+    this.checkUnsavedData();
   };
 
   handleAddRow = (type: string) => {
@@ -1809,7 +1812,7 @@ class CreateUser extends Component<any, any> {
       // });
     }
   };
-  checkCreateFilled = () => {
+  checkUnsavedData = () => {
     this.isFilledAllFields = false;
     let userValues = this.state.userData;
     let isDeliveryFieldsFilled = false;
@@ -1870,28 +1873,28 @@ class CreateUser extends Component<any, any> {
           if (item.name !== "geolevel0") {
             if (
               item.name === "geolevel1" &&
-              item.value !== userFields.deliverygeolevel1
+              (item.value !== userFields.deliverygeolevel1 || item.value === "")
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "geolevel2" &&
-              item.value !== userFields.deliverygeolevel2
+              (item.value !== userFields.deliverygeolevel2 || item.value === "")
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "geolevel3" &&
-              item.value !== userFields.deliverygeolevel3
+              (item.value !== userFields.deliverygeolevel3 || item.value === "")
             ) {
               isDeliveryFieldsFilled = true;
             }
-            if (item.name === "geolevel4" && item.value !== userFields.deliverygeolevel4) {
+            if (item.name === "geolevel4" && (item.value !== userFields.deliverygeolevel4 || item.value === "")) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "geolevel5" &&
-              item.value !== userFields.deliverygeolevel5
+              (item.value !== userFields.deliverygeolevel5 || item.value === "")
             ) {
               isDeliveryFieldsFilled = true;
             }
@@ -1901,11 +1904,11 @@ class CreateUser extends Component<any, any> {
           if (item.name !== "geolevel0") {
             if (
               item.name === "geolevel1" &&
-              item.value !== userFields.billinggeolevel1
+              (item.value !== userFields.billinggeolevel1 || item.value === "")
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "geolevel2" && item.value !== userFields.billinggeolevel2) {
+            if (item.name === "geolevel2" && (item.value !== userFields.billinggeolevel2 || item.value === "")) {
               isWHTFieldsFilled = true;
             }
             if (
@@ -1914,12 +1917,12 @@ class CreateUser extends Component<any, any> {
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "geolevel4" && item.value !== userFields.billinggeolevel4) {
+            if (item.name === "geolevel4" && (item.value !== userFields.billinggeolevel4 || item.value === "")) {
               isWHTFieldsFilled = true;
             }
             if (
               item.name === "geolevel5" &&
-              item.value !== userFields.billinggeolevel5
+              (item.value !== userFields.billinggeolevel5 || item.value === "")
             ) {
               isWHTFieldsFilled = true;
             }
@@ -1929,12 +1932,12 @@ class CreateUser extends Component<any, any> {
 
       if (
         (userValues.ownerRows[0].firstname !==
-          editDatas.ownerRows[0].firstname) ||
-        (userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname) ||
+          editDatas.ownerRows[0].firstname) || (userValues.ownerRows[0].firstname === "") ||
+        (userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname) || (userValues.ownerRows[0].lastname === "") ||
         (userValues.ownerRows[0].mobilenumber !==
           editDatas.ownerRows[0].mobilenumber) ||
-        (userValues.whtaccountname !== editDatas.whtaccountname) ||
-        (userValues.whtownername !== editDatas.whtownername) ||
+        (userValues.whtaccountname !== editDatas.whtaccountname) || (userValues.whtaccountname=== "") ||
+        (userValues.whtownername !== editDatas.whtownername) || (userValues.whtownername === "") ||
         isStaffFieldsFilled ||
         isDeliveryFieldsFilled ||
         isWHTFieldsFilled
@@ -2073,7 +2076,7 @@ class CreateUser extends Component<any, any> {
       <AUX>
         {isLoader && <Loader />}
         { this.isFilledAllFields &&
-          <RouterPrompt
+        <RouterPrompt
         when={this.state.shouldBlockNavigation}
         title="Leave this page"
         cancelText="Cancel"
