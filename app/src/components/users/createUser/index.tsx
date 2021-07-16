@@ -1266,7 +1266,7 @@ class CreateUser extends Component<any, any> {
       userData.ownerRows.forEach((userInfo: any, idx: number) => {
         let errObj: any = {
           firstNameErr: "",
-          lastNameErr: "",
+          lastnameErr: "",
           emailErr: userInfo.errObj.emailErr,
           mobilenumberErr: userInfo.errObj.mobilenumberErr,
         };
@@ -1274,7 +1274,7 @@ class CreateUser extends Component<any, any> {
         errObj.firstNameErr = userInfo.firstname
           ? ""
           : "Please enter the First Name";
-        errObj.lastNameErr = userInfo.lastname
+        errObj.lastnameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
 
@@ -1296,7 +1296,7 @@ class CreateUser extends Component<any, any> {
         userData.ownerRows[idx].errObj = errObj;
         if (
           errObj.firstNameErr !== "" ||
-          errObj.lastNameErr !== "" ||
+          errObj.lastnameErr !== "" ||
           errObj.mobilenumberErr !== "" ||
           errObj.emailErr !== ""
         ) {
@@ -1313,7 +1313,7 @@ class CreateUser extends Component<any, any> {
       userData.staffdetails?.forEach((userInfo: any, idx: number) => {
         let errObj: any = {
           firstNameErr: "",
-          lastNameErr: "",
+          lastnameErr: "",
           emailErr: userInfo.errObj.emailErr,
           mobilenumberErr: userInfo.errObj.mobilenumberErr,
           isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
@@ -1321,7 +1321,7 @@ class CreateUser extends Component<any, any> {
         errObj.firstNameErr = userInfo.firstname
           ? ""
           : "Please enter the First Name";
-        errObj.lastNameErr = userInfo.lastname
+        errObj.lastnameErr = userInfo.lastname
           ? ""
           : "Please enter the last Name";
 
@@ -1343,7 +1343,7 @@ class CreateUser extends Component<any, any> {
         userData.staffdetails[idx].errObj = errObj;
         if (
           errObj.firstNameErr !== "" ||
-          errObj.lastNameErr !== "" ||
+          errObj.lastnameErr !== "" ||
           errObj.mobilenumberErr !== "" ||
           errObj.emailErr !== ""
         ) {
@@ -1454,8 +1454,7 @@ class CreateUser extends Component<any, any> {
         ...prevState.userData,
         ownerRows: ownerRows,
         staffdetails: staffdetails,
-      },
-      isRendered: true,
+      }
     }));
   };
 
@@ -1598,7 +1597,6 @@ class CreateUser extends Component<any, any> {
       }
       this.setState((prevState: any) => ({
         userData: {
-          isRendered: true,
           ...prevState.userData,
           ownerRows: owners,
         },
@@ -1609,7 +1607,7 @@ class CreateUser extends Component<any, any> {
           ? ""
           : "Please enter the First Name";
         } else if(e.target?.name ==='lastname'){
-          owners[idx].errObj.lastNameErr = owners[idx].lastname
+          owners[idx].errObj.lastnameErr = owners[idx].lastname
           ? ""
           : "Please enter the last Name";
         }
@@ -1648,7 +1646,7 @@ class CreateUser extends Component<any, any> {
           ? ""
           : "Please enter the First Name";
         } else if(e.target?.name ==='lastname'){
-          staffs[idx].errObj.lastNameErr = staffs[idx].lastname
+          staffs[idx].errObj.lastnameErr = staffs[idx].lastname
           ? ""
           : "Please enter the last Name";
         }
@@ -2282,9 +2280,9 @@ class CreateUser extends Component<any, any> {
                                           allowAlphabetsNumbers(e)
                                         }
                                       />
-                                      {item.errObj?.lastNameErr && (
+                                      {item.errObj?.lastnameErr && (
                                         <span className="error">
-                                          {item.errObj.lastNameErr}{" "}
+                                          {item.errObj.lastnameErr}{" "}
                                         </span>
                                       )}
                                     </td>
@@ -2584,9 +2582,9 @@ class CreateUser extends Component<any, any> {
                                             allowAlphabetsNumbers(e)
                                           }
                                         />
-                                        {item.errObj?.lastNameErr && (
+                                        {item.errObj?.lastnameErr && (
                                           <span className="error">
-                                            {item.errObj.lastNameErr}{" "}
+                                            {item.errObj.lastnameErr}{" "}
                                           </span>
                                         )}
                                       </td>
