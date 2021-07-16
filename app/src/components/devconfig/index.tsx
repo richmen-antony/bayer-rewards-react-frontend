@@ -29,11 +29,7 @@ import left from "../../assets/icons/left.svg";
 import ArrowIcon from "../../assets/icons/dark bg.svg";
 import cluster_json from "../../utility/lib/cluster.json";
 import AUX from "../../hoc/Aux_";
-import {
-	withStyles,
-	Theme,
-	createStyles,
-} from "@material-ui/core/styles";
+import { withStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
@@ -45,8 +41,6 @@ import { getLocalStorageData } from "../../utility/base/localStore";
 import Dropdown from "../../utility/widgets/dropdown";
 import { handledropdownoption } from "../../utility/helper";
 // import _ from 'lodash'
-
-
 
 export interface IFormValue {
 	id: string;
@@ -191,12 +185,8 @@ function TabPanel(props: TabPanelProps) {
 	);
 }
 
-
 // class Devconfigurations extends Component<MyComponentProps, MyComponentState> {
-class Devconfigurations extends React.Component<
-	IDevConfigProps,
-	MyComponentState
-> {
+class Devconfigurations extends React.Component<IDevConfigProps, MyComponentState> {
 	constructor(props: IDevConfigProps) {
 		super(props);
 		this.state = {
@@ -227,12 +217,11 @@ class Devconfigurations extends React.Component<
 			tntflowData: [],
 			countryDetails: [],
 			packageDefintionData: [],
-			scanPtsAllocationData:[]
+			scanPtsAllocationData: [],
 		};
-		
+
 		this.handleDropdownChange = this.handleDropdownChange.bind(this);
-		this.handleDropdownChangeRegion =
-			this.handleDropdownChangeRegion.bind(this);
+		this.handleDropdownChangeRegion = this.handleDropdownChangeRegion.bind(this);
 	}
 
 	handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -251,9 +240,7 @@ class Devconfigurations extends React.Component<
 		const { currentStep } = this.state;
 		const { loacationinputList } = this.props;
 		if (currentStep === 2) {
-			const isValid = loacationinputList.filter(
-				(value: any) => value.locationhiername === ""
-			);
+			const isValid = loacationinputList.filter((value: any) => value.locationhiername === "");
 			if (isValid) {
 				this.setState({ isError: true });
 			} else {
@@ -314,9 +301,7 @@ class Devconfigurations extends React.Component<
 				break;
 			case 2:
 				this.props.addLocationInputList({});
-				this.props.addLocationInputList([
-					{ locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
-				]);
+				this.props.addLocationInputList([{ locationhierlevel: 0, locationhiername: "", parentlocation: -1 }]);
 				newStep = 2;
 				break;
 			case 3:
@@ -399,7 +384,7 @@ class Devconfigurations extends React.Component<
 
 	// componentWillMount() {
 	// 	let getUserdata: any = getLocalStorageData("userData");
-    //     let userData = JSON.parse(getUserdata);
+	//     let userData = JSON.parse(getUserdata);
 	// 	const setData = cluster_json;
 	// 	this.setState({ setData: setData });
 
@@ -407,25 +392,24 @@ class Devconfigurations extends React.Component<
 	// 		this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
 	// 	}
 	// }
-	
-	UNSAFE_componentWillMount (){
+
+	UNSAFE_componentWillMount() {
 		let getUserdata: any = getLocalStorageData("userData");
-        let userData = JSON.parse(getUserdata);
+		let userData = JSON.parse(getUserdata);
 		const setData = cluster_json;
 		this.setState({ setData: setData });
-		let setSelectedClusterName:string;
+		let setSelectedClusterName: string;
 
 		if (userData.countrycode === "IN") {
-			setSelectedClusterName =  "South Asia"
+			setSelectedClusterName = "South Asia";
 			this.setState({ setSelectedRegion: "APAC" });
 			this.setState({ setSelectedCluster: "South Asia" });
 			this._retrieveSelectedContryofCluster(setSelectedClusterName);
-		}
-		else if (this.state.setSelectedCluster) {
+		} else if (this.state.setSelectedCluster) {
 			this._retrieveSelectedContryofCluster(this.state.setSelectedCluster);
-		}	
+		}
 	}
-	
+
 	componentDidUpdate(prevProps: any, prevState: any) {
 		if (this.state.currentStep !== prevState.currentStep) {
 			window.scrollTo(0, 0);
@@ -438,7 +422,7 @@ class Devconfigurations extends React.Component<
 				locationHierarchy: this.props.loacationinputList,
 			});
 		}
-         // update the role hiearchy data in state
+		// update the role hiearchy data in state
 		if (this.props.roleinputList !== prevProps.roleinputList) {
 			this.setState({
 				roleHierarchy: this.props.roleinputList,
@@ -450,18 +434,14 @@ class Devconfigurations extends React.Component<
 				tntflowData: this.props.tntflowinputList,
 			});
 		}
-	   // update the package defintion data in state
-		if (
-			this.props.packagingdefinitionList !== prevProps.packagingdefinitionList
-		) {
+		// update the package defintion data in state
+		if (this.props.packagingdefinitionList !== prevProps.packagingdefinitionList) {
 			this.setState({
 				packageDefintionData: this.props.packagingdefinitionList,
 			});
 		}
 		// update the scan points allocation data in state
-		if (
-			this.props.scanpointsandallocationinputList !== prevProps.scanpointsandallocationinputList
-		) {
+		if (this.props.scanpointsandallocationinputList !== prevProps.scanpointsandallocationinputList) {
 			this.setState({
 				scanPtsAllocationData: this.props.scanpointsandallocationinputList,
 			});
@@ -479,17 +459,16 @@ class Devconfigurations extends React.Component<
 			selectedCountryDetails = countryUnique;
 
 			this.setState({ selectedCountryDetails });
-		} catch (error) {
-		}
+		} catch (error) {}
 	};
 
 	registerTemplateByCountry = () => {
 		const { registerTemplateData } = apiURL;
 		const { devconfig } = this.props;
-	
+
 		let getUserdata: any = getLocalStorageData("userData");
-         let userData = JSON.parse(getUserdata);
-		 	// const { locationHierarchy, roleHierarchy, tntflowData } = this.state;
+		let userData = JSON.parse(getUserdata);
+		// const { locationHierarchy, roleHierarchy, tntflowData } = this.state;
 		// let locationHierarchyData = locationHierarchy.map((value: any) => {
 		// 	if (value?.error || !value?.error) {
 		// 		delete value.error;
@@ -529,8 +508,7 @@ class Devconfigurations extends React.Component<
 			rolehierarchy: devconfig.role.inputList,
 			trackntraceflow: devconfig.tntflow.inputList,
 			productpackagedefinition: devconfig.packagingdefinition.inputList,
-			scanpointallocationdefinition:
-				devconfig.scanpointsandallocation.inputList,
+			scanpointallocationdefinition: devconfig.scanpointsandallocation.inputList,
 		};
 
 		invokePostService(registerTemplateData, data)
@@ -545,10 +523,7 @@ class Devconfigurations extends React.Component<
 			.catch((error: any) => {
 				this.setState({ isLoader: false });
 				let message = error.message;
-				if (
-					message ===
-					'duplicate key value violates unique constraint "tt_tem_countrydef_pkey"'
-				) {
+				if (message === 'duplicate key value violates unique constraint "tt_tem_countrydef_pkey"') {
 					message = "Country configuration is already exists";
 				}
 				// toastInfo(message);
@@ -623,16 +598,14 @@ class Devconfigurations extends React.Component<
 			roleHierarchy,
 			tntflowData,
 			packageDefintionData,
-			scanPtsAllocationData
+			scanPtsAllocationData,
 		} = this.state;
 
 		switch (currentStep) {
 			case 1:
 				return (
 					<CountrySetup
-						setCountryDetails={(data: any) =>
-							this.setState({ selectedCountryDetails: data })
-						}
+						setCountryDetails={(data: any) => this.setState({ selectedCountryDetails: data })}
 						selectedCountryDetails={selectedCountryDetails}
 					/>
 				);
@@ -645,21 +618,9 @@ class Devconfigurations extends React.Component<
 					/>
 				);
 			case 3:
-				return (
-					<RoleHierarchy
-						inputList={roleHierarchy}
-						isValidNext={isError}
-						getValidation={this.handleInputValidation}
-					/>
-				);
+				return <RoleHierarchy inputList={roleHierarchy} isValidNext={isError} getValidation={this.handleInputValidation} />;
 			case 4:
-				return (
-					<TnTFlow
-						inputList={tntflowData}
-						isValidNext={isError}
-						getValidation={this.handleInputValidation}
-					/>
-				);
+				return <TnTFlow inputList={tntflowData} isValidNext={isError} getValidation={this.handleInputValidation} />;
 			case 5:
 				return (
 					<PackagingDefinition
@@ -669,10 +630,13 @@ class Devconfigurations extends React.Component<
 					/>
 				);
 			case 6:
-				return <ScanPointsAndAllocation 
-				        inputList={scanPtsAllocationData}
+				return (
+					<ScanPointsAndAllocation
+						inputList={scanPtsAllocationData}
 						isValidNext={isError}
-						getValidation={this.handleInputValidation}/>;
+						getValidation={this.handleInputValidation}
+					/>
+				);
 			case 7:
 				return <Anticounterfeit />;
 			default:
@@ -709,7 +673,7 @@ class Devconfigurations extends React.Component<
 			roleinputList,
 			tntflowinputList,
 			packagingdefinitionList,
-			scanpointsandallocationinputList
+			scanpointsandallocationinputList,
 		} = this.props;
 		// validate location hierarchy data
 		if (currentStep === 2) {
@@ -738,7 +702,7 @@ class Devconfigurations extends React.Component<
 
 			this.setState({ locationHierarchy: data });
 		}
-// validate role hierarchy data
+		// validate role hierarchy data
 		if (currentStep === 3) {
 			const data = roleinputList.map((value: any) => {
 				if (!value.rolehierarchyname || !value.rolecode) {
@@ -785,7 +749,7 @@ class Devconfigurations extends React.Component<
 			});
 			this.setState({ roleHierarchy: data });
 		}
-// validate T and T Flow data
+		// validate T and T Flow data
 		if (currentStep === 4) {
 			const data = tntflowinputList.map((value: any) => {
 				if (!value.code || !value.position) {
@@ -817,7 +781,7 @@ class Devconfigurations extends React.Component<
 			});
 			this.setState({ tntflowData: data });
 		}
-// validate package defintion data
+		// validate package defintion data
 		if (currentStep === 5) {
 			const data = packagingdefinitionList.map((value: any) => {
 				if (!value.packaginghierarchyname) {
@@ -842,35 +806,38 @@ class Devconfigurations extends React.Component<
 				return value;
 			});
 
-			this.setState({ packageDefintionData: data }, () => {
-			});
+			this.setState({ packageDefintionData: data }, () => {});
 		}
 		// validate the scan points allocation data
-		if(currentStep===6){
+		if (currentStep === 6) {
+			const errorKeys: any[] = [];
 			const data = scanpointsandallocationinputList.map((value: any) => {
-					for (let key in value) {
-						if (value[key]==="" || value[key]===0) {
+				for (let key in value) {
+					if (!key.includes("_error") && key !== "pointallocated" && (value[key] === "" || value[key] === 0)) {
+						value = { ...value, [key + "_error"]: true };
+						errorKeys.push(key + "_error");
+						this.setState({
+							isError: true,
+							currentStep: 6,
+						});
+					} else {
+						let appendKey = key.includes("_error") ? key : key + "_error";
+						if (!errorKeys.includes(key)) {
+							value = { ...value, [appendKey]: false };
+						} else {
+							value = { ...value, [appendKey]: true };
 							this.setState({
 								isError: true,
 								currentStep: 6,
 							});
-					     value={...value,[key+"_error"]:true}
-						}else{
-						if(value[key]!==false){
-							value={...value,[key+"_error"]:false}
-							this.setState({
-								isError: false,
-							
-							});
-						} 
 						}
-						
-					  }
-					  return value;	 
+					}
+					
+				}
+				return value;
 			});
-			this.setState({ scanPtsAllocationData: data }, () => {
-			});
-
+			console.log({ data });
+			this.setState({ scanPtsAllocationData: data });
 		}
 	};
 	render() {
@@ -909,20 +876,14 @@ class Devconfigurations extends React.Component<
 		let button;
 		if (currentStep === stepsArray.length) {
 			button = (
-				<button
-					className="btnNextSubmit"
-					onClick={() => this.handleClick("next", "")}
-				>
+				<button className="btnNextSubmit" onClick={() => this.handleClick("next", "")}>
 					Apply
-					<img src={check}  alt="" />
+					<img src={check} alt="" />
 				</button>
 			);
 		} else {
 			button = (
-				<button
-					className="btnNextSubmit cus-btn-dev"
-					onClick={(e) => this.handleClick("next", e)}
-				>
+				<button className="btnNextSubmit cus-btn-dev" onClick={(e) => this.handleClick("next", e)}>
 					Next <img src={right_arrow} alt="" />
 				</button>
 			);
@@ -944,11 +905,7 @@ class Devconfigurations extends React.Component<
 				<div className="card-container">
 					<div>
 						<div className="tabs">
-							<AntTabs
-								value={this.state.value}
-								onChange={this.handleChange}
-								aria-label="ant example"
-							>
+							<AntTabs value={this.state.value} onChange={this.handleChange} aria-label="ant example">
 								<AntTab label="COUNTRY" />
 								{/* <AntTab label="FEATURE TOGGLE" />
                 <AntTab label="DEV CONFIG" /> */}
@@ -962,18 +919,14 @@ class Devconfigurations extends React.Component<
 										<div className="row rm-group">
 											<div className="col-sm-3">
 												<div>
-													<label className="font-weight-bold pt-4 label">
-														Region
-													</label>
+													<label className="font-weight-bold pt-4 label">Region</label>
 												</div>
 												<div>
 													<Dropdown
 														name="setSelectedRegion"
 														label="Region"
 														options={regionOption}
-														handleChange={(event: any) =>
-															this.handleDropdownChangeRegion(event)
-														}
+														handleChange={(event: any) => this.handleDropdownChangeRegion(event)}
 														value={this.state.setSelectedRegion}
 														isPlaceholder
 														isDisabled
@@ -1004,18 +957,14 @@ class Devconfigurations extends React.Component<
 											</div>
 											<div className="col-sm-3">
 												<div>
-													<label className="font-weight-bold pt-4 label">
-														Cluster
-													</label>
+													<label className="font-weight-bold pt-4 label">Cluster</label>
 												</div>
 												<div>
 													<Dropdown
 														name="setSelectedCluster"
 														label="Cluster"
 														options={clusterOption}
-														handleChange={(event: any) =>
-															this.handleDropdownChange(event)
-														}
+														handleChange={(event: any) => this.handleDropdownChange(event)}
 														value={this.state.setSelectedCluster}
 														isPlaceholder
 														isDisabled
@@ -1056,25 +1005,16 @@ class Devconfigurations extends React.Component<
 													<label className="font-weight-bold pt-4"></label>
 												</div>
 												<div className="breadcrums sub-title">
-													<Breadcrumbs
-														separator={<NavigateNextIcon fontSize="small" />}
-														aria-label="breadcrumb"
-													>
+													<Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
 														{/* <Link color="inherit" href="/">
                               {this.state.setSelectedRegion}
                             </Link>
                             <Link color="inherit">
                               {this.state.setSelectedCluster}
                             </Link> */}
-														<Typography color="textPrimary">
-															{this.state.setSelectedRegion}
-														</Typography>
-														<Typography color="textPrimary">
-															{this.state.setSelectedCluster}
-														</Typography>
-														<Typography color="textPrimary">
-															{this.props.devconfig.countryCode}
-														</Typography>
+														<Typography color="textPrimary">{this.state.setSelectedRegion}</Typography>
+														<Typography color="textPrimary">{this.state.setSelectedCluster}</Typography>
+														<Typography color="textPrimary">{this.props.devconfig.countryCode}</Typography>
 													</Breadcrumbs>
 													{/* <p>{"EMEA >  Africa  >Malawi"}</p> */}
 												</div>
@@ -1085,46 +1025,29 @@ class Devconfigurations extends React.Component<
 							)}
 
 							<div className="stepper-container-horizontal">
-								<Stepper
-									direction="horizontal"
-									currentStepNumber={currentStep - 1}
-									steps={stepsArray}
-									stepColor="#7DBB41"
-								/>
+								<Stepper direction="horizontal" currentStepNumber={currentStep - 1} steps={stepsArray} stepColor="#7DBB41" />
 							</div>
 							{this._getCurrentStep()}
 							<div className="col-md-12 buttons-container">
 								{this.state.isActive && (
-									<button
-										className="cus-btn-dev reset"
-										onClick={() => this.handleClick()}
-									>
-										<img src={left}  alt=""  width="7" style={{ marginRight: "8px" }} />{" "}
-										Back
+									<button className="cus-btn-dev reset" onClick={() => this.handleClick()}>
+										<img src={left} alt="" width="7" style={{ marginRight: "8px" }} /> Back
 									</button>
 								)}
-								<button
-									className="cus-btn-dev reset"
-									onClick={() => this.handleReset()}
-								>
-									Reset{" "}
-									<img src={reset}  alt=""  width="12" style={{ marginLeft: "5px" }} />
+								<button className="cus-btn-dev reset" onClick={() => this.handleReset()}>
+									Reset <img src={reset} alt="" width="12" style={{ marginLeft: "5px" }} />
 								</button>
-								<button
-									className="btnNextSubmit cus-btn-dev"
-									onClick={() => this.handleClick("next")}
-								>
+								<button className="btnNextSubmit cus-btn-dev" onClick={() => this.handleClick("next")}>
 									{currentStep === stepsArray.length ? "Apply" : "Next"}{" "}
 									{currentStep === stepsArray.length ? (
 										// <img src={check} />
-										<span style={{margin:0}}>
-											<img src={tickIcon} className="arrow-i" width="12"  alt=""/>{" "}
+										<span style={{ margin: 0 }}>
+											<img src={tickIcon} className="arrow-i" width="12" alt="" />{" "}
 											{/* <img src={RtButton} className="layout" /> */}
 										</span>
 									) : (
 										<span>
-											<img src={ArrowIcon}  alt=""  className="arrow-i" />{" "}
-											{/* <img src={RtButton} className="layout" /> */}
+											<img src={ArrowIcon} alt="" className="arrow-i" /> {/* <img src={RtButton} className="layout" /> */}
 										</span>
 									)}{" "}
 								</button>
@@ -1155,13 +1078,7 @@ const stepsArray = [
 
 const mapStateToProps = ({
 	devconfig,
-	devconfig: {
-		location,
-		role,
-		tntflow,
-		packagingdefinition,
-		scanpointsandallocation,
-	},
+	devconfig: { location, role, tntflow, packagingdefinition, scanpointsandallocation },
 }: any) => {
 	return {
 		devconfig,
@@ -1187,7 +1104,4 @@ const mapDispatchToProps = {
 // const rootComponent = compose(withStyles(useStyles), connect(mapStateToProps))(Devconfigurations);
 // export default rootComponent as React.ComponentType;
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(withStyles(useStyles)(Devconfigurations));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(useStyles)(Devconfigurations));

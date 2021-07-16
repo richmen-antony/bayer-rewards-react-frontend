@@ -117,9 +117,9 @@ class OrderHistory extends Component<Props, States> {
 			list: ["ALL", "Distributor", "Retailer"],
 			selectedFilters: {
 				status: "FULFILLED",
-				ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+				ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
 				ordereddateto: new Date(),
-				lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
+				lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 6),
 				lastmodifiedto: new Date(),
 				geolevel1: "ALL",
 			},
@@ -140,6 +140,7 @@ class OrderHistory extends Component<Props, States> {
 			lastUpdatedDateErr: "",
 			loggedUserInfo: {},
 			regionOptions: [],
+			inActiveFilter:false
 		};
 		this.timeOut = 0;
 	}
@@ -162,10 +163,11 @@ class OrderHistory extends Component<Props, States> {
 	 */
 	getAdminOrderList = (filterScan?: any) => {
 		const { adminOrderList } = apiURL;
-		this.setState({ isLoader: true });
+		const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo
+		this.setState({ isLoader: true ,pageNo:pageNo});
 		const { selectedFilters, isFiltered, regionOptions } = this.state;
 		let data = {
-			page: this.state.searchText !== "" ? 1 : this.state.pageNo,
+			page: pageNo,
 			searchtext: this.state.searchText || null,
 			rowsperpage: this.state.rowsPerPage,
 			isfiltered: isFiltered,
@@ -256,7 +258,7 @@ class OrderHistory extends Component<Props, States> {
 	}
 	handleSearch = (e: any) => {
 		let searchText = e.target.value;
-		this.setState({ searchText: searchText, isFiltered: true });
+		this.setState({ searchText: searchText, isFiltered: true,inActiveFilter:false});
 		if (this.timeOut) {
 			clearTimeout(this.timeOut);
 		}
@@ -303,7 +305,7 @@ class OrderHistory extends Component<Props, States> {
 			if (name === "status" && item !== this.state.selectedFilters.status) {
 				isStatusChange = true;
 			}
-			this.setState({ selectedFilters: val }, () => {
+			this.setState({ selectedFilters: val ,pageNo:1 }, () => {
 				isStatusChange && this.getAdminOrderList();
 			});
 		}
@@ -312,16 +314,15 @@ class OrderHistory extends Component<Props, States> {
 	 * To reset selected filter values
 	 */
 	resetFilter = () => {
-		let today = new Date();
 		let conditionIsFilter = this.state.searchText ? true : false;
 		this.setState(
 			{
 				selectedFilters: {
 					 ...this.state.selectedFilters,
-					ordereddatefrom: today.setMonth(today.getMonth() - 3),
-					ordereddateto: new Date(),
-					lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
-					lastmodifiedto: new Date(),
+					 ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+					 ordereddateto: new Date(),
+					 lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 6),
+					 lastmodifiedto: new Date(),
 					geolevel1: "ALL",
 				},
 				isFiltered: conditionIsFilter,
@@ -338,7 +339,7 @@ class OrderHistory extends Component<Props, States> {
 	 * To applicable filter selection after filter the matching values
 	 */
 	applyFilter = () => {
-		this.setState({ isFiltered: true }, () => {
+		this.setState({ isFiltered: true,inActiveFilter:false }, () => {
 			this.getAdminOrderList();
 			this.toggleFilter();
 
@@ -346,17 +347,17 @@ class OrderHistory extends Component<Props, States> {
 		});
 	};
 	previous = (pageNo: any) => {
-		this.setState({ pageNo: pageNo - 1 }, () => {
+		this.setState({ pageNo: pageNo - 1,inActiveFilter:true }, () => {
 			this.getAdminOrderList();
 		});
 	};
 	next = (pageNo: any) => {
-		this.setState({ pageNo: pageNo + 1 }, () => {
+		this.setState({ pageNo: pageNo + 1 ,inActiveFilter:true}, () => {
 			this.getAdminOrderList();
 		});
 	};
 	pageNumberClick = (number: any) => {
-		this.setState({ pageNo: number }, () => {
+		this.setState({ pageNo: number,inActiveFilter:true }, () => {
 			this.getAdminOrderList();
 		});
 	};
@@ -368,32 +369,30 @@ class OrderHistory extends Component<Props, States> {
 		this.setState({
 			startIndex: this.state.startIndex - 3,
 			endIndex: this.state.endIndex - 1,
+			inActiveFilter:true
 		});
 	};
 	fastForward = () => {
 		this.setState({
 			startIndex: this.state.endIndex + 1,
 			endIndex: this.state.endIndex + 3,
+			inActiveFilter:true
 		});
 	};
 	handlePaginationChange = (e: any) => {
 		let value = 0;
 		if (e.target.name === "perpage") {
 			value = e.target.value;
-			this.setState({ rowsPerPage: value }, () => {
+			this.setState({ rowsPerPage: value,inActiveFilter:true }, () => {
 				this.getAdminOrderList();
 			});
 		} else if (e.target.name === "gotopage") {
-			// value = e.target.value;
-			// this.setState({ pageNo: value }, () => {
-			//   this.getAdminOrderList();
-			// });
 			const { totalData, rowsPerPage } = this.state;
 			const pageData = Math.ceil(totalData / rowsPerPage);
 			value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
 			let isNumeric = Validator.validateNumeric(e.target.value);
 			if (isNumeric) {
-				this.setState({ pageNo: value }, () => {
+				this.setState({ pageNo: value,inActiveFilter:true }, () => {
 					if (this.state.pageNo && pageData >= this.state.pageNo) {
 						setTimeout(() => {
 							this.state.pageNo && this.getAdminOrderList();
@@ -561,7 +560,7 @@ class OrderHistory extends Component<Props, States> {
 										type="text"
 										onChange={this.handleSearch}
 										value={searchText}
-										tolltip={`Search applicable for Order ID, ${selectedFilters.status === "FULFILLED" ? "Retailer Name/ID,":""} Farmer Name/Mobile, Advisor Name/ID.`}
+										tolltip={`Search applicable for Order ID, ${selectedFilters.status === "FULFILLED" ? "Retailer Name/ID,Account Name,":""} Farmer Name/Mobile, Advisor Name/ID.`}
 									/>
 									<div className="filter-right-side">
 										<div className="filter-status">

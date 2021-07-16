@@ -162,6 +162,7 @@ class ScanLogsTable extends Component<Props, States> {
       farmerOptions: [],
       retailerOptions: [],
       loggedUserInfo: {},
+      inActiveFilter:false
     };
     this.timeOut = 0;
   }
@@ -230,10 +231,11 @@ class ScanLogsTable extends Component<Props, States> {
   };
   getScanLogs = (filterScan?: any) => {
     const { scanLogs } = apiURL;
-    this.setState({ isLoader: true });
+    const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo
+		this.setState({ isLoader: true ,pageNo:pageNo});
     const { selectedFilters, isFiltered } = this.state;
     let data = {
-      page: this.state.searchText !== "" ? 1 : this.state.pageNo,
+      page: pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       isfiltered: this.state.isFiltered,
@@ -330,7 +332,7 @@ class ScanLogsTable extends Component<Props, States> {
   }
   handleSearch = (e: any) => {
     let searchText = e.target.value;
-    this.setState({ searchText: searchText,isFiltered:true });
+    this.setState({ searchText: searchText,isFiltered:true,inActiveFilter:false });
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
@@ -424,7 +426,7 @@ class ScanLogsTable extends Component<Props, States> {
   };
 
   applyFilter = () => {
-    this.setState({ isFiltered: true }, () => {
+    this.setState({ isFiltered: true,inActiveFilter:false }, () => {
       this.getScanLogs();
       this.toggleFilter();
       
@@ -432,17 +434,17 @@ class ScanLogsTable extends Component<Props, States> {
     });
   };
   previous = (pageNo: any) => {
-    this.setState({ pageNo: pageNo - 1 }, () => {
+    this.setState({ pageNo: pageNo - 1 ,inActiveFilter:true}, () => {
       this.getScanLogs();
     });
   };
   next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 }, () => {
+    this.setState({ pageNo: pageNo + 1,inActiveFilter:true }, () => {
       this.getScanLogs();
     });
   };
   pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number }, () => {
+    this.setState({ pageNo: number ,inActiveFilter:true}, () => {
       this.getScanLogs();
     });
   };
@@ -454,19 +456,21 @@ class ScanLogsTable extends Component<Props, States> {
     this.setState({
       startIndex: this.state.startIndex - 3,
       endIndex: this.state.endIndex - 1,
+      inActiveFilter:true
     });
   };
   fastForward = () => {
     this.setState({
       startIndex: this.state.endIndex + 1,
       endIndex: this.state.endIndex + 3,
+      inActiveFilter:true
     });
   };
   handlePaginationChange = (e: any) => {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value }, () => {
+      this.setState({ rowsPerPage: value,inActiveFilter:true }, () => {
         this.getScanLogs();
       });
     } else if (e.target.name === "gotopage") {
@@ -475,7 +479,7 @@ class ScanLogsTable extends Component<Props, States> {
       value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
       let isNumeric = Validator.validateNumeric(e.target.value);
       if (isNumeric) {
-        this.setState({ pageNo: value }, () => {
+        this.setState({ pageNo: value ,inActiveFilter:true}, () => {
           if (this.state.pageNo && pageData >= this.state.pageNo) {
             setTimeout(() => {
               this.state.pageNo&&this.getScanLogs();

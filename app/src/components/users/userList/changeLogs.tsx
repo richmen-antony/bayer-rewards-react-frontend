@@ -37,6 +37,7 @@ type States = {
   isAsc: Boolean;
   totalData: number;
   loggedUserInfo: any;
+  inActiveFilter:boolean;
 };
 
 class ChangeLogs extends Component<Props, States> {
@@ -53,6 +54,7 @@ class ChangeLogs extends Component<Props, States> {
       isAsc: true,
       totalData: 0,
       loggedUserInfo: {},
+      inActiveFilter:false
     };
     this.timeOut = 0;
   }
@@ -72,9 +74,10 @@ class ChangeLogs extends Component<Props, States> {
 
   getChangeLogs = () => {
     const { changeLogs } = apiURL;
-    this.setState({ isLoader: true, allChangeLogs: [] });
+    const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo;
+    this.setState({ isLoader: true, allChangeLogs: [],pageNo:pageNo });
     let data = {
-      page: this.state.searchText !== "" ? 1 : this.state.pageNo,
+      page: pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
       countrycode: this.state.loggedUserInfo.countrycode,
@@ -120,19 +123,19 @@ class ChangeLogs extends Component<Props, States> {
     this.onSort(columnname, allChangeLogs, isAsc);
   }
   previous = (pageNo: any) => {
-    this.setState({ pageNo: pageNo - 1 });
+    this.setState({ pageNo: pageNo - 1 ,inActiveFilter:false });
     setTimeout(() => {
       this.getChangeLogs();
     }, 0);
   };
   next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 });
+    this.setState({ pageNo: pageNo + 1 ,inActiveFilter:false });
     setTimeout(() => {
       this.getChangeLogs();
     }, 0);
   };
   pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number });
+    this.setState({ pageNo: number ,inActiveFilter:false });
     setTimeout(() => {
       this.getChangeLogs();
     }, 0);
@@ -142,7 +145,7 @@ class ChangeLogs extends Component<Props, States> {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value });
+      this.setState({ rowsPerPage: value ,inActiveFilter:false });
       setTimeout(() => {
         this.getChangeLogs();
       }, 2000);
@@ -155,7 +158,7 @@ class ChangeLogs extends Component<Props, States> {
           : e.target.value;
       let isNumeric = Validator.validateNumeric(e.target.value);
       if (isNumeric) {
-        this.setState({ pageNo: value }, () => {
+        this.setState({ pageNo: value ,inActiveFilter:false }, () => {
           if (this.state.pageNo && pageData >= this.state.pageNo) {
             setTimeout(() => {
               this.state.pageNo && this.getChangeLogs();
@@ -167,9 +170,12 @@ class ChangeLogs extends Component<Props, States> {
   };
   download = () => {
     const { downloadChanglogs } = apiURL;
-    let data = {
-      countrycode: this.state.loggedUserInfo.countrycode,
+    let data :any = {
+      countrycode: this.state.loggedUserInfo.countrycode
     };
+    if (this.state.searchText) {
+      data ={...data,searchtext: this.state.searchText,isfiltered: true,}
+    }
 
     invokeGetAuthService(downloadChanglogs, data)
       .then((response) => {

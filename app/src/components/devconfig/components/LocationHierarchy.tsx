@@ -19,7 +19,7 @@ const LocationHierarchy = (props: ILocationProps) => {
   const { inputList, setInputList, getValidation, isValidNext } = props;
 
   // handle input change
-  const handleInputChange = (e: any, index: any) => {
+  const handleInputChange =(e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
@@ -36,9 +36,11 @@ const LocationHierarchy = (props: ILocationProps) => {
     }
 
     list[index][name] = value;
-    setInputList(list);
-  };
+    setInputList(list)
 
+  };
+  
+ 
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
@@ -120,6 +122,7 @@ const LocationHierarchy = (props: ILocationProps) => {
                           value={item.locationhiername}
                           onChange={(e) => handleInputChange(e, idx)}
                           data-id={idx}
+                          onBlur={getValidation}
                         />
                         {item?.error && isValidNext && (
                           <span className="error">

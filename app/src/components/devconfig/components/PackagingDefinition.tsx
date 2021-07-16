@@ -30,7 +30,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
    * @param index 
    * @param data 
    */
-  const handleInputChange = (e: any, index: any, data: any) => {
+  const handleInputChange =(e: any, index: any, data: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     let isDuplicate:boolean=false
@@ -53,6 +53,11 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
     });
     // add list 
     setInputList(arr);
+    // To get recent list value updated and then call validation method
+    // const canSetInputList:any =  await Promise.resolve(setInputList(arr));
+    // if(canSetInputList)
+    //  getValidation();
+    
   };
 
   
@@ -226,6 +231,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               name="packaginghierarchyname"
                               value={item.packaginghierarchyname}
                               onChange={(e) => handleInputChange(e, idx, item)}
+                              onBlur={getValidation}
                             />
                              {isValidNext && item?.error ?  
                          <span className="error">

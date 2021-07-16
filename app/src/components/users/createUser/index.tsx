@@ -38,7 +38,7 @@ const role = [
   // { value: "DISTRIBUTOR", text: "Distributor" },
 ];
 
-let isFilledAllFields = false;
+
 
 let geoLocationInfo = {
   geolevel1: "",
@@ -66,13 +66,19 @@ const DialogActions = withStyles((theme: Theme) => ({
     padding: theme.spacing(1),
     justifyContent: "center",
     marginTop: "30px",
-  }
+  },
+  button: {
+    boxShadow: "0px 3px 6px #c7c7c729",
+    border: "1px solid #89D329",
+    borderRadius: "50px",
+  },
 }))(MuiDialogActions);
 
 class CreateUser extends Component<any, any> {
   static contextType = AppContext
   loggedUserInfo: any;
   getStoreData: any;
+  isFilledAllFields: boolean;
   constructor(props: any) {
     super(props);
     const dataObj: any = getLocalStorageData("userData");
@@ -166,6 +172,7 @@ class CreateUser extends Component<any, any> {
       shouldBlockNavigation:true,
     };
     this.loggedUserInfo = loggedUserInfo;
+    this.isFilledAllFields = false;
   }
 
   componentDidMount() {
@@ -1507,7 +1514,6 @@ class CreateUser extends Component<any, any> {
         dynamicFields: data,
       }));
     } else {
-
       if(!this.state.accInfo){
         let data: any = this.state.withHolding;
         data?.forEach((list: any) => {
@@ -1804,7 +1810,7 @@ class CreateUser extends Component<any, any> {
     }
   };
   checkCreateFilled = () => {
-    isFilledAllFields = false;
+    this.isFilledAllFields = false;
     let userValues = this.state.userData;
     let isDeliveryFieldsFilled = false;
     let isWHTFieldsFilled = false;
@@ -1840,7 +1846,7 @@ class CreateUser extends Component<any, any> {
         isWHTFieldsFilled ||
         isStaffFieldsFilled
       ) {
-        isFilledAllFields = true;
+        this.isFilledAllFields = true;
       }
     } else {
       let editDatas = this.state.cloneduserData;
@@ -1933,15 +1939,15 @@ class CreateUser extends Component<any, any> {
         isDeliveryFieldsFilled ||
         isWHTFieldsFilled
       ) {
-        isFilledAllFields = true;
+        this.isFilledAllFields = true;
       } else {
-        isFilledAllFields = false;
+        this.isFilledAllFields = false;
       }
     }
     const {setPromptMode} =this.context;
-     setPromptMode(isFilledAllFields);
+     setPromptMode(this.isFilledAllFields);
    
-    return isFilledAllFields;
+    return this.isFilledAllFields;
   };
   handleClosePopup = () => {
     this.setState({ deleteStaffPopup: false });
@@ -2066,7 +2072,7 @@ class CreateUser extends Component<any, any> {
     return (
       <AUX>
         {isLoader && <Loader />}
-        { isFilledAllFields &&
+        { this.isFilledAllFields &&
           <RouterPrompt
         when={this.state.shouldBlockNavigation}
         title="Leave this page"

@@ -102,12 +102,12 @@ const DialogActions = withStyles((theme: Theme) => ({
     padding: theme.spacing(1),
     justifyContent: "center",
     marginTop: "30px",
-  }
-  // button: {
-  //   boxShadow: "0px 3px 6px #c7c7c729",
-  //   border: "1px solid #89D329",
-  //   borderRadius: "50px",
-  // },
+  },
+  button: {
+    boxShadow: "0px 3px 6px #c7c7c729",
+    border: "1px solid #89D329",
+    borderRadius: "50px",
+  },
 }))(MuiDialogActions);
 
 class ChannelPartners extends Component<Props, States> {

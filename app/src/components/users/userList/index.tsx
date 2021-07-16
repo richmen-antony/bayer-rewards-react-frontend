@@ -88,6 +88,7 @@ type States = {
   level3Options: Array<any>;
   level4Options: Array<any>;
   level5Options: Array<any>;
+  inActiveFilter:boolean;
 };
 
 const AntTabs = withStyles({
@@ -261,6 +262,7 @@ class UserList extends Component<Props, States> {
       level3Options: [],
       level4Options: [],
       level5Options: [],
+      inActiveFilter:false
     };
     this.timeOut = 0;
   }
@@ -438,7 +440,8 @@ class UserList extends Component<Props, States> {
       dateErrMsg: "",
     });
     const { channelPartnersList } = apiURL;
-    this.setState({ isLoader: true });
+    const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo
+    this.setState({ isLoader: true ,pageNo:pageNo});
     let {
       status,
       lastmodifieddatefrom,
@@ -449,7 +452,7 @@ class UserList extends Component<Props, States> {
     }: any = this.state.selectedFilters;
     let data = {
       countrycode: this.getStoreData.countryCode,
-      page: this.state.searchText !== "" ? 1 : this.state.pageNo,
+      page:  pageNo,
       searchtext: this.state.searchText,
       isfiltered: this.state.isFiltered,
       rowsperpage: this.state.rowsPerPage,
@@ -661,12 +664,12 @@ class UserList extends Component<Props, States> {
 
   handleSearch = (e: any) => {
     let searchText = e.target.value;
-    this.setState({ searchText: searchText });
+    this.setState({ searchText: searchText});
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
     if (searchText.length >= 3 || searchText.length === 0) {
-      this.setState({ isFiltered: true });
+      this.setState({ isFiltered: true,inActiveFilter:false  });
       this.timeOut = setTimeout(() => {
         this.getChannelPartnersList();
       }, 1000);
@@ -674,25 +677,25 @@ class UserList extends Component<Props, States> {
   };
   applyFilter = () => {
     if(this.state.dateErrMsg === ''){
-      this.setState({ isFiltered: true }, () => {
+      this.setState({ isFiltered: true,inActiveFilter:false }, () => {
         this.getChannelPartnersList("filter");
       });
     }
   };
   previous = (pageNo: any) => {
-    this.setState({ pageNo: pageNo - 1 });
+    this.setState({ pageNo: pageNo - 1 ,inActiveFilter:true});
     setTimeout(() => {
       this.getChannelPartnersList();
     }, 0);
   };
   next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 });
+    this.setState({ pageNo: pageNo + 1 ,inActiveFilter:true});
     setTimeout(() => {
       this.getChannelPartnersList();
     }, 0);
   };
   pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number });
+    this.setState({ pageNo: number ,inActiveFilter:true});
     setTimeout(() => {
       this.getChannelPartnersList();
     }, 0);
@@ -702,12 +705,14 @@ class UserList extends Component<Props, States> {
     this.setState({
       startIndex: this.state.startIndex - 3,
       endIndex: this.state.endIndex - 1,
+      inActiveFilter:true
     });
   };
   fastForward = () => {
     this.setState({
       startIndex: this.state.endIndex + 1,
       endIndex: this.state.endIndex + 3,
+      inActiveFilter:true
     });
   };
 
@@ -715,7 +720,7 @@ class UserList extends Component<Props, States> {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value });
+      this.setState({ rowsPerPage: value,inActiveFilter:true });
       setTimeout(() => {
         this.getChannelPartnersList();
       }, 2000);
@@ -725,7 +730,7 @@ class UserList extends Component<Props, States> {
       value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
       let isNumeric = Validator.validateNumeric(e.target.value);
       if (isNumeric) {
-        this.setState({ pageNo: value }, () => {
+        this.setState({ pageNo: value,inActiveFilter:true }, () => {
           if (this.state.pageNo && pageData >= this.state.pageNo) {
             setTimeout(() => {
               this.state.pageNo&&this.getChannelPartnersList();

@@ -154,12 +154,13 @@ export const ScanPointsAndAllocation = (
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-    // to call validate fn from parent component 
-    getValidation();
+  
     // get current list of array
     const data = inputList[index];
+      // to call validate fn from parent component 
+      getValidation();
     // check and validate fields is not empty string
-    if(!Object.values(data).some(el=>el==="")){
+    if(!Object.values(data).some(el=>el===""||el===0 )){
       setInputList([
         ...inputList,
         //   {
@@ -178,37 +179,52 @@ export const ScanPointsAndAllocation = (
         },
       ]);
     }
-
     
   };
 
-  const handleDropdownPostionChange = (event: any, index: any) => {
+  const handleDropdownPostionChange = async(event: any, index: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
     list[index].position = value;
     setInputList(list);
+    // To get recent list value updated and then call validation method
+    const canSetInputList:any =  await Promise.resolve(setInputList(list));
+    if(canSetInputList)
+     getValidation();
   };
 
-  const handleScannedbyChange = (event: any, index: any) => {
+  const handleScannedbyChange = async(event: any, index: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
     list[index].scannedby = value;
     setInputList(list);
+    // To get recent list value updated and then call validation method
+    const canSetInputList:any =  await Promise.resolve(setInputList(list));
+    if(canSetInputList)
+     getValidation();
   };
 
-  const handleScannedtypeChange = (event: any, index: any) => {
+  const handleScannedtypeChange = async(event: any, index: any) => {
     const {value } = event.target;
     const list: any = [...inputList];
     list[index].scantype = value;
     setInputList(list);
+    // To get recent list value updated and then call validation method
+    const canSetInputList:any =  await Promise.resolve(setInputList(list));
+    if(canSetInputList)
+     getValidation();
   };
 
-  const handlePackaginglevelChange = (event: any, index: any) => {
+  const handlePackaginglevelChange = async(event: any, index: any) => {
     const list: any = [...inputList];
      // remove empty string from array
      const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
     list[index].packaginglevel = result.join(",");
     setInputList(list);
+    // To get recent list value updated and then call validation method
+    const canSetInputList:any =  await Promise.resolve(setInputList(list));
+    if(canSetInputList)
+     getValidation();
   };
 
   const handlePointsallocatedChange = (event: any, index: any) => {
@@ -241,7 +257,6 @@ export const ScanPointsAndAllocation = (
     props.tntflow.inputList,
     "position"
   );
-
   return (
     <div className="col-md-12">
       <div className="container">

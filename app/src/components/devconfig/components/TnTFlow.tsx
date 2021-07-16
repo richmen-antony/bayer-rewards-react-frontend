@@ -21,7 +21,7 @@ export const TnTFlow = (props: ITnTProps) => {
    * @param e 
    * @param index 
    */
-  const handleInputChange = (e: any, index: any) => {
+  const handleInputChange =(e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
@@ -116,6 +116,7 @@ export const TnTFlow = (props: ITnTProps) => {
                           name="code"
                           value={item.code}
                           onChange={(e) => handleInputChange(e, idx)}
+                          onBlur={getValidation}
                         />
                         {isValidNext && item?.code_error ?  
                          <span className="error">
@@ -144,6 +145,7 @@ export const TnTFlow = (props: ITnTProps) => {
                           name="position"
                           value={item.position}
                           onChange={(e) => handleInputChange(e, idx)}
+                          onBlur={getValidation}
                         />
                         {isValidNext && item?.position_error ? 
                         <span className="error">

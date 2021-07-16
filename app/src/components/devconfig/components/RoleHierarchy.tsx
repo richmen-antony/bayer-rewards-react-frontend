@@ -26,7 +26,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
    * @param e 
    * @param index 
    */
-  const handleInputChange = (e: any, index: any) => {
+  const handleInputChange =(e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
@@ -43,7 +43,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
     }
     list[index][name] = value;
     setInputList(list);
-    // getValidation();
+   
   };
 
 
@@ -160,6 +160,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           name="rolecode"
                           value={item.rolecode}
                           onChange={(e) => handleInputChange(e, idx)}
+                          onBlur={getValidation}
                         />
                         {isValidNext && item?.rolecode_error ? 
                         <span className="error">
@@ -178,6 +179,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           name="rolehierarchyname"
                           value={item.rolehierarchyname}
                           onChange={(e) => handleInputChange(e, idx)}
+                          onBlur={getValidation}
                         />
                         {isValidNext && item?.rolehierarchyname_error ? 
                         <span className="error">
