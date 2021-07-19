@@ -1,15 +1,21 @@
-import * as ReactDOM from 'react-dom';
 import React from 'react';
+import ReactDom from "react-dom";
 import { fireEvent, screen } from '@testing-library/react';
 import UserList from "../components/users/userList";
 import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 describe('User List component tests', () => { 
     let container: HTMLDivElement
 
     beforeEach(() => {
         container = document.createElement('div');
         document.body.appendChild(container);
-        ReactDOM.render(<UserList />, container);
+        ReactDom.render(
+            <BrowserRouter>
+              <UserList />
+            </BrowserRouter>, 
+          container);
+        // ReactDOM.render(<UserList />, container);
     })
 
     afterEach(() => {
