@@ -84,8 +84,8 @@ class CreateUser extends Component<any, any> {
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
     this.getStoreData = {
-      country: loggedUserInfo.geolevel0,
-      countryCode: loggedUserInfo.countrycode,
+      country: loggedUserInfo?.geolevel0,
+      countryCode: loggedUserInfo?.countrycode,
       Language: "EN-US",
     };
 
@@ -1004,7 +1004,7 @@ class CreateUser extends Component<any, any> {
     } else if (clickType === "geographicNext") {
       formValid = this.checkValidation();
       if (formValid) {
-        if (!this.state.isEditPage && !this.state.withHoldingSelected) {
+        if (!this.state.isEditPage && !this.state.accInfo && !this.state.withHoldingSelected) {
           let level1Options: any = [];
           let setFormArray: any = [];
           this.state.geolevel1List.forEach((item: any) => {
@@ -1968,7 +1968,7 @@ class CreateUser extends Component<any, any> {
   };
 
   render() {
-    let countryCodeLower = _.toLower(this.loggedUserInfo.countrycode);
+    let countryCodeLower = _.toLower(this.loggedUserInfo?.countrycode);
     const {
       currentStep,
       userData,
@@ -2183,6 +2183,7 @@ class CreateUser extends Component<any, any> {
                           <label className="font-weight-bold">
                             Has store staff?(Max 4)
                             <input
+                              data-testid="storestaff"
                               type="checkbox"
                               style={{ marginLeft: "10px" }}
                               onChange={(e: any) => {
@@ -2236,6 +2237,7 @@ class CreateUser extends Component<any, any> {
                                     )}
                                     <td>
                                       <Input
+                                        data-testid="owner-firstname"
                                         type="text"
                                         className="form-control"
                                         name="firstname"
@@ -2340,7 +2342,8 @@ class CreateUser extends Component<any, any> {
                                     </td>
                                     <td>
                                       <Input
-                                        type="text"
+                                        data-testid = "email-input"
+                                        type="email"
                                         className="form-control"
                                         name="email"
                                         placeHolder="Eg: abc@mail.com"
@@ -2363,7 +2366,7 @@ class CreateUser extends Component<any, any> {
                                         }
                                       />
                                       {item.errObj?.emailErr && (
-                                        <span className="error">
+                                        <span className="error" data-testid="error-msg">
                                           {item.errObj.emailErr}{" "}
                                         </span>
                                       )}

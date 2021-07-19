@@ -47,7 +47,7 @@ describe('Order Histroy component tests', () => {
         within(columnNames).getByText("ORDERED QTY");
         within(columnNames).getByText("TOTAL COST");
         within(columnNames).getByText("ADVISOR NAME/ID");
-        within(columnNames).getByText("FARMER NAME/ID");
+        within(columnNames).getByText("FARMER NAME/PHONE");
         within(columnNames).getByText("STATUS");
 
 
