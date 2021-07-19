@@ -470,7 +470,7 @@ class ScanLogsTable extends Component<Props, States> {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value,inActiveFilter:true }, () => {
+      this.setState({ rowsPerPage: value,inActiveFilter:false }, () => {
         this.getScanLogs();
       });
     } else if (e.target.name === "gotopage") {

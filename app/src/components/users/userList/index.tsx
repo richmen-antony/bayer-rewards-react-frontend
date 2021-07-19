@@ -720,10 +720,9 @@ class UserList extends Component<Props, States> {
     let value = 0;
     if (e.target.name === "perpage") {
       value = e.target.value;
-      this.setState({ rowsPerPage: value,inActiveFilter:true });
-      setTimeout(() => {
+      this.setState({ rowsPerPage: value,inActiveFilter:false },()=>{
         this.getChannelPartnersList();
-      }, 2000);
+      });
     } else if (e.target.name === "gotopage") {
       const { totalData, rowsPerPage } = this.state;
       const pageData = Math.ceil(totalData / rowsPerPage);
