@@ -1113,7 +1113,7 @@ class ScanLogsTable extends Component<Props, States> {
                                   <span
                                     style={{ flex: "1", whiteSpace: "nowrap" }}
                                   >
-                                    {value.username}<img
+                                    {_.startCase(_.toLower(value.username))}<img
                                     className="retailer-icon"
                                     src={ExpandWindowImg}
                                     alt=""
@@ -1133,13 +1133,13 @@ class ScanLogsTable extends Component<Props, States> {
                             <td>{"MK " + value.totalcost}</td>
                             <td>
                               <div className="farmer-id">
-                                <p>{value.advisorname}</p>
+                                <p>{_.startCase(_.toLower(value.advisorname))}</p>
                                 <label>{value.advisorid}</label>
                               </div>
                             </td>
                             <td>
                               <div className="farmer-id">
-                                <p>{value.farmername}</p>
+                                <p>{_.startCase(_.toLower(value.farmername))}</p>
                                 <label>{value.farmerid}</label>
                               </div>
                             </td>
