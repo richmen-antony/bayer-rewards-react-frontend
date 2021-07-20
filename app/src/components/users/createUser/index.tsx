@@ -1241,6 +1241,8 @@ class CreateUser extends Component<any, any> {
         }
         // toastSuccess(msg);
         Alert("success", msg);
+        const {setPromptMode} =this.context;
+        setPromptMode(false);
         this.props.history.push("/userList");
       })
       .catch((error: any) => {

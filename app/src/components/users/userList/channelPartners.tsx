@@ -1739,10 +1739,10 @@ class ChannelPartners extends Component<Props, States> {
                       <td style={{ width: "10%" }}>{list.username}</td>
                       <td style={{ width: "10%" }}>{list.ownerphonenumber} </td>
                       <td style={{ textAlign: "left", width: "12%" }}>
-                        {list.whtaccountname}{" "}
+                        {_.startCase(_.toLower(list.whtaccountname))}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "12%" }}>
-                        {list.ownerfirstname + " " + list.ownerlastname}{" "}
+                        {_.startCase(_.toLower(list.ownerfirstname)) + " " + _.startCase(_.toLower(list.ownerlastname))}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
                         {list.deliverygeolevel1}{" "}
