@@ -88,12 +88,10 @@ class ChangeLogs extends Component<Props, States> {
     invokeGetAuthService(changeLogs, data)
       .then((response: any) => {
           const total = response?.totalrows;
+          let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
           this.setState({
             isLoader: false,
-            allChangeLogs:
-              Object.keys(response.body).length !== 0
-                ? response.body?.rows
-                : [],
+            allChangeLogs: data,
             totalData: Number(total),
           });
       })

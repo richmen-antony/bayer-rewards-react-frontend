@@ -5,20 +5,39 @@ export type tableSortProps = {
 };
 
 function compareByAsc(key: any) {
-    return function (a:any, b:any) {
-      if (a[key] < b[key]) return -1;
-      if (a[key] > b[key]) return 1;
-      return 0;
-    };
-  }
-
+  return function (a:any, b:any) {
+    let nameA=typeof a[key]==="string" ? a[key].toUpperCase():a[key];
+    let nameB=typeof b[key]==="string" ? b[key].toUpperCase():b[key];
+    if (nameA <nameB) return -1;
+    if (nameA >nameB) return 1;
+    return 0;
+  };
+}
 function compareByDesc(key: any){
-    return function (a:any, b:any) {
-      if (a[key] < b[key]) return 1;
-      if (a[key] > b[key]) return -1;
-      return 0;
-    };
-  }
+  return function (a:any, b:any) {
+    let nameA=typeof a[key]==="string" ? a[key].toUpperCase():a[key];
+    let nameB=typeof b[key]==="string" ? b[key].toUpperCase():b[key];
+    if (nameA < nameB) return 1;
+    if (nameA > nameB) return -1;
+    return 0;
+  };
+}
+
+// function compareByAsc(key: any) {
+//     return function (a:any, b:any) {
+//       if (a[key] < b[key]) return -1;
+//       if (a[key] > b[key]) return 1;
+//       return 0;
+//     };
+//   }
+
+// function compareByDesc(key: any){
+//     return function (a:any, b:any) {
+//       if (a[key] < b[key]) return 1;
+//       if (a[key] > b[key]) return -1;
+//       return 0;
+//     };
+//   }
 
 //Function for sorting in table header in asc and desc order
 // Usage Implementation

@@ -1,6 +1,6 @@
 import * as ReactDOM from 'react-dom';
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen,within } from '@testing-library/react';
 import ScanLogs from "../components/scanLogs";
 import userEvent from '@testing-library/user-event';
 describe('Order Histroy component tests', () => { 
@@ -39,5 +39,20 @@ describe('Order Histroy component tests', () => {
 
     })
   
+    it('check the right header column values', () => { 
+        const table = screen.getByRole("table");
+        const [columnNames, ...rows] = within(table).getAllByRole("rowgroup");
+        within(columnNames).getByText("ORDER ID");
+        within(columnNames).getByText("RETAILER NAME/ID");
+        within(columnNames).getByText("INTENDED QTY");
+        within(columnNames).getByText("ORDERED QTY");
+        within(columnNames).getByText("TOTAL COST");
+        within(columnNames).getByText("ADVISOR NAME/ID");
+        within(columnNames).getByText("FARMER NAME/ID");
+        within(columnNames).getByText("STATUS");
+        within(columnNames).getByText("UPDATED DATE");
 
+
+    })
+    
 })
