@@ -16,6 +16,7 @@ import Pagination  from "../../../utility/widgets/pagination";
 import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import Validator from "../../../utility/validator";
+import _ from "lodash";
 
 type Props = {
   location?: any;
@@ -308,9 +309,9 @@ class ChangeLogs extends Component<Props, States> {
                     <AUX key={i}>
                       <tr>
                         <td>{list.userid}</td>
-                        <td>{list.fieldname} </td>
-                        <td>{list.oldvalue} </td>
-                        <td>{list.newvalue} </td>
+                        <td>{_.startCase(_.toLower(list.fieldname))} </td>
+                        <td>{_.startCase(_.toLower(list.oldvalue))} </td>
+                        <td>{_.startCase(_.toLower(list.newvalue))} </td>
                         <td>
                           {moment(list.lastupdateddate).format("YYYY-MM-DD")}
                         </td>

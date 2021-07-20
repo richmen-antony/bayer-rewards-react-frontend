@@ -2029,6 +2029,7 @@ class CreateUser extends Component<any, any> {
     if (currentStep === 1) {
       nextButton = (
         <button
+          name="personal-next"
           className="cus-btn-user buttonStyle"
           onClick={(e) => this.handleClick("personalNext", e)}
         >
@@ -2264,6 +2265,7 @@ class CreateUser extends Component<any, any> {
                                     </td>
                                     <td>
                                       <Input
+                                         data-testid="owner-lastname"
                                         type="text"
                                         className="form-control"
                                         name="lastname"
@@ -2834,6 +2836,7 @@ class CreateUser extends Component<any, any> {
                     <div className="row">
                       <div className="col-md-8">
                         <Input
+                        data-testid = "delivery-street"
                           type="text"
                           className="form-control"
                           name="deliverystreet"
@@ -2851,6 +2854,7 @@ class CreateUser extends Component<any, any> {
 
                       <div className="col-md-4">
                         <Input
+                          data-testid = "delivery-postal"
                           type="text"
                           className="form-control"
                           name="deliveryzipcode"

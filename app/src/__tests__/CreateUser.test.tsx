@@ -1,6 +1,6 @@
 import * as ReactDOM from 'react-dom';
 import React from 'react';
-import {screen ,within,cleanup} from '@testing-library/react';
+import {screen , fireEvent, within,cleanup} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CreateUser from "../components/users/createUser";
 // import getGeographicFields from "../components/users/createUser";
@@ -30,10 +30,13 @@ describe('Create User component tests', () => {
         container.remove();
         cleanup();
     })
-    test('render owner firstname input', () => {
+    test('render owner firstname and lastname input', () => {
        const firstnameInput = screen.getByTestId("owner-firstname");
+       const lastnameInput = screen.getByTestId("owner-lastname");
         expect(firstnameInput).toBeInTheDocument();
         expect(firstnameInput).toHaveAttribute("type", "text");
+        expect(lastnameInput).toBeInTheDocument();
+        expect(lastnameInput).toHaveAttribute("type", "text");
     });
     test('render user type input', () => {
         const storestaff = screen.getByTestId("storestaff");
@@ -59,16 +62,39 @@ describe('Create User component tests', () => {
         expect(screen.queryByTestId("error-msg")).toBeInTheDocument();
         // expect(screen.queryByTestId("error-msg").textContent).toEqual("Please enter a valid email");
     });
-    // test("shows all required input fields with empty values", () => {
+    test("shows first and last name required input fields with empty values", () => {
+      const firstnameInput:any = screen.getByTestId("owner-firstname");
+      const lastnameInput:any = screen.getByTestId("owner-lastname");
+      userEvent.type(firstnameInput, "")
+      userEvent.type(lastnameInput, "")
+      expect(screen.getByTestId("owner-firstname")).toHaveValue("");
+      expect(screen.getByTestId("owner-lastname")).toHaveValue("");
+    });
+    test("shows first and last name required input fields with values", () => {
     //   const firstnameInput:any = screen.getByTestId("owner-firstname");
-    //   // const passwordInput :any= screen.getByLabelText(/password/i);
-    //   const text = ''
-    //   userEvent.type(firstnameInput, text)
-    //   // userEvent.type(passwordInput, text)
-    //   expect(passwordInput.value).toBe("");
-    //   expect(screen.getByTestId("owner-firstname")).toBe("");
-    //   // expect(passwordInput.value).toBe("");
+      const title = screen.getByTestId("owner-firstname");
+      userEvent.type(title, "demo")
+      expect(screen.getByTestId("owner-firstname")).toHaveValue("demo");
+    //   const lastnameInput:any = screen.getByTestId("owner-lastname");
+    //   userEvent.type(lastnameInput, "s")
+    //   expect(screen.getByTestId("owner-lastname")).toHaveValue("s");
+    });
+    // test('render Delivery and postal input', () => {
+    //   const deliverystreetInput = screen.getByTestId("delivery-street");
+    //   const deliverypostalInput = screen.getByTestId("delivery-postal");
+    //   expect(deliverystreetInput).toBeInTheDocument();
+    //   expect(deliverypostalInput).toBeInTheDocument();
+    //   expect(deliverystreetInput).toHaveAttribute("type", "text");
+    //   expect(deliverypostalInput).toHaveAttribute("type", "text");
     // });
+    // test("shows Button actions", async () => {
+    //   const button = screen.getByRole('button', { name: 'personal-next' })
+    //   fireEvent.click(button)
+    //   await screen.findByText('Address information')
+    //   // fireEvent.click(button)
+    //   // await screen.findByText('Clicked twice')
+    // });
+
     // it("should return status code 200 and a defined body as response", async () => {
     //     // Mock API
     //     jest.spyOn(global, "fetch").mockImplementation(():any => 

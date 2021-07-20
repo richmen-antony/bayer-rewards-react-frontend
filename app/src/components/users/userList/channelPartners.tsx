@@ -983,8 +983,8 @@ class ChannelPartners extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userList?.whtaccountname || ""},{" "}
-                      <label>{userList?.rolename}</label>{" "}
+                      {_.startCase(_.toLower(userList?.whtaccountname)) || ""},{" "}
+                      <label>{_.startCase(_.toLower(userList?.rolename))}</label>{" "}
                     </p>
                   </div>
                 </div>
@@ -996,7 +996,7 @@ class ChannelPartners extends Component<Props, States> {
                       <span>
                         Are you sure you want to change &nbsp;
                         <strong>
-                          {userList.whtownername} - {userList.whtaccountname}
+                          {_.startCase(_.toLower(userList?.whtownername))} - {_.startCase(_.toLower(userList?.whtaccountname)) }
                         </strong>
                         &nbsp; account to
                         {userList.userstatus === "ACTIVE" ? (
@@ -1013,7 +1013,7 @@ class ChannelPartners extends Component<Props, States> {
                       <span>
                         Would you like to validate & approve&nbsp;
                         <strong>
-                          {userList.whtownername} - {userList.whtaccountname}
+                        {_.startCase(_.toLower(userList?.whtownername))} - {_.startCase(_.toLower(userList?.whtaccountname)) }
                         </strong>
                         &nbsp;account to use Bayer Rewards mobile application?
                       </span>
@@ -1064,8 +1064,8 @@ class ChannelPartners extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userList?.whtaccountname || ""},{" "}
-                      <label>{userList?.rolename}</label>{" "}
+                    {_.startCase(_.toLower(userList?.whtaccountname)) || ""},{" "}
+                      <label>{_.startCase(_.toLower(userList?.rolename))}</label>{" "}
                     </p>
                   </div>
                   <>
@@ -1739,10 +1739,10 @@ class ChannelPartners extends Component<Props, States> {
                       <td style={{ width: "10%" }}>{list.username}</td>
                       <td style={{ width: "10%" }}>{list.ownerphonenumber} </td>
                       <td style={{ textAlign: "left", width: "12%" }}>
-                        {list.whtaccountname}{" "}
+                      {_.startCase(_.toLower(list.whtaccountname))}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "12%" }}>
-                        {list.ownerfirstname + " " + list.ownerlastname}{" "}
+                        {_.startCase(_.toLower(list.ownerfirstname)) + " " + _.startCase(_.toLower(list.ownerlastname))}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
                         {list.deliverygeolevel1}{" "}
