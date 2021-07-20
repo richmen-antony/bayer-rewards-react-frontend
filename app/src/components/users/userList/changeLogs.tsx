@@ -81,7 +81,7 @@ class ChangeLogs extends Component<Props, States> {
       page: pageNo,
       searchtext: this.state.searchText,
       rowsperpage: this.state.rowsPerPage,
-      countrycode: this.state.loggedUserInfo.countrycode,
+      countrycode: this.state.loggedUserInfo?.countrycode,
       isFiltered: true
     };
 

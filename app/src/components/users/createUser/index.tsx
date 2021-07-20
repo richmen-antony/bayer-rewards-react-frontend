@@ -2241,6 +2241,7 @@ class CreateUser extends Component<any, any> {
                                     <td>
                                       <Input
                                         data-testid="owner-firstname"
+                                        aria-label="owner-firstname"
                                         type="text"
                                         className="form-control"
                                         name="firstname"

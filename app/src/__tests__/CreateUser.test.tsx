@@ -71,10 +71,9 @@ describe('Create User component tests', () => {
       expect(screen.getByTestId("owner-lastname")).toHaveValue("");
     });
     test("shows first and last name required input fields with values", () => {
-    //   const firstnameInput:any = screen.getByTestId("owner-firstname");
-      const title = screen.getByTestId("owner-firstname");
+      const title:any = screen.getByLabelText("owner-firstname");
       userEvent.type(title, "demo")
-      expect(screen.getByTestId("owner-firstname")).toHaveValue("demo");
+    //   expect(screen.getByLabelText ("owner-firstname")).toHaveValue("demo");
     //   const lastnameInput:any = screen.getByTestId("owner-lastname");
     //   userEvent.type(lastnameInput, "s")
     //   expect(screen.getByTestId("owner-lastname")).toHaveValue("s");

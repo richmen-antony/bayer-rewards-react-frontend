@@ -1766,7 +1766,7 @@ class ChannelPartners extends Component<Props, States> {
                                     ? "default"
                                     : "pointer",
                               }}
-                              alt=""
+                              alt="expand-window"
                               onClick={(event) => {
                                 list.userstatus === "DECLINED" ||
                                 list.userstatus === "PENDING"
@@ -1835,7 +1835,7 @@ class ChannelPartners extends Component<Props, States> {
                                 ? EditDisabled
                                 : Edit
                             }
-                            alt=""
+                            alt="edit-icon"
                             width="20"
                             onClick={(event) => {
                               list.userstatus === "DECLINED" ||
