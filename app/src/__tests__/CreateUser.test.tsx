@@ -1,8 +1,9 @@
 import * as ReactDOM from 'react-dom';
 import React from 'react';
-import {screen , fireEvent, within,cleanup} from '@testing-library/react';
+import {screen , fireEvent, within,cleanup, render, getAllByRole} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CreateUser from "../components/users/createUser";
+import {Dropdown} from "../utility/widgets/dropdown";
 // import getGeographicFields from "../components/users/createUser";
 
 
@@ -16,6 +17,16 @@ import CreateUser from "../components/users/createUser";
 //       flag: "Slovakia flag",
 //     },
 //   ];
+const props = {
+    open: true,
+    close: () => {},
+    data: [],
+};
+const options = [
+    { value: "retailer", text: "Retailer" },
+    { value: "distributor", text: "Distributor" },
+    { value: "ara sales manager", text: "Area Sales Manager" },
+];
 describe('Create User component tests', () => { 
     let container: HTMLDivElement
 
@@ -70,29 +81,52 @@ describe('Create User component tests', () => {
       expect(screen.getByTestId("owner-firstname")).toHaveValue("");
       expect(screen.getByTestId("owner-lastname")).toHaveValue("");
     });
-    test("shows first and last name required input fields with values", () => {
-      const title:any = screen.getByLabelText("owner-firstname");
-      userEvent.type(title, "demo")
-    //   expect(screen.getByLabelText ("owner-firstname")).toHaveValue("demo");
-    //   const lastnameInput:any = screen.getByTestId("owner-lastname");
-    //   userEvent.type(lastnameInput, "s")
-    //   expect(screen.getByTestId("owner-lastname")).toHaveValue("s");
+    test("shows first name required input fields with values", () => {
+      const firstname:any = screen.getByLabelText("owner-firstname");
+      userEvent.type(firstname, "v")
+      expect(firstname.value).toBe("v");
     });
-    // test('render Delivery and postal input', () => {
-    //   const deliverystreetInput = screen.getByTestId("delivery-street");
-    //   const deliverypostalInput = screen.getByTestId("delivery-postal");
-    //   expect(deliverystreetInput).toBeInTheDocument();
-    //   expect(deliverypostalInput).toBeInTheDocument();
-    //   expect(deliverystreetInput).toHaveAttribute("type", "text");
-    //   expect(deliverypostalInput).toHaveAttribute("type", "text");
+    it("shows loader during iitail render", () => {
+        expect(screen.getByTitle("loading-spinner")).toBeInTheDocument();
+    });
+    it('can change the value of the dropdown', () => {
+        const dropdown = screen.getByTestId('dropdown');
+        const display = dropdown.children[0];
+        expect(display.textContent).toBe(options[0].text);
+        fireEvent.click(dropdown);
+        // const dropdownOptions = screen.getAllByRole(dropdown, 'options');
+        // fireEvent.click(dropdownOptions[2]);
+        // expect(display.textContent).toBe(options[2].text);
+    });
+    it("check the popup label text", async () => {
+        // expect(screen.getByText(/Are you sure you want to delete store's staff?/i)).toBeInTheDocument();
+        const title = await screen.findByText(/Are you sure you want to delete store's staff?/i);
+        expect(title).toBeInTheDocument();
+    });
+    
+    // test("fds fdsf", () => {
+    //     expect(screen.getByText("Retailer")).toBeInTheDocument();
+    //     fireEvent.click(screen.getByTestId("dropdown"), {
+    //       target: { value: "retailer" },
+    //     });
+    //     expect(screen.getByText("retailer")).toBeInTheDocument();
+    //   });
+
+
+
+    // it('Table header is in the document', async () => {
+    //     const button = screen.getByRole('button', { name: /next/i });
+    //     fireEvent.click(button);
+    //     const title = await screen.findByText(/Address information/i);
+    //     expect(title).toBeInTheDocument();
     // });
-    // test("shows Button actions", async () => {
-    //   const button = screen.getByRole('button', { name: 'personal-next' })
-    //   fireEvent.click(button)
-    //   await screen.findByText('Address information')
-    //   // fireEvent.click(button)
-    //   // await screen.findByText('Clicked twice')
-    // });
+    
+    // it('Checkbox element', async () => {
+    //     const storestaffcheckbox:any = screen.getByTestId("storestaff");
+    //     userEvent.click(storestaffcheckbox)
+    //     const staff = await screen.findByText(/Store Staffs/i);
+    //     expect(staff).toBeInTheDocument();
+    //   });
 
     // it("should return status code 200 and a defined body as response", async () => {
     //     // Mock API
@@ -113,29 +147,7 @@ describe('Create User component tests', () => {
     //     expect(result.status).toBe(200);
     //     expect(result.data).toBe(stubbedCountries);
     //   });
- 
-
-
-    // it('Renders correctly initial document', () => { 
-    //     const inputs = container.querySelectorAll('input');
-    //     // how many input used for components
-    //     expect(inputs).toHaveLength(5);
-    //     expect(inputs[0].name).toBe('searchText');
-
-    // })
-
-    // it('validate search input fields', () => { 
-    //     const searchInput:any = screen.getByTestId('search-input');
-    //     userEvent.type(searchInput, "Northern");
-    //     expect(searchInput.value).toBe("Northern");
-
-    // })
-    // it('search input fields with empty string', () => { 
-    //     const searchInput:any = screen.getByTestId('search-input');
-    //     userEvent.type(searchInput, "")
-    //     expect(searchInput.value).toBe("");
-    // })
-  
 
 })
+
 
