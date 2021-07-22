@@ -703,6 +703,8 @@ class ScanLogsTable extends Component<Props, States> {
                                 }
                                 options={retailerOptions}
                                 defaultValue="ALL"
+                                id="retailer-test"
+                                dataTestId="retailer-test"
                               />
                             </div>
 
@@ -719,6 +721,8 @@ class ScanLogsTable extends Component<Props, States> {
                                 }
                                 options={farmerOptions}
                                 defaultValue="ALL"
+                                id="farmer-test"
+                                dataTestId="farmer-test"
                               />
                             </div>
 
@@ -775,12 +779,13 @@ class ScanLogsTable extends Component<Props, States> {
                               ))}
                             </div>
 
-                            <label className="font-weight-bold pt-2">
+                            <label className="font-weight-bold pt-2" htmlFor="order-date">
                               Ordered Date
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
                                 <DatePicker
+                                  id="order-date"
                                   value={selectedFilters.ordereddatefrom}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input ref={ref} />}
@@ -817,12 +822,13 @@ class ScanLogsTable extends Component<Props, States> {
                             {dateErrMsg && (
                               <span className="error">{dateErrMsg} </span>
                             )}
-                            <label className="font-weight-bold pt-2">
+                            <label className="font-weight-bold pt-2" htmlFor="update-date">
                               Last Updated Date
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
                                 <DatePicker
+                                 id="update-date"
                                   value={selectedFilters.lastmodifiedfrom}
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input ref={ref} />}

@@ -12,6 +12,8 @@ export interface DropdownProps {
   isLabel?: boolean;
   isDisabled?: boolean;
   isNative?: boolean;
+  id?:string;
+  dataTestId?:string
 }
 
 export const NativeDropdown = ({
@@ -26,6 +28,8 @@ export const NativeDropdown = ({
   isLabel,
   isDisabled,
   isNative,
+  id,
+  dataTestId,
   ...props
 }: DropdownProps) => {
   return (
@@ -36,9 +40,11 @@ export const NativeDropdown = ({
         value={value}
         onChange={handleChange}
         disabled={isDisabled ? true : false}
+        id={id}
+        data-testid={dataTestId}
       >
         {defaultValue&&
-        <option value={defaultValue}>
+        <option value={defaultValue} data-testid={defaultValue} key={defaultValue}>
           {defaultValue}
         </option>
          }

@@ -66,19 +66,19 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
               <p>
                 <label>
                   #{data?.advisororderid} 
-                  { data.orderstatus === "FULFILLED"&& " - " + _.startCase(_.toLower(data?.accountname))}
+                  { data?.orderstatus === "FULFILLED"&& " - " + _.startCase(_.toLower(data?.accountname))}
                 </label>
               </p>
             </div>
           </div>
           <div className="wrapper-progressBar">
             <ul className="progressBar">
-              <li className={`active ${data.orderstatus === "EXPIRED" || data.orderstatus === "CANCELLED"? "join" : data.orderstatus === "PENDING"? "dotline-pending":""}`}>
-                <div className={`line-cnt ${data.orderstatus === "PENDING" ? "pending-center" :""}`}>
+              <li className={`active ${data?.orderstatus === "EXPIRED" || data?.orderstatus === "CANCELLED"? "join" : data?.orderstatus === "PENDING"? "dotline-pending":""}`}>
+                <div className={`line-cnt ${data?.orderstatus === "PENDING" ? "pending-center" :""}`}>
                   <p>Ordered date</p>
                   <label>
-                    {data.ordereddate &&
-                      moment(data.ordereddate).format("Do MMM, YYYY")}
+                    {data?.ordereddate &&
+                      moment(data?.ordereddate).format("Do MMM, YYYY")}
                   </label>
                 </div>
                 <div className="content">
@@ -86,35 +86,35 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
 
                   <p>Advisor ID & Name</p>
                   <span>
-                    {data.advisorid} - {data.advisorname}
+                    {data?.advisorid} - {data?.advisorname}
                   </span>
                 </div>
               </li>
-              { data.orderstatus !== "PENDING"&&
+              { data?.orderstatus !== "PENDING"&&
               <li
                 className={`${
-                  data.orderstatus === "FULFILLED"
+                  data?.orderstatus === "FULFILLED"
                     ? "active"
-                    : data.orderstatus === "EXPIRED" || data.orderstatus === "CANCELLED" 
+                    : data?.orderstatus === "EXPIRED" || data?.orderstatus === "CANCELLED" 
                     ? "inactive"
                     : ""
                 } `}
               >
                 <div className="line-cnt-expiry-date">
                   <p>
-                    { _.startCase(_.toLower(data.orderstatus))+" date"}
+                    { _.startCase(_.toLower(data?.orderstatus))+" date"}
                   </p>
                   <label>
-                    {data.lastupdateddate &&
-                      moment(data.lastupdateddate).format("Do MMM, YYYY")}
+                    {data?.lastupdateddate &&
+                      moment(data?.lastupdateddate).format("Do MMM, YYYY")}
                   </label>
                 </div>
-                {data.orderstatus === "FULFILLED" &&
+                {data?.orderstatus === "FULFILLED" &&
                 <div className="content">
                   <img src={retailerImg} alt="" />
                   <p>Fulfilled by ID & Name</p>
                   <span>
-                    {data.staffid} - {data.staffname}
+                    {data?.staffid} - {data?.staffname}
                   </span>
                 </div>
                 }
@@ -124,7 +124,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                 <div className="content">
                   <img
                     src={
-                      data.orderstatus === "FULFILLED"
+                      data?.orderstatus === "FULFILLED"
                         ? farmerImg
                         : FarmerDenied
                     }
@@ -132,7 +132,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                   />
                   <p>Farmer ID & Name</p>
                   <span>
-                    {data.farmerid} - {data.farmername}
+                    {data?.farmerid} - {data?.farmername}
                   </span>
                 </div>
               </li>
@@ -142,7 +142,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
           {data?.products_ordered?.length > 0 ? (
             <>
               <div className="sub-order">
-                <table className="table">
+                <table className="table"> 
                   <thead>
                     <tr>
                       <th></th>
@@ -216,7 +216,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                           </tr> : null}
                           {accordionView &&
                             value?.orderlineitemid === accordionId &&
-                            data.orderstatus === "FULFILLED" && (
+                            data?.orderstatus === "FULFILLED" && (
                               <tr>
                                 <td
                                   colSpan={7}
