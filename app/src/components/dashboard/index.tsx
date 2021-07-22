@@ -40,7 +40,8 @@ class Dashboard extends Component<Props, States> {
 	componentDidMount() {
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
-		this.setState({ userRole: userData.role });
+		if (userData?.role) 
+		this.setState({ userRole: userData?.role });
 
 		if (userData?.role === "ADMIN") this.getAdminDashboardDetails();
 		if (userData?.role === "RSM") this.getrsmDashboardDetails();
@@ -50,8 +51,8 @@ class Dashboard extends Component<Props, States> {
 		let obj: any = getLocalStorageData("userData");
 		let userData = JSON.parse(obj);
 		const data = {
-			region: userData.geolevel1,
-			countrycode: userData.countrycode,
+			region: userData?.geolevel1,
+			countrycode: userData?.countrycode,
 		};
 		this.setState({ isLoader: true });
 		invokeGetAuthService(rsmDashboard, data).then((response) => {
@@ -67,8 +68,8 @@ class Dashboard extends Component<Props, States> {
 		let obj: any = getLocalStorageData("userData");
 		let userData = JSON.parse(obj);
 		const data = {
-			// region: userData.geolevel1 ,
-			countrycode: userData.countrycode,
+			// region: userData?.geolevel1 ,
+			countrycode: userData?.countrycode,
 		};
 		invokeGetAuthService(adminUserCount, data)
 			.then((response: any) => {
@@ -116,7 +117,7 @@ class Dashboard extends Component<Props, States> {
 	render() {
 		return (
 			<AUX>
-				<div className="card card-main">
+				<div className="card card-main" data-testid="dashboard">
 					{this.state.userRole === "RSM" ? (
 						<div className="dashboard">
 							<div style={{ marginRight: "30px" }}>
