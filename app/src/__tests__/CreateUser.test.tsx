@@ -54,6 +54,7 @@ describe('Create User component tests', () => {
          expect(storestaff).toBeInTheDocument();
          expect(storestaff).toHaveAttribute("type", "checkbox");
      });
+     //Email starts
     test('render email input', () => {
         const emailinput = screen.getByTestId("email-input");
         expect(emailinput).toBeInTheDocument();
@@ -73,6 +74,7 @@ describe('Create User component tests', () => {
         expect(screen.queryByTestId("error-msg")).toBeInTheDocument();
         // expect(screen.queryByTestId("error-msg").textContent).toEqual("Please enter a valid email");
     });
+    //Email Ends
     test("shows first and last name required input fields with empty values", () => {
       const firstnameInput:any = screen.getByTestId("owner-firstname");
       const lastnameInput:any = screen.getByTestId("owner-lastname");
@@ -89,33 +91,45 @@ describe('Create User component tests', () => {
     it("shows loader during iitail render", () => {
         expect(screen.getByTitle("loading-spinner")).toBeInTheDocument();
     });
+    //Dropdown
     it('can change the value of the dropdown', () => {
         const dropdown = screen.getByTestId('dropdown');
         const display = dropdown.children[0];
         expect(display.textContent).toBe(options[0].text);
         fireEvent.click(dropdown);
-        // const dropdownOptions = screen.getAllByRole(dropdown, 'options');
-        // fireEvent.click(dropdownOptions[2]);
-        // expect(display.textContent).toBe(options[2].text);
     });
-    it("check the popup label text", async () => {
-        // expect(screen.getByText(/Are you sure you want to delete store's staff?/i)).toBeInTheDocument();
-        const title = await screen.findByText(/Are you sure you want to delete store's staff?/i);
-        expect(title).toBeInTheDocument();
-    });
+	it("Check dropdown is defined",()=>{
+		const dropdownSelect = screen.getByTestId(/dropdown/i);
+		expect(dropdownSelect).toBeDefined();
+	})
+	it("Check dropdown is not null",()=>{
+		const dropdownSelect = screen.getByTestId(/dropdown/i);
+        expect(dropdownSelect).not.toBeNull();
+	})
+	it("Check dropdown appears",()=>{
+		const dropdownSelect = screen.getByTestId(/dropdown/i);
+        expect(dropdownSelect).toBeInTheDocument()
+	})
+    it("check the right owner header column values", () => {
+		const table = screen.getByTestId("table");
+		const [columnNames, ...rows] = within(table).getAllByRole("rowgroup");
+		within(columnNames).getByText("Type");
+		within(columnNames).getByText("First Name");
+		within(columnNames).getByText("Last Name");
+		within(columnNames).getByText("Mobile Number");
+		within(columnNames).getByText("Email(Optional)");
+		within(columnNames).getByText("Active?");
+	});
     
-    // test("fds fdsf", () => {
-    //     expect(screen.getByText("Retailer")).toBeInTheDocument();
-    //     fireEvent.click(screen.getByTestId("dropdown"), {
-    //       target: { value: "retailer" },
-    //     });
-    //     expect(screen.getByText("retailer")).toBeInTheDocument();
-    //   });
-
-
+    // it("check the popup label text", async () => {
+    //     // expect(screen.getByText(/Are you sure you want to delete store's staff?/i)).toBeInTheDocument();
+    //     const title = await screen.findByText(/Are you sure you want to delete store's staff?/i);
+    //     expect(title).toBeInTheDocument();
+    // });
+    
 
     // it('Table header is in the document', async () => {
-    //     const button = screen.getByRole('button', { name: /next/i });
+    //     const button = screen.getByTestId("personal-next");
     //     fireEvent.click(button);
     //     const title = await screen.findByText(/Address information/i);
     //     expect(title).toBeInTheDocument();

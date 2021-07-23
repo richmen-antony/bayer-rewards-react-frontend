@@ -1721,8 +1721,8 @@ class ChannelPartners extends Component<Props, States> {
               <tr>{this.generateHeader(allChannelPartners, isAsc)}</tr>
             </thead>
             <tbody>
-              {allChannelPartners.length > 0 ? (
-                allChannelPartners.map((list: any, i: number) => {
+              {allChannelPartners?.length > 0 ? (
+                allChannelPartners?.map((list: any, i: number) => {
                   return (
                   <AUX key={`channelpartners`+i}>
                     <tr
@@ -1758,6 +1758,7 @@ class ChannelPartners extends Component<Props, States> {
                           <p>
                             {list.staffdetails?.length}
                             <img
+                              data-testid="expand-window"
                               className="retailer-icon"
                               style={{
                                 cursor:
@@ -1821,6 +1822,8 @@ class ChannelPartners extends Component<Props, States> {
                       </td>
                       <td style={{ width: "7%" }}>
                           <img
+                            data-testid="edit-icon"
+                            aria-label = "edit-icon"
                             className="edit"
                             style={{
                               cursor:
@@ -1866,7 +1869,7 @@ class ChannelPartners extends Component<Props, States> {
             </tbody>
           </Table>
           <div className="add-plus-icon" onClick={() => this.createUserClick()}>
-            <img src={AddBtn} alt={NoImage} />
+            <img data-testid="floating-add" src={AddBtn} alt={NoImage} />
           </div>
 
           <div>

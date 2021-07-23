@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDom from "react-dom";
-import { fireEvent, screen} from '@testing-library/react';
+import { fireEvent, screen, within} from '@testing-library/react';
 import UserList from "../components/users/userList";
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
@@ -71,5 +71,54 @@ describe('User List component tests', () => {
     //     expect(inactivecontent).toBeInTheDocument();
     //     expect(errorContent).not.toBeInTheDocument();
     // });
+    it("Date picker invalid order date DD/MM/YYYY", () => {
+        const fromDate:any = screen.getByLabelText(/Last Modified Date/i);
+        fireEvent.click(fromDate);
+        fireEvent.change(fromDate, { target: { value: "29/10/2020" } });
+        expect(fromDate.value).toBe("29/10/2020");
+	});
+	it("Date picker empty value", () => {
+        const fromDate:any = screen.getByLabelText(/Last Modified Date/i);
+        fireEvent.click(fromDate);
+        fireEvent.change(fromDate, { target: { value: "" } });
+        expect(fromDate.value).toBe("");
+	});
+	it("Ordered Date to check the valid date format DD-MM-YYYY", () => {
+        const fromDate:any = screen.getByLabelText(/Last Modified Date/i);
+        fireEvent.click(fromDate);
+		//enter the invalid date format
+        fireEvent.change(fromDate, { target: { value: "March 29,2021" } });
+		//expect valid format
+        expect(fromDate.value).toBe("29-03-2021");
+	});
+    //Dropdown
+    // it("Check dropdown is defined",()=>{
+    //     const dropdownSelect = screen.getByTestId(/geolevel-test/i);
+    //     expect(dropdownSelect).toBeDefined();
+    // })
+    // it("Check dropdown is not null",()=>{
+    //     const dropdownSelect = screen.getByTestId(/geolevel-test/i);
+    //     expect(dropdownSelect).not.toBeNull();
+    // })
+    // it("Check dropdown appears",()=>{
+    //     const dropdownSelect = screen.getByTestId(/geolevel-test/i);
+    //     expect(dropdownSelect).toBeInTheDocument()
+    // })
+    it("check the right header column values", () => {
+		const table = screen.getByRole("table");
+		const [columnNames, ...rows] = within(table).getAllByRole("rowgroup");
+		within(columnNames).getByText("USER NAME");
+		within(columnNames).getByText("MOBILE#");
+		within(columnNames).getByText("ACCOUNT NAME");
+		within(columnNames).getByText("OWNER NAME");
+		within(columnNames).getByText("STAFF COUNT");
+		within(columnNames).getByText("STATUS");
+        within(columnNames).getByText("UPDATED BY");
+	});
+    test('Logo must have src = "/logo.svg" and alt = "Logo"', () => {
+        const logo = screen.getByTestId('floating-add');
+        expect(logo).toHaveAttribute('src', 'add_btn.svg');
+        expect(logo).toHaveAttribute('alt', 'no_image.svg');
+    });
 
 })

@@ -216,6 +216,7 @@ class ChangeLogs extends Component<Props, States> {
             </div>
             <div className="col-sm-6 leftAlign">
               <SearchInput
+                data-testid="search-input"
                 placeHolder="Search Logs (min 3 letters)"
                 type="text"
                 onChange={this.handleSearch}

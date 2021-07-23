@@ -2033,6 +2033,7 @@ class CreateUser extends Component<any, any> {
         <button
           title="personal-next"
           name="personal-next"
+          data-testid="personal-next"
           className="cus-btn-user buttonStyle"
           onClick={(e) => this.handleClick("personalNext", e)}
         >
@@ -2217,7 +2218,7 @@ class CreateUser extends Component<any, any> {
                       >
                         <div style={{ marginRight: "10px" }}>
                           {/* <Table borderless> */}
-                          <table className="table table-borderless">
+                          <table className="table table-borderless" data-testid="table">
                             <thead>
                               <tr>
                                 <th>Type</th>

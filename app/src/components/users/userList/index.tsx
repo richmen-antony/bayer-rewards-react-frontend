@@ -845,6 +845,8 @@ class UserList extends Component<Props, States> {
                       this.handleUpdateDropdown(e.target.value, list.name);
                     }}
                     value={list.value}
+                    id="geolevel-test"
+                    dataTestId="geolevel-test"
                   />
                 )}
               </div>
@@ -1009,7 +1011,7 @@ class UserList extends Component<Props, States> {
                                 </div>
                               </div>
                               <div className="form-group">{locationList}</div>
-                              <label className="font-weight-bold pt-2">
+                              <label className="font-weight-bold pt-2" htmlFor="update-date">
                                 Last Modified Date
                               </label>
                               <div className="d-flex">
@@ -1027,6 +1029,7 @@ class UserList extends Component<Props, States> {
                                     }
                                   /> */}
                                   <DatePicker
+                                    id="update-date"
                                     value={selectedFilters.lastmodifieddatefrom}
                                     dateFormat="dd-MM-yyyy"
                                     customInput={<Input ref={ref} />}
