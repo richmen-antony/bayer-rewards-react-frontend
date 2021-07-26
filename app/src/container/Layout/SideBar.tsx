@@ -8,6 +8,7 @@ import userListIcon from "../../assets/icons/list_user_icon.svg";
 import scanLogsIcon from "../../assets/icons/scan_logs_icon.svg";
 import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
+import NoImage from "../../assets/images/no_image.svg";
 import country from "../../assets/images/country.svg";
 import {
   getLocalStorageData,
@@ -71,7 +72,7 @@ class Sidebar extends Component<Props, States> {
     return (
       <AUX>
         <div className="left side-menu ">
-          <img className="sideMenuLine" src={lLogo} alt="" />
+          <img className="sideMenuLine" src={lLogo} data-testid="left-logo" alt={NoImage} />
           <div className="sideMenuNav">
             {/* <Scrollbars
               style={scrollHeight}
@@ -107,7 +108,7 @@ class Sidebar extends Component<Props, States> {
                       to="/dashboard"
                       onClick={() => this.setActiveTab("dashboard")}
                     >
-                      <img src={homeIcon} alt="User" width="16" />{" "}
+                      <img src={homeIcon} alt={NoImage} width="16" data-testid="dashboard-icon" />{" "}
                       <span> Dashboard </span>
                     </Link>
                   </li>
@@ -128,7 +129,7 @@ class Sidebar extends Component<Props, States> {
                         to="/createUser"
                         onClick={(e:any) => (window.location.pathname.indexOf("createUser") > -1) ? e.preventDefault(): this.setActiveTab("createUser")}
                       >
-                        <img src={addUserIcon} alt="User" width="16" />{" "}
+                        <img src={addUserIcon} alt={NoImage} width="16" data-testid="createuser-icon" />{" "}
                         <span> Create New User </span>
                       </Link>
                     </li>
@@ -145,7 +146,7 @@ class Sidebar extends Component<Props, States> {
                         to="/userList"
                         onClick={() => this.setActiveTab("userList")}
                       >
-                        <img src={userListIcon} alt="User" width="16" />{" "}
+                        <img src={userListIcon} alt={NoImage} width="16" data-testid="listuser-icon" />{" "}
                         <span> User List </span>
                       </Link>
                     </li>
@@ -161,7 +162,7 @@ class Sidebar extends Component<Props, States> {
                         to="/order"
                         onClick={() => this.setActiveTab("order")}
                       >
-                        <img src={scanLogsIcon} alt="User" width="16" />{" "}
+                        <img src={scanLogsIcon} alt={NoImage} width="16" data-testid="order-icon" />{" "}
                         <span> Order History </span>
                       </Link>
                     </li>
@@ -290,7 +291,7 @@ class Sidebar extends Component<Props, States> {
                   }
                 ></span>
                 <Link to="/landing" onClick={this.logout}>
-                  <img src={logoutIcon} alt="Help Center" width="16" />{" "}
+                  <img src={logoutIcon} alt={NoImage} width="16" data-testid="logout-icon" />{" "}
                   <span> Logout </span>
                 </Link>
               </li>

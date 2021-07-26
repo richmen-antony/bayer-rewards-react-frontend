@@ -88,9 +88,6 @@ describe('Create User component tests', () => {
       userEvent.type(firstname, "v")
       expect(firstname.value).toBe("v");
     });
-    it("shows loader during iitail render", () => {
-        expect(screen.getByTitle("loading-spinner")).toBeInTheDocument();
-    });
     //Dropdown
     it('can change the value of the dropdown', () => {
         const dropdown = screen.getByTestId('dropdown');
@@ -120,6 +117,15 @@ describe('Create User component tests', () => {
 		within(columnNames).getByText("Email(Optional)");
 		within(columnNames).getByText("Active?");
 	});
+    test('Logo must have src = "/logo.svg" and alt = "Logo"', () => {
+        const arrowIcon = screen.getByTestId('ArrowIcon');
+        const buttonIcon = screen.getByTestId('RtButton');
+        expect(arrowIcon).toHaveAttribute('src', 'dark bg.svg');
+        expect(arrowIcon).toHaveAttribute('alt', 'no_image.svg');
+        expect(buttonIcon).toHaveAttribute('src', 'right_btn.svg');
+        expect(buttonIcon).toHaveAttribute('alt', 'no_image.svg');
+
+    });
     
     // it("check the popup label text", async () => {
     //     // expect(screen.getByText(/Are you sure you want to delete store's staff?/i)).toBeInTheDocument();

@@ -25,6 +25,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import ArrowIcon from "../../../assets/icons/dark bg.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
+import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
@@ -2039,8 +2040,8 @@ class CreateUser extends Component<any, any> {
         >
           Next
           <span>
-            <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
-            <img src={RtButton} alt="" className="layout" />
+            <img src={ArrowIcon} alt={NoImage} data-testid= "ArrowIcon" className="arrow-i" />{" "}
+            <img src={RtButton} alt={NoImage} data-testid= "RtButton"  className="layout" />
           </span>
         </button>
       );

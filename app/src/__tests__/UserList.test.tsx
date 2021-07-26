@@ -32,9 +32,8 @@ describe('User List component tests', () => {
         const searchInput:any = screen.getByTestId('search-input');
         userEvent.type(searchInput, "Northern");
         expect(searchInput.value).toBe("Northern");
-
     })
-    it('search input fields with empty string', () => { 
+    it('Search input fields with empty string', () => { 
         const searchInput:any = screen.getByTestId('search-input');
         userEvent.type(searchInput, "")
         expect(searchInput.value).toBe("");
@@ -115,10 +114,16 @@ describe('User List component tests', () => {
 		within(columnNames).getByText("STATUS");
         within(columnNames).getByText("UPDATED BY");
 	});
-    test('Logo must have src = "/logo.svg" and alt = "Logo"', () => {
-        const logo = screen.getByTestId('floating-add');
-        expect(logo).toHaveAttribute('src', 'add_btn.svg');
-        expect(logo).toHaveAttribute('alt', 'no_image.svg');
+    test('Image must have src = "/ex.svg" and alt = "ex"', () => {
+        const addbtn = screen.getByTestId('floating-add');
+        const changelogs = screen.getByTestId('changelog');
+        const download = screen.getByTestId('download');
+        expect(addbtn).toHaveAttribute('src', 'add_btn.svg');
+        expect(addbtn).toHaveAttribute('alt', 'no_image.svg');
+        expect(changelogs).toHaveAttribute('src', 'logs.svg');
+        expect(changelogs).toHaveAttribute('alt', 'no_image.svg');
+        expect(download).toHaveAttribute('src', 'download.svg');
+        expect(download).toHaveAttribute('alt', 'no_image.svg');
     });
 
 })

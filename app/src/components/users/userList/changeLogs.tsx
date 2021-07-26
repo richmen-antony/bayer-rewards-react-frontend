@@ -205,10 +205,11 @@ class ChangeLogs extends Component<Props, States> {
             <div className="col-sm-6">
               <span>
                 <img
+                  data-testid="left-arrow"
                   style={{ marginRight: "8px", cursor: "pointer" }}
                   src={leftArrow}
                   width="17"
-                  alt="leftArrow"
+                  alt={NoImage}
                   onClick={() => backToUsersList()}
                 />
                 CHANGE LOGS
@@ -229,7 +230,7 @@ class ChangeLogs extends Component<Props, States> {
                   style={{ backgroundColor: "#1F445A" }}
                   onClick={this.download}
                 >
-                  <img src={Download} width="17" alt={NoImage} />
+                  <img src={Download} width="17" alt={NoImage} data-testid="download" />
                 </button>
               </div>
             </div>

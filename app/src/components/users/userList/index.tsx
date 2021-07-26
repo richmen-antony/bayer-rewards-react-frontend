@@ -892,7 +892,7 @@ class UserList extends Component<Props, States> {
                       className="form-control changeLogs"
                       onClick={() => this.handleChangeLog()}
                     >
-                      <img src={Logs} alt={NoImage} /> <span>Change Logs</span>
+                      <img src={Logs} alt={NoImage} data-testid="changelog" /> <span>Change Logs</span>
                     </button>
                   </div>
 
@@ -902,7 +902,7 @@ class UserList extends Component<Props, States> {
                       onClick={this.download}
                       style={{ backgroundColor: "#1F445A" }}
                     >
-                      <img src={Download} width="17" alt={NoImage} />{" "}
+                      <img src={Download} width="17" alt={NoImage} data-testid="download" />{" "}
                       <span>Download</span>
                     </button>
                   </div>

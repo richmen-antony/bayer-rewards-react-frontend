@@ -58,4 +58,12 @@ describe('User List component tests', () => {
 		within(columnNames).getByText("Modified Date");
 		within(columnNames).getByText("Modified Time");
 	});
+    test('Image must have src = "/ex.svg" and alt = "ex"', () => {
+        const changelogsleftarrow = screen.getByTestId('left-arrow');
+        const download = screen.getByTestId('download');
+        expect(changelogsleftarrow).toHaveAttribute('src', 'left_arrow.svg');
+        expect(changelogsleftarrow).toHaveAttribute('alt', 'no_image.svg');
+        expect(download).toHaveAttribute('src', 'download.svg');
+        expect(download).toHaveAttribute('alt', 'no_image.svg');
+    });
 })
