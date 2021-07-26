@@ -136,6 +136,7 @@ export const Dropdown = ({
             getContentAnchorEl: null,
             classes: { paper: classes.menuPaper },
           }}
+          data-testid="dropdown"
         >
           {isPlaceholder && !isNative ? (
             <MenuItem value="" disabled>
