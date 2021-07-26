@@ -55,17 +55,17 @@ const RouterPrompt: React.FC<Props> = (props: Props) => {
    */
   useEffect(() => {
     if (when) {
-      history.block((prompt: any) => {
+      history?.block((prompt: any) => {
         setCurrentPath(prompt.pathname);
         setShowPrompt(true);
         return "true";
       });
     } else {
-      history.block(() => {});
+      history?.block(() => {});
     }
 
     return () => {
-      history.block(() => {});
+      history?.block(() => {});
     };
   }, [history, when]);
   /**
@@ -77,7 +77,7 @@ const RouterPrompt: React.FC<Props> = (props: Props) => {
       // to inactive prompt mode value in context api
       setPromptMode(false);
       if (canRoute) {
-        history.block(() => {});
+        history?.block(() => {});
         if (currentPath === "/landing") {
           Authorization.logOut();
           history.push(currentPath);
@@ -96,7 +96,7 @@ const RouterPrompt: React.FC<Props> = (props: Props) => {
     if (onCancel) {
       const canRoute = await Promise.resolve(onCancel());
       if (canRoute) {
-        history.block(() => {});
+        history?.block(() => {});
         history.push(currentPath);
       }
     }

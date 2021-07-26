@@ -1,18 +1,9 @@
 import * as ReactDOM from "react-dom";
 import React from "react";
-import { fireEvent, screen, within } from "@testing-library/react";
+import { fireEvent, screen, within,render } from "@testing-library/react";
 import ScanLogs from "../components/scanLogs";
 import userEvent from "@testing-library/user-event";
-// export function getByHtmlAttribute(
-//     attributeName:any,
-//     attributeValue:any
-//   ) {
-//     return screen.getByText((content:any, element:any) => {
-//       if (element.getAttribute(attributeName) === attributeValue) {
-//         return element;
-//       }
-//     });
-//   }
+
 describe("Order Histroy component tests", () => {
 	let container: HTMLDivElement;
 
@@ -164,7 +155,64 @@ describe("Order Histroy component tests", () => {
 		let options:any = screen.getAllByTestId('ALL')
 		expect(options[0].selected).toBeTruthy();
 	})
-
-
+	it('Download button is in the document', async () => {
+		Object.defineProperty(window, 'getComputedStyle', {
+			value: () => ({
+				getPropertyValue: () => {
+					return '';
+				}
+			})
+		});
+        const downloadBtn:any = screen.getByRole('button', { name: /download/i });
+        fireEvent.click(downloadBtn);
+		expect(screen.getByText(/download/i)).toBeInTheDocument()
+		// check buttom  is not disabled
+		expect(screen.getByText(/download/i).closest('button')).not.toBeDisabled();
+		// check button type is not submit 
+		expect(downloadBtn).not.toHaveAttribute('type', 'submit')
+        
+    });
+	it('Download button is in the document attrubute', async () => {
+        const downloadBtn:any = screen.getByRole('button', { name: /download/i });
+		expect(downloadBtn.tagName).toBe('BUTTON')
+        
+    });
+	it('renders all buttons', async () => {
+		const btn = container.querySelectorAll("button");
+		expect(btn).toHaveLength(13)
+	  })
+	  it('Reset all button is in the document', async () => {
+		const resetAllBtn = screen.getByTestId("reset-all");
+	   fireEvent.click(resetAllBtn);
+		expect(resetAllBtn).toBeDefined();
+		expect(screen.getByText(/Reset All/i)).toBeInTheDocument()
+		// // check buttom  is not disabled
+		expect(screen.getByText(/Reset All/i).closest('button')).not.toBeDisabled();
+		// // check button type is not submit 
+		expect(resetAllBtn).not.toHaveAttribute('type', 'submit')
+	    
+    });
+	it('Reset all button is in the document attrubute', async () => {
+        const resetAllBtn = screen.getByTestId("reset-all");
+		expect(resetAllBtn.tagName).toBe('BUTTON')
+        
+    });
+	// apply btn unit test cases
+	it('Apply button is in the document', async () => {
+		const applyBtn = screen.getByTestId("apply");
+	   fireEvent.click(applyBtn);
+		expect(applyBtn).toBeDefined();
+		expect(screen.getByText(/Apply/i)).toBeInTheDocument()
+		// // check buttom  is not disabled
+		expect(screen.getByText(/Apply/i).closest('button')).not.toBeDisabled();
+		// // check button type is not submit 
+		expect(applyBtn).not.toHaveAttribute('type', 'submit')
+	    
+    });
+	it('Apply button is in the document attrubute', async () => {
+        const resetAllBtn = screen.getByTestId("apply");
+		expect(resetAllBtn.tagName).toBe('BUTTON')
+        
+    });
 
 });

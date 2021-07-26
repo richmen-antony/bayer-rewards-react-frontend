@@ -607,10 +607,12 @@ class OrderHistory extends Component<Props, States> {
 																	handleChange={(e: any) => this.handleSelect(e, "geolevel1")}
 																	options={regionOptions}
 																	defaultValue="ALL"
+																	id="region-test"
+                                									dataTestId="region-test"
 																/>
 															</div>
 														)}
-														<label className="font-weight-bold pt-2">
+														<label className="font-weight-bold pt-2" htmlFor="order-date">
 															Ordered Date <span>(6 months interval)</span>
 														</label>
 														<div className="d-flex">
@@ -625,6 +627,7 @@ class OrderHistory extends Component<Props, States> {
 																	showYearDropdown
 																	dropdownMode="select"
 																	maxDate={new Date()}
+																	id="order-date"
 																/>
 															</div>
 															<div className="p-2">-</div>
@@ -639,11 +642,12 @@ class OrderHistory extends Component<Props, States> {
 																	showYearDropdown
 																	dropdownMode="select"
 																	maxDate={new Date()}
+																	
 																/>
 															</div>
 														</div>
 														{dateErrMsg && <span className="error">{dateErrMsg} </span>}
-														<label className="font-weight-bold pt-2">
+														<label className="font-weight-bold pt-2" htmlFor="update-date">
 															Last Updated Date <span>(6 months interval)</span>
 														</label>
 														<div className="d-flex">
@@ -658,6 +662,7 @@ class OrderHistory extends Component<Props, States> {
 																	showYearDropdown
 																	dropdownMode="select"
 																	maxDate={new Date()}
+																	id="update-date"
 																/>
 															</div>
 
@@ -679,13 +684,14 @@ class OrderHistory extends Component<Props, States> {
 														{lastUpdatedDateErr && <span className="error">{lastUpdatedDateErr} </span>}
 
 														<div className="filterFooter pt-3">
-															<button className="cus-btn-scanlog-filter reset" onClick={this.resetFilter}>
+															<button className="cus-btn-scanlog-filter reset" onClick={this.resetFilter}  data-testid ="reset-all">
 																Reset All
 															</button>
 															<button
 																className="cus-btn-scanlog-filter"
 																onClick={this.applyFilter}
 																disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
+																data-testid ="apply"
 															>
 																Apply
 																<span>

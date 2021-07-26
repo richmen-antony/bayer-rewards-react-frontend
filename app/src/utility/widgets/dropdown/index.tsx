@@ -117,7 +117,6 @@ export const Dropdown = ({
       >
         {isLabel && <InputLabel htmlFor={labelId}>{label}</InputLabel>}
         <Select
-          data-testid="dropdown"
           name={name}
           labelId={labelId}
           value={value}

@@ -876,6 +876,7 @@ class ScanLogsTable extends Component<Props, States> {
                               <button
                                 className="cus-btn-scanlog-filter reset"
                                 onClick={(e) => this.resetFilter(e)}
+                                data-testid ="reset-all"
                               >
                                 Reset All
                               </button>
@@ -887,6 +888,7 @@ class ScanLogsTable extends Component<Props, States> {
                                     ? true
                                     : false
                                 }
+                                data-testid ="apply"
                               >
                                 Apply
                                 <span>
