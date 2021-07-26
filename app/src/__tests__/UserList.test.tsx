@@ -71,6 +71,22 @@ describe('User List component tests', () => {
     //     expect(errorContent).not.toBeInTheDocument();
     // });
     it("Date picker invalid order date DD/MM/YYYY", () => {
+        Object.defineProperty(window, 'getComputedStyle', {
+            value: () => ({
+                paddingLeft: 0,
+                paddingRight: 0,
+                paddingTop: 0,
+                paddingBottom: 0,
+                marginLeft: 0,
+                marginRight: 0,
+                marginTop: 0,
+                marginBottom: 0,
+                borderBottomWidth: 0,
+                borderTopWidth: 0,
+                borderRightWidth: 0,
+                borderLeftWidth: 0
+            })
+        });
         const fromDate:any = screen.getByLabelText(/Last Modified Date/i);
         fireEvent.click(fromDate);
         fireEvent.change(fromDate, { target: { value: "29/10/2020" } });
