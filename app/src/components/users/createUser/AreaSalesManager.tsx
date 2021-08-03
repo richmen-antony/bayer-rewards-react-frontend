@@ -67,9 +67,9 @@ class AreaSalesManager extends Component<any, any> {
                             <Input
                                 type="text"
                                 className="form-control"
-                                name="fullname"
-                                placeHolder="Full Name"
-                                value={asaDatas.fullname}
+                                name="firstname"
+                                placeHolder="First Name"
+                                value={asaDatas.firstname}
                                 onChange={(e: any) =>
                                     asahandleChange(e)
                                 }
@@ -90,31 +90,46 @@ class AreaSalesManager extends Component<any, any> {
                     </div>
                     <div className="row fieldsAlign">
                         <div className="col-sm-3">
-                        <div className="flagInput">
-                            <PhoneInput
-                                placeholder="Mobile Number"
-                                inputProps={{
-                                name: "mobilenumber",
-                                required: true,
-                                maxLength:
-                                    process.env.REACT_APP_STAGE ===
-                                    "dev" ||
-                                    process.env.REACT_APP_STAGE ===
-                                    "int"
-                                    ? 12
-                                    : 11,
-                                }}
-                                country={countryCodeLower}
-                                value={asaDatas.mobilenumber}
-                                // disabled={isEditPage ? true : false}
-                                onChange={(value, e) =>
-                                    asahandleChange(e, value, "mobilenumber")
+                            <Input
+                                type="text"
+                                className="form-control"
+                                name="lastname"
+                                placeHolder="Last Name"
+                                value={asaDatas.lastname}
+                                onChange={(e: any) =>
+                                    asahandleChange(e)
                                 }
-                                onlyCountries={[countryCodeLower]}
-                                autoFormat
-                                disableDropdown
-                                disableCountryCode
+                                onKeyPress={(e: any) =>
+                                    allowAlphabetsNumbers(e)
+                                }
                             />
+                        </div>
+                        <div className="col-sm-3">
+                            <div className="flagInput">
+                                <PhoneInput
+                                    placeholder="Mobile Number"
+                                    inputProps={{
+                                    name: "mobilenumber",
+                                    required: true,
+                                    maxLength:
+                                        process.env.REACT_APP_STAGE ===
+                                        "dev" ||
+                                        process.env.REACT_APP_STAGE ===
+                                        "int"
+                                        ? 12
+                                        : 11,
+                                    }}
+                                    country={countryCodeLower}
+                                    value={asaDatas.mobilenumber}
+                                    // disabled={isEditPage ? true : false}
+                                    onChange={(value, e) =>
+                                        asahandleChange(e, value, "mobilenumber")
+                                    }
+                                    onlyCountries={[countryCodeLower]}
+                                    autoFormat
+                                    disableDropdown
+                                    disableCountryCode
+                                />
                             </div>
                         </div>
                         <div className="col-sm-3">

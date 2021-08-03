@@ -1104,7 +1104,6 @@ class UserList extends Component<Props, States> {
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                   <ThirdPartyUsers
-                    allChannelPartners={allChannelPartners}
                     isAsc={isAsc}
                     onSort={this.onSort}
                     state={this.state}

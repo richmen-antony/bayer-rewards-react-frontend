@@ -173,11 +173,13 @@ class CreateUser extends Component<any, any> {
       shouldBlockNavigation:true,
       asaDatas : {
         active : true,
-        fullname : "",
+        firstname : "",
+        lastname : "",
         email : "",
         mobilenumber : ""
       },
-      asaFullNameErr : "",
+      asafirstNameErr : "",
+      asalastNameErr : "",
       asaEmailErr : "",
       userroleType : "external",
       partnerDatas : [
@@ -1096,7 +1098,7 @@ class CreateUser extends Component<any, any> {
         //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
         // });
         if(this.state.userroleType === "external"){
-          this.submitUserDatas();
+          this.submitretailerUserDatas();
         } else if (this.state.userroleType === "internal"){
           this.submitasaUserDatas();
         }
@@ -1104,7 +1106,7 @@ class CreateUser extends Component<any, any> {
       }
     }
   }
-  submitUserDatas = () => {
+  submitretailerUserDatas = () => {
     this.setState({
       isLoader: true,
     });
@@ -1303,41 +1305,41 @@ class CreateUser extends Component<any, any> {
     const { asaCreation } = apiURL;
     const asaPersonalData = this.state.asaDatas;
     let geoFields: any = {};
-    let shippingFields: any = {};
     this.state.dynamicFields.forEach((list: any, i: number) => {
       geoFields[list.name] = list.value;
     });
     let userData = this.state.userData;
+    let partners = this.state.partnerDatas;
+    let userMappings:any = [];
+    partners.forEach((item:any, index:number)=>{
+      let mappings:any = {};
+      mappings['channelpartnerid'] = item.name
+      mappings['isactive'] = true
+      userMappings.push(mappings);
+    });
     const data = {
-      countrycode : "MW",
+      countrycode : this.getStoreData.countryCode,
       firstname : asaPersonalData.firstname,
       lastname: asaPersonalData.lastname,
-      phonenumber:asaPersonalData.phonenumber,
+      phonenumber:asaPersonalData.mobilenumber,
       emailid:asaPersonalData.email,
       locale:"English (Malawi)",
       usertype:"EXTERNAL",
       rolename:"ASA",
-      userstatus:"ACTIVE",
-      deliverygeolevel0: this.getStoreData.countryCode,
-        deliverygeolevel1: geoFields.geolevel1,
-        deliverygeolevel2: geoFields.geolevel2,
-        deliverygeolevel3: geoFields.geolevel3,
-        deliverygeolevel4: geoFields.geolevel4,
-        deliverygeolevel5: geoFields.geolevel5,
-        street: userData.deliverystreet,
-        zipcode: userData.deliveryzipcode,
-        iscreatedfrommobile:false,
-          usermapping: [{
-              "channelpartnerid":"MW-7678687673",
-              "isactive":true
-          },
-          {
-              "channelpartnerid":"MW-2655656546",
-              "isactive":true
-          }
-          ]
-    }
+      userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
+      geolevel0: this.getStoreData.countryCode,
+      geolevel1: geoFields.geolevel1,
+      geolevel2: geoFields.geolevel2,
+      geolevel3: geoFields.geolevel3,
+      geolevel4: geoFields.geolevel4,
+      geolevel5: geoFields.geolevel5,
+      street: userData.deliverystreet,
+      zipcode: userData.deliveryzipcode,
+      iscreatedfrommobile:false,
+      usermapping : userMappings
+     }
     // const url = this.state.isEditPage ? updateUser : asaCreation;
+    console.log('asasubmit', data);
   const url = asaCreation;
   const userDetails = this.state.isEditPage
   ? {
@@ -1352,13 +1354,7 @@ class CreateUser extends Component<any, any> {
         isLoader: false,
       });
       let msg = "";
-      if (this.props.location?.page === "validate") {
-        if (userData.isDeclineUser) {
-          msg = "User Declined Successfully";
-        } else {
-          msg = "User Validated Successfully";
-        }
-      } else if (this.props.location?.page === "edit") {
+      if (this.props.location?.page === "edit") {
         msg = "User Updated Successfully";
       } else {
         msg = "User Created Successfully";
@@ -1691,7 +1687,7 @@ class CreateUser extends Component<any, any> {
     let userData = this.state.userData;
     userData["isDeclineUser"] = true;
     this.setState({ userData: userData,shouldBlockNavigation: false });
-    this.submitUserDatas();
+    this.submitretailerUserDatas();
   };
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
@@ -2206,7 +2202,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
     let partnertypeOptions = this.state.channelPartnersOptions;
     partnerDatas.splice(idx, 1);
     partnertypeOptions.splice(idx,1);
-    this.setState({ partnerDatas: partnerDatas, partnertypeOptions: partnertypeOptions });
+    this.setState({ partnerDatas: partnerDatas, channelPartnersOptions: partnertypeOptions });
 };
 
   render() {
@@ -2229,7 +2225,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
       userroleType
     } = this.state;
 
-    console.log('partnerDatas', this.state.partnerDatas)
+    console.log('partnerDatas', this.state.asaDatas)
 
     let currentPage = this.props.location?.page;
     const fields =

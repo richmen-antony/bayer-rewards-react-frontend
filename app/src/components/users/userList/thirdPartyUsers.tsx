@@ -85,6 +85,8 @@ type States = {
   isEditRedirect: boolean;
   allThirdPartyUsers : any;
   partnerDatas: any;
+  locationwiseChannelPartners: any;
+  channelPartnersOptions: any;
   pageNo: number;
   isFiltered: boolean;
 };
@@ -172,52 +174,7 @@ class ChannelPartners extends Component<Props, States> {
       },
       isStaff: false,
       isEditRedirect: false,
-      allThirdPartyUsers : [
-          {
-              username : "vidhya",
-              mobilenumber : "987898778",
-              fullname : "vidhya arul",
-              partnersmapped : [
-                    {
-                        type : "Distributor",
-                        location: "Northern",
-                        name : "Smith",
-                        // errObj : {
-                        //     typeErr: "",
-                        //     locationErr: "",
-                        //     nameErr: "",
-                        // }
-                    },
-                    {
-                        type : "Retailer",
-                        location: "Southern",
-                        name : "John",
-                    }
-              ],
-              deliverygeolevel1 : "Northern",
-              deliverygeolevel2 : "Blantyre",
-              deliverygeolevel3 : "Kasungu",
-              userstatus : "ACTIVE",
-              lastupdatedby: ""
-          },
-          {
-            username : "arul",
-            mobilenumber : "665654654",
-            fullname : "arul mani",
-            partnersmapped : [
-                {
-                    type : "Retailer",
-                    location: "Southern",
-                    name : "Smith",
-                }
-            ],
-            deliverygeolevel1 : "Southern",
-            deliverygeolevel2 : "Blantyre",
-            deliverygeolevel3 : "Kasungu",
-            userstatus : "INACTIVE",
-            lastupdatedby: ""
-        }
-      ],
+      allThirdPartyUsers : [],
       partnerDatas : [
         {
             type : "",
@@ -230,6 +187,8 @@ class ChannelPartners extends Component<Props, States> {
             }
         }
     ],
+    locationwiseChannelPartners : [],
+    channelPartnersOptions:[],
     pageNo: 1,
     isFiltered: false
     };
@@ -833,6 +792,7 @@ class ChannelPartners extends Component<Props, States> {
       this.setState({ userData: datas });
     }
   };
+
   asahandleAddRow = () => {
     const item = {
       type: "",
@@ -851,8 +811,10 @@ class ChannelPartners extends Component<Props, States> {
 
 asahandleRemoveSpecificRow = (idx: any) => () => {
     let partnerDatas = this.state.partnerDatas;
+    let partnertypeOptions = this.state.channelPartnersOptions;
     partnerDatas.splice(idx, 1);
-    this.setState({ partnerDatas: partnerDatas });
+    partnertypeOptions.splice(idx,1);
+    this.setState({ partnerDatas: partnerDatas, channelPartnersOptions: partnertypeOptions });
 };
 
 partnerhandleChange = (e:any, idx: number) => {
@@ -860,6 +822,55 @@ partnerhandleChange = (e:any, idx: number) => {
     const datas = this.state.partnerDatas;
     datas[idx][name] = value;
     this.setState({ partnerDatas : datas });
+    if( (this.state.partnerDatas[idx].type !== "") && (this.state.partnerDatas[idx].location !== "") && (name !== "name")) {
+      this.getlocationwiseChannelPartners(idx);
+    }
+}
+
+getlocationwiseChannelPartners = (idx: number) => {
+  const { channelPartners } = apiURL;
+  const partnerData = this.state.partnerDatas;
+  // let options = this.state.channelPartnersOptions[idx];
+  // options = [];
+  this.setState({ isLoader: true,
+    locationwiseChannelPartners:[],
+    // channelPartnersOptions:options
+  });
+  let data = {
+    countrycode: this.getStoreData.countryCode,
+    page: 1,
+    // searchtext: "",
+    // isfiltered: false,
+    rowsperpage: 1000,
+    partnertype: partnerData[idx].type,
+    geolevel1 : partnerData[idx].location
+  };
+  return new Promise((resolve, reject) => {
+    invokeGetAuthService(channelPartners, data)
+    .then((response) => {
+      let res =  Object.keys(response.body).length !== 0 ? response.body.rows : [];
+      this.setState({
+        isLoader: false,
+        locationwiseChannelPartners:res
+      },()=>{
+        const channelPartnersOptions = this.state.channelPartnersOptions;
+        let partners:any = [];
+        this.state.locationwiseChannelPartners?.forEach((item:any, index:number)=>{
+          let partnersObj:any = {};
+            partnersObj['text'] = item.channelpartnerfullname;
+            partnersObj['value'] = item.channelpartnerid;
+            // partnersObj['partnerid'] = item.channelpartnerid;
+            partners.push(partnersObj);
+        });
+          channelPartnersOptions[idx]=partners;
+          this.setState({ channelPartnersOptions: channelPartnersOptions });
+      });
+    })
+    .catch((error) => {
+      this.setState({ isLoader: false });
+    });
+  });
+
 }
 
   validateEmail = (value: any, idx: number, type: string) => {
@@ -1116,6 +1127,7 @@ partnerhandleChange = (e:any, idx: number) => {
                             handleAddRow = {this.asahandleAddRow}
                             partnerhandleChange = {this.partnerhandleChange} 
                             partnerDatas = {partnerDatas} 
+                            channelPartnersOptions={this.state.channelPartnersOptions}
                         />
                     </div>
                 </div>
