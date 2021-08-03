@@ -707,6 +707,17 @@ cus-btn-scanlog-filter[disabled] {
   }
 }
 
+.filter-partnertype {
+  display: flex;
+  align-items: center;
+  .partnertype-list {
+    margin-left: 12px;
+    button {
+      font-size: 12px;
+    }
+  }
+}
+
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {
     font-size: 11px;

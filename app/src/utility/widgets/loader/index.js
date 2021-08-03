@@ -4,7 +4,7 @@ import Loader from 'react-loader-spinner';
 class Loaders extends Component {
     render() {
         return (
-            <div style={{
+            <div title = "loading-spinner" style={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -19,6 +19,7 @@ class Loaders extends Component {
                 cursor: 'pointer'
             }}>
                 <Loader
+                    data-testid="loading-spinner"
                     type="Puff"
                     color="#00bcff"
                     height={100}
