@@ -98,7 +98,7 @@ class UserMappings extends Component<any, any> {
                                         handleChange={(e: any) =>
                                             partnerhandleChange(e, idx)
                                         }
-                                        value={item.name}
+                                        value={item.partnerid}
                                         isPlaceholder
                                     />
                                 </div>

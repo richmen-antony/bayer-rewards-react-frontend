@@ -84,7 +84,9 @@ type States = {
   isStaff: boolean;
   isEditRedirect: boolean;
   allThirdPartyUsers : any;
-  partnerDatas: any
+  partnerDatas: any;
+  pageNo: number;
+  isFiltered: boolean;
 };
 
 let levelsName: any = [];
@@ -227,8 +229,9 @@ class ChannelPartners extends Component<Props, States> {
                 nameErr: "",
             }
         }
-    ]
-
+    ],
+    pageNo: 1,
+    isFiltered: false
     };
     this.generateHeader = this.generateHeader.bind(this);
   }
@@ -239,6 +242,7 @@ class ChannelPartners extends Component<Props, States> {
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
     if (userData?.username) this.setState({ userName: userData.username });
+    this.getThirdPartyList();
   }
 
   getCountryList() {
@@ -277,6 +281,66 @@ class ChannelPartners extends Component<Props, States> {
         Alert("warning", message);
       });
   }
+
+  getThirdPartyList = (condIf?: string) => {
+    this.setState({
+      allThirdPartyUsers: [],
+      // dropdownOpenFilter: false,
+      // dateErrMsg: "",
+    });
+    const { thirdPartyList } = apiURL;
+    // const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo
+    const pageNo = 1;
+    this.setState({ isLoader: true ,pageNo:pageNo});
+    // let {
+    //   status,
+    //   lastmodifieddatefrom,
+    //   lastmodifieddateto,
+    //   geolevel1,
+    //   geolevel2,
+    //   geolevel3,
+    // }: any = this.state.selectedFilters;
+    let data = {
+      countrycode: this.getStoreData.countryCode,
+      page:  pageNo,
+      isfiltered: this.state.isFiltered,
+      // rowsperpage: this.state.rowsPerPage,
+      rowsperpage: 10,
+      partnertype : "ASA"
+      // partnertype:
+      //   this.state.partnerType.type === "Distributor"
+      //     ? "DISTRIBUTOR"
+      //     : this.state.partnerType.type === "ALL"
+      //     ? "ALL"
+      //     : "RETAILER",
+    };
+    // if (this.state.isFiltered) {
+    //   let filter = {
+    //     status: status,
+    //     lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
+    //     lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
+    //     geolevel1: geolevel1,
+    //     geolevel2: geolevel2,
+    //     geolevel3: geolevel3,
+    //   };
+    //   data = { ...data, ...filter };
+    // }
+    invokeGetAuthService(thirdPartyList, data)
+      .then((response) => {
+        this.setState({
+          isLoader: false,
+          allThirdPartyUsers:
+            Object.keys(response.body).length !== 0 ? response.body.rows : [],
+        });
+        const total = response.totalrows;
+        // this.setState({ totalData: Number(total) });
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+        // let message = error.message
+        // Alert("warning", message);
+      });
+  };
 
   handleSort(
     e: any,
@@ -1107,14 +1171,15 @@ partnerhandleChange = (e:any, idx: number) => {
                       }
                     >
                       <td style={{ width: "10%" }}>{list.username}</td>
-                      <td style={{ width: "10%" }}>{list.mobilenumber} </td>
+                      <td style={{ width: "10%" }}>{list.phonenumber} </td>
                       <td style={{ textAlign: "left", width: "12%" }}>
-                        {_.startCase(_.toLower(list.fullname))}{" "}
+                      {_.startCase(_.toLower(list.firstname)) + " " + _.startCase(_.toLower(list.lastname))}{" "}
+                        {/* {_.startCase(_.toLower(list.fullname))}{" "} */}
                       </td>
                       <td style={{ textAlign: "center", width: "8%" }}>
                         <div className="retailer-id">
                           <p>
-                            {list.partnersmapped?.length}
+                            {list.usermapping?.length}
                             <img
                               data-testid="expand-window"
                               className="retailer-icon"
@@ -1138,13 +1203,13 @@ partnerhandleChange = (e:any, idx: number) => {
                         </div>
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.deliverygeolevel1}{" "}
+                        {list.geolevel1}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.deliverygeolevel2}
+                        {list.geolevel2}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.deliverygeolevel3}{" "}
+                        {list.geolevel3}{" "}
                       </td>
 
                       <td style={{ width: "9%" }}>

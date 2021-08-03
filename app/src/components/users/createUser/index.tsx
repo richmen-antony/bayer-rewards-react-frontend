@@ -185,6 +185,7 @@ class CreateUser extends Component<any, any> {
             type : "",
             location: "",
             name : "",
+            partnerId: "",
             errObj : {
                 typeErr: "",
                 locationErr: "",
@@ -1094,7 +1095,12 @@ class CreateUser extends Component<any, any> {
         // this.setState({
         //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
         // });
-        this.submitUserDatas();
+        if(this.state.userroleType === "external"){
+          this.submitUserDatas();
+        } else if (this.state.userroleType === "internal"){
+          this.submitasaUserDatas();
+        }
+
       }
     }
   }
@@ -1289,6 +1295,96 @@ class CreateUser extends Component<any, any> {
         );
       });
   };
+
+  submitasaUserDatas = () => {
+    this.setState({
+      isLoader: true,
+    });
+    const { asaCreation } = apiURL;
+    const asaPersonalData = this.state.asaDatas;
+    let geoFields: any = {};
+    let shippingFields: any = {};
+    this.state.dynamicFields.forEach((list: any, i: number) => {
+      geoFields[list.name] = list.value;
+    });
+    let userData = this.state.userData;
+    const data = {
+      countrycode : "MW",
+      firstname : asaPersonalData.firstname,
+      lastname: asaPersonalData.lastname,
+      phonenumber:asaPersonalData.phonenumber,
+      emailid:asaPersonalData.email,
+      locale:"English (Malawi)",
+      usertype:"EXTERNAL",
+      rolename:"ASA",
+      userstatus:"ACTIVE",
+      deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
+        street: userData.deliverystreet,
+        zipcode: userData.deliveryzipcode,
+        iscreatedfrommobile:false,
+          usermapping: [{
+              "channelpartnerid":"MW-7678687673",
+              "isactive":true
+          },
+          {
+              "channelpartnerid":"MW-2655656546",
+              "isactive":true
+          }
+          ]
+    }
+    // const url = this.state.isEditPage ? updateUser : asaCreation;
+  const url = asaCreation;
+  const userDetails = this.state.isEditPage
+  ? {
+      isedit: true,
+      lastupdatedby: this.state.username.toUpperCase(),
+      lastupdateddate: new Date().toJSON(),
+    }
+  : "";
+    invokePostAuthService(url, data, userDetails)
+    .then((response: any) => {
+      this.setState({
+        isLoader: false,
+      });
+      let msg = "";
+      if (this.props.location?.page === "validate") {
+        if (userData.isDeclineUser) {
+          msg = "User Declined Successfully";
+        } else {
+          msg = "User Validated Successfully";
+        }
+      } else if (this.props.location?.page === "edit") {
+        msg = "User Updated Successfully";
+      } else {
+        msg = "User Created Successfully";
+      }
+      // toastSuccess(msg);
+      Alert("success", msg);
+      const {setPromptMode} =this.context;
+      setPromptMode(false);
+      this.props.history.push("/userList");
+    })
+    .catch((error: any) => {
+      this.setState({ isLoader: false });
+      let message = error.message;
+      if (message === "Retailer with the same Mobilenumber exists") {
+        message = "User with same Mobilenumber already exists";
+      }
+      this.setState(
+        { isRendered: true, currentStep: 1, shouldBlockNavigation: true },
+        () => {
+          // toastInfo(message);
+          Alert("warning", message);
+        }
+      );
+    });
+    
+  }
 
   externalUsersValidation() {
     let formValid = true;
@@ -2074,7 +2170,8 @@ getlocationwiseChannelPartners = (idx: number) => {
         this.state.locationwiseChannelPartners?.forEach((item:any, index:number)=>{
           let partnersObj:any = {};
             partnersObj['text'] = item.channelpartnerfullname;
-            partnersObj['value'] = item.channelpartnerfullname;
+            partnersObj['value'] = item.channelpartnerid;
+            // partnersObj['partnerid'] = item.channelpartnerid;
             partners.push(partnersObj);
         });
           channelPartnersOptions[idx]=partners;

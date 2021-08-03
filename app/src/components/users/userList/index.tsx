@@ -492,32 +492,7 @@ class UserList extends Component<Props, States> {
       });
   };
 
-  getThirdPartysList = () => {
-    const { channelPartnersList } = apiURL;
-    this.setState({ isLoader: true });
-    let data = {
-      page: this.state.pageNo,
-      searchtext: this.state.searchText,
-      rowsperpage: this.state.rowsPerPage,
-      usertype: "THIRD PARTY",
-    };
 
-    invokeGetAuthService(channelPartnersList, data)
-      .then((response) => {
-        this.setState({
-          isLoader: false,
-          allThirdParty:
-            Object.keys(response.body).length !== 0 ? response.body.rows : [],
-        });
-        const total = response.body.rows.count();
-        this.setState({ totalData: total });
-      })
-      .catch((error) => {
-        this.setState({ isLoader: false });
-        let message = error.message;
-        Alert("warning", message);
-      });
-  };
 
   getCountryList() {
     //service call
