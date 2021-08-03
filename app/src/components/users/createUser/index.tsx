@@ -2036,7 +2036,6 @@ class CreateUser extends Component<any, any> {
 partnerhandleChange = (e:any, idx: number) => {
     const { name, value} = e.target;
     const datas = this.state.partnerDatas;
-
     datas[idx][name] = value;
     this.setState({ partnerDatas : datas });
     if( (this.state.partnerDatas[idx].type !== "") && (this.state.partnerDatas[idx].location !== "") && (name !== "name")) {
@@ -2070,21 +2069,16 @@ getlocationwiseChannelPartners = (idx: number) => {
         isLoader: false,
         locationwiseChannelPartners:res
       },()=>{
-
         const channelPartnersOptions = this.state.channelPartnersOptions;
-        console.log('locationwiseChannelPartners',this.state.locationwiseChannelPartners )
         let partners:any = [];
-
         this.state.locationwiseChannelPartners?.forEach((item:any, index:number)=>{
           let partnersObj:any = {};
             partnersObj['text'] = item.channelpartnerfullname;
             partnersObj['value'] = item.channelpartnerfullname;
             partners.push(partnersObj);
         });
-        channelPartnersOptions.push(partners)
-        this.setState({ channelPartnersOptions: channelPartnersOptions });
-        console.log('partners',this.state.channelPartnersOptions )
-        // console.log('vidhyaaaa',partners )
+          channelPartnersOptions[idx]=partners;
+          this.setState({ channelPartnersOptions: channelPartnersOptions });
       });
     })
     .catch((error) => {
@@ -2137,6 +2131,8 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
       asaDatas,
       userroleType
     } = this.state;
+
+    console.log('partnerDatas', this.state.partnerDatas)
 
     let currentPage = this.props.location?.page;
     const fields =
