@@ -25,5 +25,7 @@ export const apiURL = {
     getLevelFive: "geographical/getGeolevel5",
     downloadChanglogs:"user/changelogsdownload",
     adminOrderList:"admin/orderlist",
-    downloadAdminOrderList:"admin/downloadorderlist"
+    downloadAdminOrderList:"admin/downloadorderlist",
+    channelPartners : "user/channelpartnerlist",
+
 }

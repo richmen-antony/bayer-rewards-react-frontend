@@ -877,7 +877,7 @@ class UserList extends Component<Props, States> {
                         aria-label="ant example"
                       >
                         <AntTab label="Channel Partners" />
-                        {/* <AntTab label="Third Party Users" /> */}
+                        <AntTab label="Third Party Users" />
                       </AntTabs>
                     </div>
                   </div>
@@ -1129,9 +1129,17 @@ class UserList extends Component<Props, States> {
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                   <ThirdPartyUsers
-                    allThirdParty={this.state.allThirdParty}
+                    allChannelPartners={allChannelPartners}
                     isAsc={isAsc}
                     onSort={this.onSort}
+                    state={this.state}
+                    previous={this.previous}
+                    next={this.next}
+                    pageNumberClick={this.pageNumberClick}
+                    totalData={totalData}
+                    handlePaginationChange={this.handlePaginationChange}
+                    callAPI={this.getChannelPartnersList}
+                    geolevel1List ={this.state.geolevel1List}
                   />
                 </TabPanel>
               </>

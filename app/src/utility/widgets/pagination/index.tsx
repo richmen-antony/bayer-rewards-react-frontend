@@ -116,7 +116,7 @@ class Pagination extends Component<Props, States> {
     // });
     return (
       <>
-        {data.length > 0 && (
+        {data?.length > 0 && (
           <div className="col-sm-12">
             <div className="row">
               <div

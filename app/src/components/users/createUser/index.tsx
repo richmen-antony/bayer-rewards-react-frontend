@@ -32,14 +32,13 @@ import AdminPopup from "../../../container/components/dialog/AdminPopup";
 import _ from "lodash";
 import RouterPrompt from "../../../container/prompt";
 import { AppContext } from "../../../container/context";
+import AreaSalesManager from "./AreaSalesManager";
 
 const role = [
-  // { value: "salesagent", text: "Area Sales Agent" },
   { value: "RETAILER", text: "Retailer" },
-  // { value: "DISTRIBUTOR", text: "Distributor" },
+  { value: "salesagent", text: "Area Sales Agent" },
+  { value: "DISTRIBUTOR", text: "Distributor" },
 ];
-
-
 
 let geoLocationInfo = {
   geolevel1: "",
@@ -126,6 +125,7 @@ class CreateUser extends Component<any, any> {
           },
         ],
       },
+      areaSalesManagerStatus: "true",
       deliverystreetErr: "",
       shippingcityErr: "",
       shippingstateErr: "",
@@ -171,6 +171,29 @@ class CreateUser extends Component<any, any> {
       cloneduserData: {},
       deleteStaffPopup: false,
       shouldBlockNavigation:true,
+      asaDatas : {
+        active : true,
+        fullname : "",
+        email : "",
+        mobilenumber : ""
+      },
+      asaFullNameErr : "",
+      asaEmailErr : "",
+      userroleType : "external",
+      partnerDatas : [
+        {
+            type : "",
+            location: "",
+            name : "",
+            errObj : {
+                typeErr: "",
+                locationErr: "",
+                nameErr: "",
+            }
+        }
+    ],
+    locationwiseChannelPartners : [],
+    channelPartnersOptions:[]
     };
     this.loggedUserInfo = loggedUserInfo;
     this.isFilledAllFields = false;
@@ -1001,9 +1024,13 @@ class CreateUser extends Component<any, any> {
   handleClick(clickType: any, e: any) {
     let formValid = true;
     if (clickType === "personalNext") {
-      formValid = this.checkValidation();
+      if(this.state.userroleType === "external"){
+        formValid = this.externalUsersValidation();
+      }else{
+        formValid = this.internalUsersValidation();
+      }
     } else if (clickType === "geographicNext") {
-      formValid = this.checkValidation();
+      formValid = this.externalUsersValidation();
       if (formValid) {
         if (!this.state.isEditPage && !this.state.accInfo && !this.state.withHoldingSelected) {
           let level1Options: any = [];
@@ -1039,7 +1066,7 @@ class CreateUser extends Component<any, any> {
         }
       }
     } else if (clickType === "createUser") {
-      formValid = this.checkValidation();
+      formValid = this.externalUsersValidation();
       if (formValid) {
         this.setState({ shouldBlockNavigation: false });
       }
@@ -1051,6 +1078,7 @@ class CreateUser extends Component<any, any> {
       newStep = newStep + 1;
     } else {
       newStep = newStep - 1;
+      
     }
 
     if (newStep > 0 && newStep <= this.state.stepsArray.length) {
@@ -1262,7 +1290,7 @@ class CreateUser extends Component<any, any> {
       });
   };
 
-  checkValidation() {
+  externalUsersValidation() {
     let formValid = true;
     let userData = this.state.userData;
     if (this.state.currentStep === 1) {
@@ -1427,6 +1455,23 @@ class CreateUser extends Component<any, any> {
         this.setState({ isRendered: true });
       });
     }
+    formValid = true;
+    return formValid;
+  }
+
+  internalUsersValidation = () => {
+    let formValid = true;
+    let asaData = this.state.asaDatas;
+    if ( asaData.fullname === "") {
+      this.setState( { asaFullNameErr : "Please Enter the Full name"})
+    } else if ( asaData.email === "") {
+      this.setState( { asaEmailErr : "Please Enter the Email"})
+    }
+
+    if ( this.state.asaFullNameErr !== "") {
+      formValid = false;
+    }
+    formValid = true;
     return formValid;
   }
 
@@ -1516,7 +1561,6 @@ class CreateUser extends Component<any, any> {
         },
         dynamicFields: data,
       }));
-      console.log('aaa', this.state.dynamicFields);
     } else {
       if(!this.state.accInfo){
         let data: any = this.state.withHolding;
@@ -1678,26 +1722,6 @@ class CreateUser extends Component<any, any> {
               ownernameErr: "",
             });
           }
-          // if (!e.target.checked) {
-          //   let setFormArray: any = [];
-          //   this.state.geographicFields.map((list: any, i: number) => {
-          //     setFormArray.push({
-          //       name: list,
-          //       placeHolder: true,
-          //       value: list === "country" ? this.getStoreData.country : "",
-          //       options:
-          //         list === "country"
-          //           ? this.state.countryList
-          //           : i == 1
-          //           ? this.state.level1Options
-          //           : "",
-          //       error: "",
-          //     });
-          //   });
-          //   this.setState({ withHolding: setFormArray });
-          // } else {
-          //   this.setState({ withHolding: this.state.dynamicFields, ownernameErr: '' });
-          // }
         }
         this.setState({ accInfo: e.target.checked });
       } else {
@@ -1716,7 +1740,18 @@ class CreateUser extends Component<any, any> {
             : "Please enter owner name";
             this.setState({ ownernameErr: whtownername});
           }
-         this.setState({userData: datas });
+          this.setState({userData: datas });
+          if (e.target.name === 'rolename') {
+            let steps = this.state.stepsArray;
+            if(e.target.value !== 'salesagent' ) {
+              steps.splice(2,1,'With-Holding Tax');
+              this.setState({ userroleType : "external"})
+            } else {
+              steps.splice(2,1,'User Mappings');
+              this.setState({ userroleType : "internal"})
+            }
+            this.setState({ stepsArray : steps });
+          }
         }
       }
     }
@@ -1970,6 +2005,119 @@ class CreateUser extends Component<any, any> {
     }));
   };
 
+  asahandleChange = (e:any,val?: any, key?:string) => {
+    let datas = this.state.asaDatas;
+    let userdata = this.state.userData;
+    if(key === "mobilenumber") {
+      datas['mobilenumber'] = val;
+    } else {
+      let { name, value, checked } = e.target;
+      if( name === "active"){
+        datas[name] = checked;
+      } else if (name === 'rolename') {
+        userdata[name] = value;
+        let steps = this.state.stepsArray;
+        if(value !== 'salesagent' ) {
+          steps.splice(2,1,'With-Holding Tax');
+          this.setState({ userroleType : "external"})
+        } else {
+          steps.splice(2,1,'User Mappings');
+          this.setState({ userroleType : "internal"})
+        }
+        this.setState({ stepsArray : steps });
+        this.setState({ userData : userdata });
+      } else {
+        datas[name] = value;
+      }
+    }
+    this.setState({ asaDatas : datas });
+  };
+  
+partnerhandleChange = (e:any, idx: number) => {
+    const { name, value} = e.target;
+    const datas = this.state.partnerDatas;
+
+    datas[idx][name] = value;
+    this.setState({ partnerDatas : datas });
+    if( (this.state.partnerDatas[idx].type !== "") && (this.state.partnerDatas[idx].location !== "") && (name !== "name")) {
+      this.getlocationwiseChannelPartners(idx);
+    }
+}
+
+getlocationwiseChannelPartners = (idx: number) => {
+  const { channelPartners } = apiURL;
+  const partnerData = this.state.partnerDatas;
+  // let options = this.state.channelPartnersOptions[idx];
+  // options = [];
+  this.setState({ isLoader: true,
+    locationwiseChannelPartners:[],
+    // channelPartnersOptions:options
+  });
+  let data = {
+    countrycode: this.getStoreData.countryCode,
+    page: 1,
+    // searchtext: "",
+    // isfiltered: false,
+    rowsperpage: 1000,
+    partnertype: partnerData[idx].type,
+    geolevel1 : partnerData[idx].location
+  };
+  return new Promise((resolve, reject) => {
+    invokeGetAuthService(channelPartners, data)
+    .then((response) => {
+      let res =  Object.keys(response.body).length !== 0 ? response.body.rows : [];
+      this.setState({
+        isLoader: false,
+        locationwiseChannelPartners:res
+      },()=>{
+
+        const channelPartnersOptions = this.state.channelPartnersOptions;
+        console.log('locationwiseChannelPartners',this.state.locationwiseChannelPartners )
+        let partners:any = [];
+
+        this.state.locationwiseChannelPartners?.forEach((item:any, index:number)=>{
+          let partnersObj:any = {};
+            partnersObj['text'] = item.channelpartnerfullname;
+            partnersObj['value'] = item.channelpartnerfullname;
+            partners.push(partnersObj);
+        });
+        channelPartnersOptions.push(partners)
+        this.setState({ channelPartnersOptions: channelPartnersOptions });
+        console.log('partners',this.state.channelPartnersOptions )
+        // console.log('vidhyaaaa',partners )
+      });
+    })
+    .catch((error) => {
+      this.setState({ isLoader: false });
+    });
+  });
+
+}
+
+asahandleAddRow = () => {
+    const item = {
+      type: "",
+      location: "",
+      name: "",
+      errObj: {
+        typeErr: "",
+        locationErr: "",
+        nameErr: "",
+      },
+    };
+    let partnerDatas = this.state.partnerDatas;
+    partnerDatas.push(item);
+    this.setState({ partnerDatas: partnerDatas });
+};
+
+asahandleRemoveSpecificRow = (idx: any) => () => {
+    let partnerDatas = this.state.partnerDatas;
+    let partnertypeOptions = this.state.channelPartnersOptions;
+    partnerDatas.splice(idx, 1);
+    partnertypeOptions.splice(idx,1);
+    this.setState({ partnerDatas: partnerDatas, partnertypeOptions: partnertypeOptions });
+};
+
   render() {
     let countryCodeLower = _.toLower(this.loggedUserInfo?.countrycode);
     const {
@@ -1986,6 +2134,8 @@ class CreateUser extends Component<any, any> {
       billingzipcodeErr,
       accInfo,
       isLoader,
+      asaDatas,
+      userroleType
     } = this.state;
 
     let currentPage = this.props.location?.page;
@@ -2032,7 +2182,6 @@ class CreateUser extends Component<any, any> {
     if (currentStep === 1) {
       nextButton = (
         <button
-          title="personal-next"
           name="personal-next"
           data-testid="personal-next"
           className="cus-btn-user buttonStyle"
@@ -2076,6 +2225,7 @@ class CreateUser extends Component<any, any> {
         </button>
       );
     }
+
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -2160,9 +2310,19 @@ class CreateUser extends Component<any, any> {
             <div className="container">
               {currentStep === 1 && (
                 <>
+                {userroleType === "internal" ? 
+                  <AreaSalesManager 
+                    handleChange={this.handleChange} 
+                    userData={userData} asaDatas={asaDatas}  
+                    asahandleChange = {this.asahandleChange} 
+                    role={role} 
+                    countryCodeLower={countryCodeLower}
+                    currentStep={currentStep}
+                    
+                  /> : 
                   <div className="personal">
                     <>
-                      <div
+                      <div 
                         className="row"
                         style={{
                           display: "flex",
@@ -2317,13 +2477,7 @@ class CreateUser extends Component<any, any> {
                                             value={item.mobilenumber}
                                             disabled={isEditPage ? true : false}
                                             onChange={(value, e) =>
-                                              this.handleChange(
-                                                idx,
-                                                e,
-                                                "phone",
-                                                "owner",
-                                                value
-                                              )
+                                              this.handleChange(idx,e,"phone","owner",value)
                                             }
                                             onlyCountries={[countryCodeLower]}
                                             autoFormat
@@ -2833,7 +2987,7 @@ class CreateUser extends Component<any, any> {
                         </div>
                       </div>
                     </>
-                  </div>
+                  </div>}
                 </>
               )}
               <div className="geographicLocation" style={{ width: "80%" }}>
@@ -2880,146 +3034,162 @@ class CreateUser extends Component<any, any> {
                   </>
                 )}
               </div>
-              <div style={{ marginTop: "-28px" }}>
-                {currentStep === 3 && (
-                  <>
-                    <div className="row fieldsAlign">
-                      <div className="col-sm-3">
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="taxid"
-                          placeHolder="Tax Id"
-                          value={userData.taxid}
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
-                        />
-                      </div>
-                      <div className="col-sm-3">
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="whtaccountname"
-                          placeHolder="Account Name"
-                          value={userData.whtaccountname}
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
-                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                        />
-                        {accountnameErr && (
-                          <span className="error">{accountnameErr} </span>
-                        )}
-                      </div>
+              {currentStep === 3 && (
+                <>
+              {userroleType === "internal" ? 
+                <AreaSalesManager 
+                  handleChange={this.handleChange} 
+                  userData={userData} asaDatas={asaDatas}  
+                  asahandleChange = {this.asahandleChange} 
+                  role={role} 
+                  countryCodeLower={countryCodeLower}
+                  currentStep={currentStep}
+                  geolevel1List ={this.state.geolevel1List}
+                  handleAddRow ={this.asahandleAddRow}
+                  handleRemoveSpecificRow={this.asahandleRemoveSpecificRow}
+                  partnerhandleChange={this.partnerhandleChange}
+                  partnerDatas={this.state.partnerDatas}
+                  channelPartnersOptions={this.state.channelPartnersOptions}
+                /> : 
+                <div style={{ marginTop: "-28px" }}>
+                  <div className="row fieldsAlign">
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="taxid"
+                        placeHolder="Tax Id"
+                        value={userData.taxid}
+                        onChange={(e: any) =>
+                          this.handleChange("", e, "", "otherSteps", "")
+                        }
+                      />
                     </div>
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="whtaccountname"
+                        placeHolder="Account Name"
+                        value={userData.whtaccountname}
+                        onChange={(e: any) =>
+                          this.handleChange("", e, "", "otherSteps", "")
+                        }
+                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                      />
+                      {accountnameErr && (
+                        <span className="error">{accountnameErr} </span>
+                      )}
+                    </div>
+                  </div>
 
-                    <div
-                      className="row"
-                      style={{
-                        marginTop:
-                          (ownernameErr === "" || ownernameErr === 'undefined' || accountnameErr === "" ||  accountnameErr === 'undefined')
-                            ? "32px"
-                            : "12px",
-                      }}
-                    >
-                      <div className="col-sm-3">
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="whtownername"
-                          placeHolder="Owner Name"
-                          value={
-                            this.state.accInfo
-                              ? userData.ownerRows[0].firstname +
-                                " " +
-                                userData.ownerRows[0].lastname
-                              : userData.whtownername
-                          }
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
-                          read-only={this.state.accInfo ? "true" : "false"}
-                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                        />
-                        <div>
-                          {ownernameErr && (
-                            <span className="error">{ownernameErr} </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-sm-6">
-                        <label className="font-weight-bold">
-                          Same as Personal Info
-                        </label>
-                        <CustomSwitch
-                          checked={this.state.accInfo}
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
-                          name="accInfo"
-                        />
-                      </div>
-                    </div>
-                    <div
-                      className="row"
-                      style={{
-                        width: "80%",
-                        marginTop:
+                  <div
+                    className="row"
+                    style={{
+                      marginTop:
                         (ownernameErr === "" || ownernameErr === 'undefined' || accountnameErr === "" ||  accountnameErr === 'undefined')
-                            ? "32px"
-                            : "12px",
-                      }}
-                    >
-                      {locationList}
-                    </div>
-                    <div className="row" style={{ width: "81%" }}>
-                      <div className="col-md-8">
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="billingstreet"
-                          placeHolder="Street"
-                          value={
-                            this.state.accInfo
-                              ? userData.deliverystreet
-                              : userData.billingstreet
-                          }
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
-                          read-only={this.state.accInfo ? "true" : "false"}
-                          width="96%"
-                        />
-                        {!accInfo && billingstreetErr && (
-                          <span className="error">{billingstreetErr} </span>
-                        )}
-                      </div>
-                      <div className="col-sm-4">
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="billingzipcode"
-                          placeHolder="Postal Code"
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
-                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                          read-only={this.state.accInfo ? "true" : "false"}
-                          value={
-                            this.state.accInfo
-                              ? userData.deliveryzipcode
-                              : userData.billingzipcode
-                          }
-                        />
-                        {!accInfo && billingzipcodeErr && (
-                          <span className="error">{billingzipcodeErr} </span>
+                          ? "32px"
+                          : "12px",
+                    }}
+                  >
+                    <div className="col-sm-3">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="whtownername"
+                        placeHolder="Owner Name"
+                        value={
+                          this.state.accInfo
+                            ? userData.ownerRows[0].firstname +
+                              " " +
+                              userData.ownerRows[0].lastname
+                            : userData.whtownername
+                        }
+                        onChange={(e: any) =>
+                          this.handleChange("", e, "", "otherSteps", "")
+                        }
+                        read-only={this.state.accInfo ? "true" : "false"}
+                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                      />
+                      <div>
+                        {ownernameErr && (
+                          <span className="error">{ownernameErr} </span>
                         )}
                       </div>
                     </div>
-                  </>
-                )}
-              </div>
+                    <div className="col-sm-6">
+                      <label className="font-weight-bold">
+                        Same as Personal Info
+                      </label>
+                      <CustomSwitch
+                        checked={this.state.accInfo}
+                        onChange={(e: any) =>
+                          this.handleChange("", e, "", "otherSteps", "")
+                        }
+                        name="accInfo"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="row"
+                    style={{
+                      width: "80%",
+                      marginTop:
+                      (ownernameErr === "" || ownernameErr === 'undefined' || accountnameErr === "" ||  accountnameErr === 'undefined')
+                          ? "32px"
+                          : "12px",
+                    }}
+                  >
+                    {locationList}
+                  </div>
+                  <div className="row" style={{ width: "81%" }}>
+                    <div className="col-md-8">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="billingstreet"
+                        placeHolder="Street"
+                        value={
+                          this.state.accInfo
+                            ? userData.deliverystreet
+                            : userData.billingstreet
+                        }
+                        onChange={(e: any) =>
+                          this.handleChange("", e, "", "otherSteps", "")
+                        }
+                        read-only={this.state.accInfo ? "true" : "false"}
+                        width="96%"
+                      />
+                      {!accInfo && billingstreetErr && (
+                        <span className="error">{billingstreetErr} </span>
+                      )}
+                    </div>
+                    <div className="col-sm-4">
+                      <Input
+                        type="text"
+                        className="form-control"
+                        name="billingzipcode"
+                        placeHolder="Postal Code"
+                        onChange={(e: any) =>
+                          this.handleChange("", e, "", "otherSteps", "")
+                        }
+                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                        read-only={this.state.accInfo ? "true" : "false"}
+                        value={
+                          this.state.accInfo
+                            ? userData.deliveryzipcode
+                            : userData.billingzipcode
+                        }
+                      />
+                      {!accInfo && billingzipcodeErr && (
+                        <span className="error">{billingzipcodeErr} </span>
+                      )}
+                    </div>
+                  </div>
+                  </div>
+                  }
+                </>
+              )}
             </div>
           </div>
 
