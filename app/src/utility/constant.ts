@@ -81,11 +81,41 @@ const CANCELLED = [
 	{ label: "", key: "", style: { width: "12%" } },
 ];
 
+// Advisor sales table header
+const ADVISOR_SALES = [
+	{ label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
+	{ label: "RETAILER NAME/ID", key: "username", style: { width: "16%" } },
+	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "14%",textAlign: "center" } },
+	{ label: "ORDERED QTY", key: "totalorderedquantity", style: { width: "13%", textAlign: "center" } },
+	{ label: "TOTAL COST", key: "totalcost", style: { width: "12%" } },
+	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
+	{ label: "FARMER NAME/PHONE", key: "farmername", style: { width: "16%" } },
+	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
+	{ label: "UPDATED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
+	{ label: "", key: "", style: { width: "10%" } },
+];
+// Advisor sales table header
+const WALKIN_SALES = [
+	{ label: "LABEL ID", key: "advisororderid", style: { width: "10%" } },
+	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
+	{ label: "PRODUCT NAME", key: "totalintendedquantity", style: { width: "14%",textAlign: "center" } },
+	{ label: "PRODUCT GROUP", key: "totalorderedquantity", style: { width: "13%", textAlign: "center" } },
+	{ label: "BATCH #", key: "totalcost", style: { width: "12%" } },
+	{ label: "SCANNED ON", key: "advisorname", style: { width: "16%" } },
+	{ label: "SCANNED BY", key: "farmername", style: { width: "16%" } },
+	{ label: "EXPIRY DATE", key: "lastupdateddate", style: { width: "10%" } , type: "date"},
+	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } }
+];
 const OrderHistroyHeader: any = {
 	FULFILLED,
 	PENDING,
 	EXPIRED,
 	CANCELLED,
 };
+const ScanlogHeader: any = {
+	ADVISOR_SALES,
+	WALKIN_SALES,
 
-export { MENU_ITEMS, OrderHistroyHeader };
+};
+
+export { MENU_ITEMS, OrderHistroyHeader ,ScanlogHeader};

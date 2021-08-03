@@ -10,7 +10,7 @@ import ScanLogsTable from "./ScanLogsTable";
 //scss
 import "../../assets/scss/scanLogs.scss";
 
-
+import  SendGoods from "./SendGoods";
 
 type States = {
 	userRole: string;
@@ -93,7 +93,7 @@ function TabPanel(props: TabPanelProps) {
 		>
 			{value === index && (
 				<Box p={3} className={classes.padding}>
-					<Typography component={'span'}>{children}</Typography>
+					<Typography component={"span"}>{children}</Typography>
 				</Box>
 			)}
 		</div>
@@ -115,15 +115,6 @@ class ScanLogs extends Component<Props, States> {
 	handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
 		this.setState({ value: newValue });
 	};
-
-	componentDidMount() {
-		// let data: any = getLocalStorageData("userData");
-		// let userData = JSON.parse(data);
-		// this.setState({
-		// 	userRole: userData.role,
-		// });
-	}
-
 	render() {
 		const { isLoader } = this.state;
 		const { classes } = this.props;
@@ -136,22 +127,18 @@ class ScanLogs extends Component<Props, States> {
 						<div>
 							<div className="tabs">
 								<AntTabs value={this.state.value} onChange={this.handleChange} aria-label="ant example">
-									<AntTab label="Advisor Sales" />
-									{/* <AntTab label="Walk-In Sales"/>
-                  <AntTab label="Send Goods" /> */}
+									<AntTab label="Send Goods" />
+									<AntTab label="Sell to Farmer" />
 								</AntTabs>
 							</div>
 
 							<Typography />
 						</div>
 						<TabPanel value={this.state.value} index={0} classes={classes}>
-							<ScanLogsTable />
+						<SendGoods />
 						</TabPanel>
 						<TabPanel value={this.state.value} index={1} classes={classes}>
-							Item Two
-						</TabPanel>
-						<TabPanel value={this.state.value} index={2} classes={classes}>
-							Item Three
+						<ScanLogsTable />
 						</TabPanel>
 					</div>
 				</div>
