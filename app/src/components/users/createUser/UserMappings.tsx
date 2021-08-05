@@ -35,6 +35,8 @@ class UserMappings extends Component<any, any> {
         }
     }
 
+
+
     render(){
         const {geolevel1List, handleRemoveSpecificRow, handleAddRow, partnerhandleChange, partnerDatas, channelPartnersOptions} = this.props;
         // const {partnertype, partnerDatas} = this.state;
@@ -98,7 +100,7 @@ class UserMappings extends Component<any, any> {
                                         handleChange={(e: any) =>
                                             partnerhandleChange(e, idx)
                                         }
-                                        value={item.partnerid}
+                                        value={item.name}
                                         isPlaceholder
                                     />
                                 </div>

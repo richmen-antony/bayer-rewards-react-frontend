@@ -37,7 +37,6 @@ import AreaSalesManager from "./AreaSalesManager";
 const role = [
   { value: "RETAILER", text: "Retailer" },
   { value: "salesagent", text: "Area Sales Agent" },
-  { value: "DISTRIBUTOR", text: "Distributor" },
 ];
 
 let geoLocationInfo = {
@@ -136,7 +135,6 @@ class CreateUser extends Component<any, any> {
       billingcityErr: "",
       billingstateErr: "",
       billingzipcodeErr: "",
-
       geographicFields: [],
       dynamicFields: [],
       withHolding: [],
@@ -178,9 +176,9 @@ class CreateUser extends Component<any, any> {
         email : "",
         mobilenumber : ""
       },
-      asafirstNameErr : "",
-      asalastNameErr : "",
-      asaEmailErr : "",
+      asafirstnameErr : "",
+      asalastnameErr : "",
+      asamobilenumberErr : "",
       userroleType : "external",
       partnerDatas : [
         {
@@ -207,13 +205,9 @@ class CreateUser extends Component<any, any> {
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
+    this.getAllPartnersList();
   }
-// componentDidUpdate(){
-//   //To handle unsaved changes navigation routes
-//   if (this.state.shouldBlockNavigation) {
-//     window.onbeforeunload = () => true
-//   }
-// }
+
   getChannelPartnersList = () => {
     this.setState({
       allChannelPartners: [],
@@ -267,8 +261,6 @@ class CreateUser extends Component<any, any> {
           let geolevels = 'geolevel'+locationhierlevel;
           levels.push(geolevels);
         });
-        // levels = ['country','region','add','district','epa','village'];
-
         this.setState(
           {
             isLoader: false,
@@ -280,81 +272,147 @@ class CreateUser extends Component<any, any> {
               let userDetails = JSON.parse(data);
               this.setState({ username: userDetails.username }, () => {});
               let userFields = this.props.location.state?.userFields;
-
-              let ownerInfo = {
-                errObj: {
-                  emailErr: "",
-                  firstnameErr: "",
-                  lastnameErr: "",
-                  mobilenumberErr: "",
-                },
-                firstname: userFields.ownerfirstname,
-                active:
-                  userFields.userstatus === "ACTIVE" ||
-                  userFields.userstatus === "PENDING"
-                    ? true
-                    : false,
-                lastname: userFields.ownerlastname,
-                mobilenumber: userFields.ownerphonenumber,
-                email: userFields.owneremail,
-              };
-
-              userFields.staffdetails.forEach((items: any) => {
-                items.active =
-                  userFields.userstatus === "PENDING"
-                    ? true
-                    : items.active;
-              });
-
-              let userDataList = this.state.userData;
-              userDataList.ownerRows[0] = ownerInfo;
-              let userinfo = {
-                ownerRows: userDataList.ownerRows,
-                countrycode: userFields.countrycode,
-                locale: userFields.locale,
-                rolename: userFields.rolename,
-                username: userFields.username,
-                deliverystreet: userFields.deliverystreet,
-                shippingcity: userFields.deliverygeolevel4,
-                shippingstate: userFields.deliverygeolevel2,
-                deliveryzipcode: userFields.deliveryzipcode,
-                taxid: userFields.taxid,
-                whtaccountname: userFields.whtaccountname,
-                whtownername: userFields.whtownername,
-                billingstreet: userFields.billingstreet,
-                billinggeolevel4: userFields.billinggeolevel4,
-                billinggeolevel2: userFields.billinggeolevel2,
-                billingzipcode: userFields.billingzipcode,
-                iscreatedfrommobile: userFields.iscreatedfrommobile,
-                staffdetails: userFields.staffdetails,
-              };
-              if (userinfo) {
-                userinfo.staffdetails.forEach((staffInfo: any) => {
-                  let errObjd = {
-                    errObj: {
-                      emailErr: "",
-                      firstnameErr: "",
-                      lastnameErr: "",
-                      mobilenumberErr: "",
-                      isPhoneEdit: staffInfo.mobilenumber ? false : true,
-                    },
-                  };
-                  Object.assign(staffInfo, errObjd);
+              if(this.props.location?.page === "edit"){
+                let ownerInfo = {
+                  errObj: {
+                    emailErr: "",
+                    firstnameErr: "",
+                    lastnameErr: "",
+                    mobilenumberErr: "",
+                  },
+                  firstname: userFields.ownerfirstname,
+                  active:
+                    userFields.userstatus === "ACTIVE" ||
+                    userFields.userstatus === "PENDING"
+                      ? true
+                      : false,
+                  lastname: userFields.ownerlastname,
+                  mobilenumber: userFields.ownerphonenumber,
+                  email: userFields.owneremail,
+                };
+  
+                userFields.staffdetails.forEach((items: any) => {
+                  items.active =
+                    userFields.userstatus === "PENDING"
+                      ? true
+                      : items.active;
                 });
+                let userDataList = this.state.userData;
+                userDataList.ownerRows[0] = ownerInfo;
+                let userinfo = {
+                  ownerRows: userDataList.ownerRows,
+                  countrycode: userFields.countrycode,
+                  locale: userFields.locale,
+                  rolename: userFields.rolename,
+                  username: userFields.username,
+                  deliverystreet: userFields.deliverystreet,
+                  shippingcity: userFields.deliverygeolevel4,
+                  shippingstate: userFields.deliverygeolevel2,
+                  deliveryzipcode: userFields.deliveryzipcode,
+                  taxid: userFields.taxid,
+                  whtaccountname: userFields.whtaccountname,
+                  whtownername: userFields.whtownername,
+                  billingstreet: userFields.billingstreet,
+                  billinggeolevel4: userFields.billinggeolevel4,
+                  billinggeolevel2: userFields.billinggeolevel2,
+                  billingzipcode: userFields.billingzipcode,
+                  iscreatedfrommobile: userFields.iscreatedfrommobile,
+                  staffdetails: userFields.staffdetails,
+                };
+                if (userinfo) {
+                  userinfo.staffdetails.forEach((staffInfo: any) => {
+                    let errObjd = {
+                      errObj: {
+                        emailErr: "",
+                        firstnameErr: "",
+                        lastnameErr: "",
+                        mobilenumberErr: "",
+                        isPhoneEdit: staffInfo.mobilenumber ? false : true,
+                      },
+                    };
+                    Object.assign(staffInfo, errObjd);
+                  });
+                }
+                this.setState({
+                  userData: userinfo,
+                  isEditPage: true,
+                  isStaff: userFields.storewithmultiuser,
+                  isRendered: true,
+                });
+                let cloneduserData = JSON.parse(JSON.stringify(userinfo));
+                this.setState({ cloneduserData: cloneduserData });
+  
+                //Dynamic Geo location dropdowns For Validate and edit User
+                setTimeout(() => {
+                  this.getDynamicOptionFields(userFields);
+                }, 0);
+              } else if(this.props.location?.page === "asaedit"){
+                let asauserinfo = {
+                  firstname: userFields.firstname,
+                  active:
+                    userFields.userstatus === "ACTIVE" ||
+                    userFields.userstatus === "PENDING"
+                      ? true
+                      : false,
+                    lastname: userFields.lastname,
+                    mobilenumber: userFields.phonenumber,
+                    email: userFields.emailid,
+                  // ownerRows: userDataList.ownerRows,
+                  // countrycode: userFields.countrycode,
+                  // locale: userFields.locale,
+                  // rolename: userFields.rolename,
+                  // username: userFields.username,
+                  // deliverystreet: userFields.deliverystreet,
+                  // shippingcity: userFields.deliverygeolevel4,
+                  // shippingstate: userFields.deliverygeolevel2,
+                  // deliveryzipcode: userFields.deliveryzipcode,
+                  // taxid: userFields.taxid,
+                  // whtaccountname: userFields.whtaccountname,
+                  // whtownername: userFields.whtownername,
+                  // billingstreet: userFields.billingstreet,
+                  // billinggeolevel4: userFields.billinggeolevel4,
+                  // billinggeolevel2: userFields.billinggeolevel2,
+                  // billingzipcode: userFields.billingzipcode,
+                  // iscreatedfrommobile: userFields.iscreatedfrommobile,
+                  // staffdetails: userFields.staffdetails,
+                };
+              let asachannelPartnersInfo:any = [];
+              userFields.usermapping.forEach((items: any, index:number) => {
+                let partnerObj = {
+                    type : items.partnertype,
+                    location: items.geolevel1,
+                    name : items.channelpartnerfullname,
+                    partnerId: items.channelpartnerid,
+                    errObj : {
+                        typeErr: "",
+                        locationErr: "",
+                        nameErr: "",
+                    }
+                };
+                asachannelPartnersInfo.push(partnerObj);
+                });
+                this.setState((prevState:any)=>({
+                  asaDatas: asauserinfo,
+                  partnerDatas : asachannelPartnersInfo,
+                  userroleType : "internal",
+                  isEditPage: true,
+                  isRendered: true,
+                  userData : {
+                    ...prevState.userData,
+                    rolename: role[1].value,
+                  }
+                }),()=>{
+                  userFields.usermapping.forEach((items: any, index:number) => {
+                    this.setOptionsForChannelPartners(index)
+                  });
+                });
+                // let cloneduserData = JSON.parse(JSON.stringify(userinfo));
+                // this.setState({ cloneduserData: cloneduserData });
+                //Dynamic Geo location dropdowns For Validate and edit User
+                setTimeout(() => {
+                  this.getDynamicOptionFields(userFields);
+                }, 0);
               }
-              this.setState({
-                userData: userinfo,
-                isEditPage: true,
-                isStaff: userFields.storewithmultiuser,
-                isRendered: true,
-              });
-              let cloneduserData = JSON.parse(JSON.stringify(userinfo));
-              this.setState({ cloneduserData: cloneduserData });
-
-              //Dynamic Geo location dropdowns For Validate and edit User
-              setTimeout(() => {
-                this.getDynamicOptionFields(userFields);
-              }, 0);
             } else {
               //Dynamic Geo location dropdowns For Validate and Create User
               this.getDynamicOptionFields("");
@@ -399,15 +457,17 @@ class CreateUser extends Component<any, any> {
     });
     let geolevel1List = this.state.geolevel1List;
     if (data) {
-      let isSameGeoAddress =
+      let isSameGeoAddress = false;
+      if(this.state.userroleType === "external") {
+        isSameGeoAddress =
         data.billinggeolevel1 === data.deliverygeolevel1 &&
         data.billinggeolevel2 === data.deliverygeolevel2 &&
         data.billinggeolevel3 === data.deliverygeolevel3 &&
         data.billinggeolevel4 === data.deliverygeolevel4 &&
         data.billinggeolevel5 === data.deliverygeolevel5 &&
         data.whtownername === data.ownerfirstname + " " + data.ownerlastname;
-
-      this.setState({ accInfo: isSameGeoAddress ? true : false });
+        this.setState({ accInfo: isSameGeoAddress ? true : false });
+      }
       let setFormArray: any = [];
       let level1Options: any = [];
       let level2Options: any = [];
@@ -545,6 +605,7 @@ class CreateUser extends Component<any, any> {
       this.setState({ dynamicFields: setFormArray });
 
       //Incase of delivery and billing address is different
+      if(this.state.userroleType === "external") { 
       if (!isSameGeoAddress) {
         setFormArray = [];
         level2Options = [];
@@ -682,6 +743,7 @@ class CreateUser extends Component<any, any> {
           });
         }
       }
+    }
     } else {
       let setFormArray: any = [];
       this.state.geographicFields.forEach((list: any, i: number) => {
@@ -1069,7 +1131,11 @@ class CreateUser extends Component<any, any> {
         }
       }
     } else if (clickType === "createUser") {
-      formValid = this.externalUsersValidation();
+      if(this.state.userroleType === "external"){
+        formValid = this.externalUsersValidation();
+      }else{
+        formValid = this.internalUsersValidation();
+      }
       if (formValid) {
         this.setState({ shouldBlockNavigation: false });
       }
@@ -1106,6 +1172,7 @@ class CreateUser extends Component<any, any> {
       }
     }
   }
+
   submitretailerUserDatas = () => {
     this.setState({
       isLoader: true,
@@ -1327,12 +1394,12 @@ class CreateUser extends Component<any, any> {
       usertype:"EXTERNAL",
       rolename:"ASA",
       userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
-      geolevel0: this.getStoreData.countryCode,
-      geolevel1: geoFields.geolevel1,
-      geolevel2: geoFields.geolevel2,
-      geolevel3: geoFields.geolevel3,
-      geolevel4: geoFields.geolevel4,
-      geolevel5: geoFields.geolevel5,
+      deliverygeolevel0: this.getStoreData.countryCode,
+      deliverygeolevel1: geoFields.geolevel1,
+      deliverygeolevel2: geoFields.geolevel2,
+      deliverygeolevel3: geoFields.geolevel3,
+      deliverygeolevel4: geoFields.geolevel4,
+      deliverygeolevel5: geoFields.geolevel5,
       street: userData.deliverystreet,
       zipcode: userData.deliveryzipcode,
       iscreatedfrommobile:false,
@@ -1462,7 +1529,6 @@ class CreateUser extends Component<any, any> {
               ? errObj.mobilenumberErr
               : "Please enter the mobile number";
         }
-
         userData.staffdetails[idx].errObj = errObj;
         if (
           errObj.firstNameErr !== "" ||
@@ -1480,19 +1546,6 @@ class CreateUser extends Component<any, any> {
         }));
       });
     } else if (this.state.currentStep === 2) {
-      // let deliverystreet = userData.deliverystreet
-      //   ? ""
-      //   : "Please enter the Street";
-      // let deliveryzipcode = userData.deliveryzipcode
-      //   ? ""
-      //   : "Please enter the Postal";
-      // if (deliverystreet != "" || deliveryzipcode != "") {
-      //   formValid = false;
-      // }
-      // this.setState({
-      //   deliverystreetErr: deliverystreet,
-      //   deliveryzipcodeErr: deliveryzipcode,
-      // });
       this.state.dynamicFields.forEach((list: any, index: number) => {
         if (list.value === "") {
           list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
@@ -1520,12 +1573,6 @@ class CreateUser extends Component<any, any> {
         let whtownername = userData.whtownername
           ? ""
           : "Please enter owner name";
-        // let billingstreet = userData.billingstreet
-        //   ? ""
-        //   : "Please enter the Street";
-        // let billingzipcode = userData.billingzipcode
-        //   ? ""
-        //   : "Please enter the Postal";
         if (whtaccountname !== "" || whtownername !== "") {
           formValid = false;
         }
@@ -1554,15 +1601,61 @@ class CreateUser extends Component<any, any> {
   internalUsersValidation = () => {
     let formValid = true;
     let asaData = this.state.asaDatas;
-    if ( asaData.fullname === "") {
-      this.setState( { asaFullNameErr : "Please Enter the Full name"})
-    } else if ( asaData.email === "") {
-      this.setState( { asaEmailErr : "Please Enter the Email"})
+    const {asafirstnameErr, asalastnameErr} = this.state;
+    let asamobilenumberErr = this.state.asamobilenumberErr;
+    let fullNameErr =  asaData.firstname === "" ? "Please Enter the First name" : "";
+    let lastNameErr =  asaData.lastname === "" ? "Please Enter the Last name" : "";
+    this.setState({asafirstnameErr: fullNameErr,asalastnameErr:lastNameErr  })
+    if (
+      asaData.mobilenumber &&
+      asamobilenumberErr !== "Phone Number Exists"
+    ) {
+      asamobilenumberErr =
+      asaData.mobilenumber.length === phoneLength
+          ? ""
+          : `Please enter ${phoneLength} Digit`;
+    } else {
+      asamobilenumberErr =
+      asamobilenumberErr === "Phone Number Exists"
+          ? asamobilenumberErr
+          : "Please enter the mobile number";
     }
-
-    if ( this.state.asaFullNameErr !== "") {
+    if ( asafirstnameErr !== "" || asalastnameErr !=="" || asamobilenumberErr !== "" ) {
       formValid = false;
     }
+    this.state.partnerDatas?.forEach((userInfo: any, idx: number) => {
+      let errObj: any = {
+        typeErr: "",
+        locationErr: "",
+        nameErr: "",
+      };
+      errObj.typeErr = userInfo.type
+        ? ""
+        : "Please enter Partner Type";
+      errObj.locationErr = userInfo.locationErr
+        ? ""
+        : "Please enter the Partner Location";
+      errObj.nameErr = userInfo.nameErr
+      ? ""
+      : "Please enter the Partner Name";
+
+      // let datas = this.state.partnerDatas;
+
+      // userData.staffdetails[idx].errObj = errObj;
+      // if (
+      //   errObj.typeErr !== "" ||
+      //   errObj.locationErr !== "" ||
+      //   errObj.nameErr !== "" 
+      // ) {
+      //   formValid = false;
+      // }
+      // this.setState((prevState: any) => ({
+      //   userData: {
+      //     ...prevState.userData,
+      //     staffdetails: userData.staffdetails,
+      //   },
+      // }));
+    });
     formValid = true;
     return formValid;
   }
@@ -1847,7 +1940,10 @@ class CreateUser extends Component<any, any> {
         }
       }
     }
-    this.checkUnsavedData();
+    if(this.state.userroleType === "external"){
+      this.checkUnsavedData();
+    }
+
   };
 
   handleAddRow = (type: string) => {
@@ -2120,6 +2216,16 @@ class CreateUser extends Component<any, any> {
         this.setState({ userData : userdata });
       } else {
         datas[name] = value;
+        if(name === 'firstname'){
+          let firstNameErr =  datas.firstname === "" ? "Please Enter the First name" : "";
+          this.setState({asafirstnameErr: firstNameErr});
+        } else if(name ==='lastname'){
+          let lastNameErr =  datas.lastname === "" ? "Please Enter the Last name" : "";
+          this.setState({asalastnameErr: lastNameErr});
+        } else if(name ==='mobilenumber'){
+          let mobileErr =  datas.mobilenumber === "" ? "Please Enter the Email" : "";
+          this.setState({asamobilenumberErr: mobileErr});
+        }
       }
     }
     this.setState({ asaDatas : datas });
@@ -2130,28 +2236,47 @@ partnerhandleChange = (e:any, idx: number) => {
     const datas = this.state.partnerDatas;
     datas[idx][name] = value;
     this.setState({ partnerDatas : datas });
-    if( (this.state.partnerDatas[idx].type !== "") && (this.state.partnerDatas[idx].location !== "") && (name !== "name")) {
-      this.getlocationwiseChannelPartners(idx);
-    }
+    this.setOptionsForChannelPartners(idx);
 }
 
-getlocationwiseChannelPartners = (idx: number) => {
-  const { channelPartners } = apiURL;
-  const partnerData = this.state.partnerDatas;
-  // let options = this.state.channelPartnersOptions[idx];
-  // options = [];
-  this.setState({ isLoader: true,
-    locationwiseChannelPartners:[],
-    // channelPartnersOptions:options
+setOptionsForChannelPartners = (idx:number) => {
+  const datas = this.state.partnerDatas;
+  const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
+  let locationInfo = [];
+  locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].location );
+  if(locationInfo.length){
+    let retailerList:any = [];
+    retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].type )
+    let partners:any = [];
+    const channelPartnersOptions = this.state.channelPartnersOptions;
+    retailerList[0].partnerdetails?.forEach((item:any, index:number)=>{
+      let partnersObj:any = {};
+        partnersObj['text'] = item.channelpartnerfullname;
+        partnersObj['value'] = item.channelpartnerfullname;
+        partnersObj['partnerid'] = item.channelpartnerid;
+        datas[idx].partnerId = item.channelpartnerid;
+
+        this.setState({partnerDatas : datas })
+        partners.push(partnersObj);
+    });
+    if(channelPartnersOptions.length) {
+       channelPartnersOptions[idx]=partners;
+    } else {
+      channelPartnersOptions.push(partners)
+    } 
+    this.setState({ channelPartnersOptions: channelPartnersOptions });
+    console.log('options', this.state.channelPartnersOptions)
+  }
+} 
+
+getAllPartnersList = () => {
+  this.setState({
+        isLoader: true,
+        locationwiseChannelPartners:[],
   });
+  const { channelPartners } = apiURL;
   let data = {
     countrycode: this.getStoreData.countryCode,
-    page: 1,
-    // searchtext: "",
-    // isfiltered: false,
-    rowsperpage: 1000,
-    partnertype: partnerData[idx].type,
-    geolevel1 : partnerData[idx].location
   };
   return new Promise((resolve, reject) => {
     invokeGetAuthService(channelPartners, data)
@@ -2160,25 +2285,12 @@ getlocationwiseChannelPartners = (idx: number) => {
       this.setState({
         isLoader: false,
         locationwiseChannelPartners:res
-      },()=>{
-        const channelPartnersOptions = this.state.channelPartnersOptions;
-        let partners:any = [];
-        this.state.locationwiseChannelPartners?.forEach((item:any, index:number)=>{
-          let partnersObj:any = {};
-            partnersObj['text'] = item.channelpartnerfullname;
-            partnersObj['value'] = item.channelpartnerid;
-            // partnersObj['partnerid'] = item.channelpartnerid;
-            partners.push(partnersObj);
-        });
-          channelPartnersOptions[idx]=partners;
-          this.setState({ channelPartnersOptions: channelPartnersOptions });
       });
     })
     .catch((error) => {
       this.setState({ isLoader: false });
     });
   });
-
 }
 
 asahandleAddRow = () => {
@@ -2186,6 +2298,7 @@ asahandleAddRow = () => {
       type: "",
       location: "",
       name: "",
+      partnerId:"",
       errObj: {
         typeErr: "",
         locationErr: "",
@@ -2206,6 +2319,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
 };
 
   render() {
+    console.log("asaDatas", this.state.asaDatas)
     let countryCodeLower = _.toLower(this.loggedUserInfo?.countrycode);
     const {
       currentStep,
@@ -2225,7 +2339,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
       userroleType
     } = this.state;
 
-    console.log('partnerDatas', this.state.asaDatas)
+    console.log('partnerDatas', this.state.partnerDatas)
 
     let currentPage = this.props.location?.page;
     const fields =
@@ -2407,7 +2521,9 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                     role={role} 
                     countryCodeLower={countryCodeLower}
                     currentStep={currentStep}
-                    
+                    asafirstnameErr={this.state.asafirstnameErr}
+                    asalastnameErr={this.state.asalastnameErr}
+                    asamobilenumberErr={this.state.asamobilenumberErr}
                   /> : 
                   <div className="personal">
                     <>

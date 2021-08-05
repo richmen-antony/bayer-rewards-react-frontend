@@ -180,6 +180,7 @@ class ChannelPartners extends Component<Props, States> {
             type : "",
             location: "",
             name : "",
+            partnerId :"",
             errObj : {
                 typeErr: "",
                 locationErr: "",
@@ -202,6 +203,7 @@ class ChannelPartners extends Component<Props, States> {
     let userData = JSON.parse(data);
     if (userData?.username) this.setState({ userName: userData.username });
     this.getThirdPartyList();
+    this.getAllPartnersList();
   }
 
   getCountryList() {
@@ -515,7 +517,7 @@ class ChannelPartners extends Component<Props, States> {
     );
   };
 
-  editStaff = (data: any) => {
+  editUserMappings = (data: any) => {
     this.setState({staffPopup : true});
     console.log('staffpopup', this.state.staffPopup)
   }
@@ -676,7 +678,7 @@ class ChannelPartners extends Component<Props, States> {
         if (edit) {
           this.props.history.push({
             pathname: "/createUser",
-            page: "edit",
+            page: "asaedit",
             state: { userFields: this.state.userList },
           });
         }
@@ -793,11 +795,71 @@ class ChannelPartners extends Component<Props, States> {
     }
   };
 
-  asahandleAddRow = () => {
+  partnerhandleChange = (e:any, idx: number) => {
+    const { name, value} = e.target;
+    const datas = this.state.partnerDatas;
+    const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
+    datas[idx][name] = value;
+    this.setState({ partnerDatas : datas });
+    // if( (this.state.partnerDatas[idx].type !== "") && (this.state.partnerDatas[idx].location !== "") && (name !== "name")) {
+    //   this.getlocationwiseChannelPartners(idx);
+    // }
+
+    let locationInfo = [];
+    locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].location );
+    if(locationInfo.length){
+      let retailerList:any = [];
+      retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].type )
+      let partners:any = [];
+      const channelPartnersOptions = this.state.channelPartnersOptions;
+      retailerList[0].partnerdetails?.forEach((item:any, index:number)=>{
+        let partnersObj:any = {};
+          partnersObj['text'] = item.channelpartnerfullname;
+          partnersObj['value'] = item.channelpartnerfullname;
+          datas[idx].partnerId = item.channelpartnerid;
+          this.setState({partnerDatas : datas })
+          partners.push(partnersObj);
+      });
+      if(channelPartnersOptions.length) {
+        channelPartnersOptions[idx]=partners;
+      } else {
+        channelPartnersOptions.push(partners)
+      } 
+      this.setState({ channelPartnersOptions: channelPartnersOptions });
+      console.log('options', this.state.channelPartnersOptions)
+    }
+}
+
+getAllPartnersList = () => {
+  this.setState({
+        isLoader: true,
+        locationwiseChannelPartners:[],
+  });
+  const { channelPartners } = apiURL;
+  let data = {
+    countrycode: this.getStoreData.countryCode,
+  };
+  return new Promise((resolve, reject) => {
+    invokeGetAuthService(channelPartners, data)
+    .then((response) => {
+      let res =  Object.keys(response.body).length !== 0 ? response.body.rows : [];
+      this.setState({
+        isLoader: false,
+        locationwiseChannelPartners:res
+      });
+    })
+    .catch((error) => {
+      this.setState({ isLoader: false });
+    });
+  });
+}
+
+asahandleAddRow = () => {
     const item = {
       type: "",
       location: "",
       name: "",
+      partnerId:"",
       errObj: {
         typeErr: "",
         locationErr: "",
@@ -817,61 +879,6 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
     this.setState({ partnerDatas: partnerDatas, channelPartnersOptions: partnertypeOptions });
 };
 
-partnerhandleChange = (e:any, idx: number) => {
-    const { name, value} = e.target;
-    const datas = this.state.partnerDatas;
-    datas[idx][name] = value;
-    this.setState({ partnerDatas : datas });
-    if( (this.state.partnerDatas[idx].type !== "") && (this.state.partnerDatas[idx].location !== "") && (name !== "name")) {
-      this.getlocationwiseChannelPartners(idx);
-    }
-}
-
-getlocationwiseChannelPartners = (idx: number) => {
-  const { channelPartners } = apiURL;
-  const partnerData = this.state.partnerDatas;
-  // let options = this.state.channelPartnersOptions[idx];
-  // options = [];
-  this.setState({ isLoader: true,
-    locationwiseChannelPartners:[],
-    // channelPartnersOptions:options
-  });
-  let data = {
-    countrycode: this.getStoreData.countryCode,
-    page: 1,
-    // searchtext: "",
-    // isfiltered: false,
-    rowsperpage: 1000,
-    partnertype: partnerData[idx].type,
-    geolevel1 : partnerData[idx].location
-  };
-  return new Promise((resolve, reject) => {
-    invokeGetAuthService(channelPartners, data)
-    .then((response) => {
-      let res =  Object.keys(response.body).length !== 0 ? response.body.rows : [];
-      this.setState({
-        isLoader: false,
-        locationwiseChannelPartners:res
-      },()=>{
-        const channelPartnersOptions = this.state.channelPartnersOptions;
-        let partners:any = [];
-        this.state.locationwiseChannelPartners?.forEach((item:any, index:number)=>{
-          let partnersObj:any = {};
-            partnersObj['text'] = item.channelpartnerfullname;
-            partnersObj['value'] = item.channelpartnerid;
-            // partnersObj['partnerid'] = item.channelpartnerid;
-            partners.push(partnersObj);
-        });
-          channelPartnersOptions[idx]=partners;
-          this.setState({ channelPartnersOptions: channelPartnersOptions });
-      });
-    })
-    .catch((error) => {
-      this.setState({ isLoader: false });
-    });
-  });
-
-}
 
   validateEmail = (value: any, idx: number, type: string) => {
     let ownerRows = [...this.state.userData.ownerRows];
@@ -1207,7 +1214,7 @@ getlocationwiseChannelPartners = (idx: number) => {
                                 list.userstatus === "DECLINED" ||
                                 list.userstatus === "PENDING"
                                   ? event.preventDefault()
-                                  : this.editStaff(list);
+                                  : this.editUserMappings(list);
                               }}
                               src={ExpandWindowImg}
                             ></img>
@@ -1215,13 +1222,13 @@ getlocationwiseChannelPartners = (idx: number) => {
                         </div>
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.geolevel1}{" "}
+                        {list.deliverygeolevel1}{" "}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.geolevel2}
+                        {list.deliverygeolevel2}
                       </td>
                       <td style={{ textAlign: "left", width: "8%" }}>
-                        {list.geolevel3}{" "}
+                        {list.deliverygeolevel3}{" "}
                       </td>
 
                       <td style={{ width: "9%" }}>

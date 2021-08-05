@@ -6,6 +6,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
 import UserMappings from './UserMappings';
+import { patterns } from "../../../utility/base/utils/patterns";
 // import "../../../assets/scss/createUser.scss";
 
 // type Props = {
@@ -27,7 +28,20 @@ class AreaSalesManager extends Component<any, any> {
     constructor(props:any){
         super(props);
         this.state = {
+            asaEmailErr :""
         }
+    }
+
+    validateEmail = (value:any) => {
+        let emailErr = this.state.asaemailErr;
+        if (patterns.emailFormat.test(value)) {
+            emailErr = "";
+          } else if (value === "") {
+            emailErr = "";
+          } else {
+            emailErr = "Please enter a valid email";
+          }
+          this.setState({asaemailErr: emailErr })
     }
 
     render(){
@@ -35,7 +49,6 @@ class AreaSalesManager extends Component<any, any> {
              asaDatas, 
              role, 
              userData, 
-             handleChange, 
              countryCodeLower,
              currentStep,
              geolevel1List,
@@ -43,7 +56,10 @@ class AreaSalesManager extends Component<any, any> {
              handleRemoveSpecificRow,
              partnerhandleChange,
              partnerDatas,
-             channelPartnersOptions
+             channelPartnersOptions,
+             asafirstnameErr,
+             asalastnameErr,
+             asamobilenumberErr
             } = this.props;
         return (
             <>
@@ -56,7 +72,6 @@ class AreaSalesManager extends Component<any, any> {
                                 label="User Type"
                                 options={role}
                                 handleChange={(e: any) =>
-                                    // handleChange("", e, "", "othersteps", "")
                                     asahandleChange(e)
                                 }
                                 value={userData.rolename}
@@ -77,6 +92,11 @@ class AreaSalesManager extends Component<any, any> {
                                     allowAlphabetsNumbers(e)
                                 }
                             />
+                             {asafirstnameErr && (
+                                <span className="error">
+                                    {asafirstnameErr}{" "}
+                                </span>
+                            )}
                         </div>
                         <div className = "col-sm-3">
                             <label className="font-weight-bold">Is Active?</label>
@@ -103,6 +123,11 @@ class AreaSalesManager extends Component<any, any> {
                                     allowAlphabetsNumbers(e)
                                 }
                             />
+                             {asalastnameErr && (
+                                <span className="error">
+                                    {asalastnameErr}{" "}
+                                </span>
+                            )}
                         </div>
                         <div className="col-sm-3">
                             <div className="flagInput">
@@ -130,6 +155,11 @@ class AreaSalesManager extends Component<any, any> {
                                     disableDropdown
                                     disableCountryCode
                                 />
+                                 {asamobilenumberErr && (
+                                <span className="error" data-testid="error-msg">
+                                    {asamobilenumberErr}{" "}
+                                </span>
+                                )}
                             </div>
                         </div>
                         <div className="col-sm-3">
@@ -143,14 +173,15 @@ class AreaSalesManager extends Component<any, any> {
                             onChange={(e: any) =>
                                 asahandleChange(e)
                             }
-                            // onKeyUp={(e: any) =>
-                            //     this.validateEmail(
-                            //     e.target.value,
-                            //     idx,
-                            //     "owner"
-                            //     )
-                            // }
+                            onKeyUp={(e: any) =>
+                                this.validateEmail(e.target.value)
+                            }
                             />
+                            {this.state.asaemailErr && (
+                                <span className="error" data-testid="error-msg">
+                                    {this.state.asaemailErr}{" "}
+                                </span>
+                                )}
                         </div>
                     </div>
                 </div>
