@@ -22,12 +22,6 @@ type Props = {
   location?: any;
   history?: any;
   backToUsersList: Function;
-  state: any;
-  previous: any;
-  next: any;
-  pageNumberClick: any;
-  handlePaginationChange: any;
-  totalData?: number;
 };
 type States = {
   isLoader: boolean;

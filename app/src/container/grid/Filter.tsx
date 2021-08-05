@@ -4,17 +4,22 @@ import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import Download from "../../assets/icons/download.svg";
 import NoImage from "../../assets/images/Group_4736.svg";
+import "../../assets/scss/filter.scss";
 interface Props {
 	dropdownOpenFilter: boolean;
 	handleSearch: (e: any) => any;
 	toggleFilter: (e: any) => any;
-	download: () => any;
+	download?: () => any;
 	searchText: string;
 	children: any;
 	handleFilterChange: (e: any, name: string, item: any) => any;
 	selectedFilters: any;
-	partnerType?: any[];
+	partnerTypeList?: any[];
 	salesType?: any[];
+	isDownload?: boolean;
+	selectedPartnerType?:any;
+	handlePartnerChange?:any
+	toolTipText:string;
 }
 
 /**
@@ -30,10 +35,14 @@ const Filter: React.FC<Props> = (props: Props) => {
 		toggleFilter,
 		download,
 		children,
-		partnerType,
+		partnerTypeList,
 		handleFilterChange,
 		selectedFilters,
 		salesType,
+		isDownload,
+		selectedPartnerType,
+		handlePartnerChange,
+		toolTipText
 	} = props;
 	return (
 		<div className="advisor-filter">
@@ -45,11 +54,11 @@ const Filter: React.FC<Props> = (props: Props) => {
 					type="text"
 					onChange={handleSearch}
 					value={searchText}
-					tolltip="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
+					tolltip={toolTipText}
 				/>
 				<div className="filter-right-side">
 					{salesType && salesType.length > 0 && (
-						<div className="filter-partnertype" style={{marginLeft:"10px"}}>
+						<div className="filter-partnertype" style={{ marginLeft: "10px" }}>
 							<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
 								Sales Type
 							</label>
@@ -65,7 +74,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 													size="md"
 													onClick={(e: any) => handleFilterChange(e, "salesType", item)}
 												>
-													{item ==="WALKIN_SALES" ? "Walk-In Sales":"Advisor Sales"}
+													{item === "WALKIN_SALES" ? "Walk-In Sales" : "Advisor Sales"}
 												</Button>
 											</span>
 										);
@@ -78,16 +87,16 @@ const Filter: React.FC<Props> = (props: Props) => {
 							Partner Type
 						</label>
 						<div className="partnertype-list">
-							{partnerType &&
-								partnerType.map((item: any, index: number) => {
+							{partnerTypeList &&
+								partnerTypeList.map((item: any, index: number) => {
 									return (
 										<span className="mr-2" key={index}>
 											<Button
 												color={
-													selectedFilters.partnerType === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
+													selectedPartnerType.type === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
 												}
 												size="md"
-												onClick={(e: any) => handleFilterChange(e, "partnerType", item)}
+												onClick={(e:any) => handlePartnerChange(item)}
 											>
 												{item}
 											</Button>
@@ -107,29 +116,33 @@ const Filter: React.FC<Props> = (props: Props) => {
 							</DropdownMenu>
 						</Dropdown>
 					</div>
-					<div>
-						<button
-							className="btn btn-primary"
-							onClick={download}
-							style={{
-								backgroundColor: "#1f445a",
-								borderColor: "#1f445a",
-							}}
-						>
-							<img src={Download} width="17" alt={NoImage} />
-							<span style={{ padding: "15px" }}>Download</span>
-						</button>
-					</div>
-					<i
-						className="fa fa-info-circle"
-						style={{
-							fontSize: "16px",
-							fontFamily: "appRegular !important",
-							marginLeft: "5px",
-							marginTop: "-20px",
-						}}
-						title={"Full extract"}
-					></i>
+					{isDownload && (
+						<>
+							<div>
+								<button
+									className="btn btn-primary"
+									onClick={download}
+									style={{
+										backgroundColor: "#1f445a",
+										borderColor: "#1f445a",
+									}}
+								>
+									<img src={Download} width="17" alt={NoImage} />
+									<span style={{ padding: "15px" }}>Download</span>
+								</button>
+							</div>
+							<i
+								className="fa fa-info-circle"
+								style={{
+									fontSize: "16px",
+									fontFamily: "appRegular !important",
+									marginLeft: "5px",
+									marginTop: "-20px",
+								}}
+								title={"Full extract"}
+							></i>
+						</>
+					)}
 				</div>
 			</div>
 		</div>

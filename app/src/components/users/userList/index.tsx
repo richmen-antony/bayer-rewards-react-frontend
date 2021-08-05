@@ -35,6 +35,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
 import moment from "moment";
 import Validator from "../../../utility/validator";
+import Typography from "@material-ui/core/Typography";
 
 type PartnerTypes = {
   type: String;
@@ -100,7 +101,15 @@ const AntTabs = withStyles({
     height: "4px",
   },
 })(Tabs);
-
+const useStyles = (theme: Theme) => ({
+	root: {
+		flexGrow: 1,
+	},
+	padding: {
+		padding: "0px",
+		marginTop: "5px",
+	},
+});
 const AntTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -140,59 +149,83 @@ interface StyledTabProps {
   label: string;
 }
 
+// interface TabPanelProps {
+//   children?: React.ReactNode;
+//   index: any;
+//   value: any;
+// }
+// function TabPanel(props: TabPanelProps) {
+//   const { children, value, index, ...other } = props;
+
+//   return (
+//     <div
+//       role="tabpanel"
+//       hidden={value !== index}
+//       id={`simple-tabpanel-${index}`}
+//       aria-labelledby={`simple-tab-${index}`}
+//       {...other}
+//     >
+//       {value === index && (
+//         <Box p={2}>
+//           {children}
+//         </Box>
+//       )}
+//     </div>
+//   );
+// }
 interface TabPanelProps {
-  children?: React.ReactNode;
-  index: any;
-  value: any;
+	children?: React.ReactNode;
+	index: any;
+	value: any;
+	classes?: any;
 }
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={2} className="row align-items-center" style={{ padding: "0" }}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
+	const { children, value, index, classes, ...other } = props;
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+				<Box p={3} className={classes.padding}>
+					<Typography component={"span"}>{children}</Typography>
+				</Box>
+			)}
+		</div>
+	);
 }
-interface IProps {
-  onChange?: any;
-  placeholder?: any;
-  value?: any;
-  id?: any;
-  onClick?: any;
-  // any other props that come into the component
-}
-const ref = React.createRef()
-const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps,ref:any) => (
-	<div style={{ border: "1px solid grey", borderRadius: "4px" }}>
-		<img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
-		<input
-			style={{
-				border: "none",
-				width: "120px",
-				height: "31px",
-				outline: "none",
-			}}
-			onChange={onChange}
-			placeholder={placeholder}
-			value={value}
-			id={id}
-			onClick={onClick}
-			ref={ref} 
+// interface IProps {
+//   onChange?: any;
+//   placeholder?: any;
+//   value?: any;
+//   id?: any;
+//   onClick?: any;
+//   // any other props that come into the component
+// }
+// const ref = React.createRef()
+// const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps,ref:any) => (
+// 	<div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+// 		<img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+// 		<input
+// 			style={{
+// 				border: "none",
+// 				width: "120px",
+// 				height: "31px",
+// 				outline: "none",
+// 			}}
+// 			onChange={onChange}
+// 			placeholder={placeholder}
+// 			value={value}
+// 			id={id}
+// 			onClick={onClick}
+// 			ref={ref} 
 			
-		/>
-	</div>
-));
+// 		/>
+// 	</div>
+// ));
 let levelsName: any = [];
 
 
@@ -201,6 +234,8 @@ class UserList extends Component<Props, States> {
   timeOut: any;
   loggedUserInfo: any;
   getStoreData: any;
+  channelPartnerRef: any;
+  thirdPartyUserRef:any;
    constructor(props: any) {
     super(props);
     const dataObj: any = getLocalStorageData("userData");
@@ -267,8 +302,6 @@ class UserList extends Component<Props, States> {
     this.timeOut = 0;
   }
   componentDidMount() {
-    this.getChannelPartnersList();
-    // this.getThirdPartysList();
     ///API to get country and language settings
     this.getHierarchyDatas();
     this.getGeographicFields();
@@ -433,83 +466,30 @@ class UserList extends Component<Props, States> {
     }
   };
 
-  getChannelPartnersList = (condIf?: string) => {
-    this.setState({
-      allChannelPartners: [],
-      dropdownOpenFilter: false,
-      dateErrMsg: "",
-    });
-    const { channelPartnersList } = apiURL;
-    const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo
-    this.setState({ isLoader: true ,pageNo:pageNo});
-    let {
-      status,
-      lastmodifieddatefrom,
-      lastmodifieddateto,
-      geolevel1,
-      geolevel2,
-      geolevel3,
-    }: any = this.state.selectedFilters;
-    let data = {
-      countrycode: this.getStoreData.countryCode,
-      page:  pageNo,
-      searchtext: this.state.searchText,
-      isfiltered: this.state.isFiltered,
-      rowsperpage: this.state.rowsPerPage,
-      usertype: "EXTERNAL",
-      partnertype:
-        this.state.partnerType.type === "Distributor"
-          ? "DISTRIBUTOR"
-          : this.state.partnerType.type === "ALL"
-          ? "ALL"
-          : "RETAILER",
-    };
-    if (this.state.isFiltered) {
-      let filter = {
-        status: status,
-        lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
-        lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
-        geolevel1: geolevel1,
-        geolevel2: geolevel2,
-        geolevel3: geolevel3,
-      };
-      data = { ...data, ...filter };
-    }
-    invokeGetAuthService(channelPartnersList, data)
-      .then((response) => {
-        this.setState({
-          isLoader: false,
-          allChannelPartners:
-            Object.keys(response.body).length !== 0 ? response.body.rows : [],
-        });
-        const total = response.totalrows;
-        this.setState({ totalData: Number(total) });
-      })
-      .catch((error) => {
-        this.setState({ isLoader: false });
-        // let message = error.message
-        // Alert("warning", message);
-      });
-  };
 
-
-
-  getCountryList() {
-    //service call
-    let res = [
-      { value: "IND", text: "INDIA" },
-      { value: "MAL", text: "Malawi" },
-    ];
-    this.setState({ countryList: res });
-  }
 
   download = () => {
-    const { downloadUserList } = apiURL;
+    console.log("ref",this.channelPartnerRef);
+    let stateValue:any="";
+    let downloadURL:string=""
+    let downloadName:string="";
+    const { downloadUserList,downloadThirdPartyList } = apiURL;
+    if(!this.state.value){
+      stateValue=this.channelPartnerRef?.state;
+      downloadURL=downloadUserList;
+      downloadName="Channel_Partner";
+    
+    }else if(this.state.value===1){
+      stateValue=this.thirdPartyUserRef?.state;
+      downloadURL=downloadThirdPartyList;
+      downloadName="Third_Party_Users"
+    }
 
     let data = {
       countrycode: this.getStoreData.countryCode,
-      usertype: "EXTERNAL",
-      partnertype: "RETAILER",
+      usertype: !this.state.value ? "EXTERNAL" :null,
+      partnertype: stateValue.partnerType.type,
+      isfiltered: this.state.value ===1? true :null,
     };
     let {
       status,
@@ -518,8 +498,8 @@ class UserList extends Component<Props, States> {
       geolevel1,
       geolevel2,
       geolevel3,
-    }: any = this.state.selectedFilters;
-    if (this.state.isFiltered) {
+    }: any = stateValue.selectedFilters;
+    if (stateValue.isFiltered) {
       let filter = {
         isfiltered: true,
         status: status.toUpperCase(),
@@ -528,15 +508,15 @@ class UserList extends Component<Props, States> {
         geolevel1: geolevel1==="ALL"? null:geolevel1,
         geolevel2:geolevel2==="ALL"?null:geolevel2,
         geolevel3:geolevel3==="ALL"?null:geolevel3,
-        searchtext: this.state.searchText,
+        searchtext: stateValue.searchText,
       };
       data = { ...data, ...filter };
     }
 
-    invokeGetAuthService(downloadUserList, data)
+    invokeGetAuthService(downloadURL, data)
       .then((response) => {
         const data = response;
-        downloadCsvFile(data, "user.csv");
+        downloadCsvFile(data, `${downloadName}.csv`);
       })
       .catch((error) => {
         this.setState({ isLoader: false });
@@ -610,7 +590,7 @@ class UserList extends Component<Props, States> {
         },
       },
       () => {
-        this.getChannelPartnersList();
+        // this.getChannelPartnersList();
       }
     );
   };
@@ -637,83 +617,7 @@ class UserList extends Component<Props, States> {
     }, 0);
   };
 
-  handleSearch = (e: any) => {
-    let searchText = e.target.value;
-    this.setState({ searchText: searchText});
-    if (this.timeOut) {
-      clearTimeout(this.timeOut);
-    }
-    if (searchText.length >= 3 || searchText.length === 0) {
-      this.setState({ isFiltered: true,inActiveFilter:false  });
-      this.timeOut = setTimeout(() => {
-        this.getChannelPartnersList();
-      }, 1000);
-    }
-  };
-  applyFilter = () => {
-    if(this.state.dateErrMsg === ''){
-      this.setState({ isFiltered: true,inActiveFilter:false }, () => {
-        this.getChannelPartnersList("filter");
-      });
-    }
-  };
-  previous = (pageNo: any) => {
-    this.setState({ pageNo: pageNo - 1 ,inActiveFilter:true});
-    setTimeout(() => {
-      this.getChannelPartnersList();
-    }, 0);
-  };
-  next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 ,inActiveFilter:true});
-    setTimeout(() => {
-      this.getChannelPartnersList();
-    }, 0);
-  };
-  pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number ,inActiveFilter:true});
-    setTimeout(() => {
-      this.getChannelPartnersList();
-    }, 0);
-  };
-
-  backForward = () => {
-    this.setState({
-      startIndex: this.state.startIndex - 3,
-      endIndex: this.state.endIndex - 1,
-      inActiveFilter:true
-    });
-  };
-  fastForward = () => {
-    this.setState({
-      startIndex: this.state.endIndex + 1,
-      endIndex: this.state.endIndex + 3,
-      inActiveFilter:true
-    });
-  };
-
-  handlePaginationChange = (e: any) => {
-    let value = 0;
-    if (e.target.name === "perpage") {
-      value = e.target.value;
-      this.setState({ rowsPerPage: value,inActiveFilter:false },()=>{
-        this.getChannelPartnersList();
-      });
-    } else if (e.target.name === "gotopage") {
-      const { totalData, rowsPerPage } = this.state;
-      const pageData = Math.ceil(totalData / rowsPerPage);
-      value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
-      let isNumeric = Validator.validateNumeric(e.target.value);
-      if (isNumeric) {
-        this.setState({ pageNo: value,inActiveFilter:true }, () => {
-          if (this.state.pageNo && pageData >= this.state.pageNo) {
-            setTimeout(() => {
-              this.state.pageNo&&this.getChannelPartnersList();
-            }, 1000);
-          } 
-        });
-      }
-    }
-  };
+  
 
   handleDialogClose = () => {
     this.setState({
@@ -894,8 +798,9 @@ class UserList extends Component<Props, States> {
                 </>
               )}
             </div>
+          
           </div>
-          {!changeLogOpen && (
+          {/* {!changeLogOpen && (
             <div className="">
               <div
                 className="row align-items-center"
@@ -991,18 +896,6 @@ class UserList extends Component<Props, States> {
                               </label>
                               <div className="d-flex">
                                 <div className="user-filter-date-picker">
-                                  {/* <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.lastmodifieddatefrom}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(
-                                        e,
-                                        "lastmodifieddatefrom",
-                                        ""
-                                      )
-                                    }
-                                  /> */}
                                   <DatePicker
                                     id="update-date"
                                     value={selectedFilters.lastmodifieddatefrom}
@@ -1025,14 +918,6 @@ class UserList extends Component<Props, States> {
                                 </div>
                                 <div className="p-2">-</div>
                                 <div className="user-filter-date-picker">
-                                  {/* <input
-                                    type="date"
-                                    className="form-control"
-                                    value={selectedFilters.lastmodifieddateto}
-                                    onChange={(e) =>
-                                      this.handleFilterChange(e, "lastmodifieddateto", "")
-                                    }
-                                  /> */}
                                   <DatePicker
                                     value={selectedFilters.lastmodifieddateto}
                                     dateFormat="dd-MM-yyyy"
@@ -1084,48 +969,31 @@ class UserList extends Component<Props, States> {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
           <div className="test">
             {!this.state.changeLogOpen ? (
               <>
-                <TabPanel value={this.state.value} index={0}>
+                <TabPanel value={this.state.value} index={0} classes={classes}>
                   <ChannelPartners
-                    allChannelPartners={allChannelPartners}
-                    isAsc={isAsc}
-                    onSort={this.onSort}
-                    state={this.state}
-                    previous={this.previous}
-                    next={this.next}
-                    pageNumberClick={this.pageNumberClick}
-                    totalData={totalData}
-                    handlePaginationChange={this.handlePaginationChange}
-                    callAPI={this.getChannelPartnersList}
+                    locationList={locationList}
+                    onRef={(node:any) => {
+                      this.channelPartnerRef = node;
+                    }}
                   />
                 </TabPanel>
-                <TabPanel value={this.state.value} index={1}>
+                <TabPanel value={this.state.value} index={1} classes={classes}>
                   <ThirdPartyUsers
-                    isAsc={isAsc}
-                    onSort={this.onSort}
-                    state={this.state}
-                    previous={this.previous}
-                    next={this.next}
-                    pageNumberClick={this.pageNumberClick}
-                    totalData={totalData}
-                    handlePaginationChange={this.handlePaginationChange}
-                    callAPI={this.getChannelPartnersList}
                     geolevel1List ={this.state.geolevel1List}
+                    locationList={locationList}
+                    onRef={(node:any) => {
+                      this.thirdPartyUserRef = node;
+                    }}
                   />
                 </TabPanel>
               </>
             ) : (
               <ChangeLogs
                 backToUsersList={this.backToUsersList}
-                state={this.state}
-                previous={this.previous}
-                next={this.next}
-                pageNumberClick={this.pageNumberClick}
-                totalData={totalData}
-                handlePaginationChange={this.handlePaginationChange}
               />
             )}
           </div>
@@ -1134,5 +1002,5 @@ class UserList extends Component<Props, States> {
     );
   }
 }
-
-export default UserList;
+export default withStyles(useStyles)(UserList);
+// export default UserList;
