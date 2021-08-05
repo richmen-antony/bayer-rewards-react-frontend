@@ -1,0 +1,29 @@
+.advisor-filter {
+    background-color: rgb(255, 255, 255);
+    padding: 10px 20px;
+    border-radius: 10px;
+    .filter-left-side {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .filter-right-side {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+  .filter-partnertype {
+    display: flex;
+    align-items: center;
+    .partnertype-list {
+      margin-left: 12px;
+      button {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .filterRow {
+    margin-right: 40px;
+  }

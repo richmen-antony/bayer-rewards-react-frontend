@@ -35,6 +35,10 @@ import Filter from "../../container/grid/Filter";
 import { ScanlogHeader } from "../../utility/constant";
 import Cancel from "../../assets/images/cancel.svg";
 import PendingImg from "../../assets/images/not_activated.svg";
+
+type PartnerTypes = {
+	type: String;
+  };
 interface IProps {
 	onChange?: any;
 	placeholder?: any;
@@ -99,6 +103,7 @@ type States = {
 	showProductPopup: boolean;
 	[key: string]: any;
 	isAsc: Boolean;
+	partnerType: PartnerTypes;
 };
 
 class ScanLogsTable extends Component<Props, States> {
@@ -153,8 +158,11 @@ class ScanLogsTable extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			partnerType: ["Retailers", "Distributors"],
+			partnerTypeList: ["Retailers", "Distributors"],
 			salesType: ["WALKIN_SALES", "ADVISOR_SALES"],
+			partnerType: {
+				type: "Retailers",
+			  },
 		};
 		this.timeOut = 0;
 	}
@@ -602,7 +610,18 @@ class ScanLogsTable extends Component<Props, States> {
 			}
 		);
 	};
-
+	handlePartnerChange = (name: string) => {
+		this.setState(
+		  {
+			partnerType: {
+			  type: name,
+			},
+		  },
+		  () => {
+			this.getScanLogs();
+		  }
+		);
+	  };
 	render() {
 		const {
 			retailerPopupData,
@@ -641,8 +660,12 @@ class ScanLogsTable extends Component<Props, States> {
 								download={this.download}
 								selectedFilters={selectedFilters}
 								handleFilterChange={this.handleFilterChange}
-								partnerType={this.state.partnerType}
+								partnerTypeList={this.state.partnerTypeList}
 								salesType={this.state.salesType}
+								isDownload={true}
+								selectedPartnerType={this.state.partnerType}
+					            handlePartnerChange={this.handlePartnerChange} 
+								toolTipText="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
 							>
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
 									<NativeDropdown

@@ -33,7 +33,9 @@ import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
 import Validator from "../../utility/validator";
 import Filter from "../../container/grid/Filter";
-
+type PartnerTypes = {
+	type: String;
+  };
 
 interface IProps {
   onChange?: any;
@@ -101,6 +103,7 @@ type States = {
   showProductPopup: boolean;
   [key: string]: any;
   isAsc: Boolean;
+  partnerType: PartnerTypes;
 };
 /**
  * SendGoods Class Component
@@ -165,7 +168,10 @@ class SendGoods extends Component<Props, States> {
       retailerOptions: [],
       loggedUserInfo: {},
       inActiveFilter:false,
-      partnerType:["Retailers","Distributors"]
+      partnerTypeList:["Retailers","Distributors"],
+      partnerType: {
+				type: "Retailers",
+			  },
     };
     this.timeOut = 0;
   }
@@ -635,6 +641,18 @@ class SendGoods extends Component<Props, States> {
     });
   };
 
+  handlePartnerChange = (name: string) => {
+		this.setState(
+		  {
+			partnerType: {
+			  type: name,
+			},
+		  },
+		  () => {
+			this.getScanLogs();
+		  }
+		);
+	  };
   render() {
     const {
       retailerPopupData,
@@ -673,7 +691,11 @@ class SendGoods extends Component<Props, States> {
 								download={this.download}
                 selectedFilters={selectedFilters}
                 handleFilterChange={this.handleFilterChange}
-                partnerType={this.state.partnerType}
+                partnerTypeList={this.state.partnerTypeList}
+                isDownload={true}
+                selectedPartnerType={this.state.partnerType}
+                handlePartnerChange={this.handlePartnerChange}
+                toolTipText="Search applicable for Customer Name, Product Name"
 							>
                 <div className="form-group" onClick={(e) => e.stopPropagation()}>
 															<NativeDropdown
