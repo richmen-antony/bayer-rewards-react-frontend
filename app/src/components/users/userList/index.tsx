@@ -26,6 +26,7 @@ import Logs from "../../../assets/icons/logs.svg";
 import ChannelPartners from "./channelPartners";
 import ThirdPartyUsers from "./thirdPartyUsers";
 import ChangeLogs from "./changeLogs";
+import InternalUser from "./InternalUser";
 import ArrowIcon from "../../../assets/icons/tick.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../../utility/widgets/input/search-input";
@@ -89,7 +90,7 @@ type States = {
   level3Options: Array<any>;
   level4Options: Array<any>;
   level5Options: Array<any>;
-  inActiveFilter:boolean;
+  inActiveFilter: boolean;
 };
 
 const AntTabs = withStyles({
@@ -102,13 +103,13 @@ const AntTabs = withStyles({
   },
 })(Tabs);
 const useStyles = (theme: Theme) => ({
-	root: {
-		flexGrow: 1,
-	},
-	padding: {
-		padding: "0px",
-		marginTop: "5px",
-	},
+  root: {
+    flexGrow: 1,
+  },
+  padding: {
+    padding: "0px",
+    marginTop: "5px",
+  },
 });
 const AntTab = withStyles((theme: Theme) =>
   createStyles({
@@ -147,6 +148,7 @@ const AntTab = withStyles((theme: Theme) =>
 
 interface StyledTabProps {
   label: string;
+  value: number;
 }
 
 // interface TabPanelProps {
@@ -174,28 +176,28 @@ interface StyledTabProps {
 //   );
 // }
 interface TabPanelProps {
-	children?: React.ReactNode;
-	index: any;
-	value: any;
-	classes?: any;
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+  classes?: any;
 }
 function TabPanel(props: TabPanelProps) {
-	const { children, value, index, classes, ...other } = props;
-	return (
-		<div
-			role="tabpanel"
-			hidden={value !== index}
-			id={`simple-tabpanel-${index}`}
-			aria-labelledby={`simple-tab-${index}`}
-			{...other}
-		>
-			{value === index && (
-				<Box p={3} className={classes.padding}>
-					<Typography component={"span"}>{children}</Typography>
-				</Box>
-			)}
-		</div>
-	);
+  const { children, value, index, classes, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3} className={classes.padding}>
+          <Typography component={"span"}>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
 }
 // interface IProps {
 //   onChange?: any;
@@ -221,22 +223,20 @@ function TabPanel(props: TabPanelProps) {
 // 			value={value}
 // 			id={id}
 // 			onClick={onClick}
-// 			ref={ref} 
-			
+// 			ref={ref}
+
 // 		/>
 // 	</div>
 // ));
 let levelsName: any = [];
-
-
 
 class UserList extends Component<Props, States> {
   timeOut: any;
   loggedUserInfo: any;
   getStoreData: any;
   channelPartnerRef: any;
-  thirdPartyUserRef:any;
-   constructor(props: any) {
+  thirdPartyUserRef: any;
+  constructor(props: any) {
     super(props);
     const dataObj: any = getLocalStorageData("userData");
     const loggedUserInfo = JSON.parse(dataObj);
@@ -297,7 +297,7 @@ class UserList extends Component<Props, States> {
       level3Options: [],
       level4Options: [],
       level5Options: [],
-      inActiveFilter:false
+      inActiveFilter: false,
     };
     this.timeOut = 0;
   }
@@ -323,7 +323,7 @@ class UserList extends Component<Props, States> {
         locationData.forEach((item: any) => {
           levelsName.push(item.locationhiername.toLowerCase());
           let locationhierlevel = item.locationhierlevel;
-          let geolevels = 'geolevel'+locationhierlevel;
+          let geolevels = "geolevel" + locationhierlevel;
           levels.push(geolevels);
         });
         // levels = ['country','region','add','district','epa','village'];
@@ -333,7 +333,7 @@ class UserList extends Component<Props, States> {
             geographicFields: levels,
           },
           () => {
-              this.getDynamicOptionFields();
+            this.getDynamicOptionFields();
           }
         );
       })
@@ -353,7 +353,9 @@ class UserList extends Component<Props, States> {
     invokeGetAuthService(getHierarchyLevels, countrycode)
       .then((response: any) => {
         let geolevel1 =
-          Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
+          Object.keys(response.body).length !== 0
+            ? response.body.geolevel1
+            : [];
         this.setState({ isLoader: false, geolevel1List: geolevel1 });
       })
       .catch((error: any) => {
@@ -408,17 +410,18 @@ class UserList extends Component<Props, States> {
         text: "ALL",
         value: "ALL",
         code: "ALL",
-        
       };
-      let geolevel3Obj = [{text: "ALL", code: "ALL", name: "ALL", value: "ALL"}]
+      let geolevel3Obj = [
+        { text: "ALL", code: "ALL", name: "ALL", value: "ALL" },
+      ];
       level2Options.unshift(geolevel1Obj);
       dynamicFieldVal[index + 1].options = level2Options;
-      this.setState({dynamicFields:dynamicFieldVal})
+      this.setState({ dynamicFields: dynamicFieldVal });
       dynamicFieldVal[index + 2].options = geolevel3Obj;
       dynamicFieldVal[index].value = value;
-      dynamicFieldVal[index+1].value = "ALL";
-      dynamicFieldVal[index+2].value = "ALL";
-      this.setState((prevState:any)=>({ 
+      dynamicFieldVal[index + 1].value = "ALL";
+      dynamicFieldVal[index + 2].value = "ALL";
+      this.setState((prevState: any) => ({
         dynamicFields: dynamicFieldVal,
         selectedFilters: {
           ...prevState.selectedFilters,
@@ -426,7 +429,6 @@ class UserList extends Component<Props, States> {
           geolevel3: "ALL",
         },
       }));
-
     } else if (type === "geolevel2") {
       let filteredLevel2: any = [];
       filteredLevel2 = geolevel1List?.filter(
@@ -444,18 +446,23 @@ class UserList extends Component<Props, States> {
         };
         geolevel3.push(geolevel3Info);
       });
-      let geolevel3Obj = { text: "ALL", code: "ALL", name: "ALL", value: "ALL" };
+      let geolevel3Obj = {
+        text: "ALL",
+        code: "ALL",
+        name: "ALL",
+        value: "ALL",
+      };
       geolevel3.unshift(geolevel3Obj);
       dynamicFieldVal[index + 1].options = geolevel3;
       dynamicFieldVal[index].value = value;
-      dynamicFieldVal[index+1].value = "ALL";
-      this.setState((prevState:any)=>({  
+      dynamicFieldVal[index + 1].value = "ALL";
+      this.setState((prevState: any) => ({
         dynamicFields: dynamicFieldVal,
         selectedFilters: {
           ...prevState.selectedFilters,
           geolevel3: "ALL",
-        }
-       }));
+        },
+      }));
     } else if (type === "geolevel3") {
       // let filteredLevel2: any = [];
       // let level3List: any = [];
@@ -466,30 +473,27 @@ class UserList extends Component<Props, States> {
     }
   };
 
-
-
   download = () => {
-    console.log("ref",this.channelPartnerRef);
-    let stateValue:any="";
-    let downloadURL:string=""
-    let downloadName:string="";
-    const { downloadUserList,downloadThirdPartyList } = apiURL;
-    if(!this.state.value){
-      stateValue=this.channelPartnerRef?.state;
-      downloadURL=downloadUserList;
-      downloadName="Channel_Partner";
-    
-    }else if(this.state.value===1){
-      stateValue=this.thirdPartyUserRef?.state;
-      downloadURL=downloadThirdPartyList;
-      downloadName="Third_Party_Users"
+    console.log("ref", this.channelPartnerRef);
+    let stateValue: any = "";
+    let downloadURL: string = "";
+    let downloadName: string = "";
+    const { downloadUserList, downloadThirdPartyList } = apiURL;
+    if (!this.state.value) {
+      stateValue = this.channelPartnerRef?.state;
+      downloadURL = downloadUserList;
+      downloadName = "Channel_Partner";
+    } else if (this.state.value === 1) {
+      stateValue = this.thirdPartyUserRef?.state;
+      downloadURL = downloadThirdPartyList;
+      downloadName = "Third_Party_Users";
     }
 
     let data = {
       countrycode: this.getStoreData.countryCode,
-      usertype: !this.state.value ? "EXTERNAL" :null,
+      usertype: !this.state.value ? "EXTERNAL" : null,
       partnertype: stateValue.partnerType.type,
-      isfiltered: this.state.value ===1? true :null,
+      isfiltered: this.state.value === 1 ? true : null,
     };
     let {
       status,
@@ -505,9 +509,9 @@ class UserList extends Component<Props, States> {
         status: status.toUpperCase(),
         lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
         lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
-        geolevel1: geolevel1==="ALL"? null:geolevel1,
-        geolevel2:geolevel2==="ALL"?null:geolevel2,
-        geolevel3:geolevel3==="ALL"?null:geolevel3,
+        geolevel1: geolevel1 === "ALL" ? null : geolevel1,
+        geolevel2: geolevel2 === "ALL" ? null : geolevel2,
+        geolevel3: geolevel3 === "ALL" ? null : geolevel3,
         searchtext: stateValue.searchText,
       };
       data = { ...data, ...filter };
@@ -609,15 +613,12 @@ class UserList extends Component<Props, States> {
           lastmodifieddateto: new Date(),
         },
         isFiltered: false,
-        dateErrMsg: ""
+        dateErrMsg: "",
       },
       () => {}
     );
-    setTimeout(() => {
-    }, 0);
+    setTimeout(() => {}, 0);
   };
-
-  
 
   handleDialogClose = () => {
     this.setState({
@@ -701,10 +702,11 @@ class UserList extends Component<Props, States> {
 
     const fields = this.state.dynamicFields;
     const locationList = fields?.map((list: any, index: number) => {
-      let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+      let nameCapitalized =
+        levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       return (
-        <React.Fragment key={`geolevels`+index}>
-          <div className="country" style={{ marginBottom: "5px" }} >
+        <React.Fragment key={`geolevels` + index}>
+          <div className="country" style={{ marginBottom: "5px" }}>
             {index !== 0 && (
               <div>
                 {list.name !== "geolevel4" && list.name !== "geolevel5" && (
@@ -755,8 +757,9 @@ class UserList extends Component<Props, States> {
                         onChange={this.handleChange}
                         aria-label="ant example"
                       >
-                        <AntTab label="Channel Partners" />
-                        <AntTab label="Third Party Users" />
+                        <AntTab label="Channel Partners" value={0} />
+                        <AntTab label="Third Party Users" value={1} />
+                        <AntTab label="Internal Users" value={2} />
                       </AntTabs>
                     </div>
                   </div>
@@ -771,7 +774,8 @@ class UserList extends Component<Props, States> {
                       className="form-control changeLogs"
                       onClick={() => this.handleChangeLog()}
                     >
-                      <img src={Logs} alt={NoImage} data-testid="changelog" /> <span>Change Logs</span>
+                      <img src={Logs} alt={NoImage} data-testid="changelog" />{" "}
+                      <span>Change Logs</span>
                     </button>
                   </div>
 
@@ -781,7 +785,12 @@ class UserList extends Component<Props, States> {
                       onClick={this.download}
                       style={{ backgroundColor: "#1F445A" }}
                     >
-                      <img src={Download} width="17" alt={NoImage} data-testid="download" />{" "}
+                      <img
+                        src={Download}
+                        width="17"
+                        alt={NoImage}
+                        data-testid="download"
+                      />{" "}
                       <span>Download</span>
                     </button>
                   </div>
@@ -798,7 +807,6 @@ class UserList extends Component<Props, States> {
                 </>
               )}
             </div>
-          
           </div>
           {/* {!changeLogOpen && (
             <div className="">
@@ -976,25 +984,26 @@ class UserList extends Component<Props, States> {
                 <TabPanel value={this.state.value} index={0} classes={classes}>
                   <ChannelPartners
                     locationList={locationList}
-                    onRef={(node:any) => {
+                    onRef={(node: any) => {
                       this.channelPartnerRef = node;
                     }}
                   />
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1} classes={classes}>
                   <ThirdPartyUsers
-                    geolevel1List ={this.state.geolevel1List}
+                    geolevel1List={this.state.geolevel1List}
                     locationList={locationList}
-                    onRef={(node:any) => {
+                    onRef={(node: any) => {
                       this.thirdPartyUserRef = node;
                     }}
                   />
                 </TabPanel>
+                <TabPanel value={this.state.value} index={2} classes={classes}>
+                  {this.state.value === 2 && <InternalUser />}
+                </TabPanel>
               </>
             ) : (
-              <ChangeLogs
-                backToUsersList={this.backToUsersList}
-              />
+              <ChangeLogs backToUsersList={this.backToUsersList} />
             )}
           </div>
         </div>

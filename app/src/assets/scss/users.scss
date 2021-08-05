@@ -53,7 +53,7 @@
 }
 
 .table-responsive {
-  overflow : hidden !important;
+  overflow: hidden !important;
   table {
     display: flex;
     flex-flow: column;
@@ -153,6 +153,12 @@
   tbody {
     height: 400px;
     overflow-y: scroll;
+  }
+
+  span.status.internalUserStatus.inactive,
+  span.status.internalUserStatus.active {
+    width: 86px !important;
+    min-width: 0px !important;
   }
 }
 /* width */
@@ -419,7 +425,7 @@
   border: 1px solid #dee2e6;
   color: #10384f;
 }
-.userlist-table{
+.userlist-table {
   .retailer-id {
     .retailer-icon {
       position: relative;
@@ -439,7 +445,6 @@
     }
   }
 }
-
 
 .change-logs {
   .table th {
@@ -585,4 +590,24 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+th.tableLastHeaderStyle,
+td.tableLastHeaderStyle {
+  border: none !important;
+  text-align: Left;
+  vertical-align: middle !important;
+  width: 50px !important;
+}
+
+.text-left {
+  padding-left: 8px !important;
+}
+
+.MuiDialogActions-root.internalUserDialogButton.MuiDialogActions-spacing {
+  justify-content: center !important;
+}
+
+.internalUserPagination {
+  width: 100%;
 }

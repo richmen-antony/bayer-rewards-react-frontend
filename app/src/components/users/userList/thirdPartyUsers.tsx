@@ -240,8 +240,8 @@ class ChannelPartners extends Component<Props, States> {
 				lastmodifieddateto: new Date(),
 			},
 			dateErrMsg: "",
-			list: ["ASA", "FC","FO"],
-			userStatus: ["ALL", "Active", "Inactive", "Pending", "Declined"],
+			list: ["ASA"],
+			userStatus: ["ALL", "Active", "Inactive"],
 			inActiveFilter: false,
 			rowsPerPage: 10,
 			gotoPage: 1,
@@ -1228,7 +1228,7 @@ class ChannelPartners extends Component<Props, States> {
 					</div>
 					<div className="form-group">{locationList}</div>
 					<label className="font-weight-bold pt-2" htmlFor="update-date">
-						Last Modified Date
+					 Updated Date <span>(6 months interval)</span>
 					</label>
 					<div className="d-flex">
 						<div className="user-filter-date-picker">

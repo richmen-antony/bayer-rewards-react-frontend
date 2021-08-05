@@ -29,5 +29,6 @@ export const apiURL = {
     channelPartners : "user/channelpartnerlist",
     asaCreation : "user/createasauser",
     thirdPartyList: "user/thirdpartyuserlist",
+    internalUserAPI:"user/internaluserlist",
     downloadThirdPartyList: "user/thirdpartyuserdownload"
 }
