@@ -66,13 +66,13 @@ class UserMappings extends Component<any, any> {
                             <td>
                                 <div className="col-sm-3 form-group">
                                     <Dropdown
-                                        name="type"
+                                        name="partnertype"
                                         label="Select Type"
                                         options={partnertypeOptions}
                                         handleChange={(e: any) =>
                                             partnerhandleChange(e, idx)
                                         }
-                                        value={item.type}
+                                        value={item.partnertype}
                                         isPlaceholder
                                     />
                                 </div>
@@ -80,13 +80,13 @@ class UserMappings extends Component<any, any> {
                             <td>
                                 <div className="col-sm-3 form-group">
                                     <Dropdown
-                                        name="location"
+                                        name="geolevel1"
                                         label="Select Location"
                                         options={level1Datas}
                                         handleChange={(e: any) =>
                                             partnerhandleChange(e, idx)
                                         }
-                                        value={item.location}
+                                        value={item.geolevel1}
                                         isPlaceholder
                                     />
                                 </div>
@@ -94,13 +94,13 @@ class UserMappings extends Component<any, any> {
                             <td>
                                 <div className="col-sm-3 form-group">
                                     <Dropdown
-                                        name="name"
+                                        name="channelpartnerfullname"
                                         label="Select Name"
                                         options={channelPartnersOptions[idx]}
                                         handleChange={(e: any) =>
                                             partnerhandleChange(e, idx)
                                         }
-                                        value={item.name}
+                                        value={item.channelpartnerfullname}
                                         isPlaceholder
                                     />
                                 </div>

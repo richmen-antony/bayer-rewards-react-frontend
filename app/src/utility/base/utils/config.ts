@@ -28,6 +28,7 @@ export const apiURL = {
     downloadAdminOrderList:"admin/downloadorderlist",
     channelPartners : "user/channelpartnerlist",
     asaCreation : "user/createasauser",
+    editasauser : "user/editasauser",
     thirdPartyList: "user/thirdpartyuserlist",
     internalUserAPI:"user/internaluserlist",
     downloadThirdPartyList: "user/thirdpartyuserdownload"

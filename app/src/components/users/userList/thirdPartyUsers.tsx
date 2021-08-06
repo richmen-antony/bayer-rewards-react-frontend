@@ -62,9 +62,10 @@ type States = {
 	dialogOpen: boolean;
 	isLoader: boolean;
 	deActivatePopup: boolean;
-	staffPopup: boolean;
+	partnerPopup: boolean;
 
 	userList: any;
+	asauserList:any;
 	status: String;
 	geographicFields: Array<any>;
 	dynamicFields: Array<any>;
@@ -175,7 +176,7 @@ class ChannelPartners extends Component<Props, States> {
 			isdeActivateUser: false,
 			isLoader: false,
 			deActivatePopup: false,
-			staffPopup: false,
+			partnerPopup: false,
 
 			status: "",
 			geographicFields: [],
@@ -192,6 +193,7 @@ class ChannelPartners extends Component<Props, States> {
 			postalCodeErr: "",
 			isValidateSuccess: true,
 			userList: {},
+			asauserList:{},
 			userData: {
 				staffdetails: [],
 				ownerRows: [
@@ -212,21 +214,23 @@ class ChannelPartners extends Component<Props, States> {
 			},
 			isStaff: false,
 			isEditRedirect: false,
-			partnerDatas: [
+			partnerDatas : [
 				{
-					type: "",
-					location: "",
-					name: "",
-					errObj: {
+					partnertype : "",
+					geolevel1: "",
+					channelpartnerfullname : "",
+					channelpartnerid: "",
+					staffid:"",
+					errObj : {
 						typeErr: "",
 						locationErr: "",
 						nameErr: "",
-					},
-				},
+					}
+				}
 			],
-      channelPartnersOptions:[],
-      locationwiseChannelPartners:[],
-      allThirdPartyUsers:[],
+			channelPartnersOptions:[],
+			locationwiseChannelPartners:[],
+			allThirdPartyUsers:[],
 			pageNo: 1,
 			isFiltered: false,
 			searchText: "",
@@ -470,7 +474,7 @@ class ChannelPartners extends Component<Props, States> {
 	}
 
 	handleClosePopup = () => {
-		this.setState({ deActivatePopup: false, staffPopup: false });
+		this.setState({ deActivatePopup: false, partnerPopup: false });
 	};
 
 	showPopup = (e: any, key: keyof States) => {
@@ -488,7 +492,7 @@ class ChannelPartners extends Component<Props, States> {
 				userList: passData,
 				status: data.userstatus,
 				activateUser: activeStatus,
-				staffPopup: true,
+				partnerPopup: true,
 			},
 			() => {
 				const userFields = this.state.userList;
@@ -551,10 +555,104 @@ class ChannelPartners extends Component<Props, States> {
 		);
 	};
 
-	editStaff = (data: any) => {
-		this.setState({ staffPopup: true });
-		console.log("staffpopup", this.state.staffPopup);
+	editChannelPartners = (data: any) => {
+		let passasaData: any = JSON.parse(JSON.stringify(data));
+		this.setState({
+			asauserList : passasaData,
+			partnerPopup: true
+		},()=>{
+			const userFields = this.state.asauserList;
+			// let asauserinfo = {
+			// 	firstname: userFields.firstname,
+			// 	active:
+			// 	  userFields.userstatus === "ACTIVE" ||
+			// 	  userFields.userstatus === "PENDING"
+			// 		? true
+			// 		: false,
+			// 	  lastname: userFields.lastname,
+			// 	  mobilenumber: userFields.phonenumber,
+			// 	  email: userFields.emailid,
+			//   };
+			let asachannelPartnersInfo:any = [];
+			userFields.usermapping.forEach((items: any, index:number) => {
+			  let partnerObj = {
+				  partnertype : items.partnertype,
+				  geolevel1: items.geolevel1,
+				  channelpartnerfullname : items.channelpartnerfullname,
+				  channelpartnerid: items.channelpartnerid,
+				  staffid: items.staffid,
+				  errObj : {
+					  typeErr: "",
+					  locationErr: "",
+					  nameErr: "",
+				  }
+			  };
+			  asachannelPartnersInfo.push(partnerObj);
+			  });
+			  this.setState((prevState:any)=>({
+				partnerDatas : asachannelPartnersInfo,
+			  }),()=>{
+				userFields.usermapping.forEach((items: any, index:number) => {
+				  this.setOptionsForChannelPartners(index)
+				});
+			  });
+		})
 	};
+	submitasaUpdateUser = (e:any) => {
+		e.target.disabled = true;
+		this.setState({ isLoader: true });
+		const { editasauser } = apiURL;
+		const userFields = this.state.asauserList;
+		let userMappings =  this.state.partnerDatas;
+		userMappings.forEach((item: any, index: number) => {
+		   item['isactive'] = true
+		   delete item.errObj;
+		 });
+		 let data =  {
+		   countrycode : this.getStoreData.countryCode,
+		   username : userFields.username,
+		   firstname : userFields.firstname,
+		   lastname: userFields.lastname,
+		   phonenumber:userFields.phonenumber,
+		   emailid:userFields.emailid,
+		   userstatus: userFields.active ? "ACTIVE" : "INACTIVE",
+		   deliverygeolevel0: this.getStoreData.countryCode,
+		   deliverygeolevel1: userFields.deliverygeolevel1,
+		   deliverygeolevel2: userFields.deliverygeolevel2,
+		   deliverygeolevel3: userFields.deliverygeolevel3,
+		   deliverygeolevel4: userFields.deliverygeolevel4,
+		   deliverygeolevel5: userFields.deliverygeolevel5,
+		   street: userFields.street,
+		   zipcode: userFields.zipcode,
+		   usermapping : userMappings
+		 }
+		 const userDetails = {
+			lastupdatedby: this.state.userName.toUpperCase(),
+			lastupdateddate: new Date().toJSON(),
+		};
+		invokePostAuthService(editasauser, data, userDetails)
+		.then((response: any) => {
+			this.setState({
+				isLoader: false,
+			});
+			Alert("success", "User Updated Successfully");
+			this.handleClosePopup();
+			this.getThirdPartyList()
+		})
+		.catch((error: any) => {
+			this.setState({ isLoader: false });
+			let message = error.message;
+			if (message === "Retailer with the same Mobilenumber exists") {
+				message = "User with same Mobilenumber exists";
+			}
+			this.setState({ isRendered: true, partnerPopup: false }, () => {
+				// toastInfo(message);
+				Alert("info", message);
+			});
+		});
+
+
+	}
 
 	submitUpdateUser = (e: any) => {
 		e.target.disabled = true;
@@ -641,7 +739,7 @@ class ChannelPartners extends Component<Props, States> {
 					if (message === "Retailer with the same Mobilenumber exists") {
 						message = "User with same Mobilenumber exists";
 					}
-					this.setState({ isRendered: true, staffPopup: false }, () => {
+					this.setState({ isRendered: true, partnerPopup: false }, () => {
 						// toastInfo(message);
 						Alert("info", message);
 					});
@@ -815,24 +913,27 @@ class ChannelPartners extends Component<Props, States> {
 	};
 	asahandleAddRow = () => {
 		const item = {
-			type: "",
-			location: "",
-			name: "",
-			errObj: {
-				typeErr: "",
-				locationErr: "",
-				nameErr: "",
-			},
+		  partnertype: "",
+		  geolevel1: "",
+		  channelpartnerfullname: "",
+		  channelpartnerid:"",
+		  errObj: {
+			typeErr: "",
+			locationErr: "",
+			nameErr: "",
+		  },
 		};
 		let partnerDatas = this.state.partnerDatas;
 		partnerDatas.push(item);
 		this.setState({ partnerDatas: partnerDatas });
 	};
-
+	
 	asahandleRemoveSpecificRow = (idx: any) => () => {
 		let partnerDatas = this.state.partnerDatas;
+		let partnertypeOptions = this.state.channelPartnersOptions;
 		partnerDatas.splice(idx, 1);
-		this.setState({ partnerDatas: partnerDatas });
+		partnertypeOptions.splice(idx,1);
+		this.setState({ partnerDatas: partnerDatas, channelPartnersOptions: partnertypeOptions });
 	};
 
 	partnerhandleChange = (e: any, idx: number) => {
@@ -840,38 +941,37 @@ class ChannelPartners extends Component<Props, States> {
 		const datas = this.state.partnerDatas;
 		datas[idx][name] = value;
 		this.setState({ partnerDatas: datas });
-    this.setOptionsForChannelPartners(idx);
+    	this.setOptionsForChannelPartners(idx);
 	};
-  setOptionsForChannelPartners = (idx:number) => {
-    const datas = this.state.partnerDatas;
-    const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
-    let locationInfo = [];
-    locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].location );
-    if(locationInfo.length){
-      let retailerList:any = [];
-      retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].type )
-      let partners:any = [];
-      const channelPartnersOptions = this.state.channelPartnersOptions;
-      retailerList[0].partnerdetails?.forEach((item:any, index:number)=>{
-        let partnersObj:any = {};
-          partnersObj['text'] = item.channelpartnerfullname;
-          partnersObj['value'] = item.channelpartnerfullname;
-          partnersObj['partnerid'] = item.channelpartnerid;
-          datas[idx].partnerId = item.channelpartnerid;
-  
-          this.setState({partnerDatas : datas })
-          partners.push(partnersObj);
-      });
-      if(channelPartnersOptions.length) {
-         channelPartnersOptions[idx]=partners;
-      } else {
-        channelPartnersOptions.push(partners)
-      } 
-      this.setState({ channelPartnersOptions: channelPartnersOptions });
-      console.log('options', this.state.channelPartnersOptions)
-    }
-  } 
-
+	setOptionsForChannelPartners = (idx:number) => {
+		const datas = this.state.partnerDatas;
+		const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
+		let locationInfo = [];
+		locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].geolevel1 );
+		if(locationInfo.length){
+		  let retailerList:any = [];
+		  retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
+		  let partners:any = [];
+		  const channelPartnersOptions = this.state.channelPartnersOptions;
+		  retailerList[0].partnerdetails?.forEach((item:any, index:number)=>{
+			let partnersObj:any = {};
+			  partnersObj['text'] = item.channelpartnerfullname;
+			  partnersObj['value'] = item.channelpartnerfullname;
+			  partnersObj['partnerid'] = item.channelpartnerid;
+			  datas[idx].channelpartnerid = item.channelpartnerid;
+	  
+			  this.setState({partnerDatas : datas })
+			  partners.push(partnersObj);
+		  });
+		  if(channelPartnersOptions.length) {
+			 channelPartnersOptions[idx]=partners;
+		  } else {
+			channelPartnersOptions.push(partners)
+		  } 
+		  this.setState({ channelPartnersOptions: channelPartnersOptions });
+		  console.log('options', this.state.channelPartnersOptions)
+		}
+	  } 
 	validateEmail = (value: any, idx: number, type: string) => {
 		let ownerRows = [...this.state.userData.ownerRows];
 		let staffdetails = [...this.state.userData.staffdetails];
@@ -1351,24 +1451,25 @@ class ChannelPartners extends Component<Props, States> {
 				) : (
 					""
 				)}
-				{this.state.staffPopup ? (
+				{this.state.partnerPopup ? (
 					// <UserMappingPopup
-					//     staffPopup = {this.state.staffPopup}
+					//     staffPopup = {this.state.partnerPopup}
 					//     handleClosePopup = {this.handleClosePopup}
 					//     userList = {this.state.userList}
 					//     submitUpdateUser = {this.handleClosePopup}
 					//     isLoader = {this.state.isLoader}
 					// />
-					<AdminPopup open={this.state.staffPopup} onClose={this.handleClosePopup} maxWidth={"980px"}>
+					<AdminPopup open={this.state.partnerPopup} onClose={this.handleClosePopup} maxWidth={"980px"}>
 						<DialogContent>
 							{isLoader && <Loader />}
 							<div className="popup-container">
 								<div className="popup-contents">
 									<div className={`popup-title`}>
 										<p>
-											<label>Vidhya, Retailer</label>
-											{/* {_.startCase(_.toLower(userList?.whtaccountname)) || ""},{" "}
-                        <label>{_.startCase(_.toLower(userList?.rolename))}</label>{" "} */}
+										<strong>
+											{_.startCase(_.toLower(userList?.firstname))} {" "}
+											{_.startCase(_.toLower(userList?.lastname))} - ASA
+										</strong>
 										</p>
 									</div>
 									<div>
@@ -1378,7 +1479,7 @@ class ChannelPartners extends Component<Props, States> {
 											handleAddRow={this.asahandleAddRow}
 											partnerhandleChange={this.partnerhandleChange}
 											partnerDatas={partnerDatas}
-                      channelPartnersOptions={this.state.channelPartnersOptions}
+                      						channelPartnersOptions={this.state.channelPartnersOptions}
 										/>
 									</div>
 								</div>
@@ -1392,7 +1493,7 @@ class ChannelPartners extends Component<Props, States> {
 									</button>
 									<button
 										onClick={(e: any) => {
-											this.submitUpdateUser(e);
+											this.submitasaUpdateUser(e);
 										}}
 										className="cus-btn-user buttonStyle"
 										style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
@@ -1453,7 +1554,7 @@ class ChannelPartners extends Component<Props, States> {
 																onClick={(event) => {
 																	list.userstatus === "DECLINED" || list.userstatus === "PENDING"
 																		? event.preventDefault()
-																		: this.editStaff(list);
+																		: this.editChannelPartners(list);
 																}}
 																src={ExpandWindowImg}
 															></img>

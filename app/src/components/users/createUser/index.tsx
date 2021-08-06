@@ -182,10 +182,11 @@ class CreateUser extends Component<any, any> {
       userroleType : "external",
       partnerDatas : [
         {
-            type : "",
-            location: "",
-            name : "",
-            partnerId: "",
+            partnertype : "",
+            geolevel1: "",
+            channelpartnerfullname : "",
+            channelpartnerid: "",
+            staffid:"",
             errObj : {
                 typeErr: "",
                 locationErr: "",
@@ -357,32 +358,16 @@ class CreateUser extends Component<any, any> {
                     lastname: userFields.lastname,
                     mobilenumber: userFields.phonenumber,
                     email: userFields.emailid,
-                  // ownerRows: userDataList.ownerRows,
-                  // countrycode: userFields.countrycode,
-                  // locale: userFields.locale,
-                  // rolename: userFields.rolename,
-                  // username: userFields.username,
-                  // deliverystreet: userFields.deliverystreet,
-                  // shippingcity: userFields.deliverygeolevel4,
-                  // shippingstate: userFields.deliverygeolevel2,
-                  // deliveryzipcode: userFields.deliveryzipcode,
-                  // taxid: userFields.taxid,
-                  // whtaccountname: userFields.whtaccountname,
-                  // whtownername: userFields.whtownername,
-                  // billingstreet: userFields.billingstreet,
-                  // billinggeolevel4: userFields.billinggeolevel4,
-                  // billinggeolevel2: userFields.billinggeolevel2,
-                  // billingzipcode: userFields.billingzipcode,
-                  // iscreatedfrommobile: userFields.iscreatedfrommobile,
-                  // staffdetails: userFields.staffdetails,
                 };
               let asachannelPartnersInfo:any = [];
-              userFields.usermapping.forEach((items: any, index:number) => {
-                let partnerObj = {
-                    type : items.partnertype,
-                    location: items.geolevel1,
-                    name : items.channelpartnerfullname,
-                    partnerId: items.channelpartnerid,
+              let partnerObj ={};
+              userFields.usermapping?.forEach((items: any, index:number) => {
+                partnerObj = {
+                    partnertype : items.partnertype,
+                    geolevel1: items.geolevel1,
+                    channelpartnerfullname : items.channelpartnerfullname,
+                    channelpartnerid: items.channelpartnerid,
+                    staffid: items.staffid,
                     errObj : {
                         typeErr: "",
                         locationErr: "",
@@ -390,33 +375,32 @@ class CreateUser extends Component<any, any> {
                     }
                 };
                 asachannelPartnersInfo.push(partnerObj);
-                });
-                this.setState((prevState:any)=>({
-                  asaDatas: asauserinfo,
-                  partnerDatas : asachannelPartnersInfo,
-                  userroleType : "internal",
-                  isEditPage: true,
-                  isRendered: true,
-                  userData : {
-                    ...prevState.userData,
-                    rolename: role[1].value,
-                  }
-                }),()=>{
-                  userFields.usermapping.forEach((items: any, index:number) => {
-                    this.setOptionsForChannelPartners(index)
-                  });
-                });
-                // let cloneduserData = JSON.parse(JSON.stringify(userinfo));
-                // this.setState({ cloneduserData: cloneduserData });
-                //Dynamic Geo location dropdowns For Validate and edit User
-                setTimeout(() => {
-                  this.getDynamicOptionFields(userFields);
-                }, 0);
+              });
+             
+            this.setState((prevState:any)=>({
+              asaDatas: asauserinfo,
+              partnerDatas : asachannelPartnersInfo,
+              userroleType : "internal",
+              isEditPage: true,
+              isRendered: true,
+              userData : {
+                ...prevState.userData,
+                rolename: role[1].value,
               }
-            } else {
-              //Dynamic Geo location dropdowns For Validate and Create User
-              this.getDynamicOptionFields("");
+            }),()=>{
+              userFields.usermapping?.forEach((items: any, index:number) => {
+                this.setOptionsForChannelPartners(index)
+              });
+            });
+            //Dynamic Geo location dropdowns for edit asa User
+            setTimeout(() => {
+              this.getDynamicOptionFields(userFields);
+            }, 0);
             }
+          } else {
+            //Dynamic Geo location dropdowns For Create asa User
+            this.getDynamicOptionFields("");
+          }
           }
         );
       })
@@ -1369,7 +1353,7 @@ class CreateUser extends Component<any, any> {
     this.setState({
       isLoader: true,
     });
-    const { asaCreation } = apiURL;
+    const { asaCreation, editasauser} = apiURL;
     const asaPersonalData = this.state.asaDatas;
     let geoFields: any = {};
     this.state.dynamicFields.forEach((list: any, i: number) => {
@@ -1377,40 +1361,69 @@ class CreateUser extends Component<any, any> {
     });
     let userData = this.state.userData;
     let partners = this.state.partnerDatas;
-    let userMappings:any = [];
-    partners.forEach((item:any, index:number)=>{
-      let mappings:any = {};
-      mappings['channelpartnerid'] = item.name
-      mappings['isactive'] = true
-      userMappings.push(mappings);
-    });
-    const data = {
-      countrycode : this.getStoreData.countryCode,
-      firstname : asaPersonalData.firstname,
-      lastname: asaPersonalData.lastname,
-      phonenumber:asaPersonalData.mobilenumber,
-      emailid:asaPersonalData.email,
-      locale:"English (Malawi)",
-      usertype:"EXTERNAL",
-      rolename:"ASA",
-      userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
-      deliverygeolevel0: this.getStoreData.countryCode,
-      deliverygeolevel1: geoFields.geolevel1,
-      deliverygeolevel2: geoFields.geolevel2,
-      deliverygeolevel3: geoFields.geolevel3,
-      deliverygeolevel4: geoFields.geolevel4,
-      deliverygeolevel5: geoFields.geolevel5,
-      street: userData.deliverystreet,
-      zipcode: userData.deliveryzipcode,
-      iscreatedfrommobile:false,
-      usermapping : userMappings
-     }
+
+    let data = {};
+    if (!this.state.isEditPage) {
+      let userMappings:any = [];
+      partners.forEach((item:any, index:number)=>{
+        let mappings:any = {};
+        mappings['channelpartnerid'] = item.channelpartnerid
+        mappings['isactive'] = true
+        userMappings.push(mappings);
+      });
+      data = {
+        countrycode : this.getStoreData.countryCode,
+        firstname : asaPersonalData.firstname,
+        lastname: asaPersonalData.lastname,
+        phonenumber:asaPersonalData.mobilenumber,
+        emailid:asaPersonalData.email,
+        locale:"English (Malawi)",
+        usertype:"EXTERNAL",
+        rolename:"ASA",
+        userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
+        street: userData.deliverystreet,
+        zipcode: userData.deliveryzipcode,
+        iscreatedfrommobile:false,
+        usermapping : userMappings
+      }
+    } else {
+     let userMappings =  this.state.partnerDatas;
+     userMappings.forEach((item: any, index: number) => {
+        item['isactive'] = true
+        delete item.errObj;
+      });
+
+      data =  {
+        countrycode : this.getStoreData.countryCode,
+        username : this.props.location.state?.userFields.username,
+        firstname : asaPersonalData.firstname,
+        lastname: asaPersonalData.lastname,
+        phonenumber:asaPersonalData.mobilenumber,
+        emailid:asaPersonalData.email,
+        userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
+        street: userData.deliverystreet,
+        zipcode: userData.deliveryzipcode,
+        usermapping : userMappings
+      }
+    }
     // const url = this.state.isEditPage ? updateUser : asaCreation;
     console.log('asasubmit', data);
-  const url = asaCreation;
+
+  const url = this.state.isEditPage ? editasauser : asaCreation;
   const userDetails = this.state.isEditPage
   ? {
-      isedit: true,
       lastupdatedby: this.state.username.toUpperCase(),
       lastupdateddate: new Date().toJSON(),
     }
@@ -1421,7 +1434,7 @@ class CreateUser extends Component<any, any> {
         isLoader: false,
       });
       let msg = "";
-      if (this.props.location?.page === "edit") {
+      if (this.props.location?.page === "asaedit") {
         msg = "User Updated Successfully";
       } else {
         msg = "User Created Successfully";
@@ -1629,13 +1642,13 @@ class CreateUser extends Component<any, any> {
         locationErr: "",
         nameErr: "",
       };
-      errObj.typeErr = userInfo.type
+      errObj.typeErr = userInfo.partnertype
         ? ""
         : "Please enter Partner Type";
-      errObj.locationErr = userInfo.locationErr
+      errObj.locationErr = userInfo.geolevel1
         ? ""
         : "Please enter the Partner Location";
-      errObj.nameErr = userInfo.nameErr
+      errObj.nameErr = userInfo.channelpartnerfullname
       ? ""
       : "Please enter the Partner Name";
 
@@ -2243,10 +2256,10 @@ setOptionsForChannelPartners = (idx:number) => {
   const datas = this.state.partnerDatas;
   const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
   let locationInfo = [];
-  locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].location );
+  locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].geolevel1 );
   if(locationInfo.length){
     let retailerList:any = [];
-    retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].type )
+    retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
     let partners:any = [];
     const channelPartnersOptions = this.state.channelPartnersOptions;
     retailerList[0].partnerdetails?.forEach((item:any, index:number)=>{
@@ -2254,7 +2267,7 @@ setOptionsForChannelPartners = (idx:number) => {
         partnersObj['text'] = item.channelpartnerfullname;
         partnersObj['value'] = item.channelpartnerfullname;
         partnersObj['partnerid'] = item.channelpartnerid;
-        datas[idx].partnerId = item.channelpartnerid;
+        datas[idx].channelpartnerid = item.channelpartnerid;
 
         this.setState({partnerDatas : datas })
         partners.push(partnersObj);
@@ -2295,10 +2308,10 @@ getAllPartnersList = () => {
 
 asahandleAddRow = () => {
     const item = {
-      type: "",
-      location: "",
-      name: "",
-      partnerId:"",
+      partnertype: "",
+      geolevel1: "",
+      channelpartnerfullname: "",
+      channelpartnerid:"",
       errObj: {
         typeErr: "",
         locationErr: "",
@@ -2416,7 +2429,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
           className="cus-btn-user buttonStyle"
           onClick={(e) => this.handleClick("createUser", e)}
         >
-          {currentPage === "edit"
+          {(currentPage === "edit" || currentPage === "asaedit")
             ? "Update"
             : currentPage === "validate"
             ? "Approve"
