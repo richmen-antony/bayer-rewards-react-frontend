@@ -485,7 +485,6 @@ const InternalUser = (Props: any) => {
         selectedPartnerType={partnerType}
         handlePartnerChange={handlePartnerChange}
         toolTipText="Search applicable for User Name,  Full Name"
-        internalUserTypeFilterHeading={true}
       >
         <div onClick={(e) => e.stopPropagation()}>
           <label className="font-weight-bold">Status</label>

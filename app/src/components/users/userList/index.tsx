@@ -998,7 +998,6 @@ class UserList extends Component<Props, States> {
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1} classes={classes}>
                   <ThirdPartyUsers
-                    geolevel1List={this.state.geolevel1List}
                     locationList={locationList}
                     onRef={(node: any) => {
                       this.thirdPartyUserRef = node;

@@ -63,7 +63,7 @@ type States = {
 	isLoader: boolean;
 	deActivatePopup: boolean;
 	partnerPopup: boolean;
-
+	pageNo: number;
 	userList: any;
 	asauserList:any;
 	status: String;

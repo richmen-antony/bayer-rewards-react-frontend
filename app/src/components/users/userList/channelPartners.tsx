@@ -91,6 +91,8 @@ type States = {
 	totalData: number;
 	isAsc: boolean;
 	partnerType: PartnerTypes;
+	geolevel1List: Array<any>;
+	level1Options:  Array<any>;
 };
 
 let levelsName: any = [];
@@ -223,11 +225,13 @@ class ChannelPartners extends Component<Props, States> {
 			isAsc:false,
 			partnerType: {
 				type: "Retailer",
-			  },
-
+			},
+			geolevel1List: [],
+			level1Options : [],
 		};
 		this.generateHeader = this.generateHeader.bind(this);
 		this.timeOut = 0;
+
 	}
 	componentDidMount() {
 		this.getChannelPartnersList()
@@ -236,11 +240,33 @@ class ChannelPartners extends Component<Props, States> {
 		this.getGeographicFields();
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
+		this.getHierarchyDatas();
 		if (userData?.username) this.setState({ userName: userData.username });
 		// assign a refrence
 		this.props.onRef && this.props.onRef(this);
 		
 	}
+	getHierarchyDatas() {
+		//To get all level datas
+		this.setState({ isLoader: true });
+		const { getHierarchyLevels } = apiURL;
+		let countrycode = {
+		  countryCode: this.getStoreData.countryCode,
+		};
+		invokeGetAuthService(getHierarchyLevels, countrycode)
+		  .then((response: any) => {
+			let geolevel1 =
+			  Object.keys(response.body).length !== 0
+				? response.body.geolevel1
+				: [];
+			this.setState({ isLoader: false, geolevel1List: geolevel1 });
+		  })
+		  .catch((error: any) => {
+			this.setState({ isLoader: false });
+			let message = error.message;
+			Alert("warning", message);
+		  });
+	  }
 	getChannelPartnersList = (defaultPageNo?: number) => {
 		this.setState({
 		  allChannelPartners: [],
@@ -375,10 +401,15 @@ class ChannelPartners extends Component<Props, States> {
 					levels.push(geolevels);
 				});
 				// levels = ['country','region','add','district','epa','village'];
-				this.setState({
-					isLoader: false,
-					geographicFields: levels,
-				});
+				this.setState(
+					{
+					  isLoader: false,
+					  geographicFields: levels,
+					},
+					() => {
+					  this.getDynamicOptionFields();
+					}
+				  );
 			})
 			.catch((error: any) => {
 				this.setState({ isLoader: false });
@@ -386,6 +417,115 @@ class ChannelPartners extends Component<Props, States> {
 				Alert("warning", message);
 			});
 	}
+	getDynamicOptionFields = (reset?: string) => {
+		let level1List = this.state.geolevel1List;
+		if (!reset) {
+		  let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
+		  level1List.unshift(allItem);
+		}
+		this.setState({ geolevel1List: level1List });
+		let level1Options: any = [];
+		this.state.geolevel1List?.forEach((item: any) => {
+		  let level1Info = { text: item.name, code: item.code, value: item.name };
+		  level1Options.push(level1Info);
+		});
+		let setFormArray: any = [];
+		this.state.geographicFields?.forEach((list: any, i: number) => {
+		  setFormArray.push({
+			name: list,
+			placeHolder: true,
+			value: list === "geolevel0" ? this.getStoreData.country : "",
+			options:
+			  list === "geolevel0"
+				? this.state.countryList
+				: list === "geolevel1"
+				? level1Options
+				: [{ text: "ALL", name: "ALL" }],
+			error: "",
+		  });
+		});
+		this.setState({ dynamicFields: setFormArray });
+	  };
+	  getOptionLists = (cron: any, type: any, value: any, index: any) => {
+		let geolevel1List = this.state.geolevel1List;
+		this.setState({ level1Options: geolevel1List });
+		let dynamicFieldVal = this.state.dynamicFields;
+		if (type === "geolevel1") {
+		  let filteredLevel1 = geolevel1List?.filter(
+			(level1: any) => level1.name === value
+		  );
+		  let level2Options: any = [];
+		  filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+			let level1Info = { text: item.name, value: item.name, code: item.code };
+			level2Options.push(level1Info);
+		  });
+		  let geolevel1Obj = {
+			text: "ALL",
+			value: "ALL",
+			code: "ALL",
+		  };
+		  let geolevel3Obj = [
+			{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" },
+		  ];
+		  level2Options.unshift(geolevel1Obj);
+		  dynamicFieldVal[index + 1].options = level2Options;
+		  this.setState({ dynamicFields: dynamicFieldVal });
+		  dynamicFieldVal[index + 2].options = geolevel3Obj;
+		  dynamicFieldVal[index].value = value;
+		  dynamicFieldVal[index + 1].value = "ALL";
+		  dynamicFieldVal[index + 2].value = "ALL";
+		  this.setState((prevState: any) => ({
+			dynamicFields: dynamicFieldVal,
+			selectedFilters: {
+			  ...prevState.selectedFilters,
+			  geolevel2: "ALL",
+			  geolevel3: "ALL",
+			},
+		  }));
+		} else if (type === "geolevel2") {
+		  let filteredLevel2: any = [];
+		  filteredLevel2 = geolevel1List?.filter(
+			(level1: any) => level1.name === dynamicFieldVal[1].value
+		  );
+		  let geolevel3: any = [];
+		  let level2List = filteredLevel2[0]?.geolevel2.filter(
+			(level2Info: any) => level2Info.name === value
+		  );
+		  level2List[0]?.geolevel3?.forEach((item: any) => {
+			let geolevel3Info = {
+			  text: item.name,
+			  value: item.name,
+			  code: item.code,
+			};
+			geolevel3.push(geolevel3Info);
+		  });
+		  let geolevel3Obj = {
+			text: "ALL",
+			code: "ALL",
+			name: "ALL",
+			value: "ALL",
+		  };
+		  geolevel3.unshift(geolevel3Obj);
+		  dynamicFieldVal[index + 1].options = geolevel3;
+		  dynamicFieldVal[index].value = value;
+		  dynamicFieldVal[index + 1].value = "ALL";
+		  this.setState((prevState: any) => ({
+			dynamicFields: dynamicFieldVal,
+			selectedFilters: {
+			  ...prevState.selectedFilters,
+			  geolevel3: "ALL",
+			},
+		  }));
+		} else if (type === "geolevel3") {
+		  // let filteredLevel2: any = [];
+		  // let level3List: any = [];
+		  // filteredLevel2 = geolevel1List.filter((region: any)=>region.name === dynamicFieldVal[1].value);
+		  // level3List = filteredLevel2[0].level2Options.filter((addinfo:any)=>addinfo.name === dynamicFieldVal[2].value)
+		  dynamicFieldVal[index].value = value;
+		  this.setState({ dynamicFields: dynamicFieldVal });
+		}
+	  };
+	
 
 	handleSort(e: any, columnname: string, allChannelPartners: any, isAsc: boolean) {
 		this.tableCellIndex = e.currentTarget.cellIndex;
@@ -1090,7 +1230,7 @@ class ChannelPartners extends Component<Props, States> {
 	 
 	  resetFilter = (e: any) => {
 		e.stopPropagation();
-		// this.getDynamicOptionFields("reset");
+		this.getDynamicOptionFields("reset");
 		this.setState(
 		  {
 			selectedFilters: {
