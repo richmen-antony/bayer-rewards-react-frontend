@@ -59,7 +59,8 @@ class AreaSalesManager extends Component<any, any> {
              channelPartnersOptions,
              asafirstnameErr,
              asalastnameErr,
-             asamobilenumberErr
+             asamobilenumberErr,
+             isEditPage
             } = this.props;
         return (
             <>
@@ -146,7 +147,7 @@ class AreaSalesManager extends Component<any, any> {
                                     }}
                                     country={countryCodeLower}
                                     value={asaDatas.mobilenumber}
-                                    // disabled={isEditPage ? true : false}
+                                    disabled={isEditPage ? true : false}
                                     onChange={(value, e) =>
                                         asahandleChange(e, value, "mobilenumber")
                                     }

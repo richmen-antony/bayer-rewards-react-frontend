@@ -75,6 +75,11 @@ class UserMappings extends Component<any, any> {
                                         value={item.partnertype}
                                         isPlaceholder
                                     />
+                                    {item.errObj?.typeErr && (
+                                        <span className="error">
+                                            {item.errObj.typeErr}{" "}
+                                        </span>
+                                    )}
                                 </div>
                             </td>
                             <td>
@@ -89,6 +94,11 @@ class UserMappings extends Component<any, any> {
                                         value={item.geolevel1}
                                         isPlaceholder
                                     />
+                                     {item.errObj?.locationErr && (
+                                        <span className="error">
+                                            {item.errObj.locationErr}{" "}
+                                        </span>
+                                    )}
                                 </div>
                             </td>
                             <td>
@@ -103,6 +113,11 @@ class UserMappings extends Component<any, any> {
                                         value={item.channelpartnerfullname}
                                         isPlaceholder
                                     />
+                                     {item.errObj?.nameErr && (
+                                        <span className="error">
+                                            {item.errObj.nameErr}{" "}
+                                        </span>
+                                    )}
                                 </div>
                             </td>
                             <td>

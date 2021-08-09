@@ -376,11 +376,14 @@ class CreateUser extends Component<any, any> {
                 };
                 asachannelPartnersInfo.push(partnerObj);
               });
-             
+              let steps = this.state.stepsArray;
+              steps.splice(2,1,'User Mappings');
+           
             this.setState((prevState:any)=>({
               asaDatas: asauserinfo,
               partnerDatas : asachannelPartnersInfo,
               userroleType : "internal",
+              stepsArray : steps,
               isEditPage: true,
               isRendered: true,
               userData : {
@@ -1473,7 +1476,6 @@ class CreateUser extends Component<any, any> {
           emailErr: userInfo.errObj.emailErr,
           mobilenumberErr: userInfo.errObj.mobilenumberErr,
         };
-
         errObj.firstNameErr = userInfo.firstname
           ? ""
           : "Please enter the First Name";
@@ -1607,69 +1609,68 @@ class CreateUser extends Component<any, any> {
         this.setState({ isRendered: true });
       });
     }
-    formValid = true;
     return formValid;
   }
 
   internalUsersValidation = () => {
     let formValid = true;
-    let asaData = this.state.asaDatas;
-    const {asafirstnameErr, asalastnameErr} = this.state;
-    let asamobilenumberErr = this.state.asamobilenumberErr;
-    let fullNameErr =  asaData.firstname === "" ? "Please Enter the First name" : "";
-    let lastNameErr =  asaData.lastname === "" ? "Please Enter the Last name" : "";
-    this.setState({asafirstnameErr: fullNameErr,asalastnameErr:lastNameErr  })
-    if (
-      asaData.mobilenumber &&
-      asamobilenumberErr !== "Phone Number Exists"
-    ) {
-      asamobilenumberErr =
-      asaData.mobilenumber.length === phoneLength
+    if (this.state.currentStep === 1) {
+      let asaData = this.state.asaDatas;
+      const {asafirstnameErr, asalastnameErr} = this.state;
+      let asamobilenumberErr = this.state.asamobilenumberErr;
+      let fullNameErr =  asaData.firstname === "" ? "Please Enter the First name" : "";
+      let lastNameErr =  asaData.lastname === "" ? "Please Enter the Last name" : "";
+     
+      
+      if (
+        asaData.mobilenumber &&
+        asamobilenumberErr !== "Phone Number Exists"
+      ) {
+        asamobilenumberErr =
+        asaData.mobilenumber.length === phoneLength
+            ? ""
+            : `Please enter ${phoneLength} Digit`;
+      } else {
+        asamobilenumberErr =
+        asamobilenumberErr === "Phone Number Exists"
+            ? asamobilenumberErr
+            : "Please enter the mobile number";
+      }
+      this.setState({asafirstnameErr: fullNameErr,asalastnameErr:lastNameErr, asamobilenumberErr:asamobilenumberErr})
+
+      if ( asafirstnameErr !== "" || asalastnameErr !=="" || asamobilenumberErr !== "" ) {
+        formValid = false;
+      }
+    } else if (this.state.currentStep === 3) {
+      let datas = this.state.partnerDatas;
+      datas.forEach((userInfo: any, idx: number) => {
+        let errorObj: any = {
+          typeErr: "",
+          locationErr: "",
+          nameErr: ""
+        };
+
+        errorObj.typeErr = userInfo.partnertype
           ? ""
-          : `Please enter ${phoneLength} Digit`;
-    } else {
-      asamobilenumberErr =
-      asamobilenumberErr === "Phone Number Exists"
-          ? asamobilenumberErr
-          : "Please enter the mobile number";
-    }
-    if ( asafirstnameErr !== "" || asalastnameErr !=="" || asamobilenumberErr !== "" ) {
-      formValid = false;
-    }
-    this.state.partnerDatas?.forEach((userInfo: any, idx: number) => {
-      let errObj: any = {
-        typeErr: "",
-        locationErr: "",
-        nameErr: "",
-      };
-      errObj.typeErr = userInfo.partnertype
-        ? ""
-        : "Please enter Partner Type";
-      errObj.locationErr = userInfo.geolevel1
-        ? ""
-        : "Please enter the Partner Location";
-      errObj.nameErr = userInfo.channelpartnerfullname
-      ? ""
-      : "Please enter the Partner Name";
+          : "Please enter Type";
+          errorObj.locationErr = userInfo.geolevel1
+          ? ""
+          : "Please enter Location";
+          errorObj.nameErr = userInfo.channelpartnerfullname
+          ? ""
+          : "Please enter Partner name";
 
-      // let datas = this.state.partnerDatas;
-
-      // userData.staffdetails[idx].errObj = errObj;
-      // if (
-      //   errObj.typeErr !== "" ||
-      //   errObj.locationErr !== "" ||
-      //   errObj.nameErr !== "" 
-      // ) {
-      //   formValid = false;
-      // }
-      // this.setState((prevState: any) => ({
-      //   userData: {
-      //     ...prevState.userData,
-      //     staffdetails: userData.staffdetails,
-      //   },
-      // }));
-    });
-    formValid = true;
+        userInfo.errObj = errorObj;
+        if (
+          errorObj.typeErr !== "" ||
+          errorObj.locationErr !== "" ||
+          errorObj.nameErr !== ""
+        ) {
+          formValid = false;
+        }
+        this.setState({ partnerDatas: datas});
+      });
+  }
     return formValid;
   }
 
@@ -1708,37 +1709,52 @@ class CreateUser extends Component<any, any> {
     let currentStep = this.state.currentStep;
     let userData = this.state.userData;
     if (currentStep === 1) {
-      userData.ownerRows.forEach((item: any, index: number) => {
-        item.firstname = "";
-        item.lastname = "";
-        if (this.state.isEditPage === false) item.mobilenumber = "";
-        item.email = "";
-        item.errObj = {
+      if(this.state.userroleType === 'external'){
+        userData.ownerRows.forEach((item: any, index: number) => {
+          item.firstname = "";
+          item.lastname = "";
+          if (this.state.isEditPage === false) item.mobilenumber = "";
+          item.email = "";
+          item.errObj = {
+              firstnameErr: "",
+              lastnameErr: "",
+              mobilenumberErr: "",
+              emailErr: "",
+          }
+        });
+        userData.staffdetails.forEach((item: any, index: number) => {
+          item.firstname = "";
+          item.lastname = "";
+          if (this.state.isEditPage === false) item.mobilenumber = "";
+          item.email = "";
+          item.errObj = {
             firstnameErr: "",
             lastnameErr: "",
             mobilenumberErr: "",
             emailErr: "",
-        }
-      });
-      userData.staffdetails.forEach((item: any, index: number) => {
-        item.firstname = "";
-        item.lastname = "";
-        if (this.state.isEditPage === false) item.mobilenumber = "";
-        item.email = "";
-        item.errObj = {
-          firstnameErr: "",
-          lastnameErr: "",
-          mobilenumberErr: "",
-          emailErr: "",
-      }
-      });
-      this.setState((prevState: any) => ({
-        userData: {
-          ...prevState.userData,
-          ownerRows: userData.ownerRows,
-          staffdetails: userData.staffdetails,
+          }
+        });
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            ownerRows: userData.ownerRows,
+            staffdetails: userData.staffdetails,
+          },
+        }));
+      }else  if(this.state.userroleType === 'internal'){
+        this.setState({ asaDatas: {
+          firstname : '',
+          lastname : '',
+          mobilenumber :'',
+          email : '',
+          active: true
         },
-      }));
+         asafirstnameErr : '',
+         asalastnameErr:'',
+         asamobilenumberErr:'',
+         asaemailErr:'' 
+        })
+      }
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
       data.forEach((list: any) => {
@@ -1760,33 +1776,50 @@ class CreateUser extends Component<any, any> {
         dynamicFields: data,
       }));
     } else {
-      if(!this.state.accInfo){
-        let data: any = this.state.withHolding;
-        data?.forEach((list: any) => {
-          if (list.name !== "geolevel0") {
-            list.value = "";
-            list.error = ""
-            if (list.name !== "geolevel1") {
-              list.options = ""
+      if(this.state.userroleType === 'external'){
+        if(!this.state.accInfo){
+          let data: any = this.state.withHolding;
+          data?.forEach((list: any) => {
+            if (list.name !== "geolevel0") {
+              list.value = "";
+              list.error = ""
+              if (list.name !== "geolevel1") {
+                list.options = ""
+              }
             }
+          });
+          this.setState({  withHolding: data})
+        }
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            taxid: "",
+            whtownername: "",
+            whtaccountname: "",
+            billingstreet: "",
+            billingzipcode: "",
+          },
+          accountnameErr: "",
+          ownernameErr: "",
+        }));
+      } else if(this.state.userroleType === 'internal') {
+        let datas = this.state.partnerDatas;
+        datas.forEach((item:any, idx:number)=>{
+          item.partnertype = '';
+          item.geolevel1 = '';
+          item.channelpartnerfullname = '';
+          item.errObj = {
+            typeErr: "",
+            locationErr: "",
+            nameErr: "",
           }
-        });
-        this.setState({  withHolding: data})
+        })
+        this.setState({ partnerDatas:datas, asafirstnameErr : '',asalastnameErr:'',asamobilenumberErr:'',asaemailErr:'' });
       }
-      this.setState((prevState: any) => ({
-        userData: {
-          ...prevState.userData,
-          taxid: "",
-          whtownername: "",
-          whtaccountname: "",
-          billingstreet: "",
-          billingzipcode: "",
-        },
-        accountnameErr: "",
-        ownernameErr: "",
-      }));
     }
-    this.checkUnsavedData();
+    if(this.state.userroleType === 'external') {
+      this.checkUnsavedData();
+    }
   };
 
   declineUser = () => {
@@ -2209,8 +2242,24 @@ class CreateUser extends Component<any, any> {
   asahandleChange = (e:any,val?: any, key?:string) => {
     let datas = this.state.asaDatas;
     let userdata = this.state.userData;
+    let asamobilenumberErr = this.state.asamobilenumberErr;
     if(key === "mobilenumber") {
       datas['mobilenumber'] = val;
+      if (
+        datas.mobilenumber &&
+        asamobilenumberErr !== "Phone Number Exists"
+      ) {
+        asamobilenumberErr =
+        datas.mobilenumber.length === phoneLength
+            ? ""
+            : `Please enter ${phoneLength} Digit`;
+      } else {
+        asamobilenumberErr =
+        asamobilenumberErr === "Phone Number Exists"
+            ? asamobilenumberErr
+            : "Please enter the mobile number";
+      }
+      this.setState({ asamobilenumberErr : asamobilenumberErr});
     } else {
       let { name, value, checked } = e.target;
       if( name === "active"){
@@ -2248,6 +2297,15 @@ partnerhandleChange = (e:any, idx: number) => {
     const { name, value} = e.target;
     const datas = this.state.partnerDatas;
     datas[idx][name] = value;
+    if(value) {
+      if( name === "partnertype"){
+        datas[idx].errObj.typeErr = ""
+      } else if( name === "geolevel1"){
+        datas[idx].errObj.locationErr = ""
+      } if( name === "channelpartnerfullname"){
+        datas[idx].errObj.nameErr = ""
+      }
+    }
     this.setState({ partnerDatas : datas });
     this.setOptionsForChannelPartners(idx);
 }
@@ -2262,7 +2320,7 @@ setOptionsForChannelPartners = (idx:number) => {
     retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
     let partners:any = [];
     const channelPartnersOptions = this.state.channelPartnersOptions;
-    retailerList[0].partnerdetails?.forEach((item:any, index:number)=>{
+    retailerList[0]?.partnerdetails?.forEach((item:any, index:number)=>{
       let partnersObj:any = {};
         partnersObj['text'] = item.channelpartnerfullname;
         partnersObj['value'] = item.channelpartnerfullname;
@@ -2537,6 +2595,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                     asafirstnameErr={this.state.asafirstnameErr}
                     asalastnameErr={this.state.asalastnameErr}
                     asamobilenumberErr={this.state.asamobilenumberErr}
+                    isEditPage={isEditPage}
                   /> : 
                   <div className="personal">
                     <>

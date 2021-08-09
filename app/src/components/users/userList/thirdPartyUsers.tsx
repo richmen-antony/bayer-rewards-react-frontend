@@ -600,58 +600,59 @@ class ChannelPartners extends Component<Props, States> {
 	};
 	submitasaUpdateUser = (e:any) => {
 		e.target.disabled = true;
-		this.setState({ isLoader: true });
-		const { editasauser } = apiURL;
-		const userFields = this.state.asauserList;
-		let userMappings =  this.state.partnerDatas;
-		userMappings.forEach((item: any, index: number) => {
-		   item['isactive'] = true
-		   delete item.errObj;
-		 });
-		 let data =  {
-		   countrycode : this.getStoreData.countryCode,
-		   username : userFields.username,
-		   firstname : userFields.firstname,
-		   lastname: userFields.lastname,
-		   phonenumber:userFields.phonenumber,
-		   emailid:userFields.emailid,
-		   userstatus: userFields.active ? "ACTIVE" : "INACTIVE",
-		   deliverygeolevel0: this.getStoreData.countryCode,
-		   deliverygeolevel1: userFields.deliverygeolevel1,
-		   deliverygeolevel2: userFields.deliverygeolevel2,
-		   deliverygeolevel3: userFields.deliverygeolevel3,
-		   deliverygeolevel4: userFields.deliverygeolevel4,
-		   deliverygeolevel5: userFields.deliverygeolevel5,
-		   street: userFields.street,
-		   zipcode: userFields.zipcode,
-		   usermapping : userMappings
-		 }
-		 const userDetails = {
-			lastupdatedby: this.state.userName.toUpperCase(),
-			lastupdateddate: new Date().toJSON(),
-		};
-		invokePostAuthService(editasauser, data, userDetails)
-		.then((response: any) => {
-			this.setState({
-				isLoader: false,
+		let formValid = this.internalUsersValidation();
+		if (formValid) {
+			this.setState({ isLoader: true });
+			const { editasauser } = apiURL;
+			const userFields = this.state.asauserList;
+			let userMappings =  this.state.partnerDatas;
+			userMappings.forEach((item: any, index: number) => {
+			item['isactive'] = true
+			delete item.errObj;
 			});
-			Alert("success", "User Updated Successfully");
-			this.handleClosePopup();
-			this.getThirdPartyList()
-		})
-		.catch((error: any) => {
-			this.setState({ isLoader: false });
-			let message = error.message;
-			if (message === "Retailer with the same Mobilenumber exists") {
-				message = "User with same Mobilenumber exists";
+			let data =  {
+			countrycode : this.getStoreData.countryCode,
+			username : userFields.username,
+			firstname : userFields.firstname,
+			lastname: userFields.lastname,
+			phonenumber:userFields.phonenumber,
+			emailid:userFields.emailid,
+			userstatus: userFields.active ? "ACTIVE" : "INACTIVE",
+			deliverygeolevel0: this.getStoreData.countryCode,
+			deliverygeolevel1: userFields.deliverygeolevel1,
+			deliverygeolevel2: userFields.deliverygeolevel2,
+			deliverygeolevel3: userFields.deliverygeolevel3,
+			deliverygeolevel4: userFields.deliverygeolevel4,
+			deliverygeolevel5: userFields.deliverygeolevel5,
+			street: userFields.street,
+			zipcode: userFields.zipcode,
+			usermapping : userMappings
 			}
-			this.setState({ isRendered: true, partnerPopup: false }, () => {
-				// toastInfo(message);
-				Alert("info", message);
+			const userDetails = {
+				lastupdatedby: this.state.userName.toUpperCase(),
+				lastupdateddate: new Date().toJSON(),
+			};
+			invokePostAuthService(editasauser, data, userDetails)
+			.then((response: any) => {
+				this.setState({
+					isLoader: false,
+				});
+				Alert("success", "User Updated Successfully");
+				this.handleClosePopup();
+				this.getThirdPartyList()
+			})
+			.catch((error: any) => {
+				this.setState({ isLoader: false });
+				let message = error.message;
+				if (message === "Retailer with the same Mobilenumber exists") {
+					message = "User with same Mobilenumber exists";
+				}
+				this.setState({ isRendered: true, partnerPopup: false }, () => {
+					// toastInfo(message);
+					Alert("info", message);
+				});
 			});
-		});
-
-
+		}
 	}
 
 	submitUpdateUser = (e: any) => {
@@ -940,6 +941,15 @@ class ChannelPartners extends Component<Props, States> {
 		const { name, value } = e.target;
 		const datas = this.state.partnerDatas;
 		datas[idx][name] = value;
+		if(value) {
+			if( name === "partnertype"){
+				datas[idx].errObj.typeErr = ""
+			} else if( name === "geolevel1"){
+				datas[idx].errObj.locationErr = ""
+			} if( name === "channelpartnerfullname"){
+				datas[idx].errObj.nameErr = ""
+			}
+		}
 		this.setState({ partnerDatas: datas });
     	this.setOptionsForChannelPartners(idx);
 	};
@@ -949,29 +959,62 @@ class ChannelPartners extends Component<Props, States> {
 		let locationInfo = [];
 		locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].geolevel1 );
 		if(locationInfo.length){
-		  let retailerList:any = [];
-		  retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
-		  let partners:any = [];
-		  const channelPartnersOptions = this.state.channelPartnersOptions;
-		  retailerList[0].partnerdetails?.forEach((item:any, index:number)=>{
+			let retailerList:any = [];
+			retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
+			let partners:any = [];
+			const channelPartnersOptions = this.state.channelPartnersOptions;
+			retailerList[0]?.partnerdetails?.forEach((item:any, index:number)=>{
 			let partnersObj:any = {};
-			  partnersObj['text'] = item.channelpartnerfullname;
-			  partnersObj['value'] = item.channelpartnerfullname;
-			  partnersObj['partnerid'] = item.channelpartnerid;
-			  datas[idx].channelpartnerid = item.channelpartnerid;
-	  
-			  this.setState({partnerDatas : datas })
-			  partners.push(partnersObj);
-		  });
-		  if(channelPartnersOptions.length) {
-			 channelPartnersOptions[idx]=partners;
-		  } else {
+				partnersObj['text'] = item.channelpartnerfullname;
+				partnersObj['value'] = item.channelpartnerfullname;
+				partnersObj['partnerid'] = item.channelpartnerid;
+				datas[idx].channelpartnerid = item.channelpartnerid;
+		
+				this.setState({partnerDatas : datas })
+				partners.push(partnersObj);
+			});
+			if(channelPartnersOptions.length) {
+				channelPartnersOptions[idx]=partners;
+			} else {
 			channelPartnersOptions.push(partners)
-		  } 
-		  this.setState({ channelPartnersOptions: channelPartnersOptions });
-		  console.log('options', this.state.channelPartnersOptions)
+			} 
+			this.setState({ channelPartnersOptions: channelPartnersOptions });
+			console.log('options', this.state.channelPartnersOptions)
 		}
-	  } 
+	}
+
+	internalUsersValidation = () => {
+		let formValid = true;
+		let datas = this.state.partnerDatas;
+		datas.forEach((userInfo: any, idx: number) => {
+		let errorObj: any = {
+			typeErr: "",
+			locationErr: "",
+			nameErr: ""
+		};
+		errorObj.typeErr = userInfo.partnertype
+			? ""
+			: "Please enter Type";
+			errorObj.locationErr = userInfo.geolevel1
+			? ""
+			: "Please enter Location";
+			errorObj.nameErr = userInfo.channelpartnerfullname
+			? ""
+			: "Please enter Partner name";
+
+		userInfo.errObj = errorObj;
+		if (
+			errorObj.typeErr !== "" ||
+			errorObj.locationErr !== "" ||
+			errorObj.nameErr !== ""
+		) {
+			formValid = false;
+		}
+		this.setState({ partnerDatas: datas});
+		});
+		return formValid;
+	}
+
 	validateEmail = (value: any, idx: number, type: string) => {
 		let ownerRows = [...this.state.userData.ownerRows];
 		let staffdetails = [...this.state.userData.staffdetails];
