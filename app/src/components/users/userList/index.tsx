@@ -1008,7 +1008,7 @@ class UserList extends Component<Props, States> {
                 <TabPanel value={this.state.value} index={2} classes={classes}>
                   {this.state.value === 2 && (
                     <InternalUser
-                      locationList={locationList}
+                      geolevel1List={this.state.geolevel1List}
                       onRef={(node: any) => {
                         this.internalUserRef = node;
                       }}

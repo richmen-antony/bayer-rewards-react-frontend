@@ -227,7 +227,6 @@ class ChannelPartners extends Component<Props, States> {
 			channelPartnersOptions:[],
 			locationwiseChannelPartners:[],
 			allThirdPartyUsers:[],
-			pageNo: 1,
 			isFiltered: false,
 			searchText: "",
 			dropdownOpenFilter: false,

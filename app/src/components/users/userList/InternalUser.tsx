@@ -1,21 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import moment from "moment";
 import MuiButton from "@material-ui/core/Button";
 import Table from "react-bootstrap/Table";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Button,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from "reactstrap";
+import { Button } from "reactstrap";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import { DialogActions, DialogContent } from "@material-ui/core";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
@@ -52,13 +44,13 @@ type Props = {
   location?: any;
   history?: any;
   onRef: any;
+  geolevel1List: any;
 };
 
 const InternalUser = (Props: any) => {
   const history = useHistory();
 
   const [internalUsers, setInternalUsers] = useState([]);
-  const [regionOptions, setRegionOptions] = useState([]);
   const [internalUserType, setUserType] = useState<string>("RSM");
   const [list, setList] = useState(["RSM"]);
   const [partnerType, setPartnerType] = useState({ type: "RSM" });
@@ -71,6 +63,7 @@ const InternalUser = (Props: any) => {
   const [tableCellIndex, setTableCellIndex] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [pageNo, setPageNo] = useState<number>(1);
+  const [gotoPage, setGotoPage] = useState<number>(1);
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
   const [isRegionValueChanged, setIsRegionValueChanged] =
@@ -143,7 +136,6 @@ const InternalUser = (Props: any) => {
     chanagedStatusValue,
     dateErrMsg,
     selectedFilters,
-    // regionOptions,
     // totalRows,
   ]);
 
@@ -182,23 +174,10 @@ const InternalUser = (Props: any) => {
 
     invokeGetAuthService(internalUserAPI, data)
       .then((response) => {
-        let data1 =
-          response?.body && Object.keys(response?.body).length !== 0
-            ? response.body.rows
-            : [];
-
         setInternalUsers(
           Object.keys(response.body).length !== 0 ? response.body.rows : []
         );
         const total = response?.totalrows || 0;
-        const regionList =
-          response.body.length !== 0 ? _.uniqBy(data1, "geolevel1") : [];
-        const regionOptionsList =
-          regionList?.length > 0
-            ? handledropdownoption(regionList, "geolevel1")
-            : [];
-
-        setRegionOptions(regionOptionsList);
         setTotalRows(total);
         setIsLoader(false);
       })
@@ -383,7 +362,6 @@ const InternalUser = (Props: any) => {
     setPartnerType({
       type: name,
     });
-    fetchInternalUserData();
   };
 
   const applyFilter = () => {
@@ -471,6 +449,18 @@ const InternalUser = (Props: any) => {
     )
   );
 
+  const { geolevel1List } = Props;
+  let regionOptions: any = [];
+  geolevel1List?.forEach((item: any, index: any) => {
+    let regionList = {
+      key: index,
+      text: item.name,
+      code: item.code,
+      value: item.name,
+    };
+    regionOptions.push(regionList);
+  });
+
   return (
     <>
       {isLoader && <Loader />}
@@ -506,6 +496,7 @@ const InternalUser = (Props: any) => {
               </span>
             ))}
           </div>
+          <br />
           <label className="font-weight-bold">Region Mapping</label>
           <div className="pt-1">
             {internalUserMappingStatus.map((item, index) => (
@@ -525,6 +516,7 @@ const InternalUser = (Props: any) => {
             ))}
           </div>
         </div>
+        <br />
 
         {/* {selectedFilters.status === "ALL" && ( */}
         <div className="form-group" onClick={(e) => e.stopPropagation()}>
@@ -534,15 +526,14 @@ const InternalUser = (Props: any) => {
             label={"Region"}
             handleChange={(e: any) => handleRegionSelect(e, "geolevel1")}
             options={regionOptions}
-            defaultValue="ALL"
+            // defaultValue="ALL"
             id="region-test"
             dataTestId="region-test"
           />
         </div>
         {/* )} */}
-
         <label className="font-weight-bold pt-2" htmlFor="update-date">
-          Last Modified Date
+          Updated Date <span>(6 months interval)</span>
         </label>
         <div className="d-flex">
           <div className="user-filter-date-picker">
