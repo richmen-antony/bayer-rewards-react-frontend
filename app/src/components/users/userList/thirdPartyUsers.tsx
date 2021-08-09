@@ -23,6 +23,7 @@ import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import { apiURL } from "../../../utility/base/utils/config";
 import { patterns } from "../../../utility/base/utils/patterns";
+import NativeDropdown from "../../../utility/widgets/dropdown/NativeSelect";
 import { invokeGetAuthService, invokePostAuthService } from "../../../utility/base/service";
 import { Alert } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
@@ -52,37 +53,24 @@ type PartnerTypes = {
 type Props = {
 	location?: any;
 	history?: any;
-	geolevel1List: any;
-	locationList: any;
 	onRef:any
 };
 type States = {
-	isActivateUser: boolean;
-	isdeActivateUser: boolean;
-	dialogOpen: boolean;
 	isLoader: boolean;
 	deActivatePopup: boolean;
 	partnerPopup: boolean;
-	pageNo: number;
 	userList: any;
 	asauserList:any;
 	status: String;
 	geographicFields: Array<any>;
 	dynamicFields: Array<any>;
 	countryList: Array<any>;
-	hierarchyList: Array<any>;
 	isRendered: boolean;
 	userName: String;
-	toDateErr: String;
 	activateUser: any;
-	accountNameErr: String;
-	phoneErr: String;
 	emailErr: String;
-	postalCodeErr: String;
-	isValidateSuccess: boolean;
 	userData: any;
 	isStaff: boolean;
-	isEditRedirect: boolean;
 	allThirdPartyUsers: any;
 	partnerDatas: any;
 	isFiltered: boolean;
@@ -96,8 +84,12 @@ type States = {
 	totalData: number;
 	isAsc: boolean;
 	partnerType: PartnerTypes;
-  channelPartnersOptions: any;
-  locationwiseChannelPartners: any;
+	channelPartnersOptions: any;
+	locationwiseChannelPartners: any;
+	geolevel1List: Array<any>;
+	level1Options: Array<any>;
+	level2Options: Array<any>;
+	level3Options: Array<any>;
 };
 
 let levelsName: any = [];
@@ -167,27 +159,17 @@ class ChannelPartners extends Component<Props, States> {
 			Language: "EN-US",
 		};
 		this.state = {
-			dialogOpen: false,
-			isActivateUser: false,
-			isdeActivateUser: false,
 			isLoader: false,
 			deActivatePopup: false,
 			partnerPopup: false,
-
 			status: "",
 			geographicFields: [],
 			dynamicFields: [],
 			countryList: [],
-			hierarchyList: [],
 			isRendered: false,
 			userName: "",
-			toDateErr: "",
 			activateUser: true,
-			accountNameErr: "",
-			phoneErr: "",
 			emailErr: "",
-			postalCodeErr: "",
-			isValidateSuccess: true,
 			userList: {},
 			asauserList:{},
 			userData: {
@@ -209,7 +191,6 @@ class ChannelPartners extends Component<Props, States> {
 				],
 			},
 			isStaff: false,
-			isEditRedirect: false,
 			partnerDatas : [
 				{
 					partnertype : "",
@@ -247,18 +228,22 @@ class ChannelPartners extends Component<Props, States> {
 			partnerType: {
 				type: "ASA",
 			},
+			geolevel1List: [],
+			level1Options: [],
+			level2Options: [],
+			level3Options: [],
 		};
 		this.generateHeader = this.generateHeader.bind(this);
 	}
 	componentDidMount() {
 		//API to get country and language settings
 		this.getCountryList();
-		this.getGeographicFields();
+		this.getHierarchyDatas();
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
 		if (userData?.username) this.setState({ userName: userData.username });
 		this.getThirdPartyList();
-    this.getAllPartnersList();
+    	this.getAllPartnersList();
 		// assign a refrence
 		this.props.onRef && this.props.onRef(this);
 	}
@@ -275,30 +260,163 @@ class ChannelPartners extends Component<Props, States> {
 		this.setState({ isLoader: true });
 		const { getTemplateData } = apiURL;
 		let data = {
-			countryCode: this.getStoreData.countryCode,
+		  countryCode: this.getStoreData.countryCode,
 		};
 		invokeGetAuthService(getTemplateData, data)
+		  .then((response: any) => {
+			let locationData = response.body[0].locationhierarchy;
+			let levels: any = [];
+			locationData.forEach((item: any) => {
+			  levelsName.push(item.locationhiername.toLowerCase());
+			  let locationhierlevel = item.locationhierlevel;
+			  let geolevels = "geolevel" + locationhierlevel;
+			  levels.push(geolevels);
+			});
+			// levels = ['country','region','add','district','epa','village'];
+			this.setState(
+			  {
+				isLoader: false,
+				geographicFields: levels,
+			  },
+			  () => {
+				this.getDynamicOptionFields();
+			  }
+			);
+		  })
+		  .catch((error: any) => {
+			this.setState({ isLoader: false });
+			let message = error.message;
+			Alert("warning", message);
+		  });
+	}
+	getHierarchyDatas() {
+		//To get all level datas
+		this.setState({ isLoader: true });
+		const { getHierarchyLevels } = apiURL;
+		let countrycode = {
+			countryCode: this.getStoreData.countryCode,
+		};
+		invokeGetAuthService(getHierarchyLevels, countrycode)
 			.then((response: any) => {
-				let locationData = response.body[0].locationhierarchy;
-				let levels: any = [];
-				locationData.forEach((item: any) => {
-					levelsName.push(item.locationhiername.toLowerCase());
-					let locationhierlevel = item.locationhierlevel;
-					let geolevels = "geolevel" + locationhierlevel;
-					levels.push(geolevels);
-				});
-				// levels = ['country','region','add','district','epa','village'];
-				this.setState({
-					isLoader: false,
-					geographicFields: levels,
-				});
+			let geolevel1 =
+				Object.keys(response.body).length !== 0
+				? response.body.geolevel1
+				: [];
+			this.setState({ isLoader: false, geolevel1List: geolevel1 },()=>{
+				this.getGeographicFields();
+			});
 			})
 			.catch((error: any) => {
-				this.setState({ isLoader: false });
-				let message = error.message;
-				Alert("warning", message);
-			});
+			this.setState({ isLoader: false });
+			let message = error.message;
+			Alert("warning", message);
+		});
 	}
+
+	getDynamicOptionFields = (reset?: string) => {
+		let level1List = this.state.geolevel1List;
+		if (!reset) {
+			let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
+			level1List.unshift(allItem);
+		}
+		this.setState({ geolevel1List: level1List });
+		let level1Options: any = [];
+		this.state.geolevel1List?.forEach((item: any) => {
+			let level1Info = { text: item.name, code: item.code, value: item.name };
+			level1Options.push(level1Info);
+		});
+		let setFormArray: any = [];
+		this.state.geographicFields?.forEach((list: any, i: number) => {
+			setFormArray.push({
+			name: list,
+			placeHolder: true,
+			value: list === "geolevel0" ? this.getStoreData.country : "",
+			options:
+				list === "geolevel0"
+				? this.state.countryList
+				: list === "geolevel1"
+				? level1Options
+				: [{ text: "ALL", name: "ALL" }],
+			error: "",
+			});
+		});
+		this.setState({ dynamicFields: setFormArray });
+		};
+		getOptionLists = (cron: any, type: any, value: any, index: any) => {
+		let geolevel1List = this.state.geolevel1List;
+		this.setState({ level1Options: geolevel1List });
+		let dynamicFieldVal = this.state.dynamicFields;
+		if (type === "geolevel1") {
+			let filteredLevel1 = geolevel1List?.filter(
+			(level1: any) => level1.name === value
+			);
+			let level2Options: any = [];
+			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+			let level1Info = { text: item.name, value: item.name, code: item.code };
+			level2Options.push(level1Info);
+			});
+			let geolevel1Obj = {
+			text: "ALL",
+			value: "ALL",
+			code: "ALL",
+			};
+			let geolevel3Obj = [
+			{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" },
+			];
+			level2Options.unshift(geolevel1Obj);
+			dynamicFieldVal[index + 1].options = level2Options;
+			this.setState({ dynamicFields: dynamicFieldVal });
+			dynamicFieldVal[index + 2].options = geolevel3Obj;
+			dynamicFieldVal[index].value = value;
+			dynamicFieldVal[index + 1].value = "ALL";
+			dynamicFieldVal[index + 2].value = "ALL";
+			this.setState((prevState: any) => ({
+			dynamicFields: dynamicFieldVal,
+			selectedFilters: {
+				...prevState.selectedFilters,
+				geolevel2: "ALL",
+				geolevel3: "ALL",
+			},
+			}));
+		} else if (type === "geolevel2") {
+			let filteredLevel2: any = [];
+			filteredLevel2 = geolevel1List?.filter(
+			(level1: any) => level1.name === dynamicFieldVal[1].value
+			);
+			let geolevel3: any = [];
+			let level2List = filteredLevel2[0]?.geolevel2.filter(
+			(level2Info: any) => level2Info.name === value
+			);
+			level2List[0]?.geolevel3?.forEach((item: any) => {
+			let geolevel3Info = {
+				text: item.name,
+				value: item.name,
+				code: item.code,
+			};
+			geolevel3.push(geolevel3Info);
+			});
+			let geolevel3Obj = {
+			text: "ALL",
+			code: "ALL",
+			name: "ALL",
+			value: "ALL",
+			};
+			geolevel3.unshift(geolevel3Obj);
+			dynamicFieldVal[index + 1].options = geolevel3;
+			dynamicFieldVal[index].value = value;
+			dynamicFieldVal[index + 1].value = "ALL";
+			this.setState((prevState: any) => ({
+			dynamicFields: dynamicFieldVal,
+			selectedFilters: {
+				...prevState.selectedFilters,
+				geolevel3: "ALL",
+			},
+			}));
+		} else if (type === "geolevel3") {
+			dynamicFieldVal[index].value = value;
+			this.setState({ dynamicFields: dynamicFieldVal });
+		}
+	};
 
 	getThirdPartyList = (defaultPageNo?: number) => {
 		this.setState({
@@ -355,29 +473,29 @@ class ChannelPartners extends Component<Props, States> {
 				// Alert("warning", message);
 			});
 	};
-  getAllPartnersList = () => {
-    this.setState({
-          isLoader: true,
-          locationwiseChannelPartners:[],
-    });
-    const { channelPartners } = apiURL;
-    let data = {
-      countrycode: this.getStoreData.countryCode,
-    };
-    return new Promise((resolve, reject) => {
-      invokeGetAuthService(channelPartners, data)
-      .then((response) => {
-        let res =  Object.keys(response.body).length !== 0 ? response.body.rows : [];
-        this.setState({
-          isLoader: false,
-          locationwiseChannelPartners:res
-        });
-      })
-      .catch((error) => {
-        this.setState({ isLoader: false });
-      });
-    });
-  }
+	getAllPartnersList = () => {
+		this.setState({
+			isLoader: true,
+			locationwiseChannelPartners:[],
+		});
+		const { channelPartners } = apiURL;
+		let data = {
+		countrycode: this.getStoreData.countryCode,
+		};
+		return new Promise((resolve, reject) => {
+		invokeGetAuthService(channelPartners, data)
+		.then((response) => {
+			let res =  Object.keys(response.body).length !== 0 ? response.body.rows : [];
+			this.setState({
+			isLoader: false,
+			locationwiseChannelPartners:res
+			});
+		})
+		.catch((error) => {
+			this.setState({ isLoader: false });
+		});
+		});
+	}
 
 	handleSort(e: any, columnname: string, allThirdPartyUsers: any, isAsc:boolean) {
 		this.tableCellIndex = e.currentTarget.cellIndex;
@@ -557,17 +675,6 @@ class ChannelPartners extends Component<Props, States> {
 			partnerPopup: true
 		},()=>{
 			const userFields = this.state.asauserList;
-			// let asauserinfo = {
-			// 	firstname: userFields.firstname,
-			// 	active:
-			// 	  userFields.userstatus === "ACTIVE" ||
-			// 	  userFields.userstatus === "PENDING"
-			// 		? true
-			// 		: false,
-			// 	  lastname: userFields.lastname,
-			// 	  mobilenumber: userFields.phonenumber,
-			// 	  email: userFields.emailid,
-			//   };
 			let asachannelPartnersInfo:any = [];
 			userFields.usermapping.forEach((items: any, index:number) => {
 			  let partnerObj = {
@@ -1166,6 +1273,14 @@ class ChannelPartners extends Component<Props, States> {
 			selectedFilters: { ...this.state.selectedFilters, [name]: date },
 		});
 	};
+	handleUpdateDropdown = (value: string, label: any) => {
+		this.setState((prevState: any) => ({
+		  selectedFilters: {
+			...prevState.selectedFilters,
+			[label.toLocaleLowerCase()]: value,
+		  },
+		}));
+	  };
 
 	onSort = (name: string, data: any, isAsc: boolean) => {
 		let response = sortBy(name, data);
@@ -1181,7 +1296,7 @@ class ChannelPartners extends Component<Props, States> {
 	
 	resetFilter = (e: any) => {
 		e.stopPropagation();
-		// this.getDynamicOptionFields("reset");
+		this.getDynamicOptionFields("reset");
 		this.setState(
 			{
 				selectedFilters: {
@@ -1254,7 +1369,6 @@ class ChannelPartners extends Component<Props, States> {
 		);
 	};
 	render() {
-		const { geolevel1List, locationList } = this.props;
 		const {
 			allThirdPartyUsers,
 			partnerDatas,
@@ -1272,6 +1386,42 @@ class ChannelPartners extends Component<Props, States> {
 		let data: any = getLocalStorageData("userData");
 		let loggedUserInfo = JSON.parse(data);
 		let countryCodeLower = loggedUserInfo?.countrycode && _.toLower(loggedUserInfo.countrycode);
+		const fields = this.state.dynamicFields;
+		const locationList = fields?.map((list: any, index: number) => {
+		  let nameCapitalized =
+			levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+		  return (
+			<React.Fragment key={`geolevels` + index}>
+			  <div className="country" style={{ marginBottom: "5px" }}>
+				{index !== 0 && (
+				  <div>
+					{list.name !== "geolevel4" && list.name !== "geolevel5" && (
+					  <NativeDropdown
+						name={list.name}
+						label={nameCapitalized}
+						options={list.options}
+						handleChange={(e: any) => {
+						  e.stopPropagation();
+						  list.value = e.target.value;
+						  this.getOptionLists(
+							"manual",
+							list.name,
+							e.target.value,
+							index
+						  );
+						  this.handleUpdateDropdown(e.target.value, list.name);
+						}}
+						value={list.value}
+						id="geolevel-test"
+						dataTestId="geolevel-test"
+					  />
+					)}
+				  </div>
+				)}
+			  </div>
+			</React.Fragment>
+		  );
+		});
 		return (
 			<AUX>
 				{isLoader && <Loader />}
@@ -1451,7 +1601,7 @@ class ChannelPartners extends Component<Props, States> {
 									</div>
 									<div>
 										<UserMappings
-											geolevel1List={geolevel1List}
+											geolevel1List={this.state.geolevel1List}
 											handleRemoveSpecificRow={this.asahandleRemoveSpecificRow}
 											handleAddRow={this.asahandleAddRow}
 											partnerhandleChange={this.partnerhandleChange}
