@@ -1,12 +1,29 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router";
+import moment from "moment";
+import MuiButton from "@material-ui/core/Button";
 import Table from "react-bootstrap/Table";
-import Button from "@material-ui/core/Button";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {
+  Button,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import { Theme, withStyles } from "@material-ui/core/styles";
 import { DialogActions, DialogContent } from "@material-ui/core";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
 import Tick from "../../../../src/assets/icons/tick1.svg";
 import Cross from "../../../../src/assets/icons/cancel1.svg";
+import CalenderIcon from "../../../assets/icons/calendar.svg";
+import ArrowIcon from "../../../assets/icons/dark bg.svg";
+import RtButton from "../../../assets/icons/right_btn.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
 import EditDisabled from "../../../assets/icons/edit_disabled.svg";
@@ -23,16 +40,44 @@ import {
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import _ from "lodash";
 import Validator from "../../../utility/validator";
+import Filter from "../../../container/grid/Filter";
+import { NativeDropdown } from "../../../utility/widgets/dropdown/NativeSelect";
+import {
+  downloadCsvFile,
+  ErrorMsg,
+  handledropdownoption,
+} from "../../../utility/helper";
 
-const InternalUser = () => {
+type Props = {
+  location?: any;
+  history?: any;
+  onRef: any;
+};
+
+const InternalUser = (Props: any) => {
+  const history = useHistory();
+
   const [internalUsers, setInternalUsers] = useState([]);
+  const [regionOptions, setRegionOptions] = useState([]);
   const [internalUserType, setUserType] = useState<string>("RSM");
+  const [list, setList] = useState(["RSM"]);
+  const [partnerType, setPartnerType] = useState({ type: "RSM" });
+  const [dateErrMsg, setDateErrMsg] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>("");
+  const [updatedUserName, setUpdatedUserName] = useState<string>(" ");
+  const [chanagedStatusValue, setChanagedStatusValue] =
+    useState<boolean>(false);
   const [totalRows, setTotalRows] = useState<number>(0);
   const [tableCellIndex, setTableCellIndex] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [pageNo, setPageNo] = useState<number>(1);
   const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [isFiltered, setIsFiltered] = useState<boolean>(false);
+  const [isRegionValueChanged, setIsRegionValueChanged] =
+    useState<boolean>(false);
+  const [inActiveFilter, setInActiveFilter] = useState<boolean>(false);
   const [isAsc, setIsAsc] = useState<boolean>(true);
+  const [dropdownOpenFilter, setDropdownOpenFilter] = useState<boolean>(false);
   const [internalUserStatusPopup, setInternalUserStatusPopup] =
     useState<boolean>(false);
   const [internalUserStatus, setInternalUserStatus] = useState([
@@ -52,36 +97,115 @@ const InternalUser = () => {
     lastname: "",
     userstatus: "",
   });
+  const [selectedFilters, setSelectedFilters] = useState({
+    geolevel1: "ALL",
+    status: "ALL",
+    lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+    lastmodifieddateto: new Date(),
+  });
+  const [selectedMappingFilters, setSelectedMappingFilters] = useState({
+    geolevel1: " ",
+    status: "ALL",
+    lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+    lastmodifieddateto: new Date(),
+  });
 
-  const fetchInternalUserData = useCallback(async () => {
+  const DialogContent = withStyles((theme: Theme) => ({
+    root: {
+      padding: theme.spacing(2),
+    },
+  }))(MuiDialogContent);
+
+  const DialogActions = withStyles((theme: Theme) => ({
+    root: {
+      margin: 0,
+      padding: theme.spacing(1),
+      justifyContent: "center",
+      marginTop: "30px",
+    },
+    button: {
+      boxShadow: "0px 3px 6px #c7c7c729",
+      border: "1px solid #89D329",
+      borderRadius: "50px",
+    },
+  }))(MuiDialogActions);
+
+  useEffect(() => {
+    fetchInternalUserData();
+    Props.onRef && Props.onRef(this);
+  }, [
+    pageNo,
+    inActiveFilter,
+    rowsPerPage,
+    searchText,
+    isFiltered,
+    partnerType,
+    chanagedStatusValue,
+    dateErrMsg,
+    selectedFilters,
+    // regionOptions,
+    // totalRows,
+  ]);
+
+  const fetchInternalUserData = () => {
     setIsLoader(true);
+    setDateErrMsg("");
+    setDropdownOpenFilter(false);
     let obj: any = getLocalStorageData("userData");
     let userData = JSON.parse(obj);
+    userData?.username && setUpdatedUserName(userData.username);
+    console.log("updatedUserName", updatedUserName);
     const { internalUserAPI } = apiURL;
-    const data = {
+    const pageNos: any = !inActiveFilter ? 1 : pageNo;
+    setPageNo(pageNos);
+    let { status, lastmodifieddatefrom, lastmodifieddateto, geolevel1 }: any =
+      selectedFilters;
+    let data = {
       countrycode: userData.countrycode,
       usertype: "RSM",
-      isfiltered: "false",
       rowsperpage: rowsPerPage,
-      page: 1,
+      page: pageNos,
+      isfiltered: isFiltered,
+      searchtext: searchText || null,
     };
+
+    if (isFiltered) {
+      let filter = {
+        status: status,
+        // partnertype: "RSM",
+        // lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
+        //lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
+        geolevel1: geolevel1,
+      };
+      data = { ...data, ...filter };
+    }
+
     invokeGetAuthService(internalUserAPI, data)
       .then((response) => {
+        let data1 =
+          response?.body && Object.keys(response?.body).length !== 0
+            ? response.body.rows
+            : [];
+
         setInternalUsers(
           Object.keys(response.body).length !== 0 ? response.body.rows : []
         );
         const total = response?.totalrows || 0;
+        const regionList =
+          response.body.length !== 0 ? _.uniqBy(data1, "geolevel1") : [];
+        const regionOptionsList =
+          regionList?.length > 0
+            ? handledropdownoption(regionList, "geolevel1")
+            : [];
+
+        setRegionOptions(regionOptionsList);
         setTotalRows(total);
         setIsLoader(false);
       })
       .catch((error) => {
         console.log("Error message", error.message);
       });
-  }, []);
-
-  useEffect(() => {
-    fetchInternalUserData();
-  }, [fetchInternalUserData]);
+  };
 
   const getCurrentUserData = (data: any) => {
     setInternalUserStatusPopup(true);
@@ -102,26 +226,20 @@ const InternalUser = () => {
 
   const previous = (pageNo: any) => {
     setPageNo(pageNo - 1);
-    //this.setState({ pageNo: pageNo - 1, inActiveFilter: true });
-    setTimeout(() => {
-      fetchInternalUserData();
-    }, 0);
+    setInActiveFilter(true);
+    setIsLoader(false);
   };
 
   const next = (pageNo: any) => {
     setPageNo(pageNo + 1);
-    // this.setState({ pageNo: pageNo + 1, inActiveFilter: true });
-    setTimeout(() => {
-      fetchInternalUserData();
-    }, 0);
+    setInActiveFilter(true);
+    setIsLoader(false);
   };
 
   const pageNumberClick = (number: any) => {
     setPageNo(number);
-    //this.setState({ pageNo: number, inActiveFilter: true });
-    setTimeout(() => {
-      fetchInternalUserData();
-    }, 0);
+    setInActiveFilter(true);
+    setIsLoader(false);
   };
 
   const handlePaginationChange = (e: any) => {
@@ -129,10 +247,7 @@ const InternalUser = () => {
     if (e.target.name === "perpage") {
       value = e.target.value;
       setRowsPerPage(value);
-      fetchInternalUserData();
-      // this.setState({ rowsPerPage: value, inActiveFilter: false }, () => {
-      //   this.getChannelPartnersList();
-      // });
+      setInActiveFilter(false);
     } else if (e.target.name === "gotopage") {
       const pageData = Math.ceil(totalRows / rowsPerPage);
       value =
@@ -142,14 +257,14 @@ const InternalUser = () => {
       let isNumeric = Validator.validateNumeric(e.target.value);
       if (isNumeric) {
         setPageNo(value);
-
-        // this.setState({ pageNo: value, inActiveFilter: true }, () => {
+        setInActiveFilter(true);
         if (pageNo && pageData >= pageNo) {
-          setTimeout(() => {
-            pageNo && fetchInternalUserData();
-          }, 1000);
+          pageNo;
+          setIsLoader(!isLoader);
+          // setTimeout(() => {
+          //   pageNo && fetchInternalUserData();
+          // }, 1000);
         }
-        //  });
       }
     }
   };
@@ -164,7 +279,7 @@ const InternalUser = () => {
       condUrl = deactivateChannelPartner;
     }
     let obj: any = {};
-    obj.lastupdatedby = username.toUpperCase();
+    obj.lastupdatedby = updatedUserName.toUpperCase();
     obj.lastupdateddate = new Date().toJSON();
     obj.username = username;
 
@@ -198,7 +313,6 @@ const InternalUser = () => {
     let response: any = sortBy(name, data);
     setInternalUsers(response);
     setIsAsc(!isAsc);
-    console.log(response, isAsc);
   };
 
   const handleSort = (
@@ -207,27 +321,281 @@ const InternalUser = () => {
     internalUsers: any,
     isAsc: boolean
   ) => {
-    console.log(
-      "tableCellIndex Beforeeeeee",
-      e.currentTarget.cellIndex,
-      columnname,
-      isAsc,
-      internalUsers
-    );
     setTableCellIndex(e.currentTarget.cellIndex);
     onSort(columnname, internalUsers, isAsc);
-    console.log(
-      "tableCellIndex",
-      e.currentTarget.cellIndex,
-      columnname,
-      isAsc,
-      internalUsers
-    );
   };
+
+  const handleSearch = (e: any) => {
+    let searchText = e.target.value;
+    setSearchText(searchText);
+    let timeOut: any;
+    if (timeOut) {
+      clearTimeout(timeOut);
+    }
+    if (searchText.length >= 3 || searchText.length === 0) {
+      setIsFiltered(true);
+      setInActiveFilter(false);
+      timeOut = setTimeout(() => {
+        fetchInternalUserData();
+      }, 100);
+    }
+  };
+
+  const toggleFilter = (e: any) => {
+    setDropdownOpenFilter(!dropdownOpenFilter);
+  };
+
+  const handleFilterChange = (e: any, name: string, item: any) => {
+    e.stopPropagation();
+    let val: any = selectedFilters;
+    let flag = false;
+    if (name === "type") {
+      val[name] = e.target.value;
+      flag = true;
+    } else if (name === "lastmodifieddatefrom") {
+      if (e.target.value <= val.lastmodifieddateto) {
+        val[name] = e.target.value;
+        flag = true;
+      } else {
+        setDateErrMsg("Start date should be lesser than End Date");
+      }
+    } else if (name === "endDate") {
+      if (e.target.value > new Date().toISOString().substr(0, 10)) {
+        setDateErrMsg("End Date should not be greater than todays date");
+      } else if (e.target.value <= val.lastmodifieddatefrom) {
+        setDateErrMsg("End Date should be greater than Start Date");
+      } else {
+        val[name] = e.target.value;
+        flag = true;
+      }
+    } else {
+      val[name] = item;
+      flag = true;
+    }
+    if (flag) {
+      setSelectedFilters(val);
+      console.log("val", val, val.status);
+      //	this.setState({ selectedFilters: val }, () => {});
+    }
+  };
+
+  const handlePartnerChange = (name: string) => {
+    setPartnerType({
+      type: name,
+    });
+    fetchInternalUserData();
+  };
+
+  const applyFilter = () => {
+    if (dateErrMsg === "") {
+      setIsFiltered(true);
+      setInActiveFilter(false);
+      setChanagedStatusValue(!chanagedStatusValue);
+      setIsRegionValueChanged(!isRegionValueChanged);
+    }
+  };
+
+  const resetFilter = (e: any) => {
+    e.stopPropagation();
+    setSelectedFilters({
+      geolevel1: "ALL",
+      status: "ALL",
+      lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+      lastmodifieddateto: new Date(),
+    });
+    setDateErrMsg("");
+    setIsFiltered(false);
+  };
+
+  const handleDateChange = (date: any, name: string) => {
+    let val = selectedFilters;
+    // to date
+    if (name === "lastmodifieddateto") {
+      if (date >= val.lastmodifieddatefrom) {
+        setDateErrMsg("");
+      } else if (date <= val.lastmodifieddatefrom) {
+        setDateErrMsg("End Date should be greater than Start Date");
+      } else {
+        setDateErrMsg("Start Date should be lesser than  End Date");
+      }
+    }
+    // from date
+    if (name === "lastmodifieddatefrom") {
+      if (date <= val.lastmodifieddateto) {
+        setDateErrMsg("");
+      } else if (date >= val.lastmodifieddateto) {
+        setDateErrMsg("Start Date should be lesser than End Date");
+      } else {
+        setDateErrMsg("Start Date should be greater than  End Date");
+      }
+    }
+    setSelectedFilters({ ...selectedFilters, [name]: date });
+  };
+
+  const handleRegionSelect = (event: any, name: string) => {
+    setSelectedFilters((prevState) => ({
+      ...selectedFilters,
+      [name]: event.target.value,
+    }));
+  };
+
+  interface IProps {
+    onChange?: any;
+    placeholder?: any;
+    value?: any;
+    id?: any;
+    onClick?: any;
+    // any other props that come into the component
+  }
+
+  const ref = React.createRef();
+  const DateInput = React.forwardRef(
+    ({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
+      <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+        <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+        <input
+          style={{
+            border: "none",
+            width: "120px",
+            height: "31px",
+            outline: "none",
+          }}
+          onChange={onChange}
+          placeholder={placeholder}
+          value={value}
+          id={id}
+          onClick={onClick}
+          ref={ref}
+        />
+      </div>
+    )
+  );
 
   return (
     <>
       {isLoader && <Loader />}
+      <Filter
+        handleSearch={handleSearch}
+        searchText={searchText}
+        dropdownOpenFilter={dropdownOpenFilter}
+        toggleFilter={toggleFilter}
+        selectedFilters={selectedFilters}
+        handleFilterChange={handleFilterChange}
+        partnerTypeList={list}
+        selectedPartnerType={partnerType}
+        handlePartnerChange={handlePartnerChange}
+        toolTipText="Search applicable for User Name,  Full Name"
+        internalUserTypeFilterHeading={true}
+      >
+        <div onClick={(e) => e.stopPropagation()}>
+          <label className="font-weight-bold">Status</label>
+          <div className="pt-1">
+            {internalUserStatus.map((item, index) => (
+              <span className="mr-2" key={`status` + index}>
+                <Button
+                  color={
+                    selectedFilters.status === item
+                      ? "btn activeColor rounded-pill"
+                      : "btn rounded-pill boxColor"
+                  }
+                  size="sm"
+                  onClick={(e) => handleFilterChange(e, "status", item)}
+                >
+                  {item}
+                </Button>
+              </span>
+            ))}
+          </div>
+          <label className="font-weight-bold">Region Mapping</label>
+          <div className="pt-1">
+            {internalUserMappingStatus.map((item, index) => (
+              <span className="mr-2" key={`geolevel1` + index}>
+                <Button
+                  color={
+                    selectedFilters.status === item
+                      ? "btn activeColor rounded-pill"
+                      : "btn rounded-pill boxColor"
+                  }
+                  size="sm"
+                  onClick={(e) => handleFilterChange(e, "status", item)}
+                >
+                  {item}
+                </Button>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* {selectedFilters.status === "ALL" && ( */}
+        <div className="form-group" onClick={(e) => e.stopPropagation()}>
+          <NativeDropdown
+            name="geolevel1"
+            value={selectedFilters.geolevel1}
+            label={"Region"}
+            handleChange={(e: any) => handleRegionSelect(e, "geolevel1")}
+            options={regionOptions}
+            defaultValue="ALL"
+            id="region-test"
+            dataTestId="region-test"
+          />
+        </div>
+        {/* )} */}
+
+        <label className="font-weight-bold pt-2" htmlFor="update-date">
+          Last Modified Date
+        </label>
+        <div className="d-flex">
+          <div className="user-filter-date-picker">
+            <DatePicker
+              id="update-date"
+              value={selectedFilters.lastmodifieddatefrom}
+              dateFormat="dd-MM-yyyy"
+              customInput={<DateInput ref={ref} />}
+              selected={selectedFilters.lastmodifieddatefrom}
+              onChange={(date: any) =>
+                handleDateChange(date, "lastmodifieddatefrom")
+              }
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              maxDate={new Date()}
+            />
+          </div>
+          <div className="p-2">-</div>
+          <div className="user-filter-date-picker">
+            <DatePicker
+              value={selectedFilters.lastmodifieddateto}
+              dateFormat="dd-MM-yyyy"
+              customInput={<DateInput ref={ref} />}
+              selected={selectedFilters.lastmodifieddateto}
+              onChange={(date: any) =>
+                handleDateChange(date, "lastmodifieddateto")
+              }
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              maxDate={new Date()}
+            />
+          </div>
+        </div>
+        {dateErrMsg && <span className="error">{dateErrMsg} </span>}
+
+        <div className="filterFooter pt-3">
+          <button
+            className="cus-btn-user-filter reset"
+            onClick={(e) => resetFilter(e)}
+          >
+            Reset All
+          </button>
+          <button className="cus-btn-user-filter" onClick={applyFilter}>
+            Apply
+            <span>
+              <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
+              <img src={RtButton} alt="" className="layout" />
+            </span>
+          </button>
+        </div>
+      </Filter>
       {internalUserStatusPopup && (
         <AdminPopup
           open={internalUserStatusPopup}
@@ -269,7 +637,7 @@ const InternalUser = () => {
                 </label>
               </div>
               <DialogActions className="internalUserDialogButton">
-                <Button
+                <MuiButton
                   autoFocus
                   onClick={handleClosePopup}
                   className="admin-popup-btn close-btn"
@@ -280,8 +648,8 @@ const InternalUser = () => {
                   }}
                 >
                   Cancel
-                </Button>
-                <Button
+                </MuiButton>
+                <MuiButton
                   onClick={changeStatus}
                   className="admin-popup-btn filter-scan"
                   autoFocus
@@ -295,7 +663,7 @@ const InternalUser = () => {
                   userList.userstatus === "INACTIVE"
                     ? "Change"
                     : ""}
-                </Button>
+                </MuiButton>
               </DialogActions>
             </div>
           </DialogContent>
@@ -440,17 +808,13 @@ const InternalUser = () => {
           </tbody>
         </Table>
       </div>
+
       <div className="internalUserPagination">
         <Pagination
           totalData={totalRows}
-          rowsPerPage={rowsPerPage}
-          previous={previous}
-          next={next}
-          pageNumberClick={pageNumberClick}
-          pageNo={pageNo}
-          handlePaginationChange={handlePaginationChange}
           data={internalUsers}
           totalLabel={"RSM Users"}
+          getRecords={fetchInternalUserData}
         />
       </div>
     </>
@@ -458,9 +822,3 @@ const InternalUser = () => {
 };
 
 export default InternalUser;
-// function columnname(columnname: any, internalUsers: any) {
-//   throw new Error("Function not implemented.");
-// }
-// function list(list: any) {
-//   throw new Error("Function not implemented.");
-// }

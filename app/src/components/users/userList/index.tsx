@@ -236,6 +236,7 @@ class UserList extends Component<Props, States> {
   getStoreData: any;
   channelPartnerRef: any;
   thirdPartyUserRef: any;
+  internalUserRef: any;
   constructor(props: any) {
     super(props);
     const dataObj: any = getLocalStorageData("userData");
@@ -478,7 +479,8 @@ class UserList extends Component<Props, States> {
     let stateValue: any = "";
     let downloadURL: string = "";
     let downloadName: string = "";
-    const { downloadUserList, downloadThirdPartyList } = apiURL;
+    const { downloadUserList, downloadThirdPartyList, downloadInternalList } =
+      apiURL;
     if (!this.state.value) {
       stateValue = this.channelPartnerRef?.state;
       downloadURL = downloadUserList;
@@ -487,12 +489,17 @@ class UserList extends Component<Props, States> {
       stateValue = this.thirdPartyUserRef?.state;
       downloadURL = downloadThirdPartyList;
       downloadName = "Third_Party_Users";
+    } else if (this.state.value === 2) {
+      stateValue = this.internalUserRef?.state;
+      downloadURL = downloadInternalList;
+      downloadName = "Internal_Users";
     }
 
     let data = {
       countrycode: this.getStoreData.countryCode,
       usertype: !this.state.value ? "EXTERNAL" : null,
       partnertype: stateValue.partnerType.type,
+      // partnertype: "ALL",
       isfiltered: this.state.value === 1 ? true : null,
     };
     let {
@@ -999,7 +1006,14 @@ class UserList extends Component<Props, States> {
                   />
                 </TabPanel>
                 <TabPanel value={this.state.value} index={2} classes={classes}>
-                  {this.state.value === 2 && <InternalUser />}
+                  {this.state.value === 2 && (
+                    <InternalUser
+                      locationList={locationList}
+                      onRef={(node: any) => {
+                        this.internalUserRef = node;
+                      }}
+                    />
+                  )}
                 </TabPanel>
               </>
             ) : (

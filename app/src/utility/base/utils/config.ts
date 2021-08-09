@@ -31,5 +31,6 @@ export const apiURL = {
     editasauser : "user/editasauser",
     thirdPartyList: "user/thirdpartyuserlist",
     internalUserAPI:"user/internaluserlist",
-    downloadThirdPartyList: "user/thirdpartyuserdownload"
+    downloadThirdPartyList: "user/thirdpartyuserdownload",
+    downloadInternalList:"user/internaluserdownload"
 }
