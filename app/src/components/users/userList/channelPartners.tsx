@@ -37,7 +37,7 @@ import _ from "lodash";
 import Filter from "../../../container/grid/Filter";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import { Button } from "reactstrap";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
 import moment from "moment";
 import { sortBy } from "../../../utility/base/utils/tableSort";
@@ -88,13 +88,8 @@ type States = {
 	isFiltered: boolean;
 	inActiveFilter:boolean;
 	allChannelPartners: Array<any>;
-	pageNo: number;
-	rowsPerPage: number;
 	totalData: number;
 	isAsc: boolean;
-	startIndex: number;
-    endIndex: number;
-    gotoPage: number;
 	partnerType: PartnerTypes;
 };
 
@@ -155,6 +150,7 @@ class ChannelPartners extends Component<Props, States> {
 	loggedUserInfo: any;
 	getStoreData: any;
 	timeOut: any;
+	paginationRef:any;
 	constructor(props: any) {
 		super(props);
 		const dataObj: any = getLocalStorageData("userData");
@@ -223,13 +219,8 @@ class ChannelPartners extends Component<Props, States> {
 	        isFiltered: false,
 			inActiveFilter:false,
 			allChannelPartners:[],
-			pageNo: 1,
-			rowsPerPage: 10,
-			gotoPage: 1,
 			totalData: 0,
 			isAsc:false,
-			startIndex: 1,
-            endIndex: 3,
 			partnerType: {
 				type: "Retailer",
 			  },
@@ -250,15 +241,22 @@ class ChannelPartners extends Component<Props, States> {
 		this.props.onRef && this.props.onRef(this);
 		
 	}
-	getChannelPartnersList = (condIf?: string) => {
+	getChannelPartnersList = (defaultPageNo?: number) => {
 		this.setState({
 		  allChannelPartners: [],
 		  dropdownOpenFilter: false,
 		  dateErrMsg: "",
 		});
 		const { channelPartnersList } = apiURL;
-		const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo
-		this.setState({ isLoader: true ,pageNo:pageNo});
+		const {state,setDefaultPage}= this.paginationRef;
+		const pageNo=  !defaultPageNo ? 1 : state.pageNo;
+
+		// set default pagination number 1 and  call the method
+		if(!defaultPageNo){
+			setDefaultPage();
+		}
+         
+		this.setState({ isLoader: true});
 		let {
 		  status,
 		  lastmodifieddatefrom,
@@ -272,7 +270,7 @@ class ChannelPartners extends Component<Props, States> {
 		  page:  pageNo,
 		  searchtext: this.state.searchText,
 		  isfiltered: this.state.isFiltered,
-		  rowsperpage: this.state.rowsPerPage,
+		  rowsperpage: state.rowsPerPage,
 		  usertype: "EXTERNAL",
 		  partnertype:
 			this.state.partnerType.type === "Distributor"
@@ -1085,68 +1083,11 @@ class ChannelPartners extends Component<Props, States> {
 	  applyFilter = () => {
 		if(this.state.dateErrMsg === ''){
 		  this.setState({ isFiltered: true,inActiveFilter:false }, () => {
-			this.getChannelPartnersList("filter");
-		  });
-		}
-	  };
-	  previous = (pageNo: any) => {
-		this.setState({ pageNo: pageNo - 1 ,inActiveFilter:true});
-		setTimeout(() => {
-		  this.getChannelPartnersList();
-		}, 0);
-	  };
-	  next = (pageNo: any) => {
-		this.setState({ pageNo: pageNo + 1 ,inActiveFilter:true});
-		setTimeout(() => {
-		  this.getChannelPartnersList();
-		}, 0);
-	  };
-	  pageNumberClick = (number: any) => {
-		this.setState({ pageNo: number ,inActiveFilter:true});
-		setTimeout(() => {
-		  this.getChannelPartnersList();
-		}, 0);
-	  };
-	
-	  backForward = () => {
-		this.setState({
-		  startIndex: this.state.startIndex - 3,
-		  endIndex: this.state.endIndex - 1,
-		  inActiveFilter:true
-		});
-	  };
-	  fastForward = () => {
-		this.setState({
-		  startIndex: this.state.endIndex + 1,
-		  endIndex: this.state.endIndex + 3,
-		  inActiveFilter:true
-		});
-	  };
-	
-	  handlePaginationChange = (e: any) => {
-		let value = 0;
-		if (e.target.name === "perpage") {
-		  value = e.target.value;
-		  this.setState({ rowsPerPage: value,inActiveFilter:false },()=>{
 			this.getChannelPartnersList();
 		  });
-		} else if (e.target.name === "gotopage") {
-		  const { totalData, rowsPerPage } = this.state;
-		  const pageData = Math.ceil(totalData / rowsPerPage);
-		  value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
-		  let isNumeric = Validator.validateNumeric(e.target.value);
-		  if (isNumeric) {
-			this.setState({ pageNo: value,inActiveFilter:true }, () => {
-			  if (this.state.pageNo && pageData >= this.state.pageNo) {
-				setTimeout(() => {
-				  this.state.pageNo&&this.getChannelPartnersList();
-				}, 1000);
-			  } 
-			});
-		  }
 		}
 	  };
-
+	 
 	  resetFilter = (e: any) => {
 		e.stopPropagation();
 		// this.getDynamicOptionFields("reset");
@@ -1173,7 +1114,7 @@ class ChannelPartners extends Component<Props, States> {
 	  
 	render() {
 		const { locationList } = this.props;
-		const {totalData, isAsc,isLoader, pageNo, rowsPerPage,dropdownOpenFilter, selectedFilters, searchText, userList, userData, isStaff, dateErrMsg,allChannelPartners } = this.state;
+		const {totalData, isAsc,isLoader, dropdownOpenFilter, selectedFilters, userList, userData, isStaff, dateErrMsg,allChannelPartners } = this.state;
 
 		let data: any = getLocalStorageData("userData");
 		let loggedUserInfo = JSON.parse(data);
@@ -1948,14 +1889,12 @@ class ChannelPartners extends Component<Props, States> {
 					<div>
 						<Pagination
 							totalData={totalData}
-							rowsPerPage={rowsPerPage}
-							previous={this.previous}
-							next={this.next}
-							pageNumberClick={this.pageNumberClick}
-							pageNo={pageNo}
-							handlePaginationChange={this.handlePaginationChange}
 							data={allChannelPartners}
 							totalLabel={"Users"}
+							getRecords={this.getChannelPartnersList}
+							onRef={(node:any)=>{
+								this.paginationRef= node;
+							}}
 						/>
 					</div>
 				</div>

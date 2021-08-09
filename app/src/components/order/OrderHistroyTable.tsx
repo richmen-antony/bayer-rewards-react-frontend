@@ -99,6 +99,7 @@ type States = {
 class OrderHistory extends Component<Props, States> {
 	tableCellIndex: any = 0;
 	timeOut: any;
+	paginationRef:any;
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -159,17 +160,22 @@ class OrderHistory extends Component<Props, States> {
 	}
 	/**
 	 * To get all admin order histroy list
-	 * @param filterScan
+	 * @param defaultPageNo
 	 */
-	getAdminOrderList = (filterScan?: any) => {
+	getAdminOrderList = (defaultPageNo?: any) => {
 		const { adminOrderList } = apiURL;
-		const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo
+		const {state,setDefaultPage}= this.paginationRef;
+		const pageNo=  !defaultPageNo ? 1 : state.pageNo;
+		// set default pagination number 1 and  call the method
+		if(!defaultPageNo){
+			setDefaultPage();
+		}
 		this.setState({ isLoader: true ,pageNo:pageNo});
 		const { selectedFilters, isFiltered, regionOptions } = this.state;
 		let data = {
 			page: pageNo,
 			searchtext: this.state.searchText || null,
-			rowsperpage: this.state.rowsPerPage,
+			rowsperpage: state.rowsPerPage,
 			isfiltered: isFiltered,
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			status: selectedFilters.status === "ALL" ? null : selectedFilters.status,
@@ -305,7 +311,7 @@ class OrderHistory extends Component<Props, States> {
 			if (name === "status" && item !== this.state.selectedFilters.status) {
 				isStatusChange = true;
 			}
-			this.setState({ selectedFilters: val ,pageNo:1 }, () => {
+			this.setState({ selectedFilters: val  }, () => {
 				isStatusChange && this.getAdminOrderList();
 			});
 		}
@@ -346,62 +352,12 @@ class OrderHistory extends Component<Props, States> {
 			// this.resetFilter();
 		});
 	};
-	previous = (pageNo: any) => {
-		this.setState({ pageNo: pageNo - 1,inActiveFilter:true }, () => {
-			this.getAdminOrderList();
-		});
-	};
-	next = (pageNo: any) => {
-		this.setState({ pageNo: pageNo + 1 ,inActiveFilter:true}, () => {
-			this.getAdminOrderList();
-		});
-	};
-	pageNumberClick = (number: any) => {
-		this.setState({ pageNo: number,inActiveFilter:true }, () => {
-			this.getAdminOrderList();
-		});
-	};
 
 	toggle = () => {
 		this.setState({ tooltipOpen: !this.state.tooltipOpen });
 	};
-	backForward = () => {
-		this.setState({
-			startIndex: this.state.startIndex - 3,
-			endIndex: this.state.endIndex - 1,
-			inActiveFilter:true
-		});
-	};
-	fastForward = () => {
-		this.setState({
-			startIndex: this.state.endIndex + 1,
-			endIndex: this.state.endIndex + 3,
-			inActiveFilter:true
-		});
-	};
-	handlePaginationChange = (e: any) => {
-		let value = 0;
-		if (e.target.name === "perpage") {
-			value = e.target.value;
-			this.setState({ rowsPerPage: value,inActiveFilter:false }, () => {
-				this.getAdminOrderList();
-			});
-		} else if (e.target.name === "gotopage") {
-			const { totalData, rowsPerPage } = this.state;
-			const pageData = Math.ceil(totalData / rowsPerPage);
-			value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
-			let isNumeric = Validator.validateNumeric(e.target.value);
-			if (isNumeric) {
-				this.setState({ pageNo: value,inActiveFilter:true }, () => {
-					if (this.state.pageNo && pageData >= this.state.pageNo) {
-						setTimeout(() => {
-							this.state.pageNo && this.getAdminOrderList();
-						}, 1000);
-					}
-				});
-			}
-		}
-	};
+	
+	
 	download = () => {
 		const { downloadAdminOrderList } = apiURL;
 		let filter = { ...this.state.selectedFilters };
@@ -1067,14 +1023,12 @@ class OrderHistory extends Component<Props, States> {
 					<div>
 						<Pagination
 							totalData={totalData}
-							rowsPerPage={rowsPerPage}
-							previous={this.previous}
-							next={this.next}
-							pageNumberClick={this.pageNumberClick}
-							pageNo={pageNo}
-							handlePaginationChange={this.handlePaginationChange}
 							data={allScanLogs}
 							totalLabel={"Sales"}
+							getRecords={this.getAdminOrderList}
+							onRef={(node:any)=>{
+								this.paginationRef= node;
+							}}
 						/>
 					</div>
 				</div>

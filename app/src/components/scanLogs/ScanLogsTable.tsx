@@ -109,6 +109,7 @@ type States = {
 class ScanLogsTable extends Component<Props, States> {
 	tableCellIndex: any = 0;
 	timeOut: any;
+	paginationRef:any;
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -117,7 +118,6 @@ class ScanLogsTable extends Component<Props, States> {
 			isAsc: true,
 			selectIndex: "",
 			isRendered: false,
-			pageNo: 1,
 			allScanLogs: [],
 			actions: ["All", "Distributor", "Retailer"],
 			dropDownValue: "Select action",
@@ -140,13 +140,10 @@ class ScanLogsTable extends Component<Props, States> {
 			},
 			dateErrMsg: "",
 			searchText: "",
-			rowsPerPage: 10,
 			totalData: 0,
 			isFiltered: false,
 			userRole: "",
 			tooltipOpen: false,
-			startIndex: 1,
-			endIndex: 3,
 			isLoader: false,
 			dropdownOpenFilter: false,
 			accordionView: false,
@@ -225,15 +222,21 @@ class ScanLogsTable extends Component<Props, States> {
 				console.log("error", error);
 			});
 	};
-	getScanLogs = (filterScan?: any) => {
+	getScanLogs = (defaultPageNo?: any) => {
 		const { scanLogs } = apiURL;
-		const pageNo = !this.state.inActiveFilter ? 1 : this.state.pageNo;
-		this.setState({ isLoader: true, pageNo: pageNo });
+		const {state,setDefaultPage}= this.paginationRef;
+		const pageNo=  !defaultPageNo ? 1 : state.pageNo;
+
+		// set default pagination number 1 and  call the method
+		if(!defaultPageNo){
+			setDefaultPage();
+		}
+		this.setState({ isLoader: true });
 		const { selectedFilters, isFiltered } = this.state;
 		let data = {
 			page: pageNo,
 			searchtext: this.state.searchText,
-			rowsperpage: this.state.rowsPerPage,
+			rowsperpage: state.rowsPerPage,
 			isfiltered: this.state.isFiltered,
 			region: this.state.loggedUserInfo?.geolevel1,
 			countrycode: this.state.loggedUserInfo?.countrycode,
@@ -244,7 +247,6 @@ class ScanLogsTable extends Component<Props, States> {
 			filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
 			filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
 			filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
-			filter.retailer = filterScan ? filterScan : filter.retailer;
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
@@ -421,62 +423,11 @@ class ScanLogsTable extends Component<Props, States> {
 			// this.resetFilter();
 		});
 	};
-	previous = (pageNo: any) => {
-		this.setState({ pageNo: pageNo - 1, inActiveFilter: true }, () => {
-			this.getScanLogs();
-		});
-	};
-	next = (pageNo: any) => {
-		this.setState({ pageNo: pageNo + 1, inActiveFilter: true }, () => {
-			this.getScanLogs();
-		});
-	};
-	pageNumberClick = (number: any) => {
-		this.setState({ pageNo: number, inActiveFilter: true }, () => {
-			this.getScanLogs();
-		});
-	};
-
+	
 	toggle = () => {
 		this.setState({ tooltipOpen: !this.state.tooltipOpen });
 	};
-	backForward = () => {
-		this.setState({
-			startIndex: this.state.startIndex - 3,
-			endIndex: this.state.endIndex - 1,
-			inActiveFilter: true,
-		});
-	};
-	fastForward = () => {
-		this.setState({
-			startIndex: this.state.endIndex + 1,
-			endIndex: this.state.endIndex + 3,
-			inActiveFilter: true,
-		});
-	};
-	handlePaginationChange = (e: any) => {
-		let value = 0;
-		if (e.target.name === "perpage") {
-			value = e.target.value;
-			this.setState({ rowsPerPage: value, inActiveFilter: false }, () => {
-				this.getScanLogs();
-			});
-		} else if (e.target.name === "gotopage") {
-			const { totalData, rowsPerPage } = this.state;
-			const pageData = Math.ceil(totalData / rowsPerPage);
-			value = e.target.value === "0" || pageData < e.target.value ? "" : e.target.value;
-			let isNumeric = Validator.validateNumeric(e.target.value);
-			if (isNumeric) {
-				this.setState({ pageNo: value, inActiveFilter: true }, () => {
-					if (this.state.pageNo && pageData >= this.state.pageNo) {
-						setTimeout(() => {
-							this.state.pageNo && this.getScanLogs();
-						}, 1000);
-					}
-				});
-			}
-		}
-	};
+	
 	download = () => {
 		const { downloadScanlogs } = apiURL;
 
@@ -1129,14 +1080,12 @@ class ScanLogsTable extends Component<Props, States> {
 					<div>
 						<Pagination
 							totalData={totalData}
-							rowsPerPage={rowsPerPage}
-							previous={this.previous}
-							next={this.next}
-							pageNumberClick={this.pageNumberClick}
-							pageNo={pageNo}
-							handlePaginationChange={this.handlePaginationChange}
 							data={allScanLogs}
 							totalLabel={"Sales"}
+							onRef={(node:any)=>{
+								this.paginationRef= node;
+							}}
+							getRecords={this.getScanLogs}
 						/>
 					</div>
 				</div>

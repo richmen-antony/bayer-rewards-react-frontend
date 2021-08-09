@@ -27,8 +27,6 @@ type States = {
   isLoader: boolean;
   allChangeLogs: Array<any>;
   searchText: any;
-  rowsPerPage: number;
-  pageNo: number;
   isAsc: Boolean;
   totalData: number;
   loggedUserInfo: any;
@@ -38,14 +36,13 @@ type States = {
 class ChangeLogs extends Component<Props, States> {
   tableCellIndex: any;
   timeOut: any;
+  paginationRef:any;
   constructor(props: any) {
     super(props);
     this.state = {
       isLoader: false,
       allChangeLogs: [],
       searchText: "",
-      rowsPerPage: 10,
-      pageNo: 1,
       isAsc: true,
       totalData: 0,
       loggedUserInfo: {},
@@ -67,14 +64,19 @@ class ChangeLogs extends Component<Props, States> {
     );
   }
 
-  getChangeLogs = () => {
+  getChangeLogs = (defaultPageNo?: number) => {
     const { changeLogs } = apiURL;
-    const pageNo=  !this.state.inActiveFilter ? 1 : this.state.pageNo;
-    this.setState({ isLoader: true, allChangeLogs: [],pageNo:pageNo });
+    const {state,setDefaultPage}= this.paginationRef;
+		const pageNo=  !defaultPageNo ? 1 : state.pageNo;
+		// set default pagination number 1 and  call the method
+		if(!defaultPageNo){
+			setDefaultPage();
+		}
+    this.setState({ isLoader: true, allChangeLogs: []});
     let data = {
       page: pageNo,
       searchtext: this.state.searchText,
-      rowsperpage: this.state.rowsPerPage,
+      rowsperpage: state.rowsPerPage,
       countrycode: this.state.loggedUserInfo?.countrycode,
       isFiltered: true
     };
@@ -115,51 +117,7 @@ class ChangeLogs extends Component<Props, States> {
     this.tableCellIndex = e.currentTarget.cellIndex;
     this.onSort(columnname, allChangeLogs, isAsc);
   }
-  previous = (pageNo: any) => {
-    this.setState({ pageNo: pageNo - 1 ,inActiveFilter:true });
-    setTimeout(() => {
-      this.getChangeLogs();
-    }, 0);
-  };
-  next = (pageNo: any) => {
-    this.setState({ pageNo: pageNo + 1 ,inActiveFilter:true });
-    setTimeout(() => {
-      this.getChangeLogs();
-    }, 0);
-  };
-  pageNumberClick = (number: any) => {
-    this.setState({ pageNo: number ,inActiveFilter:true });
-    setTimeout(() => {
-      this.getChangeLogs();
-    }, 0);
-  };
-
-  handlePaginationChange = (e: any) => {
-    let value = 0;
-    if (e.target.name === "perpage") {
-      value = e.target.value;
-      this.setState({ rowsPerPage: value ,inActiveFilter:false },()=>{
-        this.getChangeLogs();
-      });
-    } else if (e.target.name === "gotopage") {
-      const { totalData, rowsPerPage } = this.state;
-      const pageData = Math.ceil(totalData / rowsPerPage);
-      value =
-        e.target.value === "0" || pageData < e.target.value
-          ? ""
-          : e.target.value;
-      let isNumeric = Validator.validateNumeric(e.target.value);
-      if (isNumeric) {
-        this.setState({ pageNo: value ,inActiveFilter:true }, () => {
-          if (this.state.pageNo && pageData >= this.state.pageNo) {
-            setTimeout(() => {
-              this.state.pageNo && this.getChangeLogs();
-            }, 1000);
-          }
-        });
-      }
-    }
-  };
+  
   download = () => {
     const { downloadChanglogs } = apiURL;
     let data :any = {
@@ -187,8 +145,6 @@ class ChangeLogs extends Component<Props, States> {
       isLoader,
       isAsc,
       totalData,
-      rowsPerPage,
-      pageNo,
     } = this.state;
 
     return (
@@ -329,14 +285,12 @@ class ChangeLogs extends Component<Props, States> {
           <div>
             <Pagination
               totalData={totalData}
-              rowsPerPage={rowsPerPage}
-              previous={this.previous}
-              next={this.next}
-              pageNumberClick={this.pageNumberClick}
-              pageNo={pageNo}
-              handlePaginationChange={this.handlePaginationChange}
               data={allChangeLogs}
               totalLabel={"Logs"}
+              getRecords={this.getChangeLogs}
+							onRef={(node:any)=>{
+								this.paginationRef= node;
+							}}
             />
           </div>
         </div>
