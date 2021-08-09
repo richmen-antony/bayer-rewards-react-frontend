@@ -959,29 +959,28 @@ class ChannelPartners extends Component<Props, States> {
 		let locationInfo = [];
 		locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].geolevel1 );
 		if(locationInfo.length){
-			let retailerList:any = [];
-			retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
-			let partners:any = [];
-			const channelPartnersOptions = this.state.channelPartnersOptions;
-			retailerList[0]?.partnerdetails?.forEach((item:any, index:number)=>{
+		  let retailerList:any = [];
+		  retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
+		  let partners:any = [];
+		  const channelPartnersOptions = this.state.channelPartnersOptions;
+	  
+		  retailerList[0]?.partnerdetails?.forEach((item:any, index:number)=>{
 			let partnersObj:any = {};
-				partnersObj['text'] = item.channelpartnerfullname;
-				partnersObj['value'] = item.channelpartnerfullname;
-				partnersObj['partnerid'] = item.channelpartnerid;
-				datas[idx].channelpartnerid = item.channelpartnerid;
-		
-				this.setState({partnerDatas : datas })
-				partners.push(partnersObj);
-			});
-			if(channelPartnersOptions.length) {
-				channelPartnersOptions[idx]=partners;
-			} else {
+			  partnersObj['text'] = item.channelpartnerfullname;
+			  partnersObj['value'] = item.channelpartnerid;
+			  partnersObj['partnerid'] = item.channelpartnerid;
+			  partners.push(partnersObj);
+		  });
+		  
+		  if(channelPartnersOptions.length) {
+			 channelPartnersOptions[idx]=partners;
+		  } else {
 			channelPartnersOptions.push(partners)
-			} 
-			this.setState({ channelPartnersOptions: channelPartnersOptions });
-			console.log('options', this.state.channelPartnersOptions)
+		  } 
+		  this.setState({ channelPartnersOptions: channelPartnersOptions });
+		  console.log('vvv', this.state.channelPartnersOptions)
 		}
-	}
+	  } 
 
 	internalUsersValidation = () => {
 		let formValid = true;
@@ -998,7 +997,7 @@ class ChannelPartners extends Component<Props, States> {
 			errorObj.locationErr = userInfo.geolevel1
 			? ""
 			: "Please enter Location";
-			errorObj.nameErr = userInfo.channelpartnerfullname
+			errorObj.nameErr = userInfo.channelpartnerid
 			? ""
 			: "Please enter Partner name";
 

@@ -104,13 +104,13 @@ class UserMappings extends Component<any, any> {
                             <td>
                                 <div className="col-sm-3 form-group">
                                     <Dropdown
-                                        name="channelpartnerfullname"
+                                        name="channelpartnerid"
                                         label="Select Name"
                                         options={channelPartnersOptions[idx]}
-                                        handleChange={(e: any) =>
+                                        handleChange={(e: any, options:any) =>
                                             partnerhandleChange(e, idx)
                                         }
-                                        value={item.channelpartnerfullname}
+                                        value={item.channelpartnerid}
                                         isPlaceholder
                                     />
                                      {item.errObj?.nameErr && (

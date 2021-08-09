@@ -412,6 +412,7 @@ class CreateUser extends Component<any, any> {
         let message = error.message;
         Alert("warning", message);
       });
+      console.log('@@vidhu', this.state.partnerDatas)
   }
 
   getHierarchyDatas() {
@@ -1364,16 +1365,17 @@ class CreateUser extends Component<any, any> {
     });
     let userData = this.state.userData;
     let partners = this.state.partnerDatas;
-
     let data = {};
     if (!this.state.isEditPage) {
       let userMappings:any = [];
       partners.forEach((item:any, index:number)=>{
         let mappings:any = {};
-        mappings['channelpartnerid'] = item.channelpartnerid
+        mappings['channelpartnerid'] = item.channelpartnerid;
         mappings['isactive'] = true
         userMappings.push(mappings);
       });
+
+      console.log('mapping',userMappings);
       data = {
         countrycode : this.getStoreData.countryCode,
         firstname : asaPersonalData.firstname,
@@ -1421,7 +1423,6 @@ class CreateUser extends Component<any, any> {
         usermapping : userMappings
       }
     }
-    // const url = this.state.isEditPage ? updateUser : asaCreation;
     console.log('asasubmit', data);
 
   const url = this.state.isEditPage ? editasauser : asaCreation;
@@ -1609,6 +1610,7 @@ class CreateUser extends Component<any, any> {
         this.setState({ isRendered: true });
       });
     }
+    formValid=true;
     return formValid;
   }
 
@@ -1620,8 +1622,6 @@ class CreateUser extends Component<any, any> {
       let asamobilenumberErr = this.state.asamobilenumberErr;
       let fullNameErr =  asaData.firstname === "" ? "Please Enter the First name" : "";
       let lastNameErr =  asaData.lastname === "" ? "Please Enter the Last name" : "";
-     
-      
       if (
         asaData.mobilenumber &&
         asamobilenumberErr !== "Phone Number Exists"
@@ -1656,7 +1656,7 @@ class CreateUser extends Component<any, any> {
           errorObj.locationErr = userInfo.geolevel1
           ? ""
           : "Please enter Location";
-          errorObj.nameErr = userInfo.channelpartnerfullname
+          errorObj.nameErr = userInfo.channelpartnerid
           ? ""
           : "Please enter Partner name";
 
@@ -1671,6 +1671,7 @@ class CreateUser extends Component<any, any> {
         this.setState({ partnerDatas: datas});
       });
   }
+  formValid=true;
     return formValid;
   }
 
@@ -2293,7 +2294,7 @@ class CreateUser extends Component<any, any> {
     this.setState({ asaDatas : datas });
   };
   
-partnerhandleChange = (e:any, idx: number) => {
+partnerhandleChange = (e:any, idx: number, ) => {
     const { name, value} = e.target;
     const datas = this.state.partnerDatas;
     datas[idx][name] = value;
@@ -2320,23 +2321,22 @@ setOptionsForChannelPartners = (idx:number) => {
     retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
     let partners:any = [];
     const channelPartnersOptions = this.state.channelPartnersOptions;
+
     retailerList[0]?.partnerdetails?.forEach((item:any, index:number)=>{
       let partnersObj:any = {};
         partnersObj['text'] = item.channelpartnerfullname;
-        partnersObj['value'] = item.channelpartnerfullname;
+        partnersObj['value'] = item.channelpartnerid;
         partnersObj['partnerid'] = item.channelpartnerid;
-        datas[idx].channelpartnerid = item.channelpartnerid;
-
-        this.setState({partnerDatas : datas })
         partners.push(partnersObj);
     });
+    
     if(channelPartnersOptions.length) {
        channelPartnersOptions[idx]=partners;
     } else {
       channelPartnersOptions.push(partners)
     } 
     this.setState({ channelPartnersOptions: channelPartnersOptions });
-    console.log('options', this.state.channelPartnersOptions)
+    console.log('vvv', this.state.channelPartnersOptions)
   }
 } 
 
