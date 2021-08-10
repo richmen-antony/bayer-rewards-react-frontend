@@ -15,10 +15,8 @@ import maxImg from "../../assets/images/maximize.svg";
 import CalenderIcon from "../../assets/icons/calendar.svg";
 import ActiveIcon from "../../assets/images/check.svg";
 import { sortBy } from "../../utility/base/utils/tableSort";
-import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
+import { Button} from "reactstrap";
 import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
-import filterIcon from "../../assets/icons/filter_icon.svg";
-import Download from "../../assets/icons/download.svg";
 import _ from "lodash";
 import { downloadCsvFile, ErrorMsg } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
@@ -27,10 +25,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
-import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
-import Validator from "../../utility/validator";
 import Filter from "../../container/grid/Filter";
 import { ScanlogHeader } from "../../utility/constant";
 import Cancel from "../../assets/images/cancel.svg";
@@ -584,9 +580,7 @@ class ScanLogsTable extends Component<Props, States> {
 			isLoader,
 			dateErrMsg,
 			searchText,
-			pageNo,
 			totalData,
-			rowsPerPage,
 			lastUpdatedDateErr,
 			farmerOptions,
 			retailerOptions,
