@@ -1924,9 +1924,8 @@ class ChannelPartners extends Component<Props, States> {
 					""
 				)}
 
-				<div className="table-responsive userlist-table">
-					{/* <table className="table" id="tableData"> */}
-					<Table responsive>
+				<div className="user-table">
+					<table>
 						<thead>
 							<tr>{this.generateHeader(allChannelPartners, isAsc)}</tr>
 						</thead>
@@ -1936,26 +1935,26 @@ class ChannelPartners extends Component<Props, States> {
 									return (
 										<AUX key={`channelpartners` + i}>
 											<tr
-												style={
-													list.userstatus === "ACTIVE"
-														? { borderLeft: "8px solid #89D329" }
-														: list.userstatus === "INACTIVE"
-														? { borderLeft: "8px solid #FF0000" }
-														: list.userstatus === "PENDING"
-														? { borderLeft: "8px solid #FFB43C" }
-														: { borderLeft: "8px solid #FF0000" }
-												}
+												// style={
+												// 	list.userstatus === "ACTIVE"
+												// 		? { borderLeft: "8px solid #89D329" }
+												// 		: list.userstatus === "INACTIVE"
+												// 		? { borderLeft: "8px solid #FF0000" }
+												// 		: list.userstatus === "PENDING"
+												// 		? { borderLeft: "8px solid #FFB43C" }
+												// 		: { borderLeft: "8px solid #FF0000" }
+												// }
 											>
-												<td style={{ width: "10%" }}>{list.username}</td>
-												<td style={{ width: "10%" }}>{list.ownerphonenumber} </td>
-												<td style={{ textAlign: "left", width: "12%" }}>{_.startCase(_.toLower(list.whtaccountname))} </td>
-												<td style={{ textAlign: "left", width: "12%" }}>
+												<td style={{  }}>{list.username}</td>
+												<td style={{  }}>{list.ownerphonenumber} </td>
+												<td style={{ textAlign: "left"}}>{_.startCase(_.toLower(list.whtaccountname))} </td>
+												<td style={{ textAlign: "left"}}>
 													{_.startCase(_.toLower(list.ownerfirstname)) + " " + _.startCase(_.toLower(list.ownerlastname))}{" "}
 												</td>
-												<td style={{ textAlign: "left", width: "8%" }}>{list.deliverygeolevel1} </td>
-												<td style={{ textAlign: "left", width: "8%" }}>{list.deliverygeolevel2}</td>
-												<td style={{ textAlign: "left", width: "8%" }}>{list.deliverygeolevel3} </td>
-												<td style={{ textAlign: "center", width: "8%" }}>
+												<td style={{ textAlign: "left" }}>{list.deliverygeolevel1} </td>
+												<td style={{ textAlign: "left" }}>{list.deliverygeolevel2}</td>
+												<td style={{ textAlign: "left" }}>{list.deliverygeolevel3} </td>
+												<td style={{ textAlign: "center" }}>
 													<div className="retailer-id">
 														<p>
 															{list.staffdetails?.length}
@@ -1977,7 +1976,7 @@ class ChannelPartners extends Component<Props, States> {
 														</p>
 													</div>
 												</td>
-												<td style={{ width: "9%" }}>
+												<td >
 													<span
 														onClick={(event: any) => {
 															this.showPopup(event, "deActivatePopup");
@@ -2015,8 +2014,8 @@ class ChannelPartners extends Component<Props, States> {
 														{_.startCase(_.toLower(list.userstatus))}
 													</span>
 												</td>
-												<td style={{ textAlign: "center", width: "8%" }}>{list.lastupdatedby}</td>
-												<td style={{ width: "7%" }}>
+												<td style={{ textAlign: "center"}}>{list.lastupdatedby}</td>
+												<td >
 													<img
 														data-testid="edit-icon"
 														aria-label="edit-icon"
@@ -2048,12 +2047,12 @@ class ChannelPartners extends Component<Props, States> {
 								</tr>
 							)}
 						</tbody>
-					</Table>
+					</table>
 					<div className="add-plus-icon" onClick={() => this.createUserClick()}>
 						<img data-testid="floating-add" src={AddBtn} alt={NoImage} />
 					</div>
-
-					<div>
+				</div>
+				<div>
 						<Pagination
 							totalData={totalData}
 							data={allChannelPartners}
@@ -2064,7 +2063,6 @@ class ChannelPartners extends Component<Props, States> {
 							}}
 						/>
 					</div>
-				</div>
 			</AUX>
 		);
 	}
