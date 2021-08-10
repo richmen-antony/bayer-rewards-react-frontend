@@ -195,7 +195,8 @@ class CreateUser extends Component<any, any> {
         }
     ],
     locationwiseChannelPartners : [],
-    channelPartnersOptions:[]
+    channelPartnersOptions:[],
+    allThirdPartyUsers:[]
     };
     this.loggedUserInfo = loggedUserInfo;
     this.isFilledAllFields = false;
@@ -206,6 +207,7 @@ class CreateUser extends Component<any, any> {
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
+    this.getThirdPartyList();
     this.getAllPartnersList();
   }
 
@@ -236,6 +238,32 @@ class CreateUser extends Component<any, any> {
         this.setState({ isLoader: false });
       });
   };
+
+  getThirdPartyList = (defaultPageNo?: number) => {
+		this.setState({	allThirdPartyUsers: [] });
+		const { thirdPartyList } = apiURL;
+		this.setState({ isLoader: true,});
+		let data = {
+			countrycode: this.getStoreData.countryCode,
+			page: 1,
+			isfiltered: false,
+			rowsperpage: 1000,
+			partnertype:"ASA",
+			searchtext: null,
+		};
+		invokeGetAuthService(thirdPartyList, data)
+			.then((response) => {
+				this.setState({
+					isLoader: false,
+					allThirdPartyUsers: Object.keys(response.body).length !== 0 ? response.body.rows : [],
+				});
+			})
+			.catch((error) => {
+				this.setState({ isLoader: false });
+				let message = error.message
+				Alert("warning", message);
+			});
+	};
 
   getCountryList() {
     //service call
@@ -1844,12 +1872,16 @@ class CreateUser extends Component<any, any> {
 
     let allowners = this.state.allChannelPartners;
     let allstaffs = _(allowners).flatMap("staffdetails").value();
+    let allthirdParty = this.state.allThirdPartyUsers;
 
-    const isOwnerPhoneEistsInDB = allowners.filter(
+    const isRetailerOwnerPhoneEistsInDB = allowners.filter(
       (items: any) => items.ownerphonenumber === val
     );
-    const isStaffPhoneEistsInDB = allstaffs.filter(
+    const isRetailerStaffPhoneEistsInDB = allstaffs.filter(
       (items: any) => items.mobilenumber === val
+    );
+    const isThirdPartyPhoneEistsInDB = allthirdParty.filter(
+      (items: any) => items.phonenumber === val
     );
 
     if (type === "owner") {
@@ -1859,7 +1891,7 @@ class CreateUser extends Component<any, any> {
             owners[
               idx
             ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isOwnerPhoneEistsInDB.length || isStaffPhoneEistsInDB.length) {
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isRetailerOwnerPhoneEistsInDB.length || isRetailerStaffPhoneEistsInDB.length || isThirdPartyPhoneEistsInDB.length ) {
             owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
           } else {
             owners[idx].errObj.mobilenumberErr = "";
@@ -1898,7 +1930,7 @@ class CreateUser extends Component<any, any> {
             staffs[
               idx
             ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isOwnerPhoneEistsInDB.length || isStaffPhoneEistsInDB.length) {
+          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isRetailerOwnerPhoneEistsInDB.length || isRetailerStaffPhoneEistsInDB.length || isThirdPartyPhoneEistsInDB.length) {
             staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
           } else {
             staffs[idx].errObj.mobilenumberErr = "";
@@ -2057,30 +2089,6 @@ class CreateUser extends Component<any, any> {
       }));
     } else {
       this.setState({ deleteStaffPopup: true });
-      // swal({
-      //   // title: "Are you sure you want to delete store's staff",
-      //   text: "Are you sure you want to delete store's staff?",
-      //   icon: "warning",
-      //   dangerMode: true,
-      //   buttons: ["Cancel", "Delete"],
-      // })
-      // .then((willDelete) => {
-      //   if (willDelete) {
-      //     // swal("Poof! Added Staff's has been deleted!", {
-      //     //   icon: "success",
-      //     // });
-      //     userData.staffdetails = [];
-      //     this.setState((prevState: any) => ({
-      //       isStaff: isStaff,
-      //       userData: {
-      //         ...prevState.userData,
-      //         staffdetails: userData.staffdetails,
-      //       },
-      //     }));
-      //   } else {
-      //     // swal("Your added staff's are safe!");
-      //   }
-      // });
     }
   };
   checkUnsavedData = () => {
@@ -2124,14 +2132,6 @@ class CreateUser extends Component<any, any> {
       }
     } else {
       let editDatas = this.state.cloneduserData;
-
-      // userValues.staffdetails?.forEach((useritem:any, index: number)=>{
-      //   editDatas.staffdetails?.forEach((edititem:any)=>{
-      //     if((useritem.firstname !== edititem[index].firstname) || (useritem.lastname !== edititem[index].lastname) || (useritem.mobilenumber !== edititem[index].mobilenumber)){
-      //       isStaffFieldsFilled = true
-      //     }
-      //   })
-      // })
       if (_.isEqual(editDatas, userValues)) {
         isStaffFieldsFilled = false;
       } else {
@@ -2144,28 +2144,28 @@ class CreateUser extends Component<any, any> {
           if (item.name !== "geolevel0") {
             if (
               item.name === "geolevel1" &&
-              (item.value !== userFields.deliverygeolevel1 || item.value === "")
+              (item.value !== userFields.deliverygeolevel1)
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "geolevel2" &&
-              (item.value !== userFields.deliverygeolevel2 || item.value === "")
+              (item.value !== userFields.deliverygeolevel2)
             ) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "geolevel3" &&
-              (item.value !== userFields.deliverygeolevel3 || item.value === "")
+              (item.value !== userFields.deliverygeolevel3)
             ) {
               isDeliveryFieldsFilled = true;
             }
-            if (item.name === "geolevel4" && (item.value !== userFields.deliverygeolevel4 || item.value === "")) {
+            if (item.name === "geolevel4" && (item.value !== userFields.deliverygeolevel4)) {
               isDeliveryFieldsFilled = true;
             }
             if (
               item.name === "geolevel5" &&
-              (item.value !== userFields.deliverygeolevel5 || item.value === "")
+              (item.value !== userFields.deliverygeolevel5)
             ) {
               isDeliveryFieldsFilled = true;
             }
@@ -2175,11 +2175,11 @@ class CreateUser extends Component<any, any> {
           if (item.name !== "geolevel0") {
             if (
               item.name === "geolevel1" &&
-              (item.value !== userFields.billinggeolevel1 || item.value === "")
+              (item.value !== userFields.billinggeolevel1)
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "geolevel2" && (item.value !== userFields.billinggeolevel2 || item.value === "")) {
+            if (item.name === "geolevel2" && (item.value !== userFields.billinggeolevel2)) {
               isWHTFieldsFilled = true;
             }
             if (
@@ -2188,12 +2188,12 @@ class CreateUser extends Component<any, any> {
             ) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "geolevel4" && (item.value !== userFields.billinggeolevel4 || item.value === "")) {
+            if (item.name === "geolevel4" && (item.value !== userFields.billinggeolevel4)) {
               isWHTFieldsFilled = true;
             }
             if (
               item.name === "geolevel5" &&
-              (item.value !== userFields.billinggeolevel5 || item.value === "")
+              (item.value !== userFields.billinggeolevel5)
             ) {
               isWHTFieldsFilled = true;
             }
@@ -2244,22 +2244,35 @@ class CreateUser extends Component<any, any> {
     let datas = this.state.asaDatas;
     let userdata = this.state.userData;
     let asamobilenumberErr = this.state.asamobilenumberErr;
+    
+    let allowners = this.state.allChannelPartners;
+    let allstaffs = _(allowners).flatMap("staffdetails").value();
+    let allthirdParty = this.state.allThirdPartyUsers;
+
+    const isRetailerOwnerPhoneEistsInDB = allowners.filter(
+      (items: any) => items.ownerphonenumber === val
+    );
+    const isRetailerStaffPhoneEistsInDB = allstaffs.filter(
+      (items: any) => items.mobilenumber === val
+    );
+    const isThirdPartyPhoneEistsInDB = allthirdParty.filter(
+      (items: any) => items.phonenumber === val
+    );
+
     if(key === "mobilenumber") {
-      datas['mobilenumber'] = val;
-      if (
-        datas.mobilenumber &&
-        asamobilenumberErr !== "Phone Number Exists"
-      ) {
-        asamobilenumberErr =
-        datas.mobilenumber.length === phoneLength
-            ? ""
-            : `Please enter ${phoneLength} Digit`;
+      if (val) {
+        if (val.length !== phoneLength) {
+          asamobilenumberErr = `Please enter ${phoneLength} Digit`;
+        } else if (isThirdPartyPhoneEistsInDB.length || isRetailerOwnerPhoneEistsInDB.length || isRetailerStaffPhoneEistsInDB.length) {
+          asamobilenumberErr = "Phone Number Exists";
+        } else {
+          asamobilenumberErr = "";
+        }
       } else {
-        asamobilenumberErr =
-        asamobilenumberErr === "Phone Number Exists"
-            ? asamobilenumberErr
-            : "Please enter the mobile number";
+        asamobilenumberErr = "Please enter the mobile number";
       }
+      datas[key] = val;
+
       this.setState({ asamobilenumberErr : asamobilenumberErr});
     } else {
       let { name, value, checked } = e.target;
