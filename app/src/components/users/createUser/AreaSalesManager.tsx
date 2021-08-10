@@ -99,17 +99,6 @@ class AreaSalesManager extends Component<any, any> {
                                 </span>
                             )}
                         </div>
-                        <div className = "col-sm-3">
-                            <label className="font-weight-bold">Is Active?</label>
-                            <CustomSwitch checked={asaDatas.active}
-                                onChange={(e: any) =>
-                                    asahandleChange(e)
-                                }
-                                name="active"
-                            />
-                        </div>
-                    </div>
-                    <div className="row fieldsAlign">
                         <div className="col-sm-3">
                             <Input
                                 type="text"
@@ -130,6 +119,8 @@ class AreaSalesManager extends Component<any, any> {
                                 </span>
                             )}
                         </div>
+                    </div>
+                    <div className="row fieldsAlign">
                         <div className="col-sm-3">
                             <div className="flagInput">
                                 <PhoneInput
@@ -183,6 +174,15 @@ class AreaSalesManager extends Component<any, any> {
                                     {this.state.asaemailErr}{" "}
                                 </span>
                                 )}
+                        </div>
+                        <div className = "col-sm-3">
+                            <label className="font-weight-bold">Is Active?</label>
+                            <CustomSwitch checked={asaDatas.active}
+                                onChange={(e: any) =>
+                                    asahandleChange(e)
+                                }
+                                name="active"
+                            />
                         </div>
                     </div>
                 </div>

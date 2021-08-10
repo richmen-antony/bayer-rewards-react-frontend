@@ -33,6 +33,7 @@ import _ from "lodash";
 import RouterPrompt from "../../../container/prompt";
 import { AppContext } from "../../../container/context";
 import AreaSalesManager from "./AreaSalesManager";
+import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
 
 const role = [
   { value: "RETAILER", text: "Retailer" },
@@ -167,6 +168,8 @@ class CreateUser extends Component<any, any> {
       level5Options: [],
       mobileLimit: true,
       cloneduserData: {},
+      clonedasaInfo : {},
+      clonedasapartnersInfo : {},
       deleteStaffPopup: false,
       shouldBlockNavigation:true,
       asaDatas : {
@@ -406,10 +409,15 @@ class CreateUser extends Component<any, any> {
               });
               let steps = this.state.stepsArray;
               steps.splice(2,1,'User Mappings');
-           
+
+              let clonedasaInfo = JSON.parse(JSON.stringify(asauserinfo));
+              let clonedasapartnersInfo = JSON.parse(JSON.stringify(asachannelPartnersInfo));
+        
             this.setState((prevState:any)=>({
               asaDatas: asauserinfo,
               partnerDatas : asachannelPartnersInfo,
+              clonedasaInfo: clonedasaInfo,
+              clonedasapartnersInfo: clonedasapartnersInfo,
               userroleType : "internal",
               stepsArray : steps,
               isEditPage: true,
@@ -1044,7 +1052,11 @@ class CreateUser extends Component<any, any> {
       withHoldingdet = JSON.parse(JSON.stringify(withHoldingdet));
       this.setState({ newWithHolding: withHoldingdet });
     }
-    this.checkUnsavedData();
+    if(this.state.userroleType === "external"){
+      this.checkUnsavedData();
+    } else {
+      this.checkUnsavedDataForASA();
+    }
   };
 
   getLevelFourDetails = () => {
@@ -1699,7 +1711,7 @@ class CreateUser extends Component<any, any> {
         this.setState({ partnerDatas: datas});
       });
   }
-  formValid=true;
+    formValid=true;
     return formValid;
   }
 
@@ -1837,6 +1849,7 @@ class CreateUser extends Component<any, any> {
           item.partnertype = '';
           item.geolevel1 = '';
           item.channelpartnerfullname = '';
+          item.channelpartnerid = '';
           item.errObj = {
             typeErr: "",
             locationErr: "",
@@ -1846,8 +1859,11 @@ class CreateUser extends Component<any, any> {
         this.setState({ partnerDatas:datas, asafirstnameErr : '',asalastnameErr:'',asamobilenumberErr:'',asaemailErr:'' });
       }
     }
-    if(this.state.userroleType === 'external') {
+    console.log('asa@@@', this.state.asaDatas);
+    if(this.state.userroleType === "external"){
       this.checkUnsavedData();
+    } else {
+      this.checkUnsavedDataForASA();
     }
   };
 
@@ -2021,6 +2037,8 @@ class CreateUser extends Component<any, any> {
     }
     if(this.state.userroleType === "external"){
       this.checkUnsavedData();
+    } else {
+      this.checkUnsavedDataForASA();
     }
 
   };
@@ -2223,6 +2241,109 @@ class CreateUser extends Component<any, any> {
    
     return this.isFilledAllFields;
   };
+
+  checkUnsavedDataForASA = () => {
+    this.isFilledAllFields = false;
+    let userValues = this.state.asaDatas;
+    let partnerValues = this.state.partnerDatas;
+    let isDeliveryFieldsFilled = false;
+    let isChannelPartnersFieldsFilled = false;
+    if (!this.state.isEditPage) {
+      this.state.dynamicFields?.forEach((item: any) => {
+        if (item.name !== "geolevel0" && item.value !== "") {
+          isDeliveryFieldsFilled = true;
+        }
+      });
+      partnerValues?.forEach((item: any) => {
+        if (
+          item.partnertype !== "" ||
+          item.geolevel1 !== "" ||
+          item.channelpartnerfullname !== ""
+        ) {
+          isChannelPartnersFieldsFilled = true;
+        }
+      });
+
+      if (
+        userValues.firstname !== "" ||
+        userValues.lastname !== "" ||
+        userValues.mobilenumber !== "" ||
+        isDeliveryFieldsFilled ||
+        isChannelPartnersFieldsFilled 
+      ) {
+        this.isFilledAllFields = true;
+      }
+    } else {
+      let editclonedasaInfo = this.state.clonedasaInfo;
+      let editclonedasapartnersInfo = this.state.clonedasapartnersInfo;
+      let isasaDataFieldsFilled = false;
+      let isasaPartnerFieldsFilled = false;
+      if (_.isEqual(editclonedasaInfo, userValues)) {
+        isasaDataFieldsFilled = false;
+      } else {
+        isasaDataFieldsFilled = true;
+      }
+      if (_.isEqual(editclonedasapartnersInfo, partnerValues)) {
+        isasaPartnerFieldsFilled = false;
+      } else {
+        isasaPartnerFieldsFilled = true;
+      }
+
+      let userFields = this.props.location.state?.userFields;
+      if (userFields) {
+        this.state.dynamicFields?.forEach((item: any) => {
+          if (item.name !== "geolevel0") {
+            if (
+              item.name === "geolevel1" &&
+              (item.value !== userFields.deliverygeolevel1)
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (
+              item.name === "geolevel2" &&
+              (item.value !== userFields.deliverygeolevel2)
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (
+              item.name === "geolevel3" &&
+              (item.value !== userFields.deliverygeolevel3)
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel4" && (item.value !== userFields.deliverygeolevel4)) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (
+              item.name === "geolevel5" &&
+              (item.value !== userFields.deliverygeolevel5)
+            ) {
+              isDeliveryFieldsFilled = true;
+            }
+          }
+        });
+      }
+
+      if (
+        (userValues.firstname !==
+          editclonedasaInfo.firstname) || (userValues.firstname === "") ||
+        (userValues.lastname !== editclonedasaInfo.lastname) || (userValues.lastname === "") ||
+        isasaDataFieldsFilled || 
+        isasaPartnerFieldsFilled ||
+        isDeliveryFieldsFilled
+      ) {
+        this.isFilledAllFields = true;
+      } else {
+        this.isFilledAllFields = false;
+      }
+    }
+    console.log('isFilledAllFields', this.isFilledAllFields)
+    const {setPromptMode} =this.context;
+    setPromptMode(this.isFilledAllFields);
+   
+    return this.isFilledAllFields;
+  }
+
   handleClosePopup = () => {
     this.setState({ deleteStaffPopup: false });
   };
@@ -2305,6 +2426,11 @@ class CreateUser extends Component<any, any> {
       }
     }
     this.setState({ asaDatas : datas });
+    if(this.state.userroleType === "external"){
+      this.checkUnsavedData();
+    } else {
+      this.checkUnsavedDataForASA();
+    }
   };
   
 partnerhandleChange = (e:any, idx: number, ) => {
@@ -2322,6 +2448,7 @@ partnerhandleChange = (e:any, idx: number, ) => {
     }
     this.setState({ partnerDatas : datas });
     this.setOptionsForChannelPartners(idx);
+    this.checkUnsavedDataForASA();
 }
 
 setOptionsForChannelPartners = (idx:number) => {
