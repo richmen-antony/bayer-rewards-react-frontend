@@ -35,6 +35,11 @@ import { AppContext } from "../../../container/context";
 import AreaSalesManager from "./AreaSalesManager";
 import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
 
+type Props = {
+	location?: any;
+	history?: any;
+};
+
 const role = [
   { value: "RETAILER", text: "Retailer" },
   { value: "salesagent", text: "Area Sales Agent" },
@@ -1487,7 +1492,10 @@ class CreateUser extends Component<any, any> {
       Alert("success", msg);
       const {setPromptMode} =this.context;
       setPromptMode(false);
-      this.props.history.push("/userList");
+      this.props.history.push({
+        pathname: "/userList",
+        page: "asaUser"
+      });
     })
     .catch((error: any) => {
       this.setState({ isLoader: false });

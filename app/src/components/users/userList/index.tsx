@@ -301,6 +301,10 @@ class UserList extends Component<Props, States> {
     this.timeOut = 0;
   }
   componentDidMount() {
+    let page = this.props.location?.page;
+    if ( page === 'asaUser') {
+      this.setState({ value : 1 });
+    }
   }
 
   download = () => {
@@ -424,6 +428,7 @@ class UserList extends Component<Props, States> {
       isLoader,
       changeLogOpen,
     } = this.state;
+    console.log('this.channelPartnerRef', this.channelPartnerRef)
 
     const { classes } = this.props;
     return (
