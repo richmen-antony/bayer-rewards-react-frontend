@@ -97,29 +97,38 @@
             display: flex;
             align-items: center;
             border-radius: 30px;
+            min-width: 100px;
+            font-size: 12px;
             padding: 10px;
+            cursor: pointer;
             i {
               margin-right: 5px;
             }
           }
+      
           .status.active {
             color: #1ccead;
             background-color: #e3f8f4;
           }
           .status.inactive {
-            color: #ff6397;
-            background-color: #ffecf2;
+            color: #ff0000;
+            background-color: #ff000026;
           }
-          .status.pending{
-            color: #FF9D00;
-            background-color: #FF9D0033;
+          .status.pending {
+            color: #ff9d00;
+            background-color: #ffe6be;
+            padding: 10px 0px 10px 5px;
           }
-          .status.cancelled{
-            color: #FF0000;
-            background-color: #FF000026;
+          .status.declined {
+            color: #ec0c0c;
+            background-color: #ffb1b1;
           }
           .max-image {
             margin-left: 60px;
+            cursor: pointer;
+          }
+          .edit {
+            margin-right: 8px;
             cursor: pointer;
           }
         }
@@ -433,8 +442,8 @@
 
 .add-plus-icon {
   position: absolute;
-  right: 0.15rem;
-  bottom: 3rem;
+  right: 1.8rem;
+  bottom: 3.3rem;
   cursor: pointer;
   img {
     width: 50px;

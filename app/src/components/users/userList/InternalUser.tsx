@@ -1,7 +1,5 @@
 import React, {  useEffect, useState } from "react";
-import { useHistory } from "react-router";
 import MuiButton from "@material-ui/core/Button";
-import Table from "react-bootstrap/Table";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "reactstrap";
@@ -37,7 +35,7 @@ import { NativeDropdown } from "../../../utility/widgets/dropdown/NativeSelect";
 
 let paginationRef:any={};
 const InternalUser = (Props: any) => {
-  const history = useHistory();
+  // const history = useHistory();
 
   const [internalUsers, setInternalUsers] = useState([]);
   const [internalUserType, setUserType] = useState<string>("RSM");
@@ -81,12 +79,12 @@ const InternalUser = (Props: any) => {
     lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
     lastmodifieddateto: new Date(),
   });
-  const [selectedMappingFilters, setSelectedMappingFilters] = useState({
-    geolevel1: " ",
-    status: "ALL",
-    lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
-    lastmodifieddateto: new Date(),
-  });
+  // const [selectedMappingFilters, setSelectedMappingFilters] = useState({
+  //   geolevel1: " ",
+  //   status: "ALL",
+  //   lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+  //   lastmodifieddateto: new Date(),
+  // });
 
   const DialogContent = withStyles((theme: Theme) => ({
     root: {
@@ -144,7 +142,7 @@ const InternalUser = (Props: any) => {
 		if(!defaultPageNo){
 			setDefaultPage();
 		}
-    let { status, lastmodifieddatefrom, lastmodifieddateto, geolevel1 }: any =
+    let { status, geolevel1 }: any =
       selectedFilters;
     let data = {
       countrycode: userData.countrycode,
@@ -220,16 +218,16 @@ const InternalUser = (Props: any) => {
         handleClosePopup();
         setIsLoader(true);
 
-        let obj: any = getLocalStorageData("userData");
-        let userData = JSON.parse(obj);
-        const { internalUserAPI } = apiURL;
-        const data = {
-          countrycode: userData.countrycode,
-          usertype: "RSM",
-          isfiltered: "false",
-          rowsperpage: 10,
-          page: 1,
-        };
+        // let obj: any = getLocalStorageData("userData");
+        // let userData = JSON.parse(obj);
+        // const { internalUserAPI } = apiURL;
+        // const data = {
+        //   countrycode: userData.countrycode,
+        //   usertype: "RSM",
+        //   isfiltered: "false",
+        //   rowsperpage: 10,
+        //   page: 1,
+        // };
         fetchInternalUserData();
       })
       .catch((error: any) => {

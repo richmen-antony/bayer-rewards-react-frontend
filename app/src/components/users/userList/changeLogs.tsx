@@ -15,7 +15,6 @@ import { SearchInput } from "../../../utility/widgets/input/search-input";
 import Pagination  from "../../../utility/widgets/pagination";
 import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-import Validator from "../../../utility/validator";
 import _ from "lodash";
 
 type Props = {

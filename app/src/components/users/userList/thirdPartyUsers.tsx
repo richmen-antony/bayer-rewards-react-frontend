@@ -13,10 +13,8 @@ import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
-import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import RtButton from "../../../assets/icons/right_btn.svg";
 import NoImage from "../../../assets/images/no_image.svg";
-import blackmockup from "../../../assets/icons/black-mockup.svg";
 import ArrowIcon from "../../../assets/icons/dark bg.svg";
 import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import "../../../assets/scss/users.scss";
@@ -27,17 +25,9 @@ import NativeDropdown from "../../../utility/widgets/dropdown/NativeSelect";
 import { invokeGetAuthService, invokePostAuthService } from "../../../utility/base/service";
 import { Alert } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
-import { Input } from "../../../utility/widgets/input";
-import CustomSwitch from "../../../container/components/switch";
-import Table from "react-bootstrap/Table";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import Loader from "../../../utility/widgets/loader";
 import _ from "lodash";
 import UserMappings from "../createUser/UserMappings";
-import UserMappingPopup from "./UserMappingPopup";
-
 import Filter from "../../../container/grid/Filter";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -45,7 +35,6 @@ import { Button as BootstrapButton} from "reactstrap";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
 import moment from "moment";
 import { sortBy } from "../../../utility/base/utils/tableSort";
-import Validator from "../../../utility/validator";
 
 type PartnerTypes = {
 	type: String;
@@ -1379,14 +1368,12 @@ class ChannelPartners extends Component<Props, States> {
 			dropdownOpenFilter,
 			selectedFilters,
 			userList,
-			userData,
-			isStaff,
 			dateErrMsg,
 		} = this.state;
 
-		let data: any = getLocalStorageData("userData");
-		let loggedUserInfo = JSON.parse(data);
-		let countryCodeLower = loggedUserInfo?.countrycode && _.toLower(loggedUserInfo.countrycode);
+		// let data: any = getLocalStorageData("userData");
+		// let loggedUserInfo = JSON.parse(data);
+		// let countryCodeLower = loggedUserInfo?.countrycode && _.toLower(loggedUserInfo.countrycode);
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 		  let nameCapitalized =

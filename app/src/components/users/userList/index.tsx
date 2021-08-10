@@ -1,20 +1,10 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from "reactstrap";
-import NativeDropdown from "../../../utility/widgets/dropdown/NativeSelect";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import AUX from "../../../hoc/Aux_";
-import { sortBy } from "../../../utility/base/utils/tableSort";
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../../utility/base/service";
-import filterIcon from "../../../assets/icons/filter_icon.svg";
 import Download from "../../../assets/icons/download.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
@@ -27,15 +17,8 @@ import ChannelPartners from "./channelPartners";
 import ThirdPartyUsers from "./thirdPartyUsers";
 import ChangeLogs from "./changeLogs";
 import InternalUser from "./InternalUser";
-import ArrowIcon from "../../../assets/icons/tick.svg";
-import RtButton from "../../../assets/icons/right_btn.svg";
-import { SearchInput } from "../../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import CalenderIcon from "../../../assets/icons/calendar.svg";
 import moment from "moment";
-import Validator from "../../../utility/validator";
 import Typography from "@material-ui/core/Typography";
 
 type PartnerTypes = {
@@ -227,7 +210,7 @@ function TabPanel(props: TabPanelProps) {
 // 		/>
 // 	</div>
 // ));
-let levelsName: any = [];
+
 
 class UserList extends Component<Props, States> {
   timeOut: any;

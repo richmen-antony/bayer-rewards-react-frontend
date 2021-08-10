@@ -31,7 +31,6 @@ import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
-import Validator from "../../utility/validator";
 import Filter from "../../container/grid/Filter";
 type PartnerTypes = {
 	type: String;
@@ -614,9 +613,7 @@ class SendGoods extends Component<Props, States> {
       isLoader,
       dateErrMsg,
       searchText,
-      pageNo,
       totalData,
-      rowsPerPage,
       lastUpdatedDateErr,
       farmerOptions,
       retailerOptions,

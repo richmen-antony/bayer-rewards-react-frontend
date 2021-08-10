@@ -30,7 +30,6 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
-import Validator from "../../utility/validator";
 import { OrderHistroyHeader } from "../../utility/constant";
 import Cancel from "../../assets/images/cancel.svg";
 import PendingImg from "../../assets/images/not_activated.svg";
@@ -489,9 +488,7 @@ class OrderHistory extends Component<Props, States> {
 			isLoader,
 			dateErrMsg,
 			searchText,
-			pageNo,
 			totalData,
-			rowsPerPage,
 			lastUpdatedDateErr,
 			regionOptions,
 		} = this.state;

@@ -29,7 +29,6 @@ import { getLocalStorageData } from "../../../utility/base/localStore";
 import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
 import { Input } from "../../../utility/widgets/input";
 import CustomSwitch from "../../../container/components/switch";
-import Table from "react-bootstrap/Table";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Loader from "../../../utility/widgets/loader";
@@ -41,7 +40,6 @@ import { Button } from "reactstrap";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
 import moment from "moment";
 import { sortBy } from "../../../utility/base/utils/tableSort";
-import Validator from "../../../utility/validator";
 import NativeDropdown from "../../../utility/widgets/dropdown/NativeSelect";
 
 type PartnerTypes = {
