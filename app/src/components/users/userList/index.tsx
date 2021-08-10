@@ -304,7 +304,6 @@ class UserList extends Component<Props, States> {
   }
 
   download = () => {
-    console.log("ref", this.channelPartnerRef);
     let stateValue: any = "";
     let downloadURL: string = "";
     let downloadName: string = "";
@@ -319,17 +318,16 @@ class UserList extends Component<Props, States> {
       downloadURL = downloadThirdPartyList;
       downloadName = "Third_Party_Users";
     } else if (this.state.value === 2) {
-      stateValue = this.internalUserRef?.state;
+      stateValue = this.internalUserRef;
       downloadURL = downloadInternalList;
       downloadName = "Internal_Users";
     }
 
     let data = {
       countrycode: this.getStoreData.countryCode,
-      usertype: !this.state.value ? "EXTERNAL" : null,
-      partnertype: stateValue.partnerType.type,
-      // partnertype: "ALL",
-      isfiltered: this.state.value === 1 ? true : null,
+      usertype: !this.state.value ? "EXTERNAL" : this.state.value===2 ?stateValue.internalUserType :null ,
+      partnertype: this.state.value===2 ? null :stateValue.partnerType.type,
+      isfiltered: stateValue.isFiltered
     };
     let {
       status,
@@ -348,7 +346,7 @@ class UserList extends Component<Props, States> {
         geolevel1: geolevel1 === "ALL" ? null : geolevel1,
         geolevel2: geolevel2 === "ALL" ? null : geolevel2,
         geolevel3: geolevel3 === "ALL" ? null : geolevel3,
-        searchtext: stateValue.searchText,
+        searchtext: stateValue.searchText || null,
       };
       data = { ...data, ...filter };
     }

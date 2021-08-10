@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import MuiButton from "@material-ui/core/Button";
 import Table from "react-bootstrap/Table";
@@ -31,22 +31,11 @@ import {
 } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import _ from "lodash";
-import Validator from "../../../utility/validator";
 import Filter from "../../../container/grid/Filter";
 import { NativeDropdown } from "../../../utility/widgets/dropdown/NativeSelect";
-import {
-  downloadCsvFile,
-  ErrorMsg,
-  handledropdownoption,
-} from "../../../utility/helper";
 
-type Props = {
-  location?: any;
-  history?: any;
-  onRef: any;
-  geolevel1List: any;
-};
 
+let paginationRef:any={};
 const InternalUser = (Props: any) => {
   const history = useHistory();
 
@@ -61,14 +50,10 @@ const InternalUser = (Props: any) => {
     useState<boolean>(false);
   const [totalRows, setTotalRows] = useState<number>(0);
   const [tableCellIndex, setTableCellIndex] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [pageNo, setPageNo] = useState<number>(1);
-  const [gotoPage, setGotoPage] = useState<number>(1);
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
   const [isRegionValueChanged, setIsRegionValueChanged] =
     useState<boolean>(false);
-  const [inActiveFilter, setInActiveFilter] = useState<boolean>(false);
   const [isAsc, setIsAsc] = useState<boolean>(true);
   const [dropdownOpenFilter, setDropdownOpenFilter] = useState<boolean>(false);
   const [internalUserStatusPopup, setInternalUserStatusPopup] =
@@ -125,11 +110,15 @@ const InternalUser = (Props: any) => {
 
   useEffect(() => {
     fetchInternalUserData();
-    Props.onRef && Props.onRef(this);
+  const passState={searchText,
+    isFiltered,
+    partnerType,
+    chanagedStatusValue,
+    dateErrMsg,
+    selectedFilters,
+    internalUserType};
+    Props.onRef && Props.onRef(passState);
   }, [
-    pageNo,
-    inActiveFilter,
-    rowsPerPage,
     searchText,
     isFiltered,
     partnerType,
@@ -139,7 +128,7 @@ const InternalUser = (Props: any) => {
     // totalRows,
   ]);
 
-  const fetchInternalUserData = () => {
+  const fetchInternalUserData = (defaultPageNo?:number) => {
     setIsLoader(true);
     setDateErrMsg("");
     setDropdownOpenFilter(false);
@@ -148,15 +137,20 @@ const InternalUser = (Props: any) => {
     userData?.username && setUpdatedUserName(userData.username);
     console.log("updatedUserName", updatedUserName);
     const { internalUserAPI } = apiURL;
-    const pageNos: any = !inActiveFilter ? 1 : pageNo;
-    setPageNo(pageNos);
+    const {state,setDefaultPage}= paginationRef;
+		const pageNo=  !defaultPageNo ? 1 : state?.pageNo;
+
+		// set default pagination number 1 and  call the method
+		if(!defaultPageNo){
+			setDefaultPage();
+		}
     let { status, lastmodifieddatefrom, lastmodifieddateto, geolevel1 }: any =
       selectedFilters;
     let data = {
       countrycode: userData.countrycode,
       usertype: "RSM",
-      rowsperpage: rowsPerPage,
-      page: pageNos,
+      rowsperpage: state?.rowsPerPage,
+      page: pageNo,
       isfiltered: isFiltered,
       searchtext: searchText || null,
     };
@@ -203,50 +197,7 @@ const InternalUser = (Props: any) => {
     setInternalUserStatusPopup(false);
   };
 
-  const previous = (pageNo: any) => {
-    setPageNo(pageNo - 1);
-    setInActiveFilter(true);
-    setIsLoader(false);
-  };
-
-  const next = (pageNo: any) => {
-    setPageNo(pageNo + 1);
-    setInActiveFilter(true);
-    setIsLoader(false);
-  };
-
-  const pageNumberClick = (number: any) => {
-    setPageNo(number);
-    setInActiveFilter(true);
-    setIsLoader(false);
-  };
-
-  const handlePaginationChange = (e: any) => {
-    let value = 0;
-    if (e.target.name === "perpage") {
-      value = e.target.value;
-      setRowsPerPage(value);
-      setInActiveFilter(false);
-    } else if (e.target.name === "gotopage") {
-      const pageData = Math.ceil(totalRows / rowsPerPage);
-      value =
-        e.target.value === "0" || pageData < e.target.value
-          ? ""
-          : e.target.value;
-      let isNumeric = Validator.validateNumeric(e.target.value);
-      if (isNumeric) {
-        setPageNo(value);
-        setInActiveFilter(true);
-        if (pageNo && pageData >= pageNo) {
-          pageNo;
-          setIsLoader(!isLoader);
-          // setTimeout(() => {
-          //   pageNo && fetchInternalUserData();
-          // }, 1000);
-        }
-      }
-    }
-  };
+  
 
   const changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
@@ -313,7 +264,6 @@ const InternalUser = (Props: any) => {
     }
     if (searchText.length >= 3 || searchText.length === 0) {
       setIsFiltered(true);
-      setInActiveFilter(false);
       timeOut = setTimeout(() => {
         fetchInternalUserData();
       }, 100);
@@ -367,7 +317,6 @@ const InternalUser = (Props: any) => {
   const applyFilter = () => {
     if (dateErrMsg === "") {
       setIsFiltered(true);
-      setInActiveFilter(false);
       setChanagedStatusValue(!chanagedStatusValue);
       setIsRegionValueChanged(!isRegionValueChanged);
     }
@@ -462,7 +411,7 @@ const InternalUser = (Props: any) => {
   });
 
   return (
-    <>
+    <div>
       {isLoader && <Loader />}
       <Filter
         handleSearch={handleSearch}
@@ -475,8 +424,10 @@ const InternalUser = (Props: any) => {
         selectedPartnerType={partnerType}
         handlePartnerChange={handlePartnerChange}
         toolTipText="Search applicable for User Name,  Full Name"
+        internalUserTypeFilterHeading={true}
+  
       >
-        <div onClick={(e) => e.stopPropagation()}>
+        <div onClick={(e) => e.stopPropagation()} >
           <label className="font-weight-bold">Status</label>
           <div className="pt-1">
             {internalUserStatus.map((item, index) => (
@@ -805,9 +756,12 @@ const InternalUser = (Props: any) => {
           data={internalUsers}
           totalLabel={"RSM Users"}
           getRecords={fetchInternalUserData}
+          onRef={(node:any)=>{
+            paginationRef= node;
+          }}
         />
       </div>
-    </>
+    </div>
   );
 };
 

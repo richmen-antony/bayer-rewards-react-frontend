@@ -44,7 +44,7 @@ interface Props extends WithStyles<typeof useStyles> {
 	totalData: any;
 	data: any;
 	totalLabel?: any;
-	getRecords: Function;
+	getRecords?: any;
 	onRef?: any;
 }
 class Pagination extends Component<Props, States> {
@@ -103,9 +103,7 @@ class Pagination extends Component<Props, States> {
 			if (isNumeric) {
 				this.setState({ pageNo: value }, () => {
 					if (this.state.pageNo && pageData >= this.state.pageNo) {
-						setTimeout(() => {
-							this.state.pageNo & this.props.getRecords(value);
-						}, 1000);
+						this.props.getRecords(this.state.pageNo);
 					}
 				});
 			}
