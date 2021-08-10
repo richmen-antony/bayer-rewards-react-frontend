@@ -421,14 +421,7 @@ class UserList extends Component<Props, States> {
 
   render() {
     const {
-      isAsc,
-      allChannelPartners,
-      dropdownOpenFilter,
-      selectedFilters,
       isLoader,
-      dateErrMsg,
-      searchText,
-      totalData,
       changeLogOpen,
     } = this.state;
 
@@ -439,7 +432,7 @@ class UserList extends Component<Props, States> {
         {isLoader && <Loader />}
 
         <div
-          className="container-fluid card card-height"
+          // className="container-fluid card card-height"
           style={{ backgroundColor: "#f8f8fa" }}
         >
           <div className="row align-items-center user-tab">

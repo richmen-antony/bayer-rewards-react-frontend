@@ -610,8 +610,8 @@ const InternalUser = (Props: any) => {
           </DialogContent>
         </AdminPopup>
       )}
-      <div className="table-responsive userlist-table">
-        <Table responsive>
+      <div className="user-table">
+        <table >
           <thead>
             <tr>
               <th
@@ -707,9 +707,9 @@ const InternalUser = (Props: any) => {
                     <td align="center">
                       <img
                         className="region-mapping"
-                        src={list.geolevel1.length === 0 ? Cross : Tick}
+                        src={list.geolevel1?.length === 0 ? Cross : Tick}
                         alt={
-                          list.geolevel1.length === 0
+                          list.geolevel1?.length === 0
                             ? "Region Not Mapped"
                             : "Region Mapped"
                         }
@@ -747,7 +747,7 @@ const InternalUser = (Props: any) => {
               </tr>
             )}
           </tbody>
-        </Table>
+        </table>
       </div>
 
       <div className="internalUserPagination">

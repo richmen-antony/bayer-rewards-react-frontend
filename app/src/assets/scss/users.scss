@@ -51,6 +51,100 @@
   justify-content: flex-end;
   align-items: center;
 }
+.user-table {
+  overflow: auto;
+  table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #a0a0a047 ;
+    border-radius: 10px !important;
+    border-style: hidden;
+    color: #212529;
+    thead {
+      tr {
+        background: #1f445a;
+        box-shadow: 0px 3px 6px #00000029;
+        border: 0.2px solid #cccccc;
+        th {
+          color: #ffffff;
+          border: 0;
+          padding: 15px 10px;
+          vertical-align: middle;
+          font-size: 14px;
+          font-weight: 500;
+          // font-family: "Open Sans", sans-serif;
+          font-family: "appRegular" !important;
+          position: sticky;
+          top: 0;
+          background-color: #1f445a;
+          z-index: 1;
+          cursor: pointer;
+          border-top: 1px solid #dee2e6;
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          font-size: 14px;
+          // font-family: "Open Sans";
+          font-family: "appRegular" !important;
+          border-top: 1px solid #dee2e6;
+          .status {
+            display: flex;
+            align-items: center;
+            border-radius: 30px;
+            padding: 10px;
+            i {
+              margin-right: 5px;
+            }
+          }
+          .status.active {
+            color: #1ccead;
+            background-color: #e3f8f4;
+          }
+          .status.inactive {
+            color: #ff6397;
+            background-color: #ffecf2;
+          }
+          .status.pending{
+            color: #FF9D00;
+            background-color: #FF9D0033;
+          }
+          .status.cancelled{
+            color: #FF0000;
+            background-color: #FF000026;
+          }
+          .max-image {
+            margin-left: 60px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+  .retailer-id {
+    .retailer-icon {
+      position: relative;
+      top: -10px;
+      margin-left: 10px;
+      cursor: pointer;
+      height: 12px;
+    }
+    p {
+      font-size: 16px;
+      margin: 0;
+      line-height: normal;
+    }
+    label {
+      color: #717171;
+      font-size: 14px;
+    }
+  }
+}
 
 .table-responsive {
   overflow: hidden !important;
@@ -472,6 +566,43 @@
   .card-height {
     height: 82vh;
   }
+  .user-table {
+    height: 58vh;
+    table {
+      thead {
+        tr {
+          th {
+            padding: 15px 5px;
+            font-size: 11px;
+            font-weight: 600;
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-size: 12px;
+            // font-family: "Open Sans";
+            font-family: "appRegular" !important;
+            vertical-align: middle;
+            text-align: left;
+            padding: 0.5rem;
+            .status {
+              border-radius: 20px;
+              padding: 5px;
+              i,
+              img {
+                margin-right: 5px;
+              }
+            }
+            .max-image {
+              margin-left: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
   .userlist-table {
     table {
       height: 56vh;
@@ -558,6 +689,42 @@
       overflow-y: scroll;
     }
   }
+  .user-table {
+    height: 63vh;
+    table {
+      thead {
+        tr {
+          th {
+            padding: 15px 5px;
+            font-size: 12px;
+            font-weight: 600;
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-size: 13px;
+            // font-family: "Open Sans";
+            font-family: "appRegular" !important;
+            vertical-align: middle;
+            text-align: left;
+            padding: 0.5rem;
+            .status {
+              border-radius: 20px;
+              padding: 5px;
+              i {
+                margin-right: 5px;
+              }
+            }
+            .max-image {
+              margin-left: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 @media only screen and (min-width: 2560px) and (max-width: 2880px) {
@@ -567,7 +734,7 @@
       overflow-y: scroll;
     }
   }
-
+ 
   .userlist-table {
     table {
       height: 90vh;
