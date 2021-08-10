@@ -1794,8 +1794,11 @@ class CreateUser extends Component<any, any> {
          asalastnameErr:'',
          asamobilenumberErr:'',
          asaemailErr:'' 
+        },()=>{
+          this.checkUnsavedDataForASA();
         })
       }
+     
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
       data.forEach((list: any) => {
@@ -1858,12 +1861,15 @@ class CreateUser extends Component<any, any> {
         })
         this.setState({ partnerDatas:datas, asafirstnameErr : '',asalastnameErr:'',asamobilenumberErr:'',asaemailErr:'' });
       }
+     
     }
     console.log('asa@@@', this.state.asaDatas);
     if(this.state.userroleType === "external"){
       this.checkUnsavedData();
     } else {
-      this.checkUnsavedDataForASA();
+      if( currentStep !== 1) {
+        this.checkUnsavedDataForASA();
+      }
     }
   };
 
