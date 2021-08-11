@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MuiButton from "@material-ui/core/Button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -32,12 +32,13 @@ import _ from "lodash";
 import Filter from "../../../container/grid/Filter";
 import { NativeDropdown } from "../../../utility/widgets/dropdown/NativeSelect";
 
-
-let paginationRef:any={};
+let paginationRef: any = {};
 const InternalUser = (Props: any) => {
   // const history = useHistory();
 
   const [internalUsers, setInternalUsers] = useState([]);
+  const [retailerOptions, setRetailerOptions] = useState<string[]>([]);
+  const [optionslist, setOptionslist] = useState([]);
   const [internalUserType, setUserType] = useState<string>("RSM");
   const [list, setList] = useState(["RSM"]);
   const [partnerType, setPartnerType] = useState({ type: "RSM" });
@@ -76,15 +77,10 @@ const InternalUser = (Props: any) => {
   const [selectedFilters, setSelectedFilters] = useState({
     geolevel1: "ALL",
     status: "ALL",
+    isregionmapped: null,
     lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
     lastmodifieddateto: new Date(),
   });
-  // const [selectedMappingFilters, setSelectedMappingFilters] = useState({
-  //   geolevel1: " ",
-  //   status: "ALL",
-  //   lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
-  //   lastmodifieddateto: new Date(),
-  // });
 
   const DialogContent = withStyles((theme: Theme) => ({
     root: {
@@ -108,42 +104,41 @@ const InternalUser = (Props: any) => {
 
   useEffect(() => {
     fetchInternalUserData();
-  const passState={searchText,
-    isFiltered,
-    partnerType,
-    chanagedStatusValue,
-    dateErrMsg,
-    selectedFilters,
-    internalUserType};
+    const passState = {
+      searchText,
+      isFiltered,
+      partnerType,
+      chanagedStatusValue,
+      dateErrMsg,
+      selectedFilters,
+      internalUserType,
+    };
     Props.onRef && Props.onRef(passState);
-  }, [
-    searchText,
-    isFiltered,
-    partnerType,
-    chanagedStatusValue,
-    dateErrMsg,
-    selectedFilters,
-    // totalRows,
-  ]);
+  }, [isFiltered, partnerType, chanagedStatusValue, dateErrMsg]);
 
-  const fetchInternalUserData = (defaultPageNo?:number) => {
+  const fetchInternalUserData = (defaultPageNo?: number) => {
     setIsLoader(true);
     setDateErrMsg("");
     setDropdownOpenFilter(false);
     let obj: any = getLocalStorageData("userData");
     let userData = JSON.parse(obj);
     userData?.username && setUpdatedUserName(userData.username);
-    console.log("updatedUserName", updatedUserName);
     const { internalUserAPI } = apiURL;
-    const {state,setDefaultPage}= paginationRef;
-		const pageNo=  !defaultPageNo ? 1 : state?.pageNo;
+    const { state, setDefaultPage } = paginationRef;
+    const pageNo = !defaultPageNo ? 1 : state?.pageNo;
+    console.log("defaultPageNo", defaultPageNo);
+    // set default pagination number 1 and  call the method
+    if (!defaultPageNo) {
+      setDefaultPage();
+    }
+    let {
+      status,
+      isregionmapped,
+      lastmodifieddatefrom,
+      lastmodifieddateto,
+      geolevel1,
+    }: any = selectedFilters;
 
-		// set default pagination number 1 and  call the method
-		if(!defaultPageNo){
-			setDefaultPage();
-		}
-    let { status, geolevel1 }: any =
-      selectedFilters;
     let data = {
       countrycode: userData.countrycode,
       usertype: "RSM",
@@ -156,6 +151,7 @@ const InternalUser = (Props: any) => {
     if (isFiltered) {
       let filter = {
         status: status,
+        isregionmapped: isregionmapped,
         // partnertype: "RSM",
         // lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
         //lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
@@ -166,9 +162,12 @@ const InternalUser = (Props: any) => {
 
     invokeGetAuthService(internalUserAPI, data)
       .then((response) => {
-        setInternalUsers(
-          Object.keys(response.body).length !== 0 ? response.body.rows : []
-        );
+        let data =
+          response?.body && Object.keys(response?.body).length !== 0
+            ? response.body.rows
+            : [];
+
+        setInternalUsers(data);
         const total = response?.totalrows || 0;
         setTotalRows(total);
         setIsLoader(false);
@@ -177,6 +176,43 @@ const InternalUser = (Props: any) => {
         console.log("Error message", error.message);
       });
   };
+
+  const getHierarchyDatas = () => {
+    const { getHierarchyLevels } = apiURL;
+    let localObj: any = getLocalStorageData("userData");
+    let userData = JSON.parse(localObj);
+    let countrycode = {
+      countryCode: userData?.countrycode,
+    };
+    invokeGetAuthService(getHierarchyLevels, countrycode)
+      .then((response: any) => {
+        let locationhierarchy =
+          Object.keys(response?.body).length !== 0
+            ? response?.body?.geolevel1
+            : [];
+
+        setRetailerOptions([...retailerOptions, locationhierarchy]);
+        const levels: any = [];
+        locationhierarchy?.length > 0 &&
+          locationhierarchy.forEach((item: any, index: number) => {
+            let obj = {
+              key: index,
+              text: item.name,
+              code: item.code,
+              value: item.name,
+            };
+            levels.push(obj);
+          });
+        setOptionslist(levels);
+      })
+      .catch((error: any) => {
+        let message = error.message;
+        console.log("warning", message);
+      });
+  };
+  useEffect(() => {
+    getHierarchyDatas();
+  }, []);
 
   const getCurrentUserData = (data: any) => {
     setInternalUserStatusPopup(true);
@@ -194,8 +230,6 @@ const InternalUser = (Props: any) => {
   const handleClosePopup = () => {
     setInternalUserStatusPopup(false);
   };
-
-  
 
   const changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
@@ -260,13 +294,14 @@ const InternalUser = (Props: any) => {
     if (timeOut) {
       clearTimeout(timeOut);
     }
-    if (searchText.length >= 3 || searchText.length === 0) {
-      setIsFiltered(true);
-      timeOut = setTimeout(() => {
-        fetchInternalUserData();
-      }, 100);
-    }
+    setIsFiltered(true);
   };
+
+  useEffect(() => {
+    if (isFiltered && (searchText.length >= 3 || searchText.length === 0)) {
+      fetchInternalUserData();
+    }
+  }, [searchText]);
 
   const toggleFilter = (e: any) => {
     setDropdownOpenFilter(!dropdownOpenFilter);
@@ -295,16 +330,24 @@ const InternalUser = (Props: any) => {
         val[name] = e.target.value;
         flag = true;
       }
+    } else if (name === "isregionmapped") {
+      const a = item === "Mapped" ? true : item === "UnMapped" ? false : null;
+      val[name] = a;
+      flag = true;
     } else {
       val[name] = item;
       flag = true;
     }
     if (flag) {
-      setSelectedFilters(val);
-      console.log("val", val, val.status);
-      //	this.setState({ selectedFilters: val }, () => {});
+      setSelectedFilters((prevState) => ({
+        ...selectedFilters,
+        val,
+      }));
     }
   };
+  useEffect(() => {
+    console.log("selectedFilters", selectedFilters);
+  }, [selectedFilters]);
 
   const handlePartnerChange = (name: string) => {
     setPartnerType({
@@ -325,6 +368,7 @@ const InternalUser = (Props: any) => {
     setSelectedFilters({
       geolevel1: "ALL",
       status: "ALL",
+      isregionmapped: null,
       lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
       lastmodifieddateto: new Date(),
     });
@@ -396,18 +440,6 @@ const InternalUser = (Props: any) => {
     )
   );
 
-  const { geolevel1List } = Props;
-  let regionOptions: any = [];
-  geolevel1List?.forEach((item: any, index: any) => {
-    let regionList = {
-      key: index,
-      text: item.name,
-      code: item.code,
-      value: item.name,
-    };
-    regionOptions.push(regionList);
-  });
-
   return (
     <div>
       {isLoader && <Loader />}
@@ -423,9 +455,8 @@ const InternalUser = (Props: any) => {
         handlePartnerChange={handlePartnerChange}
         toolTipText="Search applicable for User Name,  Full Name"
         internalUserTypeFilterHeading={true}
-  
       >
-        <div onClick={(e) => e.stopPropagation()} >
+        <div onClick={(e) => e.stopPropagation()}>
           <label className="font-weight-bold">Status</label>
           <div className="pt-1">
             {internalUserStatus.map((item, index) => (
@@ -451,12 +482,12 @@ const InternalUser = (Props: any) => {
               <span className="mr-2" key={`geolevel1` + index}>
                 <Button
                   color={
-                    selectedFilters.status === item
+                    selectedFilters.isregionmapped === item
                       ? "btn activeColor rounded-pill"
                       : "btn rounded-pill boxColor"
                   }
                   size="sm"
-                  onClick={(e) => handleFilterChange(e, "status", item)}
+                  onClick={(e) => handleFilterChange(e, "isregionmapped", item)}
                 >
                   {item}
                 </Button>
@@ -466,20 +497,19 @@ const InternalUser = (Props: any) => {
         </div>
         <br />
 
-        {/* {selectedFilters.status === "ALL" && ( */}
         <div className="form-group" onClick={(e) => e.stopPropagation()}>
           <NativeDropdown
             name="geolevel1"
             value={selectedFilters.geolevel1}
             label={"Region"}
             handleChange={(e: any) => handleRegionSelect(e, "geolevel1")}
-            options={regionOptions}
-            // defaultValue="ALL"
+            options={optionslist}
+            defaultValue="ALL"
             id="region-test"
             dataTestId="region-test"
           />
         </div>
-        {/* )} */}
+
         <label className="font-weight-bold pt-2" htmlFor="update-date">
           Updated Date <span>(6 months interval)</span>
         </label>
@@ -609,7 +639,7 @@ const InternalUser = (Props: any) => {
         </AdminPopup>
       )}
       <div className="user-table">
-        <table >
+        <table>
           <thead>
             <tr>
               <th
@@ -630,8 +660,21 @@ const InternalUser = (Props: any) => {
                   <i className={"fas fa-sort-up ml-3"}></i>
                 )}
               </th>
-              <th className="text-left" key="mobile">
-                MOBILE#
+              <th
+                className="text-left"
+                onClick={(e) =>
+                  handleSort(e, "phonenumber", internalUsers, isAsc)
+                }
+                key="phonenumber"
+              >
+                MOBILE#{" "}
+                {tableCellIndex === 1 ? (
+                  <i
+                    className={`fas ${
+                      isAsc ? "fa-sort-down" : "fa-sort-up"
+                    } ml-3`}
+                  ></i>
+                ) : null}
               </th>
               <th
                 className="text-left"
@@ -649,11 +692,39 @@ const InternalUser = (Props: any) => {
                   ></i>
                 ) : null}
               </th>
-              <th className="text-left" key="email">
-                MAIL ID
+              <th
+                className="text-left"
+                onClick={(e) => handleSort(e, "emailid", internalUsers, isAsc)}
+                key="emailid"
+              >
+                MAIL ID{" "}
+                {tableCellIndex === 3 ? (
+                  <i
+                    className={`fas ${
+                      isAsc ? "fa-sort-down" : "fa-sort-up"
+                    } ml-3`}
+                  ></i>
+                ) : null}
               </th>
-              <th className="text-left">REGION</th>
-              <th key="status">STATUS</th>
+              <th
+                className="text-left"
+                onClick={(e) =>
+                  handleSort(e, "geolevel1", internalUsers, isAsc)
+                }
+                key="geolevel1"
+              >
+                REGION{" "}
+                {tableCellIndex === 4 ? (
+                  <i
+                    className={`fas ${
+                      isAsc ? "fa-sort-down" : "fa-sort-up"
+                    } ml-3`}
+                  ></i>
+                ) : null}
+              </th>
+              <th className="text-center" key="status">
+                STATUS
+              </th>
               <th key="regionMapping">REGION MAPPED</th>
               <th className="text-left" key="updatedBy">
                 UPDATED BY
@@ -702,17 +773,13 @@ const InternalUser = (Props: any) => {
                         {_.startCase(_.toLower(list.userstatus))}
                       </span>
                     </td>
-                    <td align="center">
+                    <td className="text-center">
                       <img
                         className="region-mapping"
-                        src={list.geolevel1?.length === 0 ? Cross : Tick}
-                        alt={
-                          list.geolevel1?.length === 0
-                            ? "Region Not Mapped"
-                            : "Region Mapped"
-                        }
+                        src={list?.geolevel1 === null ? Cross : Tick}
+                        alt="Region mapping status"
                         width="25px"
-                      />
+                      />{" "}
                     </td>
                     <td align="center">{list.lastupdatedby}</td>
                     <td className="tableLastHeaderStyle">
@@ -727,7 +794,7 @@ const InternalUser = (Props: any) => {
                         src={
                           list.userstatus === "DECLINED" ? EditDisabled : Edit
                         }
-                        alt="edi icon"
+                        alt="edit user icon"
                         width="20"
                         onClick={(event) => {
                           event.preventDefault();
@@ -754,8 +821,8 @@ const InternalUser = (Props: any) => {
           data={internalUsers}
           totalLabel={"RSM Users"}
           getRecords={fetchInternalUserData}
-          onRef={(node:any)=>{
-            paginationRef= node;
+          onRef={(node: any) => {
+            paginationRef = node;
           }}
         />
       </div>

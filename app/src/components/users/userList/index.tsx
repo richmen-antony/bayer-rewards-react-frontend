@@ -312,9 +312,13 @@ class UserList extends Component<Props, States> {
 
     let data = {
       countrycode: this.getStoreData.countryCode,
-      usertype: !this.state.value ? "EXTERNAL" : this.state.value===2 ?stateValue.internalUserType :null ,
-      partnertype: this.state.value===2 ? null :stateValue.partnerType.type,
-      isfiltered: stateValue.isFiltered
+      usertype: !this.state.value
+        ? "EXTERNAL"
+        : this.state.value === 2
+        ? stateValue.internalUserType
+        : null,
+      partnertype: this.state.value === 2 ? null : stateValue.partnerType.type,
+      isfiltered: stateValue.isFiltered,
     };
     let {
       status,
@@ -471,7 +475,7 @@ class UserList extends Component<Props, States> {
                       <span>Download</span>
                     </button>
                   </div>
-                  <i
+                  {/* <i
                     className="fa fa-info-circle"
                     style={{
                       fontSize: "16px",
@@ -480,7 +484,7 @@ class UserList extends Component<Props, States> {
                       marginTop: "-20px",
                     }}
                     title={"Full extract"}
-                  ></i>
+                  ></i> */}
                 </>
               )}
             </div>
