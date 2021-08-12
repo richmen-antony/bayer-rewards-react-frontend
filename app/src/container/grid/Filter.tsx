@@ -2,8 +2,7 @@ import React from "react";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
-import Download from "../../assets/icons/download.svg";
-import NoImage from "../../assets/images/Group_4736.svg";
+import { CustomDownload } from "../../utility/widgets/button/download";
 import "../../assets/scss/filter.scss";
 interface Props {
   dropdownOpenFilter: boolean;
@@ -141,31 +140,7 @@ const Filter: React.FC<Props> = (props: Props) => {
             </Dropdown>
           </div>
           {isDownload && (
-            <>
-              <div>
-                <button
-                  className="btn btn-primary"
-                  onClick={download}
-                  style={{
-                    backgroundColor: "#1f445a",
-                    borderColor: "#1f445a",
-                  }}
-                >
-                  <img src={Download} width="17" alt={NoImage} />
-                  <span style={{ padding: "15px" }}>Download</span>
-                </button>
-              </div>
-              <i
-                className="fa fa-info-circle"
-                style={{
-                  fontSize: "16px",
-                  fontFamily: "appRegular !important",
-                  marginLeft: "5px",
-                  marginTop: "-20px",
-                }}
-                title={"Full extract"}
-              ></i>
-            </>
+            <CustomDownload  download={download} />
           )}
         </div>
       </div>

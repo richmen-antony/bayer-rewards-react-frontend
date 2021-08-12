@@ -243,6 +243,7 @@ class UserList extends Component<Props, States> {
         status: "ALL",
         lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
         lastmodifieddateto: new Date(),
+        isregionmapped: null,
       },
       partnerType: {
         type: "Retailer",
@@ -285,8 +286,8 @@ class UserList extends Component<Props, States> {
   }
   componentDidMount() {
     let page = this.props.location?.page;
-    if ( page === 'asaUser') {
-      this.setState({ value : 1 });
+    if (page === "asaUser") {
+      this.setState({ value: 1 });
     }
   }
 
@@ -312,11 +313,16 @@ class UserList extends Component<Props, States> {
 
     let data = {
       countrycode: this.getStoreData.countryCode,
-      usertype: !this.state.value ? "EXTERNAL" : this.state.value===2 ?stateValue.internalUserType :null ,
-      partnertype: this.state.value===2 ? null :stateValue.partnerType.type,
-      isfiltered: stateValue.isFiltered
+      usertype: !this.state.value
+        ? "EXTERNAL"
+        : this.state.value === 2
+        ? stateValue.internalUserType
+        : null,
+      partnertype: this.state.value === 2 ? null : stateValue.partnerType.type,
+      isfiltered: stateValue.isFiltered,
     };
     let {
+      isregionmapped,
       status,
       lastmodifieddatefrom,
       lastmodifieddateto,
@@ -334,6 +340,7 @@ class UserList extends Component<Props, States> {
         geolevel2: geolevel2 === "ALL" ? null : geolevel2,
         geolevel3: geolevel3 === "ALL" ? null : geolevel3,
         searchtext: stateValue.searchText || null,
+        isregionmapped: this.state.value === 2 ? isregionmapped : null,
       };
       data = { ...data, ...filter };
     }
@@ -364,7 +371,6 @@ class UserList extends Component<Props, States> {
   //     dropdownOpenFilter: !prevState.dropdownOpenFilter,
   //   }));
   // };
-
 
   // handlePartnerChange = (name: String) => {
   //   this.setState(
@@ -407,15 +413,11 @@ class UserList extends Component<Props, States> {
   };
 
   render() {
-    const {
-      isLoader,
-      changeLogOpen,
-    } = this.state;
-    console.log('this.channelPartnerRef', this.channelPartnerRef)
+    const { isLoader, changeLogOpen } = this.state;
+    console.log("this.channelPartnerRef", this.channelPartnerRef);
 
     const { classes } = this.props;
     return (
-      
       <AUX>
         {isLoader && <Loader />}
 
@@ -471,7 +473,7 @@ class UserList extends Component<Props, States> {
                       <span>Download</span>
                     </button>
                   </div>
-                  <i
+                  {/* <i
                     className="fa fa-info-circle"
                     style={{
                       fontSize: "16px",
@@ -480,7 +482,7 @@ class UserList extends Component<Props, States> {
                       marginTop: "-20px",
                     }}
                     title={"Full extract"}
-                  ></i>
+                  ></i> */}
                 </>
               )}
             </div>
@@ -522,4 +524,3 @@ class UserList extends Component<Props, States> {
   }
 }
 export default withStyles(useStyles)(UserList);
-

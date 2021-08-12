@@ -30,14 +30,16 @@ function SearchInput(props: any) {
         {...restProps}
         placeholder={placeHolder}
         onKeyUp={props.onKeyUp}
+        style={{ width: width ? width : "260px" }}
       />
 
       <img src={Layout} className="layout" alt=""/>
-      <i
+      {tolltip&& <i
         className="fa fa-info-circle"
         style={{ fontSize: "16px", fontFamily: "appRegular !important" }}
         title={tolltip}
-      ></i>
+      ></i>}
+     
     </div>
   );
 }
