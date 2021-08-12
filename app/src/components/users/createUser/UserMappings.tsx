@@ -23,9 +23,6 @@ const partnertypeOptions = [
     { value: "DISTRIBUTOR", text: "Distributor" },
     { value: "RETAILER", text: "Retailer" },
 ];
-
-
-
 class UserMappings extends Component<any, any> {
     constructor(props:any){
         super(props);
@@ -35,19 +32,16 @@ class UserMappings extends Component<any, any> {
         }
     }
 
-
-
     render(){
-        const {geolevel1List, handleRemoveSpecificRow, handleAddRow, partnerhandleChange, partnerDatas, channelPartnersOptions} = this.props;
-        // const {partnertype, partnerDatas} = this.state;
-        console.log('options',channelPartnersOptions)
+        const {geolevel1List, handleRemoveSpecificRow, handleAddRow, partnerhandleChange, partnerDatas, channelPartnersOptions, page} = this.props;
         let level1Datas:any =[];
         geolevel1List?.forEach((item: any) => {
             let level1Info = { text: item.name, code: item.code, value: item.name };
             level1Datas.push(level1Info);
         });
-
-
+        if (page === "listuser") {
+            level1Datas.shift();
+        }
 
         return (
             <div className="userMappings">

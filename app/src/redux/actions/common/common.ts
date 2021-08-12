@@ -19,8 +19,8 @@ export const getGeographicLevel1Options = () => {
           countryCode: userDetails.countrycode,
         };
         invokeGetAuthService(getHierarchyLevels, countrycode)
-          .then((response: any) => {
-              dispatch(Success(response));
+          .then(async (response: any) => {
+              await dispatch(Success(response));
           })
           .catch((error: any) => {
             dispatch({ type : LOADING_REQUEST, status : false } );

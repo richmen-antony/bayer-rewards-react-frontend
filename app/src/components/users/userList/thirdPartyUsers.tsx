@@ -42,7 +42,7 @@ type PartnerTypes = {
 type Props = {
 	location?: any;
 	history?: any;
-	onRef:any
+	onRef:any;
 };
 type States = {
 	isLoader: boolean;
@@ -305,6 +305,7 @@ class ChannelPartners extends Component<Props, States> {
 	getDynamicOptionFields = (reset?: string) => {
 		let level1List = this.state.geolevel1List;
 		if (!reset) {
+
 			let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
 			level1List.unshift(allItem);
 		}
@@ -331,7 +332,8 @@ class ChannelPartners extends Component<Props, States> {
 		});
 		this.setState({ dynamicFields: setFormArray });
 		};
-		getOptionLists = (cron: any, type: any, value: any, index: any) => {
+		
+	getOptionLists = (cron: any, type: any, value: any, index: any) => {
 		let geolevel1List = this.state.geolevel1List;
 		this.setState({ level1Options: geolevel1List });
 		let dynamicFieldVal = this.state.dynamicFields;
@@ -339,19 +341,17 @@ class ChannelPartners extends Component<Props, States> {
 			let filteredLevel1 = geolevel1List?.filter(
 			(level1: any) => level1.name === value
 			);
-			let level2Options: any = [];
-			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-			let level1Info = { text: item.name, value: item.name, code: item.code };
-			level2Options.push(level1Info);
+				let level2Options: any = [];
+				filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+				let level1Info = { text: item.name, value: item.name, code: item.code };
+				level2Options.push(level1Info);
 			});
 			let geolevel1Obj = {
-			text: "ALL",
-			value: "ALL",
-			code: "ALL",
+				text: "ALL",
+				value: "ALL",
+				code: "ALL",
 			};
-			let geolevel3Obj = [
-			{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" },
-			];
+			let geolevel3Obj = [{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
 			level2Options.unshift(geolevel1Obj);
 			dynamicFieldVal[index + 1].options = level2Options;
 			this.setState({ dynamicFields: dynamicFieldVal });
@@ -585,77 +585,6 @@ class ChannelPartners extends Component<Props, States> {
 		this.setState<never>({
 			[key]: true,
 		});
-	};
-
-	editStaffOld = (data: any) => {
-		let passData: any = JSON.parse(JSON.stringify(data));
-		let activeStatus = passData.userstatus === "INACTIVE" || passData.userstatus === "DECLINED" ? false : true;
-		this.setState(
-			{
-				userList: passData,
-				status: data.userstatus,
-				activateUser: activeStatus,
-				partnerPopup: true,
-			},
-			() => {
-				const userFields = this.state.userList;
-				let ownerInfo = {
-					errObj: {
-						emailErr: "",
-						firstnameErr: "",
-						lastnameErr: "",
-						mobilenumberErr: "",
-					},
-					firstname: userFields.ownerfirstname,
-					active: userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING" ? true : false,
-					lastname: userFields.ownerlastname,
-					mobilenumber: userFields.ownerphonenumber,
-					email: userFields.owneremail,
-				};
-
-				let userDataList = this.state.userData;
-				userDataList.ownerRows[0] = ownerInfo;
-				let userinfo = {
-					ownerRows: userDataList.ownerRows,
-					countrycode: userFields.countrycode,
-					locale: userFields.locale,
-					rolename: userFields.rolename,
-					username: userFields.username,
-					shippingstreet: userFields.shippingstreet,
-					shippingcity: userFields.shippingcity,
-					shippingstate: userFields.shippingstate,
-					shippingzipcode: userFields.shippingzipcode,
-					taxid: userFields.taxid,
-					whtaccountname: userFields.whtaccountname,
-					whtownername: userFields.whtownername,
-					billingstreet: userFields.billingstreet,
-					billinggeolevel4: userFields.billinggeolevel4,
-					billinggeolevel2: userFields.billinggeolevel2,
-					billingzipcode: userFields.billingzipcode,
-					staffdetails: userFields.staffdetails,
-					iscreatedfrommobile: userFields.iscreatedfrommobile,
-				};
-				if (userinfo) {
-					userinfo.staffdetails.forEach((staffInfo: any) => {
-						let errObjd = {
-							errObj: {
-								emailErr: "",
-								firstnameErr: "",
-								lastnameErr: "",
-								mobilenumberErr: "",
-								isPhoneEdit: staffInfo.mobilenumber ? false : true,
-							},
-						};
-						staffInfo = Object.assign(staffInfo, errObjd);
-					});
-				}
-				this.setState({
-					userData: userinfo,
-					isStaff: userFields.storewithmultiuser,
-					isRendered: true,
-				});
-			}
-		);
 	};
 
 	editChannelPartners = (data: any) => {
@@ -1595,6 +1524,7 @@ class ChannelPartners extends Component<Props, States> {
 											partnerhandleChange={this.partnerhandleChange}
 											partnerDatas={partnerDatas}
                       						channelPartnersOptions={this.state.channelPartnersOptions}
+											page="listuser"
 										/>
 									</div>
 								</div>

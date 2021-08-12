@@ -189,7 +189,8 @@ class AreaSalesManager extends Component<any, any> {
                 }
                 {currentStep === 3 && (
                     <UserMappings geolevel1List={geolevel1List} handleAddRow={handleAddRow} handleRemoveSpecificRow={handleRemoveSpecificRow} partnerhandleChange={partnerhandleChange} partnerDatas={partnerDatas}
-                    channelPartnersOptions={channelPartnersOptions} />
+                    channelPartnersOptions={channelPartnersOptions}
+                    page = "createuser" />
                 )}
             </>
 

@@ -48,10 +48,7 @@ type PartnerTypes = {
 type Props = {
 	location?: any;
 	history?: any;
-
 	onRef:any;
-	// selectedFilters:any;
-
 };
 type States = {
 	isLoader: boolean;

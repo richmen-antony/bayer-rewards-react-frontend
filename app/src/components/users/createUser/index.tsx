@@ -514,7 +514,7 @@ class CreateUser extends Component<any, any> {
         this.setState({ level1Options: level1Options });
       }
       if ("deliverygeolevel2" in data) {
-        let filteredLevel2 = geolevel1List.filter(
+        let filteredLevel2 = geolevel1List?.filter(
           (level1: any) => level1.name === data.deliverygeolevel1
         );
         geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
@@ -531,7 +531,7 @@ class CreateUser extends Component<any, any> {
       }
       if ("deliverygeolevel3" in data) {
         geolevel3 = data.deliverygeolevel3;
-        let filteredLevel2 = geolevel1List.filter(
+        let filteredLevel2 = geolevel1List?.filter(
           (level1: any) => level1.name === data.deliverygeolevel1
         );
         let level2List = filteredLevel2[0]?.geolevel2.filter(
@@ -647,7 +647,7 @@ class CreateUser extends Component<any, any> {
           this.setState({ level1Options: level1Options });
         }
         if ("billinggeolevel2" in data) {
-          let filteredLevel2 = geolevel1List.filter(
+          let filteredLevel2 = geolevel1List?.filter(
             (level1: any) => level1.name === data.billinggeolevel1
           );
           geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
@@ -668,7 +668,7 @@ class CreateUser extends Component<any, any> {
         }
         if ("billinggeolevel3" in data) {
           geolevel3 = data.billinggeolevel3;
-          let filteredLevel2 = geolevel1List.filter(
+          let filteredLevel2 = geolevel1List?.filter(
             (level1: any) => level1.name === data.billinggeolevel1
           );
           let level2List = filteredLevel2[0]?.geolevel2.filter(
@@ -3449,7 +3449,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                   role={role} 
                   countryCodeLower={countryCodeLower}
                   currentStep={currentStep}
-                  geolevel1List ={this.state.geolevel1List}
+                  geolevel1List ={this.props.geoLevel1List}
                   handleAddRow ={this.asahandleAddRow}
                   handleRemoveSpecificRow={this.asahandleRemoveSpecificRow}
                   partnerhandleChange={this.partnerhandleChange}
@@ -3665,9 +3665,6 @@ const mapStateToProps = ({ common: { isLoader, geoLevel1List, errorMessage } }: 
 
 const mapDispatchToProps = {
   getGeographicLevel1Options: getGeographicLevel1Options,
-
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateUser);
-
-// export default CreateUser;
