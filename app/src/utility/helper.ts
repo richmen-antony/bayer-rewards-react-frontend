@@ -39,9 +39,7 @@ export const downloadExcel = (tableId: any, fileName: string) => {
  * @param filename 
  */
 export const downloadCsvFile = (csv: any, filename: string) => {
-  console.log("scg",csv?.status)
   if (csv?.status===404 || !csv) {
-    // toastWarning("No data available !");
     Alert('warning', "No data available !")
   } else {
     var csvFile;
@@ -67,6 +65,7 @@ export const downloadCsvFile = (csv: any, filename: string) => {
 
     // Lanzamos
     downloadLink.click();
+    Alert('success', "Download successfully.")
   }
 
 

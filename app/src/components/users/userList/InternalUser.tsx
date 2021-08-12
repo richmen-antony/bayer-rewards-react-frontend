@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 import MuiButton from "@material-ui/core/Button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -153,8 +154,8 @@ const InternalUser = (Props: any) => {
         status: status,
         isregionmapped: isregionmapped,
         // partnertype: "RSM",
-        // lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
-        //lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
+        lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
+        lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
         geolevel1: geolevel1,
       };
       data = { ...data, ...filter };
@@ -207,7 +208,7 @@ const InternalUser = (Props: any) => {
       })
       .catch((error: any) => {
         let message = error.message;
-        console.log("warning", message);
+        console.log("getHierarchyDatas warning", message);
       });
   };
   useEffect(() => {
@@ -251,17 +252,6 @@ const InternalUser = (Props: any) => {
         Alert("success", "User Status Changed Successfully");
         handleClosePopup();
         setIsLoader(true);
-
-        // let obj: any = getLocalStorageData("userData");
-        // let userData = JSON.parse(obj);
-        // const { internalUserAPI } = apiURL;
-        // const data = {
-        //   countrycode: userData.countrycode,
-        //   usertype: "RSM",
-        //   isfiltered: "false",
-        //   rowsperpage: 10,
-        //   page: 1,
-        // };
         fetchInternalUserData();
       })
       .catch((error: any) => {
@@ -414,7 +404,6 @@ const InternalUser = (Props: any) => {
     value?: any;
     id?: any;
     onClick?: any;
-    // any other props that come into the component
   }
 
   const ref = React.createRef();
@@ -453,7 +442,7 @@ const InternalUser = (Props: any) => {
         partnerTypeList={list}
         selectedPartnerType={partnerType}
         handlePartnerChange={handlePartnerChange}
-        toolTipText="Search applicable for User Name,  Full Name"
+        toolTipText="Search applicable for User Name, Mobile, Full Name"
         internalUserTypeFilterHeading={true}
       >
         <div onClick={(e) => e.stopPropagation()}>
@@ -478,21 +467,31 @@ const InternalUser = (Props: any) => {
           <br />
           <label className="font-weight-bold">Region Mapping</label>
           <div className="pt-1">
-            {internalUserMappingStatus.map((item, index) => (
-              <span className="mr-2" key={`geolevel1` + index}>
-                <Button
-                  color={
-                    selectedFilters.isregionmapped === item
-                      ? "btn activeColor rounded-pill"
-                      : "btn rounded-pill boxColor"
-                  }
-                  size="sm"
-                  onClick={(e) => handleFilterChange(e, "isregionmapped", item)}
-                >
-                  {item}
-                </Button>
-              </span>
-            ))}
+            {internalUserMappingStatus.map((item, index) => {
+              const seletedRegionMapped =
+                selectedFilters.isregionmapped === null
+                  ? "ALL"
+                  : selectedFilters.isregionmapped
+                  ? "Mapped"
+                  : "UnMapped";
+              return (
+                <span className="mr-2" key={`geolevel1` + index}>
+                  <Button
+                    color={
+                      seletedRegionMapped === item
+                        ? "btn activeColor rounded-pill"
+                        : "btn rounded-pill boxColor"
+                    }
+                    size="sm"
+                    onClick={(e) =>
+                      handleFilterChange(e, "isregionmapped", item)
+                    }
+                  >
+                    {item}
+                  </Button>
+                </span>
+              );
+            })}
           </div>
         </div>
         <br />
@@ -806,7 +805,7 @@ const InternalUser = (Props: any) => {
               })
             ) : (
               <tr style={{ height: "250px" }}>
-                <td colSpan={10} className="no-records">
+                <td colSpan={8} className="no-records">
                   No records found
                 </td>
               </tr>
