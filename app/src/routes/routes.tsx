@@ -100,6 +100,17 @@ export const ROUTE = [
     component: React.lazy(() => import('../components/order')),
     role:"ADMIN"
   },
+  {
+    private: true,
+    exact: true,
+    path: '/label',
+    meta: {
+      title: siteTitle,
+      description: siteMetaDescription
+    },
+    component: React.lazy(() => import('../components/label')),
+    role:"RSM"
+  },
 
   // {
   //   private: true,
