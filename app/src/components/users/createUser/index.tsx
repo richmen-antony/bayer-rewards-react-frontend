@@ -33,7 +33,8 @@ import _ from "lodash";
 import RouterPrompt from "../../../container/prompt";
 import { AppContext } from "../../../container/context";
 import AreaSalesManager from "./AreaSalesManager";
-import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
+import { connect } from "react-redux";
+import { getGeographicLevel1Options } from "../../../redux/actions";
 
 type Props = {
 	location?: any;
@@ -211,12 +212,15 @@ class CreateUser extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.getHierarchyDatas();
+    this.props.getGeographicLevel1Options();
+    console.log('loading@@', this.props.loading);
+    console.log('geolevels@@', this.props.geoLevel1List);
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
     this.getThirdPartyList();
     this.getAllPartnersList();
+    this.getGeographicFields();
   }
 
   getChannelPartnersList = () => {
@@ -304,147 +308,7 @@ class CreateUser extends Component<any, any> {
             geographicFields: levels,
           },
           () => {
-            if (this.props.location?.page) {
-              let data: any = getLocalStorageData("userData");
-              let userDetails = JSON.parse(data);
-              this.setState({ username: userDetails.username }, () => {});
-              let userFields = this.props.location.state?.userFields;
-              if(this.props.location?.page === "edit"){
-                let ownerInfo = {
-                  errObj: {
-                    emailErr: "",
-                    firstnameErr: "",
-                    lastnameErr: "",
-                    mobilenumberErr: "",
-                  },
-                  firstname: userFields.ownerfirstname,
-                  active:
-                    userFields.userstatus === "ACTIVE" ||
-                    userFields.userstatus === "PENDING"
-                      ? true
-                      : false,
-                  lastname: userFields.ownerlastname,
-                  mobilenumber: userFields.ownerphonenumber,
-                  email: userFields.owneremail,
-                };
-  
-                userFields.staffdetails.forEach((items: any) => {
-                  items.active =
-                    userFields.userstatus === "PENDING"
-                      ? true
-                      : items.active;
-                });
-                let userDataList = this.state.userData;
-                userDataList.ownerRows[0] = ownerInfo;
-                let userinfo = {
-                  ownerRows: userDataList.ownerRows,
-                  countrycode: userFields.countrycode,
-                  locale: userFields.locale,
-                  rolename: userFields.rolename,
-                  username: userFields.username,
-                  deliverystreet: userFields.deliverystreet,
-                  shippingcity: userFields.deliverygeolevel4,
-                  shippingstate: userFields.deliverygeolevel2,
-                  deliveryzipcode: userFields.deliveryzipcode,
-                  taxid: userFields.taxid,
-                  whtaccountname: userFields.whtaccountname,
-                  whtownername: userFields.whtownername,
-                  billingstreet: userFields.billingstreet,
-                  billinggeolevel4: userFields.billinggeolevel4,
-                  billinggeolevel2: userFields.billinggeolevel2,
-                  billingzipcode: userFields.billingzipcode,
-                  iscreatedfrommobile: userFields.iscreatedfrommobile,
-                  staffdetails: userFields.staffdetails,
-                };
-                if (userinfo) {
-                  userinfo.staffdetails.forEach((staffInfo: any) => {
-                    let errObjd = {
-                      errObj: {
-                        emailErr: "",
-                        firstnameErr: "",
-                        lastnameErr: "",
-                        mobilenumberErr: "",
-                        isPhoneEdit: staffInfo.mobilenumber ? false : true,
-                      },
-                    };
-                    Object.assign(staffInfo, errObjd);
-                  });
-                }
-                this.setState({
-                  userData: userinfo,
-                  isEditPage: true,
-                  isStaff: userFields.storewithmultiuser,
-                  isRendered: true,
-                });
-                let cloneduserData = JSON.parse(JSON.stringify(userinfo));
-                this.setState({ cloneduserData: cloneduserData });
-  
-                //Dynamic Geo location dropdowns For Validate and edit User
-                setTimeout(() => {
-                  this.getDynamicOptionFields(userFields);
-                }, 0);
-              } else if(this.props.location?.page === "asaedit"){
-                let asauserinfo = {
-                  firstname: userFields.firstname,
-                  active:
-                    userFields.userstatus === "ACTIVE" ||
-                    userFields.userstatus === "PENDING"
-                      ? true
-                      : false,
-                    lastname: userFields.lastname,
-                    mobilenumber: userFields.phonenumber,
-                    email: userFields.emailid,
-                };
-              let asachannelPartnersInfo:any = [];
-              let partnerObj ={};
-              userFields.usermapping?.forEach((items: any, index:number) => {
-                partnerObj = {
-                    partnertype : items.partnertype,
-                    geolevel1: items.geolevel1,
-                    channelpartnerfullname : items.channelpartnerfullname,
-                    channelpartnerid: items.channelpartnerid,
-                    staffid: items.staffid,
-                    errObj : {
-                        typeErr: "",
-                        locationErr: "",
-                        nameErr: "",
-                    }
-                };
-                asachannelPartnersInfo.push(partnerObj);
-              });
-              let steps = this.state.stepsArray;
-              steps.splice(2,1,'User Mappings');
-
-              let clonedasaInfo = JSON.parse(JSON.stringify(asauserinfo));
-              let clonedasapartnersInfo = JSON.parse(JSON.stringify(asachannelPartnersInfo));
-        
-            this.setState((prevState:any)=>({
-              asaDatas: asauserinfo,
-              partnerDatas : asachannelPartnersInfo,
-              clonedasaInfo: clonedasaInfo,
-              clonedasapartnersInfo: clonedasapartnersInfo,
-              userroleType : "internal",
-              stepsArray : steps,
-              isEditPage: true,
-              isRendered: true,
-              userData : {
-                ...prevState.userData,
-                rolename: role[1].value,
-              }
-            }),()=>{
-              userFields.usermapping?.forEach((items: any, index:number) => {
-                this.setOptionsForChannelPartners(index)
-              });
-            });
-            //Dynamic Geo location dropdowns for edit asa User
-            setTimeout(() => {
-              this.getDynamicOptionFields(userFields);
-            }, 0);
-            }
-          } else {
-            //Dynamic Geo location dropdowns For Create asa User
-            this.getDynamicOptionFields("");
-          }
+            this.editUser();
           }
         );
       })
@@ -453,38 +317,158 @@ class CreateUser extends Component<any, any> {
         let message = error.message;
         Alert("warning", message);
       });
-      console.log('@@vidhu', this.state.partnerDatas)
   }
 
-  getHierarchyDatas() {
-    //To get all level datas
-    this.setState({ isLoader: true });
-    const { getHierarchyLevels } = apiURL;
-    let countrycode = {
-      countryCode: this.getStoreData.countryCode,
-    };
-    invokeGetAuthService(getHierarchyLevels, countrycode)
-      .then((response: any) => {
-        let geolevel1 =
-          Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
-        this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
-          this.getGeographicFields();
+  editUser = () => {
+      if (this.props.location?.page) {
+        let data: any = getLocalStorageData("userData");
+        let userDetails = JSON.parse(data);
+        this.setState({ username: userDetails.username }, () => {});
+        let userFields = this.props.location.state?.userFields;
+        if(this.props.location?.page === "edit"){
+          let ownerInfo = {
+            errObj: {
+              emailErr: "",
+              firstnameErr: "",
+              lastnameErr: "",
+              mobilenumberErr: "",
+            },
+            firstname: userFields.ownerfirstname,
+            active:
+              userFields.userstatus === "ACTIVE" ||
+              userFields.userstatus === "PENDING"
+                ? true
+                : false,
+            lastname: userFields.ownerlastname,
+            mobilenumber: userFields.ownerphonenumber,
+            email: userFields.owneremail,
+          };
+
+          userFields.staffdetails.forEach((items: any) => {
+            items.active =
+              userFields.userstatus === "PENDING"
+                ? true
+                : items.active;
+          });
+          let userDataList = this.state.userData;
+          userDataList.ownerRows[0] = ownerInfo;
+          let userinfo = {
+            ownerRows: userDataList.ownerRows,
+            countrycode: userFields.countrycode,
+            locale: userFields.locale,
+            rolename: userFields.rolename,
+            username: userFields.username,
+            deliverystreet: userFields.deliverystreet,
+            shippingcity: userFields.deliverygeolevel4,
+            shippingstate: userFields.deliverygeolevel2,
+            deliveryzipcode: userFields.deliveryzipcode,
+            taxid: userFields.taxid,
+            whtaccountname: userFields.whtaccountname,
+            whtownername: userFields.whtownername,
+            billingstreet: userFields.billingstreet,
+            billinggeolevel4: userFields.billinggeolevel4,
+            billinggeolevel2: userFields.billinggeolevel2,
+            billingzipcode: userFields.billingzipcode,
+            iscreatedfrommobile: userFields.iscreatedfrommobile,
+            staffdetails: userFields.staffdetails,
+          };
+          if (userinfo) {
+            userinfo.staffdetails.forEach((staffInfo: any) => {
+              let errObjd = {
+                errObj: {
+                  emailErr: "",
+                  firstnameErr: "",
+                  lastnameErr: "",
+                  mobilenumberErr: "",
+                  isPhoneEdit: staffInfo.mobilenumber ? false : true,
+                },
+              };
+              Object.assign(staffInfo, errObjd);
+            });
+          }
+          this.setState({
+            userData: userinfo,
+            isEditPage: true,
+            isStaff: userFields.storewithmultiuser,
+            isRendered: true,
+          });
+          let cloneduserData = JSON.parse(JSON.stringify(userinfo));
+          this.setState({ cloneduserData: cloneduserData });
+
+          //Dynamic Geo location dropdowns For Validate and edit User
+          setTimeout(() => {
+            this.getDynamicOptionFields(userFields);
+          }, 0);
+        } else if(this.props.location?.page === "asaedit"){
+          let asauserinfo = {
+            firstname: userFields.firstname,
+            active:
+              userFields.userstatus === "ACTIVE" ||
+              userFields.userstatus === "PENDING"
+                ? true
+                : false,
+              lastname: userFields.lastname,
+              mobilenumber: userFields.phonenumber,
+              email: userFields.emailid,
+          };
+        let asachannelPartnersInfo:any = [];
+        let partnerObj ={};
+        userFields.usermapping?.forEach((items: any, index:number) => {
+          partnerObj = {
+              partnertype : items.partnertype,
+              geolevel1: items.geolevel1,
+              channelpartnerfullname : items.channelpartnerfullname,
+              channelpartnerid: items.channelpartnerid,
+              staffid: items.staffid,
+              errObj : {
+                  typeErr: "",
+                  locationErr: "",
+                  nameErr: "",
+              }
+          };
+          asachannelPartnersInfo.push(partnerObj);
         });
-      })
-      .catch((error: any) => {
-        this.setState({ isLoader: false });
-        let message = error.message;
-        Alert("warning", message);
+        let steps = this.state.stepsArray;
+        steps.splice(2,1,'User Mappings');
+
+        let clonedasaInfo = JSON.parse(JSON.stringify(asauserinfo));
+        let clonedasapartnersInfo = JSON.parse(JSON.stringify(asachannelPartnersInfo));
+
+      this.setState((prevState:any)=>({
+        asaDatas: asauserinfo,
+        partnerDatas : asachannelPartnersInfo,
+        clonedasaInfo: clonedasaInfo,
+        clonedasapartnersInfo: clonedasapartnersInfo,
+        userroleType : "internal",
+        stepsArray : steps,
+        isEditPage: true,
+        isRendered: true,
+        userData : {
+          ...prevState.userData,
+          rolename: role[1].value,
+        }
+      }),()=>{
+        userFields.usermapping?.forEach((items: any, index:number) => {
+          this.setOptionsForChannelPartners(index)
+        });
       });
+      //Dynamic Geo location dropdowns for edit asa User
+        this.getDynamicOptionFields(userFields);
+      }
+    } else {
+      //Dynamic Geo location dropdowns For Create asa User
+        this.getDynamicOptionFields("");
+    }
   }
 
   getDynamicOptionFields = async (data: any) => {
+    let level1 = this.props.geoLevel1List;
     let level1Datas: any = [];
-    this.state.geolevel1List?.forEach((item: any) => {
+    level1?.forEach((item: any) => {
       let level1Info = { text: item.name, code: item.code, value: item.name };
       level1Datas.push(level1Info);
     });
-    let geolevel1List = this.state.geolevel1List;
+    let geolevel1List = this.props.geoLevel1List;
     if (data) {
       let isSameGeoAddress = false;
       if(this.state.userroleType === "external") {
@@ -794,7 +778,7 @@ class CreateUser extends Component<any, any> {
   };
 
   getOptionLists = async (cron: any, type: any, value: any, index: any) => {
-    let geolevel1List = this.state.geolevel1List;
+    let geolevel1List = this.props.geoLevel1List;
     if (geolevel1List.length) {
       geolevel1List.forEach((level1: any) => {
         level1.text = level1.name;
@@ -1133,7 +1117,7 @@ class CreateUser extends Component<any, any> {
         if (!this.state.isEditPage && !this.state.accInfo && !this.state.withHoldingSelected) {
           let level1Options: any = [];
           let setFormArray: any = [];
-          this.state.geolevel1List.forEach((item: any) => {
+          this.props.geoLevel1List.forEach((item: any) => {
             let level1Info = {
               text: item.name,
               code: item.code,
@@ -1419,9 +1403,7 @@ class CreateUser extends Component<any, any> {
         mappings['isactive'] = true
         userMappings.push(mappings);
       });
-
-      console.log('mapping',userMappings);
-      data = {
+     data = {
         countrycode : this.getStoreData.countryCode,
         firstname : asaPersonalData.firstname,
         lastname: asaPersonalData.lastname,
@@ -1468,8 +1450,6 @@ class CreateUser extends Component<any, any> {
         usermapping : userMappings
       }
     }
-    console.log('asasubmit', data);
-
   const url = this.state.isEditPage ? editasauser : asaCreation;
   const userDetails = this.state.isEditPage
   ? {
@@ -1658,7 +1638,6 @@ class CreateUser extends Component<any, any> {
         this.setState({ isRendered: true });
       });
     }
-    formValid=true;
     return formValid;
   }
 
@@ -1719,7 +1698,6 @@ class CreateUser extends Component<any, any> {
         this.setState({ partnerDatas: datas});
       });
   }
-    formValid=true;
     return formValid;
   }
 
@@ -1871,7 +1849,6 @@ class CreateUser extends Component<any, any> {
       }
      
     }
-    console.log('asa@@@', this.state.asaDatas);
     if(this.state.userroleType === "external"){
       this.checkUnsavedData();
     } else {
@@ -1889,7 +1866,6 @@ class CreateUser extends Component<any, any> {
   };
 
   handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
-    
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
 
@@ -2351,7 +2327,6 @@ class CreateUser extends Component<any, any> {
         this.isFilledAllFields = false;
       }
     }
-    console.log('isFilledAllFields', this.isFilledAllFields)
     const {setPromptMode} =this.context;
     setPromptMode(this.isFilledAllFields);
    
@@ -2490,7 +2465,6 @@ setOptionsForChannelPartners = (idx:number) => {
       channelPartnersOptions.push(partners)
     } 
     this.setState({ channelPartnersOptions: channelPartnersOptions });
-    console.log('vvv', this.state.channelPartnersOptions)
   }
 } 
 
@@ -2544,7 +2518,6 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
 };
 
   render() {
-    console.log("asaDatas", this.state.asaDatas)
     let countryCodeLower = _.toLower(this.loggedUserInfo?.countrycode);
     const {
       currentStep,
@@ -2563,9 +2536,6 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
       asaDatas,
       userroleType
     } = this.state;
-
-    console.log('partnerDatas', this.state.partnerDatas)
-
     let currentPage = this.props.location?.page;
     const fields =
       currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
@@ -2656,7 +2626,8 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
 
     return (
       <AUX>
-        {isLoader && <Loader />}
+        {(this.state.isLoader || this.props.isLoader) && <Loader />}
+        {this.props.errorMessage && Alert("warning", this.props.errorMessage)}
         { this.isFilledAllFields &&
         <RouterPrompt
         when={this.state.shouldBlockNavigation}
@@ -3681,5 +3652,19 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
     );
   }
 }
+const mapStateToProps = ({ common: { isLoader, geoLevel1List, errorMessage } }: any) => {
+  return {
+    isLoader,
+    geoLevel1List,
+    errorMessage
+  };
+};
 
-export default CreateUser;
+const mapDispatchToProps = {
+  getGeographicLevel1Options: getGeographicLevel1Options,
+
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateUser);
+
+// export default CreateUser;
