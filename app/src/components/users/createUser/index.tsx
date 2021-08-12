@@ -213,14 +213,18 @@ class CreateUser extends Component<any, any> {
 
   componentDidMount() {
     this.props.getGeographicLevel1Options();
-    console.log('loading@@', this.props.loading);
-    console.log('geolevels@@', this.props.geoLevel1List);
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
     this.getThirdPartyList();
     this.getAllPartnersList();
     this.getGeographicFields();
+  }
+
+  componentDidUpdate(prevProps:any) {
+    if(prevProps.errorMessage !== this.props.errorMessage) {
+      Alert("warning", this.props.errorMessage)
+    }
   }
 
   getChannelPartnersList = () => {
@@ -2627,7 +2631,6 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
     return (
       <AUX>
         {(this.state.isLoader || this.props.isLoader) && <Loader />}
-        {this.props.errorMessage && Alert("warning", this.props.errorMessage)}
         { this.isFilledAllFields &&
         <RouterPrompt
         when={this.state.shouldBlockNavigation}
