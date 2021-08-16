@@ -115,7 +115,7 @@ const InternalUser = (Props: any) => {
       internalUserType,
     };
     Props.onRef && Props.onRef(passState);
-  }, [isFiltered, partnerType, chanagedStatusValue, dateErrMsg]);
+  }, [isFiltered, partnerType, chanagedStatusValue, dateErrMsg]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchInternalUserData = (defaultPageNo?: number) => {
     setIsLoader(true);
@@ -127,7 +127,6 @@ const InternalUser = (Props: any) => {
     const { internalUserAPI } = apiURL;
     const { state, setDefaultPage } = paginationRef;
     const pageNo = !defaultPageNo ? 1 : state?.pageNo;
-    console.log("defaultPageNo", defaultPageNo);
     // set default pagination number 1 and  call the method
     if (!defaultPageNo) {
       setDefaultPage();
@@ -141,7 +140,7 @@ const InternalUser = (Props: any) => {
     }: any = selectedFilters;
 
     let data = {
-      countrycode: userData.countrycode,
+      countrycode: userData?.countrycode,
       usertype: "RSM",
       rowsperpage: state?.rowsPerPage,
       page: pageNo,
@@ -213,7 +212,7 @@ const InternalUser = (Props: any) => {
   };
   useEffect(() => {
     getHierarchyDatas();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getCurrentUserData = (data: any) => {
     setInternalUserStatusPopup(true);
@@ -291,7 +290,7 @@ const InternalUser = (Props: any) => {
     if (isFiltered && (searchText.length >= 3 || searchText.length === 0)) {
       fetchInternalUserData();
     }
-  }, [searchText]);
+  }, [searchText]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleFilter = (e: any) => {
     setDropdownOpenFilter(!dropdownOpenFilter);
@@ -335,9 +334,7 @@ const InternalUser = (Props: any) => {
       }));
     }
   };
-  useEffect(() => {
-    console.log("selectedFilters", selectedFilters);
-  }, [selectedFilters]);
+  useEffect(() => {}, [selectedFilters]);
 
   const handlePartnerChange = (name: string) => {
     setPartnerType({
@@ -737,7 +734,7 @@ const InternalUser = (Props: any) => {
             {internalUsers.length > 0 ? (
               internalUsers.map((list: any, i: number) => {
                 return (
-                  <tr>
+                  <tr key={i}>
                     <td>{list.username}</td>
                     <td>{list.phonenumber} </td>
                     <td>{list.firstname + " " + list.lastname} </td>
@@ -774,6 +771,7 @@ const InternalUser = (Props: any) => {
                     </td>
                     <td className="text-center">
                       <img
+                        data-testid="region-mapping"
                         className="region-mapping"
                         src={list?.geolevel1 === null ? Cross : Tick}
                         alt="Region mapping status"
