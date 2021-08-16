@@ -1,7 +1,9 @@
 import {
     GET_GEOLOCATION_LEVEL1_OPTIONS_SUCCESS,
     GET_GEOLOCATION_LEVEL1_OPTIONS_ERROR,
-    LOADING_REQUEST
+    LOADING_REQUEST,
+    GET_GEOLOCATION_FIELDS_SUCCESS,
+    GET_GEOLOCATION_FIELDS_ERROR
 } from '../actionTypes/commonTypes';
 
 const INITIAL_STATE: any = {
@@ -11,7 +13,9 @@ const INITIAL_STATE: any = {
     currencyName:null,
     isLoader: false,
     geoLevel1List: [],
-    errorMessage: ''
+    errorMessage: '',
+    geographicFields :[],
+    levelsName : []
 };
 
 function commonReducer(state = {INITIAL_STATE}, action: any): any {
@@ -30,6 +34,28 @@ function commonReducer(state = {INITIAL_STATE}, action: any): any {
             }
         }
         case GET_GEOLOCATION_LEVEL1_OPTIONS_ERROR : {
+            return {
+                ...state,
+                errorMessage : action.errorMsg
+            }
+        }
+        case GET_GEOLOCATION_FIELDS_SUCCESS : {
+            let locationData = action.levels.body[0].locationhierarchy;
+			let levels: any = [];
+            let levelsNames: any = [];
+			locationData.forEach((item: any) => {
+              levelsNames.push(item.locationhiername.toLowerCase());
+			  let locationhierlevel = item.locationhierlevel;
+			  let geolevels = "geolevel" + locationhierlevel;
+			  levels.push(geolevels);
+			});
+            return {
+                ...state,
+                geographicFields : levels,
+                levelsName : levelsNames
+            }
+        }
+        case GET_GEOLOCATION_FIELDS_ERROR : {
             return {
                 ...state,
                 errorMessage : action.errorMsg
