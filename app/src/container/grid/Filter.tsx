@@ -58,6 +58,34 @@ const Filter: React.FC<Props> = (props: Props) => {
           tolltip={toolTipText}
         />
         <div className="filter-right-side">
+          <div className="filter-partnertype">
+            <label
+              className="font-weight-bold pt-2"
+              style={{ color: "#363636", fontSize: "12px" }}
+            >
+              {internalUserTypeFilterHeading ? "User Type" : "Partner Type"}
+            </label>
+            <div className="partnertype-list">
+              {partnerTypeList &&
+                partnerTypeList.map((item: any, index: number) => {
+                  return (
+                    <span className="mr-2" key={index}>
+                      <Button
+                        color={
+                          selectedPartnerType.type === item
+                            ? "btn activeColor rounded-pill"
+                            : "btn rounded-pill boxColor"
+                        }
+                        size="md"
+                        onClick={(e: any) => handlePartnerChange(item)}
+                      >
+                        {item}
+                      </Button>
+                    </span>
+                  );
+                })}
+            </div>
+          </div>
           {salesType && salesType.length > 0 && (
             <div className="filter-partnertype" style={{ marginLeft: "10px" }}>
               <label
@@ -92,34 +120,6 @@ const Filter: React.FC<Props> = (props: Props) => {
               </div>
             </div>
           )}
-          <div className="filter-partnertype">
-            <label
-              className="font-weight-bold pt-2"
-              style={{ color: "#363636", fontSize: "12px" }}
-            >
-              {internalUserTypeFilterHeading ? "User Type" : "Partner Type"}
-            </label>
-            <div className="partnertype-list">
-              {partnerTypeList &&
-                partnerTypeList.map((item: any, index: number) => {
-                  return (
-                    <span className="mr-2" key={index}>
-                      <Button
-                        color={
-                          selectedPartnerType.type === item
-                            ? "btn activeColor rounded-pill"
-                            : "btn rounded-pill boxColor"
-                        }
-                        size="md"
-                        onClick={(e: any) => handlePartnerChange(item)}
-                      >
-                        {item}
-                      </Button>
-                    </span>
-                  );
-                })}
-            </div>
-          </div>
           <div className="filterRow">
             <Dropdown isOpen={dropdownOpenFilter} toggle={toggleFilter}>
               <DropdownToggle>

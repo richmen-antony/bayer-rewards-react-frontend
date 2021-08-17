@@ -36,6 +36,57 @@
     }
     
 
+    .label-table {
+        table {
+          table-layout: fixed;
+          border-collapse: collapse;
+          border-spacing: 0;
+          width: 30%;
+          background: #ffffff;
+          border-radius: 10px !important;
+          border-style: hidden;
+          thead {
+            tr {
+              th {
+                color: #ffffff;
+                border: 0;
+                padding:10px;
+                vertical-align: middle;
+                font-size: 16px;
+                font-weight: 500;
+                // font-family: "Open Sans", sans-serif;
+                font-family: "appRegular" !important;
+                position: sticky;
+                top: 0;
+                background-color: #1f445a;
+                z-index: 1;
+                cursor: pointer;
+              }
+            }
+          }
+          tbody {
+            tr {
+                padding: auto;
+                .title{
+                    color: #4E4E4E;
+                    opacity: 1;
+                    padding-right: 7rem;
+                   
+                }
+                .value{
+                    color: #242424;
+                    font-weight: 600;
+                }
+              td {
+                font-size: 14px;
+                font-family: "appRegular" !important;
+                padding: 0.5rem;
+              }
+            }
+          }
+        }
+      }
+
 }
 
 
@@ -46,6 +97,49 @@
         .card-main {
             height: 75vh;
         }
+        .label-table {
+            table {
+              thead {
+                tr {
+                  th {
+                    padding:10px;
+                    font-size: 14px;
+                    font-weight: 600;
+                  }
+                }
+              }
+              tbody {
+                tr {
+                  td {
+                    font-size: 12px;
+                }
+              }
+            }
+          }
     }
     
+}
+
+@media only screen and (min-width: 1400px) and (max-width: 1920px) {
+    .label-table {
+        table {
+          thead {
+            tr {
+              th {
+                padding:10px;
+                font-size: 16px;
+                font-weight: 600;
+              }
+            }
+          }
+          tbody {
+            tr {
+              td {
+                font-size: 13px;            
+            }
+          }
+        }
+      }
+    }
+}
 }

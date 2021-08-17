@@ -102,7 +102,7 @@ type States = {
 	partnerType: PartnerTypes;
 };
 
-class ScanLogsTable extends Component<Props, States> {
+class SellFarmer extends Component<Props, States> {
 	tableCellIndex: any = 0;
 	timeOut: any;
 	paginationRef:any;
@@ -151,7 +151,7 @@ class ScanLogsTable extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			partnerTypeList: ["Retailers", "Distributors"],
+			partnerTypeList: ["Retailers"],
 			salesType: ["WALKIN_SALES", "ADVISOR_SALES"],
 			partnerType: {
 				type: "Retailers",
@@ -1154,4 +1154,4 @@ class ScanLogsTable extends Component<Props, States> {
 	}
 }
 
-export default ScanLogsTable;
+export default SellFarmer;
