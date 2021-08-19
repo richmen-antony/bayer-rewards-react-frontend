@@ -59,7 +59,7 @@
     border-spacing: 0;
     width: 100%;
     background: #ffffff;
-    border: 1px solid #a0a0a047 ;
+    border: 1px solid #a0a0a047;
     border-radius: 10px !important;
     border-style: hidden;
     color: #212529;
@@ -105,7 +105,7 @@
               margin-right: 5px;
             }
           }
-      
+
           .status.active {
             color: #1ccead;
             background-color: #e3f8f4;
@@ -743,7 +743,7 @@
       overflow-y: scroll;
     }
   }
- 
+
   .userlist-table {
     table {
       height: 90vh;
@@ -770,7 +770,6 @@
 
 th.tableLastHeaderStyle,
 td.tableLastHeaderStyle {
-  border: none !important;
   text-align: Left;
   vertical-align: middle !important;
   width: 50px !important;
