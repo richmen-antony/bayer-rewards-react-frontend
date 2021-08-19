@@ -838,10 +838,14 @@ label {
   .card-main {
     height: 82vh;
   }
+  .btn{
+    font-size: 11px;
+  }
 }
 
 @media only screen and (min-width: 1400px) and (max-width: 1920px) {
   .card-main {
     height: 84vh;
   }
+  
 }

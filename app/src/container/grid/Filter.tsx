@@ -20,6 +20,10 @@ interface Props {
   handlePartnerChange?: any;
   toolTipText: string;
   internalUserTypeFilterHeading?: boolean;
+  condType?:string;
+  condTypeList?:any[]
+  buttonChange?:any;
+  condSelectedButton?:string
 }
 
 /**
@@ -44,6 +48,10 @@ const Filter: React.FC<Props> = (props: Props) => {
     handlePartnerChange,
     toolTipText,
     internalUserTypeFilterHeading = false,
+    condType,
+    condTypeList,
+    buttonChange,
+    condSelectedButton
   } = props;
   return (
     <div className="grid-filter">
@@ -86,31 +94,29 @@ const Filter: React.FC<Props> = (props: Props) => {
                 })}
             </div>
           </div>
-          {salesType && salesType.length > 0 && (
+          {condTypeList && condTypeList.length > 0 && (
             <div className="filter-partnertype" style={{ marginLeft: "10px" }}>
               <label
                 className="font-weight-bold pt-2"
                 style={{ color: "#363636", fontSize: "12px" }}
               >
-                Sales Type
+                {condType}
               </label>
               <div className="partnertype-list">
-                {salesType &&
-                  salesType.map((item: any, index: number) => {
+                {condTypeList &&
+                  condTypeList.map((item: any, index: number) => {
                     return (
                       <span className="mr-2" key={index}>
                         <Button
                           color={
-                            selectedFilters.salesType === item
+                            condSelectedButton === item
                               ? "btn activeColor rounded-pill"
                               : "btn rounded-pill boxColor"
                           }
                           size="md"
-                          onClick={(e: any) =>
-                            handleFilterChange(e, "salesType", item)
-                          }
+                          onClick={()=>buttonChange(condType==="Scan Type"? "selectedScanType" : "selectedSalesType", item)}
                         >
-                          {item === "WALKIN_SALES"
+                          {condType==="Scan Type" ? item :item === "WALKIN_SALES"
                             ? "Walk-In Sales"
                             : "Advisor Sales"}
                         </Button>

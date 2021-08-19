@@ -717,6 +717,20 @@ cus-btn-scanlog-filter[disabled] {
     }
   }
 }
+.region-add-dropdown{
+  display: flex;
+  align-items: center;
+  .list{
+    width: 100%;
+    
+  }
+  .list.region{
+    padding-right: 5px;
+  }
+}
+
+
+// media queries
 
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {
