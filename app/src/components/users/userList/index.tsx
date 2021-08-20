@@ -437,8 +437,8 @@ class UserList extends Component<Props, States> {
                         aria-label="ant example"
                       >
                         <AntTab label="Channel Partners" value={0} />
-                        <AntTab label="Third Party Users" value={1} />
-                        <AntTab label="Internal Users" value={2} />
+                        {/* <AntTab label="Third Party Users" value={1} />
+                        <AntTab label="Internal Users" value={2} /> */}
                       </AntTabs>
                     </div>
                   </div>
@@ -497,7 +497,7 @@ class UserList extends Component<Props, States> {
                     }}
                   />
                 </TabPanel>
-                <TabPanel value={this.state.value} index={1} classes={classes}>
+                {/* <TabPanel value={this.state.value} index={1} classes={classes}>
                   <ThirdPartyUsers
                     onRef={(node: any) => {
                       this.thirdPartyUserRef = node;
@@ -512,7 +512,7 @@ class UserList extends Component<Props, States> {
                       }}
                     />
                   )}
-                </TabPanel>
+                </TabPanel> */}
               </>
             ) : (
               <ChangeLogs backToUsersList={this.backToUsersList} />

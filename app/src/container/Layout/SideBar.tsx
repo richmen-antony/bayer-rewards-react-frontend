@@ -225,17 +225,17 @@ class Sidebar extends Component<Props, States> {
                     {/* <li className="d-flex">
                       <span
                         className={
-                          window.location.pathname.indexOf("pointLogs") > -1
+                          window.location.pathname.indexOf("consolidatedScans") > -1
                             ? "waves-effect active"
                             : "waves-effect"
                         }
                       ></span>
                       <Link
-                        to="/pointLogs"
-                        onClick={() => this.setActiveTab("pointLogs")}
+                        to="/consolidatedScans"
+                        onClick={() => this.setActiveTab("consolidatedScans")}
                       >
-                        <img src={pointLogsIcon} alt="Points" width="16" />{" "}
-                        <span> Point logs </span>
+                        <img src={scanLogsIcon} alt="Consolidated Scans" width="16" />{" "}
+                        <span> Consolidated Sales </span>
                       </Link>
                     </li>{" "} */}
                   </>

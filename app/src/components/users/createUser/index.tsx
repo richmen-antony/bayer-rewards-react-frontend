@@ -2745,6 +2745,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                             }
                             value={userData.rolename}
                             isPlaceholder
+                            isDisabled
                           />
                         </div>
                         <div
@@ -3475,7 +3476,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                         type="text"
                         className="form-control"
                         name="whtaccountname"
-                        placeHolder="Account Name"
+                        placeHolder="Store Name"
                         value={userData.whtaccountname}
                         onChange={(e: any) =>
                           this.handleChange("", e, "", "otherSteps", "")

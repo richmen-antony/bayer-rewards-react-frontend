@@ -557,7 +557,7 @@ class ChannelPartners extends Component<Props, States> {
 				onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
 				key="whtaccountname"
 			>
-				{"ACCOUNT NAME"}
+				{"STORE NAME"}
 				{this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
 			</th>
 		);

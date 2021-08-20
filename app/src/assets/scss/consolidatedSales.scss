@@ -1,0 +1,425 @@
+@import "./variables.scss";
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
+
+.card {
+  border-radius: 15px;
+}
+.filterSide {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.searchInputRow.advisor-sales {
+  margin-right: 40px;
+
+  .input-field {
+    padding: 10px;
+    padding-left: 35px;
+  }
+  i {
+    position: absolute;
+  }
+  .icon {
+    padding: 13px;
+    color: #8e8e8e;
+  }
+
+  input {
+    width: 250px;
+    height: 40px;
+    background: #ffffff;
+    border: 1px solid #7c7c7c4a;
+    border-radius: 5px;
+    outline: none;
+  }
+}
+
+.filterRow {
+  margin-right: 40px;
+  .dropdown .btn-secondary {
+    color: #fff;
+    background-color: #ffffff;
+    border-color: #dce4ea;
+    padding: 5px !important;
+  }
+  .dropdown .btn-secondary.focus,
+  .btn-secondary:focus {
+    color: #fff;
+    background-color: #f3f7fa !important;
+    border-color: #f3f7fa !important;
+    box-shadow: none !important;
+  }
+  .dropdown-menu {
+    //width: 365px;
+    top: -30px !important;
+    left: 5px !important;
+  }
+
+  .form-group .filterDropdown {
+    margin-bottom: 0;
+  }
+}
+.chip {
+  display: inline-block;
+  padding: 0 25px;
+  height: 35px;
+  font-size: 16px;
+  line-height: 35px;
+  border-radius: 25px;
+  background-color: blue;
+  min-width: 100px;
+}
+
+.filter-text {
+  font-size: 11px;
+}
+
+.filter-item-mar {
+  margin-top: 5px;
+}
+
+.filterFooter {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.activeColor {
+  background-color: $appSecondary;
+  color: $white;
+}
+.activeColor:hover {
+  background-color: $secondary;
+  color: $white;
+}
+.boxColor {
+  border-color: lightgrey;
+}
+.applybtn {
+  background-color: $submit;
+}
+
+.downloadBtn {
+  width: 50px;
+  background-color: $primary;
+}
+
+.validBoxShadow {
+  border: 1px solid #cfcfcf;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 4px 0 #bcf1b2;
+}
+.inValidBoxShadow {
+  border: 1px solid #cfcfcf;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 3px 4px 0 #f6b4b4;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0px !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $appSecondary;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $appSecondary;
+}
+
+.paginationNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.paginationNumber a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.paginationNumber a.active {
+  background-color: $appSecondary;
+  color: $white;
+}
+.scanTitle {
+  display: flex;
+  align-items: center;
+  font-size: "20px";
+}
+.roleTitle {
+  margin-left: 5%;
+}
+
+.action-filter {
+  width: 10%;
+}
+
+.hiddenRow {
+  padding: 0 !important;
+}
+
+.accordion-content {
+  display: flex;
+  .accordion-content-col {
+    display: flex;
+    margin-right: 50px;
+    label {
+      color: #707070;
+      padding-right: 10px;
+      font-size: 14px;
+      margin: 0;
+    }
+    p {
+      color: #242424;
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+}
+
+.consolidatedSales-table {
+  table {
+    // table-layout: fixed;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #a0a0a047;
+    border-radius: 10px !important;
+    border-style: hidden;
+    thead {
+      tr {
+        background: #1f445a;
+        box-shadow: 0px 3px 6px #00000029;
+        border: 0.2px solid #cccccc;
+        th {
+          color: #ffffff;
+          border: 0;
+          padding: 15px 10px;
+          vertical-align: middle;
+          font-size: 14px;
+          font-weight: 500;
+          // font-family: "Open Sans", sans-serif;
+          font-family: "appRegular" !important;
+          position: sticky;
+          top: 0;
+          background-color: #1f445a;
+          z-index: 1;
+          cursor: pointer;
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          font-size: 14px;
+          // font-family: "Open Sans";
+          font-family: "appRegular" !important;
+          .status {
+            display: flex;
+            align-items: center;
+            border-radius: 30px;
+            padding: 10px;
+            i {
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.advisor-filter {
+  background-color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border-radius: 10px;
+  .filter-left-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-right-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.cus-btn-scanlog-filter {
+  color: #ffffff;
+  background-color: #7eb343;
+  width: 125px;
+  height: 35px;
+  border-radius: 20px;
+  border: 0;
+  box-shadow: 0px 3px 6px #c7c7c729;
+
+  span {
+    position: relative;
+    left: 42px;
+    margin-left: -45px;
+  }
+  .arrow-i {
+    position: relative;
+    left: 30px;
+    width: 10%;
+  }
+  .layout {
+    width: 40%;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+}
+.cus-btn-scanlog-filter.reset {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  color: #10384f;
+}
+.cus-btn-scanlog-filter:disabled,
+cus-btn-scanlog-filter[disabled] {
+  background-color: #96a8ae;
+}
+
+// .consolidatedSales-container {
+//   height: 65vh;
+//   overflow: auto;
+// }
+
+
+.filter-partnertype {
+  display: flex;
+  align-items: center;
+  .partnertype-list {
+    margin-left: 12px;
+    button {
+      font-size: 12px;
+    }
+  }
+}
+
+.filterSection {
+  max-width : 100% !important;
+}
+
+@media only screen and (max-width: 1400px) {
+  .dropdown-menu {
+    font-size: 11px;
+  }
+  .consolidatedSales-table {
+    table {
+      thead {
+        tr {
+          th {
+            padding: 15px 5px;
+            font-size: 11px;
+            font-weight: 600;
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-size: 12px;
+            // font-family: "Open Sans";
+            font-family: "appRegular" !important;
+            vertical-align: middle;
+            text-align: left;
+            padding: 0.5rem;
+            .status {
+              border-radius: 20px;
+              padding: 5px;
+              i,
+              img {
+                margin-right: 5px;
+              }
+            }
+            .max-image {
+              margin-left: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+//   .scanlog-container {
+//     height: 58vh;
+//   }
+}
+
+@media only screen and (min-width: 1400px) and (max-width: 1920px) {
+  /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
+  .dropdown-menu {
+    font-size: 11px;
+  }
+  .ordered-table {
+    table {
+      thead {
+        tr {
+          th {
+            font-size: 11px;
+            // font-family: "Open Sans";
+            font-family: "appRegular" !important;
+            padding: 12px;
+          }
+        }
+      }
+    }
+  }
+  .consolidatedSales-table {
+    table {
+      thead {
+        tr {
+          th {
+            padding: 15px 5px;
+            font-size: 12px;
+            font-weight: 600;
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            font-size: 13px;
+            // font-family: "Open Sans";
+            font-family: "appRegular" !important;
+            vertical-align: middle;
+            text-align: left;
+            padding: 0.5rem;
+            .status {
+              border-radius: 20px;
+              padding: 5px;
+              i {
+                margin-right: 5px;
+              }
+            }
+            .max-image {
+              margin-left: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .consolidatedSales-container {
+    height: 65vh;
+    overflow: auto;
+  }
+}
+
+@media only screen and (min-width: 2560px) and (max-width: 2880px) {
+  .consolidatedSales-container {
+    height: 80vh;
+  }
+}
