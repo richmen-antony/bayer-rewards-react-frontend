@@ -12,7 +12,6 @@ import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
 import CalenderIcon from "../../assets/icons/calendar.svg";
-import ActiveIcon from "../../assets/images/check.svg";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import { Button } from "reactstrap";
 import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
@@ -27,6 +26,7 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
 import Filter from "../../container/grid/Filter";
+import { Alert } from "../../utility/widgets/toaster";
 type PartnerTypes = {
 	type: String;
 };
@@ -97,6 +97,8 @@ type States = {
 	isAsc: Boolean;
 	partnerType: PartnerTypes;
 };
+
+let levelsName: any = [];
 /**
  * SendGoods Class Component
  * @param props
@@ -132,7 +134,7 @@ class SendGoods extends Component<Props, States> {
 				farmer: "ALL",
 				retailer: "ALL",
 				partnerType: "Retailers",
-        scannedPeriod:"Today"
+				scannedPeriod: "Today",
 			},
 			dateErrMsg: "",
 			searchText: "",
@@ -151,7 +153,7 @@ class SendGoods extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			partnerTypeList: [ "Distributors"],
+			partnerTypeList: ["Distributors"],
 			partnerType: {
 				type: "Distributors",
 			},
@@ -160,10 +162,11 @@ class SendGoods extends Component<Props, States> {
 				{ label: "This week (Sun - Sat)", value: "" },
 				{ label: "Last 30 days", value: "" },
 				{ label: "This year (Jan - Dec)", value: "" },
-				{ label: "Prev. year (Jan - Dec)", value: "" }
+				{ label: "Prev. year (Jan - Dec)", value: "" },
+				{ label: "Custom", value: "" },
 			],
-      scanTypeList:["SG - STO","SG - D2R"],
-      selectedScanType:"SG - STO"
+			scanTypeList: ["SG - ST", "SG - D2R"],
+			selectedScanType: "SG - ST",
 		};
 		this.timeOut = 0;
 	}
@@ -177,9 +180,18 @@ class SendGoods extends Component<Props, States> {
 			() => {
 				this.getScanLogs();
 				this.getRetailerList();
-				this.getLocationHierachyOrder();
+				//API to get country and language settings
+				this.getCountryList();
+				this.getHierarchyDatas();
 			}
 		);
+	}
+	getCountryList() {
+		let res = [
+			{ value: "India", text: "India" },
+			{ value: "Malawi", text: "Malawi" },
+		];
+		this.setState({ countryList: res });
 	}
 	/**
 	 * Retailer and Farmer dropdown list value
@@ -274,31 +286,6 @@ class SendGoods extends Component<Props, States> {
 			});
 	};
 
-	/**
-	 * To get location hierachy data order list
-	 */
-	getLocationHierachyOrder = () => {
-		const { getTemplateData } = apiURL;
-		let data = {
-			countryCode: this.state.loggedUserInfo?.countrycode,
-		};
-		invokeGetAuthService(getTemplateData, data).then((response: any) => {
-			let locationData = response.body[0].locationhierarchy;
-			let levels: any = [];
-			locationData?.length > 0 &&
-				locationData.forEach((item: any, index: number) => {
-					if (index > 0) {
-						let locationhierlevel = item.locationhierlevel;
-						let geolevels = "geolevel" + locationhierlevel;
-						let obj = { name: item.locationhiername, geolevels };
-						levels.push(obj);
-					}
-				});
-			this.setState({
-				locationData: levels,
-			});
-		});
-	};
 	handleClosePopup = () => {
 		this.setState({ showPopup: false });
 	};
@@ -404,7 +391,7 @@ class SendGoods extends Component<Props, States> {
 					farmer: "ALL",
 					retailer: "ALL",
 					partnerType: "Retailers",
-          scannedPeriod:"Today"
+					scannedPeriod: "Today",
 				},
 				isFiltered: conditionIsFilter,
 				dateErrMsg: "",
@@ -576,19 +563,152 @@ class SendGoods extends Component<Props, States> {
 			}
 		);
 	};
-  handleButtonChange =(name:string,value:string)=>{
-    this.setState({
-      [name]:value
-    })
+	handleButtonChange = (name: string, value: string) => {
+		this.setState({
+			[name]: value,
+		});
+	};
+	getGeographicFields() {
+		this.setState({ isLoader: true });
+		const { getTemplateData } = apiURL;
+		let data = {
+			countryCode: this.state.loggedUserInfo?.countrycode,
+		};
+		invokeGetAuthService(getTemplateData, data)
+			.then((response: any) => {
+				let locationData = response.body[0].locationhierarchy;
+				let levels: any = [];
+				locationData.forEach((item: any) => {
+					levelsName.push(item.locationhiername.toLowerCase());
+					let locationhierlevel = item.locationhierlevel;
+					let geolevels = "geolevel" + locationhierlevel;
+					levels.push(geolevels);
+				});
+				let levelsData: any = [];
+				locationData?.length > 0 &&
+					locationData.forEach((item: any, index: number) => {
+						if (index > 0) {
+							let locationhierlevel = item.locationhierlevel;
+							let geolevels = "geolevel" + locationhierlevel;
+							let obj = { name: item.locationhiername, geolevels };
+							levelsData.push(obj);
+						}
+					});
+				this.setState(
+					{
+						isLoader: false,
+						geographicFields: levels,
+						locationData: levelsData,
+					},
+					() => {
+						this.getDynamicOptionFields();
+					}
+				);
+			})
+			.catch((error: any) => {
+				this.setState({ isLoader: false });
+				let message = error.message;
+				Alert("warning", message);
+			});
+	}
+	getHierarchyDatas() {
+		//To get all level datas
+		this.setState({ isLoader: true });
+		const { getHierarchyLevels } = apiURL;
+		let countrycode = {
+			countryCode: this.state.loggedUserInfo?.countrycode,
+		};
+		invokeGetAuthService(getHierarchyLevels, countrycode)
+			.then((response: any) => {
+				let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
+				this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
+					this.getGeographicFields();
+				});
+			})
+			.catch((error: any) => {
+				this.setState({ isLoader: false });
+				let message = error.message;
+				Alert("warning", message);
+			});
+	}
+	getDynamicOptionFields = (reset?: string) => {
+		let level1List = this.state.geolevel1List;
+		if (!reset) {
+			let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
+			level1List.unshift(allItem);
+		}
+		this.setState({ geolevel1List: level1List });
+		let level1Options: any = [];
+		this.state.geolevel1List?.forEach((item: any) => {
+			let level1Info = { text: item.name, code: item.code, value: item.name };
+			level1Options.push(level1Info);
+		});
+		let setFormArray: any = [];
+		this.state.geographicFields?.forEach((list: any, i: number) => {
+			setFormArray.push({
+				name: list,
+				placeHolder: true,
+				value: list === "geolevel0" ? this.state.loggedUserInfo?.country : "",
+				options:
+					list === "geolevel0"
+						? this.state.countryList
+						: list === "geolevel1"
+						? level1Options
+						: [{ text: "ALL", name: "ALL" }],
+				error: "",
+			});
+		});
+		this.setState({ dynamicFields: setFormArray });
+	};
 
-  }
+	getOptionLists = (cron: any, type: any, value: any, index: any) => {
+		let geolevel1List = this.state.geolevel1List;
+		this.setState({ level1Options: geolevel1List });
+		let dynamicFieldVal = this.state.dynamicFields;
+		if (type === "geolevel1") {
+			let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
+			let level2Options: any = [];
+			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+				let level1Info = { text: item.name, value: item.name, code: item.code };
+				level2Options.push(level1Info);
+			});
+			let geolevel1Obj = {
+				text: "ALL",
+				value: "ALL",
+				code: "ALL",
+			};
+			let geolevel3Obj = [{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
+			level2Options.unshift(geolevel1Obj);
+			dynamicFieldVal[index + 1].options = level2Options;
+			this.setState({ dynamicFields: dynamicFieldVal });
+			dynamicFieldVal[index + 2].options = geolevel3Obj;
+			dynamicFieldVal[index].value = value;
+			dynamicFieldVal[index + 1].value = "ALL";
+			dynamicFieldVal[index + 2].value = "ALL";
+			this.setState((prevState: any) => ({
+				dynamicFields: dynamicFieldVal,
+				selectedFilters: {
+					...prevState.selectedFilters,
+					geolevel2: "ALL",
+					geolevel3: "ALL",
+				},
+			}));
+		} else if (type === "geolevel2") {
+			this.setState((prevState: any) => ({
+				dynamicFields: dynamicFieldVal,
+				selectedFilters: {
+					...prevState.selectedFilters,
+					geolevel3: "ALL",
+				},
+			}));
+		}
+	};
 	render() {
 		const {
 			retailerPopupData,
 			showProductPopup,
 			isAsc,
 			allScanLogs,
-			dropdownOpenFilter,
 			selectedFilters,
 			isLoader,
 			dateErrMsg,
@@ -604,6 +724,33 @@ class SendGoods extends Component<Props, States> {
 		for (let i = 1; i <= pageData; i++) {
 			pageNumbers.push(i);
 		}
+		const fields = this.state.dynamicFields;
+		console.log({ fields });
+		const locationList = fields?.map((list: any, index: number) => {
+			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+			return (
+				<React.Fragment key={`geolevels` + index}>
+					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
+						<div className="col" style={{ marginBottom: "5px" }}>
+							<NativeDropdown
+								name={list.name}
+								label={nameCapitalized}
+								options={list.options}
+								handleChange={(e: any) => {
+									e.stopPropagation();
+									list.value = e.target.value;
+									this.getOptionLists("manual", list.name, e.target.value, index);
+									//   this.handleUpdateDropdown(e.target.value, list.name);
+								}}
+								value={list.value}
+								id="geolevel-test"
+								dataTestId="geolevel-test"
+							/>
+						</div>
+					)}
+				</React.Fragment>
+			);
+		});
 		return (
 			<AUX>
 				{isLoader && <Loader />}
@@ -613,20 +760,16 @@ class SendGoods extends Component<Props, States> {
 							<Filter
 								handleSearch={this.handleSearch}
 								searchText={searchText}
-								dropdownOpenFilter={dropdownOpenFilter}
-								toggleFilter={this.toggleFilter}
 								download={this.download}
-								selectedFilters={selectedFilters}
-								handleFilterChange={this.handleFilterChange}
 								partnerTypeList={this.state.partnerTypeList}
 								isDownload={true}
 								selectedPartnerType={this.state.partnerType}
 								handlePartnerChange={this.handlePartnerChange}
 								toolTipText="Search applicable for Customer Name, Product Name"
-                condType="Scan Type"
-                condTypeList={this.state.scanTypeList}
-                buttonChange={this.handleButtonChange}
-                condSelectedButton={this.state.selectedScanType}
+								condType="Scan Type"
+								condTypeList={this.state.scanTypeList}
+								buttonChange={this.handleButtonChange}
+								condSelectedButton={this.state.selectedScanType}
 							>
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
 									<NativeDropdown
@@ -659,58 +802,36 @@ class SendGoods extends Component<Props, States> {
 										</span>
 									))}
 								</div>
-								<div className="form-group region-add-dropdown" onClick={(e) => e.stopPropagation()}>
-									<div className="list region">
-										<NativeDropdown
-											name="region"
-											value={selectedFilters.region}
-											label={"Region"}
-											handleChange={(e: any) => this.handleSelect(e, "region")}
-											options={farmerOptions}
-											defaultValue="ALL"
-											id="region-test"
-											dataTestId="region-test"
-										/>
-									</div>
-
-									<div className="list">
-										<NativeDropdown
-											name="region"
-											value={selectedFilters.region}
-											label={"ADD"}
-											handleChange={(e: any) => this.handleSelect(e, "region")}
-											options={farmerOptions}
-											defaultValue="ALL"
-											id="region-test"
-											dataTestId="region-test"
-										/>
-									</div>
+								<div className="form-group container" onClick={(e) => e.stopPropagation()}>
+									<div className="row column-dropdown">{locationList}</div>
 								</div>
-								<div className="form-group region-add-dropdown" onClick={(e) => e.stopPropagation()}>
-									<div className="list region">
-										<NativeDropdown
-											name="region"
-											value={selectedFilters.region}
-											label={"Label ID"}
-											handleChange={(e: any) => this.handleSelect(e, "region")}
-											options={farmerOptions}
-											defaultValue="ALL"
-											id="region-test"
-											dataTestId="region-test"
-										/>
-									</div>
-
-									<div className="list">
-										<NativeDropdown
-											name="region"
-											value={selectedFilters.region}
-											label={"Batch #"}
-											handleChange={(e: any) => this.handleSelect(e, "region")}
-											options={farmerOptions}
-											defaultValue="ALL"
-											id="region-test"
-											dataTestId="region-test"
-										/>
+								<div className="form-group container" onClick={(e) => e.stopPropagation()}>
+									<div className="row column-dropdown">
+									<div className="col">
+											<NativeDropdown
+												name="region"
+												value={selectedFilters.region}
+												label={"Batch #"}
+												handleChange={(e: any) => this.handleSelect(e, "region")}
+												options={farmerOptions}
+												defaultValue="ALL"
+												id="region-test"
+												dataTestId="region-test"
+											/>
+										</div>
+										<div className="col">
+											<NativeDropdown
+												name="region"
+												value={selectedFilters.region}
+												label={"Label ID"}
+												handleChange={(e: any) => this.handleSelect(e, "region")}
+												options={farmerOptions}
+												defaultValue="ALL"
+												id="region-test"
+												dataTestId="region-test"
+											/>
+										</div>
+										
 									</div>
 								</div>
 								<label className="font-weight-bold pt-2"> Scan Status</label>
@@ -748,45 +869,48 @@ class SendGoods extends Component<Props, States> {
 										</span>
 									))}
 								</div>
+								{selectedFilters.scannedPeriod === "Custom" && (
+									<React.Fragment>
+										<label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+											From
+										</label>
+										<label className="font-weight-bold pt-2" htmlFor="order-todate">
+											To
+										</label>
+										<div className="d-flex">
+											<div className="user-filter-date-picker">
+												<DatePicker
+													id="order-date"
+													value={selectedFilters.ordereddatefrom}
+													dateFormat="dd-MM-yyyy"
+													customInput={<Input ref={ref} />}
+													selected={selectedFilters.ordereddatefrom}
+													onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
+													showMonthDropdown
+													showYearDropdown
+													dropdownMode="select"
+													maxDate={new Date()}
+												/>
+											</div>
+											<div className="p-2">-</div>
 
-									<label className="font-weight-bold pt-2" htmlFor="order-date" style={{width:"55%"}}>
-										From
-									</label>
-									<label className="font-weight-bold pt-2" htmlFor="order-todate">
-										To
-									</label>
-								<div className="d-flex">
-									<div className="user-filter-date-picker">
-										<DatePicker
-											id="order-date"
-											value={selectedFilters.ordereddatefrom}
-											dateFormat="dd-MM-yyyy"
-											customInput={<Input ref={ref} />}
-											selected={selectedFilters.ordereddatefrom}
-											onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											maxDate={new Date()}
-										/>
-									</div>
-									<div className="p-2">-</div>
-
-									<div className="user-filter-date-picker">
-										<DatePicker
-											value={selectedFilters.ordereddateto}
-											dateFormat="dd-MM-yyyy"
-											customInput={<Input ref={ref} />}
-											selected={selectedFilters.ordereddateto}
-											onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											maxDate={new Date()}
-										/>
-									</div>
-								</div>
-								{dateErrMsg && <span className="error">{dateErrMsg} </span>}
+											<div className="user-filter-date-picker">
+												<DatePicker
+													value={selectedFilters.ordereddateto}
+													dateFormat="dd-MM-yyyy"
+													customInput={<Input ref={ref} />}
+													selected={selectedFilters.ordereddateto}
+													onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
+													showMonthDropdown
+													showYearDropdown
+													dropdownMode="select"
+													maxDate={new Date()}
+												/>
+											</div>
+										</div>
+										{dateErrMsg && <span className="error">{dateErrMsg} </span>}
+									</React.Fragment>
+								)}
 
 								<div className="filterFooter pt-3">
 									<button
@@ -813,8 +937,8 @@ class SendGoods extends Component<Props, States> {
 								<table className="table">
 									<thead>
 										<tr>
-											<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "advisororderid", allScanLogs, isAsc)}>
-												LABEL ID
+											<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "advisororderid", allScanLogs, isAsc)}>
+												LABEL/BATCH ID
 												{this.tableCellIndex !== undefined ? (
 													this.tableCellIndex === 0 ? (
 														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
@@ -823,23 +947,14 @@ class SendGoods extends Component<Props, States> {
 													<i className={"fas fa-sort-up ml-2"}></i>
 												)}
 											</th>
-											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "username", allScanLogs, isAsc)}>
+											<th style={{ width: "18%" }} onClick={(e) => this.handleSort(e, "username", allScanLogs, isAsc)}>
 												CUSTOMER NAME/ID
 												{this.tableCellIndex === 1 ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
 											<th
-												style={{ width: "14%", textAlign: "center" }}
-												onClick={(e) => this.handleSort(e, "totalintendedquantity", allScanLogs, isAsc)}
-											>
-												CUSTOMER TYPE
-												{this.tableCellIndex === 2 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th
-												style={{ width: "13%", textAlign: "center" }}
+												style={{ width: "16%" }}
 												onClick={(e) => this.handleSort(e, "totalorderedquantity", allScanLogs, isAsc)}
 											>
 												PRODUCT NAME
@@ -848,12 +963,12 @@ class SendGoods extends Component<Props, States> {
 												) : null}
 											</th>
 											<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "totalcost", allScanLogs, isAsc)}>
-												BATCH #
+												CHANNEL TYPE
 												{this.tableCellIndex === 4 ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
-											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "advisorname", allScanLogs, isAsc)}>
+											<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "advisorname", allScanLogs, isAsc)}>
 												SCANNED ON
 												{this.tableCellIndex === 5 ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
@@ -865,9 +980,20 @@ class SendGoods extends Component<Props, States> {
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
-											<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "orderstatus", allScanLogs, isAsc)}>
-												EXPIRY DATE
-												{this.tableCellIndex === 7 ? (
+											{this.state.selectedScanType === "SG - D2R" && (
+												<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "orderstatus", allScanLogs, isAsc)}>
+													STORE NAME
+													{this.tableCellIndex === 7 ? (
+														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+													) : null}
+												</th>
+											)}
+											<th
+												style={{ width: "10%" }}
+												onClick={(e) => this.handleSort(e, "lastupdateddate", allScanLogs, isAsc)}
+											>
+												REGION
+												{this.tableCellIndex === 8 ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
@@ -875,7 +1001,7 @@ class SendGoods extends Component<Props, States> {
 												style={{ width: "15%" }}
 												onClick={(e) => this.handleSort(e, "lastupdateddate", allScanLogs, isAsc)}
 											>
-												STATUS
+												EXPIRY DATE
 												{this.tableCellIndex === 8 ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
@@ -894,7 +1020,17 @@ class SendGoods extends Component<Props, States> {
 														style={{ cursor: "pointer" }}
 														key={i}
 													>
-														<td>{value.advisororderid}</td>
+														<td>
+															{value.advisororderid}
+															<p>
+																<span
+																	className={`status-label ${value.orderstatus === "FULFILLED" ? "active" : "inactive"}`}
+																>
+																	Valid
+																</span>{" "}
+																- #234524
+															</p>
+														</td>
 														<td
 															onClick={(event) => {
 																this.showPopup(event, "showPopup");
@@ -913,36 +1049,36 @@ class SendGoods extends Component<Props, States> {
 																		<img className="retailer-icon" src={ExpandWindowImg} alt="" />
 																	</span>
 																</p>
-																<label>{value.userid}</label>
+																<label>{value.userid + "- Retailer"}</label>
 															</div>
 														</td>
-														<td style={{ textAlign: "center" }}>{value.totalintendedquantity}</td>
-														<td style={{ textAlign: "center" }}>{value.totalorderedquantity}</td>
-														<td>{"MK " + value.totalcost}</td>
 														<td>
-															<div className="farmer-id">
-																<p>{_.startCase(_.toLower(value.advisorname))}</p>
-																<label>{value.advisorid}</label>
+															<div className="retailer-id">
+																<p
+																	style={{
+																		display: "flex",
+																		alignItems: "center",
+																	}}
+																>
+																	<span style={{ flex: "1", whiteSpace: "nowrap" }}>
+																		{_.startCase(_.toLower(value.username))}
+																		<img className="retailer-icon" src={ExpandWindowImg} alt="" />
+																	</span>
+																</p>
+																<label>{value.userid + "- Corn"}</label>
 															</div>
 														</td>
+														<td>{"MK " + value.totalcost}</td>
+														<td>{moment(value.lastupdateddate).format("DD/MM/YYYY")}</td>
 														<td>
 															<div className="farmer-id">
 																<p>{_.startCase(_.toLower(value.farmername))}</p>
 																<label>{value.farmerid}</label>
 															</div>
 														</td>
+														{this.state.selectedScanType === "SG - D2R" && <td>{value.storename}</td>}
+														<td>{value.geolevel1}</td>
 														<td>{moment(value.lastupdateddate).format("DD/MM/YYYY")}</td>
-														<td>
-															<span className={`status ${value.orderstatus === "FULFILLED" ? "active" : "inactive"}`}>
-																{value.orderstatus === "FULFILLED" ? (
-																	<img src={ActiveIcon} style={{ marginRight: "8px" }} width="17" alt="" />
-																) : (
-																	<i className="fas fa-clock"></i>
-																)}
-																{/* {value.orderstatus} */}
-																{_.startCase(_.toLower(value.orderstatus))}
-															</span>
-														</td>
 													</tr>
 												);
 											})

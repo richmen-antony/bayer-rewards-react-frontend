@@ -18,7 +18,7 @@ function CustomDownload(props: any) {
 					<span style={{ padding: "15px" }}>Download</span>
 				</button>
 			</div>
-			<i
+			{/* <i
 				className="fa fa-info-circle"
 				style={{
 					fontSize: "16px",
@@ -27,7 +27,7 @@ function CustomDownload(props: any) {
 					marginTop: "-20px",
 				}}
 				title={"Full extract"}
-			></i>
+			></i> */}
 		</Fragment>
 	);
 }

@@ -582,7 +582,6 @@ class SellFarmer extends Component<Props, States> {
 			showProductPopup,
 			isAsc,
 			allScanLogs,
-			dropdownOpenFilter,
 			selectedFilters,
 			isLoader,
 			dateErrMsg,
@@ -607,11 +606,7 @@ class SellFarmer extends Component<Props, States> {
 							<Filter
 								handleSearch={this.handleSearch}
 								searchText={searchText}
-								dropdownOpenFilter={dropdownOpenFilter}
-								toggleFilter={this.toggleFilter}
 								download={this.download}
-								selectedFilters={selectedFilters}
-								handleFilterChange={this.handleFilterChange}
 								partnerTypeList={this.state.partnerTypeList}
 								condType="Sales Type"
 								condTypeList={this.state.salesType}
@@ -961,7 +956,7 @@ class SellFarmer extends Component<Props, States> {
 																	style={{ textAlign: list?.style?.textAlign ? "center" : "inherit" }}
 																	key={index}
 																>
-																	{list.key === "username" || list.label === "SCANNED BY" ? (
+																	{list.key === "username" || list.label === "SCANNED BY" ||list.label==="PRODUCT NAME" ? (
 																		<div className="retailer-id">
 																			<p
 																				style={{

@@ -336,6 +336,20 @@
           font-size: 14px;
           // font-family: "Open Sans";
           font-family: "appRegular" !important;
+      
+            .status-label.active {
+              color: #1ccead;
+            }
+            .status-label.inactive {
+              color: #ff6397;
+            }
+            .status-label.pending{
+              color: #FF9D00;
+            }
+            .status-label.cancelled{
+              color: #FF0000;
+            }
+          
           .status {
             display: flex;
             align-items: center;
@@ -717,19 +731,12 @@ cus-btn-scanlog-filter[disabled] {
     }
   }
 }
-.region-add-dropdown{
-  display: flex;
-  align-items: center;
-  .list{
-    width: 100%;
-    
-  }
-  .list.region{
-    padding-right: 5px;
-  }
+
+
+.column-dropdown{
+  margin-right: -30px;
+  margin-left: -30px;
 }
-
-
 // media queries
 
 @media only screen and (max-width: 1400px) {
@@ -883,7 +890,7 @@ cus-btn-scanlog-filter[disabled] {
     }
   }
   .scanlog-container {
-    height: 58vh;
+    height: 60vh;
   }
 }
 .tab-header{
@@ -893,7 +900,9 @@ cus-btn-scanlog-filter[disabled] {
   margin-bottom: -55px;
   p{
     color: #000000;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: "appRegular" !important;
   }
  
 }

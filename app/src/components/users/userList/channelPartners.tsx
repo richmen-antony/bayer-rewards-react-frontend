@@ -1240,7 +1240,7 @@ class ChannelPartners extends Component<Props, States> {
 	  
 	render() {
 
-		const {totalData, isAsc,isLoader, dropdownOpenFilter, selectedFilters, userList, userData, isStaff, dateErrMsg,allChannelPartners } = this.state;
+		const {totalData, isAsc,isLoader, selectedFilters, userList, userData, isStaff, dateErrMsg,allChannelPartners } = this.state;
 
 		let data: any = getLocalStorageData("userData");
 		let loggedUserInfo = JSON.parse(data);
@@ -1288,10 +1288,6 @@ class ChannelPartners extends Component<Props, States> {
 				<Filter
 					handleSearch={this.handleSearch}
 					searchText={this.state.searchText}
-					dropdownOpenFilter={dropdownOpenFilter}
-					toggleFilter={this.toggleFilter}
-					selectedFilters={selectedFilters}
-					handleFilterChange={this.handleFilterChange}
 					partnerTypeList={this.state.list}
 					selectedPartnerType={this.state.partnerType}
 					handlePartnerChange={this.handlePartnerChange}

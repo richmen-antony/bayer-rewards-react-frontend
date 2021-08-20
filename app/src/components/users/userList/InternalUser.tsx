@@ -55,11 +55,9 @@ const InternalUser = (Props: any) => {
   const [tableCellIndex, setTableCellIndex] = useState<number>(0);
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isRegionValueChanged, setIsRegionValueChanged] =
     useState<boolean>(false);
   const [isAsc, setIsAsc] = useState<boolean>(true);
-  const [dropdownOpenFilter, setDropdownOpenFilter] = useState<boolean>(false);
   const [internalUserStatusPopup, setInternalUserStatusPopup] =
     useState<boolean>(false);
   const [userList, setUserList] = useState({
@@ -128,7 +126,6 @@ const InternalUser = (Props: any) => {
   const fetchInternalUserData = (defaultPageNo?: number) => {
     setIsLoader(true);
     setDateErrMsg("");
-    setDropdownOpenFilter(false);
     let obj: any = getLocalStorageData("userData");
     let userData = JSON.parse(obj);
     userData?.username && setUpdatedUserName(userData.username);
@@ -300,9 +297,7 @@ const InternalUser = (Props: any) => {
     }
   }, [searchText]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const toggleFilter = (e: any) => {
-    setDropdownOpenFilter(!dropdownOpenFilter);
-  };
+ 
 
   const handleFilterChange = (e: any, name: string, item: any) => {
     e.stopPropagation();
@@ -463,10 +458,6 @@ const InternalUser = (Props: any) => {
       <Filter
         handleSearch={handleSearch}
         searchText={searchText}
-        dropdownOpenFilter={dropdownOpenFilter}
-        toggleFilter={toggleFilter}
-        selectedFilters={selectedFilters}
-        handleFilterChange={handleFilterChange}
         partnerTypeList={list}
         selectedPartnerType={partnerType}
         handlePartnerChange={handlePartnerChange}

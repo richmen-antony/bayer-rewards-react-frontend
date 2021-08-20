@@ -1294,7 +1294,6 @@ class ChannelPartners extends Component<Props, States> {
 			totalData,
 			isAsc,
 			isLoader,
-			dropdownOpenFilter,
 			selectedFilters,
 			userList,
 			dateErrMsg,
@@ -1345,10 +1344,6 @@ class ChannelPartners extends Component<Props, States> {
 				<Filter
 					handleSearch={this.handleSearch}
 					searchText={this.state.searchText}
-					dropdownOpenFilter={dropdownOpenFilter}
-					toggleFilter={this.toggleFilter}
-					selectedFilters={selectedFilters}
-					handleFilterChange={this.handleFilterChange}
 					partnerTypeList={this.state.list}
 					selectedPartnerType={this.state.partnerType}
 					handlePartnerChange={this.handlePartnerChange}
