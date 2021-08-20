@@ -336,6 +336,20 @@
           font-size: 14px;
           // font-family: "Open Sans";
           font-family: "appRegular" !important;
+      
+            .status-label.active {
+              color: #1ccead;
+            }
+            .status-label.inactive {
+              color: #ff6397;
+            }
+            .status-label.pending{
+              color: #FF9D00;
+            }
+            .status-label.cancelled{
+              color: #FF0000;
+            }
+          
           .status {
             display: flex;
             align-items: center;
@@ -718,6 +732,13 @@ cus-btn-scanlog-filter[disabled] {
   }
 }
 
+
+.column-dropdown{
+  margin-right: -30px;
+  margin-left: -30px;
+}
+// media queries
+
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {
     font-size: 11px;
@@ -869,10 +890,22 @@ cus-btn-scanlog-filter[disabled] {
     }
   }
   .scanlog-container {
-    height: 58vh;
+    height: 60vh;
   }
 }
-
+.tab-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -55px;
+  p{
+    color: #000000;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: "appRegular" !important;
+  }
+ 
+}
 @media only screen and (min-width: 1400px) and (max-width: 1920px) {
   /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
   .dropdown-menu {

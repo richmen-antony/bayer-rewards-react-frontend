@@ -10,6 +10,7 @@ import { Theme, withStyles } from "@material-ui/core/styles";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import AdminPopup from "../../../container/components/dialog/AdminPopup";
+//import SimpleDialog from "../../../container/components/dialog";
 import Tick from "../../../../src/assets/icons/tick1.svg";
 import Cross from "../../../../src/assets/icons/cancel1.svg";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
@@ -19,6 +20,8 @@ import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
 import EditDisabled from "../../../assets/icons/edit_disabled.svg";
 import Edit from "../../../assets/images/edit.svg";
+//import NoImage from "../../../assets/images/Group_4736.svg";
+//import CheckMark from "../../../assets/images/check.png";
 import { apiURL } from "../../../utility/base/utils/config";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import { Alert } from "../../../utility/widgets/toaster";
@@ -32,6 +35,8 @@ import { getLocalStorageData } from "../../../utility/base/localStore";
 import _ from "lodash";
 import Filter from "../../../container/grid/Filter";
 import { NativeDropdown } from "../../../utility/widgets/dropdown/NativeSelect";
+//import Dropdown from "../../../utility/widgets/dropdown";
+//import PhoneInput from "react-phone-input-2";
 
 let paginationRef: any = {};
 const InternalUser = (Props: any) => {
@@ -40,8 +45,6 @@ const InternalUser = (Props: any) => {
   const [internalUsers, setInternalUsers] = useState([]);
   const [retailerOptions, setRetailerOptions] = useState<string[]>([]);
   const [optionslist, setOptionslist] = useState([]);
-  const [internalUserType, setUserType] = useState<string>("RSM");
-  const [list, setList] = useState(["RSM"]);
   const [partnerType, setPartnerType] = useState({ type: "RSM" });
   const [dateErrMsg, setDateErrMsg] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
@@ -55,19 +58,8 @@ const InternalUser = (Props: any) => {
   const [isRegionValueChanged, setIsRegionValueChanged] =
     useState<boolean>(false);
   const [isAsc, setIsAsc] = useState<boolean>(true);
-  const [dropdownOpenFilter, setDropdownOpenFilter] = useState<boolean>(false);
   const [internalUserStatusPopup, setInternalUserStatusPopup] =
     useState<boolean>(false);
-  const [internalUserStatus, setInternalUserStatus] = useState([
-    "ALL",
-    "Active",
-    "Inactive",
-  ]);
-  const [internalUserMappingStatus, setInternalUserMappingStatus] = useState([
-    "ALL",
-    "Mapped",
-    "UnMapped",
-  ]);
   const [userList, setUserList] = useState({
     username: "",
     phonenumber: "",
@@ -75,6 +67,15 @@ const InternalUser = (Props: any) => {
     lastname: "",
     userstatus: "",
   });
+  // const [edituserList, setEdituserList] = useState({
+  //   username: "",
+  //   phonenumber: "",
+  //   firstname: "",
+  //   lastname: "",
+  //   userstatus: "",
+  //   emailid: "",
+  //   geolevel1: "",
+  // });
   const [selectedFilters, setSelectedFilters] = useState({
     geolevel1: "ALL",
     status: "ALL",
@@ -82,6 +83,11 @@ const InternalUser = (Props: any) => {
     lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
     lastmodifieddateto: new Date(),
   });
+
+  const internalUserType = "RSM";
+  const list = ["RSM"];
+  const internalUserStatus = ["ALL", "Active", "Inactive"];
+  const internalUserMappingStatus = ["ALL", "Mapped", "UnMapped"];
 
   const DialogContent = withStyles((theme: Theme) => ({
     root: {
@@ -120,7 +126,6 @@ const InternalUser = (Props: any) => {
   const fetchInternalUserData = (defaultPageNo?: number) => {
     setIsLoader(true);
     setDateErrMsg("");
-    setDropdownOpenFilter(false);
     let obj: any = getLocalStorageData("userData");
     let userData = JSON.parse(obj);
     userData?.username && setUpdatedUserName(userData.username);
@@ -292,9 +297,7 @@ const InternalUser = (Props: any) => {
     }
   }, [searchText]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const toggleFilter = (e: any) => {
-    setDropdownOpenFilter(!dropdownOpenFilter);
-  };
+ 
 
   const handleFilterChange = (e: any, name: string, item: any) => {
     e.stopPropagation();
@@ -395,6 +398,29 @@ const InternalUser = (Props: any) => {
     }));
   };
 
+  // const handleCloseSimplePopup = () => {
+  //   setShowPopup(false);
+  // };
+
+  // const updateInternalUserDetails = () => {
+  //   console.log("hiii");
+  // };
+
+  // const showPopupDialog = (e: any, data: any) => {
+  //   setShowPopup(true);
+  //   let currentUserData: any = JSON.parse(JSON.stringify(data));
+  //   setEdituserList((prevState) => ({
+  //     ...prevState,
+  //     username: currentUserData.username,
+  //     phonenumber: currentUserData.phonenumber,
+  //     firstname: currentUserData.firstname,
+  //     lastname: currentUserData.lastname,
+  //     userstatus: currentUserData.userstatus,
+  //     emailid: currentUserData.emailid,
+  //     geolevel1: currentUserData.geolevel1,
+  //   }));
+  // };
+
   interface IProps {
     onChange?: any;
     placeholder?: any;
@@ -432,10 +458,6 @@ const InternalUser = (Props: any) => {
       <Filter
         handleSearch={handleSearch}
         searchText={searchText}
-        dropdownOpenFilter={dropdownOpenFilter}
-        toggleFilter={toggleFilter}
-        selectedFilters={selectedFilters}
-        handleFilterChange={handleFilterChange}
         partnerTypeList={list}
         selectedPartnerType={partnerType}
         handlePartnerChange={handlePartnerChange}
@@ -634,6 +656,147 @@ const InternalUser = (Props: any) => {
           </DialogContent>
         </AdminPopup>
       )}
+      {/* {showPopup && (
+        <SimpleDialog
+          open={showPopup}
+          onClose={handleCloseSimplePopup}
+          header={"header"}
+          maxWidth={"800px"}
+        >
+          <DialogContent>
+            <div className="popup-container popup-retailer">
+              <div className="img">
+                <img src={NoImage} alt="" />
+              </div>
+              <div className="popup-content">
+                <div className={`popup-title`}>
+                  <p>
+                    {edituserList.username},{" "}
+                    <label>{_.startCase(_.toLower(internalUserType))}</label>{" "}
+                  </p>
+                </div>
+                <div className="popup-content-row">
+                  <div className="content-list">
+                    <label>Fullname</label>
+                    <p>
+                      {edituserList.firstname + " " + edituserList.lastname}{" "}
+                    </p>
+                  </div>
+                  <div className="content-list">
+                    <label>Email</label>
+                    <p>{edituserList.emailid}</p>
+                  </div>
+                  <div className="content-list">
+                    <label>Region</label>
+                    <Dropdown
+                      name={optionslist}
+                      options={optionslist}
+                      handleChange={(e: any) => {
+                        console.log(e);
+                        edituserList.geolevel1 = e.target.value;
+                        handleRegionSelect(e, "geolevel1");
+                        // this.setState({ isRendered: true });
+                        // this.getOptionLists("manual", list.name, e.target.value, index);
+                      }}
+                      value={edituserList.geolevel1}
+                      isPlaceholder
+                      isDisabled={false}
+                    />
+                  </div>
+                  <div className="content-list">
+                    <label>Phone Number</label>
+                    <PhoneInput
+                      placeholder="Mobile Number"
+                      inputProps={{
+                        name: "phonenumber",
+                        required: true,
+                        maxLength:
+                          process.env.REACT_APP_STAGE === "dev" ||
+                          process.env.REACT_APP_STAGE === "int"
+                            ? 12
+                            : 11,
+                      }}
+                      country={"countryCodeLower"}
+                      value={edituserList.phonenumber}
+                      disabled={false}
+                      onChange={
+                        (value, e) => console.log(e)
+                        // handleChange(
+                        //   idx,
+                        //   e,
+                        //   "phone",
+                        //   "owner",
+                        //   value
+                        // )
+                      }
+                      //onlyCountries={[countryCodeLower]}
+                      autoFormat
+                      disableDropdown
+                      disableCountryCode
+                    />
+                  </div>
+                  <div className="content-list">
+                    <label>is Active</label>
+                    <p>
+                      {" "}
+                      <img
+                        style={{ marginRight: "6px" }}
+                        alt="status"
+                        src={
+                          edituserList.userstatus === "ACTIVE"
+                            ? CheckMark
+                            : edituserList.userstatus === "INACTIVE"
+                            ? Cancel
+                            : ""
+                        }
+                      />
+                    </p>
+                  </div>
+                  <div className="content-list">
+                    <label>Region Mapped</label>
+                    <p>
+                      <img
+                        style={{ marginRight: "6px" }}
+                        alt="status"
+                        src={
+                          edituserList?.geolevel1 === null ? Cancel : CheckMark
+                        }
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <DialogActions className="internalUserDialogButton">
+                <MuiButton
+                  autoFocus
+                  onClick={handleCloseSimplePopup}
+                  className="admin-popup-btn close-btn"
+                  style={{
+                    boxShadow: "0px 3px 6px #c7c7c729",
+                    border: "1px solid #89D329",
+                    borderRadius: "50px",
+                  }}
+                >
+                  Cancel
+                </MuiButton>
+                <MuiButton
+                  onClick={updateInternalUserDetails}
+                  className="admin-popup-btn filter-scan"
+                  autoFocus
+                  style={{
+                    boxShadow: "0px 3px 6px #c7c7c729",
+                    border: "1px solid #89D329",
+                    borderRadius: "50px",
+                  }}
+                >
+                  Update
+                </MuiButton>
+              </DialogActions>
+            </div>
+          </DialogContent>
+        </SimpleDialog>
+      )} */}
       <div className="user-table">
         <table>
           <thead>
@@ -794,6 +957,7 @@ const InternalUser = (Props: any) => {
                         alt="edit user icon"
                         width="20"
                         onClick={(event) => {
+                          // showPopupDialog(event, list);
                           event.preventDefault();
                         }}
                       />
@@ -811,7 +975,6 @@ const InternalUser = (Props: any) => {
           </tbody>
         </table>
       </div>
-
       <div className="internalUserPagination">
         <Pagination
           totalData={totalRows}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CSVLink } from "react-csv";
+// import { CSVLink } from "react-csv";
 
 
 class CSVDownload extends Component {
@@ -35,12 +35,12 @@ class CSVDownload extends Component {
         <button className={this.className} value={this.label} onClick={this.downloadReport} >
           <i className="fa fa-download mr-2"></i> <span>{this.label}</span>
         </button>
-        <CSVLink
+        {/* <CSVLink
           headers={this.headers}
           filename={this.filename}
           data={this.data}
           ref={this.csvLinkEl}
-        />
+        /> */}
       </div>
     );
   }

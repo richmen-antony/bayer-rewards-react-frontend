@@ -1,7 +1,7 @@
 
 .native-select{
     label{
-        font-weight: 600;
+        font-weight: 700;
         font-size: 14px;
         color: #303030;
     }
@@ -11,5 +11,13 @@
         border:none;
         border-bottom: 1px solid lightgray;
         outline: none;
+    }
+}
+
+@media only screen and (max-width: 1400px) {
+    .native-select{
+        label{
+            font-size: 11px;
+        }
     }
 }

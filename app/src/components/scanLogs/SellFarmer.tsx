@@ -102,7 +102,7 @@ type States = {
 	partnerType: PartnerTypes;
 };
 
-class ScanLogsTable extends Component<Props, States> {
+class SellFarmer extends Component<Props, States> {
 	tableCellIndex: any = 0;
 	timeOut: any;
 	paginationRef:any;
@@ -131,7 +131,6 @@ class ScanLogsTable extends Component<Props, States> {
 				lastmodifiedto: new Date(),
 				farmer: "ALL",
 				retailer: "ALL",
-				salesType: "WALKIN_SALES",
 				partnerType:"Retailers"
 			},
 			dateErrMsg: "",
@@ -151,11 +150,12 @@ class ScanLogsTable extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			partnerTypeList: ["Retailers", "Distributors"],
+			partnerTypeList: ["Retailers"],
 			salesType: ["WALKIN_SALES", "ADVISOR_SALES"],
 			partnerType: {
 				type: "Retailers",
 			  },
+			selectedSalesType:"WALKIN_SALES"
 		};
 		this.timeOut = 0;
 	}
@@ -569,13 +569,19 @@ class ScanLogsTable extends Component<Props, States> {
 		  }
 		);
 	  };
+
+	  handleButtonChange =(name:string,value:string)=>{
+		this.setState({
+		  [name]:value
+		})
+	
+	  }
 	render() {
 		const {
 			retailerPopupData,
 			showProductPopup,
 			isAsc,
 			allScanLogs,
-			dropdownOpenFilter,
 			selectedFilters,
 			isLoader,
 			dateErrMsg,
@@ -600,17 +606,16 @@ class ScanLogsTable extends Component<Props, States> {
 							<Filter
 								handleSearch={this.handleSearch}
 								searchText={searchText}
-								dropdownOpenFilter={dropdownOpenFilter}
-								toggleFilter={this.toggleFilter}
 								download={this.download}
-								selectedFilters={selectedFilters}
-								handleFilterChange={this.handleFilterChange}
 								partnerTypeList={this.state.partnerTypeList}
-								salesType={this.state.salesType}
+								condType="Sales Type"
+								condTypeList={this.state.salesType}
 								isDownload={true}
 								selectedPartnerType={this.state.partnerType}
 					            handlePartnerChange={this.handlePartnerChange} 
 								toolTipText="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
+								buttonChange={this.handleButtonChange}
+								condSelectedButton={this.state.selectedSalesType}
 							>
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
 									<NativeDropdown
@@ -822,8 +827,8 @@ class ScanLogsTable extends Component<Props, States> {
 								<table className="table">
 									<thead>
 										<tr>
-											{ScanlogHeader[`${selectedFilters.salesType}`].length > 0 &&
-												ScanlogHeader[`${selectedFilters.salesType}`].map((value: any, index: number) => {
+											{ScanlogHeader[`${this.state.selectedSalesType}`].length > 0 &&
+												ScanlogHeader[`${this.state.selectedSalesType}`].map((value: any, index: number) => {
 													return (
 														<th
 															style={value.style}
@@ -916,13 +921,13 @@ class ScanLogsTable extends Component<Props, States> {
 												return (
 													<tr
 														onClick={(event) => {
-															selectedFilters.salesType === "ADVISOR_SALES" && this.showPopup(event, "showProductPopup");
+															this.state.selectedSalesType === "ADVISOR_SALES" && this.showPopup(event, "showProductPopup");
 															this.updateOrderData(value);
 														}}
 														style={{ cursor: "pointer" }}
 														key={i}
 													>
-														{ScanlogHeader[`${selectedFilters.salesType}`].map((list: any, index: number) => {
+														{ScanlogHeader[`${this.state.selectedSalesType}`].map((list: any, index: number) => {
 															const statusColor =
 																value.orderstatus === "FULFILLED"
 																	? "active"
@@ -951,7 +956,7 @@ class ScanLogsTable extends Component<Props, States> {
 																	style={{ textAlign: list?.style?.textAlign ? "center" : "inherit" }}
 																	key={index}
 																>
-																	{list.key === "username" || list.label === "SCANNED BY" ? (
+																	{list.key === "username" || list.label === "SCANNED BY" ||list.label==="PRODUCT NAME" ? (
 																		<div className="retailer-id">
 																			<p
 																				style={{
@@ -961,8 +966,8 @@ class ScanLogsTable extends Component<Props, States> {
 																			>
 																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>
 																					{_.startCase(_.toLower(value.username))}
-																					{(selectedFilters.salesType === "ADVISOR_SALES" && list.key === "username") ||
-																					(selectedFilters.salesType === "WALKIN_SALES" && list.label === "SCANNED BY") ? (
+																					{(this.state.selectedSalesType === "ADVISOR_SALES" && list.key === "username") ||
+																					(this.state.selectedSalesType === "WALKIN_SALES" && list.label === "SCANNED BY") ? (
 																						<img className="retailer-icon" src={ExpandWindowImg} alt="" />
 																					) : null}
 																				</span>
@@ -1154,4 +1159,4 @@ class ScanLogsTable extends Component<Props, States> {
 	}
 }
 
-export default ScanLogsTable;
+export default SellFarmer;

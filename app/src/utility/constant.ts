@@ -85,26 +85,25 @@ const CANCELLED = [
 const ADVISOR_SALES = [
 	{ label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
 	{ label: "RETAILER NAME/ID", key: "username", style: { width: "16%" } },
-	{ label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "14%",textAlign: "center" } },
-	{ label: "ORDERED QTY", key: "totalorderedquantity", style: { width: "13%", textAlign: "center" } },
+	{ label: "STORE NAME", key: "storename", style: { width: "10%" } },
 	{ label: "TOTAL COST", key: "totalcost", style: { width: "12%" } },
 	{ label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
-	{ label: "FARMER NAME/PHONE", key: "farmername", style: { width: "16%" } },
+	{ label: "FARMER NAME/PHONE NO", key: "farmername", style: { width: "16%" } },
 	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } },
 	{ label: "UPDATED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
 	{ label: "", key: "", style: { width: "10%" } },
 ];
 // Advisor sales table header
 const WALKIN_SALES = [
-	{ label: "LABEL ID", key: "advisororderid", style: { width: "10%" } },
+	{ label: "LABEL/BATCH ID", key: "advisororderid", style: { width: "12%" } },
 	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
 	{ label: "PRODUCT NAME", key: "totalintendedquantity", style: { width: "14%",textAlign: "center" } },
-	{ label: "PRODUCT GROUP", key: "totalorderedquantity", style: { width: "13%", textAlign: "center" } },
 	{ label: "BATCH #", key: "totalcost", style: { width: "12%" } },
-	{ label: "SCANNED ON", key: "advisorname", style: { width: "16%" } },
+	{ label: "SCANNED ON", key: "lastupdateddate", style: { width: "16%" }, type: "date" },
 	{ label: "SCANNED BY", key: "farmername", style: { width: "16%" } },
-	{ label: "EXPIRY DATE", key: "lastupdateddate", style: { width: "10%" } , type: "date"},
-	{ label: "STATUS", key: "orderstatus", style: { width: "10%" } }
+	{ label: "STORE NAME", key: "storename", style: { width: "10%" } },
+	{ label: "REGION", key: "geolevel1", style: { width: "10%" } },
+	{ label: "EXPIRY DATE", key: "lastupdateddate", style: { width: "10%" } , type: "date"}
 ];
 const OrderHistroyHeader: any = {
 	FULFILLED,

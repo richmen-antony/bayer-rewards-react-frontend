@@ -6,11 +6,11 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import ScanLogsTable from "./ScanLogsTable";
+import SellFarmer from "./SellFarmer";
 //scss
 import "../../assets/scss/scanLogs.scss";
 
-import  SendGoods from "./SendGoods";
+import SendGoods from "./SendGoods";
 
 type States = {
 	userRole: string;
@@ -99,7 +99,7 @@ function TabPanel(props: TabPanelProps) {
 		</div>
 	);
 }
-interface Props extends WithStyles<typeof useStyles> {}
+interface Props extends WithStyles<typeof useStyles> { }
 class ScanLogs extends Component<Props, States> {
 	timeOut: any;
 	constructor(props: any) {
@@ -124,23 +124,20 @@ class ScanLogs extends Component<Props, States> {
 				{isLoader && <Loader />}
 				<div>
 					<div className={classes?.root}>
-						<div>
-							<div className="tabs">
-								<AntTabs value={this.state.value} onChange={this.handleChange} aria-label="ant example">
-									<AntTab label="Send Goods" />
-									<AntTab label="Sell to Farmer" />
-								</AntTabs>
-							</div>
-
-							<Typography />
-						</div>
+						<div className="tab-header"><p>Scan Logs</p></div>
+						<AntTabs value={this.state.value} onChange={this.handleChange} aria-label="ant example">
+							<AntTab label="Send Goods" />
+							<AntTab label="Sell to Farmer" />
+						</AntTabs>
 						<TabPanel value={this.state.value} index={0} classes={classes}>
-						<SendGoods />
+							<SendGoods />
 						</TabPanel>
 						<TabPanel value={this.state.value} index={1} classes={classes}>
-						<ScanLogsTable />
+							<SellFarmer />
 						</TabPanel>
+
 					</div>
+
 				</div>
 			</AUX>
 		);
