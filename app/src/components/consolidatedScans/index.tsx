@@ -81,10 +81,6 @@ class ConsolidatedScans extends Component<any, any> {
                         <Filter
                             handleSearch={this.handleSearch}
                             searchText={this.state.searchText}
-                            dropdownOpenFilter={dropdownOpenFilter}
-                            toggleFilter={this.toggleFilter}
-                            selectedFilters={selectedFilters}
-                            handleFilterChange={this.handleFilterChange}
                             partnerTypeList={this.state.partnerTypeList}
                             selectedPartnerType={this.state.partnerType}
                             download={this.download}
