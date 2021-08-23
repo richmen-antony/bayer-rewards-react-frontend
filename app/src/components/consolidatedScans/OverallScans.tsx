@@ -69,7 +69,10 @@ const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: I
 
 
 
-type Props = {};
+type Props = {
+  distributorScans: any;
+  getSelectedBrands: any;
+};
 
 type States = {
 //   showPopup: boolean;
@@ -77,7 +80,7 @@ type States = {
 //   [key: string]: any;
 //   isAsc: Boolean;
 //   partnerType: PartnerTypes;
-  sales: Array<any>;
+distributorScans: Array<any>;
   loggedUserInfo : any;
 };
 
@@ -88,85 +91,6 @@ class OverallScans extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-        sales : [
-            {
-                "name" : "vidhya",
-                "sendgoods" : 3131,
-                "receivegoods" : 3243,
-                "walkinsales" : 432,
-                "advisorsales" :434 
-            },
-            {
-                "name" : "demo",
-                "sendgoods" : 343,
-                "receivegoods" : 89,
-                "walkinsales" : 978,
-                "advisorsales" :65 
-            },
-            {
-              "name" : "demo1",
-              "sendgoods" : 343,
-              "receivegoods" : 89,
-              "walkinsales" : 978,
-              "advisorsales" :65 
-          },
-  {
-              "name" : "demo2",
-              "sendgoods" : 343,
-              "receivegoods" : 89,
-              "walkinsales" : 978,
-              "advisorsales" :65 
-          },
-          {
-            "name" : "demo2",
-            "sendgoods" : 343,
-            "receivegoods" : 89,
-            "walkinsales" : 978,
-            "advisorsales" :65 
-        },
-        {
-          "name" : "demo2",
-          "sendgoods" : 343,
-          "receivegoods" : 89,
-          "walkinsales" : 978,
-          "advisorsales" :65 
-      },
-      {
-        "name" : "demo2",
-        "sendgoods" : 343,
-        "receivegoods" : 89,
-        "walkinsales" : 978,
-        "advisorsales" :65 
-    },
-    {
-      "name" : "demo2",
-      "sendgoods" : 343,
-      "receivegoods" : 89,
-      "walkinsales" : 978,
-      "advisorsales" :65 
-  },
-  {
-    "name" : "demo2",
-    "sendgoods" : 343,
-    "receivegoods" : 89,
-    "walkinsales" : 978,
-    "advisorsales" :65 
-},
-{
-  "name" : "demo2",
-  "sendgoods" : 343,
-  "receivegoods" : 89,
-  "walkinsales" : 978,
-  "advisorsales" :65 
-},
-{
-  "name" : "demo2",
-  "sendgoods" : 343,
-  "receivegoods" : 89,
-  "walkinsales" : 978,
-  "advisorsales" :65 
-}
-        ],
     //   showPopup: false,
     //   showProductPopup: false,
     //   isAsc: true,
@@ -233,8 +157,17 @@ class OverallScans extends Component<any, any> {
         // this.getScanLogs();
         // this.getRetailerList();
         // this.getLocationHierachyOrder();
+
       }
     );
+
+  }
+  getSelectedBrands = (distributorId : number) =>{
+    let allBrands = this.state.scannedBrands?.filter((brands:any) => brands.distributorId === distributorId);
+    let allProducts = this.state.scannedProducts?.filter((product:any) => (product.distributorId === distributorId && allBrands[0].brandId === product.brandId));
+    this.setState({selectedBrandList : allBrands, selectedProductList :  allProducts});
+    console.log('allbrands', allBrands);
+    console.log('allProducts', allProducts);
   }
   /**
    * Retailer and Farmer dropdown list value
@@ -644,6 +577,9 @@ class OverallScans extends Component<any, any> {
       retailerOptions,
     } = this.state;
 
+    const { distributorScans, getSelectedBrands,selectedDistributor } = this.props;
+    console.log('selectedDistributor', selectedDistributor)
+
     const pageNumbers = [];
     const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
     for (let i = 1; i <= pageData; i++) {
@@ -655,7 +591,7 @@ class OverallScans extends Component<any, any> {
             <div className="">
               <label className="font-weight-bold">Overall Consolidated Scans</label>
               <div className="consolidatedSales-table"  style={{height: '54vh', overflowY: 'auto' }}>
-                <table className="table">
+                <table className="table retailerTable">
                   <thead>
                     <tr>
                     <th>CUSTOMER NAME/ID</th>
@@ -666,19 +602,21 @@ class OverallScans extends Component<any, any> {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.sales.length > 0 ? (
-                      this.state.sales.map((item: any, i: number) => {
+                    {distributorScans.length > 0 ? (
+                      distributorScans.map((item: any, idx: number) => {
                         return (
                           <tr
-                            style={{ cursor: "pointer" }}
-                            key={i}
+                            style={{ cursor: "pointer", backgroundColor : selectedDistributor === idx ? '#F5FCFF' : ''}}
+                            key={idx}
+                            onClick = {()=>getSelectedBrands(item.distributorId, idx, 'selected')}
+                            // className = { selectedDistributor === idx ? "isfirstRowActive" : 'isSelectedRowActive'} 
                           >
-                                    <td>{item.name}</td>
-                                    <td>{item.sendgoods}</td>
-                                    <td>{item.receivegoods}</td>
-                                    <td>{item.walkinsales}</td>
-                                    <td>{item.advisorsales}</td>
-                           
+                            <td>{_.startCase(_.toLower(item.name))}</td>
+                            <td>{item.sendgoods}</td>
+                            <td>{item.receivegoods}</td>
+                            <td>{item.walkinsales}</td>
+                            <td>{item.advisorsales}</td>
+                    
                           </tr>
                         );
                       })
