@@ -129,12 +129,12 @@ class SendGoods extends Component<Props, States> {
 				status: "ALL",
 				ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
 				ordereddateto: new Date(),
-				lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
-				lastmodifiedto: new Date(),
-				farmer: "ALL",
 				retailer: "ALL",
 				partnerType: "Retailers",
 				scannedPeriod: "Today",
+				scandateto:new Date().setMonth(new Date().getMonth() - 3),
+				scandatefrom:new Date().setMonth(new Date().getMonth() - 3)
+
 			},
 			dateErrMsg: "",
 			searchText: "",
@@ -158,11 +158,11 @@ class SendGoods extends Component<Props, States> {
 				type: "Distributors",
 			},
 			scannedPeriodsList: [
-				{ label: "Today", value: "" },
-				{ label: "This week (Sun - Sat)", value: "" },
-				{ label: "Last 30 days", value: "" },
-				{ label: "This year (Jan - Dec)", value: "" },
-				{ label: "Prev. year (Jan - Dec)", value: "" },
+				{ label: "Today",from: moment(new Date).format("YYYY-MM-DD"),to: moment(new Date).format("YYYY-MM-DD")},
+				{ label: "This week (Sun - Sat)", from:moment().startOf('week').format('YYYY-MM-DD'),to:moment().endOf('week').format('YYYY-MM-DD') },
+				{ label: "Last 30 days", from :moment().subtract(30, 'days').format("YYYY-MM-DD"),to:moment(new Date).format("YYYY-MM-DD")},
+				{ label: "This year (Jan - Dec)", from :moment().startOf('year').format("YYYY-MM-DD"),to:moment().endOf("year").format("YYYY-MM-DD")},
+				{ label: "Prev. year (Jan - Dec)",from:moment().subtract(1, 'years').startOf('year').format("YYYY-MM-DD"), to :moment().subtract(1, 'years').endOf('year').format("YYYY-MM-DD")},
 				{ label: "Custom", value: "" },
 			],
 			scanTypeList: ["SG - ST", "SG - D2R"],
@@ -239,7 +239,7 @@ class SendGoods extends Component<Props, States> {
 			});
 	};
 	getScanLogs = (defaultPageNo?: any) => {
-		const { scanLogs } = apiURL;
+		const { getScanLog } = apiURL;
 		const { state, setDefaultPage } = this.paginationRef;
 		const pageNo = !defaultPageNo ? 1 : state.pageNo;
 
@@ -248,33 +248,32 @@ class SendGoods extends Component<Props, States> {
 			setDefaultPage();
 		}
 		this.setState({ isLoader: true });
-		const { selectedFilters, isFiltered } = this.state;
+		const { selectedFilters, isFiltered, selectedScanType} = this.state;
 		let data = {
 			page: pageNo,
-			searchtext: this.state.searchText,
+			searchtext: this.state.searchText || null,
 			rowsperpage: state.rowsPerPage,
 			isfiltered: this.state.isFiltered,
-			region: this.state.loggedUserInfo?.geolevel1,
+			// region: this.state.loggedUserInfo?.geolevel1,
 			countrycode: this.state.loggedUserInfo?.countrycode,
+			scantype:selectedScanType=== "SG - ST" ? "SCAN_OUT_ST_D2D":"SCAN_OUT_D2R"
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
 			filter.ordereddatefrom = moment(filter.ordereddatefrom).format("YYYY-MM-DD");
 			filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
-			filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
-			filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.partnerType = null;
 			data = { ...data, ...filter };
 		}
 
-		invokeGetAuthService(scanLogs, data)
+		invokeGetAuthService(getScanLog, data)
 			.then((response) => {
+				let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
 				this.setState({
 					isLoader: false,
-					allScanLogs: Object.keys(response.body).length !== 0 ? response.body.rows : [],
+					allScanLogs: data,
 				});
 				const total = response.body?.totalrows;
 				this.setState({ totalData: Number(total) });
@@ -337,41 +336,28 @@ class SendGoods extends Component<Props, States> {
 		}));
 	};
 
-	handleFilterChange = (e: any, name: string, item: any) => {
+	handleFilterChange = (e: any, name: string, item: any,itemList?:any) => {
 		e.stopPropagation();
 		let val = this.state.selectedFilters;
 		let flag = false;
+		console.log("item",itemList&&itemList);
 		// this.state.dateErrMsg = '';
 		if (name === "type") {
 			val[name] = e.target.value;
 			flag = true;
-		} else if (name === "startDate") {
-			if (e.target.value <= val.endDate) {
-				val[name] = e.target.value;
-				flag = true;
-			} else {
-				this.setState({
-					dateErrMsg: "Start date should be lesser than End Date",
-				});
-			}
-		} else if (name === "endDate") {
-			if (e.target.value >= new Date().toISOString().substr(0, 10)) {
-				this.setState({
-					dateErrMsg: "End Date should not be greater than todays date",
-				});
-			} else if (e.target.value <= val.startDate) {
-				this.setState({
-					dateErrMsg: "End Date should be greater than Start Date",
-				});
-			} else {
-				val[name] = e.target.value;
-				flag = true;
-			}
-		} else {
+		} else if (name==="scannedPeriod" && item!=="Custom") {
+			val["scandatefrom"]=itemList?.from;
+			val["scandatefto"]=itemList?.to;
 			val[name] = item;
 			flag = true;
 		}
+		else {
+			val[name] = item;
+			
+			flag = true;
+		}
 		if (flag) {
+			console.log({val});
 			this.setState({ selectedFilters: val });
 		}
 	};
@@ -459,11 +445,11 @@ class SendGoods extends Component<Props, States> {
 				});
 			} else if (date <= val.ordereddatefrom) {
 				this.setState({
-					dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
+					dateErrMsg: "Scanned End Date should be greater than  Scanned Start Date",
 				});
 			} else {
 				this.setState({
-					dateErrMsg: "Ordered Start Date should be lesser than  Ordered End Date",
+					dateErrMsg: "Scanned Start Date should be lesser than  Scanned End Date",
 				});
 			}
 		}
@@ -475,7 +461,7 @@ class SendGoods extends Component<Props, States> {
 				});
 			} else if (date >= val.ordereddateto) {
 				this.setState({
-					dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
+					dateErrMsg: "Scanned Start Date should be lesser than Scanned End Date",
 				});
 			} else {
 				this.setState({
@@ -483,40 +469,6 @@ class SendGoods extends Component<Props, States> {
 				});
 			}
 		}
-		// Last updated date - check End date
-		if (name === "lastmodifiedto") {
-			if (date >= val.lastmodifiedfrom) {
-				this.setState({
-					lastUpdatedDateErr: "",
-				});
-			} else if (date <= val.lastmodifiedfrom) {
-				this.setState({
-					lastUpdatedDateErr: "Last Updated End Date should be greater than  Last Updated Start Date",
-				});
-			} else {
-				this.setState({
-					lastUpdatedDateErr: "Last Updated Start Date should be lesser than  Last Updated End Date",
-				});
-			}
-		}
-
-		// Last updated date - check Start date
-		if (name === "lastmodifiedfrom") {
-			if (date <= val.lastmodifiedto) {
-				this.setState({
-					lastUpdatedDateErr: "",
-				});
-			} else if (date >= val.lastmodifiedto) {
-				this.setState({
-					lastUpdatedDateErr: "Last Updated Start Date should be lesser than Last Updated End Date",
-				});
-			} else {
-				this.setState({
-					lastUpdatedDateErr: "Last Updated Start Date should be greater than Last Updated End Date",
-				});
-			}
-		}
-
 		this.setState({
 			selectedFilters: { ...this.state.selectedFilters, [name]: date },
 		});
@@ -861,7 +813,7 @@ class SendGoods extends Component<Props, States> {
 														: "btn rounded-pill boxColor"
 												}
 												size="sm"
-												onClick={(e) => this.handleFilterChange(e, "scannedPeriod", item.label)}
+												onClick={(e) => this.handleFilterChange(e, "scannedPeriod", item.label,item)}
 												style={{ marginBottom: "5px" }}
 											>
 												{item.label}
