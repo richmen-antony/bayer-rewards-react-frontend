@@ -167,7 +167,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         {"Please enter the Role Code"}
                       </span> :item?.rolecodeIsDuplicate &&(
                           <span className="error">
-                            {item.rolecode + " is unavailable"}
+                            {item.rolecode + " already exists"}
                           </span>
                         )}
                         
@@ -186,7 +186,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         {"Please enter the Role Hierarchy"}
                       </span> :item?.rolehierarchynameIsDuplicate &&(
                           <span className="error">
-                            {item.rolehierarchyname + " is unavailable"}
+                            {item.rolehierarchyname + " already exists"}
                           </span>
                         )}
                         

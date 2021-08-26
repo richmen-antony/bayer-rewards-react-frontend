@@ -131,7 +131,7 @@ const LocationHierarchy = (props: ILocationProps) => {
                         )}
                         {item?.isDuplicate && isValidNext && (
                           <span className="error">
-                            {item.locationhiername + " is unavailable"}
+                            {item.locationhiername + " already exists"}
                           </span>
                         )}
                       </td>

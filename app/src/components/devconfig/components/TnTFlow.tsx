@@ -123,7 +123,7 @@ export const TnTFlow = (props: ITnTProps) => {
                          {"Please enter the code"}
                        </span> :item?.codeIsDuplicate && (
                           <span className="error">
-                            {item.code + " is unavailable"}
+                            {item.code + " already exists"}
                           </span>
                         )  }
                         {/* {item?.code_error && isValidNext && (
@@ -133,7 +133,7 @@ export const TnTFlow = (props: ITnTProps) => {
                         )}
                         {!item?.code_error&&item?.codeIsDuplicate && isValidNext && (
                           <span className="error">
-                            {item.code + " is unavailable"}
+                            {item.code + " already exists"}
                           </span>
                         )} */}
                       </td>
@@ -152,7 +152,7 @@ export const TnTFlow = (props: ITnTProps) => {
                         {"Please enter the position"}
                       </span> :item?.positionIsDuplicate &&(
                           <span className="error">
-                            {item.position + " is unavailable"}
+                            {item.position + " already exists"}
                           </span>
                         )
 
@@ -165,7 +165,7 @@ export const TnTFlow = (props: ITnTProps) => {
                         )}
                          {item?.positionIsDuplicate && isValidNext && (
                           <span className="error">
-                            {item.position + " is unavailable"}
+                            {item.position + " already exists"}
                           </span>
                         )} */}
                       </td>

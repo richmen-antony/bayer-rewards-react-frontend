@@ -238,7 +238,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                          {"Please enter the name"}
                        </span> :item?.isDuplicate && (
                           <span className="error">
-                            {item.packaginghierarchyname + " is unavailable"}
+                            {item.packaginghierarchyname + " already exists"}
                           </span>
                         )  }
                           {/* {item?.error && isValidNext && (
@@ -248,7 +248,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                         )}
                         {item?.isDuplicate && isValidNext && (
                           <span className="error">
-                            {item.packaginghierarchyname + " is unavailable"}
+                            {item.packaginghierarchyname + " already exists"}
                           </span>
                         )} */}
                           </td>

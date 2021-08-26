@@ -41,7 +41,11 @@ export const downloadExcel = (tableId: any, fileName: string) => {
 export const downloadCsvFile = (csv: any, filename: string) => {
   if (csv?.status===404 || !csv) {
     Alert('warning', "No data available !")
-  } else {
+  }else if(csv?.status===500){
+    let error={message:csv?.message_response }
+    ErrorMsg(error);
+  }
+  else {
     var csvFile;
     var downloadLink;
 

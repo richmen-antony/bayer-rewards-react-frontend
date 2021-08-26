@@ -39,6 +39,7 @@ import { NativeDropdown } from "../../../utility/widgets/dropdown/NativeSelect";
 //import PhoneInput from "react-phone-input-2";
 
 let paginationRef: any = {};
+let closeToggle :any;
 const InternalUser = (Props: any) => {
   // const history = useHistory();
 
@@ -350,6 +351,7 @@ const InternalUser = (Props: any) => {
       setIsFiltered(true);
       setChanagedStatusValue(!chanagedStatusValue);
       setIsRegionValueChanged(!isRegionValueChanged);
+      closeToggle();
     }
   };
 
@@ -463,6 +465,9 @@ const InternalUser = (Props: any) => {
         handlePartnerChange={handlePartnerChange}
         toolTipText="Search applicable for User Name, Mobile, Full Name"
         internalUserTypeFilterHeading={true}
+        onClose={(node: any) => {
+        closeToggle = node
+        }}
       >
         <div onClick={(e) => e.stopPropagation()}>
           <label className="font-weight-bold">Status</label>

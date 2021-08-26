@@ -127,14 +127,14 @@ class ScanLogs extends Component<Props, States> {
 						<div className="tab-header"><p>Scan Logs</p></div>
 						<AntTabs value={this.state.value} onChange={this.handleChange} aria-label="ant example">
 							<AntTab label="Send Goods" />
-							<AntTab label="Sell to Farmer" />
+							{/* <AntTab label="Sell to Farmer" /> */}
 						</AntTabs>
 						<TabPanel value={this.state.value} index={0} classes={classes}>
 							<SendGoods />
 						</TabPanel>
-						<TabPanel value={this.state.value} index={1} classes={classes}>
+						{/* <TabPanel value={this.state.value} index={1} classes={classes}>
 							<SellFarmer />
-						</TabPanel>
+						</TabPanel> */}
 
 					</div>
 

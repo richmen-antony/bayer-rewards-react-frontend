@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
@@ -19,6 +19,7 @@ interface Props {
 	condTypeList?: any[];
 	buttonChange?: any;
 	condSelectedButton?: string;
+	onClose ?:any;
 }
 
 /**
@@ -28,6 +29,7 @@ interface Props {
  */
 const Filter: React.FC<Props> = (props: Props) => {
   const [dropdownOpenFilter,setToggleFilter]= useState<boolean>(false);
+
   const toggleFilter =()=>{
     setToggleFilter(!dropdownOpenFilter)
   }
@@ -46,7 +48,12 @@ const Filter: React.FC<Props> = (props: Props) => {
 		condTypeList,
 		buttonChange,
 		condSelectedButton,
+		onClose
 	} = props;
+	useEffect(() => { 
+		onClose&& onClose(toggleFilter)
+
+	},[dropdownOpenFilter]);
 	return (
 		<div className="grid-filter">
 			<div className="filter-left-side">

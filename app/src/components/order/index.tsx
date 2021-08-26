@@ -142,7 +142,7 @@ class Order extends Component<Props, States> {
 						<div>
 							<div className="tabs">
 								<AntTabs value={this.state.value} onChange={this.handleChange} aria-label="ant example">
-									<AntTab label="Advisor Sales" />
+									<AntTab label="Order History" />
 									{/* <AntTab label="Walk-In Sales"/>
                   <AntTab label="Send Goods" /> */}
 								</AntTabs>
