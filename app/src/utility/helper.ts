@@ -69,7 +69,7 @@ export const downloadCsvFile = (csv: any, filename: string) => {
 
     // Lanzamos
     downloadLink.click();
-    Alert('success', "Download successfully.")
+    Alert('success', "Downloaded successfully.")
   }
 
 

@@ -128,13 +128,13 @@ class SendGoods extends Component<Props, States> {
 			selectedFilters: {
 				productgroup: "ALL",
 				scanstatus: "ALL",
-				ordereddatefrom: new Date(),
+				ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
 				ordereddateto: new Date(),
 				retailer: "ALL",
 				partnerType: "Retailers",
-				scannedPeriod: "Today",
-				scandatefrom: new Date(),
-				scandateto: new Date(),
+				scannedPeriod: "Last 30 days",
+				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
+				scandateto: moment(new Date()).format("YYYY-MM-DD"),
 				batchno:"ALL",
 				soldtoid:"ALL"
 			},
@@ -355,13 +355,13 @@ class SendGoods extends Component<Props, States> {
 				selectedFilters: {
 					productgroup: "ALL",
 					scanstatus: "ALL",
-					ordereddatefrom: new Date(),
+					ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
 					ordereddateto: new Date(),
-					scandatefrom: new Date(),
-					scandateto: new Date(),
+					scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
+				    scandateto: moment(new Date()).format("YYYY-MM-DD"),
 					retailer: "ALL",
 					partnerType: "Retailers",
-					scannedPeriod: "Today",
+					scannedPeriod: "Last 30 days",
 					batchno:"ALL",
 					soldtoid:"ALL"
 				},
@@ -425,7 +425,7 @@ class SendGoods extends Component<Props, States> {
 				
 			})
 			.catch((error) => {
-				console.log({ error });
+				ErrorMsg(error);
 			});
 	};
 	handleDateChange = (date: any, name: string) => {
@@ -474,15 +474,8 @@ class SendGoods extends Component<Props, States> {
 				selectedFilters: {
 					...this.state.selectedFilters,
 					[name]: event.target.value,
-				},
-			},
-			() => {
-				if (name === "retailer") {
-					let condIf = "retailer";
-					// this.getRetailerList(condIf);
 				}
-			}
-		);
+			});
 	};
 
 	filterScans = (filterValue: any) => {
@@ -1069,7 +1062,7 @@ class SendGoods extends Component<Props, States> {
 														<td>
 															<div className="farmer-id">
 																<p>{_.startCase(_.toLower(value.productname))}</p>
-																<label>{value.productid + " - " +_.capitalize(value.productgroup) }</label>
+																<label>{value.productid===null ? "":value.productid + " - " +_.capitalize(value.productgroup) }</label>
 															</div>
 														</td>
 														<td>{value.channeltype}</td>
@@ -1118,7 +1111,7 @@ class SendGoods extends Component<Props, States> {
 						<Pagination
 							totalData={totalData}
 							data={allScanLogs}
-							totalLabel={"Sales"}
+							totalLabel={"Send Goods"}
 							onRef={(node: any) => {
 								this.paginationRef = node;
 							}}
