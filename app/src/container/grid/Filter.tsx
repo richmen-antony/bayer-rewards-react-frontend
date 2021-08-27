@@ -119,7 +119,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 						<Dropdown isOpen={dropdownOpenFilter} toggle={toggleFilter}>
 							<DropdownToggle>{!dropdownOpenFilter && <img src={filterIcon} width="17" alt="filter" />}</DropdownToggle>
 							<DropdownMenu right>
-								<div className="p-3" style={{minWidth:"22rem"}}>
+								<div className="p-3" style={{minWidth:"23rem"}}>
 									<i className="fa fa-filter boxed float-right" aria-hidden="true" onClick={toggleFilter}></i>
 									{children}
 								</div>
