@@ -24,7 +24,10 @@ const ProductBrandList = ({
   tableCellIndex,
   tableName
 }:ProductBrandProps) => {
-  console.log('brandtableCellIndex', tableCellIndex)
+  let totalReceivedGoods:number = 0;
+  let totalSendGoods:number = 0;
+  let totalWalkInSales:number = 0;
+  let totalAdvisorSales:number = 0;
   return (
     <AUX>
           <div className="">
@@ -55,6 +58,10 @@ const ProductBrandList = ({
                 <tbody>
                   {selectedBrandList.length > 0 ? (
                     selectedBrandList.map((item: any, idx: number) => {
+                      totalReceivedGoods = totalReceivedGoods + (item.sendgoods);
+                      totalSendGoods = totalSendGoods + (item.receivegoods);
+                      totalWalkInSales = totalWalkInSales + (item.walkinsales);
+                      totalAdvisorSales = totalAdvisorSales + (item.advisorsales);
                       return (
                         <tr
                         style={{ cursor: "pointer", backgroundColor : selectedBrand === idx ? '#F5FCFF' : ''}}
@@ -79,6 +86,7 @@ const ProductBrandList = ({
                 </tbody>
               </table>
             </div>
+            {selectedBrandList.length > 0 &&
             <div>
                 <table  className="table sum-total">
                   <tbody>
@@ -88,28 +96,29 @@ const ProductBrandList = ({
                       </td>
                       <td className="text-center">
                         <span className="">
-                          {2122}
+                          {totalReceivedGoods}
                         </span>
                       </td>
                       <td className="text-center">
                         <span className="">
-                          {4324}
+                          {totalSendGoods}
                         </span>
                       </td>
                       <td>
                         <span className="">
-                          {423432}
+                          {totalWalkInSales}
                         </span>
                       </td>
                       <td>
                       <span className="productprice">
-                          {767}
+                          {totalAdvisorSales}
                         </span>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+            }
          </div>
     </AUX>
   );

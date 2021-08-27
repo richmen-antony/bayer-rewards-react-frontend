@@ -1,23 +1,16 @@
-import React ,{Fragment,useState,useEffect}from "react";
+import React ,{Fragment,useState}from "react";
 import Download from "../../../assets/icons/download.svg";
 import NoImage from "../../../assets/images/Group_4736.svg";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
-import filterIcon from "../../../assets/icons/filter_icon.svg";
 import "../../../assets/scss/download.scss";
 
 function CustomDownload(props: any) {
 	const {download, downloadPopup,overallDownload,brandWiseDownload,productWiseDownload } = props;
-
 	const [dropdownOpenDownload,settoggleDownload]= useState<boolean>(false);
 
 	const toggleDownload =()=>{
 		settoggleDownload(!dropdownOpenDownload)
 	}
-	// useEffect(() => { 
-	// 	onClose&& onClose(toggleDownload)
-
-	// },[dropdownOpenDownload]);
-
 	return (
 		<Fragment>
 			{!downloadPopup ?
@@ -65,12 +58,12 @@ function CustomDownload(props: any) {
 								<hr />
 								<div className="contents" onClick = {brandWiseDownload}>
 									<i class="fa fa-download" aria-hidden="true"></i>
-									<span className="dropdownContent">BrandWise Scans</span>
+									<span className="dropdownContent">Consolidated Scans</span>
 								</div>
 								<hr />
 								<div className="contents" onClick = {productWiseDownload}>
 									<i class="fa fa-download" aria-hidden="true"></i>
-									<span className="dropdownContent">ProductWise Scans</span>
+									<span className="dropdownContent">Product Wise Scans</span>
 								</div>
 							</div>
 						</div>

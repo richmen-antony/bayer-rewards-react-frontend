@@ -107,6 +107,10 @@ export const OverallScans = ({
   tableCellIndex,
   tableName
 }:OverallScanProps) => {
+  let totalReceivedGoods:number = 0;
+  let totalSendGoods:number = 0;
+  let totalWalkInSales:number = 0;
+  let totalAdvisorSales:number = 0;
   const [selectedFilters, setSelectedFilters] = useState({
 		geolevel1: "ALL",
 		status: "ALL",
@@ -173,12 +177,15 @@ export const OverallScans = ({
                   <tbody>
                     {distributorScans.length > 0 ? (
                       distributorScans.map((item: any, idx: number) => {
+                        totalReceivedGoods = totalReceivedGoods + (item.sendgoods);
+                        totalSendGoods = totalSendGoods + (item.receivegoods);
+                        totalWalkInSales = totalWalkInSales + (item.walkinsales);
+                        totalAdvisorSales = totalAdvisorSales + (item.advisorsales);
                         return (
                           <tr
                             style={{ cursor: "pointer", backgroundColor : selectedDistributor === idx ? '#F5FCFF' : ''}}
                             key={idx}
                             onClick = {()=>getSelectedBrands(item.distributorId, idx, 'selected')}
-                            // className = { selectedDistributor === idx ? "isfirstRowActive" : 'isSelectedRowActive'} 
                           >
                             <td onClick={(event) => {
 																showRetailerPopup(event);
@@ -233,6 +240,7 @@ export const OverallScans = ({
                   </tfoot> */}
                 </table>
               </div>
+              {distributorScans.length > 0 &&
               <div style={{ marginTop: '5px'}}>
                 <table  className="table sum-total">
                   <tbody>
@@ -242,7 +250,7 @@ export const OverallScans = ({
                       </td>
                       <td className="text-center">
                         <span className="">
-                          {2122}
+                          {totalReceivedGoods}
                         </span>
                       </td>
                       <td className="text-center">
@@ -264,6 +272,7 @@ export const OverallScans = ({
                   </tbody>
                 </table>
               </div>
+            }
             </>
           {/* <div>
             <Pagination
@@ -284,26 +293,27 @@ export const OverallScans = ({
 								<div className="img">
 									<img src={NoImage} alt="" />
 								</div>
-								{/* <div className="popup-content">
+								<div className="popup-content">
 									<div className={`popup-title`}>
-										<p>
+										{/* <p>
 											{retailerPopupData.username}, <label>{popupHeader?.sub}</label>{" "}
-										</p>
+										</p> */}
 									</div>
 									<div className="popup-content-row">
 										<div className="content-list">
 											<label>Username</label>
-											<p>{retailerPopupData.userid}</p>
+                      <p></p>
+											{/* <p>{retailerPopupData.userid}</p> */}
 										</div>
 										<div className="content-list">
 											<label>Account Name</label>
-											<p>{retailerPopupData.accountname}</p>
+											{/* <p>{retailerPopupData.accountname}</p> */}
 										</div>
 										<div className="content-list">
 											<label>Phone Number</label>
-											<p>{retailerPopupData.phonenumber}</p>
+											{/* <p>{retailerPopupData.phonenumber}</p> */}
 										</div>
-										{this.state.locationData?.length > 0 &&
+										{/* {this.state.locationData?.length > 0 &&
 											this.state.locationData.map((location: any, locationIndex: number) => {
 												return (
 													<div className="content-list" key={locationIndex}>
@@ -311,13 +321,13 @@ export const OverallScans = ({
 														<p>{retailerPopupData[location.geolevels]}</p>
 													</div>
 												);
-											})}
+											})} */}
 										<div className="content-list">
 											<label>Postal Code</label>
-											<p>{retailerPopupData.billingzipcode}</p>
+											{/* <p>{retailerPopupData.billingzipcode}</p> */}
 										</div>
 									</div>
-								</div> */}
+								</div>
 							</div>
 						</DialogContent>
 						<DialogActions>
