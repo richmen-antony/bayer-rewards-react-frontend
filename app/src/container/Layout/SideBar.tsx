@@ -6,6 +6,7 @@ import homeIcon from "../../assets/icons/home_icon.svg";
 import addUserIcon from "../../assets/icons/add_user_icon.svg";
 import userListIcon from "../../assets/icons/list_user_icon.svg";
 import scanLogsIcon from "../../assets/icons/scan_logs_icon.svg";
+import orderHistoryIcon from "../../assets/icons/order_history.svg";
 import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
 import NoImage from "../../assets/images/no_image.svg";
@@ -162,7 +163,7 @@ class Sidebar extends Component<Props, States> {
                         to="/order"
                         onClick={() => this.setActiveTab("order")}
                       >
-                        <img src={scanLogsIcon} alt={NoImage} width="16" data-testid="order-icon" />{" "}
+                        <img src={orderHistoryIcon} alt={NoImage} width="16" data-testid="order-icon" />{" "}
                         <span> Order History </span>
                       </Link>
                     </li>

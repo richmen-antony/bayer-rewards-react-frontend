@@ -8,6 +8,7 @@ import { getLocalStorageData } from "../../utility/base/localStore";
 import { apiURL } from "../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../utility/base/service";
 import BarCodeIcon from "../../assets/icons/barcode.svg";
+import orderHistoryIcon from "../../assets/icons/order_history_blue.svg";
 import country from "../../assets/images/country.svg";
 
 type Props = {
@@ -164,7 +165,7 @@ class Dashboard extends Component<Props, States> {
 								</div>
 								<div className="card-list">
 									<CustomCard
-										icon={BarCodeIcon}
+										icon={orderHistoryIcon}
 										border="1px solid #b6d0ea"
 										background="#f8f9fa"
 										cardClick={() => this.handleNavigateOrder()}

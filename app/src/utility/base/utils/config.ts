@@ -32,5 +32,9 @@ export const apiURL = {
     thirdPartyList: "user/thirdpartyuserlist",
     internalUserAPI:"user/internaluserlist",
     downloadThirdPartyList: "user/thirdpartyuserdownload",
-    downloadInternalList:"user/internaluserdownload"
+    downloadInternalList:"user/internaluserdownload",
+    getScanLog:"admin/scanloglist",
+    downloadAllScanLogs:"admin/downloadscanloglist",
+    getBatchList:"admin/batchlist",
+    getPartnerList:"admin/partnerlist"
 }

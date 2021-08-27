@@ -138,6 +138,7 @@ class ChannelPartners extends Component<Props, States> {
 	getStoreData: any;
 	timeOut: any;
 	paginationRef:any;
+	closeToggle: any;
 	constructor(props: any) {
 		super(props);
 		const dataObj: any = getLocalStorageData("userData");
@@ -1209,6 +1210,7 @@ class ChannelPartners extends Component<Props, States> {
 		if (this.state.dateErrMsg === "") {
 			this.setState({ isFiltered: true, inActiveFilter: false }, () => {
 				this.getThirdPartyList();
+				this.closeToggle();
 			});
 		}
 	};
@@ -1348,6 +1350,9 @@ class ChannelPartners extends Component<Props, States> {
 					selectedPartnerType={this.state.partnerType}
 					handlePartnerChange={this.handlePartnerChange}
 					toolTipText="Search applicable for User Name, Full Name"
+					onClose={(node: any) => {
+						this.closeToggle = node;
+					}}
 				>
 					<div onClick={(e) => e.stopPropagation()}>
 						<label className="font-weight-bold">Status</label>
