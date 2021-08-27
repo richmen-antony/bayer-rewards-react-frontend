@@ -7,6 +7,7 @@ import "../../assets/scss/filter.scss";
 interface Props {
 	handleSearch: (e: any) => any;
 	download?: () => any;
+	downloadPopup?: Boolean;
 	searchText: string;
 	children: any;
 	partnerTypeList?: any[];
@@ -20,6 +21,9 @@ interface Props {
 	buttonChange?: any;
 	condSelectedButton?: string;
 	onClose ?:any;
+	overallDownload?: () => any;
+	brandWiseDownload?: () => any;
+	productWiseDownload?: () => any;
 }
 
 /**
@@ -48,7 +52,8 @@ const Filter: React.FC<Props> = (props: Props) => {
 		condTypeList,
 		buttonChange,
 		condSelectedButton,
-		onClose
+		onClose,
+		downloadPopup
 	} = props;
 	useEffect(() => { 
 		onClose&& onClose(toggleFilter)
@@ -126,7 +131,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 							</DropdownMenu>
 						</Dropdown>
 					</div>
-					{isDownload && <CustomDownload download={download} />}
+					{isDownload && <CustomDownload download={download} downloadPopup={downloadPopup}/>}
 				</div>
 			</div>
 		</div>

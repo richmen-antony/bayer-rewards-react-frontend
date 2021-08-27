@@ -346,7 +346,13 @@ const ConsolidatedScans = (Props: any) => {
 	const handleSearch = () => {
 
 	}
-	const download = () => {
+	const overallDownload = () => {
+
+	}
+	const brandWiseDownload = () => {
+
+	}
+	const productWiseDownload = () => {
 
 	}
 	const handlePartnerChange = () => {
@@ -735,10 +741,13 @@ const ConsolidatedScans = (Props: any) => {
                             searchText={searchText}
                             partnerTypeList={partnerTypeList}
                             selectedPartnerType={partnerType}
-                            download={download}
+							downloadPopup={true}
                             isDownload={true}
                             handlePartnerChange={handlePartnerChange}
                             toolTipText="Search applicable for User Name, Account Name and Owner Name"
+							overallDownload={overallDownload}
+							brandWiseDownload={brandWiseDownload}
+							productWiseDownload={productWiseDownload}
 					    >
 						<label className="font-weight-bold pt-2">Product Group</label>
 							<div className="form-group pt-1">
@@ -820,8 +829,8 @@ const ConsolidatedScans = (Props: any) => {
 													value={selectedFilters.lastmodifieddateto}
 													dateFormat="dd-MM-yyyy"
 													customInput={<DateInput ref={ref} />}
-													selected={selectedFilters.lastmodifieddatefrom}
-													onChange={(date: any) => handleDateChange(date, "lastmodifieddatefrom")}
+													selected={selectedFilters.lastmodifieddateto}
+													onChange={(date: any) => handleDateChange(date, "lastmodifieddateto")}
 													showMonthDropdown
 													showYearDropdown
 													dropdownMode="select"
