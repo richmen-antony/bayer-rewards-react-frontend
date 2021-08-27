@@ -595,12 +595,14 @@ class ChannelPartners extends Component<Props, States> {
 		}
 		// let nextIndex: number =
 		//   staticColumn + (this.state.geographicFields.length - 1);
+		if (this.state.partnerType.type === 'Retailer') {
+			res.push(
+				<th style={{ width: "8%", cursor: "default" }} key="staff">
+					{"STAFF COUNT"}
+				</th>
+			);
+		}
 
-		res.push(
-			<th style={{ width: "8%", cursor: "default" }} key="staff">
-				{"STAFF COUNT"}
-			</th>
-		);
 		res.push(
 			<th style={{ width: "10%", cursor: "default" }} key="status">
 				{"STATUS"}
@@ -1950,6 +1952,7 @@ class ChannelPartners extends Component<Props, States> {
 												<td style={{ textAlign: "left" }}>{list.deliverygeolevel1} </td>
 												<td style={{ textAlign: "left" }}>{list.deliverygeolevel2}</td>
 												<td style={{ textAlign: "left" }}>{list.deliverygeolevel3} </td>
+												{ this.state.partnerType.type === 'Retailer' && 
 												<td style={{ textAlign: "center" }}>
 													<div className="retailer-id">
 														<p>
@@ -1971,7 +1974,8 @@ class ChannelPartners extends Component<Props, States> {
 															></img>
 														</p>
 													</div>
-												</td>
+												</td> 
+												}
 												<td >
 													<span
 														onClick={(event: any) => {
@@ -2012,6 +2016,7 @@ class ChannelPartners extends Component<Props, States> {
 												</td>
 												<td style={{ textAlign: "center"}}>{list.lastupdatedby}</td>
 												<td >
+												{ this.state.partnerType.type === 'Retailer' && 
 													<img
 														data-testid="edit-icon"
 														aria-label="edit-icon"
@@ -2028,7 +2033,7 @@ class ChannelPartners extends Component<Props, States> {
 																? event.preventDefault()
 																: this.editUser(list);
 														}}
-													/>
+													/> }
 													{list.iscreatedfrommobile && <img src={blackmockup} alt="" width="20" height="25" />}
 												</td>
 											</tr>

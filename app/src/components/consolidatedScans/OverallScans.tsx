@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import AUX from "../../hoc/Aux_";
 import "../../assets/scss/consolidatedSales.scss";
 import Loader from "../../utility/widgets/loader";
@@ -62,543 +62,109 @@ const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: I
 			id={id}
 			onClick={onClick}
 			ref={ref} 
-			
 		/>
 	</div>
 ))
 
+const DialogContent = withStyles((theme: Theme) => ({
+	root: {
+		padding: theme.spacing(2),
+	},
+}))(MuiDialogContent);
 
+const DialogActions = withStyles((theme: Theme) => ({
+	root: {
+		margin: 0,
+		padding: theme.spacing(1),
+		justifyContent: "center",
+		// boxShadow: "0px 3px 6px #c7c7c729",
+		// border: "1px solid #89D329",
+		// borderRadius: "50px",
+	},
+	// button: {
+	//   boxShadow: "0px 3px 6px #c7c7c729",
+	//   border: "1px solid #89D329",
+	//   borderRadius: "50px",
+	// },
+}))(MuiDialogActions);
 
-type Props = {
+export type OverallScanProps = {
   distributorScans: any;
   getSelectedBrands: any;
+  selectedDistributor: any;
+  handleSort :Function;
+  isAsc: Boolean;
+  tableCellIndex: string;
 };
 
-type States = {
-//   showPopup: boolean;
-//   showProductPopup: boolean;
-//   [key: string]: any;
-//   isAsc: Boolean;
-//   partnerType: PartnerTypes;
-distributorScans: Array<any>;
-  loggedUserInfo : any;
-};
+export const OverallScans = ({
+  distributorScans,
+  getSelectedBrands,
+  selectedDistributor,
+  handleSort,
+  isAsc,
+  tableCellIndex,
+}:OverallScanProps) => {
+  const [selectedFilters, setSelectedFilters] = useState({
+		geolevel1: "ALL",
+		status: "ALL",
+		isregionmapped: null,
+		lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+		lastmodifieddateto: new Date(),
+	  });
+    // const [ loggedUserInfo, setloggedUserInfo] = useState({});
+    const [showPopup, setshowPopup] = useState(false);
+    const [retailerPopupData,setretailerPopupData] = useState({});
 
-class OverallScans extends Component<any, any> {
-  tableCellIndex: any;
-  timeOut: any;
-  paginationRef:any;
-  constructor(props: any) {
-    super(props);
-    this.state = {
-    //   showPopup: false,
-    //   showProductPopup: false,
-    //   isAsc: true,
-    //   selectIndex: "",
-    //   isRendered: false,
-    //   allScanLogs: [],
-    //   actions: ["All", "Distributor", "Retailer"],
-    //   dropDownValue: "Select action",
-    //   scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-    //   productCategories: [
-    //     "ALL",
-    //     "HYBRID",
-    //     "CORN SEED",
-    //     "HERBICIDES",
-    //     "FUNGICIDES",
-    //     "INSECTICIDES",
-    //   ],
-    //   status: ["ALL", "FULFILLED"],
-    //   // status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
-    //   list: ["ALL", "Distributor", "Retailer"],
-      selectedFilters: {
-        productgroup: "ALL",
-        status: "ALL",
-        ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
-        ordereddateto: new Date(),
-        lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
-        lastmodifiedto: new Date(),
-        farmer: "ALL",
-        retailer: "ALL",
-        partnerType:"Retailers"
-      },
-    //   dateErrMsg: "",
-    //   searchText: "",
-    //   totalData: 0,
-    //   isFiltered: false,
-    //   userRole: "",
-    //   tooltipOpen: false,
-    //   isLoader: false,
-    //   dropdownOpenFilter: false,
-    //   accordionView: false,
-    //   accordionId: "",
-    //   // value: 0,
-    //   value: moment(),
-    //   lastUpdatedDateErr: "",
-    //   farmerOptions: [],
-    //   retailerOptions: [],
-      loggedUserInfo: {},
-    //   inActiveFilter:false,
-    //   partnerTypeList:["Retailers","Distributors"],
-    //   partnerType: {
-	// 			type: "Retailers",
-	// 		  },
+    useEffect (()=>{
+      // let data: any = getLocalStorageData("userData");
+      // let userData = JSON.parse(data);
+      // setloggedUserInfo(userData);
+    },[]);
+
+    const handleClosePopup = () => {
+      setshowPopup(false);
     };
-    this.timeOut = 0;
-  }
-  componentDidMount() {
-    let data: any = getLocalStorageData("userData");
-    let userData = JSON.parse(data);
-    this.setState(
-      {
-        loggedUserInfo: userData,
-      },
-      () => {
-        // this.getScanLogs();
-        // this.getRetailerList();
-        // this.getLocationHierachyOrder();
-
-      }
-    );
-
-  }
-  getSelectedBrands = (distributorId : number) =>{
-    let allBrands = this.state.scannedBrands?.filter((brands:any) => brands.distributorId === distributorId);
-    let allProducts = this.state.scannedProducts?.filter((product:any) => (product.distributorId === distributorId && allBrands[0].brandId === product.brandId));
-    this.setState({selectedBrandList : allBrands, selectedProductList :  allProducts});
-    console.log('allbrands', allBrands);
-    console.log('allProducts', allProducts);
-  }
-  /**
-   * Retailer and Farmer dropdown list value
-   * @param condIf 
-   */
-  getRetailerList = (condIf?: any) => {
-    const { rsmRetailerList } = apiURL;
-    const { selectedFilters } = this.state;
-    let queryParams = {
-      region: this.state.loggedUserInfo?.geolevel1,
-      countrycode: this.state.loggedUserInfo?.countrycode,
-      retailerid:
-        selectedFilters.retailer === "ALL" ? null : selectedFilters.retailer,
-    };
-    let oneTimeUpdate =
-      selectedFilters.retailer !== "ALL" && condIf ? true : false;
-    invokeGetAuthService(rsmRetailerList, queryParams)
-      .then((response) => {
-        if (response.data) {
-          const { farmers, retailers } = response.data;
-          const farmerOptions =
-            farmers?.length > 0
-              ? farmers.map((val: any) => {
-                  return { value: val.farmerid, text: val.farmername };
-                })
-              : [];
-
-          const retailerOptions =
-            retailers?.length > 0
-              ? retailers.map((val: any) => {
-                  return { value: val.userid, text: val.username };
-                })
-              : [];
-          const retailerList =
-            oneTimeUpdate && this.state.retailerOptions.length
-              ? this.state.retailerOptions
-              : retailerOptions;
-          this.setState({
-            isLoader: false,
-            farmerOptions,
-            retailerOptions: retailerList,
-          });
-        }
-      })
-      .catch((error) => {
-        this.setState({ isLoader: false });
-        ErrorMsg(error);
-        console.log("error", error);
-      });
-  };
-  getScanLogs = (defaultPageNo?: any) => {
-    const { scanLogs } = apiURL;
-    const {state,setDefaultPage}= this.paginationRef;
-		const pageNo=  !defaultPageNo ? 1 : state.pageNo;
-
-		// set default pagination number 1 and  call the method
-		if(!defaultPageNo){
-			setDefaultPage();
-		}
-		this.setState({ isLoader: true });
-    const { selectedFilters, isFiltered } = this.state;
-    let data = {
-      page: pageNo,
-      searchtext: this.state.searchText,
-      rowsperpage: state.rowsPerPage,
-      isfiltered: this.state.isFiltered,
-      region: this.state.loggedUserInfo?.geolevel1,
-      countrycode: this.state.loggedUserInfo?.countrycode,
-    };
-    if (isFiltered) {
-      let filter = { ...selectedFilters };
-      filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
-        "YYYY-MM-DD"
-      );
-      filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
-      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format(
-        "YYYY-MM-DD"
-      );
-      filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
-        "YYYY-MM-DD"
-      );
-      filter.productgroup =
-        filter.productgroup === "ALL" ? null : filter.productgroup;
-      filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
-      filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-      filter.partnerType = null
-      data = { ...data, ...filter };
-    }
-
-    invokeGetAuthService(scanLogs, data)
-      .then((response) => {
-        this.setState({
-          isLoader: false,
-          allScanLogs:
-            Object.keys(response.body).length !== 0 ? response.body.rows : [],
-        });
-        const total = response.body?.totalrows;
-        this.setState({ totalData: Number(total) });
-      })
-      .catch((error) => {
-        this.setState({ isLoader: false, allScanLogs: [] }, () => {
-        });
-        ErrorMsg(error);
-        console.log("error", error);
-      });
-  };
-
-  /**
-	 * To get location hierachy data order list
-	 */
-	getLocationHierachyOrder = () => {
-		const { getTemplateData } = apiURL;
-		let data = {
-			countryCode: this.state.loggedUserInfo?.countrycode,
-		};
-		invokeGetAuthService(getTemplateData, data).then((response: any) => {
-			let locationData = response.body[0].locationhierarchy;
-			let levels: any = [];
-			locationData?.length > 0 &&
-				locationData.forEach((item: any,index:number) => {
-					if(index>0){
-						let locationhierlevel = item.locationhierlevel;
-						let geolevels = "geolevel" + locationhierlevel;
-						let obj = { name: item.locationhiername, geolevels };
-						levels.push(obj);
-					}
-					
-				});
-			this.setState({
-				locationData: levels,
-			});
-		});
-	};
-  handleClosePopup = () => {
-    this.setState({ showPopup: false });
-  };
-
-  showPopup = (e: any, key: keyof States) => {
-    e.stopPropagation();
-    this.setState<never>({
-      [key]: true,
-    });
-  };
-  handleCloseProductPopup = () => {
-    this.setState({ showProductPopup: false });
-  };
-  updateOrderData = (value: any) => {
-    this.setState({
-      orderData: value,
-    });
-  };
-  handleUpdateRetailer(value: any) {
-    this.setState({
-      retailerPopupData: value,
-    });
-  }
-  handleSearch = (e: any) => {
-    let searchText = e.target.value;
-    this.setState({ searchText: searchText,isFiltered:true,inActiveFilter:false });
-    if (this.timeOut) {
-      clearTimeout(this.timeOut);
-    }
-    if (searchText.length >= 3 || searchText.length === 0) {
-      this.timeOut = setTimeout(() => {
-        this.getScanLogs();
-      }, 1000);
-    }
-  };
-  onSort = (name: string, datas: any, isAsc: Boolean) => {
-    let response = sortBy(name, datas);
-    this.setState({ allScanLogs: response, isAsc: !isAsc });
-  };
-
-  handleSort(e: any, columnname: string, data: any, isAsc: Boolean) {
-    this.tableCellIndex = e.currentTarget.cellIndex;
-    this.onSort(columnname, data, isAsc);
-  }
-
-  toggleFilter = () => {
-    this.setState((prevState: any) => ({
-      dropdownOpenFilter: !prevState.dropdownOpenFilter,
-    }));
-  };
-
-  handleFilterChange = (e: any, name: string, item: any) => {
-    e.stopPropagation();
-    let val = this.state.selectedFilters;
-    let flag = false;
-    // this.state.dateErrMsg = '';
-    if (name === "type") {
-      val[name] = e.target.value;
-      flag = true;
-    } else if (name === "startDate") {
-      if (e.target.value <= val.endDate) {
-        val[name] = e.target.value;
-        flag = true;
-      } else {
-        this.setState({
-          dateErrMsg: "Start date should be lesser than End Date",
-        });
-      }
-    } else if (name === "endDate") {
-      if (e.target.value >= new Date().toISOString().substr(0, 10)) {
-        this.setState({
-          dateErrMsg: "End Date should not be greater than todays date",
-        });
-      } else if (e.target.value <= val.startDate) {
-        this.setState({
-          dateErrMsg: "End Date should be greater than Start Date",
-        });
-      } else {
-        val[name] = e.target.value;
-        flag = true;
-      }
-    } else {
-      val[name] = item;
-      flag = true;
-    }
-    if (flag) {
-      this.setState({ selectedFilters: val });
-    }
-  };
-
-  resetFilter = (e?: any) => {
-    let today = new Date();
-    let conditionIsFilter = this.state.searchText ? true : false
-    this.setState(
-      {
-        selectedFilters: {
-          productgroup: "ALL",
-          status: "ALL",
-          ordereddatefrom: today.setMonth(today.getMonth() - 3),
-          ordereddateto: new Date(),
-          lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
-          lastmodifiedto: new Date(),
-          farmer: "ALL",
-          retailer: "ALL",
-          partnerType:"Retailers"
-        },
-        isFiltered: conditionIsFilter,
-        dateErrMsg:"",
-        lastUpdatedDateErr:""
-
-      },
-      () => {
-        this.getScanLogs();
-        this.toggleFilter();
-        this.getRetailerList();
-      }
-    );
-  };
-
-  applyFilter = () => {
-    this.setState({ isFiltered: true,inActiveFilter:false }, () => {
-      this.getScanLogs();
-      this.toggleFilter();
-      
-      // this.resetFilter();
-    });
-  };
-  toggle = () => {
-    this.setState({ tooltipOpen: !this.state.tooltipOpen });
-  };
   
-  download = () => {
-    const { downloadScanlogs } = apiURL;
-
-    let data = {
-      region: this.state.loggedUserInfo?.geolevel1,
-      countrycode: this.state.loggedUserInfo?.countrycode,
-      isfiltered: this.state.isFiltered,
-      searchtext: this.state.searchText,
+    const showRetailerPopup = (e: any) => {
+      e.stopPropagation();
+      setshowPopup(true)
+      // this.setState<never>({
+      //   [key]: true,
+      // });
     };
-    if (this.state.isFiltered) {
-      let filter = { ...this.state.selectedFilters };
-      filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
-        "YYYY-MM-DD"
-      );
-      filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
-      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format(
-        "YYYY-MM-DD"
-      );
-      filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
-        "YYYY-MM-DD"
-      );
-      filter.productgroup =
-        filter.productgroup === "ALL" ? null : filter.productgroup;
-      filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
-      filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-      filter.status = filter.status === "ALL" ? null : filter.status;
 
-      data = { ...data, ...filter };
-    }
-    invokeGetAuthService(downloadScanlogs, data)
-      .then((response) => {
-        const data = response;
-        downloadCsvFile(data, "scanlogs.csv");
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-  handleDateChange = (date: any, name: string) => {
-    let val = this.state.selectedFilters;
-
-    // order date - check End date
-    if (name === "ordereddateto") {
-      if (date >= val.ordereddatefrom) {
-        this.setState({
-          dateErrMsg: "",
-        });
-      } else if (date <= val.ordereddatefrom) {
-        this.setState({
-          dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
-        });
-      } else {
-        this.setState({
-          dateErrMsg: "Ordered Start Date should be lesser than  Ordered End Date",
-        });
-      }
-    }
-    // order date - check Start date
-    if (name === "ordereddatefrom") {
-      if (date <= val.ordereddateto) {
-        this.setState({
-          dateErrMsg: "",
-        });
-      } else if (date >= val.ordereddateto) {
-        this.setState({
-          dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
-        });
-      } else {
-        this.setState({
-          dateErrMsg: "Ordered Start Date should be greater than Ordered End Date",
-        });
-      }
-    }
-    // Last updated date - check End date
-    if (name === "lastmodifiedto") {
-      if (date >= val.lastmodifiedfrom) {
-        this.setState({
-          lastUpdatedDateErr: "",
-        });
-      } else if (date <= val.lastmodifiedfrom) {
-        this.setState({
-          lastUpdatedDateErr:
-            "Last Updated End Date should be greater than  Last Updated Start Date",
-        });
-      } else {
-        this.setState({
-          lastUpdatedDateErr:
-            "Last Updated Start Date should be lesser than  Last Updated End Date",
-        });
-      }
+    const handleUpdateRetailer = (value: object) => {
+      setretailerPopupData(value)
     }
 
-    // Last updated date - check Start date
-    if (name === "lastmodifiedfrom") {
-      if (date <= val.lastmodifiedto) {
-        this.setState({
-          lastUpdatedDateErr: "",
-        });
-      } else if (date >= val.lastmodifiedto) {
-        this.setState({
-          lastUpdatedDateErr:
-            "Last Updated Start Date should be lesser than Last Updated End Date",
-        });
-      } else {
-        this.setState({
-          lastUpdatedDateErr:
-            "Last Updated Start Date should be greater than Last Updated End Date",
-        });
-      }
-    }
 
-    this.setState({
-      selectedFilters: { ...this.state.selectedFilters, [name]: date },
-    });
-  };
-
-  handlePartnerChange = (name: string) => {
-		this.setState(
-		  {
-			partnerType: {
-			  type: name,
-			},
-		  },
-		  () => {
-			this.getScanLogs();
-		  }
-		);
-	  };
-  render() {
-    const {
-      retailerPopupData,
-      showProductPopup,
-      isAsc,
-      allScanLogs,
-      dropdownOpenFilter,
-      selectedFilters,
-      isLoader,
-      dateErrMsg,
-      searchText,
-      totalData,
-      lastUpdatedDateErr,
-      farmerOptions,
-      retailerOptions,
-    } = this.state;
-
-    const { distributorScans, getSelectedBrands,selectedDistributor } = this.props;
-    console.log('selectedDistributor', selectedDistributor)
-
-    const pageNumbers = [];
-    const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
-    for (let i = 1; i <= pageData; i++) {
-      pageNumbers.push(i);
-    }
     return (
       <AUX>
-        {isLoader && <Loader />}
-            <div className="">
-              <label className="font-weight-bold">Overall Consolidated Scans</label>
-              <div className="consolidatedSales-table"  style={{height: '54vh', overflowY: 'auto' }}>
+        <div className="">
+              <label className="font-weight-bold scanlabel">overall consolidated scans</label>
+              <>
+              <div className="consolidatedSales-table overallscan"  style={{height: '57vh', overflowY: 'auto' }}>
                 <table className="table retailerTable">
                   <thead>
                     <tr>
-                    <th>CUSTOMER NAME/ID</th>
-                        <th>RECEIVE GOODS</th>
-                        <th>SEND GOODS</th>
-                        <th>S2F-WALK-IN-SALES</th>
-                        <th>S2F-ADVISOR SALES</th>
+                    <th 
+                     onClick={(e) => handleSort(e, "name", distributorScans, isAsc,"overallScans")}
+                      key="name">CUSTOMER NAME/ID
+                        {
+                          (tableCellIndex === 'overall0') ? (
+                            <i
+                              className={`fas ${
+                                isAsc ? "fa-sort-down" : "fa-sort-up"
+                              } ml-3`}
+                            ></i>
+                          ) : null
+                        }
+                      </th>
+                      <th>RECEIVE GOODS</th>
+                      <th>SEND GOODS</th>
+                      <th>S2F-WALK-IN-SALES</th>
+                      <th>S2F-ADVISOR SALES</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -611,12 +177,18 @@ class OverallScans extends Component<any, any> {
                             onClick = {()=>getSelectedBrands(item.distributorId, idx, 'selected')}
                             // className = { selectedDistributor === idx ? "isfirstRowActive" : 'isSelectedRowActive'} 
                           >
-                            <td>{_.startCase(_.toLower(item.name))}</td>
+                            <td onClick={(event) => {
+																showRetailerPopup(event);
+                                handleUpdateRetailer(item);
+															}}>
+																	{_.startCase(_.toLower(item.name))}
+																	<img className="retailer-icon" src={ExpandWindowImg} alt="" /><br />
+																  <label style={{fontSize:'9px'}}>{item.label}</label>
+                              </td>
                             <td>{item.sendgoods}</td>
                             <td>{item.receivegoods}</td>
                             <td>{item.walkinsales}</td>
                             <td>{item.advisorsales}</td>
-                    
                           </tr>
                         );
                       })
@@ -628,9 +200,9 @@ class OverallScans extends Component<any, any> {
                       </tr>
                     )}
                   </tbody>
-                  <tfoot className="">
+                  {/* <tfoot className="sum-total">
                     <tr>
-                      {/* <td colSpan={2}></td> */}
+                      
                       <td>
                         <p className="total">Total(2)</p>
                       </td>
@@ -655,11 +227,42 @@ class OverallScans extends Component<any, any> {
                         </span>
                       </td>
                     </tr>
-                  </tfoot>
+                  </tfoot> */}
                 </table>
               </div>
-
-          <div>
+              <div style={{ marginTop: '5px'}}>
+                <table  className="table sum-total">
+                  <tbody>
+                    <tr>
+                    <td>
+                        <p className="total">Total({distributorScans.length})</p>
+                      </td>
+                      <td className="text-center">
+                        <span className="">
+                          {2122}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span className="">
+                          {4324}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="">
+                          {423432}
+                        </span>
+                      </td>
+                      <td>
+                      <span className="productprice">
+                          {767}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </>
+          {/* <div>
             <Pagination
               totalData={totalData}
               data={allScanLogs}
@@ -669,11 +272,70 @@ class OverallScans extends Component<any, any> {
 							}}
               getRecords={this.getScanLogs}
             />
-          </div>
+          </div> */}
         </div>
+        {showPopup ? (
+					<SimpleDialog open={showPopup} onClose={handleClosePopup} maxWidth={"800px"}>
+						<DialogContent>
+							<div className="popup-container popup-retailer">
+								<div className="img">
+									<img src={NoImage} alt="" />
+								</div>
+								{/* <div className="popup-content">
+									<div className={`popup-title`}>
+										<p>
+											{retailerPopupData.username}, <label>{popupHeader?.sub}</label>{" "}
+										</p>
+									</div>
+									<div className="popup-content-row">
+										<div className="content-list">
+											<label>Username</label>
+											<p>{retailerPopupData.userid}</p>
+										</div>
+										<div className="content-list">
+											<label>Account Name</label>
+											<p>{retailerPopupData.accountname}</p>
+										</div>
+										<div className="content-list">
+											<label>Phone Number</label>
+											<p>{retailerPopupData.phonenumber}</p>
+										</div>
+										{this.state.locationData?.length > 0 &&
+											this.state.locationData.map((location: any, locationIndex: number) => {
+												return (
+													<div className="content-list" key={locationIndex}>
+														<label>{_.startCase(_.toLower(location.name))}</label>
+														<p>{retailerPopupData[location.geolevels]}</p>
+													</div>
+												);
+											})}
+										<div className="content-list">
+											<label>Postal Code</label>
+											<p>{retailerPopupData.billingzipcode}</p>
+										</div>
+									</div>
+								</div> */}
+							</div>
+						</DialogContent>
+						<DialogActions>
+							{/* <CustomButton
+								label="Filter scans"
+								style={{
+									borderRadius: "30px",
+									backgroundColor: "#7eb343",
+									width: "190px",
+									padding: "7px",
+									border: "1px solid  #7eb343",
+								}}
+								handleClick={() => this.filterScans(retailerPopupData.userid)}
+							/> */}
+						</DialogActions>
+					</SimpleDialog>
+				) : (
+					""
+				)}
       </AUX>
     );
-  }
 }
 
 export default OverallScans;
