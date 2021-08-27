@@ -60,9 +60,9 @@ const ConsolidatedScans = (Props: any) => {
 		{ label: "Custom", value: "" },
 	]);
 	const [isFiltered, setIsFiltered] = useState<boolean>(false);
-	const [overalltableIndex, setoveralltableIndex] = useState<string>('overall0');
-	const [brandtableIndex, setbrandtableIndex] = useState<string>('brand0');
-	const [producttableIndex, setproducttableIndex] = useState<string>('product0');
+	const [overalltableIndex, setoveralltableIndex] = useState<number>(0);
+	const [brandtableIndex, setbrandtableIndex] =useState<number>(0);
+	const [producttableIndex, setproducttableIndex] = useState<number>(0);
 	const [isAsc, setIsAsc] = useState<boolean>(true);
 
 	const [selectedFilters, setSelectedFilters] = useState({
@@ -706,11 +706,19 @@ const ConsolidatedScans = (Props: any) => {
 		table : string
 	  ) => {
 		if(table === "overallScans"){
-			setbrandtableIndex(`${'overall'+e.currentTarget.cellIndex}`);
+			setoveralltableIndex(e.currentTarget.cellIndex);
+			setbrandtableIndex(1);
+			setproducttableIndex(1);
+			console.log('###', overalltableIndex)
 		} else if (table === "scannedBrands") {
-			setbrandtableIndex(`${'brand'+e.currentTarget.cellIndex}`);
+			setbrandtableIndex(e.currentTarget.cellIndex);
+			setoveralltableIndex(1);
+			setproducttableIndex(1);
+			console.log('###brands', brandtableIndex)
 		} else if(table === "scannedProducts") {
-			setbrandtableIndex(`${'product'+e.currentTarget.cellIndex}`);
+			setproducttableIndex(e.currentTarget.cellIndex);
+			setoveralltableIndex(1);
+			setbrandtableIndex(1);
 		}
 		  onSort(columnname, distributorScans, isAsc,table);
 	};
@@ -851,15 +859,14 @@ const ConsolidatedScans = (Props: any) => {
                 <div className="row" style={{    marginTop: '-5px'}}>
                         <div className = "col-sm-6">
                             <OverallScans distributorScans={distributorScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
-							isAsc={isAsc} tableCellIndex={overalltableIndex} />
+							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} />
                         </div>
                         <div className = "col-sm-6">
                             <div className="row">
-                                <ProductBrandList selectedBrandList={selectedBrandList} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} />
+                                <ProductBrandList selectedBrandList={selectedBrandList} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
                             </div>
                             <div className="row">
-                                <ProductList selectedProductList = {selectedProductList} brandName={selectedBrandName} handleSort={handleSort} 
-							isAsc={isAsc} tableCellIndex={producttableIndex} />
+                                <ProductList selectedProductList = {selectedProductList} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
                             </div>
                         </div>
                 </div>

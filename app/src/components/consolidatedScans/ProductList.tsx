@@ -8,7 +8,8 @@ export type ProductListProps = {
   brandName : String;
   handleSort :Function;
   isAsc: Boolean;
-  tableCellIndex: string;
+  tableCellIndex: any;
+  tableName: string;
 };
 
 export const ProductList = ({
@@ -16,7 +17,8 @@ export const ProductList = ({
   brandName,
   handleSort,
   isAsc,
-  tableCellIndex
+  tableCellIndex,
+  tableName
 }:ProductListProps) => {
   return (
     <AUX>
@@ -27,19 +29,17 @@ export const ProductList = ({
               <thead>
                 <tr>
                 <th 
-                     onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc,"selectedProduct")}
+                     onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc,"scannedProducts")}
                       key="productname">PRODUCT
-                      {tableCellIndex !== undefined ? (
-                          tableCellIndex === 'product0' ? (
+                      {
+                           (tableCellIndex === 0 && tableName === 'scannedProducts') ? (
                             <i
                               className={`fas ${
                                 isAsc ? "fa-sort-down" : "fa-sort-up"
                               } ml-3`}
                             ></i>
                           ) : null
-                        ) : (
-                          <i className={"fas fa-sort-up ml-3"}></i>
-                        )}
+                        }
                       </th>
                     <th>RECEIVE GOODS</th>
                     <th>SEND GOODS</th>

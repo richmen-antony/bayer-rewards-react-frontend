@@ -10,7 +10,7 @@ export type ProductBrandProps = {
   selectedBrand : Number;
   handleSort :Function;
   isAsc: Boolean;
-  tableCellIndex: string;
+  tableCellIndex: any;
   tableName?: string;
 };
 
@@ -24,6 +24,7 @@ const ProductBrandList = ({
   tableCellIndex,
   tableName
 }:ProductBrandProps) => {
+  console.log('brandtableCellIndex', tableCellIndex)
   return (
     <AUX>
           <div className="">
@@ -36,7 +37,7 @@ const ProductBrandList = ({
                      onClick={(e) => handleSort(e, "brandname", selectedBrandList, isAsc,"scannedBrands")}
                       key="brandname">BRAND
                       {
-                         (tableCellIndex === 'brand0') ? (
+                         (tableCellIndex === 0 && tableName === 'scannedBrands') ? (
                             <i
                               className={`fas ${
                                 isAsc ? "fa-sort-down" : "fa-sort-up"

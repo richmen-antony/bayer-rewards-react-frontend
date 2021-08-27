@@ -94,7 +94,8 @@ export type OverallScanProps = {
   selectedDistributor: any;
   handleSort :Function;
   isAsc: Boolean;
-  tableCellIndex: string;
+  tableCellIndex: any;
+  tableName?: string;
 };
 
 export const OverallScans = ({
@@ -104,6 +105,7 @@ export const OverallScans = ({
   handleSort,
   isAsc,
   tableCellIndex,
+  tableName
 }:OverallScanProps) => {
   const [selectedFilters, setSelectedFilters] = useState({
 		geolevel1: "ALL",
@@ -137,9 +139,10 @@ export const OverallScans = ({
     const handleUpdateRetailer = (value: object) => {
       setretailerPopupData(value)
     }
-
+    console.log('oneralltableCellIndex', tableCellIndex)
 
     return (
+
       <AUX>
         <div className="">
               <label className="font-weight-bold scanlabel">overall consolidated scans</label>
@@ -152,7 +155,7 @@ export const OverallScans = ({
                      onClick={(e) => handleSort(e, "name", distributorScans, isAsc,"overallScans")}
                       key="name">CUSTOMER NAME/ID
                         {
-                          (tableCellIndex === 'overall0') ? (
+                          (tableCellIndex === 0 && tableName === 'overallScans') ? (
                             <i
                               className={`fas ${
                                 isAsc ? "fa-sort-down" : "fa-sort-up"
