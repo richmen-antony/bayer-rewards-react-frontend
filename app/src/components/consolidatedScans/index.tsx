@@ -47,10 +47,10 @@ const ConsolidatedScans = (Props: any) => {
 	])
 
 	const [countryList,setcountryList] = useState([{}]);
-	const [geographicFields, setgeographicFields] = useState([{}]);
-	const [dynamicFields, setdynamicFields] = useState([{}]);
-	const [level1Options,setlevel1Options] = useState([{}]);
-	const [geolevel1List,setgeolevel1List] = useState([{}]);
+	const [geographicFields, setgeographicFields] = useState([]);
+	const [dynamicFields, setdynamicFields] = useState([]);
+	const [level1Options,setlevel1Options] = useState([]);
+	const [geolevel1List,setgeolevel1List] = useState([]);
 	const [scannedPeriodsList, setscannedPeriodsList] = useState([
 		{label: "Today", value: ""},
 		{ label: "This week (Sun - Sat)", value: "" },
@@ -307,6 +307,14 @@ const ConsolidatedScans = (Props: any) => {
 		  },
 	  ]);
 
+	  useEffect(()=>{
+		let distributorId = distributorScans[0].distributorId;
+		getSelectedBrands(distributorId);
+		getCountryList();
+		getHierarchyDatas();
+	
+	},[])
+
 	const getSelectedBrands = (distributorId : number, idx?:any, type?:string)=>{
 		let allBrands = scannedBrands?.filter((brands:any) => brands.distributorId === distributorId);
 		let allProducts = scannedProducts?.filter((product:any) => (product.distributorId === distributorId && allBrands[0]?.brandId === product.brandId));
@@ -325,12 +333,6 @@ const ConsolidatedScans = (Props: any) => {
 		})
 	};
 
-	useEffect(()=>{
-		let distributorId = distributorScans[0].distributorId;
-		getSelectedBrands(distributorId);
-		getHierarchyDatas();
-	},[])
-
 	const getSelectedProducts = (distributorId: number, brandId:number, idx:number, type?:String) => {
 		let allProducts = scannedProducts?.filter((product:any) => (product.distributorId === distributorId && brandId === product.brandId));
 		if ( type === 'selected' ) {
@@ -343,21 +345,7 @@ const ConsolidatedScans = (Props: any) => {
 		})
 		setselectedProductList(allProducts)
 	}
-	const handleSearch = () => {
 
-	}
-	const overallDownload = () => {
-
-	}
-	const brandWiseDownload = () => {
-
-	}
-	const productWiseDownload = () => {
-
-	}
-	const handlePartnerChange = () => {
-
-	}
 	const getCountryList = ()=> {
 		//service call
 		let res = [
@@ -399,9 +387,7 @@ const ConsolidatedScans = (Props: any) => {
 	// 		console.log("getHierarchyDatas warning", message);
 	// 	  });
 	//   };
-	//   useEffect(() => {
-	// 	getHierarchyDatas();
-	//   }, []);
+
 	const getHierarchyDatas = () => {
 		//To get all level datas
 		setIsLoader(true);
@@ -427,7 +413,9 @@ const ConsolidatedScans = (Props: any) => {
 				Alert("warning", message);
 			});
 	}
+
 	const getGeographicFields = () => {
+		console.log('callinggetGeographicFields')
 		setIsLoader(true);
 		const { getTemplateData } = apiURL;
 		let localObj: any = getLocalStorageData("userData");
@@ -441,10 +429,13 @@ const ConsolidatedScans = (Props: any) => {
 				let levels: any = [];
 				locationData.forEach((item: any) => {
 					levelsName.push(item.locationhiername.toLowerCase());
+				
 					let locationhierlevel = item.locationhierlevel;
 					let geolevels = "geolevel" + locationhierlevel;
 					levels.push(geolevels);
 				});
+				
+
 				let levelsData: any = [];
 				locationData?.length > 0 &&
 					locationData.forEach((item: any, index: number) => {
@@ -457,6 +448,7 @@ const ConsolidatedScans = (Props: any) => {
 					});
 
 					setIsLoader(false);
+					console.log('levelsname', levels);
 					setgeographicFields(levels);
 					getDynamicOptionFields();
 				// this.setState(
@@ -476,9 +468,15 @@ const ConsolidatedScans = (Props: any) => {
 				Alert("warning", message);
 			});
 	}
+	// useEffect(()=>{
+	// 	console.log('geodemo')
+	// 	if(geographicFields.length < 6) {
+	// 		getGeographicFields();
+	// 	}
+	// },[]);
 
 	const getDynamicOptionFields = (reset?: string) => {
-		let level1List = geolevel1List;
+		let level1List:any = geolevel1List;
 		if (!reset) {
 			let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
 			level1List.unshift(allItem);
@@ -495,6 +493,7 @@ const ConsolidatedScans = (Props: any) => {
 		let countrycode = {
 			countryCode: userData?.countrycode,
 		};
+		console.log('geographicFields',geographicFields)
 		geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
@@ -554,6 +553,21 @@ const ConsolidatedScans = (Props: any) => {
 		// 	}));
 		// }
 	};
+	const handleSearch = () => {
+
+	}
+	const overallDownload = () => {
+
+	}
+	const brandWiseDownload = () => {
+
+	}
+	const productWiseDownload = () => {
+
+	}
+	const handlePartnerChange = () => {
+
+	}
 
 	const handleFilterChange = (e: any, name: string, item: any) => {
 		e.stopPropagation();
@@ -595,38 +609,46 @@ const ConsolidatedScans = (Props: any) => {
 	  };
 	  useEffect(() => {}, [selectedFilters]);
 	  
-	  const handleRegionSelect = (event: any, name: string) => {
+	//   const handleRegionSelect = (event: any, name: string) => {
+	// 	setSelectedFilters((prevState) => ({
+	// 	  ...selectedFilters,
+	// 	  [name]: event.target.value,
+	// 	}));
+	//   };
+	const handleGeolevelDropdown = (value: string, label: any) => {
 		setSelectedFilters((prevState) => ({
-		  ...selectedFilters,
-		  [name]: event.target.value,
-		}));
-	  };
-	//   const fields = dynamicFields;
-	// 	const locationList = fields?.map((list: any, index: number) => {
-	// 		let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-	// 		return (
-	// 			<React.Fragment key={`geolevels` + index}>
-	// 				{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
-	// 					<div className="col" style={{ marginBottom: "5px" }}>
-	// 						<NativeDropdown
-	// 							name={list.name}
-	// 							label={nameCapitalized}
-	// 							options={list.options}
-	// 							handleChange={(e: any) => {
-	// 								e.stopPropagation();
-	// 								list.value = e.target.value;
-	// 								getOptionLists("manual", list.name, e.target.value, index);
-	// 								//   this.handleUpdateDropdown(e.target.value, list.name);
-	// 							}}
-	// 							value={list.value}
-	// 							id="geolevel-test"
-	// 							dataTestId="geolevel-test"
-	// 						/>
-	// 					</div>
-	// 				)}
-	// 			</React.Fragment>
-	// 		);
-	// 	});
+			...selectedFilters,
+			[label.toLocaleLowerCase()]: value,
+		}))
+	};
+	console.log('dynamicFields',dynamicFields);
+	// console.log('levelsName',levelsName)
+	// const fields = dynamicFields;
+	// const locationList = fields?.map((list: any, index: number) => {
+	// 	let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+	// 	return (
+	// 		<React.Fragment key={`geolevels` + index}>
+	// 			{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
+	// 				<div className="col" style={{ marginBottom: "5px" }}>
+	// 					<NativeDropdown
+	// 						name={list.name}
+	// 						label={nameCapitalized}
+	// 						options={list.options}
+	// 						handleChange={(e: any) => {
+	// 							e.stopPropagation();
+	// 							list.value = e.target.value;
+	// 							getOptionLists("manual", list.name, e.target.value, index);
+	// 							// handleGeolevelDropdown(e.target.value, list.name);
+	// 						}}
+	// 						value={list.value}
+	// 						id="geolevel-test"
+	// 						dataTestId="geolevel-test"
+	// 					/>
+	// 				</div>
+	// 			)}
+	// 		</React.Fragment>
+	// 	);
+	// });
 
 	interface IProps {
 		onChange?: any;
@@ -715,12 +737,12 @@ const ConsolidatedScans = (Props: any) => {
 			setoveralltableIndex(e.currentTarget.cellIndex);
 			setbrandtableIndex(1);
 			setproducttableIndex(1);
-			console.log('###', overalltableIndex)
+			// console.log('###', overalltableIndex)
 		} else if (table === "scannedBrands") {
 			setbrandtableIndex(e.currentTarget.cellIndex);
 			setoveralltableIndex(1);
 			setproducttableIndex(1);
-			console.log('###brands', brandtableIndex)
+			// console.log('###brands', brandtableIndex)
 		} else if(table === "scannedProducts") {
 			setproducttableIndex(e.currentTarget.cellIndex);
 			setoveralltableIndex(1);
@@ -768,7 +790,7 @@ const ConsolidatedScans = (Props: any) => {
 									</span>
 								))}
 							</div>
-							<div className="form-group" onClick={(e) => e.stopPropagation()}>
+							{/* <div className="form-group" onClick={(e) => e.stopPropagation()}>
 								<NativeDropdown
 									name="geolevel1"
 									value={selectedFilters.geolevel1}
@@ -779,7 +801,10 @@ const ConsolidatedScans = (Props: any) => {
 									id="region-test"
 									dataTestId="region-test"
 								/>
-							</div>
+							</div> */}
+							{/* <div className="form-group container" onClick={(e) => e.stopPropagation()}>
+									<div className="row column-dropdown">{locationList}</div>
+								</div> */}
 							<label className="font-weight-bold pt-2">Scanned Period</label>
 								<div className="pt-1">
 									{scannedPeriodsList.map((item: any, i: number) => (
