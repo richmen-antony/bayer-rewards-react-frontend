@@ -633,13 +633,13 @@ class SendGoods extends Component<Props, States> {
 				level2Options.push(level2Info);
 			});
 			let geolevel2Obj = {
-				text: "ALL",
+				label: "ALL",
 				value: "ALL",
 				code: "ALL",
 			};
 			level2Options.unshift(geolevel2Obj);
 		} else {
-			let level1Info = { text: "ALL", name: "ALL" };
+			let level1Info = { label: "ALL", name: "ALL" };
 			level2Options.push(level1Info);
 		}
 
@@ -656,7 +656,7 @@ class SendGoods extends Component<Props, States> {
 						? level1Options
 						: list === "geolevel2"
 						? level2Options
-						: [{ text: "ALL", name: "ALL" }],
+						: [{ label: "ALL", name: "ALL" }],
 				error: "",
 			});
 		});
