@@ -628,6 +628,7 @@ class SendGoods extends Component<Props, States> {
 				error: "",
 			});
 		});
+		console.log({setFormArray})
 		this.setState({ dynamicFields: setFormArray });
 	};
 
@@ -708,6 +709,8 @@ class SendGoods extends Component<Props, States> {
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			soldtorole:this.state.selectedScanType === "SG - D2R"?"RETAILER":"DISTRIBUTOR",
+			isfiltered:true,
+			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
 		};
 		let condName= this.state.selectedScanType === "SG - D2R"? "retailerOptions":"distributorOptions";
 		invokeGetAuthService(getPartnerList, countrycode)
@@ -760,7 +763,7 @@ class SendGoods extends Component<Props, States> {
 						<div className="col" style={{ marginBottom: "5px" }}>
 							<NativeDropdown
 								name={list.name}
-								label={"Scanned by - "+nameCapitalized}
+								label={`Scanned by - ${nameCapitalized==="Add" ? "ADD" :nameCapitalized}`}
 								options={list.options}
 								handleChange={(e: any) => {
 									e.stopPropagation();
@@ -791,7 +794,7 @@ class SendGoods extends Component<Props, States> {
 								isDownload={true}
 								selectedPartnerType={this.state.partnerType}
 								handlePartnerChange={this.handlePartnerChange}
-								toolTipText="Search applicable for Customer Name, Product Name"
+								toolTipText="Search applicable for Label,Customer Name,Product Name,Channel Type,Store Name and ScannedBy."
 								condType="Scan Type"
 								condTypeList={this.state.scanTypeList}
 								buttonChange={this.handleButtonChange}
@@ -953,7 +956,7 @@ class SendGoods extends Component<Props, States> {
 								<table className="table">
 									<thead>
 										<tr>
-											<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "labelid", allScanLogs, isAsc)}>
+											<th style={{ width: this.state.selectedScanType === "SG - D2R"?"12%" :"15%" }} onClick={(e) => this.handleSort(e, "labelid", allScanLogs, isAsc)}>
 												LABEL/BATCH ID
 												{
 													activeSortKeyIcon === "labelid"? (
@@ -1000,7 +1003,7 @@ class SendGoods extends Component<Props, States> {
 												) : null}
 											</th>
 											
-											<th
+											{/* <th
 												style={{ width: "10%" }}
 												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
 											>
@@ -1008,8 +1011,8 @@ class SendGoods extends Component<Props, States> {
 												{activeSortKeyIcon === "soldbygeolevel1" ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
-											</th>
-											<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "expirydate", allScanLogs, isAsc)}>
+											</th> */}
+											<th style={{ width: this.state.selectedScanType === "SG - D2R"?"10%":"16%" }} onClick={(e) => this.handleSort(e, "expirydate", allScanLogs, isAsc)}>
 												EXPIRY DATE
 												{activeSortKeyIcon ===  "expirydate"  ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
@@ -1090,7 +1093,7 @@ class SendGoods extends Component<Props, States> {
 															</div>
 														</td>
 														
-														<td>{value.soldbygeolevel1}</td>
+														{/* <td>{value.soldbygeolevel1}</td> */}
 														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 													</tr>
 												);

@@ -151,11 +151,11 @@ class SellFarmer extends Component<Props, States> {
 			loggedUserInfo: {},
 			inActiveFilter: false,
 			partnerTypeList: ["Retailers"],
-			salesType: ["WALKIN_SALES", "ADVISOR_SALES"],
+			salesType: [ "ADVISOR_SALES"],
 			partnerType: {
 				type: "Retailers",
 			  },
-			selectedSalesType:"WALKIN_SALES"
+			selectedSalesType:"ADVISOR_SALES"
 		};
 		this.timeOut = 0;
 	}
