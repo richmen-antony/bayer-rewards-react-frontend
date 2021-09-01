@@ -205,6 +205,7 @@ class SendGoods extends Component<Props, States> {
 				this.getPartnerList();
 			}
 		);
+		console.log('loggedUserInfo',userData)
 	}
 	getCountryList() {
 		let res = [
@@ -613,17 +614,38 @@ class SendGoods extends Component<Props, States> {
 			let level1Info = { text: item.name, code: item.code, value: item.name };
 			level1Options.push(level1Info);
 		});
+		let userrole = this.state.loggedUserInfo?.role;
+		let level2Options: any = [];
+		if (userrole === "RSM" ){
+			let filteredLevel1 = this.state.geolevel1List?.filter((list:any) => list.name === this.state.loggedUserInfo?.geolevel1);
+			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+				let level2Info = { text: item.name, value: item.name, code: item.code };
+				level2Options.push(level2Info);
+			});
+			let geolevel2Obj = {
+				text: "ALL",
+				value: "ALL",
+				code: "ALL",
+			};
+			level2Options.unshift(geolevel2Obj);
+		} else {
+			let level1Info = { text: "ALL", name: "ALL" };
+			level2Options.push(level1Info);
+		}
+
 		let setFormArray: any = [];
 		this.state.geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: list === "geolevel0" ? this.state.loggedUserInfo?.country : "",
+				value: list === "geolevel0" ? this.state.loggedUserInfo?.country : ("geolevel1" && userrole === "RSM") ? this.state.loggedUserInfo?.geolevel1 : "",
 				options:
 					list === "geolevel0"
 						? this.state.countryList
 						: list === "geolevel1"
 						? level1Options
+						: list === "geolevel2"
+						? level2Options
 						: [{ text: "ALL", name: "ALL" }],
 				error: "",
 			});
@@ -774,6 +796,7 @@ class SendGoods extends Component<Props, States> {
 								value={list.value}
 								id="geolevel-test"
 								dataTestId="geolevel-test"
+								isDisabled = {list.name === "geolevel1" }
 							/>
 						</div>
 					)}
