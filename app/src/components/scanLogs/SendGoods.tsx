@@ -27,6 +27,8 @@ import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
 import Filter from "../../container/grid/Filter";
 import { Alert } from "../../utility/widgets/toaster";
+import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
+
 type PartnerTypes = {
 	type: String;
 };
@@ -135,8 +137,8 @@ class SendGoods extends Component<Props, States> {
 				scannedPeriod: "Last 30 days",
 				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 				scandateto: moment(new Date()).format("YYYY-MM-DD"),
-				batchno:"ALL",
-				soldtoid:"ALL"
+				batchno: "ALL",
+				soldtoid: "ALL",
 			},
 			dateErrMsg: "",
 			searchText: "",
@@ -185,7 +187,7 @@ class SendGoods extends Component<Props, States> {
 			],
 			scanTypeList: ["SG - ST", "SG - D2R"],
 			selectedScanType: "SG - ST",
-			activeSortKeyIcon:"labelid"
+			activeSortKeyIcon: "labelid",
 		};
 		this.timeOut = 0;
 	}
@@ -205,17 +207,15 @@ class SendGoods extends Component<Props, States> {
 				this.getPartnerList();
 			}
 		);
-		console.log('loggedUserInfo',userData)
 	}
 	getCountryList() {
 		let res = [
-			{ value: "India", text: "India" },
-			{ value: "Malawi", text: "Malawi" },
+			{ value: "India", label: "India" },
+			{ value: "Malawi", label: "Malawi" },
 		];
 		this.setState({ countryList: res });
 	}
-	
-	
+
 	getScanLogs = (defaultPageNo?: any) => {
 		const { getScanLog } = apiURL;
 		const { state, setDefaultPage } = this.paginationRef;
@@ -297,7 +297,7 @@ class SendGoods extends Component<Props, States> {
 	handleUpdateRetailer(value: any, name: string) {
 		this.setState({
 			retailerPopupData: value,
-			condFilterScan: name
+			condFilterScan: name,
 		});
 	}
 	handleSearch = (e: any) => {
@@ -321,8 +321,8 @@ class SendGoods extends Component<Props, States> {
 		this.tableCellIndex = e.currentTarget.cellIndex;
 		this.onSort(columnname, data, isAsc);
 		this.setState({
-			activeSortKeyIcon:columnname
-		})
+			activeSortKeyIcon: columnname,
+		});
 	}
 
 	handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
@@ -350,6 +350,7 @@ class SendGoods extends Component<Props, States> {
 
 	resetFilter = (e?: any) => {
 		let conditionIsFilter = this.state.searchText ? true : false;
+		const options = [{ value: "ALL", label: "ALL" }];
 		this.getDynamicOptionFields("reset");
 		this.setState(
 			{
@@ -359,16 +360,20 @@ class SendGoods extends Component<Props, States> {
 					ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
 					ordereddateto: new Date(),
 					scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
-				    scandateto: moment(new Date()).format("YYYY-MM-DD"),
+					scandateto: moment(new Date()).format("YYYY-MM-DD"),
 					retailer: "ALL",
 					partnerType: "Retailers",
 					scannedPeriod: "Last 30 days",
-					batchno:"ALL",
-					soldtoid:"ALL"
+					batchno: "ALL",
+					soldtoid: "ALL",
 				},
 				isFiltered: conditionIsFilter,
 				dateErrMsg: "",
 				lastUpdatedDateErr: "",
+				selectedBatchOptions: options,
+				selectedCustomerOptions: options,
+				selectedGeolevel1Options: options,
+				selectedGeolevel2Options: options,
 			},
 			() => {
 				this.getScanLogs();
@@ -423,7 +428,6 @@ class SendGoods extends Component<Props, States> {
 			.then((response) => {
 				const data = response;
 				downloadCsvFile(data, "scanlogs.csv");
-				
 			})
 			.catch((error) => {
 				ErrorMsg(error);
@@ -470,41 +474,48 @@ class SendGoods extends Component<Props, States> {
 	};
 
 	handleSelect = (event: any, name: string) => {
-		this.setState(
-			{
-				selectedFilters: {
-					...this.state.selectedFilters,
-					[name]: event.target.value,
-				}
-			});
+		this.setState({
+			selectedFilters: {
+				...this.state.selectedFilters,
+				[name]: event.target.value,
+			},
+		});
+	};
+	handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
+		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
+		console.log({ condOptionName });
+		this.setState({
+			selectedFilters: {
+				...this.state.selectedFilters,
+				[e.name]: selectedOption.value,
+			},
+			[condOptionName]: selectedOption,
+		});
 	};
 
 	filterScans = (filterValue: any) => {
-		let name= this.state.condFilterScan ==="customer" ? "soldtoid":"soldbyid";
-		let filters={...this.state.selectedFilters};
-		let searchText=this.state.searchText;
-		if(name==="soldtoid"){
-			filters[name]=filterValue
-			filters["soldbyid"]=null
-		 }
-		 if(name==="soldbyid"){
-			filters["soldtoid"]=null
-			searchText= filterValue
-		 }
-		this.setState(
-			{ isFiltered: true, inActiveFilter: false, selectedFilters: { ...filters },searchText },
-			() => {
-				this.getScanLogs();
-				this.handleClosePopup();
-			}
-		);
+		let name = this.state.condFilterScan === "customer" ? "soldtoid" : "soldbyid";
+		let filters = { ...this.state.selectedFilters };
+		let searchText = this.state.searchText;
+		if (name === "soldtoid") {
+			filters[name] = filterValue;
+			filters["soldbyid"] = null;
+		}
+		if (name === "soldbyid") {
+			filters["soldtoid"] = null;
+			searchText = filterValue;
+		}
+		this.setState({ isFiltered: true, inActiveFilter: false, selectedFilters: { ...filters }, searchText }, () => {
+			this.getScanLogs();
+			this.handleClosePopup();
+		});
 	};
 
 	handlePartnerChange = (name: string) => {
 		let oneTimeAPI = false;
 		if (name !== this.state.partnerType.type) {
-		   oneTimeAPI = true;
-	   }
+			oneTimeAPI = true;
+		}
 		this.setState(
 			{
 				partnerType: {
@@ -512,30 +523,29 @@ class SendGoods extends Component<Props, States> {
 				},
 			},
 			() => {
-				oneTimeAPI&& this.getScanLogs();
+				oneTimeAPI && this.getScanLogs();
 			}
 		);
 	};
 	/**
-	 * Handle scan type 
-	 * @param name 
-	 * @param value 
+	 * Handle scan type
+	 * @param name
+	 * @param value
 	 */
 	handleButtonChange = (name: string, value: string) => {
 		let oneTimeAPI = false;
-	 if (value !== this.state[name]) {
-		oneTimeAPI = true;
-	}
+		if (value !== this.state[name]) {
+			oneTimeAPI = true;
+		}
 		this.setState(
 			{
 				[name]: value,
 			},
 			() => {
-				if(oneTimeAPI){
+				if (oneTimeAPI) {
 					this.getScanLogs();
 					this.getPartnerList();
 				}
-				
 			}
 		);
 	};
@@ -611,7 +621,7 @@ class SendGoods extends Component<Props, States> {
 		this.setState({ geolevel1List: level1List });
 		let level1Options: any = [];
 		this.state.geolevel1List?.forEach((item: any) => {
-			let level1Info = { text: item.name, code: item.code, value: item.name };
+			let level1Info = { label: item.name, code: item.code, value: item.name };
 			level1Options.push(level1Info);
 		});
 		let userrole = this.state.loggedUserInfo?.role;
@@ -662,15 +672,15 @@ class SendGoods extends Component<Props, States> {
 			let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
 			let level2Options: any = [];
 			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-				let level1Info = { text: item.name, value: item.name, code: item.code };
+				let level1Info = { label: item.name, value: item.name, code: item.code };
 				level2Options.push(level1Info);
 			});
 			let geolevel1Obj = {
-				text: "ALL",
+				label: "ALL",
 				value: "ALL",
 				code: "ALL",
 			};
-			let geolevel3Obj = [{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
+			let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
 			level2Options.unshift(geolevel1Obj);
 			dynamicFieldVal[index + 1].options = level2Options;
 			this.setState({ dynamicFields: dynamicFieldVal });
@@ -684,6 +694,7 @@ class SendGoods extends Component<Props, States> {
 					...prevState.selectedFilters,
 					geolevel2: "ALL",
 				},
+				selectedGeolevel2Options: geolevel1Obj,
 			}));
 		} else if (type === "geolevel2") {
 			this.setState((prevState: any) => ({
@@ -704,7 +715,7 @@ class SendGoods extends Component<Props, States> {
 		}));
 	};
 
-	getBatchList=()=>{
+	getBatchList = () => {
 		const { getBatchList } = apiURL;
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
@@ -712,46 +723,50 @@ class SendGoods extends Component<Props, States> {
 		invokeGetAuthService(getBatchList, countrycode)
 			.then((response: any) => {
 				let data = Object.keys(response.data).length !== 0 ? response.data : [];
-				const options =data?.length > 0
-							? data.map((val: any) => {
-									return { value: val.batchno, text: val.batchno };
-							  })
-							: [];
-				this.setState({ isLoader: false, batchOptions:options});
+				let options = [{ value: "ALL", label: "ALL" }];
+				const temp =
+					data?.length > 0
+						? data.map((val: any) => {
+								return { value: val.batchno, label: val.batchno };
+						  })
+						: [];
+				const list = [...options, ...temp];
+				this.setState({ isLoader: false, batchOptions: list });
 			})
 			.catch((error: any) => {
 				this.setState({ isLoader: false });
 				let message = error.message;
 				Alert("warning", message);
 			});
-
-	}
-	getPartnerList=()=>{
+	};
+	getPartnerList = () => {
 		const { getPartnerList } = apiURL;
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			soldtorole:this.state.selectedScanType === "SG - D2R"?"RETAILER":"DISTRIBUTOR",
-			isfiltered:true,
+			soldtorole: this.state.selectedScanType === "SG - D2R" ? "RETAILER" : "DISTRIBUTOR",
+			isfiltered: true,
 			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
 		};
-		let condName= this.state.selectedScanType === "SG - D2R"? "retailerOptions":"distributorOptions";
+		let condName = this.state.selectedScanType === "SG - D2R" ? "retailerOptions" : "distributorOptions";
 		invokeGetAuthService(getPartnerList, countrycode)
 			.then((response: any) => {
 				let data = Object.keys(response.data).length !== 0 ? response.data : [];
-				const options =data?.length > 0
-							? data.map((val: any) => {
-									return { value: val.soldtoid, text: val.soldtoname };
-							  })
-							: [];
-				this.setState({ isLoader: false, [condName]:options});
+				let options = [{ value: "ALL", label: "ALL" }];
+				const temp =
+					data?.length > 0
+						? data.map((val: any) => {
+								return { value: val.soldtoid, label: val.soldtoname };
+						  })
+						: [];
+				const list = [...options, ...temp];
+				this.setState({ isLoader: false, [condName]: list });
 			})
 			.catch((error: any) => {
 				this.setState({ isLoader: false });
 				let message = error.message;
 				Alert("warning", message);
 			});
-
-	}
+	};
 	render() {
 		const {
 			retailerPopupData,
@@ -768,7 +783,11 @@ class SendGoods extends Component<Props, States> {
 			condFilterScan,
 			batchOptions,
 			distributorOptions,
-			activeSortKeyIcon
+			activeSortKeyIcon,
+			selectedBatchOptions,
+			selectedCustomerOptions,
+			selectedGeolevel1Options,
+			selectedGeolevel2Options,
 		} = this.state;
 
 		const pageNumbers = [];
@@ -779,11 +798,12 @@ class SendGoods extends Component<Props, States> {
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+			console.log("op", list.options);
 			return (
 				<React.Fragment key={`geolevels` + index}>
 					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
 						<div className="col" style={{ marginBottom: "5px" }}>
-							<NativeDropdown
+							{/* <NativeDropdown
 								name={list.name}
 								label={`Scanned by - ${nameCapitalized==="Add" ? "ADD" :nameCapitalized}`}
 								options={list.options}
@@ -796,7 +816,20 @@ class SendGoods extends Component<Props, States> {
 								value={list.value}
 								id="geolevel-test"
 								dataTestId="geolevel-test"
-								isDisabled = {list.name === "geolevel1" }
+							/> */}
+							<ReactSelect
+								name={list.name}
+								label={`Scanned by - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
+								options={list.options}
+								handleChange={(selectedOptions: any, e: any) => {
+									list.value = selectedOptions.value;
+									this.getOptionLists("manual", list.name, selectedOptions.value, index);
+									this.handleReactSelect(selectedOptions, e, list.name);
+									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
+								}}
+								value={list.name === "geolevel1" ? selectedGeolevel1Options : selectedGeolevel2Options}
+								id="geolevel-test"
+								dataTestId="geolevel-test"
 							/>
 						</div>
 					)}
@@ -827,12 +860,14 @@ class SendGoods extends Component<Props, States> {
 								}}
 							>
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
-									<NativeDropdown
+									<ReactSelect
 										name="soldtoid"
-										value={selectedFilters.soldtoid}
-										label={`Customer Name (${this.state.selectedScanType === "SG - D2R" ? "Retailer" :"Distributor"})` }
-										handleChange={(e: any) => this.handleSelect(e, "soldtoid")}
-										options={this.state.selectedScanType === "SG - D2R" ? retailerOptions :distributorOptions}
+										value={selectedCustomerOptions}
+										label={`Customer Name (${this.state.selectedScanType === "SG - D2R" ? "Retailer" : "Distributor"})`}
+										handleChange={(selectedOptions: any, e: any) =>
+											this.handleReactSelect(selectedOptions, e, "selectedCustomerOptions")
+										}
+										options={this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions}
 										defaultValue="ALL"
 										id="retailer-test"
 										dataTestId="retailer-test"
@@ -863,11 +898,23 @@ class SendGoods extends Component<Props, States> {
 								<div className="form-group container" onClick={(e) => e.stopPropagation()}>
 									<div className="row column-dropdown">
 										<div className="col">
-											<NativeDropdown
+											{/* <NativeDropdown
 												name="batchno"
 												value={selectedFilters.batchno}
 												label={"Batch #"}
 												handleChange={(e: any) => this.handleSelect(e, "batchno")}
+												options={batchOptions}
+												defaultValue="ALL"
+												id="batchno-test"
+												dataTestId="batchno-test"
+											/> */}
+											<ReactSelect
+												name="batchno"
+												value={selectedBatchOptions}
+												label={"Batch #"}
+												handleChange={(selectedOptions: any, e: any) =>
+													this.handleReactSelect(selectedOptions, e, "selectedBatchOptions")
+												}
 												options={batchOptions}
 												defaultValue="ALL"
 												id="batchno-test"
@@ -979,13 +1026,14 @@ class SendGoods extends Component<Props, States> {
 								<table className="table">
 									<thead>
 										<tr>
-											<th style={{ width: this.state.selectedScanType === "SG - D2R"?"12%" :"15%" }} onClick={(e) => this.handleSort(e, "labelid", allScanLogs, isAsc)}>
+											<th
+												style={{ width: this.state.selectedScanType === "SG - D2R" ? "12%" : "15%" }}
+												onClick={(e) => this.handleSort(e, "labelid", allScanLogs, isAsc)}
+											>
 												LABEL/BATCH ID
-												{
-													activeSortKeyIcon === "labelid"? (
-														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-													) : null
-												}
+												{activeSortKeyIcon === "labelid" ? (
+													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+												) : null}
 											</th>
 											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "soldtoname", allScanLogs, isAsc)}>
 												CUSTOMER NAME/ID
@@ -1025,7 +1073,7 @@ class SendGoods extends Component<Props, States> {
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
-											
+
 											{/* <th
 												style={{ width: "10%" }}
 												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
@@ -1035,9 +1083,12 @@ class SendGoods extends Component<Props, States> {
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th> */}
-											<th style={{ width: this.state.selectedScanType === "SG - D2R"?"10%":"16%" }} onClick={(e) => this.handleSort(e, "expirydate", allScanLogs, isAsc)}>
+											<th
+												style={{ width: this.state.selectedScanType === "SG - D2R" ? "10%" : "16%" }}
+												onClick={(e) => this.handleSort(e, "expirydate", allScanLogs, isAsc)}
+											>
 												EXPIRY DATE
-												{activeSortKeyIcon ===  "expirydate"  ? (
+												{activeSortKeyIcon === "expirydate" ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
@@ -1088,7 +1139,11 @@ class SendGoods extends Component<Props, States> {
 														<td>
 															<div className="farmer-id">
 																<p>{_.startCase(_.toLower(value.productname))}</p>
-																<label>{value.productid===null ? "":value.productid + " - " +_.capitalize(value.productgroup) }</label>
+																<label>
+																	{value.productid === null
+																		? ""
+																		: value.productid + " - " + _.capitalize(value.productgroup)}
+																</label>
 															</div>
 														</td>
 														<td>{value.channeltype}</td>
@@ -1115,7 +1170,7 @@ class SendGoods extends Component<Props, States> {
 																<label>{value.soldbyid}</label>
 															</div>
 														</td>
-														
+
 														{/* <td>{value.soldbygeolevel1}</td> */}
 														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 													</tr>
@@ -1211,7 +1266,9 @@ class SendGoods extends Component<Props, States> {
 									padding: "7px",
 									border: "1px solid  #7eb343",
 								}}
-								handleClick={() => this.filterScans(retailerPopupData[condFilterScan === "customer" ? "soldtoid" : "soldbyid"])}
+								handleClick={() =>
+									this.filterScans(retailerPopupData[condFilterScan === "customer" ? "soldtoid" : "soldbyid"])
+								}
 							/>
 						</DialogActions>
 					</SimpleDialog>
