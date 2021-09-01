@@ -46,6 +46,7 @@ export default function ReactSelect({
         isSearchable
         name={name}
         defaultValue={options&&options[0]}
+        isDisabled={isDisabled}
       />
     </div>
   );
