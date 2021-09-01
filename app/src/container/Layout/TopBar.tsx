@@ -138,8 +138,10 @@ class TopBar extends Component<Props, States> {
                     <div className="profileImg">
                       <div className="content">
                         <h4 className="title">{userData.username}</h4>
-
-                        {/* <span>{userData.email}</span> */}
+                        
+                        <p className="sub-title">{userData.role}</p>
+                      
+                        <p className="sub-title">{userData.geolevel1}</p>
                       </div>
                       <img
                         src={DropdownArrow}
@@ -164,7 +166,7 @@ class TopBar extends Component<Props, States> {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <div style={{ paddingLeft: "20px", paddingTop: "8px" }}>
+              <div style={{ paddingLeft: "20px" }}>
                 <img src={logo} alt="Logo" height="50" />
               </div>
             </div>
