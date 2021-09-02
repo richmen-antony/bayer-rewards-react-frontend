@@ -19,6 +19,7 @@ const INITIAL_STATE: any = {
 };
 
 function commonReducer(state = {INITIAL_STATE}, action: any): any {
+    console.log('geoLevel1Listreducer', state)
     switch (action.type) {
         case LOADING_REQUEST: {
             return {
@@ -32,6 +33,7 @@ function commonReducer(state = {INITIAL_STATE}, action: any): any {
                 isLoader: false,
                 geoLevel1List: Object.keys(action.levels.body).length !== 0 ? action.levels.body.geolevel1 : []
             }
+           
         }
         case GET_GEOLOCATION_LEVEL1_OPTIONS_ERROR : {
             return {
@@ -44,8 +46,8 @@ function commonReducer(state = {INITIAL_STATE}, action: any): any {
 			let levels: any = [];
             let levelsNames: any = [];
 			locationData.forEach((item: any) => {
-              levelsNames.push(item.locationhiername.toLowerCase());
-			  let locationhierlevel = item.locationhierlevel;
+              levelsNames.push(item.name.toLowerCase());
+			  let locationhierlevel = item.level;
 			  let geolevels = "geolevel" + locationhierlevel;
 			  levels.push(geolevels);
 			});
@@ -62,6 +64,7 @@ function commonReducer(state = {INITIAL_STATE}, action: any): any {
             }
         }
         default:
+
             return state;
     }
 }

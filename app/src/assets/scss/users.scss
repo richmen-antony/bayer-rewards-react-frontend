@@ -94,10 +94,10 @@
           font-family: "appRegular" !important;
           border-top: 1px solid #dee2e6;
           .status {
-            display: flex;
+            display: inline-block;
             align-items: center;
             border-radius: 30px;
-            min-width: 100px;
+            min-width: 85px;
             font-size: 12px;
             padding: 10px;
             cursor: pointer;
@@ -214,10 +214,10 @@
     vertical-align: middle;
     // text-align: center;
     .status {
-      display: flex;
+      display: inline-block;
       align-items: center;
       border-radius: 30px;
-      min-width: 100px;
+      min-width: 80px;
       font-size: 12px;
       padding: 10px;
       cursor: pointer;

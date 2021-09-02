@@ -355,8 +355,8 @@ class ChannelPartners extends Component<Props, States> {
 			let locationData = response.body[0].locationhierarchy;
 			let levels: any = [];
 			locationData.forEach((item: any) => {
-			  levelsName.push(item.locationhiername.toLowerCase());
-			  let locationhierlevel = item.locationhierlevel;
+			  levelsName.push(item.name.toLowerCase());
+			  let locationhierlevel = item.level;
 			  let geolevels = "geolevel" + locationhierlevel;
 			  levels.push(geolevels);
 			});
@@ -1979,8 +1979,11 @@ class ChannelPartners extends Component<Props, States> {
 												<td >
 													<span
 														onClick={(event: any) => {
-															this.showPopup(event, "deActivatePopup");
-															this.getCurrentUserData(list);
+															(this.state.partnerType.type === 'Retailer') ? (
+															this.showPopup(event, "deActivatePopup")
+															// this.getCurrentUserData(list)
+															) : event.preventDefault(); 
+															this.getCurrentUserData(list)
 														}}
 														className={`status ${
 															list.userstatus === "ACTIVE"
@@ -1993,7 +1996,7 @@ class ChannelPartners extends Component<Props, States> {
 																? "declined"
 																: ""
 														}`}
-														style={{ fontStyle: "12px", height: "30px" }}
+														style={{ fontStyle: "12px", height: "30px", cursor : this.state.partnerType.type === 'Retailer' ? "pointer" : "default"}}
 													>
 														<img
 															style={{ marginRight: "6px" }}

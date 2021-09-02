@@ -143,7 +143,7 @@ export const OverallScans = ({
     const handleUpdateRetailer = (value: object) => {
       setretailerPopupData(value)
     }
-    console.log('oneralltableCellIndex', tableCellIndex)
+    // console.log('oneralltableCellIndex', tableCellIndex)
 
     return (
 

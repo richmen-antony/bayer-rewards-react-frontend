@@ -259,8 +259,8 @@ class ChangeLogs extends Component<Props, States> {
                       <tr>
                         <td>{list.userid}</td>
                         <td>{_.startCase(_.toLower(list.fieldname))} </td>
-                        <td>{_.startCase(_.toLower(list.oldvalue))} </td>
-                        <td>{_.startCase(_.toLower(list.newvalue))} </td>
+                        <td>{list.oldvalue} </td>
+                        <td>{list.newvalue} </td>
                         <td>
                           {moment(list.lastupdateddate).format("YYYY-MM-DD")}
                         </td>

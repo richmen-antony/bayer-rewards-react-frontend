@@ -223,7 +223,8 @@ class CreateUser extends Component<any, any> {
 
   componentDidUpdate(prevProps:any) {
     if(prevProps.errorMessage !== this.props.errorMessage) {
-      Alert("warning", this.props.errorMessage)
+      console.log('createuserdidupdate');
+      // Alert("warning", this.props.errorMessage)
     }
   }
 
@@ -301,8 +302,8 @@ class CreateUser extends Component<any, any> {
         let locationData = response.body[0].locationhierarchy;
         let levels: any = [];
         locationData.forEach((item: any) => {
-          levelsName.push(item.locationhiername.toLowerCase());
-          let locationhierlevel = item.locationhierlevel;
+          levelsName.push(item.name.toLowerCase());
+          let locationhierlevel = item.level;
           let geolevels = 'geolevel'+locationhierlevel;
           levels.push(geolevels);
         });
@@ -2815,7 +2816,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                         className="form-control"
                                         name="firstname"
                                         placeHolder="Eg: Keanu"
-                                        value={item.firstname}
+                                        value={_.startCase(_.toLower(item.firstname))}
                                         onChange={(e: any) =>
                                           this.handleChange(
                                             idx,
@@ -2843,7 +2844,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                         className="form-control"
                                         name="lastname"
                                         placeHolder="Eg: Reeves"
-                                        value={item.lastname}
+                                        value={_.startCase(_.toLower(item.lastname))}
                                         onChange={(e: any) =>
                                           this.handleChange(
                                             idx,
@@ -3114,7 +3115,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                           className="form-control"
                                           name="firstname"
                                           placeHolder="Eg: Keanu"
-                                          value={item.firstname}
+                                          value={_.startCase(_.toLower(item.firstname))}
                                           onChange={(e: any) =>
                                             this.handleChange(
                                               idx,
@@ -3140,7 +3141,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                           className="form-control"
                                           name="lastname"
                                           placeHolder="Eg: Reeves"
-                                          value={item.lastname}
+                                          value={_.startCase(_.toLower(item.lastname))}
                                           onChange={(e: any) =>
                                             this.handleChange(
                                               idx,

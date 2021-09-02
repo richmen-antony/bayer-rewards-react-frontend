@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState,useCallback } from "react";
+import {useDispatch, useSelector} from 'react-redux';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import AUX from "../../hoc/Aux_";
@@ -22,12 +23,17 @@ import { getLocalStorageData } from "../../utility/base/localStore";
 import CalenderIcon from "../../assets/icons/calendar.svg";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
+import {
+	getGeographicLevel1Options,
+	getGeoLocationFields
+  } from '../../redux/actions/common/common';
+import { ENGINE_METHOD_PKEY_ASN1_METHS } from "node:constants";
 
 let levelsName: any = [];
 
-
-
 const ConsolidatedScans = (Props: any) => {
+	// const dispatch            = useDispatch();
+	// const geoLevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
 	const [searchText, setSearchText] = useState<string>("");
 	const [retailerOptions, setRetailerOptions] = useState<string[]>([]);
 	const [optionslist, setOptionslist] = useState([]);
@@ -69,6 +75,7 @@ const ConsolidatedScans = (Props: any) => {
 			productgroup: "ALL",
 			status: "ALL",
 			geolevel1: "ALL",
+			geolevel2: "ALL",
 			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
 			lastmodifieddateto: new Date(),
 			partnerType: "Retailers",
@@ -307,13 +314,14 @@ const ConsolidatedScans = (Props: any) => {
 		  },
 	  ]);
 
-	  useEffect(()=>{
+	useEffect(()=>{
+		// dispatch(getGeographicLevel1Options());
 		let distributorId = distributorScans[0].distributorId;
 		getSelectedBrands(distributorId);
 		getCountryList();
 		getHierarchyDatas();
-	
-	},[])
+		getGeographicFields();
+	},[]);
 
 	const getSelectedBrands = (distributorId : number, idx?:any, type?:string)=>{
 		let allBrands = scannedBrands?.filter((brands:any) => brands.distributorId === distributorId);
@@ -354,39 +362,6 @@ const ConsolidatedScans = (Props: any) => {
 		];
 		setcountryList(res);
 	  }
-	// const getHierarchyDatas = () => {
-	// 	const { getHierarchyLevels } = apiURL;
-	// 	let localObj: any = getLocalStorageData("userData");
-	// 	let userData = JSON.parse(localObj);
-	// 	let countrycode = {
-	// 	  countryCode: userData?.countrycode,
-	// 	};
-	// 	invokeGetAuthService(getHierarchyLevels, countrycode)
-	// 	  .then((response: any) => {
-	// 		let locationhierarchy =
-	// 		  Object.keys(response?.body).length !== 0
-	// 			? response?.body?.geolevel1
-	// 			: [];
-	
-	// 		setRetailerOptions([...retailerOptions, locationhierarchy]);
-	// 		const levels: any = [];
-	// 		locationhierarchy?.length > 0 &&
-	// 		  locationhierarchy.forEach((item: any, index: number) => {
-	// 			let obj = {
-	// 			  key: index,
-	// 			  text: item.name,
-	// 			  code: item.code,
-	// 			  value: item.name,
-	// 			};
-	// 			levels.push(obj);
-	// 		  });
-	// 		setOptionslist(levels);
-	// 	  })
-	// 	  .catch((error: any) => {
-	// 		let message = error.message;
-	// 		console.log("getHierarchyDatas warning", message);
-	// 	  });
-	//   };
 
 	const getHierarchyDatas = () => {
 		//To get all level datas
@@ -402,7 +377,7 @@ const ConsolidatedScans = (Props: any) => {
 				let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
 				setIsLoader(true);
 				setgeolevel1List(geolevel1);
-				getGeographicFields();
+
 				// this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
 				// 	this.getGeographicFields();
 				// });
@@ -415,7 +390,6 @@ const ConsolidatedScans = (Props: any) => {
 	}
 
 	const getGeographicFields = () => {
-		console.log('callinggetGeographicFields')
 		setIsLoader(true);
 		const { getTemplateData } = apiURL;
 		let localObj: any = getLocalStorageData("userData");
@@ -428,29 +402,24 @@ const ConsolidatedScans = (Props: any) => {
 				let locationData = response.body[0].locationhierarchy;
 				let levels: any = [];
 				locationData.forEach((item: any) => {
-					levelsName.push(item.locationhiername.toLowerCase());
-				
-					let locationhierlevel = item.locationhierlevel;
+					levelsName.push(item.name.toLowerCase());
+					let locationhierlevel = item.level;
 					let geolevels = "geolevel" + locationhierlevel;
 					levels.push(geolevels);
 				});
-				
-
 				let levelsData: any = [];
 				locationData?.length > 0 &&
 					locationData.forEach((item: any, index: number) => {
 						if (index > 0) {
-							let locationhierlevel = item.locationhierlevel;
+							let locationhierlevel = item.level;
 							let geolevels = "geolevel" + locationhierlevel;
-							let obj = { name: item.locationhiername, geolevels };
+							let obj = { name: item.name, geolevels };
 							levelsData.push(obj);
 						}
 					});
-
 					setIsLoader(false);
-					console.log('levelsname', levels);
 					setgeographicFields(levels);
-					getDynamicOptionFields();
+					// getDynamicOptionFields();
 				// this.setState(
 				// 	{
 				// 		isLoader: false,
@@ -468,12 +437,12 @@ const ConsolidatedScans = (Props: any) => {
 				Alert("warning", message);
 			});
 	}
-	// useEffect(()=>{
-	// 	console.log('geodemo')
-	// 	if(geographicFields.length < 6) {
-	// 		getGeographicFields();
-	// 	}
-	// },[]);
+
+	useEffect(()=>{
+		// if(geographicFields.length > 0) {
+			getDynamicOptionFields();
+		// }
+	},[geographicFields]);
 
 	const getDynamicOptionFields = (reset?: string) => {
 		let level1List:any = geolevel1List;
@@ -493,7 +462,6 @@ const ConsolidatedScans = (Props: any) => {
 		let countrycode = {
 			countryCode: userData?.countrycode,
 		};
-		console.log('geographicFields',geographicFields)
 		geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
@@ -512,46 +480,48 @@ const ConsolidatedScans = (Props: any) => {
 	};
 
 	const getOptionLists = (cron: any, type: any, value: any, index: any) => {
-	// 	let geolevel1List = geolevel1List;
-	// setlevel1Options(geolevel1List);
-		// let dynamicFieldVal = dynamicFields;
-		// if (type === "geolevel1") {
-		// 	let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
-		// 	let level2Options: any = [];
-		// 	filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-		// 		let level1Info = { text: item.name, value: item.name, code: item.code };
-		// 		level2Options.push(level1Info);
-		// 	});
-		// 	let geolevel1Obj = {
-		// 		text: "ALL",
-		// 		value: "ALL",
-		// 		code: "ALL",
-		// 	};
-		// 	let geolevel3Obj = [{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
-		// 	level2Options.unshift(geolevel1Obj);
-		// 	dynamicFieldVal[index + 1].options = level2Options;
-		// 	this.setState({ dynamicFields: dynamicFieldVal });
-		// 	dynamicFieldVal[index + 2].options = geolevel3Obj;
-		// 	dynamicFieldVal[index].value = value;
-		// 	dynamicFieldVal[index + 1].value = "ALL";
-		// 	dynamicFieldVal[index + 2].value = "ALL";
-		// 	this.setState((prevState: any) => ({
-		// 		dynamicFields: dynamicFieldVal,
-		// 		selectedFilters: {
-		// 			...prevState.selectedFilters,
-		// 			geolevel2: "ALL",
-		// 			geolevel3: "ALL",
-		// 		},
-		// 	}));
-		// } else if (type === "geolevel2") {
-		// 	this.setState((prevState: any) => ({
-		// 		dynamicFields: dynamicFieldVal,
-		// 		selectedFilters: {
-		// 			...prevState.selectedFilters,
-		// 			geolevel3: "ALL",
-		// 		},
-		// 	}));
-		// }
+		let dynamicFieldVal:any = dynamicFields;
+		if (type === "geolevel1") {
+			let filteredLevel1:any = geolevel1List?.filter((level1: any) => level1.name === value);
+			let level2Options: any = [];
+			console.log('filteredLevel1',filteredLevel1)
+			filteredLevel1[0]?.geolevel2.forEach((item: any) => {
+				let level1Info = { text: item.name, value: item.name, code: item.code };
+				level2Options.push(level1Info);
+			});
+			let geolevel1Obj = {
+				text: "ALL",
+				value: "ALL",
+				code: "ALL",
+			};
+			let geolevel3Obj = [{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
+			level2Options.unshift(geolevel1Obj);
+			dynamicFieldVal[index + 1].options = level2Options;
+			dynamicFieldVal[index + 2].options = geolevel3Obj;
+			dynamicFieldVal[index].value = value;
+			dynamicFieldVal[index + 1].value = "ALL";
+			dynamicFieldVal[index + 2].value = "ALL";
+			setdynamicFields(dynamicFieldVal);
+			setSelectedFilters({...selectedFilters, geolevel2: "ALL"});
+			// this.setState((prevState: any) => ({
+			// 	dynamicFields: dynamicFieldVal,
+			// 	selectedFilters: {
+			// 		...prevState.selectedFilters,
+			// 		geolevel2: "ALL",
+			// 		geolevel3: "ALL",
+			// 	},
+			// }));
+
+		} else if (type === "geolevel2") {
+			setdynamicFields(dynamicFieldVal);
+			// this.setState((prevState: any) => ({
+			// 	dynamicFields: dynamicFieldVal,
+			// 	selectedFilters: {
+			// 		...prevState.selectedFilters,
+			// 		geolevel3: "ALL",
+			// 	},
+			// }));
+		}
 	};
 	const handleSearch = () => {
 
@@ -607,7 +577,7 @@ const ConsolidatedScans = (Props: any) => {
 		  }));
 		}
 	  };
-	  useEffect(() => {}, [selectedFilters]);
+	//   useEffect(() => {}, [selectedFilters]);
 	  
 	//   const handleRegionSelect = (event: any, name: string) => {
 	// 	setSelectedFilters((prevState) => ({
@@ -621,34 +591,35 @@ const ConsolidatedScans = (Props: any) => {
 			[label.toLocaleLowerCase()]: value,
 		}))
 	};
+	console.log('geographicfields',geographicFields);
 	console.log('dynamicFields',dynamicFields);
-	// console.log('levelsName',levelsName)
-	// const fields = dynamicFields;
-	// const locationList = fields?.map((list: any, index: number) => {
-	// 	let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-	// 	return (
-	// 		<React.Fragment key={`geolevels` + index}>
-	// 			{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
-	// 				<div className="col" style={{ marginBottom: "5px" }}>
-	// 					<NativeDropdown
-	// 						name={list.name}
-	// 						label={nameCapitalized}
-	// 						options={list.options}
-	// 						handleChange={(e: any) => {
-	// 							e.stopPropagation();
-	// 							list.value = e.target.value;
-	// 							getOptionLists("manual", list.name, e.target.value, index);
-	// 							// handleGeolevelDropdown(e.target.value, list.name);
-	// 						}}
-	// 						value={list.value}
-	// 						id="geolevel-test"
-	// 						dataTestId="geolevel-test"
-	// 					/>
-	// 				</div>
-	// 			)}
-	// 		</React.Fragment>
-	// 	);
-	// });
+	console.log('levelsName',levelsName)
+	const fields = dynamicFields;
+	const locationList = fields?.map((list: any, index: number) => {
+		let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+		return (
+			<React.Fragment key={`geolevels` + index}>
+				{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
+					<div className="col" style={{ marginBottom: "5px" }}>
+						<NativeDropdown
+							name={list.name}
+							label={nameCapitalized}
+							options={list.options}
+							handleChange={(e: any) => {
+								e.stopPropagation();
+								list.value = e.target.value;
+								getOptionLists("manual", list.name, e.target.value, index);
+								handleGeolevelDropdown(e.target.value, list.name);
+							}}
+							value={list.value}
+							id="geolevel-test"
+							dataTestId="geolevel-test"
+						/>
+					</div>
+				)}
+			</React.Fragment>
+		);
+	});
 
 	interface IProps {
 		onChange?: any;
@@ -802,9 +773,9 @@ const ConsolidatedScans = (Props: any) => {
 									dataTestId="region-test"
 								/>
 							</div> */}
-							{/* <div className="form-group container" onClick={(e) => e.stopPropagation()}>
+							<div className="form-group container" onClick={(e) => e.stopPropagation()}>
 									<div className="row column-dropdown">{locationList}</div>
-								</div> */}
+								</div>
 							<label className="font-weight-bold pt-2">Scanned Period</label>
 								<div className="pt-1">
 									{scannedPeriodsList.map((item: any, i: number) => (

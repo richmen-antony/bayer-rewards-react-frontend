@@ -257,8 +257,8 @@ class ChannelPartners extends Component<Props, States> {
 			let locationData = response.body[0].locationhierarchy;
 			let levels: any = [];
 			locationData.forEach((item: any) => {
-			  levelsName.push(item.locationhiername.toLowerCase());
-			  let locationhierlevel = item.locationhierlevel;
+			  levelsName.push(item.name.toLowerCase());
+			  let locationhierlevel = item.level;
 			  let geolevels = "geolevel" + locationhierlevel;
 			  levels.push(geolevels);
 			});
