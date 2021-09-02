@@ -106,6 +106,7 @@ class SellFarmer extends Component<Props, States> {
 	tableCellIndex: any = 0;
 	timeOut: any;
 	paginationRef:any;
+	closeToggle: any;
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -151,7 +152,7 @@ class SellFarmer extends Component<Props, States> {
 			loggedUserInfo: {},
 			inActiveFilter: false,
 			partnerTypeList: ["Retailers"],
-			salesType: [ "ADVISOR_SALES"],
+			salesType: ["ADVISOR_SALES"],
 			partnerType: {
 				type: "Retailers",
 			  },
@@ -282,9 +283,9 @@ class SellFarmer extends Component<Props, States> {
 			locationData?.length > 0 &&
 				locationData.forEach((item: any, index: number) => {
 					if (index > 0) {
-						let locationhierlevel = item.locationhierlevel;
+						let locationhierlevel = item.level;
 						let geolevels = "geolevel" + locationhierlevel;
-						let obj = { name: item.locationhiername, geolevels };
+						let obj = { name: item.name, geolevels };
 						levels.push(obj);
 					}
 				});
@@ -414,9 +415,7 @@ class SellFarmer extends Component<Props, States> {
 	applyFilter = () => {
 		this.setState({ isFiltered: true, inActiveFilter: false }, () => {
 			this.getScanLogs();
-			this.toggleFilter();
-
-			// this.resetFilter();
+			this.closeToggle();
 		});
 	};
 	
@@ -616,6 +615,9 @@ class SellFarmer extends Component<Props, States> {
 								toolTipText="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
 								buttonChange={this.handleButtonChange}
 								condSelectedButton={this.state.selectedSalesType}
+								onClose={(node: any) => {
+									this.closeToggle = node;
+								}}
 							>
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
 									<NativeDropdown

@@ -227,9 +227,9 @@ class OrderHistory extends Component<Props, States> {
 			locationData?.length > 0 &&
 				locationData.forEach((item: any, index: number) => {
 					if (index > 0) {
-						let locationhierlevel = item.locationhierlevel;
+						let locationhierlevel = item.level;
 						let geolevels = "geolevel" + locationhierlevel;
-						let obj = { name: item.locationhiername, geolevels };
+						let obj = { name: item.name, geolevels };
 						levels.push(obj);
 					}
 				});
