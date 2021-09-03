@@ -33,7 +33,7 @@ export default function ReactSelect({
     dataTestId,
     ...props
   }: DropdownProps) {
-
+ const defaultOptions=[{ value: "ALL", label: "ALL" }]
 
   return (
     <div className="react-select">
@@ -46,8 +46,9 @@ export default function ReactSelect({
         isClearable={false}
         isSearchable
         name={name}
-        defaultValue={options&&options[0]}
+        defaultValue={defaultOptions&&defaultOptions[0]}
         isDisabled={isDisabled}
+        noOptionsMessage={() => 'No records found!'}
       />
     </div>
   );
