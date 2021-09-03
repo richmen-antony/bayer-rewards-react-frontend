@@ -27,7 +27,8 @@ import {
 	getGeographicLevel1Options,
 	getGeoLocationFields
   } from '../../redux/actions/common/common';
-import { ENGINE_METHOD_PKEY_ASN1_METHS } from "node:constants";
+  import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
+  import _ from "lodash";
 
 let levelsName: any = [];
 
@@ -453,26 +454,46 @@ const ConsolidatedScans = (Props: any) => {
 		setgeolevel1List(level1List);
 		let level1Options: any = [];
 		geolevel1List?.forEach((item: any) => {
-			let level1Info = { text: item.name, code: item.code, value: item.name };
+			let level1Info = { label: item.name, code: item.code, value: item.name };
 			level1Options.push(level1Info);
 		});
 		let setFormArray: any = [];
 		let localObj: any = getLocalStorageData("userData");
 		let userData = JSON.parse(localObj);
-		let countrycode = {
-			countryCode: userData?.countrycode,
-		};
+		
+		let userrole = userData?.role;
+		let level2Options: any = [];
+		if (userrole === "RSM" ){
+			let filteredLevel1:any = geolevel1List?.filter((list:any) => list.name === userData?.geolevel1);
+			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+				let level2Info = { label: item.name, value: item.name, code: item.code };
+				level2Options.push(level2Info);
+			});
+			let geolevel2Obj = {
+				label: "ALL",
+				value: "ALL",
+				code: "ALL",
+			};
+			level2Options.unshift(geolevel2Obj);
+		} else {
+			let level1Info = { label: "ALL", value :"ALL" };
+			level2Options.push(level1Info);
+		}
+		let usergeolevel1 = userData?.geolevel1;
+		let geolevel1Obj = { label : usergeolevel1, value : usergeolevel1};
 		geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: list === "geolevel0" ? countrycode : "",
+				value: list ===  "geolevel1" && (userrole === "RSM") ? geolevel1Obj : {label: "ALL",value: "ALL"},
 				options:
 					list === "geolevel0"
 						? countryList
 						: list === "geolevel1"
 						? level1Options
-						: [{ text: "ALL", name: "ALL" }],
+						: list === "geolevel2"
+						? level2Options
+						: [{ label: "ALL",value: "ALL" }],
 				error: "",
 			});
 		});
@@ -480,27 +501,28 @@ const ConsolidatedScans = (Props: any) => {
 	};
 
 	const getOptionLists = (cron: any, type: any, value: any, index: any) => {
+		let newvalue = {label : value, name : value};
 		let dynamicFieldVal:any = dynamicFields;
 		if (type === "geolevel1") {
 			let filteredLevel1:any = geolevel1List?.filter((level1: any) => level1.name === value);
 			let level2Options: any = [];
 			console.log('filteredLevel1',filteredLevel1)
 			filteredLevel1[0]?.geolevel2.forEach((item: any) => {
-				let level1Info = { text: item.name, value: item.name, code: item.code };
+				let level1Info = { label: item.name, value: item.name, code: item.code };
 				level2Options.push(level1Info);
 			});
 			let geolevel1Obj = {
-				text: "ALL",
+				label: "ALL",
 				value: "ALL",
 				code: "ALL",
 			};
-			let geolevel3Obj = [{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
+			let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
 			level2Options.unshift(geolevel1Obj);
 			dynamicFieldVal[index + 1].options = level2Options;
 			dynamicFieldVal[index + 2].options = geolevel3Obj;
-			dynamicFieldVal[index].value = value;
-			dynamicFieldVal[index + 1].value = "ALL";
-			dynamicFieldVal[index + 2].value = "ALL";
+			dynamicFieldVal[index].value = newvalue;
+			dynamicFieldVal[index + 1].value = {label: "ALL",value: "ALL"};
+			dynamicFieldVal[index + 2].value = {label: "ALL",value: "ALL"};
 			setdynamicFields(dynamicFieldVal);
 			setSelectedFilters({...selectedFilters, geolevel2: "ALL"});
 			// this.setState((prevState: any) => ({
@@ -513,6 +535,7 @@ const ConsolidatedScans = (Props: any) => {
 			// }));
 
 		} else if (type === "geolevel2") {
+			dynamicFieldVal[index].value = newvalue;
 			setdynamicFields(dynamicFieldVal);
 			// this.setState((prevState: any) => ({
 			// 	dynamicFields: dynamicFieldVal,
@@ -577,31 +600,37 @@ const ConsolidatedScans = (Props: any) => {
 		  }));
 		}
 	  };
-	//   useEffect(() => {}, [selectedFilters]);
 	  
-	//   const handleRegionSelect = (event: any, name: string) => {
+	// const handleGeolevelDropdown = (value: string, label: any) => {
 	// 	setSelectedFilters((prevState) => ({
-	// 	  ...selectedFilters,
-	// 	  [name]: event.target.value,
-	// 	}));
-	//   };
-	const handleGeolevelDropdown = (value: string, label: any) => {
-		setSelectedFilters((prevState) => ({
-			...selectedFilters,
-			[label.toLocaleLowerCase()]: value,
-		}))
+	// 		...selectedFilters,
+	// 		[label.toLocaleLowerCase()]: value,
+	// 	}))
+	// };
+	const handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
+		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
+		console.log({ condOptionName });
+		setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+
+		// this.setState({
+		// 	selectedFilters: {
+		// 		...this.state.selectedFilters,
+		// 		[e.name]: selectedOption.value,
+		// 	},
+		// 	[condOptionName]: selectedOption,
+		// });
 	};
 	console.log('geographicfields',geographicFields);
 	console.log('dynamicFields',dynamicFields);
 	console.log('levelsName',levelsName)
 	const fields = dynamicFields;
 	const locationList = fields?.map((list: any, index: number) => {
-		let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+		let nameCapitalized = levelsName[index]?.charAt(0).toUpperCase() + levelsName[index]?.slice(1);
 		return (
 			<React.Fragment key={`geolevels` + index}>
 				{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
 					<div className="col" style={{ marginBottom: "5px" }}>
-						<NativeDropdown
+						{/* <NativeDropdown
 							name={list.name}
 							label={nameCapitalized}
 							options={list.options}
@@ -614,7 +643,22 @@ const ConsolidatedScans = (Props: any) => {
 							value={list.value}
 							id="geolevel-test"
 							dataTestId="geolevel-test"
-						/>
+						/> */}
+						<ReactSelect
+								name={list.name}
+								label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
+								options={list.options}
+								handleChange={(selectedOptions: any, e: any) => {
+									list.value = selectedOptions.value;
+									getOptionLists("manual", list.name, selectedOptions.value, index);
+									handleReactSelect(selectedOptions, e, list.name);
+									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
+								}}
+								value={list.value}
+								isDisabled = {list.name === "geolevel1" }
+								id="geolevel-test"
+								dataTestId="geolevel-test"
+							/>
 					</div>
 				)}
 			</React.Fragment>

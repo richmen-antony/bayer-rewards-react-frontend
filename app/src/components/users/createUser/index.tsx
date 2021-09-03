@@ -223,8 +223,7 @@ class CreateUser extends Component<any, any> {
 
   componentDidUpdate(prevProps:any) {
     if(prevProps.errorMessage !== this.props.errorMessage) {
-      console.log('createuserdidupdate');
-      // Alert("warning", this.props.errorMessage)
+      Alert("warning", this.props.errorMessage)
     }
   }
 
@@ -280,7 +279,7 @@ class CreateUser extends Component<any, any> {
 				let message = error.message
 				Alert("warning", message);
 			});
-	};
+	  };
 
   getCountryList() {
     //service call
