@@ -329,7 +329,7 @@ class CreateUser extends Component<any, any> {
         let userDetails = JSON.parse(data);
         this.setState({ username: userDetails.username }, () => {});
         let userFields = this.props.location.state?.userFields;
-        if(this.props.location?.page === "edit"){
+        if(this.props.location?.page === "edit" || this.props.location?.page === "validate"){
           let ownerInfo = {
             errObj: {
               emailErr: "",
@@ -1609,7 +1609,7 @@ class CreateUser extends Component<any, any> {
       let accInfo = this.state.accInfo;
       let whtaccountname = userData.whtaccountname
         ? ""
-        : "Please enter account name";
+        : "Please enter Store Name";
 
       if (whtaccountname !== "") {
         formValid = false;
@@ -2007,7 +2007,7 @@ class CreateUser extends Component<any, any> {
            if(e.target?.name ==='whtaccountname'){
             let whtaccountname = datas.whtaccountname
             ? ""
-            : "Please enter account name";
+            : "Please enter Store Name";
             this.setState({accountnameErr: whtaccountname});
           } else if( e.target?.name ==='whtownername') {
             let whtownername = datas.whtownername
@@ -2621,10 +2621,10 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
             : currentPage === "validate"
             ? "Approve"
             : "Create"}
-          <span>
+          {/* <span>
             <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
             <img src={RtButton} alt="" className="layout" />
-          </span>
+          </span> */}
         </button>
       );
     }
@@ -3618,7 +3618,6 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
               {currentStep !== 1 && (
                 <button
                   className="cus-btn-user reset buttonStyle"
-                  style={{ marginRight: "30px" }}
                   onClick={(e) => this.handleClick("back", e)}
                 >
                   <span>
@@ -3641,6 +3640,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
               >
                 Reset All
               </button>
+              {nextButton}
               {this.props.location?.page === "validate" && currentStep === 3 && (
                 <button
                   className="btn buttonStyle dec-btn-user"
@@ -3650,7 +3650,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                 </button>
               )}
             </div>
-            <div className="">{nextButton}</div>
+            {/* <div className=""></div> */}
           </div>
         </div>
       </AUX>
