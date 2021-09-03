@@ -64,7 +64,6 @@ function commonReducer(state = {INITIAL_STATE}, action: any): any {
             }
         }
         default:
-
             return state;
     }
 }

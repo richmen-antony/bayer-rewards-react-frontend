@@ -134,7 +134,7 @@ class SendGoods extends Component<Props, States> {
 				ordereddateto: new Date(),
 				retailer: "ALL",
 				partnerType: "Retailers",
-				scannedPeriod: "Last 30 days",
+				scannedPeriod: "",
 				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 				scandateto: moment(new Date()).format("YYYY-MM-DD"),
 				batchno: "ALL",
@@ -239,10 +239,10 @@ class SendGoods extends Component<Props, States> {
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
-			let startDate = filter.scannedPeriod === "Custom" ? filter.ordereddatefrom : filter.scandatefrom;
-			let endDate = filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scandateto;
-			filter.scandatefrom = moment(startDate).format("YYYY-MM-DD");
-			filter.scandateto = moment(endDate).format("YYYY-MM-DD");
+			let startDate = filter.scannedPeriod === "Custom" ? filter.ordereddatefrom : filter.scannedPeriod==="" ?null:filter.scandatefrom;
+			let endDate = filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod==="" ?null:filter.scandateto;
+			filter.scandatefrom =  startDate ?moment(startDate).format("YYYY-MM-DD") :null;
+			filter.scandateto = endDate?moment(endDate).format("YYYY-MM-DD"):null;
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
@@ -362,7 +362,7 @@ class SendGoods extends Component<Props, States> {
 					scandateto: moment(new Date()).format("YYYY-MM-DD"),
 					retailer: "ALL",
 					partnerType: "Retailers",
-					scannedPeriod: "Last 30 days",
+					scannedPeriod: "",
 					batchno: "ALL",
 					soldtoid: "ALL",
 				},
@@ -404,10 +404,10 @@ class SendGoods extends Component<Props, States> {
 		};
 		if (this.state.isFiltered) {
 			let filter = { ...this.state.selectedFilters };
-			let startDate = filter.scannedPeriod === "Custom" ? filter.ordereddatefrom : filter.scandatefrom;
-			let endDate = filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scandateto;
-			filter.scandatefrom = moment(startDate).format("YYYY-MM-DD");
-			filter.scandateto = moment(endDate).format("YYYY-MM-DD");
+			let startDate = filter.scannedPeriod === "Custom" ? filter.ordereddatefrom : filter.scannedPeriod==="" ?null:filter.scandatefrom;
+			let endDate = filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod==="" ?null:filter.scandateto;
+			filter.scandatefrom =  startDate ?moment(startDate).format("YYYY-MM-DD") :null;
+			filter.scandateto = endDate?moment(endDate).format("YYYY-MM-DD"):null;
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
@@ -482,7 +482,6 @@ class SendGoods extends Component<Props, States> {
 	};
 	handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
 		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
-		console.log({ condOptionName });
 		this.setState({
 			selectedFilters: {
 				...this.state.selectedFilters,
@@ -533,12 +532,15 @@ class SendGoods extends Component<Props, States> {
 	 */
 	handleButtonChange = (name: string, value: string) => {
 		let oneTimeAPI = false;
+		let customerOptions=this.state.selectedCustomerOptions;
 		if (value !== this.state[name]) {
 			oneTimeAPI = true;
+			customerOptions={value:"ALL",label:"ALL"}
 		}
 		this.setState(
 			{
 				[name]: value,
+				selectedCustomerOptions: customerOptions
 			},
 			() => {
 				if (oneTimeAPI) {
@@ -559,8 +561,8 @@ class SendGoods extends Component<Props, States> {
 				let locationData = response.body[0].locationhierarchy;
 				let levels: any = [];
 				locationData.forEach((item: any) => {
-					levelsName.push(item.locationhiername.toLowerCase());
-					let locationhierlevel = item.locationhierlevel;
+					levelsName.push(item.name.toLowerCase());
+					let locationhierlevel = item.level;
 					let geolevels = "geolevel" + locationhierlevel;
 					levels.push(geolevels);
 				});
@@ -568,9 +570,9 @@ class SendGoods extends Component<Props, States> {
 				locationData?.length > 0 &&
 					locationData.forEach((item: any, index: number) => {
 						if (index > 0) {
-							let locationhierlevel = item.locationhierlevel;
+							let locationhierlevel = item.level;
 							let geolevels = "geolevel" + locationhierlevel;
-							let obj = { name: item.locationhiername, geolevels };
+							let obj = { name: item.name, geolevels };
 							levelsData.push(obj);
 						}
 					});
@@ -628,7 +630,7 @@ class SendGoods extends Component<Props, States> {
 		if (userrole === "RSM" ){
 			let filteredLevel1 = this.state.geolevel1List?.filter((list:any) => list.name === this.state.loggedUserInfo?.geolevel1);
 			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-				let level2Info = { label: item.name, value: item.name, code: item.code };
+				let level2Info = { text: item.name, value: item.name, code: item.code };
 				level2Options.push(level2Info);
 			});
 			let geolevel2Obj = {
@@ -638,18 +640,16 @@ class SendGoods extends Component<Props, States> {
 			};
 			level2Options.unshift(geolevel2Obj);
 		} else {
-			let level1Info = { label: "ALL", value :"ALL" };
+			let level1Info = { label: "ALL", name: "ALL" };
 			level2Options.push(level1Info);
 		}
 
 		let setFormArray: any = [];
-		let usergeolevel1 = this.state.loggedUserInfo?.geolevel1;
-		let geolevel1Obj = { label : usergeolevel1, value : usergeolevel1};
 		this.state.geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: list ===  "geolevel1" && (userrole === "RSM") ? geolevel1Obj : {label: "ALL",value: "ALL"},
+				value: list === "geolevel0" ? this.state.loggedUserInfo?.country : ("geolevel1" && userrole === "RSM") ? this.state.loggedUserInfo?.geolevel1 : "",
 				options:
 					list === "geolevel0"
 						? this.state.countryList
@@ -657,7 +657,7 @@ class SendGoods extends Component<Props, States> {
 						? level1Options
 						: list === "geolevel2"
 						? level2Options
-						: [{ label: "ALL",value: "ALL" }],
+						: [{ label: "ALL", name: "ALL" }],
 				error: "",
 			});
 		});
@@ -665,7 +665,6 @@ class SendGoods extends Component<Props, States> {
 	};
 
 	getOptionLists = (cron: any, type: any, value: any, index: any) => {
-		let newvalue = {label : value, name : value};
 		let geolevel1List = this.state.geolevel1List;
 		this.setState({ level1Options: geolevel1List });
 		let dynamicFieldVal = this.state.dynamicFields;
@@ -682,14 +681,13 @@ class SendGoods extends Component<Props, States> {
 				code: "ALL",
 			};
 			let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
-		
 			level2Options.unshift(geolevel1Obj);
 			dynamicFieldVal[index + 1].options = level2Options;
 			this.setState({ dynamicFields: dynamicFieldVal });
 			dynamicFieldVal[index + 2].options = geolevel3Obj;
-			dynamicFieldVal[index].value = newvalue;
-			dynamicFieldVal[index + 1].value = {label: "ALL",value: "ALL"};
-			dynamicFieldVal[index + 2].value = {label: "ALL",value: "ALL"};
+			dynamicFieldVal[index].value = value;
+			dynamicFieldVal[index + 1].value = "ALL";
+			dynamicFieldVal[index + 2].value = "ALL";
 			this.setState((prevState: any) => ({
 				dynamicFields: dynamicFieldVal,
 				selectedFilters: {
@@ -699,7 +697,6 @@ class SendGoods extends Component<Props, States> {
 				selectedGeolevel2Options: geolevel1Obj,
 			}));
 		} else if (type === "geolevel2") {
-			dynamicFieldVal[index].value = newvalue;
 			this.setState((prevState: any) => ({
 				dynamicFields: dynamicFieldVal,
 				selectedFilters: {
@@ -789,6 +786,8 @@ class SendGoods extends Component<Props, States> {
 			activeSortKeyIcon,
 			selectedBatchOptions,
 			selectedCustomerOptions,
+			selectedGeolevel1Options,
+			selectedGeolevel2Options,
 		} = this.state;
 
 		const pageNumbers = [];
@@ -827,8 +826,7 @@ class SendGoods extends Component<Props, States> {
 									this.handleReactSelect(selectedOptions, e, list.name);
 									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
-								value={list.value}
-								isDisabled = {list.name === "geolevel1" }
+								value={list.name === "geolevel1" ? selectedGeolevel1Options : selectedGeolevel2Options}
 								id="geolevel-test"
 								dataTestId="geolevel-test"
 							/>
@@ -874,7 +872,7 @@ class SendGoods extends Component<Props, States> {
 										dataTestId="retailer-test"
 									/>
 								</div>
-								<label className="font-weight-bold pt-2">Product Group</label>
+								<label className="pt-2">Product Group</label>
 								<div className="form-group pt-1">
 									{this.state.productCategories.map((item: any, i: number) => (
 										<span className="mr-2 chipLabel" key={i}>
@@ -924,7 +922,7 @@ class SendGoods extends Component<Props, States> {
 										</div>
 									</div>
 								</div>
-								<label className="font-weight-bold pt-2"> Scan Status</label>
+								<label className="pt-2"> Scan Status</label>
 								<div className="pt-1">
 									{this.state.status.map((item: any, statusIndex: number) => (
 										<span className="mr-2" key={statusIndex}>
@@ -940,7 +938,7 @@ class SendGoods extends Component<Props, States> {
 										</span>
 									))}
 								</div>
-								<label className="font-weight-bold pt-2">Scanned Period</label>
+								<label className="pt-2">Scanned Period</label>
 								<div className="pt-1">
 									{this.state.scannedPeriodsList.map((item: any, i: number) => (
 										<span className="mr-2 chipLabel" key={i}>
@@ -961,10 +959,10 @@ class SendGoods extends Component<Props, States> {
 								</div>
 								{selectedFilters.scannedPeriod === "Custom" && (
 									<React.Fragment>
-										<label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+										<label className="pt-2" htmlFor="order-date" style={{ width: "55%" }}>
 											From
 										</label>
-										<label className="font-weight-bold pt-2" htmlFor="order-todate">
+										<label className="pt-2" htmlFor="order-todate">
 											To
 										</label>
 										<div className="d-flex">
@@ -1074,7 +1072,6 @@ class SendGoods extends Component<Props, States> {
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
-
 											{/* <th
 												style={{ width: "10%" }}
 												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
@@ -1139,7 +1136,7 @@ class SendGoods extends Component<Props, States> {
 														{this.state.selectedScanType === "SG - D2R" && <td>{value.soldtostore}</td>}
 														<td>
 															<div className="farmer-id">
-																<p>{_.startCase(_.toLower(value.productname))}</p>
+																<p>{value.productname}</p>
 																<label>
 																	{value.productid === null
 																		? ""
@@ -1171,7 +1168,6 @@ class SendGoods extends Component<Props, States> {
 																<label>{value.soldbyid}</label>
 															</div>
 														</td>
-
 														{/* <td>{value.soldbygeolevel1}</td> */}
 														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 													</tr>
@@ -1211,7 +1207,7 @@ class SendGoods extends Component<Props, States> {
 								<div className="popup-content">
 									<div className={`popup-title`}>
 										<p>
-											{retailerPopupData[condFilterScan === "customer" ? "soldtoname" : "soldbyname"]},{" "}
+											{retailerPopupData[condFilterScan === "customer" ? "soldtoname" : "soldbyname"]},
 											<label>
 												{_.startCase(
 													_.toLower(retailerPopupData[condFilterScan === "customer" ? "soldtorole" : "soldbyrole"])

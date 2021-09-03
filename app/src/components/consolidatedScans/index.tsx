@@ -354,7 +354,6 @@ const ConsolidatedScans = (Props: any) => {
 		})
 		setselectedProductList(allProducts)
 	}
-
 	const getCountryList = ()=> {
 		//service call
 		let res = [
@@ -363,7 +362,6 @@ const ConsolidatedScans = (Props: any) => {
 		];
 		setcountryList(res);
 	  }
-
 	const getHierarchyDatas = () => {
 		//To get all level datas
 		setIsLoader(true);
@@ -378,7 +376,6 @@ const ConsolidatedScans = (Props: any) => {
 				let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
 				setIsLoader(true);
 				setgeolevel1List(geolevel1);
-
 				// this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
 				// 	this.getGeographicFields();
 				// });
@@ -389,7 +386,6 @@ const ConsolidatedScans = (Props: any) => {
 				Alert("warning", message);
 			});
 	}
-
 	const getGeographicFields = () => {
 		setIsLoader(true);
 		const { getTemplateData } = apiURL;

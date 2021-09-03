@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
+import  '../../../assets/scss/dropdown.scss'
 export interface DropdownProps {
     label?: string;
     control?: any;
@@ -35,7 +36,7 @@ export default function ReactSelect({
 
 
   return (
-    <div className="">
+    <div className="react-select">
         <label>{label}</label>
       <Select
         onChange={handleChange}
