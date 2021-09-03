@@ -1072,7 +1072,6 @@ class SendGoods extends Component<Props, States> {
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
-
 											{/* <th
 												style={{ width: "10%" }}
 												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
@@ -1169,7 +1168,6 @@ class SendGoods extends Component<Props, States> {
 																<label>{value.soldbyid}</label>
 															</div>
 														</td>
-
 														{/* <td>{value.soldbygeolevel1}</td> */}
 														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 													</tr>
