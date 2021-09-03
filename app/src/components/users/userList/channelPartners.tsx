@@ -604,12 +604,12 @@ class ChannelPartners extends Component<Props, States> {
 		}
 
 		res.push(
-			<th style={{ width: "10%", cursor: "default" }} key="status">
+			<th style={{ cursor: "default" }} key="status">
 				{"STATUS"}
 			</th>
 		);
 		res.push(
-			<th style={{ width: "9%", cursor: "default" , textAlign: "center"}} key="updatedBy">
+			<th style={{ cursor: "default" , textAlign: "center"}} key="updatedBy">
 				{"UPDATED BY"}
 			</th>
 		);
@@ -728,6 +728,8 @@ class ChannelPartners extends Component<Props, States> {
 			if (this.state.isStaff) {
 				newUserList.staffdetails.forEach((item: any, index: number) => {
 					delete item.errObj;
+					item.firstname = (item.firstname).trim();
+        			item.lastname = (item.lastname).trim();
 					// item.active = item.active ? 'ACTIVE' : 'INACTIVE'
 				});
 			} else {
@@ -744,8 +746,8 @@ class ChannelPartners extends Component<Props, States> {
 
 			let data = {
 				countrycode: this.getStoreData.countryCode,
-				ownerfirstname: newUserList.ownerRows[0].firstname,
-				ownerlastname: newUserList.ownerRows[0].lastname,
+				ownerfirstname: (newUserList.ownerRows[0].firstname).trim(),
+				ownerlastname: (newUserList.ownerRows[0].lastname).trim(),
 				ownerphonenumber: newUserList.ownerRows[0].mobilenumber,
 				owneremail: newUserList.ownerRows[0].email,
 				locale: "English (Malawi)",
@@ -756,9 +758,9 @@ class ChannelPartners extends Component<Props, States> {
 				userstatus: newUserList.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
 				storewithmultiuser: this.state.isStaff ? true : false,
 				iscreatedfrommobile: userData.iscreatedfrommobile,
-				whtaccountname: userData.whtaccountname,
+				whtaccountname: (userData.whtaccountname).trim(),
 				taxid: userData.taxid,
-				whtownername: userData.whtownername,
+				whtownername: (userData.whtownername).trim(),
 				deliverygeolevel0: this.getStoreData.countryCode,
 				deliverygeolevel1: userData.deliverygeolevel1,
 				deliverygeolevel2: userData.deliverygeolevel2,

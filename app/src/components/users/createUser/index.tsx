@@ -216,7 +216,7 @@ class CreateUser extends Component<any, any> {
     ///API to get country and language settings
     this.getCountryList();
     this.getChannelPartnersList();
-    this.getThirdPartyList();
+    // this.getThirdPartyList();
     this.getAllPartnersList();
     this.getGeographicFields();
   }
@@ -255,31 +255,31 @@ class CreateUser extends Component<any, any> {
       });
   };
 
-  getThirdPartyList = (defaultPageNo?: number) => {
-		this.setState({	allThirdPartyUsers: [] });
-		const { thirdPartyList } = apiURL;
-		this.setState({ isLoader: true,});
-		let data = {
-			countrycode: this.getStoreData.countryCode,
-			page: 1,
-			isfiltered: false,
-			rowsperpage: 1000,
-			partnertype:"ASA",
-			searchtext: null,
-		};
-		invokeGetAuthService(thirdPartyList, data)
-			.then((response) => {
-				this.setState({
-					isLoader: false,
-					allThirdPartyUsers: Object.keys(response.body).length !== 0 ? response.body.rows : [],
-				});
-			})
-			.catch((error) => {
-				this.setState({ isLoader: false });
-				let message = error.message
-				Alert("warning", message);
-			});
-	  };
+  // getThirdPartyList = (defaultPageNo?: number) => {
+	// 	this.setState({	allThirdPartyUsers: [] });
+	// 	const { thirdPartyList } = apiURL;
+	// 	this.setState({ isLoader: true,});
+	// 	let data = {
+	// 		countrycode: this.getStoreData.countryCode,
+	// 		page: 1,
+	// 		isfiltered: false,
+	// 		rowsperpage: 1000,
+	// 		partnertype:"ASA",
+	// 		searchtext: null,
+	// 	};
+	// 	invokeGetAuthService(thirdPartyList, data)
+	// 		.then((response) => {
+	// 			this.setState({
+	// 				isLoader: false,
+	// 				allThirdPartyUsers: Object.keys(response.body).length !== 0 ? response.body.rows : [],
+	// 			});
+	// 		})
+	// 		.catch((error) => {
+	// 			this.setState({ isLoader: false });
+	// 			let message = error.message
+	// 			Alert("warning", message);
+	// 		});
+	//   };
 
   getCountryList() {
     //service call
@@ -1211,6 +1211,8 @@ class CreateUser extends Component<any, any> {
     if (this.state.isStaff) {
       newUserList.staffdetails.forEach((item: any, index: number) => {
         delete item.errObj;
+        item.firstname = (item.firstname).trim();
+        item.lastname = (item.lastname).trim();
       });
       this.setState((prevState: any) => ({
         userData: {
@@ -1286,8 +1288,8 @@ class CreateUser extends Component<any, any> {
     } else {
       data = {
         countrycode: this.getStoreData.countryCode,
-        ownerfirstname: userData.ownerRows[0].firstname,
-        ownerlastname: userData.ownerRows[0].lastname,
+        ownerfirstname: (userData.ownerRows[0].firstname).trim(),
+        ownerlastname: (userData.ownerRows[0].lastname).trim(),
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
         owneremail: userData.ownerRows[0].email,
         locale: "English (Malawi)",
@@ -1302,13 +1304,13 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: (userData.whtaccountname).trim(),
         taxid: userData.taxid,
         whtownername: this.state.accInfo
-          ? userData.ownerRows[0].firstname +
+          ? (userData.ownerRows[0].firstname).trim() +
             " " +
-            userData.ownerRows[0].lastname
-          : userData.whtownername,
+            (userData.ownerRows[0].lastname).trim()
+          : (userData.whtownername).trim(),
         deliverygeolevel0: this.getStoreData.countryCode,
         deliverygeolevel1: geoFields.geolevel1,
         deliverygeolevel2: geoFields.geolevel2,
@@ -1334,7 +1336,6 @@ class CreateUser extends Component<any, any> {
         isprivacydataconsent: true,
       };
     }
-
     const userDetails = this.state.isEditPage
       ? {
           isedit: true,
@@ -2815,7 +2816,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                         className="form-control"
                                         name="firstname"
                                         placeHolder="Eg: Keanu"
-                                        value={_.startCase(_.toLower(item.firstname))}
+                                        value={item.firstname}
                                         onChange={(e: any) =>
                                           this.handleChange(
                                             idx,
@@ -2843,7 +2844,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                         className="form-control"
                                         name="lastname"
                                         placeHolder="Eg: Reeves"
-                                        value={_.startCase(_.toLower(item.lastname))}
+                                        value={item.lastname}
                                         onChange={(e: any) =>
                                           this.handleChange(
                                             idx,
@@ -3114,7 +3115,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                           className="form-control"
                                           name="firstname"
                                           placeHolder="Eg: Keanu"
-                                          value={_.startCase(_.toLower(item.firstname))}
+                                          value={item.firstname}
                                           onChange={(e: any) =>
                                             this.handleChange(
                                               idx,
@@ -3140,7 +3141,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                           className="form-control"
                                           name="lastname"
                                           placeHolder="Eg: Reeves"
-                                          value={_.startCase(_.toLower(item.lastname))}
+                                          value={item.lastname}
                                           onChange={(e: any) =>
                                             this.handleChange(
                                               idx,
