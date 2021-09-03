@@ -10,10 +10,8 @@ const INITIAL_STATE: any = {
     currencyCode:null,
     currencyName:null,
     isLoader: false,
-    geoLevel1List: [],
+    overallConsolidatedScans: [],
     errorMessage: '',
-    geographicFields :[],
-    levelsName : []
 };
 
 function ConsolidatedScansReducer(state = {INITIAL_STATE}, action: any): any {
@@ -25,14 +23,14 @@ function ConsolidatedScansReducer(state = {INITIAL_STATE}, action: any): any {
                 isLoader: action.status
             };
         }
-        // case GET_GEOLOCATION_LEVEL1_OPTIONS_SUCCESS: {
-        //     return {
-        //         ...state,
-        //         isLoader: false,
-        //         geoLevel1List: Object.keys(action.levels.body).length !== 0 ? action.levels.body.geolevel1 : []
-        //     }
+        case GET_OVERALL_CONSOLIDATED_SCANS_SUCCESS: {
+            return {
+                ...state,
+                isLoader: false,
+                geoLevel1List: Object.keys(action.response.body).length !== 0 ? action.response.body : []
+            }
            
-        // }
+        }
         // case GET_GEOLOCATION_LEVEL1_OPTIONS_ERROR : {
         //     return {
         //         ...state,
