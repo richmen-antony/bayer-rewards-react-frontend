@@ -536,14 +536,17 @@ class SendGoods extends Component<Props, States> {
 	handleButtonChange = (name: string, value: string) => {
 		let oneTimeAPI = false;
 		let customerOptions=this.state.selectedCustomerOptions;
+		const filters ={...this.state.selectedFilters}
 		if (value !== this.state[name]) {
 			oneTimeAPI = true;
 			customerOptions={value:"ALL",label:"ALL"}
+		    filters['soldtoid'] = null;
 		}
 		this.setState(
 			{
 				[name]: value,
-				selectedCustomerOptions: customerOptions
+				selectedCustomerOptions: customerOptions,
+				selectedFilters:filters
 			},
 			() => {
 				if (oneTimeAPI) {
@@ -1136,7 +1139,7 @@ class SendGoods extends Component<Props, States> {
 																<label>{value.soldtoid + " - " + _.startCase(_.toLower(value.soldtorole))}</label>
 															</div>
 														</td>
-														{this.state.selectedScanType === "SG - D2R" && <td>{value.soldtostore}</td>}
+														{this.state.selectedScanType === "SG - D2R" && <td>{_.startCase(_.toLower(value.soldtostore))}</td>}
 														<td>
 															<div className="farmer-id">
 																<p>{value.productname}</p>

@@ -31,6 +31,7 @@ import Filter from "../../container/grid/Filter";
 import { ScanlogHeader } from "../../utility/constant";
 import Cancel from "../../assets/images/cancel.svg";
 import PendingImg from "../../assets/images/not_activated.svg";
+import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 
 type PartnerTypes = {
 	type: String;
@@ -152,7 +153,7 @@ class SellFarmer extends Component<Props, States> {
 			loggedUserInfo: {},
 			inActiveFilter: false,
 			partnerTypeList: ["Retailers"],
-			salesType: ["ADVISOR_SALES"],
+			salesType: ["WALKIN_SALES","ADVISOR_SALES"],
 			partnerType: {
 				type: "Retailers",
 			  },
@@ -191,25 +192,28 @@ class SellFarmer extends Component<Props, States> {
 			.then((response) => {
 				if (response.data) {
 					const { farmers, retailers } = response.data;
-					const farmerOptions =
+					let options = [{ value: "ALL", label: "ALL" }];
+					const farmerOptionsList =
 						farmers?.length > 0
 							? farmers.map((val: any) => {
-									return { value: val.farmerid, text: val.farmername };
+									return { value: val.farmerid, label: val.farmername };
 							  })
 							: [];
-
-					const retailerOptions =
+						const farmerOptions=[...options,...farmerOptionsList]
+					const retailerOptionsList =
 						retailers?.length > 0
 							? retailers.map((val: any) => {
-									return { value: val.userid, text: val.username };
+									return { value: val.userid, label: val.username };
 							  })
 							: [];
+							const retailerOptions=[...options,...retailerOptionsList]
 					const retailerList =
 						oneTimeUpdate && this.state.retailerOptions.length ? this.state.retailerOptions : retailerOptions;
 					this.setState({
 						isLoader: false,
 						farmerOptions,
 						retailerOptions: retailerList,
+					
 					});
 				}
 			})
@@ -387,6 +391,7 @@ class SellFarmer extends Component<Props, States> {
 	resetFilter = (e?: any) => {
 		let today = new Date();
 		let conditionIsFilter = this.state.searchText ? true : false;
+		const options = [{ value: "ALL", label: "ALL" }];
 		this.setState(
 			{
 				selectedFilters: {
@@ -403,6 +408,8 @@ class SellFarmer extends Component<Props, States> {
 				isFiltered: conditionIsFilter,
 				dateErrMsg: "",
 				lastUpdatedDateErr: "",
+				selectedFarmerOptions:options,
+				selectedRetailerOptions:options
 			},
 			() => {
 				this.getScanLogs();
@@ -575,6 +582,15 @@ class SellFarmer extends Component<Props, States> {
 		})
 	
 	  }
+	  handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
+		this.setState({
+			selectedFilters: {
+				...this.state.selectedFilters,
+				[e.name]: selectedOption.value,
+			},
+			[optionName]: selectedOption,
+		});
+	};
 	render() {
 		const {
 			retailerPopupData,
@@ -589,6 +605,9 @@ class SellFarmer extends Component<Props, States> {
 			lastUpdatedDateErr,
 			farmerOptions,
 			retailerOptions,
+			loggedUserInfo,
+			selectedFarmerOptions,
+			selectedRetailerOptions
 		} = this.state;
 
 		const pageNumbers = [];
@@ -620,7 +639,20 @@ class SellFarmer extends Component<Props, States> {
 								}}
 							>
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
-									<NativeDropdown
+								<ReactSelect
+										name="retailer"
+										value={selectedRetailerOptions}
+										label={"Retailer"}
+										handleChange={(selectedOptions: any, e: any) =>
+											this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
+										}
+										// handleChange={(e: any) => this.handleSelect(e, "retailer")}
+										options={retailerOptions}
+										defaultValue="ALL"
+										id="retailer-test"
+										dataTestId="retailer-test"
+									/>
+									{/* <NativeDropdown
 										name="retailer"
 										value={selectedFilters.retailer}
 										label={"Retailer"}
@@ -629,15 +661,18 @@ class SellFarmer extends Component<Props, States> {
 										defaultValue="ALL"
 										id="retailer-test"
 										dataTestId="retailer-test"
-									/>
+									/> */}
 								</div>
 
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
-									<NativeDropdown
+									<ReactSelect
 										name="farmer"
-										value={selectedFilters.farmer}
+										value={selectedFarmerOptions}
 										label={"Farmer"}
-										handleChange={(e: any) => this.handleSelect(e, "farmer")}
+										handleChange={(selectedOptions: any, e: any) =>
+											this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
+										}
+										// handleChange={(e: any) => this.handleSelect(e, "farmer")}
 										options={farmerOptions}
 										defaultValue="ALL"
 										id="farmer-test"
@@ -645,7 +680,7 @@ class SellFarmer extends Component<Props, States> {
 									/>
 								</div>
 
-								<label className="font-weight-bold pt-2">Product Group</label>
+								<label className="pt-2">Product Group</label>
 								<div className="pt-1">
 									{this.state.productCategories.map((item: any, i: number) => (
 										<span className="mr-2 chipLabel" key={i}>
@@ -665,7 +700,7 @@ class SellFarmer extends Component<Props, States> {
 									))}
 								</div>
 
-								<label className="font-weight-bold pt-2">Status</label>
+								<label className="pt-2">Status</label>
 								<div className="pt-1">
 									{this.state.status.map((item: any, statusIndex: number) => (
 										<span className="mr-2" key={statusIndex}>
@@ -682,7 +717,7 @@ class SellFarmer extends Component<Props, States> {
 									))}
 								</div>
 
-								<label className="font-weight-bold pt-2" htmlFor="order-date">
+								<label className="pt-2" htmlFor="order-date">
 									Ordered Date
 								</label>
 								<div className="d-flex">
@@ -716,7 +751,7 @@ class SellFarmer extends Component<Props, States> {
 									</div>
 								</div>
 								{dateErrMsg && <span className="error">{dateErrMsg} </span>}
-								<label className="font-weight-bold pt-2" htmlFor="update-date">
+								<label className="pt-2" htmlFor="update-date">
 									Last Updated Date
 								</label>
 								<div className="d-flex">
@@ -831,7 +866,7 @@ class SellFarmer extends Component<Props, States> {
 										<tr>
 											{ScanlogHeader[`${this.state.selectedSalesType}`].length > 0 &&
 												ScanlogHeader[`${this.state.selectedSalesType}`].map((value: any, index: number) => {
-													return (
+													return loggedUserInfo?.role==="RSM"&& value.key==="geolevel1"? null: (
 														<th
 															style={value.style}
 															onClick={(e) => this.handleSort(e, value.key, allScanLogs, isAsc)}
@@ -920,7 +955,7 @@ class SellFarmer extends Component<Props, States> {
 									<tbody>
 										{allScanLogs.length > 0 ? (
 											allScanLogs.map((value: any, i: number) => {
-												return (
+												return  (
 													<tr
 														onClick={(event) => {
 															this.state.selectedSalesType === "ADVISOR_SALES" && this.showPopup(event, "showProductPopup");
@@ -996,7 +1031,8 @@ class SellFarmer extends Component<Props, States> {
 																		<img className="max-image" src={maxImg} alt="" />
 																	) : list.key === "totalcost" ? (
 																		"MK " + value.totalcost
-																	) : (
+																	) :
+																	 (
 																		(value[list.key] && _.startCase(_.toLower(value[list.key]))) || ""
 																	)}
 																</td>
