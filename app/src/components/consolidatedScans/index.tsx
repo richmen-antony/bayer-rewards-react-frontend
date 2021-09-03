@@ -82,7 +82,7 @@ const ConsolidatedScans = (Props: any) => {
 			partnerType: "Retailers",
 			scannedPeriod: "Today",
 	  });
-	  const [distributorScans,setdistributorScans] = useState([
+	  const [allConsolidatedScans,setAllConsolidatedScans] = useState([
 			{
 				"distributorId" : 1,
 				"name" : "vidhya",
@@ -317,7 +317,7 @@ const ConsolidatedScans = (Props: any) => {
 
 	useEffect(()=>{
 		// dispatch(getGeographicLevel1Options());
-		let distributorId = distributorScans[0].distributorId;
+		let distributorId = allConsolidatedScans[0].distributorId;
 		getSelectedBrands(distributorId);
 		getCountryList();
 		getHierarchyDatas();
@@ -335,7 +335,7 @@ const ConsolidatedScans = (Props: any) => {
 			setselectedDistributor(idx);
 			setselectedBrand(0);
 		}
-		distributorScans?.forEach((item:any,index:number)=>{
+		allConsolidatedScans?.forEach((item:any,index:number)=>{
 			if( item.distributorId === distributorId) {
 				setselectedDistributorName(item.name);
 			}
@@ -728,7 +728,7 @@ const ConsolidatedScans = (Props: any) => {
 	const onSort = (name: string, data: any, isAsc: boolean,table:string) => {
 		let response: any = sortBy(name, data);
 		if(table === "overallScans"){
-			setdistributorScans(response);
+			setAllConsolidatedScans(response);
 		} else if (table === "scannedBrands") {
 			setselectedBrandList(response);
 		} else if(table === "scannedProducts") {
@@ -740,7 +740,7 @@ const ConsolidatedScans = (Props: any) => {
 	const handleSort = (
 		e: any,
 		columnname: string,
-		distributorScans: any,
+		allConsolidatedScans: any,
 		isAsc: boolean,
 		table : string
 	  ) => {
@@ -759,7 +759,7 @@ const ConsolidatedScans = (Props: any) => {
 			setoveralltableIndex(1);
 			setbrandtableIndex(1);
 		}
-		  onSort(columnname, distributorScans, isAsc,table);
+		  onSort(columnname, allConsolidatedScans, isAsc,table);
 	};
   
 
@@ -903,7 +903,7 @@ const ConsolidatedScans = (Props: any) => {
                 </div>
                 <div className="row" style={{    marginTop: '-5px'}}>
                         <div className = "col-sm-6">
-                            <OverallScans distributorScans={distributorScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
+                            <OverallScans allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
 							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} />
                         </div>
                         <div className = "col-sm-6">

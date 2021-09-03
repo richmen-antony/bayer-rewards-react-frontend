@@ -481,6 +481,7 @@ class SendGoods extends Component<Props, States> {
 		});
 	};
 	handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
+	
 		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
 		this.setState({
 			selectedFilters: {
@@ -489,6 +490,8 @@ class SendGoods extends Component<Props, States> {
 			},
 			[condOptionName]: selectedOption,
 		});
+		console.log('condOptionName',condOptionName)
+		console.log('selectedOption',selectedOption)
 	};
 
 	filterScans = (filterValue: any) => {

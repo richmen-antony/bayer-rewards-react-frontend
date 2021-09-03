@@ -89,7 +89,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 export type OverallScanProps = {
-  distributorScans: any;
+  allConsolidatedScans: any;
   getSelectedBrands: any;
   selectedDistributor: any;
   handleSort :Function;
@@ -99,7 +99,7 @@ export type OverallScanProps = {
 };
 
 export const OverallScans = ({
-  distributorScans,
+  allConsolidatedScans,
   getSelectedBrands,
   selectedDistributor,
   handleSort,
@@ -156,7 +156,7 @@ export const OverallScans = ({
                   <thead>
                     <tr>
                     <th 
-                     onClick={(e) => handleSort(e, "name", distributorScans, isAsc,"overallScans")}
+                     onClick={(e) => handleSort(e, "name", allConsolidatedScans, isAsc,"overallScans")}
                       key="name">CUSTOMER NAME/ID
                         {
                           (tableCellIndex === 0 && tableName === 'overallScans') ? (
@@ -175,8 +175,8 @@ export const OverallScans = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {distributorScans.length > 0 ? (
-                      distributorScans.map((item: any, idx: number) => {
+                    {allConsolidatedScans.length > 0 ? (
+                      allConsolidatedScans.map((item: any, idx: number) => {
                         totalReceivedGoods = totalReceivedGoods + (item.sendgoods);
                         totalSendGoods = totalSendGoods + (item.receivegoods);
                         totalWalkInSales = totalWalkInSales + (item.walkinsales);
@@ -240,13 +240,13 @@ export const OverallScans = ({
                   </tfoot> */}
                 </table>
               </div>
-              {distributorScans.length > 0 &&
+              {allConsolidatedScans.length > 0 &&
               <div style={{ marginTop: '5px'}}>
                 <table  className="table sum-total">
                   <tbody>
                     <tr>
                     <td>
-                        <p className="total">Total({distributorScans.length})</p>
+                        <p className="total">Total({allConsolidatedScans.length})</p>
                       </td>
                       <td className="text-center">
                         <span className="">
