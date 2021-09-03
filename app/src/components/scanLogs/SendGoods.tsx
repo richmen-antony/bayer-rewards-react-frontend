@@ -272,7 +272,6 @@ class SendGoods extends Component<Props, States> {
 			.catch((error) => {
 				this.setState({ isLoader: false, allScanLogs: [] }, () => {});
 				ErrorMsg(error);
-				console.log("error", error);
 			});
 	};
 
@@ -483,7 +482,6 @@ class SendGoods extends Component<Props, States> {
 	};
 	handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
 		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
-		console.log({ condOptionName });
 		this.setState({
 			selectedFilters: {
 				...this.state.selectedFilters,
@@ -534,12 +532,15 @@ class SendGoods extends Component<Props, States> {
 	 */
 	handleButtonChange = (name: string, value: string) => {
 		let oneTimeAPI = false;
+		let customerOptions=this.state.selectedCustomerOptions;
 		if (value !== this.state[name]) {
 			oneTimeAPI = true;
+			customerOptions={value:"ALL",label:"ALL"}
 		}
 		this.setState(
 			{
 				[name]: value,
+				selectedCustomerOptions: customerOptions
 			},
 			() => {
 				if (oneTimeAPI) {
@@ -660,7 +661,6 @@ class SendGoods extends Component<Props, States> {
 				error: "",
 			});
 		});
-		console.log({setFormArray})
 		this.setState({ dynamicFields: setFormArray });
 	};
 
@@ -798,7 +798,6 @@ class SendGoods extends Component<Props, States> {
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-			console.log("op", list.options);
 			return (
 				<React.Fragment key={`geolevels` + index}>
 					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
