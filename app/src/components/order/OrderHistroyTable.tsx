@@ -513,7 +513,7 @@ class OrderHistory extends Component<Props, States> {
 										type="text"
 										onChange={this.handleSearch}
 										value={searchText}
-										tolltip={`Search applicable for Order ID, ${selectedFilters.status === "FULFILLED" ? "Retailer Name/ID,Account Name,":""} Farmer Name/Mobile, Advisor Name/ID.`}
+										tolltip={`Search applicable for Order ID, ${selectedFilters.status === "FULFILLED" ? "Retailer Name/ID,Store Name,":""} Farmer Name/Mobile, Advisor Name/ID.`}
 									/>
 									<div className="filter-right-side">
 										<div className="filter-status">

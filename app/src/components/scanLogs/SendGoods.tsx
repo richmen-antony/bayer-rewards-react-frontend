@@ -722,6 +722,7 @@ class SendGoods extends Component<Props, States> {
 		const { getBatchList } = apiURL;
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
+			soldbygeolevel1 : this.state.loggedUserInfo?.geolevel1,
 		};
 		invokeGetAuthService(getBatchList, countrycode)
 			.then((response: any) => {

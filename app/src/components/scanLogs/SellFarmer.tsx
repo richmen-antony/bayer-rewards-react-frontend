@@ -153,7 +153,7 @@ class SellFarmer extends Component<Props, States> {
 			loggedUserInfo: {},
 			inActiveFilter: false,
 			partnerTypeList: ["Retailers"],
-			salesType: ["WALKIN_SALES","ADVISOR_SALES"],
+			salesType: ["ADVISOR_SALES"], //"WALKIN_SALES",
 			partnerType: {
 				type: "Retailers",
 			  },
@@ -631,7 +631,7 @@ class SellFarmer extends Component<Props, States> {
 								isDownload={true}
 								selectedPartnerType={this.state.partnerType}
 					            handlePartnerChange={this.handlePartnerChange} 
-								toolTipText="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
+								toolTipText="Search applicable for Order ID, Retailer Name/ID, Store Name, Farmer Name/ID, Advisor Name/ID."
 								buttonChange={this.handleButtonChange}
 								condSelectedButton={this.state.selectedSalesType}
 								onClose={(node: any) => {
@@ -1145,7 +1145,7 @@ class SellFarmer extends Component<Props, States> {
 											<p>{retailerPopupData.userid}</p>
 										</div>
 										<div className="content-list">
-											<label>Account Name</label>
+											<label>Store Name</label>
 											<p>{retailerPopupData.accountname}</p>
 										</div>
 										<div className="content-list">

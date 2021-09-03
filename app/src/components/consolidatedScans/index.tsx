@@ -777,7 +777,7 @@ const ConsolidatedScans = (Props: any) => {
 							downloadPopup={true}
                             isDownload={true}
                             handlePartnerChange={handlePartnerChange}
-                            toolTipText="Search applicable for User Name, Account Name and Owner Name"
+                            toolTipText="Search applicable for User Name, Store Name and Owner Name"
 							overallDownload={overallDownload}
 							brandWiseDownload={brandWiseDownload}
 							productWiseDownload={productWiseDownload}

@@ -1297,7 +1297,7 @@ class ChannelPartners extends Component<Props, States> {
 					partnerTypeList={this.state.list}
 					selectedPartnerType={this.state.partnerType}
 					handlePartnerChange={this.handlePartnerChange}
-					toolTipText="Search applicable for User Name, Account Name and Owner Name"
+					toolTipText="Search applicable for User Name, Store Name and Owner Name"
 					onClose={(node: any) => {
 						this.closeToggle = node;
 					}}
