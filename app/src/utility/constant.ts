@@ -1,3 +1,5 @@
+import authorization from "./authorization";
+
 const MENU_ITEMS = [
 	{
 		title: "Dashboard",
@@ -95,7 +97,7 @@ const ADVISOR_SALES = [
 ];
 // Advisor sales table header
 const WALKIN_SALES = [
-	{ label: "LABEL/BATCH ID", key: "advisororderid", style: { width: "12%" } },
+	{ label: "LABEL/BATCH ID", key: "labelid", style: { width: "12%" } },
 	{ label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
 	{ label: "PRODUCT NAME", key: "totalintendedquantity", style: { width: "14%",textAlign: "center" } },
 	{ label: "BATCH #", key: "totalcost", style: { width: "12%" } },
@@ -111,10 +113,21 @@ const OrderHistroyHeader: any = {
 	EXPIRED,
 	CANCELLED,
 };
+
+const removeRegionList=()=>{
+	const currentUser=authorization.getAuthUser();
+	// If current user is RSM admin and remove region column values
+	if(currentUser.role==="RSM"){
+		WALKIN_SALES.splice(7,1);
+	}
+
+
+
+}
+removeRegionList();
 const ScanlogHeader: any = {
 	ADVISOR_SALES,
 	WALKIN_SALES,
 
 };
-
 export { MENU_ITEMS, OrderHistroyHeader ,ScanlogHeader};
