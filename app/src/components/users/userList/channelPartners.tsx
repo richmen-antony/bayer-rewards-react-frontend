@@ -609,7 +609,7 @@ class ChannelPartners extends Component<Props, States> {
 			</th>
 		);
 		res.push(
-			<th style={{ width: "9%", cursor: "default" }} key="updatedBy">
+			<th style={{ width: "9%", cursor: "default" , textAlign: "center"}} key="updatedBy">
 				{"UPDATED BY"}
 			</th>
 		);
