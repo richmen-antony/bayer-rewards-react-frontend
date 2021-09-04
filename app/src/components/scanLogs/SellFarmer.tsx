@@ -553,8 +553,13 @@ class SellFarmer extends Component<Props, States> {
 	};
 
 	filterScans = (filterValue: any) => {
+		const {retailerOptions,selectedRetailerOptions}= this.state;
+		let options={...selectedRetailerOptions};
+		const data=retailerOptions?.length>0&&retailerOptions.filter((el:any)=>el.value===filterValue);
+				if(data?.length>0)
+				options={...data[0]}
 		this.setState(
-			{ isFiltered: true, inActiveFilter: false, selectedFilters: { ...this.state.selectedFilters, retailer: filterValue } },
+			{ isFiltered: true, inActiveFilter: false, selectedFilters: { ...this.state.selectedFilters, retailer: filterValue },selectedRetailerOptions:options },
 			() => {
 				this.getScanLogs();
 				this.handleClosePopup();
