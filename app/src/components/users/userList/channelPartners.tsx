@@ -531,7 +531,7 @@ class ChannelPartners extends Component<Props, States> {
 		let staticColumn: number = 3;
 		let res = [];
 		res.push(
-			<th style={{ width: "9%" }} onClick={(e) => this.handleSort(e, "username", allChannelPartners, isAsc)} key="username">
+			<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "username", allChannelPartners, isAsc)} key="username">
 				{"USER NAME"}
 				{this.tableCellIndex !== undefined ? (
 					this.tableCellIndex === 0 ? (
@@ -552,26 +552,54 @@ class ChannelPartners extends Component<Props, States> {
 				{this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
 			</th>
 		);
-		res.push(
-			<th
-				style={{ width: "12%" }}
-				onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
-				key="whtaccountname"
-			>
-				{"STORE NAME"}
-				{this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-			</th>
-		);
-		res.push(
-			<th
-				style={{ width: "12%" }}
-				onClick={(e) => this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)}
-				key="ownerfirstname"
-			>
-				{"OWNER NAME"}
-				{this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-			</th>
-		);
+		if (this.state.partnerType.type === 'Retailer') {
+			res.push(
+				<th
+					style={{ width: "14%" }}
+					onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
+					key="whtaccountname"
+				>
+					{"STORE NAME"}
+					{this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+				</th>
+			);
+	
+		}
+		else{
+			res.push(
+				<th
+					style={{ width: "16%" }}
+					onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
+					key="whtaccountname"
+				>
+					{"STORE NAME"}
+					{this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+				</th>
+			);
+		}
+		if (this.state.partnerType.type === 'Retailer') {
+			res.push(
+				<th
+					style={{ width: "12%" }}
+					onClick={(e) => this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)}
+					key="ownerfirstname"
+				>
+					{"OWNER NAME"}
+					{this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+				</th>
+			);
+		}else{
+			res.push(
+				<th
+					style={{ width: "16%" }}
+					onClick={(e) => this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)}
+					key="ownerfirstname"
+				>
+					{"OWNER NAME"}
+					{this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+				</th>
+			);
+		}
 
 		for (var i = 1; i < this.state.geographicFields.length; i++) {
 			if (i <= staticColumn) {
@@ -582,7 +610,7 @@ class ChannelPartners extends Component<Props, States> {
 				res.push(
 					<th
 						key={`geolevels` + i}
-						style={{ width: "8%" }}
+						style={{ width: "10%" }}
 						onClick={(e) => this.handleSort(e, "delivery" + geolevelsname, allChannelPartners, isAsc)}
 					>
 						{columnname}
@@ -602,17 +630,27 @@ class ChannelPartners extends Component<Props, States> {
 				</th>
 			);
 		}
-
 		res.push(
-			<th style={{ cursor: "default" }} key="status">
+			<th style={{ width: "8%",cursor: "default" }} key="status">
 				{"STATUS"}
 			</th>
 		);
-		res.push(
-			<th style={{ cursor: "default" , textAlign: "center"}} key="updatedBy">
-				{"UPDATED BY"}
-			</th>
-		);
+		if (this.state.partnerType.type === 'Retailer') {
+			res.push(
+				<th style={{ width: "8%", cursor: "default" , textAlign: "center"}} key="updatedBy">
+					{"UPDATED BY"}
+				</th>
+			);
+	
+		}
+		else{
+			res.push(
+				<th style={{ width: "7%",cursor: "default" , textAlign: "center"}} key="updatedBy">
+					{"UPDATED BY"}
+				</th>
+			);
+
+		}
 		res.push(<th style={{ width: "7%", cursor: "default" }} key="default"></th>);
 
 		return res;
@@ -716,7 +754,7 @@ class ChannelPartners extends Component<Props, States> {
 
 	submitUpdateUser = (e: any) => {
 		e.target.disabled = true;
-		this.setState({ isLoader: true });
+		
 		const { updateUser } = apiURL;
 		let geoFields: any = {};
 		this.state.dynamicFields.forEach((list: any, i: number) => {
@@ -725,6 +763,7 @@ class ChannelPartners extends Component<Props, States> {
 		let newUserList = JSON.parse(JSON.stringify(this.state.userData));
 		let formValid = this.checkValidation();
 		if (formValid) {
+			this.setState({ isLoader: true });
 			if (this.state.isStaff) {
 				newUserList.staffdetails.forEach((item: any, index: number) => {
 					delete item.errObj;
