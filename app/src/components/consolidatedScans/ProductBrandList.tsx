@@ -56,23 +56,23 @@ const ProductBrandList = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedBrandList.length > 0 ? (
-                    selectedBrandList.map((item: any, idx: number) => {
-                      totalReceivedGoods = totalReceivedGoods + (item.sendgoods);
-                      totalSendGoods = totalSendGoods + (item.receivegoods);
-                      totalWalkInSales = totalWalkInSales + (item.walkinsales);
-                      totalAdvisorSales = totalAdvisorSales + (item.advisorsales);
+                  {selectedBrandList?.length > 0 ? (
+                    selectedBrandList?.map((item: any, idx: number) => {
+                      totalReceivedGoods = totalReceivedGoods + (item.SEND_GOOD);
+                      totalSendGoods = totalSendGoods + (item.RECEIVE_GOOD);
+                      totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
+                      totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
                       return (
                         <tr
                         style={{ cursor: "pointer", backgroundColor : selectedBrand === idx ? '#F5FCFF' : ''}}
                           key={idx}
-                          onClick ={()=>getSelectedProducts(item.distributorId,item.brandId,idx,'selected')}
+                          onClick ={()=>getSelectedProducts(item.soldbyid,item.productbrand,idx,'selected')}
                         >
-                            <td>{_.startCase(_.toLower(item.brandname))}</td>
-                            <td>{item.sendgoods}</td>
-                            <td>{item.receivegoods}</td>
-                            <td>{item.walkinsales}</td>
-                            <td>{item.advisorsales}</td>
+                            <td>{_.startCase(_.toLower(item.productbrand))}</td>
+                            <td>{item.SEND_GOOD}</td>
+                            <td>{item.RECEIVE_GOOD}</td>
+                            <td>{item.S2F_WALKIN}</td>
+                            <td>{item.S2F_ADVISOR}</td>
                         </tr>
                       );
                     })
@@ -86,13 +86,13 @@ const ProductBrandList = ({
                 </tbody>
               </table>
             </div>
-            {selectedBrandList.length > 0 &&
+            {selectedBrandList?.length > 0 &&
             <div>
                 <table  className="table sum-total">
                   <tbody>
                     <tr>
                     <td>
-                        <p className="total">Total({selectedBrandList.length})</p>
+                        <p className="total">Total({selectedBrandList?.length})</p>
                       </td>
                       <td className="text-center">
                         <span className="">

@@ -175,17 +175,17 @@ export const OverallScans = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {allConsolidatedScans.length > 0 ? (
-                      allConsolidatedScans.map((item: any, idx: number) => {
-                        totalReceivedGoods = totalReceivedGoods + (item.sendgoods);
-                        totalSendGoods = totalSendGoods + (item.receivegoods);
-                        totalWalkInSales = totalWalkInSales + (item.walkinsales);
-                        totalAdvisorSales = totalAdvisorSales + (item.advisorsales);
+                    {allConsolidatedScans?.length > 0 ? (
+                      allConsolidatedScans?.map((item: any, idx: number) => {
+                        totalReceivedGoods = totalReceivedGoods + (item.SEND_GOOD);
+                        totalSendGoods = totalSendGoods + (item.RECEIVE_GOOD);
+                        totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
+                        totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
                         return (
                           <tr
                             style={{ cursor: "pointer", backgroundColor : selectedDistributor === idx ? '#F5FCFF' : ''}}
                             key={idx}
-                            onClick = {()=>getSelectedBrands(item.distributorId, idx, 'selected')}
+                            onClick = {()=>getSelectedBrands(item.soldbyid, idx, 'selected')}
                           >
                             <td onClick={(event) => {
 																showRetailerPopup(event);
@@ -193,12 +193,12 @@ export const OverallScans = ({
 															}}>
 																	{_.startCase(_.toLower(item.name))}
 																	<img className="retailer-icon" src={ExpandWindowImg} alt="" /><br />
-																  <label style={{fontSize:'9px'}}>{item.label}</label>
+																  <label style={{fontSize:'9px'}}>{item.soldbyid}</label>
                               </td>
-                            <td>{item.sendgoods}</td>
-                            <td>{item.receivegoods}</td>
-                            <td>{item.walkinsales}</td>
-                            <td>{item.advisorsales}</td>
+                            <td>{item.SEND_GOOD}</td>
+                            <td>{item.RECEIVE_GOOD}</td>
+                            <td>{item.S2F_WALKIN}</td>
+                            <td>{item.S2F_ADVISOR}</td>
                           </tr>
                         );
                       })
@@ -240,13 +240,13 @@ export const OverallScans = ({
                   </tfoot> */}
                 </table>
               </div>
-              {allConsolidatedScans.length > 0 &&
+              {allConsolidatedScans?.length > 0 &&
               <div style={{ marginTop: '5px'}}>
                 <table  className="table sum-total">
                   <tbody>
                     <tr>
                     <td>
-                        <p className="total">Total({allConsolidatedScans.length})</p>
+                        <p className="total">Total({allConsolidatedScans?.length})</p>
                       </td>
                       <td className="text-center">
                         <span className="">

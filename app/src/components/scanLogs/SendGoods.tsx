@@ -631,12 +631,18 @@ class SendGoods extends Component<Props, States> {
 			let level1Info = { label: item.name, code: item.code, value: item.name };
 			level1Options.push(level1Info);
 		});
-		let userrole = this.state.loggedUserInfo?.role;
+		
+
+		let setFormArray: any = [];
+		let localObj: any = getLocalStorageData("userData");
+		let userData = JSON.parse(localObj);
+		
+		let userrole = userData?.role;
 		let level2Options: any = [];
 		if (userrole === "RSM" ){
-			let filteredLevel1 = this.state.geolevel1List?.filter((list:any) => list.name === this.state.loggedUserInfo?.geolevel1);
+			let filteredLevel1:any = this.state.geolevel1List?.filter((list:any) => list.name === userData?.geolevel1);
 			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-				let level2Info = { text: item.name, value: item.name, code: item.code };
+				let level2Info = { label: item.name, value: item.name, code: item.code };
 				level2Options.push(level2Info);
 			});
 			let geolevel2Obj = {
@@ -646,16 +652,16 @@ class SendGoods extends Component<Props, States> {
 			};
 			level2Options.unshift(geolevel2Obj);
 		} else {
-			let level1Info = { label: "ALL", name: "ALL" };
+			let level1Info = { label: "ALL", value :"ALL" };
 			level2Options.push(level1Info);
 		}
-
-		let setFormArray: any = [];
+		let usergeolevel1 = userData?.geolevel1;
+		let geolevel1Obj = { label : usergeolevel1, value : usergeolevel1};
 		this.state.geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: list === "geolevel0" ? this.state.loggedUserInfo?.country : ("geolevel1" && userrole === "RSM") ? this.state.loggedUserInfo?.geolevel1 : "",
+				value: list ===  "geolevel1" && (userrole === "RSM") ? geolevel1Obj : {label: "ALL",value: "ALL"},
 				options:
 					list === "geolevel0"
 						? this.state.countryList
@@ -671,6 +677,7 @@ class SendGoods extends Component<Props, States> {
 	};
 
 	getOptionLists = (cron: any, type: any, value: any, index: any) => {
+		let newvalue = {label : value, name : value};
 		let geolevel1List = this.state.geolevel1List;
 		this.setState({ level1Options: geolevel1List });
 		let dynamicFieldVal = this.state.dynamicFields;
@@ -691,9 +698,9 @@ class SendGoods extends Component<Props, States> {
 			dynamicFieldVal[index + 1].options = level2Options;
 			this.setState({ dynamicFields: dynamicFieldVal });
 			dynamicFieldVal[index + 2].options = geolevel3Obj;
-			dynamicFieldVal[index].value = value;
-			dynamicFieldVal[index + 1].value = "ALL";
-			dynamicFieldVal[index + 2].value = "ALL";
+			dynamicFieldVal[index].value = newvalue;
+			dynamicFieldVal[index + 1].value = {label: "ALL",value: "ALL"};
+			dynamicFieldVal[index + 2].value = {label: "ALL",value: "ALL"};
 			this.setState((prevState: any) => ({
 				dynamicFields: dynamicFieldVal,
 				selectedFilters: {
@@ -703,6 +710,7 @@ class SendGoods extends Component<Props, States> {
 				selectedGeolevel2Options: geolevel1Obj,
 			}));
 		} else if (type === "geolevel2") {
+			dynamicFieldVal[index].value = newvalue;
 			this.setState((prevState: any) => ({
 				dynamicFields: dynamicFieldVal,
 				selectedFilters: {
@@ -832,7 +840,9 @@ class SendGoods extends Component<Props, States> {
 									this.handleReactSelect(selectedOptions, e, list.name);
 									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
-								value={list.name === "geolevel1" ? selectedGeolevel1Options : selectedGeolevel2Options}
+								// value={list.name === "geolevel1" ? selectedGeolevel1Options : selectedGeolevel2Options}
+								value={list.value}
+								isDisabled = {list.name === "geolevel1" }
 								id="geolevel-test"
 								dataTestId="geolevel-test"
 							/>

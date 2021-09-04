@@ -27,14 +27,22 @@ import {
 	getGeographicLevel1Options,
 	getGeoLocationFields
   } from '../../redux/actions/common/common';
+  import {
+	getOverallScans,
+	getScannedBrands,
+	setselectedBrandList
+  } from '../../redux/actions/consolidatedScans/consolidatedScans';
   import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
   import _ from "lodash";
 
 let levelsName: any = [];
 
 const ConsolidatedScans = (Props: any) => {
-	// const dispatch            = useDispatch();
+	const dispatch            = useDispatch();
 	// const geoLevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
+	const allConsolidatedScans = useSelector(({consolidatedScans}:any) => consolidatedScans?.allConsolidatedScans);
+	const scannedBrands = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedBrands);
+	console.log('scannedBrands@@',scannedBrands)
 	const [searchText, setSearchText] = useState<string>("");
 	const [retailerOptions, setRetailerOptions] = useState<string[]>([]);
 	const [optionslist, setOptionslist] = useState([]);
@@ -43,7 +51,7 @@ const ConsolidatedScans = (Props: any) => {
 	const [dropdownOpenFilter,setdropdownOpenFilter] = useState(false);
 	const [partnerTypeList, setpartnerTypeList] = useState(["Retailers", "Distributors"]);
 	const [partnerType, setPartnerType] = useState({ type: "Retailers" });
-	const [selectedBrandList,setselectedBrandList] = useState([{}]);
+	// const [selectedBrandList,setselectedBrandList] = useState([{}]);
 	const [selectedProductList,setselectedProductList] = useState([{}]);
 	const [selectedDistributorName,setselectedDistributorName] = useState('');
 	const [selectedBrandName,setselectedBrandName] = useState('');
@@ -82,164 +90,165 @@ const ConsolidatedScans = (Props: any) => {
 			partnerType: "Retailers",
 			scannedPeriod: "Today",
 	  });
-	  const [allConsolidatedScans,setAllConsolidatedScans] = useState([
-			{
-				"distributorId" : 1,
-				"name" : "vidhya",
-				"sendgoods" : 3131,
-				"receivegoods" : 3243,
-				"walkinsales" : 432,
-				"advisorsales" :434,
-				"label" : "GCHPU"
-			},
-			{
-			  "distributorId" : 2,
-				"name" : "demo",
-				"sendgoods" : 343,
-				"receivegoods" : 89,
-				"walkinsales" : 978,
-				"advisorsales" :65,
-				"label" : "RANDM"
-			},
-			{
-			  "distributorId" : 3,
-			  "name" : "demo1",
-			  "sendgoods" : 343,
-			  "receivegoods" : 89,
-			  "walkinsales" : 978,
-			  "advisorsales" :65,
-			  "label" : "DHUHN"
-		  },
-		  {
-			  "distributorId" : 4,
-			  "name" : "demo2",
-			  "sendgoods" : 343,
-			  "receivegoods" : 89,
-			  "walkinsales" : 978,
-			  "advisorsales" :65,
-			  "label" : "AMJKHJ"
-		  },
-		  {
-			"distributorId" : 5,
-			"name" : "demo2",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65,
-			"label" : "AMJKHJ" 
-		},
-		{
-		  "distributorId" : 6,
-		  "name" : "demo2",
-		  "sendgoods" : 343,
-		  "receivegoods" : 89,
-		  "walkinsales" : 978,
-		  "advisorsales" :65,
-		  "label" : "RANDM" 
-	  },
-	  {
-		"distributorId" : 7,
-		"name" : "demo2",
-		"sendgoods" : 343,
-		"receivegoods" : 89,
-		"walkinsales" : 978,
-		"advisorsales" :65,
-		"label" : "RANDM"
-	  },
-	  {
-		"distributorId" : 8,
-		"name" : "demo2",
-		"sendgoods" : 343,
-		"receivegoods" : 89,
-		"walkinsales" : 978,
-		"advisorsales" :65,
-		"label" : "GCHPU" 
-	  },
-		{
-		  "distributorId" : 9,
-		  "name" : "demo2",
-		  "sendgoods" : 343,
-		  "receivegoods" : 89,
-		  "walkinsales" : 978,
-		  "advisorsales" :65,
-		  "label" : "GCHPU" 
-		},
-		{
-		  "distributorId" : 10,
-		  "name" : "demo2",
-		  "sendgoods" : 343,
-		  "receivegoods" : 89,
-		  "walkinsales" : 978,
-		  "advisorsales" :65,
-		  "label" : "GCHPU" 
-		},
-		{
-		  "distributorId" :11,
-		  "name" : "demo2",
-		  "sendgoods" : 343,
-		  "receivegoods" : 89,
-		  "walkinsales" : 978,
-		  "advisorsales" :65,
-		  "label" : "GCHPU"
-		}]
-	  );
-	  const [scannedBrands,setscannedBrands] = useState([
-		{
-			"distributorId" : 1,
-			"brandId" : 1,
-			"brandname" : "brand1",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65 
-		  },
-		  {
-			  "distributorId" : 1,
-			  "brandId" : 2,
-			  "brandname" : "arand2",
-			  "sendgoods" : 343,
-			  "receivegoods" : 89,
-			  "walkinsales" : 978,
-			  "advisorsales" :65 
-			},
-		  {
-			"distributorId" : 2,
-			"brandId" : 3,
-			"brandname" : "brand3",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65 
-		  },
+	  const [soldbyid,setSoldbyid] = useState('');
+	//   const [allConsolidatedScans,setAllConsolidatedScans] = useState([
+	// 		{
+	// 			"distributorId" : 1,
+	// 			"name" : "vidhya",
+	// 			"sendgoods" : 3131,
+	// 			"receivegoods" : 3243,
+	// 			"walkinsales" : 432,
+	// 			"advisorsales" :434,
+	// 			"label" : "GCHPU"
+	// 		},
+	// 		{
+	// 		  "distributorId" : 2,
+	// 			"name" : "demo",
+	// 			"sendgoods" : 343,
+	// 			"receivegoods" : 89,
+	// 			"walkinsales" : 978,
+	// 			"advisorsales" :65,
+	// 			"label" : "RANDM"
+	// 		},
+	// 		{
+	// 		  "distributorId" : 3,
+	// 		  "name" : "demo1",
+	// 		  "sendgoods" : 343,
+	// 		  "receivegoods" : 89,
+	// 		  "walkinsales" : 978,
+	// 		  "advisorsales" :65,
+	// 		  "label" : "DHUHN"
+	// 	  },
+	// 	  {
+	// 		  "distributorId" : 4,
+	// 		  "name" : "demo2",
+	// 		  "sendgoods" : 343,
+	// 		  "receivegoods" : 89,
+	// 		  "walkinsales" : 978,
+	// 		  "advisorsales" :65,
+	// 		  "label" : "AMJKHJ"
+	// 	  },
+	// 	  {
+	// 		"distributorId" : 5,
+	// 		"name" : "demo2",
+	// 		"sendgoods" : 343,
+	// 		"receivegoods" : 89,
+	// 		"walkinsales" : 978,
+	// 		"advisorsales" :65,
+	// 		"label" : "AMJKHJ" 
+	// 	},
+	// 	{
+	// 	  "distributorId" : 6,
+	// 	  "name" : "demo2",
+	// 	  "sendgoods" : 343,
+	// 	  "receivegoods" : 89,
+	// 	  "walkinsales" : 978,
+	// 	  "advisorsales" :65,
+	// 	  "label" : "RANDM" 
+	//   },
+	//   {
+	// 	"distributorId" : 7,
+	// 	"name" : "demo2",
+	// 	"sendgoods" : 343,
+	// 	"receivegoods" : 89,
+	// 	"walkinsales" : 978,
+	// 	"advisorsales" :65,
+	// 	"label" : "RANDM"
+	//   },
+	//   {
+	// 	"distributorId" : 8,
+	// 	"name" : "demo2",
+	// 	"sendgoods" : 343,
+	// 	"receivegoods" : 89,
+	// 	"walkinsales" : 978,
+	// 	"advisorsales" :65,
+	// 	"label" : "GCHPU" 
+	//   },
+	// 	{
+	// 	  "distributorId" : 9,
+	// 	  "name" : "demo2",
+	// 	  "sendgoods" : 343,
+	// 	  "receivegoods" : 89,
+	// 	  "walkinsales" : 978,
+	// 	  "advisorsales" :65,
+	// 	  "label" : "GCHPU" 
+	// 	},
+	// 	{
+	// 	  "distributorId" : 10,
+	// 	  "name" : "demo2",
+	// 	  "sendgoods" : 343,
+	// 	  "receivegoods" : 89,
+	// 	  "walkinsales" : 978,
+	// 	  "advisorsales" :65,
+	// 	  "label" : "GCHPU" 
+	// 	},
+	// 	{
+	// 	  "distributorId" :11,
+	// 	  "name" : "demo2",
+	// 	  "sendgoods" : 343,
+	// 	  "receivegoods" : 89,
+	// 	  "walkinsales" : 978,
+	// 	  "advisorsales" :65,
+	// 	  "label" : "GCHPU"
+	// 	}]
+	//   );
+	//   const [scannedBrands,setscannedBrands] = useState([
+	// 	{
+	// 		"distributorId" : 1,
+	// 		"brandId" : 1,
+	// 		"brandname" : "brand1",
+	// 		"sendgoods" : 343,
+	// 		"receivegoods" : 89,
+	// 		"walkinsales" : 978,
+	// 		"advisorsales" :65 
+	// 	  },
+	// 	  {
+	// 		  "distributorId" : 1,
+	// 		  "brandId" : 2,
+	// 		  "brandname" : "arand2",
+	// 		  "sendgoods" : 343,
+	// 		  "receivegoods" : 89,
+	// 		  "walkinsales" : 978,
+	// 		  "advisorsales" :65 
+	// 		},
+	// 	  {
+	// 		"distributorId" : 2,
+	// 		"brandId" : 3,
+	// 		"brandname" : "brand3",
+	// 		"sendgoods" : 343,
+	// 		"receivegoods" : 89,
+	// 		"walkinsales" : 978,
+	// 		"advisorsales" :65 
+	// 	  },
 
-		  {
-			"distributorId" : 2,
-			"brandId" : 4,
-			"brandname" : "brand4",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65 
-		  },
-		  {
-			  "distributorId" : 1,
-			  "brandId" : 5,
-			  "brandname" : "brand5",
-			  "sendgoods" : 343,
-			  "receivegoods" : 89,
-			  "walkinsales" : 978,
-			  "advisorsales" :65 
-			},
-			{
-				"distributorId" : 1,
-				"brandId" : 6,
-				"brandname" : "brand6",
-				"sendgoods" : 343,
-				"receivegoods" : 89,
-				"walkinsales" : 978,
-				"advisorsales" :65 
-			  },
-	  ]);
+	// 	  {
+	// 		"distributorId" : 2,
+	// 		"brandId" : 4,
+	// 		"brandname" : "brand4",
+	// 		"sendgoods" : 343,
+	// 		"receivegoods" : 89,
+	// 		"walkinsales" : 978,
+	// 		"advisorsales" :65 
+	// 	  },
+	// 	  {
+	// 		  "distributorId" : 1,
+	// 		  "brandId" : 5,
+	// 		  "brandname" : "brand5",
+	// 		  "sendgoods" : 343,
+	// 		  "receivegoods" : 89,
+	// 		  "walkinsales" : 978,
+	// 		  "advisorsales" :65 
+	// 		},
+	// 		{
+	// 			"distributorId" : 1,
+	// 			"brandId" : 6,
+	// 			"brandname" : "brand6",
+	// 			"sendgoods" : 343,
+	// 			"receivegoods" : 89,
+	// 			"walkinsales" : 978,
+	// 			"advisorsales" :65 
+	// 		  },
+	//   ]);
 	  const [scannedProducts,setscannedProducts] = useState([ 
 		{
 			"distributorId" :1,
@@ -317,38 +326,55 @@ const ConsolidatedScans = (Props: any) => {
 
 	useEffect(()=>{
 		// dispatch(getGeographicLevel1Options());
-		let distributorId = allConsolidatedScans[0].distributorId;
-		getSelectedBrands(distributorId);
+		dispatch(getOverallScans());
+		let id = allConsolidatedScans && allConsolidatedScans[0]?.soldbyid;
+		setSoldbyid(id);
 		getCountryList();
 		getHierarchyDatas();
 		getGeographicFields();
 	},[]);
 
-	const getSelectedBrands = (distributorId : number, idx?:any, type?:string)=>{
-		let allBrands = scannedBrands?.filter((brands:any) => brands.distributorId === distributorId);
-		let allProducts = scannedProducts?.filter((product:any) => (product.distributorId === distributorId && allBrands[0]?.brandId === product.brandId));
-		setselectedBrandList(allBrands);
-		setselectedProductList(allProducts);
-		setselectedBrandName(allBrands[0]?.brandname)
+	useEffect(()=>{
+			dispatch(getScannedBrands(soldbyid));
+			if(scannedBrands?.length > 0) {
+				getSelectedBrands(soldbyid);
+			}
+	},[soldbyid]);
+
+	// useEffect(()=>{
+	// 	if(scannedBrands?.length > 0) {
+	// 		getSelectedBrands(soldbyid);
+	// 	}
+	// },[])
+
+
+	const getSelectedBrands = (soldbyid : string, idx?:any, type?:string)=>{
+		let allBrands = scannedBrands?.filter((brands:any) => brands.soldbyid === soldbyid);
+		let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && (allBrands && allBrands[0]?.brandId === product.brandId) ));
+		dispatch(setselectedBrandList(allBrands));
+		console.log('brands@@', scannedBrands);
+		// setselectedBrandList(allBrands);
+		// setselectedProductList(allProducts);
+		setselectedBrandName(allBrands && allBrands[0]?.productbrand)
 
 		if ( type === 'selected' ) {
 			setselectedDistributor(idx);
 			setselectedBrand(0);
 		}
 		allConsolidatedScans?.forEach((item:any,index:number)=>{
-			if( item.distributorId === distributorId) {
-				setselectedDistributorName(item.name);
+			if( item.soldbyid === soldbyid) {
+				setselectedDistributorName(item.firstname);
 			}
 		})
 	};
 
-	const getSelectedProducts = (distributorId: number, brandId:number, idx:number, type?:String) => {
-		let allProducts = scannedProducts?.filter((product:any) => (product.distributorId === distributorId && brandId === product.brandId));
+	const getSelectedProducts = (soldbyid: number, productbrand:string, idx:number, type?:String) => {
+		let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && productbrand === product.productbrand));
 		if ( type === 'selected' ) {
 			setselectedBrand(idx);
 		}
 		scannedBrands?.forEach((item:any,index:number)=>{
-			if( item.brandId === brandId && item.distributorId === distributorId) {
+			if( item.productbrand === productbrand && item.soldbyid === soldbyid) {
 				setselectedBrandName(item.brandname);
 			}
 		})
@@ -728,9 +754,10 @@ const ConsolidatedScans = (Props: any) => {
 	const onSort = (name: string, data: any, isAsc: boolean,table:string) => {
 		let response: any = sortBy(name, data);
 		if(table === "overallScans"){
-			setAllConsolidatedScans(response);
+			// setAllConsolidatedScans(response);
 		} else if (table === "scannedBrands") {
-			setselectedBrandList(response);
+			// dispatch(setselectedBrandList(response));
+			// setselectedBrandList(response);
 		} else if(table === "scannedProducts") {
 			setselectedProductList(response)
 		}
@@ -908,7 +935,7 @@ const ConsolidatedScans = (Props: any) => {
                         </div>
                         <div className = "col-sm-6">
                             <div className="row">
-                                <ProductBrandList selectedBrandList={selectedBrandList} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
+                                <ProductBrandList selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
                             </div>
                             <div className="row">
                                 <ProductList selectedProductList = {selectedProductList} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
