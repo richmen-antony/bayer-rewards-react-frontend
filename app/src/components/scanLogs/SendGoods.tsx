@@ -493,17 +493,29 @@ class SendGoods extends Component<Props, States> {
 
 	filterScans = (filterValue: any) => {
 		let name = this.state.condFilterScan === "customer" ? "soldtoid" : "soldbyid";
+		const {retailerOptions,distributorOptions,selectedCustomerOptions} =this.state;
+		console.log({selectedCustomerOptions})
+		let options=selectedCustomerOptions ? {...selectedCustomerOptions} :{label:"ALL",value:"ALL"};
 		let filters = { ...this.state.selectedFilters };
 		let searchText = this.state.searchText;
 		if (name === "soldtoid") {
 			filters[name] = filterValue;
-			filters["soldbyid"] = null;
+			// filters["soldbyid"] = null;
+			if(this.state.selectedScanType === "SG - D2R"){
+				const data=retailerOptions?.length>0&&retailerOptions.filter((el:any)=>el.value===filterValue);
+				if(data?.length>0)
+				options={...data[0]}
+			}else{
+				const data=distributorOptions?.length>0&&distributorOptions.filter((el:any)=>el.value===filterValue);
+				if(data?.length>0)
+				options={...data[0]}
+			}
 		}
 		if (name === "soldbyid") {
-			filters["soldtoid"] = null;
 			searchText = filterValue;
 		}
-		this.setState({ isFiltered: true, inActiveFilter: false, selectedFilters: { ...filters }, searchText }, () => {
+
+		this.setState({ isFiltered: true, inActiveFilter: false, selectedFilters: { ...filters }, searchText,selectedCustomerOptions:options }, () => {
 			this.getScanLogs();
 			this.handleClosePopup();
 		});
