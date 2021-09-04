@@ -306,7 +306,7 @@ export const OverallScans = ({
 											{/* <p>{retailerPopupData.userid}</p> */}
 										</div>
 										<div className="content-list">
-											<label>Account Name</label>
+											<label>Store Name</label>
 											{/* <p>{retailerPopupData.accountname}</p> */}
 										</div>
 										<div className="content-list">

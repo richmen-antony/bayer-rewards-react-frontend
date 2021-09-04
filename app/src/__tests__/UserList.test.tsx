@@ -124,7 +124,7 @@ describe('User List component tests', () => {
 		const [columnNames, ...rows] = within(table).getAllByRole("rowgroup");
 		within(columnNames).getByText("USER NAME");
 		within(columnNames).getByText("MOBILE#");
-		within(columnNames).getByText("ACCOUNT NAME");
+		within(columnNames).getByText("STORE NAME");
 		within(columnNames).getByText("OWNER NAME");
 		within(columnNames).getByText("STAFF COUNT");
 		within(columnNames).getByText("STATUS");
