@@ -213,6 +213,7 @@ class SellFarmer extends Component<Props, States> {
 						isLoader: false,
 						farmerOptions,
 						retailerOptions: retailerList,
+						selectedFilters:{...this.state.selectedFilters,farmer:"ALL"}
 					
 					});
 				}
@@ -594,6 +595,11 @@ class SellFarmer extends Component<Props, States> {
 				[e.name]: selectedOption.value,
 			},
 			[optionName]: selectedOption,
+		},()=>{
+			if (e.name === "retailer") {
+				let condIf = "retailer";
+				this.getRetailerList(condIf);
+			}
 		});
 	};
 	render() {
@@ -611,8 +617,6 @@ class SellFarmer extends Component<Props, States> {
 			farmerOptions,
 			retailerOptions,
 			loggedUserInfo,
-			selectedFarmerOptions,
-			selectedRetailerOptions
 		} = this.state;
 
 		const pageNumbers = [];
@@ -646,7 +650,9 @@ class SellFarmer extends Component<Props, States> {
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
 								<ReactSelect
 										name="retailer"
-										value={selectedRetailerOptions}
+										value={retailerOptions.filter(function(option:any) {
+											return option.value === selectedFilters.retailer;
+										  })}
 										label={"Retailer"}
 										handleChange={(selectedOptions: any, e: any) =>
 											this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
@@ -672,7 +678,9 @@ class SellFarmer extends Component<Props, States> {
 								<div className="form-group" onClick={(e) => e.stopPropagation()}>
 									<ReactSelect
 										name="farmer"
-										value={selectedFarmerOptions}
+										value={farmerOptions.filter(function(option:any) {
+											return option.value === selectedFilters.farmer 
+										  })}
 										label={"Farmer"}
 										handleChange={(selectedOptions: any, e: any) =>
 											this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
@@ -683,6 +691,16 @@ class SellFarmer extends Component<Props, States> {
 										id="farmer-test"
 										dataTestId="farmer-test"
 									/>
+									{/* <NativeDropdown
+										name="farmer"
+										value={selectedFilters.farmer}
+										label={"Farmer"}
+										handleChange={(e: any) => this.handleSelect(e, "farmer")}
+										options={farmerOptions}
+										defaultValue="ALL"
+										id="farmer-test"
+										dataTestId="farmer-test"
+									/> */}
 								</div>
 
 								<label className="pt-2">Product Group</label>
