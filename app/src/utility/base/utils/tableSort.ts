@@ -11,9 +11,8 @@ function compareByAsc(key: any) {
     // if (nameA <nameB) return -1;
     // if (nameA >nameB) return 1;
     // return 0;
-    let nameA=typeof a[key]==="string" ? a[key].toUpperCase():a[key];
-    let va = (a[key] === null) ? "" : "" + a[key],
-        vb = (b[key] === null) ? "" : "" + b[key];
+    let va = (a[key] === null) ? "" : "" + a[key].toUpperCase(),
+        vb = (b[key] === null) ? "" : "" + b[key].toUpperCase();
 
     return va > vb ? 1 : ( va === vb ? 0 : -1 );
   };
@@ -25,8 +24,8 @@ function compareByDesc(key: any){
     // if (nameA < nameB) return 1;
     // if (nameA > nameB) return -1;
     // return 0;
-    let va = (a[key] === null) ? "" : "" + a[key],
-    vb = (b[key] === null) ? "" : "" + b[key];
+    let va = (a[key] === null) ? "" : "" + a[key].toUpperCase(),
+    vb = (b[key] === null) ? "" : "" + b[key].toUpperCase();
 
     return va > vb ? -1 : ( va === vb ? 0 : -1 );
   };

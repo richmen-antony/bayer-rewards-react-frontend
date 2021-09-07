@@ -175,3 +175,34 @@ export function invokePostService(path, reqObj, params) {
     }
   });
 };
+
+//Put method 
+export function invokePutService(path,reqObj) {
+  return new Promise(function (resolve, reject) {
+    if (checkSessionTimeOut()) {
+      const apiEndPoint = configApp.env;
+      const config = {
+        method: 'PUT',
+        data: reqObj,
+        headers,
+      };
+      axios.create({
+        baseURL: apiEndPoint + path
+      })(config)
+        .then((response) => {
+          setLocalStorageData("sessionTime", moment().unix());
+          resolve(response.data)
+        })
+        .catch((err) => {
+          if (err.response) {
+            reject(err.response.data);
+          }
+        });
+
+    }
+    else {
+      handleSessionLogout();
+    }
+
+  });
+};

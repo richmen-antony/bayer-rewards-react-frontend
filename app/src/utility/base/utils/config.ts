@@ -37,6 +37,8 @@ export const apiURL = {
     downloadAllScanLogs:"admin/downloadscanloglist",
     getBatchList:"admin/batchlist",
     getPartnerList:"admin/partnerlist",
+    featureToggle:"feature/getFeatures",
+    updateFeatureToggle:"feature/EditFeatures",
     consolidatedScans : {
         getOverallScans : "scangoods/report/level1",
         getScannedBrands : "scangoods/report/level2"

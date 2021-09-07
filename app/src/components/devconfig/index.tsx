@@ -11,6 +11,7 @@ import RoleHierarchy from "./components/RoleHierarchy"; // Step 1
 import TnTFlow from "./components/TnTFlow";
 import PackagingDefinition from "./components/PackagingDefinition";
 import ScanPointsAndAllocation from "./components/ScanPointsAndAllocation";
+import ConfigureFeature from "./feature/ConfigureFeature";
 import { Anticounterfeit } from "./components/Anticounterfeit";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
@@ -954,8 +955,8 @@ class Devconfigurations extends React.Component<
                 aria-label="ant example"
               >
                 <AntTab label="COUNTRY" />
-                {/* <AntTab label="FEATURE TOGGLE" />
-                <AntTab label="DEV CONFIG" /> */}
+                <AntTab label="FEATURE TOGGLE" />
+                {/* <AntTab label="DEV CONFIG" />  */}
               </AntTabs>
               <Typography />
             </div>
@@ -1149,10 +1150,10 @@ class Devconfigurations extends React.Component<
                 </button>
               </div>
             </TabPanel>
-            {/* <TabPanel value={this.state.value} index={1} classes={classes}>
-              Item Two
+            <TabPanel value={this.state.value} index={1} classes={classes}>
+              <ConfigureFeature />
             </TabPanel>
-            <TabPanel value={this.state.value} index={2} classes={classes}>
+            {/*  <TabPanel value={this.state.value} index={2} classes={classes}>
               Item Three
             </TabPanel> */}
           </div>
