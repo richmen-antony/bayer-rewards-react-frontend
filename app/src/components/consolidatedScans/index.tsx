@@ -77,7 +77,9 @@ const ConsolidatedScans = (Props: any) => {
 	const [producttableIndex, setproducttableIndex]            = useState<number>(0);
 	const [isAsc, setIsAsc]                                    = useState<boolean>(true);
 	const [soldbyid,setSoldbyid]                               = useState('');
-	const [isResetFilter,setIsResetFilter]                         = useState(false);
+	const [isResetFilter,setIsResetFilter]                     = useState(false);
+	const [filterAppliedTime,setFilterAppliedTime]             = useState(Number);
+	
 
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
@@ -90,13 +92,30 @@ const ConsolidatedScans = (Props: any) => {
 			scannedPeriod: "",
 	  });
 	  const [scannedPeriodsList, setscannedPeriodsList]         = useState([
-		{label: "Today", value: ""},
-		{ label: "This week (Sun - Sat)", value: "" },
-		{ label: "Last 30 days", value: "" },
-		{ label: "This year (Jan - Dec)", value: "" },
-		{ label: "Prev. year (Jan - Dec)", value: "" },
+		{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
+		{
+			label: "This week (Sun - Sat)",
+			from: moment().startOf("week").format("YYYY-MM-DD"),
+			to: moment().endOf("week").format("YYYY-MM-DD"),
+		},
+		{
+			label: "Last 30 days",
+			from: moment().subtract(30, "days").format("YYYY-MM-DD"),
+			to: moment(new Date()).format("YYYY-MM-DD"),
+		},
+		{
+			label: "This year (Jan - Dec)",
+			from: moment().startOf("year").format("YYYY-MM-DD"),
+			to: moment().endOf("year").format("YYYY-MM-DD"),
+		},
+		{
+			label: "Prev. year (Jan - Dec)",
+			from: moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"),
+			to: moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"),
+		},
 		{ label: "Custom", value: "" },
 	]);
+	
 	const [productCategories, setproductCategories]             = useState([
 		"ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
 	]);
@@ -105,9 +124,9 @@ const ConsolidatedScans = (Props: any) => {
 	useEffect(()=>{
 		dispatch(getGeographicLevel1Options());
 		let data = {
-			countrycode: userData?.countrycode,
-			partnertype: (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			isfiltered:isFiltered,
+			countrycode : userData?.countrycode,
+			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+			isfiltered  : isFiltered,
 		};
 		dispatch(getOverallScans(data));
 		getCountryList();
@@ -125,10 +144,31 @@ const ConsolidatedScans = (Props: any) => {
 		}
 	},[allConsolidatedScans]);
 
+	useEffect(()=>{
+		if ( searchText.length >= 3 || searchText.length === 0) {
+			let data = {
+				countrycode  : userData?.countrycode,
+				partnertype  : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+				isfiltered   : isFiltered,
+				searchtext   : searchText
+			};
+			let filteredDatas = {};
+			if(isFiltered) {
+				filteredDatas = getFilteredDatas(filteredDatas);
+				data = { ...data, ...filteredDatas };
+			}
+		
+			dispatch(getOverallScans(data));
+		}
+	},[searchText, partnerType,filterAppliedTime])
+
 	useEffect(() => {
 		if(soldbyid) {
-			let productgroup = selectedFilters.productgroup;
-			dispatch(getScannedBrands(soldbyid,productgroup));
+			let filteredDatas = {};
+			if(isFiltered) {
+				filteredDatas = getFilteredDatas(filteredDatas);
+			}
+			dispatch(getScannedBrands(soldbyid,isFiltered,filteredDatas));
 			if(scannedBrands?.length > 0) {
 				getSelectedBrands(soldbyid);
 			}
@@ -137,7 +177,7 @@ const ConsolidatedScans = (Props: any) => {
 			dispatch(setselectedProductList([]));
 			setselectedDistributorName('');
 		}
-	},[soldbyid])
+	},[soldbyid, filterAppliedTime])
 
 	const getSelectedBrands = (soldbyidd : string, idx?:any, type?:string, productbrand?:any)=>{
 		// let allBrands = scannedBrands?.filter((brands:any) => brands.soldbyid === soldbyid);
@@ -153,7 +193,11 @@ const ConsolidatedScans = (Props: any) => {
 			}
 		})
 		setselectedBrandName(productbrand);
-		dispatch(getScannedBrands(soldbyidd,selectedFilters.productgroup));
+		let filteredDatas = {};
+		if(isFiltered) {
+			filteredDatas = getFilteredDatas(filteredDatas);
+		}
+		dispatch(getScannedBrands(soldbyidd,isFiltered,filteredDatas));
 	};
 
 	useEffect(()=>{
@@ -161,12 +205,20 @@ const ConsolidatedScans = (Props: any) => {
 	},[scannedBrands]);
 
 	useEffect(()=>{
-		dispatch(getScannedProducts(soldbyid, selectedBrandName));
-	},[selectedBrandName])
+		let filteredDatas = {};
+			if(isFiltered) {
+				filteredDatas = getFilteredDatas(filteredDatas);
+			}
+		dispatch(getScannedProducts(soldbyid,isFiltered, selectedBrandName,filteredDatas));
+	},[selectedBrandName,filterAppliedTime])
 
 	const getSelectedProducts = (soldby : string, productbrand:string, idx:number) => {
 		// let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && productbrand === product.productbrand));
-		dispatch(getScannedProducts(soldby, productbrand));
+		let filteredDatas = {};
+			if(isFiltered) {
+				filteredDatas = getFilteredDatas(filteredDatas);
+			}
+		dispatch(getScannedProducts(soldby,isFiltered, productbrand,filteredDatas));
 		setselectedBrand(idx);
 		scannedBrands?.forEach((item:any,index:number) => {
 			if( item.productbrand === productbrand && item.soldbyid === soldbyid) {
@@ -175,6 +227,22 @@ const ConsolidatedScans = (Props: any) => {
 		})
 		// setselectedProductList(allProducts)
 	}
+	const getFilteredDatas = (filteredDatas:{}) => {
+		let { scanneddatefrom ,scanneddateto ,productgroup,geolevel1,geolevel2,scannedPeriod,lastmodifieddatefrom,lastmodifieddateto  }:any = selectedFilters;
+		let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
+			let endDate   = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
+			if(isFiltered) {
+				filteredDatas = {
+					scanneddatefrom : startDate ? moment(startDate).format("YYYY-MM-DD") : null,
+					scanneddateto   : endDate ? moment(endDate).format("YYYY-MM-DD") : null,
+					productgroup    : productgroup === "ALL" ? null : productgroup,
+					geolevel1       :  geolevel1 === "ALL" ? null : userData?.geolevel1,
+					geolevel2       : geolevel2 === "ALL" ? null : geolevel2,
+					scannedPeriod   : scannedPeriod
+				}
+			}
+			return filteredDatas;
+		}
 
 	const getCountryList = ()=> {
 		let res = [
@@ -183,53 +251,6 @@ const ConsolidatedScans = (Props: any) => {
 		];
 		setcountryList(res);
 	}
-
-	// const getGeographicFields = () => {
-	// 	setIsLoader(true);
-	// 	const { getTemplateData } = apiURL;
-	// 	let countrycode = {
-	// 		countryCode: userData?.countrycode,
-	// 	};
-	// 	invokeGetAuthService(getTemplateData, countrycode)
-	// 		.then((response: any) => {
-	// 			let locationData = response.body[0].locationhierarchy;
-	// 			let levels: any = [];
-	// 			locationData.forEach((item: any) => {
-	// 				levelsName.push(item.name.toLowerCase());
-	// 				let locationhierlevel = item.level;
-	// 				let geolevels = "geolevel" + locationhierlevel;
-	// 				levels.push(geolevels);
-	// 			});
-	// 			let levelsData: any = [];
-	// 			locationData?.length > 0 &&
-	// 				locationData.forEach((item: any, index: number) => {
-	// 					if (index > 0) {
-	// 						let locationhierlevel = item.level;
-	// 						let geolevels = "geolevel" + locationhierlevel;
-	// 						let obj = { name: item.name, geolevels };
-	// 						levelsData.push(obj);
-	// 					}
-	// 				});
-	// 				setIsLoader(false);
-	// 				setgeographicFields(levels);
-	// 				// getDynamicOptionFields();
-	// 			// this.setState(
-	// 			// 	{
-	// 			// 		isLoader: false,
-	// 			// 		geographicFields: levels,
-	// 			// 		locationData: levelsData,
-	// 			// 	},
-	// 			// 	() => {
-	// 			// 		this.getDynamicOptionFields();
-	// 			// 	}
-	// 			// );
-	// 		})
-	// 		.catch((error: any) => {
-	// 			setIsLoader(false);
-	// 			let message = error.message;
-	// 			Alert("warning", message);
-	// 		});
-	// }
 
 	useEffect(()=>{
 		getDynamicOptionFields();
@@ -346,32 +367,7 @@ const ConsolidatedScans = (Props: any) => {
 		setIsFiltered(true);
 	}
 
-	useEffect(()=>{
-		console.log('filterchange');
-		let { scanneddatefrom ,scanneddateto ,productgroup,geolevel1,geolevel2,scannedPeriod,lastmodifieddatefrom,lastmodifieddateto  }:any = selectedFilters;
-		if ( searchText.length >= 3 || searchText.length === 0) {
-			console.log('serachText', searchText);
-			let data = {
-				countrycode  : userData?.countrycode,
-				partnertype  : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-				isfiltered   : isFiltered,
-				searchtext   : searchText
-			};
-			let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
-			let endDate   = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
-			let filter:any = {
-				scanneddatefrom : startDate ? moment(startDate).format("YYYY-MM-DD") : null,
-				scanneddateto   : endDate ? moment(endDate).format("YYYY-MM-DD") : null,
-				productgroup    : productgroup === "ALL" ? null : productgroup,
-				geolevel1       :  geolevel2 === "ALL" ? null : userData?.geolevel1,
-				geolevel2       : geolevel2 === "ALL" ? null : geolevel2,
-				scannedPeriod   : scannedPeriod
-			}
-			data = { ...data, ...filter };
-			
-			dispatch(getOverallScans(data));
-		}
-	},[searchText, isFiltered])
+
 
 	const overallDownload = () => {
 
@@ -390,30 +386,6 @@ const ConsolidatedScans = (Props: any) => {
 		setselectedBrand(0);
 	};
 	
-	useEffect(()=>{
-		let { scanneddatefrom ,scanneddateto ,productgroup,geolevel1,geolevel2,scannedPeriod,lastmodifieddatefrom,lastmodifieddateto }:any = selectedFilters;
-		let data = {
-			countrycode : userData?.countrycode,
-			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			isfiltered  : isFiltered,
-			searchText  : searchText
-		};
-		if(isFiltered) {
-			let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
-			let endDate   = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
-			let filter:any = {
-				scanneddatefrom : startDate ? moment(startDate).format("YYYY-MM-DD") : null,
-				scanneddateto   : endDate ? moment(endDate).format("YYYY-MM-DD") : null,
-				productgroup    : productgroup === "ALL" ? null : productgroup,
-				geolevel1       : geolevel1 === "ALL" ? null : geolevel1 || userData?.geolevel1,
-				geolevel2       : geolevel2 === "ALL" ? null : geolevel2,
-				scannedPeriod   : scannedPeriod
-			}
-			data = { ...data, ...filter };
-		}
-		dispatch(getOverallScans(data));
-	},[partnerType])
-
 	const handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
 		e.stopPropagation();
 		let val:any = selectedFilters;
@@ -440,24 +412,9 @@ const ConsolidatedScans = (Props: any) => {
 		  }
 	};
 
-	  
-	// const handleGeolevelDropdown = (value: string, label: any) => {
-	// 	setSelectedFilters((prevState) => ({
-	// 		...selectedFilters,
-	// 		[label.toLocaleLowerCase()]: value,
-	// 	}))
-	// };
 	const handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
 		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
 		setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
-
-		// this.setState({
-		// 	selectedFilters: {
-		// 		...this.state.selectedFilters,
-		// 		[e.name]: selectedOption.value,
-		// 	},
-		// 	[condOptionName]: selectedOption,
-		// });
 	};
 	const fields = dynamicFields;
 	const locationList = fields?.map((list: any, index: number) => {
@@ -466,20 +423,6 @@ const ConsolidatedScans = (Props: any) => {
 			<React.Fragment key={`geolevels` + index}>
 				{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
 					<div className="col" style={{ marginBottom: "5px" }}>
-						{/* <NativeDropdown
-							name={list.name}
-							label={nameCapitalized}
-							options={list.options}
-							handleChange={(e: any) => {
-								e.stopPropagation();
-								list.value = e.target.value;
-								getOptionLists("manual", list.name, e.target.value, index);
-								handleGeolevelDropdown(e.target.value, list.name);
-							}}
-							value={list.value}
-							id="geolevel-test"
-							dataTestId="geolevel-test"
-						/> */}
 						<ReactSelect
 								name={list.name}
 								label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
@@ -488,7 +431,6 @@ const ConsolidatedScans = (Props: any) => {
 									list.value = selectedOptions.value;
 									getOptionLists("manual", list.name, selectedOptions.value, index);
 									handleReactSelect(selectedOptions, e, list.name);
-									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
 								value={list.value}
 								isDisabled = {list.name === "geolevel1" }
@@ -560,6 +502,7 @@ const ConsolidatedScans = (Props: any) => {
 
 	const applyFilter = () => {
 		setIsFiltered(true);
+		setFilterAppliedTime(new Date().getTime());
 		// closeToggle();
 		// this.setState({ isFiltered: true, inActiveFilter: false }, () => {
 		// 	this.getScanLogs();
@@ -624,7 +567,8 @@ const ConsolidatedScans = (Props: any) => {
 		setDateErrMsg("");
 		setIsFiltered(false);
 		setIsResetFilter(true);
-		setSearchText("")
+		setSearchText("");
+		setFilterAppliedTime(new Date().getTime());
 	  };
 
 	  useEffect(()=>{
@@ -634,6 +578,11 @@ const ConsolidatedScans = (Props: any) => {
 				partnertype: (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
 				isfiltered:isFiltered,
 			};
+			let filteredDatas = {};
+			if(isFiltered) {
+				filteredDatas = getFilteredDatas(filteredDatas);
+				data = { ...data, ...filteredDatas };
+			}
 			dispatch(getOverallScans(data));
 		  }
 	},[isResetFilter])

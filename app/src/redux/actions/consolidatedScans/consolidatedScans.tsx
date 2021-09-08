@@ -42,7 +42,7 @@ export const setOverallList = (allScans:any) => {
   }
 }
 
-export const getScannedBrands = (soldbyid:string,productgroup:string) => {
+export const getScannedBrands = (soldbyid:string,isfiltered:boolean,filteredDatas:{}) => {
   return async(dispatch: Dispatch<AnyAction>) => {
       dispatch({ type : LOADING_REQUEST, status : true } );
       const { getScannedBrands } = apiURL.consolidatedScans;
@@ -50,8 +50,10 @@ export const getScannedBrands = (soldbyid:string,productgroup:string) => {
         countrycode: userDetails.countrycode,
         userid : soldbyid,
         by : "productbrand",
-        productgroup : productgroup
+        isfiltered : isfiltered,
+        ...filteredDatas
       };
+console.log('vidhu@@@', data)
       invokeGetAuthService(getScannedBrands, data)
         .then(async (response: any) => {
             await dispatch(Success(response));
@@ -70,7 +72,7 @@ export const setselectedBrandList = (allBrands:any) => {
       dispatch({ type : SET_SELECTED_BRANDS, allBrands } );
   }
 }
-export const getScannedProducts = (soldbyid:string, productbrand:string) => {
+export const getScannedProducts = (soldbyid:string,isfiltered:boolean, productbrand:string,filteredDatas:{}) => {
   return async(dispatch: Dispatch<AnyAction>) => {
       dispatch({ type : LOADING_REQUEST, status : true } );
       const { getScannedProducts } = apiURL.consolidatedScans;
@@ -78,7 +80,10 @@ export const getScannedProducts = (soldbyid:string, productbrand:string) => {
         countrycode: userDetails.countrycode,
         userid : soldbyid,
         productbrand: productbrand,
-        by : "productbrand"
+        by : "productbrand",
+        isfiltered : isfiltered,
+        ...filteredDatas
+        // productgroup : productgroup
       };
       invokeGetAuthService(getScannedProducts, data)
         .then(async (response: any) => {
