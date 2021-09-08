@@ -1057,9 +1057,10 @@ class OrderHistory extends Component<Props, States> {
 										</div>
 										{this.state.locationData?.length > 0 &&
 											this.state.locationData.map((location: any, index: number) => {
+												let nameCapitalized = location.name === 'ADD' || location.name === 'EPA' ? location.name: _.startCase(_.toLower(location.name));
 												return (
 													<div className="content-list" key={index}>
-														<label>{_.startCase(_.toLower(location.name))}</label>
+														<label>{nameCapitalized}</label>
 														<p>{retailerPopupData[location.geolevels]}</p>
 													</div>
 												);

@@ -1257,9 +1257,10 @@ class SendGoods extends Component<Props, States> {
 										</div>
 										{this.state.locationData?.length > 0 &&
 											this.state.locationData.map((location: any, locationIndex: number) => {
+												let nameCapitalized = location.name === 'ADD' || location.name === 'EPA' ? location.name: _.startCase(_.toLower(location.name));
 												return (
 													<div className="content-list" key={locationIndex}>
-														<label>{_.startCase(_.toLower(location.name))}</label>
+														<label>{nameCapitalized}</label>
 														<p>
 															{
 																retailerPopupData[
