@@ -119,7 +119,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			countrycode: this.props.loggedUser?.countrycode,
 			scantype: "S2F_WALKIN",
 			soldbyrole: "RETAILER",
-			soldbygeolevel1: this.props.loggedUser?.geolevel1,
+			soldbygeolevel1:this.props.loggedUser?.role ==="ADMIN" ? null: this.props.loggedUser?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -130,7 +130,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || this.props.loggedUser?.geolevel1;
+			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ||  data.soldbygeolevel1;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
 			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
@@ -209,7 +209,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			searchtext: searchText || null,
 			scantype: "S2F_WALKIN",
 			soldbyrole: "RETAILER",
-			soldbygeolevel1: this.props.loggedUser?.geolevel1,
+			soldbygeolevel1:this.props.loggedUser?.role ==="ADMIN" ? null: this.props.loggedUser?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -220,7 +220,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || this.props.loggedUser?.geolevel1;
+			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
 			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
@@ -293,7 +293,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			condFilterScan,
 			activeSortKeyIcon,
 		} = this.state;
-
+     const {loggedUser} =this.props;
 		return (
 			<AUX>
 				{isLoader && <Loader />}
@@ -344,7 +344,9 @@ class WalkInSales extends PureComponent<Props, States> {
 														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 													) : null}
 												</th>
-											{/* <th
+												{
+													loggedUser?.role === "ADMIN" &&
+													<th
 												style={{ width: "10%" }}
 												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allWalkInSalesData, isAsc)}
 											>
@@ -352,9 +354,11 @@ class WalkInSales extends PureComponent<Props, States> {
 												{activeSortKeyIcon === "soldbygeolevel1" ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
-											</th> */}
+											</th>
+												}
+											
 											<th
-												style={{ width: this.props.loggedUser?.role === "ADMIN" ? "10%" : "10%" }}
+												style={{ width: loggedUser?.role === "ADMIN" ? "10%" : "10%" }}
 												onClick={(e) => this.handleSort(e, "expirydate", allWalkInSalesData, isAsc)}
 											>
 												EXPIRY DATE
@@ -428,7 +432,7 @@ class WalkInSales extends PureComponent<Props, States> {
 															</div>
 														</td>
 														<td>{_.startCase(_.toLower(value.soldbystore))}</td>
-														{/* <td>{value.soldbygeolevel1}</td> */}
+														{loggedUser?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td> }
 														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 													</tr>
 												);

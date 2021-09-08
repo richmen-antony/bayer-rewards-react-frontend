@@ -17,12 +17,12 @@ const PrivateRoute = ({ component: Component, meta, role, ...rest }: any) => {
         if (Authorization.isLoggedIn()) {
           if (
             Authorization.isRSMAdmin() &&
-            (role === "public" || role === "RSM")
+            (role === "public" || role === "RSM" || role==="RSM_ADMIN")
           ) {
             return <Component {...props} />;
           } else if (
             Authorization.isAdmin() &&
-            (role === "public" ||  role === "ADMIN")
+            (role === "public" ||  role === "ADMIN" ||role==="RSM_ADMIN")
           ) {
             return <Component {...props} />;
           } else if (

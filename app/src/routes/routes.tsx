@@ -76,7 +76,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/scanLogs')),
-    role:"RSM"
+    role:"RSM_ADMIN"
   },
   {
     private: true,

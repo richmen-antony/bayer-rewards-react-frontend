@@ -174,9 +174,12 @@ class SellFarmer extends Component<Props, States> {
 	componentDidMount() {
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
+		const condSalesType=userData?.role==="RSM"? this.state.salesType: ["WALKIN_SALES"];
 		this.setState(
 			{
 				loggedUserInfo: userData,
+				salesType:condSalesType
+
 			},
 			() => {
 				this.getRetailerList();
