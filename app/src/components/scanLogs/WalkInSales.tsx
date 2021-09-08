@@ -391,7 +391,7 @@ class WalkInSales extends PureComponent<Props, States> {
 															<div className="retailer-id">
 																<p>
 																	<span>
-																		{_.startCase(_.toLower(value.soldtoname))}
+																		{value.soldtoname}
 																	</span>
 																</p>
 																<label>{value.soldtoid}</label>
