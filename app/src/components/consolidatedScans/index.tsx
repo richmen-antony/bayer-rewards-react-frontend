@@ -40,6 +40,7 @@ import {
   import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
   import _ from "lodash";
 import { AnyAaaaRecord } from "node:dns";
+import { SettingsInputAntenna } from "@material-ui/icons";
 
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
@@ -122,7 +123,8 @@ const ConsolidatedScans = (Props: any) => {
 	const [retailerPopupData,setretailerPopupData]              = useState({});
   
 	useEffect(()=>{
-		dispatch(getGeographicLevel1Options());
+		Promise.all([dispatch(getGeoLocationFields()),dispatch(getGeographicLevel1Options())]).then((response) => {
+		});
 		let data = {
 			countrycode : userData?.countrycode,
 			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
@@ -130,9 +132,6 @@ const ConsolidatedScans = (Props: any) => {
 		};
 		dispatch(getOverallScans(data));
 		getCountryList();
-		// getHierarchyDatas();
-		dispatch(getGeoLocationFields());
-		// getGeographicFields();
 	},[]);
 
 	useEffect(()=>{
@@ -157,7 +156,6 @@ const ConsolidatedScans = (Props: any) => {
 				filteredDatas = getFilteredDatas(filteredDatas);
 				data = { ...data, ...filteredDatas };
 			}
-		
 			dispatch(getOverallScans(data));
 		}
 	},[searchText, partnerType,filterAppliedTime])
@@ -180,8 +178,6 @@ const ConsolidatedScans = (Props: any) => {
 	},[soldbyid, filterAppliedTime])
 
 	const getSelectedBrands = (soldbyidd : string, idx?:any, type?:string, productbrand?:any)=>{
-		// let allBrands = scannedBrands?.filter((brands:any) => brands.soldbyid === soldbyid);
-		// let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && (allBrands && allBrands[0]?.brandId === product.brandId) ));
 		setSoldbyid(soldbyidd);
 		if ( type === 'selected' ) {
 			setselectedDistributor(idx);
@@ -213,7 +209,6 @@ const ConsolidatedScans = (Props: any) => {
 	},[selectedBrandName,filterAppliedTime])
 
 	const getSelectedProducts = (soldby : string, productbrand:string, idx:number) => {
-		// let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && productbrand === product.productbrand));
 		let filteredDatas = {};
 			if(isFiltered) {
 				filteredDatas = getFilteredDatas(filteredDatas);
@@ -225,7 +220,6 @@ const ConsolidatedScans = (Props: any) => {
 				setselectedBrandName(item.productbrand);
 			}
 		})
-		// setselectedProductList(allProducts)
 	}
 	const getFilteredDatas = (filteredDatas:{}) => {
 		let { scanneddatefrom ,scanneddateto ,productgroup,geolevel1,geolevel2,scannedPeriod,lastmodifieddatefrom,lastmodifieddateto  }:any = selectedFilters;
@@ -263,7 +257,6 @@ const ConsolidatedScans = (Props: any) => {
 			level1List?.unshift(allItem);
 		}
 		dispatch(setGeolevel1Options(level1List));
-		// setgeolevel1List(level1List);
 		let level1Options: any = [];
 		geolevel1List?.forEach((item: any) => {
 			let level1Info = { label: item.name, code: item.code, value: item.name };
@@ -336,27 +329,12 @@ const ConsolidatedScans = (Props: any) => {
 			dynamicFieldVal[index + 2].value = {label: "ALL",value: "ALL"};
 			setdynamicFields(dynamicFieldVal);
 			setSelectedFilters({...selectedFilters, geolevel2: "ALL"});
-			// this.setState((prevState: any) => ({
-			// 	dynamicFields: dynamicFieldVal,
-			// 	selectedFilters: {
-			// 		...prevState.selectedFilters,
-			// 		geolevel2: "ALL",
-			// 		geolevel3: "ALL",
-			// 	},
-			// }));
-
 		} else if (type === "geolevel2") {
 			dynamicFieldVal[index].value = newvalue;
 			setdynamicFields(dynamicFieldVal);
-			// this.setState((prevState: any) => ({
-			// 	dynamicFields: dynamicFieldVal,
-			// 	selectedFilters: {
-			// 		...prevState.selectedFilters,
-			// 		geolevel3: "ALL",
-			// 	},
-			// }));
 		}
 	};
+
 	const handleSearch = (e:any) => {
 		let searchText = e.target.value;
 		setSearchText(searchText);
@@ -366,8 +344,6 @@ const ConsolidatedScans = (Props: any) => {
 		}
 		setIsFiltered(true);
 	}
-
-
 
 	const overallDownload = () => {
 
@@ -390,7 +366,6 @@ const ConsolidatedScans = (Props: any) => {
 		e.stopPropagation();
 		let val:any = selectedFilters;
 		let flag = false;
-		// this.state.dateErrMsg = '';
 		if (name === "type") {
 			val[name] = e.target.value;
 			flag = true;
@@ -416,6 +391,7 @@ const ConsolidatedScans = (Props: any) => {
 		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
 		setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
 	};
+
 	const fields = dynamicFields;
 	const locationList = fields?.map((list: any, index: number) => {
 		let nameCapitalized = levelsName[index]?.charAt(0).toUpperCase() + levelsName[index]?.slice(1);
@@ -504,10 +480,6 @@ const ConsolidatedScans = (Props: any) => {
 		setIsFiltered(true);
 		setFilterAppliedTime(new Date().getTime());
 		// closeToggle();
-		// this.setState({ isFiltered: true, inActiveFilter: false }, () => {
-		// 	this.getScanLogs();
-		// 	this.toggleFilter();
-		// });
 	};
 
 	const onSort = (name: string, data: any, isAsc: boolean,table:string) => {
@@ -587,8 +559,6 @@ const ConsolidatedScans = (Props: any) => {
 		  }
 	},[isResetFilter])
 
-
-
 	return (
         <AUX>
 			{(isLoader || isReduxLoader) && <Loader />}
@@ -631,18 +601,6 @@ const ConsolidatedScans = (Props: any) => {
 									</span>
 								))}
 							</div>
-							{/* <div className="form-group" onClick={(e) => e.stopPropagation()}>
-								<NativeDropdown
-									name="geolevel1"
-									value={selectedFilters.geolevel1}
-									label={"Region"}
-									handleChange={(e: any) => handleRegionSelect(e, "geolevel1")}
-									options={optionslist}
-									defaultValue="ALL"
-									id="region-test"
-									dataTestId="region-test"
-								/>
-							</div> */}
 							<div className="form-group container" onClick={(e) => e.stopPropagation()}>
 									<div className="row column-dropdown">{locationList}</div>
 								</div>
@@ -737,10 +695,10 @@ const ConsolidatedScans = (Props: any) => {
 							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />
                         </div>
                         <div className = "col-sm-6">
-                            <div className="row">
+                            <div>
                                 <ProductBrandList selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
                             </div>
-                            <div className="row">
+                            <div>
                                 <ProductList selectedProductList = {scannedProducts} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
                             </div>
                         </div>

@@ -32,7 +32,7 @@ const ProductBrandList = ({
     <AUX>
           <div className="">
             <label className="font-weight-bold scanlabel">product brand wise scans - {_.startCase(_.toLower(distributorName))}</label>
-            <div className="consolidatedSales-table scannedbrands"  style={{height: '24vh', overflowY: 'auto' }}>
+            <div className="consolidatedSales-table scannedbrands"  style={{height: '22vh', overflowY: 'auto' }}>
               <table className="table brandTable">
                 <thead>
                   <tr>
@@ -87,12 +87,12 @@ const ProductBrandList = ({
               </table>
             </div>
             {selectedBrandList?.length > 0 &&
-            <div>
-                <table  className="table sum-total">
+            <div className="consolidated-sum-total">
+                <table style={{ width: '100%', marginTop: "10px"}}>
                   <tbody>
                     <tr>
-                    <td>
-                        <p className="total">Total({selectedBrandList?.length})</p>
+                    <td style={{ width: "20%", paddingLeft: "10px" }}> 
+                        <span className="total">Total({selectedBrandList?.length})</span>
                       </td>
                       <td className="text-center">
                         <span className="">
@@ -104,12 +104,12 @@ const ProductBrandList = ({
                           {totalSendGoods}
                         </span>
                       </td>
-                      <td>
+                      <td className="text-center">
                         <span className="">
                           {totalWalkInSales}
                         </span>
                       </td>
-                      <td>
+                      <td className="text-center">
                       <span className="productprice">
                           {totalAdvisorSales}
                         </span>

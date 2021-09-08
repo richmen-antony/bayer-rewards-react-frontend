@@ -286,9 +286,9 @@
 // .brandTable {
 //   height: 32vh;
 // }
-// .retailerTable {
-//   height: 100vh;
-// }
+.scanTable {
+  margin-bottom: 0px;
+}
 .retailer-icon {
   position: relative;
   top: -7px;
@@ -368,18 +368,10 @@ cus-btn-scanlog-filter[disabled] {
 .filterSection {
   max-width : 100% !important;
 }
-.sum-total  {
+.consolidated-sum-total {
   border: 2px solid #e9ecef;
-  td{
-    padding-bottom: 0px;
-  }
-  // td{
-  //   position: sticky;
-  //   bottom: 0;
-  //   background-color: #ffffff;
-  //   z-index: 1;
-  //   border-top:10;
-  // }
+  border-radius : 15px;
+  height: 47px,
 }
 
 @media only screen and (max-width: 1400px) {

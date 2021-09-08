@@ -26,9 +26,9 @@ export const ProductList = ({
   let totalAdvisorSales:number = 0;
   return (
     <AUX>
-        <div className="" style={{ marginTop: '-20px'}}>
+        <div className="">
           <label className="font-weight-bold scanlabel">product wise scans - {_.startCase(_.toLower(brandName))}</label>
-          <div className="consolidatedSales-table scannedProducts"  style={{height: '22vh', overflowY: 'auto',marginTop: '-10px'}}>
+          <div className="consolidatedSales-table scannedProducts"  style={{height: '22vh', overflowY: 'auto'}}>
             <table className="table">
               <thead>
                 <tr>
@@ -84,12 +84,12 @@ export const ProductList = ({
             </table>
           </div>
           {selectedProductList?.length > 0 &&
-          <div>
-                <table  className="table sum-total">
+          <div className="consolidated-sum-total">
+                <table style={{ width: '100%', marginTop: "10px"}}>
                   <tbody>
                     <tr>
-                    <td>
-                        <p className="total">Total({selectedProductList?.length})</p>
+                    <td style={{ width: "20%", paddingLeft: "10px" }}> 
+                        <span className="total">Total({selectedProductList?.length})</span>
                       </td>
                       <td className="text-center">
                         <span className="">
@@ -101,12 +101,12 @@ export const ProductList = ({
                           {totalSendGoods}
                         </span>
                       </td>
-                      <td>
+                      <td className="text-center">
                         <span className="">
                           {totalWalkInSales}
                         </span>
                       </td>
-                      <td>
+                      <td className="text-center">
                       <span className="productprice">
                           {totalAdvisorSales}
                         </span>

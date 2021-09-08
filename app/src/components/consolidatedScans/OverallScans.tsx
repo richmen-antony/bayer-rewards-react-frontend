@@ -156,8 +156,8 @@ export const OverallScans = ({
         <div className="">
               <label className="font-weight-bold scanlabel">overall consolidated scans</label>
               <>
-              <div className="consolidatedSales-table overallscan"  style={{height: '57vh', overflowY: 'auto' }}>
-                <table className="table retailerTable">
+              <div className="consolidatedSales-table overallscan" style={{ height: "340px", overflow: "scroll", overflowY: "auto" }}>
+                <table className="table scanTable">
                   <thead>
                     <tr>
                     <th 
@@ -246,12 +246,12 @@ export const OverallScans = ({
                 </table>
               </div>
               {allConsolidatedScans?.length > 0 &&
-              <div style={{ marginTop: '5px'}}>
-                <table  className="table sum-total">
+              <div className ="consolidated-sum-total">
+                <table style={{ width: '100%', marginTop: "10px"}}>
                   <tbody>
                     <tr>
-                    <td>
-                        <p className="total">Total({allConsolidatedScans?.length})</p>
+                    <td style={{ width: "20%", paddingLeft: "10px" }}> 
+                        <span className="total">Total({allConsolidatedScans?.length})</span>
                       </td>
                       <td className="text-center">
                         <span className="">
@@ -263,12 +263,12 @@ export const OverallScans = ({
                           {totalSendGoods}
                         </span>
                       </td>
-                      <td>
+                      <td className="text-center">
                         <span className="">
                           {totalWalkInSales}
                         </span>
                       </td>
-                      <td>
+                      <td className="text-center">
                       <span className="productprice">
                           {totalAdvisorSales}
                         </span>
