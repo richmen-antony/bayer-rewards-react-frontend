@@ -10,7 +10,6 @@ import { Theme, withStyles } from "@material-ui/core/styles";
 import NoImage from "../../assets/images/Group_4736.svg";
 import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
-import CalenderIcon from "../../assets/icons/calendar.svg";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import _ from "lodash";
 import { downloadCsvFile, ErrorMsg } from "../../utility/helper";
@@ -20,9 +19,6 @@ import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
 
 
-type PartnerTypes = {
-	type: String;
-};
 
 
 const popupHeader = {

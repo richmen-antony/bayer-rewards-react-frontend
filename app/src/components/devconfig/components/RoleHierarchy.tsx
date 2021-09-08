@@ -68,18 +68,18 @@ export const RoleHierarchy = (props: IRoleProps) => {
     const data = inputList[index];
     getValidation();
     if (
-      data.rolehierarchyname &&
-      data.rolecode &&
+      data.name &&
+      data.code &&
       !data.rolehierarchynameIsDuplicate &&
       !data.rolecodeIsDuplicate
     ) {
       setInputList([
         ...inputList,
         {
-          rolehierarchylevel: inputList.length,
-          rolecode: "",
-          rolehierarchyname: "",
-          roletype: "INTERNAL",
+          level: inputList.length,
+          code: "",
+          name: "",
+          type: "INTERNAL",
           parentrole: inputList[inputList.length-1].rolecode,
         },
       ]);
@@ -104,7 +104,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
   const handleDropdownRoleChange = (event: any, index: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
-    list[index].roletype = value;
+    list[index].type = value;
     setInputList(list);
   };
 /**
@@ -117,20 +117,20 @@ export const RoleHierarchy = (props: IRoleProps) => {
     const newList = list.map((listItem: any, idx: number) => {
       return {
         ...listItem,
-        rolehierarchylevel: idx,
+        level: idx,
         // parentrole:
         //   listItem.parentrole >= index
         //     ? listItem.parentrole - 1
         //     : listItem.parentrole,
 
         // rolehierarchylevel: idx,
-        parentrole: idx >= index ? list[idx - 1].rolecode : listItem.parentrole,
+        parentrole: idx >= index ? list[idx - 1].code : listItem.parentrole,
       };
     });
     return newList;
   };
   // role dropdown list
-  const roleOptions = handledropdownoption(inputList, "rolecode");
+  const roleOptions = handledropdownoption(inputList, "code");
 
   return (
     <div className="col-md-12">
@@ -157,8 +157,8 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         <input
                           className="form-control dpstyle label"
                           type="text"
-                          name="rolecode"
-                          value={item.rolecode}
+                          name="code"
+                          value={item.code}
                           onChange={(e) => handleInputChange(e, idx)}
                           onBlur={getValidation}
                         />
@@ -167,7 +167,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         {"Please enter the Role Code"}
                       </span> :item?.rolecodeIsDuplicate &&(
                           <span className="error">
-                            {item.rolecode + " already exists"}
+                            {item.code + " already exists"}
                           </span>
                         )}
                         
@@ -177,7 +177,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           className="form-control dpstyle label"
                           type="text"
                           name="rolehierarchyname"
-                          value={item.rolehierarchyname}
+                          value={item.name}
                           onChange={(e) => handleInputChange(e, idx)}
                           onBlur={getValidation}
                         />
@@ -186,7 +186,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         {"Please enter the Role Hierarchy"}
                       </span> :item?.rolehierarchynameIsDuplicate &&(
                           <span className="error">
-                            {item.rolehierarchyname + " already exists"}
+                            {item.name + " already exists"}
                           </span>
                         )}
                         
@@ -215,7 +215,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           handleChange={(event: any) =>
                             handleDropdownRoleChange(event, idx)
                           }
-                          value={item.roletype || "INTERNAL"}
+                          value={item.type || "INTERNAL"}
                           isPlaceholder
                           commonSelectType={true}
                         />

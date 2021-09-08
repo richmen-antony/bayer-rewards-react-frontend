@@ -6,7 +6,6 @@ import Pagination from "../../utility/widgets/pagination";
 import moment from "moment";
 import CalenderIcon from "../../assets/icons/calendar.svg";
 import { Button } from "reactstrap";
-import _ from "lodash";
 import { ErrorMsg } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../utility/base/service";

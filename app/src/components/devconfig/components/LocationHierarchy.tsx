@@ -53,13 +53,13 @@ const LocationHierarchy = (props: ILocationProps) => {
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
-    if (data.locationhiername && !data.isDuplicate) {
+    if (data.name && !data.isDuplicate) {
       setInputList([
         ...inputList,
         {
-          locationhierlevel: inputList.length,
-          locationhiername: "",
-          parentlocation: inputList.length -1,
+          level: inputList.length,
+          name: "",
+          parentlevel: inputList.length -1,
         },
       ]);
     }
@@ -68,7 +68,7 @@ const LocationHierarchy = (props: ILocationProps) => {
   const handleDropdownChange = (event: any, index: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
-    list[index].parentlocation = value;
+    list[index].parentlevel = value;
     setInputList(list);
   };
 
@@ -76,11 +76,11 @@ const LocationHierarchy = (props: ILocationProps) => {
     const newList = list.map((listItem: any, idx: number) => {
       return {
         ...listItem,
-        locationhierlevel: idx,
-        parentlocation:
-          listItem.parentlocation >= index
-            ? listItem.parentlocation - 1
-            : listItem.parentlocation,
+        level: idx,
+        parentlevel:
+          listItem.parentlevel >= index
+            ? listItem.parentlevel - 1
+            : listItem.parentlevel,
         // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
       };
     });
@@ -89,7 +89,7 @@ const LocationHierarchy = (props: ILocationProps) => {
 
   const LocationDetailsOption = handledropdownoption(
     inputList,
-    "locationhiername"
+    "name"
   );
 
 
@@ -118,8 +118,8 @@ const LocationHierarchy = (props: ILocationProps) => {
                             item?.error && isValidNext ? "invalid" : ""
                           }`}
                           type="text"
-                          name="locationhiername"
-                          value={item.locationhiername}
+                          name="name"
+                          value={item.name}
                           onChange={(e) => handleInputChange(e, idx)}
                           data-id={idx}
                           onBlur={getValidation}
@@ -131,7 +131,7 @@ const LocationHierarchy = (props: ILocationProps) => {
                         )}
                         {item?.isDuplicate && isValidNext && (
                           <span className="error">
-                            {item.locationhiername + " already exists"}
+                            {item.name + " already exists"}
                           </span>
                         )}
                       </td>
@@ -169,9 +169,9 @@ const LocationHierarchy = (props: ILocationProps) => {
                             handleDropdownChange(event, idx)
                           }
                           value={
-                            item.parentlocation === -1
+                            item.parentlevel === -1
                               ? "NA"
-                              : item.parentlocation
+                              : item.parentlevel
                           }
                           isPlaceholder
                           parentIndex={idx}
