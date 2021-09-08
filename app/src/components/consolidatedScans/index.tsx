@@ -480,9 +480,6 @@ const ConsolidatedScans = (Props: any) => {
 		setIsFiltered(true);
 		setFilterAppliedTime(new Date().getTime());
 		closeToggle&&closeToggle();
-		
-	
-		// closeToggle();
 	};
 
 	const onSort = (name: string, data: any, isAsc: boolean,table:string) => {
@@ -544,6 +541,7 @@ const ConsolidatedScans = (Props: any) => {
 		setIsResetFilter(true);
 		setSearchText("");
 		setFilterAppliedTime(new Date().getTime());
+		closeToggle&&closeToggle();
 	  };
 
 	  useEffect(()=>{

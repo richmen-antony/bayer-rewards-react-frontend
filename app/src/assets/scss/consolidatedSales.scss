@@ -373,6 +373,49 @@ cus-btn-scanlog-filter[disabled] {
   border-radius : 15px;
   height: 47px,
 }
+.popup-partner {
+  display: flex;
+  justify-content: space-between;
+  img {
+    max-width: 100%;
+  }
+  .img {
+    padding: 5px 45px;
+    width: 50%;
+  }
+  .popup-content {
+    width: 50%;
+
+    p {
+      color: #000000;
+      font-size: 16px;
+      font-weight: 600;
+      label {
+        font-size: 14px;
+        font-weight: normal;
+      }
+    }
+    .popup-content-row {
+      display: flex;
+      flex-wrap: wrap;
+      .content-list {
+        width: 33.3%;
+        label {
+          color: #818181;
+          font-size: 12px;
+          // font-family: "Open Sans", sans-serif;
+          font-family: "appRegular" !important;
+        }
+        p {
+          color: #000000;
+          font-size: 12px;
+          // font-family: "Open Sans", sans-serif;
+          font-family: "appRegular" !important;
+        }
+      }
+    }
+  }
+}
 
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {

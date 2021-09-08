@@ -205,7 +205,25 @@ class Sidebar extends Component<Props, States> {
                   </>
                 )}
                  
-                {this.state.userRole === "RSM" && (
+
+                  {this.state.userRole === "RSM" || this.state.userRole === "ADMIN" ?<li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("scanlogs") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/scanlogs"
+                        onClick={() => this.setActiveTab("scanlogs")}
+                      >
+                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
+                        <span> Scan Logs </span>
+                      </Link>
+                    </li> :null
+                        }
+                                        {this.state.userRole === "RSM" && (
                   <>
                     <li className="menu-title">LOGS</li>
                     
@@ -227,23 +245,6 @@ class Sidebar extends Component<Props, States> {
                     </li>{" "}
                   </>
                 )}
-                  {this.state.userRole === "RSM" || this.state.userRole === "ADMIN" ?<li className="d-flex">
-                      <span
-                        className={
-                          window.location.pathname.indexOf("scanlogs") > -1
-                            ? "waves-effect active"
-                            : "waves-effect"
-                        }
-                      ></span>
-                      <Link
-                        to="/scanlogs"
-                        onClick={() => this.setActiveTab("scanlogs")}
-                      >
-                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                        <span> Scan Logs </span>
-                      </Link>
-                    </li> :null
-                        }
                 {/* <li className="menu-title">HELP</li>
                 <li className="d-flex">
                   <span

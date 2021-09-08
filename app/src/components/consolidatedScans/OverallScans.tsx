@@ -294,7 +294,7 @@ export const OverallScans = ({
         {showPopup ? (
 					<SimpleDialog open={showPopup} onClose={handleClosePopup} maxWidth={"800px"}>
 						<DialogContent>
-							<div className="popup-container popup-retailer">
+							<div className="popup-container popup-partner">
 								<div className="img">
 									<img src={NoImage} alt="" />
 								</div>
