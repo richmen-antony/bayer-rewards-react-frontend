@@ -852,7 +852,7 @@ class SendGoods extends Component<Props, States> {
 								isDownload={true}
 								selectedPartnerType={this.state.partnerType}
 								handlePartnerChange={this.handlePartnerChange}
-								toolTipText="Search applicable for Label,Customer Name,Product Name,Channel Type,Store Name and ScannedBy."
+								toolTipText={`Search applicable for Label,Customer Name,Product Name,Channel Type,${this.state.selectedScanType === "SG - D2R" ?"Store Name":""} and ScannedBy.`}
 								condType="Scan Type"
 								condTypeList={this.state.scanTypeList}
 								buttonChange={this.handleButtonChange}
