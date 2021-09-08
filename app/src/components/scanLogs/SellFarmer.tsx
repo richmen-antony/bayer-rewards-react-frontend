@@ -4,21 +4,10 @@ import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
 import Pagination from "../../utility/widgets/pagination";
 import moment from "moment";
-import SimpleDialog from "../../container/components/dialog";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
-import { Theme, withStyles } from "@material-ui/core/styles";
-import NoImage from "../../assets/images/Group_4736.svg";
-import OrderTable from "./Order";
-import ExpandWindowImg from "../../assets/images/expand-window.svg";
-import maxImg from "../../assets/images/maximize.svg";
 import CalenderIcon from "../../assets/icons/calendar.svg";
-import ActiveIcon from "../../assets/images/check.svg";
-import { sortBy } from "../../utility/base/utils/tableSort";
-import { Button} from "reactstrap";
-import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
+import { Button } from "reactstrap";
 import _ from "lodash";
-import { downloadCsvFile, ErrorMsg } from "../../utility/helper";
+import { ErrorMsg } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../utility/base/service";
 import DatePicker from "react-datepicker";
@@ -26,16 +15,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
-import { CustomButton } from "../../utility/widgets/button";
 import Filter from "../../container/grid/Filter";
-import { ScanlogHeader } from "../../utility/constant";
-import Cancel from "../../assets/images/cancel.svg";
-import PendingImg from "../../assets/images/not_activated.svg";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
+import AdvisorSales from "./AdvisorSales";
+import WalkInSales from "./WalkInSales";
+import { Alert } from "../../utility/widgets/toaster";
 
 type PartnerTypes = {
 	type: String;
-  };
+};
 interface IProps {
 	onChange?: any;
 	placeholder?: any;
@@ -66,33 +54,6 @@ const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: I
 	</div>
 ));
 
-const popupHeader = {
-	title: "Maria Joseph",
-	sub: "Retailer",
-};
-
-const DialogContent = withStyles((theme: Theme) => ({
-	root: {
-		padding: theme.spacing(2),
-	},
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme: Theme) => ({
-	root: {
-		margin: 0,
-		padding: theme.spacing(1),
-		justifyContent: "center",
-		// boxShadow: "0px 3px 6px #c7c7c729",
-		// border: "1px solid #89D329",
-		// borderRadius: "50px",
-	},
-	// button: {
-	//   boxShadow: "0px 3px 6px #c7c7c729",
-	//   border: "1px solid #89D329",
-	//   borderRadius: "50px",
-	// },
-}))(MuiDialogActions);
-
 type Props = {};
 
 type States = {
@@ -102,12 +63,14 @@ type States = {
 	isAsc: Boolean;
 	partnerType: PartnerTypes;
 };
-
+let levelsName: any = [];
 class SellFarmer extends Component<Props, States> {
 	tableCellIndex: any = 0;
 	timeOut: any;
-	paginationRef:any;
+	paginationRef: any;
 	closeToggle: any;
+	walkinSalesRef: any;
+	advisorSalesRef: any;
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -121,8 +84,8 @@ class SellFarmer extends Component<Props, States> {
 			dropDownValue: "Select action",
 			scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
 			productCategories: ["ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
-			status: ["ALL", "FULFILLED"],
-			// status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
+			status: ["ALL", "VALID", "INVALID"],
+			advisorStatus: ["ALL", "FULFILLED"],
 			list: ["ALL", "Distributor", "Retailer"],
 			selectedFilters: {
 				productgroup: "ALL",
@@ -133,7 +96,32 @@ class SellFarmer extends Component<Props, States> {
 				lastmodifiedto: new Date(),
 				farmer: "ALL",
 				retailer: "ALL",
-				partnerType:"Retailers"
+				partnerType: "Retailers",
+			},
+			selectedAdvisorFilters: {
+				productgroup: "ALL",
+				status: "ALL",
+				ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+				ordereddateto: new Date(),
+				lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
+				lastmodifiedto: new Date(),
+				farmer: "ALL",
+				retailer: "ALL",
+				partnerType: "Retailers",
+			},
+			selectedWalkInFilters: {
+				productgroup: "ALL",
+				scanstatus: "ALL",
+				//custom calender date values
+				scannedDateFrom: new Date().setDate(new Date().getDate() - 30),
+				scannedDateTo: new Date(),
+				retailer: "ALL",
+				partnerType: "Retailers",
+				scannedPeriod: "",
+				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
+				scandateto: moment(new Date()).format("YYYY-MM-DD"),
+				batchno: "ALL",
+				soldtoid: "ALL",
 			},
 			dateErrMsg: "",
 			searchText: "",
@@ -151,13 +139,36 @@ class SellFarmer extends Component<Props, States> {
 			farmerOptions: [],
 			retailerOptions: [],
 			loggedUserInfo: {},
-			inActiveFilter: false,
 			partnerTypeList: ["Retailers"],
-			salesType: ["ADVISOR_SALES"], //"WALKIN_SALES",
+			salesType: ["WALKIN_SALES", "ADVISOR_SALES"],
 			partnerType: {
 				type: "Retailers",
-			  },
-			selectedSalesType:"ADVISOR_SALES"
+			},
+			selectedSalesType: "WALKIN_SALES",
+			scannedPeriodsList: [
+				{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
+				{
+					label: "This week (Sun - Sat)",
+					from: moment().startOf("week").format("YYYY-MM-DD"),
+					to: moment().endOf("week").format("YYYY-MM-DD"),
+				},
+				{
+					label: "Last 30 days",
+					from: moment().subtract(30, "days").format("YYYY-MM-DD"),
+					to: moment(new Date()).format("YYYY-MM-DD"),
+				},
+				{
+					label: "This year (Jan - Dec)",
+					from: moment().startOf("year").format("YYYY-MM-DD"),
+					to: moment().endOf("year").format("YYYY-MM-DD"),
+				},
+				{
+					label: "Prev. year (Jan - Dec)",
+					from: moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"),
+					to: moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"),
+				},
+				{ label: "Custom", value: "" },
+			],
 		};
 		this.timeOut = 0;
 	}
@@ -169,25 +180,36 @@ class SellFarmer extends Component<Props, States> {
 				loggedUserInfo: userData,
 			},
 			() => {
-				this.getScanLogs();
 				this.getRetailerList();
 				this.getLocationHierachyOrder();
+				this.getCountryList();
+				this.getHierarchyDatas();
+				this.getBatchList();
 			}
 		);
 	}
+
+	getCountryList() {
+		let res = [
+			{ value: "India", label: "India" },
+			{ value: "Malawi", label: "Malawi" },
+		];
+		this.setState({ countryList: res });
+	}
+
 	/**
 	 * Retailer and Farmer dropdown list value
 	 * @param condIf
 	 */
 	getRetailerList = (condIf?: any) => {
 		const { rsmRetailerList } = apiURL;
-		const { selectedFilters } = this.state;
+		const { selectedAdvisorFilters } = this.state;
 		let queryParams = {
 			region: this.state.loggedUserInfo?.geolevel1,
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			retailerid: selectedFilters.retailer === "ALL" ? null : selectedFilters.retailer,
+			retailerid: selectedAdvisorFilters.retailer === "ALL" ? null : selectedAdvisorFilters.retailer,
 		};
-		let oneTimeUpdate = selectedFilters.retailer !== "ALL" && condIf ? true : false;
+		let oneTimeUpdate = selectedAdvisorFilters.retailer !== "ALL" && condIf ? true : false;
 		invokeGetAuthService(rsmRetailerList, queryParams)
 			.then((response) => {
 				if (response.data) {
@@ -199,77 +221,27 @@ class SellFarmer extends Component<Props, States> {
 									return { value: val.farmerid, label: val.farmername };
 							  })
 							: [];
-						const farmerOptions=[...options,...farmerOptionsList]
+					const farmerOptions = [...options, ...farmerOptionsList];
 					const retailerOptionsList =
 						retailers?.length > 0
 							? retailers.map((val: any) => {
 									return { value: val.userid, label: val.username };
 							  })
 							: [];
-							const retailerOptions=[...options,...retailerOptionsList]
+					const retailerOptions = [...options, ...retailerOptionsList];
 					const retailerList =
 						oneTimeUpdate && this.state.retailerOptions.length ? this.state.retailerOptions : retailerOptions;
 					this.setState({
 						isLoader: false,
 						farmerOptions,
 						retailerOptions: retailerList,
-					
+						selectedAdvisorFilters: { ...this.state.selectedAdvisorFilters, farmer: "ALL" },
 					});
 				}
 			})
 			.catch((error) => {
 				this.setState({ isLoader: false });
 				ErrorMsg(error);
-				console.log("error", error);
-			});
-	};
-	getScanLogs = (defaultPageNo?: any) => {
-		const { scanLogs } = apiURL;
-		const {state,setDefaultPage}= this.paginationRef;
-		const pageNo=  !defaultPageNo ? 1 : state.pageNo;
-
-		// set default pagination number 1 and  call the method
-		if(!defaultPageNo){
-			setDefaultPage();
-		}
-		this.setState({ isLoader: true });
-		const { selectedFilters, isFiltered } = this.state;
-		let data = {
-			page: pageNo,
-			searchtext: this.state.searchText,
-			rowsperpage: state.rowsPerPage,
-			isfiltered: this.state.isFiltered,
-			region: this.state.loggedUserInfo?.geolevel1,
-			countrycode: this.state.loggedUserInfo?.countrycode,
-		};
-		if (isFiltered) {
-			let filter = { ...selectedFilters };
-			filter.ordereddatefrom = moment(filter.ordereddatefrom).format("YYYY-MM-DD");
-			filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
-			filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
-			filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
-			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
-			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-			filter.status = filter.status === "ALL" ? null : filter.status;
-			filter.partnerType = null
-			filter.salesType = null;
-			data = { ...data, ...filter };
-		}
-
-		invokeGetAuthService(scanLogs, data)
-			.then((response) => {
-				this.setState({
-					isLoader: false,
-					allScanLogs: Object.keys(response.body).length !== 0 ? response.body.rows : [],
-				});
-				const total = response.body?.totalrows;
-				this.setState({ totalData: Number(total) });
-			})
-			.catch((error) => {
-				this.setState({ isLoader: false, allScanLogs: [] }, () => {});
-				ErrorMsg(error);
-				console.log("error", error);
 			});
 	};
 
@@ -298,172 +270,134 @@ class SellFarmer extends Component<Props, States> {
 			});
 		});
 	};
-	handleClosePopup = () => {
-		this.setState({ showPopup: false });
-	};
 
-	showPopup = (e: any, key: keyof States) => {
-		e.stopPropagation();
-		this.setState<never>({
-			[key]: true,
-		});
-	};
-	handleCloseProductPopup = () => {
-		this.setState({ showProductPopup: false });
-	};
-	updateOrderData = (value: any) => {
-		this.setState({
-			orderData: value,
-		});
-	};
-	handleUpdateRetailer(value: any) {
-		this.setState({
-			retailerPopupData: value,
-		});
-	}
 	handleSearch = (e: any) => {
 		let searchText = e.target.value;
-		this.setState({ searchText: searchText, isFiltered: true, inActiveFilter: false });
+		this.setState({ searchText: searchText, isFiltered: true });
 		if (this.timeOut) {
 			clearTimeout(this.timeOut);
 		}
 		if (searchText.length >= 3 || searchText.length === 0) {
 			this.timeOut = setTimeout(() => {
-				this.getScanLogs();
+				this.callChildAPI();
 			}, 1000);
 		}
 	};
-	onSort = (name: string, datas: any, isAsc: Boolean) => {
-		let response = sortBy(name, datas);
-		this.setState({ allScanLogs: response, isAsc: !isAsc });
-	};
-
-	handleSort(e: any, columnname: string, data: any, isAsc: Boolean) {
-		this.tableCellIndex = e.currentTarget.cellIndex;
-		this.onSort(columnname, data, isAsc);
-	}
-
-	toggleFilter = () => {
-		this.setState((prevState) => ({
-			dropdownOpenFilter: !prevState.dropdownOpenFilter,
-		}));
-	};
-
-	handleFilterChange = (e: any, name: string, item: any) => {
+	handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
 		e.stopPropagation();
-		let val = this.state.selectedFilters;
+		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
 		let flag = false;
-		// this.state.dateErrMsg = '';
 		if (name === "type") {
 			val[name] = e.target.value;
 			flag = true;
-		} else if (name === "startDate") {
-			if (e.target.value <= val.endDate) {
-				val[name] = e.target.value;
-				flag = true;
-			} else {
-				this.setState({
-					dateErrMsg: "Start date should be lesser than End Date",
-				});
-			}
-		} else if (name === "endDate") {
-			if (e.target.value >= new Date().toISOString().substr(0, 10)) {
-				this.setState({
-					dateErrMsg: "End Date should not be greater than todays date",
-				});
-			} else if (e.target.value <= val.startDate) {
-				this.setState({
-					dateErrMsg: "End Date should be greater than Start Date",
-				});
-			} else {
-				val[name] = e.target.value;
-				flag = true;
-			}
+		} else if (name === "scannedPeriod" && item !== "Custom") {
+			val["scandatefrom"] = itemList?.from;
+			val["scandateto"] = itemList?.to;
+			val[name] = item;
+			flag = true;
 		} else {
 			val[name] = item;
+
 			flag = true;
 		}
 		if (flag) {
-			this.setState({ selectedFilters: val });
+			const name = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+			this.setState({ [name]: val });
 		}
 	};
-
 	resetFilter = (e?: any) => {
-		let today = new Date();
 		let conditionIsFilter = this.state.searchText ? true : false;
-		const options = [{ value: "ALL", label: "ALL" }];
+		const { selectedSalesType } = this.state;
+		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+		let val =
+			selectedSalesType === "WALKIN_SALES"
+				? {
+						productgroup: "ALL",
+						scanstatus: "ALL",
+						scannedDateFrom: new Date().setDate(new Date().getDate() - 30),
+						scannedDateTo: new Date(),
+						scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
+						scandateto: moment(new Date()).format("YYYY-MM-DD"),
+						retailer: "ALL",
+						partnerType: "Retailers",
+						scannedPeriod: "",
+						batchno: "ALL",
+				  }
+				: {
+						productgroup: "ALL",
+						status: "ALL",
+						ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+						ordereddateto: new Date(),
+						lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
+						lastmodifiedto: new Date(),
+						farmer: "ALL",
+						retailer: "ALL",
+						partnerType: "Retailers",
+				  };
+		this.getDynamicOptionFields("reset");
 		this.setState(
 			{
-				selectedFilters: {
-					productgroup: "ALL",
-					status: "ALL",
-					ordereddatefrom: today.setMonth(today.getMonth() - 3),
-					ordereddateto: new Date(),
-					lastmodifiedfrom: today.setMonth(today.getMonth() - 3),
-					lastmodifiedto: new Date(),
-					farmer: "ALL",
-					retailer: "ALL",
-					partnerType:"Retailers"
-				},
+				[condName]: { ...val },
 				isFiltered: conditionIsFilter,
 				dateErrMsg: "",
 				lastUpdatedDateErr: "",
-				selectedFarmerOptions:options,
-				selectedRetailerOptions:options
+				ScannedDateErrMsg: "",
 			},
 			() => {
-				this.getScanLogs();
-				this.toggleFilter();
-				this.getRetailerList();
+				// this.toggleFilter();
+				this.callChildAPI();
+				if (selectedSalesType === "ADVISOR_SALES") this.getRetailerList();
 			}
 		);
 	};
 
 	applyFilter = () => {
-		this.setState({ isFiltered: true, inActiveFilter: false }, () => {
-			this.getScanLogs();
+		this.setState({ isFiltered: true }, () => {
+			this.callChildAPI();
 			this.closeToggle();
 		});
 	};
-	
-	toggle = () => {
-		this.setState({ tooltipOpen: !this.state.tooltipOpen });
-	};
-	
+
 	download = () => {
-		const { downloadScanlogs } = apiURL;
-
-		let data = {
-			region: this.state.loggedUserInfo?.geolevel1,
-			countrycode: this.state.loggedUserInfo?.countrycode,
-			isfiltered: this.state.isFiltered,
-			searchtext: this.state.searchText,
-		};
-		if (this.state.isFiltered) {
-			let filter = { ...this.state.selectedFilters };
-			filter.ordereddatefrom = moment(filter.ordereddatefrom).format("YYYY-MM-DD");
-			filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
-			filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
-			filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
-			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
-			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-			filter.status = filter.status === "ALL" ? null : filter.status;
-
-			data = { ...data, ...filter };
-		}
-		invokeGetAuthService(downloadScanlogs, data)
-			.then((response) => {
-				const data = response;
-				downloadCsvFile(data, "scanlogs.csv");
-			})
-			.catch((error) => {
-				console.log({ error });
-			});
+		const { selectedSalesType } = this.state;
+		selectedSalesType === "WALKIN_SALES" ? this.walkinSalesRef?.download() : this.advisorSalesRef?.download();
 	};
 	handleDateChange = (date: any, name: string) => {
-		let val = this.state.selectedFilters;
-
+		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
+		// Custom scanned date - check End date
+		if (name === "scannedDateTo") {
+			if (date >= val.scannedDateFrom) {
+				this.setState({
+					ScannedDateErrMsg: "",
+				});
+			} else if (date <= val.scannedDateFrom) {
+				this.setState({
+					ScannedDateErrMsg: "Scanned End Date should be greater than  Scanned Start Date",
+				});
+			} else {
+				this.setState({
+					ScannedDateErrMsg: "Scanned Start Date should be lesser than  Scanned End Date",
+				});
+			}
+		}
+		// Custom scanned date - check Start date
+		if (name === "scannedDateFrom") {
+			if (date <= val.scannedDateTo) {
+				this.setState({
+					ScannedDateErrMsg: "",
+				});
+			} else if (date >= val.scannedDateTo) {
+				this.setState({
+					ScannedDateErrMsg: "Scanned Start Date should be lesser than Scanned End Date",
+				});
+			} else {
+				this.setState({
+					ScannedDateErrMsg: "Scanned Start Date should be greater than Scanned End Date",
+				});
+			}
+		}
 		// order date - check End date
 		if (name === "ordereddateto") {
 			if (date >= val.ordereddatefrom) {
@@ -529,9 +463,9 @@ class SellFarmer extends Component<Props, States> {
 				});
 			}
 		}
-
+		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
 		this.setState({
-			selectedFilters: { ...this.state.selectedFilters, [name]: date },
+			[condName]: { ...this.state[condName], [name]: date },
 		});
 	};
 
@@ -552,74 +486,322 @@ class SellFarmer extends Component<Props, States> {
 		);
 	};
 
-	filterScans = (filterValue: any) => {
-		const {retailerOptions,selectedRetailerOptions}= this.state;
-		let options={...selectedRetailerOptions};
-		const data=retailerOptions?.length>0&&retailerOptions.filter((el:any)=>el.value===filterValue);
-				if(data?.length>0)
-				options={...data[0]}
+	handlePartnerChange = (name: string) => {
+		this.setState({
+			partnerType: {
+				type: name,
+			},
+		});
+	};
+
+	handleButtonChange = (name: string, value: string) => {
 		this.setState(
-			{ isFiltered: true, inActiveFilter: false, selectedFilters: { ...this.state.selectedFilters, retailer: filterValue },selectedRetailerOptions:options },
+			{
+				[name]: value,
+			},
 			() => {
-				this.getScanLogs();
-				this.handleClosePopup();
-				let condIf = "retailer";
-				this.getRetailerList(condIf);
+				this.callChildAPI();
 			}
 		);
 	};
-	handlePartnerChange = (name: string) => {
+	handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
+		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
 		this.setState(
-		  {
-			partnerType: {
-			  type: name,
+			{
+				[condName]: {
+					...val,
+					[e.name]: selectedOption.value,
+				},
+				[optionName]: selectedOption,
 			},
-		  },
-		  () => {
-			this.getScanLogs();
-		  }
+			() => {
+				if (e.name === "retailer") {
+					let condIf = "retailer";
+					this.getRetailerList(condIf);
+				}
+			}
 		);
-	  };
-
-	  handleButtonChange =(name:string,value:string)=>{
-		this.setState({
-		  [name]:value
-		})
-	
-	  }
-	  handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
-		this.setState({
+	};
+	handleGeolevelDropdown = (value: string, label: any) => {
+		this.setState((prevState: any) => ({
 			selectedFilters: {
-				...this.state.selectedFilters,
-				[e.name]: selectedOption.value,
+				...prevState.selectedFilters,
+				[label.toLocaleLowerCase()]: value,
 			},
-			[optionName]: selectedOption,
+		}));
+	};
+	getBatchList = () => {
+		const { getBatchList } = apiURL;
+		let countrycode = {
+			countrycode: this.state.loggedUserInfo?.countrycode,
+			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
+		};
+		invokeGetAuthService(getBatchList, countrycode)
+			.then((response: any) => {
+				let data = Object.keys(response.data).length !== 0 ? response.data : [];
+				let options = [{ value: "ALL", label: "ALL" }];
+				const temp =
+					data?.length > 0
+						? data.map((val: any) => {
+								return { value: val.batchno, label: val.batchno };
+						  })
+						: [];
+				const list = [...options, ...temp];
+				this.setState({ isLoader: false, batchOptions: list });
+			})
+			.catch((error: any) => {
+				this.setState({ isLoader: false });
+				let message = error.message;
+				Alert("warning", message);
+			});
+	};
+
+	getHierarchyDatas() {
+		//To get all level datas
+		this.setState({ isLoader: true });
+		const { getHierarchyLevels } = apiURL;
+		let countrycode = {
+			countryCode: this.state.loggedUserInfo?.countrycode,
+		};
+		invokeGetAuthService(getHierarchyLevels, countrycode)
+			.then((response: any) => {
+				let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
+				this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
+					this.getGeographicFields();
+				});
+			})
+			.catch((error: any) => {
+				this.setState({ isLoader: false });
+				let message = error.message;
+				Alert("warning", message);
+			});
+	}
+	getDynamicOptionFields = (reset?: string) => {
+		let level1List = this.state.geolevel1List;
+		if (!reset) {
+			let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
+			level1List.unshift(allItem);
+		}
+		this.setState({ geolevel1List: level1List });
+		let level1Options: any = [];
+		this.state.geolevel1List?.forEach((item: any) => {
+			let level1Info = { label: item.name, code: item.code, value: item.name };
+			level1Options.push(level1Info);
+		});
+
+		let setFormArray: any = [];
+		let localObj: any = getLocalStorageData("userData");
+		let userData = JSON.parse(localObj);
+
+		let userrole = userData?.role;
+		let level2Options: any = [];
+		if (userrole === "RSM") {
+			let filteredLevel1: any = this.state.geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
+			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+				let level2Info = { label: item.name, value: item.name, code: item.code };
+				level2Options.push(level2Info);
+			});
+			let geolevel2Obj = {
+				label: "ALL",
+				value: "ALL",
+				code: "ALL",
+			};
+			level2Options.unshift(geolevel2Obj);
+		} else {
+			let level1Info = { label: "ALL", value: "ALL" };
+			level2Options.push(level1Info);
+		}
+		let usergeolevel1 = userData?.geolevel1;
+		let geolevel1Obj = { label: usergeolevel1, value: usergeolevel1 };
+		this.state.geographicFields?.forEach((list: any, i: number) => {
+			setFormArray.push({
+				name: list,
+				placeHolder: true,
+				value: list === "geolevel1" && userrole === "RSM" ? geolevel1Obj : { label: "ALL", value: "ALL" },
+				options:
+					list === "geolevel0"
+						? this.state.countryList
+						: list === "geolevel1"
+						? level1Options
+						: list === "geolevel2"
+						? level2Options
+						: [{ label: "ALL", name: "ALL" }],
+				error: "",
+			});
+		});
+		this.setState({ dynamicFields: setFormArray });
+	};
+	getOptionLists = (cron: any, type: any, value: any, index: any) => {
+		let newvalue = { label: value, name: value };
+		let geolevel1List = this.state.geolevel1List;
+		this.setState({ level1Options: geolevel1List });
+		let dynamicFieldVal = this.state.dynamicFields;
+		if (type === "geolevel1") {
+			let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
+			let level2Options: any = [];
+			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+				let level1Info = { label: item.name, value: item.name, code: item.code };
+				level2Options.push(level1Info);
+			});
+			let geolevel1Obj = {
+				label: "ALL",
+				value: "ALL",
+				code: "ALL",
+			};
+			let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
+			level2Options.unshift(geolevel1Obj);
+			dynamicFieldVal[index + 1].options = level2Options;
+			this.setState({ dynamicFields: dynamicFieldVal });
+			dynamicFieldVal[index + 2].options = geolevel3Obj;
+			dynamicFieldVal[index].value = newvalue;
+			dynamicFieldVal[index + 1].value = { label: "ALL", value: "ALL" };
+			dynamicFieldVal[index + 2].value = { label: "ALL", value: "ALL" };
+			this.setState((prevState: any) => ({
+				dynamicFields: dynamicFieldVal,
+				selectedFilters: {
+					...prevState.selectedFilters,
+					geolevel2: "ALL",
+				},
+				selectedGeolevel2Options: geolevel1Obj,
+			}));
+		} else if (type === "geolevel2") {
+			dynamicFieldVal[index].value = newvalue;
+			this.setState((prevState: any) => ({
+				dynamicFields: dynamicFieldVal,
+				selectedFilters: {
+					...prevState.selectedFilters,
+				},
+			}));
+		}
+	};
+	getGeographicFields() {
+		this.setState({ isLoader: true });
+		const { getTemplateData } = apiURL;
+		let data = {
+			countryCode: this.state.loggedUserInfo?.countrycode,
+		};
+		invokeGetAuthService(getTemplateData, data)
+			.then((response: any) => {
+				let locationData = response.body[0].locationhierarchy;
+				let levels: any = [];
+				locationData.forEach((item: any) => {
+					levelsName.push(item.name.toLowerCase());
+					let locationhierlevel = item.level;
+					let geolevels = "geolevel" + locationhierlevel;
+					levels.push(geolevels);
+				});
+				let levelsData: any = [];
+				locationData?.length > 0 &&
+					locationData.forEach((item: any, index: number) => {
+						if (index > 0) {
+							let locationhierlevel = item.level;
+							let geolevels = "geolevel" + locationhierlevel;
+							let obj = { name: item.name, geolevels };
+							levelsData.push(obj);
+						}
+					});
+				this.setState(
+					{
+						isLoader: false,
+						geographicFields: levels,
+						locationData: levelsData,
+					},
+					() => {
+						this.getDynamicOptionFields();
+					}
+				);
+			})
+			.catch((error: any) => {
+				this.setState({ isLoader: false });
+				let message = error.message;
+				Alert("warning", message);
+			});
+	}
+	handlePagination = (data: any[], total: any) => {
+		this.setState({
+			paginationData: data,
+			totalPagination: total,
 		});
 	};
+
+	hanldeUpdateFilterScan = (value: any, name: string) => {
+		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
+		this.setState(
+			{
+				[condName]: {
+					...val,
+					[name]: value,
+				},
+				isFiltered: true,
+			},
+			() => {
+				this.callChildAPI();
+			}
+		);
+	};
+	callChildAPI = () => {
+		const { selectedSalesType } = this.state;
+		selectedSalesType === "WALKIN_SALES" ? this.walkinSalesRef?.getWalkInSales() : this.advisorSalesRef?.getAdvisorSales();
+	};
+	handleUpdateSearch = (value: string) => {
+		this.setState(
+			{
+				searchText: value,
+				isFiltered: true,
+			},
+			() => {
+				this.callChildAPI();
+			}
+		);
+	};
+
 	render() {
 		const {
-			retailerPopupData,
-			showProductPopup,
-			isAsc,
-			allScanLogs,
-			selectedFilters,
 			isLoader,
 			dateErrMsg,
 			searchText,
-			totalData,
 			lastUpdatedDateErr,
 			farmerOptions,
 			retailerOptions,
-			loggedUserInfo,
-			selectedFarmerOptions,
-			selectedRetailerOptions
+			selectedSalesType,
+			batchOptions,
+			selectedWalkInFilters,
+			selectedAdvisorFilters,
+			isFiltered,
+			ScannedDateErrMsg,
 		} = this.state;
-
-		const pageNumbers = [];
-		const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
-		for (let i = 1; i <= pageData; i++) {
-			pageNumbers.push(i);
-		}
+		const fields = this.state.dynamicFields;
+		const locationList = fields?.map((list: any, index: number) => {
+			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+			return (
+				<React.Fragment key={`geolevels` + index}>
+					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
+						<div className="col" style={{ marginBottom: "5px" }}>
+							<ReactSelect
+								name={list.name}
+								label={`Scanned by - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
+								options={list.options}
+								handleChange={(selectedOptions: any, e: any) => {
+									list.value = selectedOptions.value;
+									this.getOptionLists("manual", list.name, selectedOptions.value, index);
+									this.handleReactSelect(selectedOptions, e, list.name);
+									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
+								}}
+								value={list.value}
+								isDisabled={list.name === "geolevel1"}
+								id="geolevel-test"
+								dataTestId="geolevel-test"
+							/>
+						</div>
+					)}
+				</React.Fragment>
+			);
+		});
+		const condToolTipText=selectedSalesType === "WALKIN_SALES" ? "Label,Farmer Name,Product Name,Store Name and ScannedBy" :"Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID,Store Name"
 		return (
 			<AUX>
 				{isLoader && <Loader />}
@@ -635,568 +817,420 @@ class SellFarmer extends Component<Props, States> {
 								condTypeList={this.state.salesType}
 								isDownload={true}
 								selectedPartnerType={this.state.partnerType}
-					            handlePartnerChange={this.handlePartnerChange} 
-								toolTipText="Search applicable for Order ID, Retailer Name/ID, Store Name, Farmer Name/ID, Advisor Name/ID."
+								handlePartnerChange={this.handlePartnerChange}
+								toolTipText={`Search applicable for ${condToolTipText}.`}
 								buttonChange={this.handleButtonChange}
 								condSelectedButton={this.state.selectedSalesType}
 								onClose={(node: any) => {
 									this.closeToggle = node;
 								}}
 							>
-								<div className="form-group" onClick={(e) => e.stopPropagation()}>
-								<ReactSelect
-										name="retailer"
-										value={selectedRetailerOptions}
-										label={"Retailer"}
-										handleChange={(selectedOptions: any, e: any) =>
-											this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
-										}
-										// handleChange={(e: any) => this.handleSelect(e, "retailer")}
-										options={retailerOptions}
-										defaultValue="ALL"
-										id="retailer-test"
-										dataTestId="retailer-test"
-									/>
-									{/* <NativeDropdown
-										name="retailer"
-										value={selectedFilters.retailer}
-										label={"Retailer"}
-										handleChange={(e: any) => this.handleSelect(e, "retailer")}
-										options={retailerOptions}
-										defaultValue="ALL"
-										id="retailer-test"
-										dataTestId="retailer-test"
-									/> */}
-								</div>
-
-								<div className="form-group" onClick={(e) => e.stopPropagation()}>
-									<ReactSelect
-										name="farmer"
-										value={selectedFarmerOptions}
-										label={"Farmer"}
-										handleChange={(selectedOptions: any, e: any) =>
-											this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
-										}
-										// handleChange={(e: any) => this.handleSelect(e, "farmer")}
-										options={farmerOptions}
-										defaultValue="ALL"
-										id="farmer-test"
-										dataTestId="farmer-test"
-									/>
-								</div>
-
-								<label className="pt-2">Product Group</label>
-								<div className="pt-1">
-									{this.state.productCategories.map((item: any, i: number) => (
-										<span className="mr-2 chipLabel" key={i}>
-											<Button
-												color={
-													selectedFilters.productgroup === item
-														? "btn activeColor rounded-pill"
-														: "btn rounded-pill boxColor"
-												}
-												size="sm"
-												onClick={(e) => this.handleFilterChange(e, "productgroup", item)}
-												style={{ marginBottom: "5px" }}
-											>
-												{item}
-											</Button>
-										</span>
-									))}
-								</div>
-
-								<label className="pt-2">Status</label>
-								<div className="pt-1">
-									{this.state.status.map((item: any, statusIndex: number) => (
-										<span className="mr-2" key={statusIndex}>
-											<Button
-												color={
-													selectedFilters.status === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
-												}
-												size="sm"
-												onClick={(e) => this.handleFilterChange(e, "status", item)}
-											>
-												{item}
-											</Button>
-										</span>
-									))}
-								</div>
-
-								<label className="pt-2" htmlFor="order-date">
-									Ordered Date
-								</label>
-								<div className="d-flex">
-									<div className="user-filter-date-picker">
-										<DatePicker
-											id="order-date"
-											value={selectedFilters.ordereddatefrom}
-											dateFormat="dd-MM-yyyy"
-											customInput={<Input ref={ref} />}
-											selected={selectedFilters.ordereddatefrom}
-											onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											maxDate={new Date()}
-										/>
-									</div>
-									<div className="p-2">-</div>
-									<div className="user-filter-date-picker">
-										<DatePicker
-											value={selectedFilters.ordereddateto}
-											dateFormat="dd-MM-yyyy"
-											customInput={<Input ref={ref} />}
-											selected={selectedFilters.ordereddateto}
-											onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											maxDate={new Date()}
-										/>
-									</div>
-								</div>
-								{dateErrMsg && <span className="error">{dateErrMsg} </span>}
-								<label className="pt-2" htmlFor="update-date">
-									Last Updated Date
-								</label>
-								<div className="d-flex">
-									<div className="user-filter-date-picker">
-										<DatePicker
-											id="update-date"
-											value={selectedFilters.lastmodifiedfrom}
-											dateFormat="dd-MM-yyyy"
-											customInput={<Input ref={ref} />}
-											selected={selectedFilters.lastmodifiedfrom}
-											onChange={(date: any) => this.handleDateChange(date, "lastmodifiedfrom")}
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											maxDate={new Date()}
-										/>
-									</div>
-
-									<div className="p-2">-</div>
-									<div className="user-filter-date-picker">
-										<DatePicker
-											value={selectedFilters.lastmodifiedto}
-											dateFormat="dd-MM-yyyy"
-											customInput={<Input ref={ref} />}
-											selected={selectedFilters.lastmodifiedto}
-											onChange={(date: any) => this.handleDateChange(date, "lastmodifiedto")}
-											showMonthDropdown
-											showYearDropdown
-											dropdownMode="select"
-											maxDate={new Date()}
-										/>
-									</div>
-								</div>
-								{lastUpdatedDateErr && <span className="error">{lastUpdatedDateErr} </span>}
-
-								<div className="filterFooter pt-3">
-									<button
-										className="cus-btn-scanlog-filter reset"
-										onClick={(e) => this.resetFilter(e)}
-										data-testid="reset-all"
-									>
-										Reset All
-									</button>
-									<button
-										className="cus-btn-scanlog-filter"
-										onClick={this.applyFilter}
-										disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
-										data-testid="apply"
-									>
-										Apply
-										<span>
-											<img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
-										</span>
-									</button>
-								</div>
-							</Filter>
-							{/* <div className="advisor-filter">
-								<div className="filter-left-side">
-									<SearchInput
-										name="searchText"
-										data-testid="search-input"
-										placeHolder="Search (min 3 letters)"
-										type="text"
-										onChange={this.handleSearch}
-										value={searchText}
-										tolltip="Search applicable for Order ID, Retailer Name/ID, Farmer Name/ID, Advisor Name/ID."
-									/>
-									<div className="filter-right-side">
-										<div className="filterRow">
-											<Dropdown isOpen={dropdownOpenFilter} toggle={this.toggleFilter}>
-												<DropdownToggle>
-													{!dropdownOpenFilter && <img src={filterIcon} width="17" alt="filter" />}
-												</DropdownToggle>
-												<DropdownMenu right>
-													<div className="p-3">
-														<i className="fa fa-filter boxed float-right" aria-hidden="true" onClick={this.toggleFilter}></i>
-														
-													</div>
-												</DropdownMenu>
-											</Dropdown>
+								{selectedSalesType === "WALKIN_SALES" ? (
+									<React.Fragment>
+										<label className="pt-2">Product Group</label>
+										<div className="form-group pt-1">
+											{this.state.productCategories.map((item: any, i: number) => (
+												<span className="mr-2 chipLabel" key={i}>
+													<Button
+														color={
+															selectedWalkInFilters.productgroup === item
+																? "btn activeColor rounded-pill"
+																: "btn rounded-pill boxColor"
+														}
+														size="sm"
+														onClick={(e) => this.handleFilterChange(e, "productgroup", item)}
+														style={{ marginBottom: "5px" }}
+													>
+														{item}
+													</Button>
+												</span>
+											))}
 										</div>
-										<div>
+										<div className="form-group container" onClick={(e) => e.stopPropagation()}>
+											<div className="row column-dropdown">{locationList}</div>
+										</div>
+										<div className="form-group container" onClick={(e) => e.stopPropagation()}>
+											<div className="row column-dropdown">
+												<div className="col">
+													<ReactSelect
+														name="batchno"
+														value={
+															batchOptions?.length > 0 &&
+															batchOptions.filter(function (option: any) {
+																return option.value === selectedWalkInFilters.batchno;
+															})
+														}
+														label={"Batch #"}
+														handleChange={(selectedOptions: any, e: any) =>
+															this.handleReactSelect(selectedOptions, e, "selectedBatchOptions")
+														}
+														options={batchOptions}
+														defaultValue="ALL"
+														id="batchno-test"
+														dataTestId="batchno-test"
+													/>
+												</div>
+											</div>
+										</div>
+										<label className="pt-2"> Scan Status</label>
+										<div className="pt-1">
+											{this.state.status.map((item: any, statusIndex: number) => (
+												<span className="mr-2" key={statusIndex}>
+													<Button
+														color={
+															selectedWalkInFilters.scanstatus === item
+																? "btn activeColor rounded-pill"
+																: "btn rounded-pill boxColor"
+														}
+														size="sm"
+														onClick={(e) => this.handleFilterChange(e, "scanstatus", item)}
+													>
+														{item}
+													</Button>
+												</span>
+											))}
+										</div>
+										<label className="pt-2">Scanned Period</label>
+										<div className="pt-1">
+											{this.state.scannedPeriodsList.map((item: any, i: number) => (
+												<span className="mr-2 chipLabel" key={i}>
+													<Button
+														color={
+															selectedWalkInFilters.scannedPeriod === item.label
+																? "btn activeColor rounded-pill"
+																: "btn rounded-pill boxColor"
+														}
+														size="sm"
+														onClick={(e) => this.handleFilterChange(e, "scannedPeriod", item.label, item)}
+														style={{ marginBottom: "5px" }}
+													>
+														{item.label}
+													</Button>
+												</span>
+											))}
+										</div>
+										{selectedWalkInFilters.scannedPeriod === "Custom" && (
+											<React.Fragment>
+												<label className="pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+													From
+												</label>
+												<label className="pt-2" htmlFor="order-todate">
+													To
+												</label>
+												<div className="d-flex">
+													<div className="user-filter-date-picker">
+														<DatePicker
+															id="order-date"
+															value={selectedWalkInFilters.scannedDateFrom}
+															dateFormat="dd-MM-yyyy"
+															customInput={<Input ref={ref} />}
+															selected={selectedWalkInFilters.scannedDateFrom}
+															onChange={(date: any) => this.handleDateChange(date, "scannedDateFrom")}
+															showMonthDropdown
+															showYearDropdown
+															dropdownMode="select"
+															// maxDate={new Date()}
+														/>
+													</div>
+													<div className="p-2">-</div>
+
+													<div className="user-filter-date-picker">
+														<DatePicker
+															value={selectedWalkInFilters.scannedDateTo}
+															dateFormat="dd-MM-yyyy"
+															customInput={<Input ref={ref} />}
+															selected={selectedWalkInFilters.scannedDateTo}
+															onChange={(date: any) => this.handleDateChange(date, "scannedDateTo")}
+															showMonthDropdown
+															showYearDropdown
+															dropdownMode="select"
+															// maxDate={new Date()}
+														/>
+													</div>
+												</div>
+												{ScannedDateErrMsg && <span className="error">{ScannedDateErrMsg} </span>}
+											</React.Fragment>
+										)}
+
+										<div className="filterFooter pt-3">
 											<button
-												className="btn btn-primary"
-												onClick={this.download}
-												style={{
-													backgroundColor: "#1f445a",
-													borderColor: "#1f445a",
-												}}
+												className="cus-btn-scanlog-filter reset"
+												onClick={(e) => this.resetFilter(e)}
+												data-testid="reset-all"
 											>
-												<img src={Download} width="17" alt={NoImage} />
-												<span style={{ padding: "15px" }}>Download</span>
+												Reset All
+											</button>
+											<button
+												className="cus-btn-scanlog-filter"
+												onClick={this.applyFilter}
+												disabled={ScannedDateErrMsg ? true : false}
+												data-testid="apply"
+											>
+												Apply
+												<span>
+													<img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
+												</span>
 											</button>
 										</div>
-										<i
-											className="fa fa-info-circle"
-											style={{
-												fontSize: "16px",
-												fontFamily: "appRegular !important",
-												marginLeft: "5px",
-												marginTop: "-20px",
-											}}
-											title={"Full extract"}
-										></i>
-									</div>
-								</div>
-							</div>
-							 */}
-							<div className="scanlog-container">
-								<table className="table">
-									<thead>
-										<tr>
-											{ScanlogHeader[`${this.state.selectedSalesType}`].length > 0 &&
-												ScanlogHeader[`${this.state.selectedSalesType}`].map((value: any, index: number) => {
-													return loggedUserInfo?.role==="RSM"&& value.key==="geolevel1"? null: (
-														<th
-															style={value.style}
-															onClick={(e) => this.handleSort(e, value.key, allScanLogs, isAsc)}
-															key={index}
-														>
-															{value.label}
-															{value.label && this.tableCellIndex !== undefined ? (
-																this.tableCellIndex === index ? (
-																	<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-																) : null
-															) : (
-																value.label && <i className={"fas fa-sort-up ml-2"}></i>
-															)}
-														</th>
-													);
-												})}
-											{/* <th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "advisororderid", allScanLogs, isAsc)}>
-												ORDER ID
-												{this.tableCellIndex !== undefined ? (
-													this.tableCellIndex === 0 ? (
-														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-													) : null
-												) : (
-													<i className={"fas fa-sort-up ml-2"}></i>
-												)}
-											</th>
-											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "username", allScanLogs, isAsc)}>
-												RETAILER NAME/ID
-												{this.tableCellIndex === 1 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th
-												style={{ width: "14%", textAlign: "center" }}
-												onClick={(e) => this.handleSort(e, "totalintendedquantity", allScanLogs, isAsc)}
-											>
-												INTENDED QTY
-												{this.tableCellIndex === 2 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th
-												style={{ width: "13%", textAlign: "center" }}
-												onClick={(e) => this.handleSort(e, "totalorderedquantity", allScanLogs, isAsc)}
-											>
-												ORDERED QTY
-												{this.tableCellIndex === 3 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "totalcost", allScanLogs, isAsc)}>
-												TOTAL COST
-												{this.tableCellIndex === 4 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "advisorname", allScanLogs, isAsc)}>
-												ADVISOR NAME/ID
-												{this.tableCellIndex === 5 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "farmername", allScanLogs, isAsc)}>
-												FARMER NAME/ID
-												{this.tableCellIndex === 6 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "orderstatus", allScanLogs, isAsc)}>
-												STATUS
-												{this.tableCellIndex === 7 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th
-												style={{ width: "20%" }}
-												onClick={(e) => this.handleSort(e, "lastupdateddate", allScanLogs, isAsc)}
-											>
-												UPDATED DATE
-												{this.tableCellIndex === 8 ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th> */}
-										</tr>
-									</thead>
-									<tbody>
-										{allScanLogs.length > 0 ? (
-											allScanLogs.map((value: any, i: number) => {
-												return  (
-													<tr
-														onClick={(event) => {
-															this.state.selectedSalesType === "ADVISOR_SALES" && this.showPopup(event, "showProductPopup");
-															this.updateOrderData(value);
-														}}
-														style={{ cursor: "pointer" }}
-														key={i}
-													>
-														{ScanlogHeader[`${this.state.selectedSalesType}`].map((list: any, index: number) => {
-															const statusColor =
-																value.orderstatus === "FULFILLED"
-																	? "active"
-																	: value.orderstatus === "EXPIRED"
-																	? "inactive"
-																	: value.orderstatus === "PENDING"
-																	? "pending"
-																	: "cancelled";
-															const statusImg =
-																value.orderstatus === "FULFILLED"
-																	? ActiveIcon
-																	: // : value.orderstatus === "EXPIRED"
-																	// ? "inactive"
-																	value.orderstatus === "PENDING"
-																	? PendingImg
-																	: Cancel;
+									</React.Fragment>
+								) : (
+									<React.Fragment>
+										<div className="form-group" onClick={(e) => e.stopPropagation()}>
+											{/* <ReactSelect
+												name="retailer"
+												value={selectedRetailerOptions}
+												label={"Retailer"}
+												handleChange={(selectedOptions: any, e: any) =>
+													this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
+												}
+												// handleChange={(e: any) => this.handleSelect(e, "retailer")}
+												options={retailerOptions}
+												defaultValue="ALL"
+												id="retailer-test"
+												dataTestId="retailer-test"
+											/> */}
+											<ReactSelect
+												name="retailer"
+												value={
+													retailerOptions?.length > 0 &&
+													retailerOptions.filter(function (option: any) {
+														return option.value === selectedAdvisorFilters.retailer;
+													})
+												}
+												label={"Retailer"}
+												handleChange={(selectedOptions: any, e: any) =>
+													this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
+												}
+												// handleChange={(e: any) => this.handleSelect(e, "retailer")}
+												options={retailerOptions}
+												defaultValue="ALL"
+												id="retailer-test"
+												dataTestId="retailer-test"
+											/>
+										</div>
 
-															return (
-																<td
-																	onClick={(event: any) => {
-																		if (list.key === "username" || list.label === "SCANNED BY") {
-																			this.showPopup(event, "showPopup");
-																			this.handleUpdateRetailer(value);
-																		}
-																	}}
-																	style={{ textAlign: list?.style?.textAlign ? "center" : "inherit" }}
-																	key={index}
-																>
-																	{list.key === "username" || list.label === "SCANNED BY" ||list.label==="PRODUCT NAME" ? (
-																		<div className="retailer-id">
-																			<p
-																				style={{
-																					display: "flex",
-																					alignItems: "center",
-																				}}
-																			>
-																				<span style={{ flex: "1", whiteSpace: "nowrap" }}>
-																					{_.startCase(_.toLower(value.username))}
-																					{(this.state.selectedSalesType === "ADVISOR_SALES" && list.key === "username") ||
-																					(this.state.selectedSalesType === "WALKIN_SALES" && list.label === "SCANNED BY") ? (
-																						<img className="retailer-icon" src={ExpandWindowImg} alt="" />
-																					) : null}
-																				</span>
-																			</p>
-																			<label>{value.userid}</label>
-																		</div>
-																	) : list.key === "farmername" || list.key === "advisorname" ? (
-																		<div className="farmer-id">
-																			<p>{_.startCase(_.toLower(value[list.key]))}</p>
-																			<label>{list.key === "farmername" ? value.farmerphonenumber : value.advisorid}</label>
-																		</div>
-																	) : list.key === "orderstatus" ? (
-																		<span className={`status ${statusColor}`}>
-																			{value.orderstatus !== "EXPIRED" ? (
-																				<img src={statusImg} style={{ marginRight: "8px" }} width="17" alt="" />
-																			) : (
-																				<i className="fas fa-clock"></i>
-																			)}
-																			{_.startCase(_.toLower(value.orderstatus))}
-																		</span>
-																	) : list?.type === "date" ? (
-																		<>{value[list.key] && moment(value[list.key]).format("DD/MM/YYYY")}</>
-																	) : !list.label && !list.key ? (
-																		<img className="max-image" src={maxImg} alt="" />
-																	) : list.key === "totalcost" ? (
-																		"MK " + value.totalcost
-																	) :
-																	 (
-																		(value[list.key] && _.startCase(_.toLower(value[list.key]))) || ""
-																	)}
-																</td>
-															);
-														})}
-													</tr>
-													// <tr
-													// 	onClick={(event) => {
-													// 		this.showPopup(event, "showProductPopup");
-													// 		this.updateOrderData(value);
-													// 	}}
-													// 	style={{ cursor: "pointer" }}
-													// 	key={i}
-													// >
-													// 	<td>{value.advisororderid}</td>
-													// 	<td
-													// 		onClick={(event) => {
-													// 			this.showPopup(event, "showPopup");
-													// 			this.handleUpdateRetailer(value);
-													// 		}}
-													// 	>
-													// 		<div className="retailer-id">
-													// 			<p
-													// 				style={{
-													// 					display: "flex",
-													// 					alignItems: "center",
-													// 				}}
-													// 			>
-													// 				<span style={{ flex: "1", whiteSpace: "nowrap" }}>
-													// 					{_.startCase(_.toLower(value.username))}
-													// 					<img className="retailer-icon" src={ExpandWindowImg} alt="" />
-													// 				</span>
-													// 			</p>
-													// 			<label>{value.userid}</label>
-													// 		</div>
-													// 	</td>
-													// 	<td style={{ textAlign: "center" }}>{value.totalintendedquantity}</td>
-													// 	<td style={{ textAlign: "center" }}>{value.totalorderedquantity}</td>
-													// 	<td>{"MK " + value.totalcost}</td>
-													// 	<td>
-													// 		<div className="farmer-id">
-													// 			<p>{_.startCase(_.toLower(value.advisorname))}</p>
-													// 			<label>{value.advisorid}</label>
-													// 		</div>
-													// 	</td>
-													// 	<td>
-													// 		<div className="farmer-id">
-													// 			<p>{_.startCase(_.toLower(value.farmername))}</p>
-													// 			<label>{value.farmerid}</label>
-													// 		</div>
-													// 	</td>
-													// 	<td>
-													// 		<span className={`status ${value.orderstatus === "FULFILLED" ? "active" : "inactive"}`}>
-													// 			{value.orderstatus === "FULFILLED" ? (
-													// 				<img src={ActiveIcon} style={{ marginRight: "8px" }} width="17" alt="" />
-													// 			) : (
-													// 				<i className="fas fa-clock"></i>
-													// 			)}
-													// 			{/* {value.orderstatus} */}
-													// 			{_.startCase(_.toLower(value.orderstatus))}
-													// 		</span>
-													// 	</td>
-													// 	<td>
-													// 		{moment(value.lastupdateddate).format("DD/MM/YYYY")}
-													// 		<img className="max-image" src={maxImg} alt="" />
-													// 	</td>
-													// </tr>
-												);
-											})
-										) : (
-											<tr style={{ height: "250px" }}>
-												<td colSpan={10} className="no-records">
-													No records found
-												</td>
-											</tr>
-										)}
-									</tbody>
-								</table>
+										<div className="form-group" onClick={(e) => e.stopPropagation()}>
+											{/* <ReactSelect
+												name="farmer"
+												value={selectedFarmerOptions}
+												label={"Farmer"}
+												handleChange={(selectedOptions: any, e: any) =>
+													this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
+												}
+												// handleChange={(e: any) => this.handleSelect(e, "farmer")}
+												options={farmerOptions}
+												defaultValue="ALL"
+												id="farmer-test"
+												dataTestId="farmer-test"
+											/> */}
+											<ReactSelect
+												name="farmer"
+												value={
+													farmerOptions?.length > 0 &&
+													farmerOptions.filter(function (option: any) {
+														return option.value === selectedAdvisorFilters.farmer;
+													})
+												}
+												label={"Farmer"}
+												handleChange={(selectedOptions: any, e: any) =>
+													this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
+												}
+												// handleChange={(e: any) => this.handleSelect(e, "farmer")}
+												options={farmerOptions}
+												defaultValue="ALL"
+												id="farmer-test"
+												dataTestId="farmer-test"
+											/>
+										</div>
+
+										<label className="pt-2">Product Group</label>
+										<div className="pt-1">
+											{this.state.productCategories.map((item: any, i: number) => (
+												<span className="mr-2 chipLabel" key={i}>
+													<Button
+														color={
+															selectedAdvisorFilters.productgroup === item
+																? "btn activeColor rounded-pill"
+																: "btn rounded-pill boxColor"
+														}
+														size="sm"
+														onClick={(e) => this.handleFilterChange(e, "productgroup", item)}
+														style={{ marginBottom: "5px" }}
+													>
+														{item}
+													</Button>
+												</span>
+											))}
+										</div>
+
+										<label className="pt-2">Status</label>
+										<div className="pt-1">
+											{this.state.advisorStatus.map((item: any, statusIndex: number) => (
+												<span className="mr-2" key={statusIndex}>
+													<Button
+														color={
+															selectedAdvisorFilters.status === item
+																? "btn activeColor rounded-pill"
+																: "btn rounded-pill boxColor"
+														}
+														size="sm"
+														onClick={(e) => this.handleFilterChange(e, "status", item)}
+													>
+														{item}
+													</Button>
+												</span>
+											))}
+										</div>
+
+										<label className="pt-2" htmlFor="order-date">
+											Ordered Date
+										</label>
+										<div className="d-flex">
+											<div className="user-filter-date-picker">
+												<DatePicker
+													id="order-date"
+													value={selectedAdvisorFilters.ordereddatefrom}
+													dateFormat="dd-MM-yyyy"
+													customInput={<Input ref={ref} />}
+													selected={selectedAdvisorFilters.ordereddatefrom}
+													onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
+													showMonthDropdown
+													showYearDropdown
+													dropdownMode="select"
+													maxDate={new Date()}
+												/>
+											</div>
+											<div className="p-2">-</div>
+											<div className="user-filter-date-picker">
+												<DatePicker
+													value={selectedAdvisorFilters.ordereddateto}
+													dateFormat="dd-MM-yyyy"
+													customInput={<Input ref={ref} />}
+													selected={selectedAdvisorFilters.ordereddateto}
+													onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
+													showMonthDropdown
+													showYearDropdown
+													dropdownMode="select"
+													maxDate={new Date()}
+												/>
+											</div>
+										</div>
+										{dateErrMsg && <span className="error">{dateErrMsg} </span>}
+										<label className="pt-2" htmlFor="update-date">
+											Last Updated Date
+										</label>
+										<div className="d-flex">
+											<div className="user-filter-date-picker">
+												<DatePicker
+													id="update-date"
+													value={selectedAdvisorFilters.lastmodifiedfrom}
+													dateFormat="dd-MM-yyyy"
+													customInput={<Input ref={ref} />}
+													selected={selectedAdvisorFilters.lastmodifiedfrom}
+													onChange={(date: any) => this.handleDateChange(date, "lastmodifiedfrom")}
+													showMonthDropdown
+													showYearDropdown
+													dropdownMode="select"
+													maxDate={new Date()}
+												/>
+											</div>
+
+											<div className="p-2">-</div>
+											<div className="user-filter-date-picker">
+												<DatePicker
+													value={selectedAdvisorFilters.lastmodifiedto}
+													dateFormat="dd-MM-yyyy"
+													customInput={<Input ref={ref} />}
+													selected={selectedAdvisorFilters.lastmodifiedto}
+													onChange={(date: any) => this.handleDateChange(date, "lastmodifiedto")}
+													showMonthDropdown
+													showYearDropdown
+													dropdownMode="select"
+													maxDate={new Date()}
+												/>
+											</div>
+										</div>
+										{lastUpdatedDateErr && <span className="error">{lastUpdatedDateErr} </span>}
+
+										<div className="filterFooter pt-3">
+											<button
+												className="cus-btn-scanlog-filter reset"
+												onClick={(e) => this.resetFilter(e)}
+												data-testid="reset-all"
+											>
+												Reset All
+											</button>
+											<button
+												className="cus-btn-scanlog-filter"
+												onClick={this.applyFilter}
+												disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
+												data-testid="apply"
+											>
+												Apply
+												<span>
+													<img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
+												</span>
+											</button>
+										</div>
+									</React.Fragment>
+								)}
+							</Filter>
+
+							<div className="scanlog-container">
+								{selectedSalesType === "WALKIN_SALES" ? (
+									<WalkInSales
+										onRef={(node: any) => {
+											this.walkinSalesRef = node;
+										}}
+										paginationRef={this.paginationRef}
+										handleUpdate={this.handlePagination}
+										loggedUser={this.state.loggedUserInfo}
+										searchText={searchText}
+										selectedFilters={selectedWalkInFilters}
+										isFiltered={isFiltered}
+										updateSearch={this.handleUpdateSearch}
+									/>
+								) : (
+									<AdvisorSales
+										onRef={(node: any) => {
+											this.advisorSalesRef = node;
+										}}
+										paginationRef={this.paginationRef}
+										handleUpdate={this.handlePagination}
+										loggedUser={this.state.loggedUserInfo}
+										searchText={searchText}
+										selectedFilters={selectedAdvisorFilters}
+										isFiltered={isFiltered}
+										handleFilterScan={this.hanldeUpdateFilterScan}
+									/>
+								)}
 							</div>
 						</div>
 					</div>
 					<div>
 						<Pagination
-							totalData={totalData}
-							data={allScanLogs}
+							totalData={
+								selectedSalesType === "WALKIN_SALES"
+									? this.walkinSalesRef?.state?.totalWalkInData
+									: this.advisorSalesRef?.state?.totalAdvisorSalesData
+							}
+							data={
+								selectedSalesType === "WALKIN_SALES"
+									? this.walkinSalesRef?.state?.allWalkInSalesData
+									: this.advisorSalesRef?.state?.allAdvisorSalesData
+							}
 							totalLabel={"Sales"}
-							onRef={(node:any)=>{
-								this.paginationRef= node;
+							onRef={(node: any) => {
+								this.paginationRef = node;
 							}}
-							getRecords={this.getScanLogs}
+							getRecords={
+								selectedSalesType === "WALKIN_SALES"
+									? this.walkinSalesRef?.getWalkInSales
+									: this.advisorSalesRef?.getAdvisorSales
+							}
 						/>
 					</div>
 				</div>
-				{this.state.showPopup ? (
-					<SimpleDialog open={this.state.showPopup} onClose={this.handleClosePopup} header={popupHeader} maxWidth={"800px"}>
-						<DialogContent>
-							<div className="popup-container popup-retailer">
-								<div className="img">
-									<img src={NoImage} alt="" />
-								</div>
-								<div className="popup-content">
-									<div className={`popup-title`}>
-										<p>
-											{retailerPopupData.username}, <label>{popupHeader?.sub}</label>{" "}
-										</p>
-									</div>
-									<div className="popup-content-row">
-										<div className="content-list">
-											<label>Username</label>
-											<p>{retailerPopupData.userid}</p>
-										</div>
-										<div className="content-list">
-											<label>Store Name</label>
-											<p>{retailerPopupData.accountname}</p>
-										</div>
-										<div className="content-list">
-											<label>Phone Number</label>
-											<p>{retailerPopupData.phonenumber}</p>
-										</div>
-										{this.state.locationData?.length > 0 &&
-											this.state.locationData.map((location: any, locationIndex: number) => {
-												return (
-													<div className="content-list" key={locationIndex}>
-														<label>{_.startCase(_.toLower(location.name))}</label>
-														<p>{retailerPopupData[location.geolevels]}</p>
-													</div>
-												);
-											})}
-										<div className="content-list">
-											<label>Postal Code</label>
-											<p>{retailerPopupData.billingzipcode}</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</DialogContent>
-						<DialogActions>
-							<CustomButton
-								label="Filter scans"
-								style={{
-									borderRadius: "30px",
-									backgroundColor: "#7eb343",
-									width: "190px",
-									padding: "7px",
-									border: "1px solid  #7eb343",
-								}}
-								handleClick={() => this.filterScans(retailerPopupData.userid)}
-							/>
-						</DialogActions>
-					</SimpleDialog>
-				) : (
-					""
-				)}
-
-				{showProductPopup ? (
-					<OrderTable open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
-				) : (
-					""
-				)}
 			</AUX>
 		);
 	}

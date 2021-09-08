@@ -9,7 +9,7 @@ import { apiURL } from "../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../utility/base/service";
 import BarCodeIcon from "../../assets/icons/barcode.svg";
 import orderHistoryIcon from "../../assets/icons/order_history_blue.svg";
-import country from "../../assets/images/country.svg";
+import country from "../../assets/images/country-devadmin.svg";
 
 type Props = {
 	location?: any;

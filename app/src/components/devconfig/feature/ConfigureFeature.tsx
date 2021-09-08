@@ -1,13 +1,21 @@
-import React, { useEffect } from "react";
-import PencilEditImg from "../../../assets/images/pencil.svg";
+import React, { useEffect, useState } from "react";
+//import PencilEditImg from "../../../assets/images/pencil.svg";
 import { withStyles, Theme, createStyles } from "@material-ui/core/styles";
 import Switch, { SwitchClassKey, SwitchProps } from "@material-ui/core/Switch";
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import filterIcon from "../../../assets/icons/filter_icon.svg";
-import {headerData,rowsData } from "./Feature";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+//import filterIcon from "../../../assets/icons/filter_icon.svg";
+//import { headerData, rowsData } from "./Feature";
+import {
+  invokeGetAuthService,
+  invokePutService,
+} from "../../../utility/base/service";
+import { apiURL } from "../../../utility/base/utils/config";
+import { getLocalStorageData } from "../../../utility/base/localStore";
+import Loader from "../../../utility/widgets/loader";
+import _ from "lodash";
 
 /**
  * Toggle styles
@@ -74,68 +82,199 @@ const IOSSwitch = withStyles((theme: Theme) =>
   );
 });
 
-
-
-
 /**
  * Configure Feature Functional Component
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 const ConfigureFeature: React.FC = (props) => {
-  const [activeButton, SetActiveButton] = React.useState("mobile"); // The useState hook
-  const [rows, setRows] = React.useState(rowsData);
+  const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [activeButton, SetActiveButton] = React.useState("web");
+  const [tFeatures, setTFeatures] = useState<any>([]);
+  const [webRoles, setWebRoles] = useState([]);
+  const [mobileRoles, setMobileRoles] = useState<any>([]);
+  const [webRoleFeatures, setWebRoleFeatures] = useState([]);
+  const [mobileRoleFeatures, setMobileRoleFeatures] = useState([]);
 
-/**
- * Function based on change toggle active or inactive
- * @param event 
- */
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let key = event.target.value;
-    const data = rows[activeButton === "mobile" ? "mobile" : "web"].map(
-      (value: any) => {
-        if (value.label === key) {
-          return (value = {
-            ...value,
-            [event.target.name]: event.target.checked,
+  /*
+   * Function based on change toggle active or inactive
+   * @param event
+   */
+
+  useEffect(() => {
+    fetchTableData();
+  }, []);
+
+  const fetchTableData = () => {
+    const { featureToggle } = apiURL;
+    let localObj: any = getLocalStorageData("userData");
+    let userData = JSON.parse(localObj);
+    let countrycode = {
+      countrycode: userData?.countrycode,
+    };
+
+    setIsLoader(true);
+    invokeGetAuthService(featureToggle, countrycode)
+      .then((response) => {
+        let tANDtFeatures =
+          response?.body && Object.keys(response?.body?.features).length !== 0
+            ? response?.body?.features
+            : [];
+        setTFeatures(tANDtFeatures);
+        //web
+        let webFeatures =
+          response?.body && Object.keys(response?.body?.web).length !== 0
+            ? response?.body?.web
+            : [];
+
+        let listOfWebHeaders: any = [];
+        let ModifiedWebDatas: any = [];
+
+        webFeatures.forEach((item: any) => {
+          Object.entries(item).forEach((allWebEntries) => {
+            listOfWebHeaders.push(allWebEntries[0]);
+            let data = {
+              role: allWebEntries[0],
+              roleData: allWebEntries[1],
+            };
+            ModifiedWebDatas.push(data);
           });
-        }
-        return value;
-      }
-    );
-    rows[activeButton === "mobile" ? "mobile" : "web"] = data;
-    // update the state value
-    setRows({ ...rows });
+        });
+        setWebRoleFeatures(ModifiedWebDatas);
+        setWebRoles(listOfWebHeaders);
+
+        //mobile
+        let mobileFeatures =
+          response?.body && Object.keys(response?.body?.web).length !== 0
+            ? response?.body?.mobile
+            : [];
+
+        let listOfMobileHeaders: any = [];
+        let ModifiedMobileDatas: any = [];
+
+        mobileFeatures.forEach((item: any) => {
+          Object.entries(item).forEach((allMobileEntries) => {
+            listOfMobileHeaders.push(allMobileEntries[0]);
+            let data = {
+              role: allMobileEntries[0],
+              roleData: allMobileEntries[1],
+            };
+            ModifiedMobileDatas.push(data);
+          });
+        });
+        setMobileRoleFeatures(ModifiedMobileDatas);
+        setMobileRoles(listOfMobileHeaders);
+        setIsLoader(false);
+      })
+      .catch((error) => {
+        console.log("Error message", error.message);
+      });
   };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    let roleName = event.target.name; // RSM,CSM
+    let activeRole: any =
+      activeButton === "mobile" ? mobileRoleFeatures : webRoleFeatures;
+    let toggleButtonStateUpdates: any =
+      activeButton === "mobile" ? setMobileRoleFeatures : setWebRoleFeatures;
+    let data = activeRole.map((value: any) => {
+      if (value.role === event.target.name) {
+        return (value = {
+          ...value,
+          role: roleName,
+          roleData: {
+            ...value.roleData,
+            [event.target.value]: event.target.checked,
+          },
+        });
+      }
+      return value;
+    });
+    toggleButtonStateUpdates(data);
+    UpdateData(event.target.name, event.target.value, event.target.checked);
+  };
+
+  const UpdateData = (role: any, selectedRole: any, selectedRoleValue: any) => {
+    const { updateFeatureToggle } = apiURL;
+    let obj: any = getLocalStorageData("userData");
+    let userData = JSON.parse(obj);
+    let APIdata = {
+      countrycode: userData?.countrycode,
+      loginuser: userData?.username,
+    };
+    if (activeButton === "web") {
+      let APIdataWebOrMobile = {
+        data: [
+          {
+            featurename: selectedRole,
+            role: role,
+            isfeatureactive: selectedRoleValue,
+            isweb: true,
+          },
+        ],
+      };
+      APIdata = { ...APIdata, ...APIdataWebOrMobile };
+    } else {
+      let APIdataWebOrMobile = {
+        data: [
+          {
+            featurename: selectedRole,
+            role: role,
+            isfeatureactive: selectedRoleValue,
+            ismobile: true,
+          },
+        ],
+      };
+      APIdata = { ...APIdata, ...APIdataWebOrMobile };
+    }
+    console.log("APIdata", APIdata);
+    invokePutService(updateFeatureToggle, APIdata)
+      .then((response) => {
+        console.log("response", response);
+      })
+      .catch((error) => {
+        console.log("Error message", error.message);
+      });
+  };
+
   /**
    * Function to handle active button ,where based on mobile and web category
-   * @param value 
+   * @param value
    */
   const handleButton = (value: string) => {
-    // call the SetActiveButton and update the activeButton value 
+    // call the SetActiveButton and update the activeButton value
     SetActiveButton(value);
   };
   /**
    * Function handle breadcrumb selection
-   * @param event 
+   * @param event
    */
   function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     event.preventDefault();
-    console.info('You clicked a breadcrumb.');
+    console.info("You clicked a breadcrumb.");
   }
+
+  let Role: any = activeButton === "mobile" ? mobileRoles : webRoles;
+  let RoleFeatures: any =
+    activeButton === "mobile" ? mobileRoleFeatures : webRoleFeatures;
+
   return (
     <div>
+      {isLoader && <Loader />}
       <div className="configure-title mt-2">
         <div className="breadcrums sub-title">
-        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-        <Link color="inherit" href="/" onClick={handleClick}>
-        EMEA
-        </Link>
-        <Link color="inherit" href="/" onClick={handleClick}>
-        Africa
-        </Link>
-        <Typography color="textPrimary">Malawi</Typography>
-      </Breadcrumbs>
+          <Breadcrumbs
+            separator={<NavigateNextIcon fontSize="small" />}
+            aria-label="breadcrumb"
+          >
+            <Link color="inherit" href="/" onClick={handleClick}>
+              EMEA
+            </Link>
+            <Link color="inherit" href="/" onClick={handleClick}>
+              Africa
+            </Link>
+            <Typography color="textPrimary">Malawi</Typography>
+          </Breadcrumbs>
           {/* <p>{"EMEA >  Africa  >Malawi"}</p> */}
         </div>
         <div className="right-column">
@@ -147,10 +286,10 @@ const ConfigureFeature: React.FC = (props) => {
             type="text"
           />
           </div> */}
-           {/* <button>
+          {/* <button>
            <img src={filterIcon} width="17" alt="filter" />
            </button> */}
-           
+
           <div
             className="btn-group mobile-web "
             role="group"
@@ -158,14 +297,18 @@ const ConfigureFeature: React.FC = (props) => {
           >
             <button
               type="button"
-              className={`btn btn-outline-primary ${activeButton==='mobile'? "active":""}`}
+              className={`btn btn-outline-primary ${
+                activeButton === "mobile" ? "active" : ""
+              }`}
               onClick={() => handleButton("mobile")}
             >
               Mobile
             </button>
             <button
               type="button"
-              className={`btn btn-outline-primary ${activeButton==='web'? "active":""}`}
+              className={`btn btn-outline-primary ${
+                activeButton === "web" ? "active" : ""
+              }`}
               onClick={() => handleButton("web")}
             >
               Web
@@ -178,104 +321,59 @@ const ConfigureFeature: React.FC = (props) => {
         <table className="config-table">
           <thead>
             <tr>
-              <th>T&T Features</th>
-
-              {headerData[activeButton === "mobile" ? "mobile" : "web"].map(
-                (value, index) => {
-                  return (
-                    <th>
-                      <div className="config-header">
-                        <img src={PencilEditImg}></img>
-                        <h3>{value.title}</h3>
-                        <p>{value.subTitle}</p>
-                      </div>
-                    </th>
-                  );
-                }
-              )}
+              <th
+                style={{
+                  width: "250px",
+                  fontSize: "20px",
+                }}
+              >
+                T&T Features
+              </th>
+              {Role.map((val: any, index: any) => {
+                return (
+                  <th
+                    style={{
+                      fontSize: "20px",
+                      width: "250px",
+                      textAlign: "center",
+                    }}
+                    key={index}
+                  >
+                    {val}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
-            {rows[activeButton === "mobile" ? "mobile" : "web"].map(
-              (value: any, index: number) => {
-                return (
-                  <tr>
-                    <td key={index}>
-                      <p className="text"> {value.label}</p>
-                    </td>
-                    <td>
+            {tFeatures.map((val: any, index: any) => {
+              return (
+                <tr key={index}>
+                  <td>
+                    <p className="text"> {val}</p>
+                  </td>
+                  {RoleFeatures.map((key: any, ind: any) => (
+                    <td key={ind}>
                       <IOSSwitch
-                        checked={
-                          activeButton === "mobile"
-                            ? value.isLevelOneToggle
-                            : value.isFieldSalesToggle
-                        }
+                        checked={key.roleData[val] ? true : false}
                         onChange={handleChange}
-                        name={
-                          activeButton === "mobile"
-                            ? "isLevelOneToggle"
-                            : "isFieldSalesToggle"
+                        disabled={
+                          Object.keys(key.roleData).includes(val) ? false : true
                         }
-                        value={value.label}
+                        name={key.role}
+                        value={val ? val : ""}
+                        id={key.role + "_" + val + "_" + index}
                       />
                     </td>
-                    <td>
-                      <IOSSwitch
-                        checked={
-                          activeButton === "mobile"
-                            ? value.isLevelTwoToggle
-                            : value.isFieldSalesManagerToggle
-                        }
-                        onChange={handleChange}
-                        name={
-                          activeButton === "mobile"
-                            ? "isLevelTwoToggle"
-                            : "isFieldSalesManagerToggle"
-                        }
-                        value={value.label}
-                      />
-                    </td>
-                    <td>
-                      <IOSSwitch
-                        checked={
-                          activeButton === "mobile"
-                            ? value.isFieldSalesToggle
-                            : value.isCountryAdminToggle
-                        }
-                        onChange={handleChange}
-                        name={
-                          activeButton === "mobile"
-                            ? "isFieldSalesToggle"
-                            : "isCountryAdminToggle"
-                        }
-                        value={value.label}
-                      />
-                    </td>
-                    <td>
-                      <IOSSwitch
-                        checked={
-                          activeButton === "mobile"
-                            ? value.isFieldSalesManagerToggle
-                            : value.isCountryDevToggle
-                        }
-                        onChange={handleChange}
-                        name={
-                          activeButton === "mobile"
-                            ? "isFieldSalesManagerToggle"
-                            : "isCountryDevToggle"
-                        }
-                        value={value.label}
-                      />
-                    </td>
-                  </tr>
-                );
-              }
-            )}
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
     </div>
   );
 };
-// export name of component 
+
 export default ConfigureFeature;

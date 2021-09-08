@@ -1047,6 +1047,7 @@ class SendGoods extends Component<Props, States> {
 									</button>
 								</div>
 							</Filter>
+							
 							<div className="scanlog-container">
 								<table className="table">
 									<thead>
