@@ -353,7 +353,7 @@ class AdvisorSales extends PureComponent<Props, States> {
 													<label>{value.userid}</label>
 												</div>
 											</td>
-											<td>{value.storename}</td>
+											<td>{_.startCase(_.toLower(value.storename))}</td>
 											<td>{"MK " + value.totalcost}</td>
 											<td>
 												<div className="farmer-id">

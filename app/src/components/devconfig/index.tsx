@@ -312,7 +312,7 @@ class Devconfigurations extends React.Component<
       case 2:
         this.props.addLocationInputList({});
         this.props.addLocationInputList([
-          { locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
+          { level: 0, name: "", parentlevel: -1 },
         ]);
         newStep = 2;
         break;
@@ -320,10 +320,10 @@ class Devconfigurations extends React.Component<
         this.props.addRoleInputList({});
         this.props.addRoleInputList([
           {
-            rolehierarchylevel: 0,
-            rolecode: "",
-            rolehierarchyname: "",
-            roletype: "",
+            level: 0,
+            code: "",
+            name: "",
+            type: "",
             parentrole: "NONE",
           },
         ]);
@@ -713,7 +713,7 @@ class Devconfigurations extends React.Component<
     // validate location hierarchy data
     if (currentStep === 2) {
       const data = loacationinputList.map((value: any) => {
-        if (!value.locationhiername) {
+        if (!value.name) {
           value = { ...value, error: true };
           this.setState({
             isError: true,
@@ -740,20 +740,20 @@ class Devconfigurations extends React.Component<
     // validate role hierarchy data
     if (currentStep === 3) {
       const data = roleinputList.map((value: any) => {
-        if (!value.rolehierarchyname || !value.rolecode) {
-          if (!value.rolehierarchyname && !value.rolecode) {
+        if (!value.name || !value.code) {
+          if (!value.name && !value.code) {
             value = {
               ...value,
               rolehierarchyname_error: true,
               rolecode_error: true,
             };
-          } else if (!value.rolehierarchyname)
+          } else if (!value.name)
             value = {
               ...value,
               rolehierarchyname_error: true,
               rolecode_error: false,
             };
-          else if (!value.rolecode)
+          else if (!value.code)
             value = {
               ...value,
               rolecode_error: true,

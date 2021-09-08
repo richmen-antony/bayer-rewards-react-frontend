@@ -14,7 +14,6 @@ import ExpandWindowImg from "../../assets/images/expand-window.svg";
 import CalenderIcon from "../../assets/icons/calendar.svg";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import { Button } from "reactstrap";
-import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
 import _ from "lodash";
 import { downloadCsvFile, ErrorMsg } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
@@ -810,15 +809,7 @@ class SendGoods extends Component<Props, States> {
 			activeSortKeyIcon,
 			selectedBatchOptions,
 			selectedCustomerOptions,
-			selectedGeolevel1Options,
-			selectedGeolevel2Options,
 		} = this.state;
-
-		const pageNumbers = [];
-		const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
-		for (let i = 1; i <= pageData; i++) {
-			pageNumbers.push(i);
-		}
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
@@ -826,20 +817,6 @@ class SendGoods extends Component<Props, States> {
 				<React.Fragment key={`geolevels` + index}>
 					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
 						<div className="col" style={{ marginBottom: "5px" }}>
-							{/* <NativeDropdown
-								name={list.name}
-								label={`Scanned by - ${nameCapitalized==="Add" ? "ADD" :nameCapitalized}`}
-								options={list.options}
-								handleChange={(e: any) => {
-									e.stopPropagation();
-									list.value = e.target.value;
-									this.getOptionLists("manual", list.name, e.target.value, index);
-									this.handleGeolevelDropdown(e.target.value, list.name);
-								}}
-								value={list.value}
-								id="geolevel-test"
-								dataTestId="geolevel-test"
-							/> */}
 							<ReactSelect
 								name={list.name}
 								label={`Scanned by - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
@@ -850,7 +827,6 @@ class SendGoods extends Component<Props, States> {
 									this.handleReactSelect(selectedOptions, e, list.name);
 									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
-								// value={list.name === "geolevel1" ? selectedGeolevel1Options : selectedGeolevel2Options}
 								value={list.value}
 								isDisabled = {list.name === "geolevel1" }
 								id="geolevel-test"
@@ -923,16 +899,6 @@ class SendGoods extends Component<Props, States> {
 								<div className="form-group container" onClick={(e) => e.stopPropagation()}>
 									<div className="row column-dropdown">
 										<div className="col">
-											{/* <NativeDropdown
-												name="batchno"
-												value={selectedFilters.batchno}
-												label={"Batch #"}
-												handleChange={(e: any) => this.handleSelect(e, "batchno")}
-												options={batchOptions}
-												defaultValue="ALL"
-												id="batchno-test"
-												dataTestId="batchno-test"
-											/> */}
 											<ReactSelect
 												name="batchno"
 												value={selectedBatchOptions}

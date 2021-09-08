@@ -197,14 +197,14 @@ const CountrySetupComp = (props: ICountryProps) => {
 
     if (newCountry === true) {
       props.addLocationInputList([
-        { locationhierlevel: 0, locationhiername: "", parentlocation: -1 },
+        { level: 0, name: "", parentlevel: -1 },
       ]);
       props.addRoleInputList([
         {
-          rolehierarchylevel: 0,
-          rolecode: "",
-          rolehierarchyname: "",
-          roletype: "",
+          level: 0,
+          code: "",
+          name: "",
+          type: "",
           parentrole: "NONE",
         },
       ]);

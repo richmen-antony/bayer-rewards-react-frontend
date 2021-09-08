@@ -23,12 +23,12 @@ const INITIAL_STATE: any = {
     location: {
         // dpList: [{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }],
         // inputList: [{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]
-        inputList: [{ locationhierlevel:0 , locationhiername: "", parentlocation: -1}]
+        inputList: [{ level:0 , name: "", parentlevel: -1}]
     },
     role: {
         // dpList: [{ rolecode: "", role: "", roletype: "", parentrole: { id: 0, value: "NA" } }],
         // inputList: [{ rolecode: "", role: "", roletype: "", parentrole: { id: 0, value: "NA" } }]
-        inputList: [{ rolehierarchylevel:0, rolecode: "", rolehierarchyname: "", roletype: "", parentrole: "NONE" }]
+        inputList: [{ level:0, code: "", name: "", type: "", parentrole: "NONE" }]
     },
     tntflow: {
         inputList: [{ level:0, code: "", position: "" }]

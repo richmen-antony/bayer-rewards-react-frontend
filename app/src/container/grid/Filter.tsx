@@ -55,10 +55,11 @@ const Filter: React.FC<Props> = (props: Props) => {
 		onClose,
 		downloadPopup
 	} = props;
+
 	useEffect(() => { 
 		onClose&& onClose(toggleFilter)
 
-	},[dropdownOpenFilter]);
+	},[dropdownOpenFilter]); // eslint-disable-line react-hooks/exhaustive-deps
 	return (
 		<div className="grid-filter">
 			<div className="filter-left-side">
