@@ -503,6 +503,9 @@ const ConsolidatedScans = (Props: any) => {
 	const applyFilter = () => {
 		setIsFiltered(true);
 		setFilterAppliedTime(new Date().getTime());
+		closeToggle&&closeToggle();
+		
+	
 		// closeToggle();
 		// this.setState({ isFiltered: true, inActiveFilter: false }, () => {
 		// 	this.getScanLogs();
