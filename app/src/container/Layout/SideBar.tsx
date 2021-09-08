@@ -6,6 +6,7 @@ import homeIcon from "../../assets/icons/home_icon.svg";
 import addUserIcon from "../../assets/icons/add_user_icon.svg";
 import userListIcon from "../../assets/icons/list_user_icon.svg";
 import scanLogsIcon from "../../assets/icons/scan_logs_icon.svg";
+import consolidatescans from "../../assets/icons/consolidated_scan.svg";
 import orderHistoryIcon from "../../assets/icons/order_history.svg";
 import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
@@ -220,7 +221,7 @@ class Sidebar extends Component<Props, States> {
                         to="/consolidatedScans"
                         onClick={() => this.setActiveTab("consolidatedScans")}
                       >
-                        <img src={scanLogsIcon} alt="Consolidated Scans" width="16" />{" "}
+                        <img src={consolidatescans} alt="Consolidated Scans" width="16" />{" "}
                         <span> Consolidated Sales </span>
                       </Link>
                     </li>{" "}

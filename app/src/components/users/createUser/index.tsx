@@ -2547,6 +2547,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
       
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+      nameCapitalized = nameCapitalized === 'Add' ? "ADD" : nameCapitalized === 'Epa' ? 'EPA' : nameCapitalized;
       return (
         <React.Fragment key={`geolevels`+index}>
           <div

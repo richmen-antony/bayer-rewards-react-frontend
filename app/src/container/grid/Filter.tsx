@@ -59,7 +59,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 	useEffect(() => { 
 		onClose&& onClose(toggleFilter)
 
-	},[dropdownOpenFilter]); // eslint-disable-line react-hooks/exhaustive-deps
+	},[dropdownOpenFilter,onClose]); // eslint-disable-line react-hooks/exhaustive-deps
 	return (
 		<div className="grid-filter">
 			<div className="filter-left-side">

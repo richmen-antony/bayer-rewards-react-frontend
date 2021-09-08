@@ -479,6 +479,9 @@ const ConsolidatedScans = (Props: any) => {
 	const applyFilter = () => {
 		setIsFiltered(true);
 		setFilterAppliedTime(new Date().getTime());
+		closeToggle&&closeToggle();
+		
+	
 		// closeToggle();
 	};
 
