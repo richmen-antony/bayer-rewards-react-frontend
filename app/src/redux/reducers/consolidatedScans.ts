@@ -1,9 +1,13 @@
 import {
     GET_OVERALL_CONSOLIDATED_SCANS_SUCCESS,
     GET_OVERALL_CONSOLIDATED_SCANS_ERROR,
+    SET_OVERALL_SCANS,
     LOADING_REQUEST,
     GET_BRANDWISE_SCANS_SUCCESS,
-    SET_SELECTED_BRANDS
+    SET_SELECTED_BRANDS,
+    GET_PRODUCTWISE_SCANS_SUCCESS,
+    GET_PRODUCTWISE_SCANS_ERROR,
+    SET_SELECTED_PRODUCTS
 } from '../actionTypes/consolidatedTypes';
 
 const INITIAL_STATE: any = {
@@ -14,11 +18,11 @@ const INITIAL_STATE: any = {
     isLoader: false,
     allConsolidatedScans: [],
     scannedBrands :[],
+    scannedProducts : [],
     errorMessage: '',
 };
 
 function ConsolidatedScansReducer(state = {INITIAL_STATE}, action: any): any {
-    console.log('geoLevel1Listreducer', state)
     switch (action.type) {
         case LOADING_REQUEST: {
             return {
@@ -40,6 +44,13 @@ function ConsolidatedScansReducer(state = {INITIAL_STATE}, action: any): any {
                 errorMessage : action.errorMsg
             }
         }
+        case SET_OVERALL_SCANS : {
+            return {
+                ...state,
+                isLoader: false,
+                allConsolidatedScans: action.allScans
+            }
+        }
         case GET_BRANDWISE_SCANS_SUCCESS : {
             return {
                 ...state,
@@ -52,6 +63,20 @@ function ConsolidatedScansReducer(state = {INITIAL_STATE}, action: any): any {
                 ...state,
                 isLoader: false,
                 scannedBrands: action.allBrands
+            }
+        }
+        case GET_PRODUCTWISE_SCANS_SUCCESS :{
+            return {
+                ...state,
+                isLoader:false,
+                scannedProducts : Object.keys(action.response.body).length !== 0 ? action.response.body : []
+            }
+        }
+        case SET_SELECTED_PRODUCTS : {
+            return {
+                ...state,
+                isLoader: false,
+                scannedProducts: action.allProducts
             }
         }
         // case GET_GEOLOCATION_FIELDS_SUCCESS : {

@@ -37,8 +37,8 @@ const ProductBrandList = ({
                 <thead>
                   <tr>
                   <th 
-                     onClick={(e) => handleSort(e, "brandname", selectedBrandList, isAsc,"scannedBrands")}
-                      key="brandname">BRAND
+                     onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc,"scannedBrands")}
+                      key="productbrand">BRAND
                       {
                          (tableCellIndex === 0 && tableName === 'scannedBrands') ? (
                             <i
@@ -58,19 +58,19 @@ const ProductBrandList = ({
                 <tbody>
                   {selectedBrandList?.length > 0 ? (
                     selectedBrandList?.map((item: any, idx: number) => {
-                      totalReceivedGoods = totalReceivedGoods + (item.SEND_GOOD);
-                      totalSendGoods = totalSendGoods + (item.RECEIVE_GOOD);
+                      totalReceivedGoods = totalReceivedGoods + (item.RECEIVE_GOOD);
+                      totalSendGoods = totalSendGoods + (item.SEND_GOOD);
                       totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
                       totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
                       return (
                         <tr
                         style={{ cursor: "pointer", backgroundColor : selectedBrand === idx ? '#F5FCFF' : ''}}
                           key={idx}
-                          onClick ={()=>getSelectedProducts(item.soldbyid,item.productbrand,idx,'selected')}
+                          onClick ={()=>getSelectedProducts(item.soldbyid,item.productbrand,idx)}
                         >
                             <td>{_.startCase(_.toLower(item.productbrand))}</td>
-                            <td>{item.SEND_GOOD}</td>
                             <td>{item.RECEIVE_GOOD}</td>
+                            <td>{item.SEND_GOOD}</td>
                             <td>{item.S2F_WALKIN}</td>
                             <td>{item.S2F_ADVISOR}</td>
                         </tr>

@@ -1,6 +1,7 @@
 import {
     GET_GEOLOCATION_LEVEL1_OPTIONS_SUCCESS,
     GET_GEOLOCATION_LEVEL1_OPTIONS_ERROR,
+    SET_GEOLOCATION_LEVEL1_OPTIONS,
     LOADING_REQUEST,
     GET_GEOLOCATION_FIELDS_SUCCESS,
     GET_GEOLOCATION_FIELDS_ERROR
@@ -39,6 +40,13 @@ function commonReducer(state = {INITIAL_STATE}, action: any): any {
             return {
                 ...state,
                 errorMessage : action.errorMsg
+            }
+        }
+        case SET_GEOLOCATION_LEVEL1_OPTIONS : {
+            return {
+                ...state,
+                isLoader: false,
+                geoLevel1List: action.levels
             }
         }
         case GET_GEOLOCATION_FIELDS_SUCCESS : {

@@ -38,7 +38,8 @@ export const apiURL = {
     getBatchList:"admin/batchlist",
     getPartnerList:"admin/partnerlist",
     consolidatedScans : {
-        getOverallScans : "scangoods/report/level1",
-        getScannedBrands : "scangoods/report/level2"
+        getOverallScans : "v1.1.0/scangoods/report/level1",
+        getScannedBrands : "v1.1.0/scangoods/report/level2",
+        getScannedProducts : "v1.1.0/scangoods/report/level3"
     }
 }

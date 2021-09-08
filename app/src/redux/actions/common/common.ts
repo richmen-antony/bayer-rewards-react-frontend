@@ -8,7 +8,8 @@ import {
   GET_GEOLOCATION_LEVEL1_OPTIONS_SUCCESS,
   GET_GEOLOCATION_LEVEL1_OPTIONS_ERROR,
   GET_GEOLOCATION_FIELDS_SUCCESS,
-  GET_GEOLOCATION_FIELDS_ERROR 
+  GET_GEOLOCATION_FIELDS_ERROR,
+  SET_GEOLOCATION_LEVEL1_OPTIONS
 } from '../../actionTypes/commonTypes';
 import Authorization from "../../../utility/authorization";
 
@@ -53,6 +54,12 @@ export const getGeoLocationFields = () => {
     function Error(errorMsg: any) { return { type: GET_GEOLOCATION_FIELDS_ERROR, errorMsg } }
   }
 }
+export const setGeolevel1Options = (levels:any) => {
+  return async(dispatch: Dispatch<AnyAction>) => {
+      dispatch({ type : SET_GEOLOCATION_LEVEL1_OPTIONS, levels } );
+  }
+}
+
 
 
 

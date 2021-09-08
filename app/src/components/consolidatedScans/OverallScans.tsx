@@ -1,4 +1,5 @@
 import React, { useEffect, useState,useCallback } from "react";
+import {useDispatch, useSelector} from 'react-redux';
 import AUX from "../../hoc/Aux_";
 import "../../assets/scss/consolidatedSales.scss";
 import Loader from "../../utility/widgets/loader";
@@ -32,16 +33,13 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
 import Filter from "../../container/grid/Filter";
-type PartnerTypes = {
-	type: String;
-  };
-
 interface IProps {
   onChange?: any;
   placeholder?: any;
   value?: any;
   id?: any;
   onClick?: any;
+
   // any other props that come into the component
 }
 
@@ -96,6 +94,11 @@ export type OverallScanProps = {
   isAsc: Boolean;
   tableCellIndex: any;
   tableName?: string;
+  handleUpdateRetailer: Function;
+  retailerPopupData?: any;
+  partnerType?: any;
+  setSearchText: Function;
+  setIsFiltered: Function;
 };
 
 export const OverallScans = ({
@@ -105,12 +108,21 @@ export const OverallScans = ({
   handleSort,
   isAsc,
   tableCellIndex,
-  tableName
+  tableName,
+  handleUpdateRetailer,
+  retailerPopupData,
+  partnerType,
+  setSearchText,
+  setIsFiltered
 }:OverallScanProps) => {
+
   let totalReceivedGoods:number = 0;
   let totalSendGoods:number = 0;
   let totalWalkInSales:number = 0;
   let totalAdvisorSales:number = 0;
+  const dispatch             = useDispatch();
+  const geoLevelsName        = useSelector(({common}:any) => common?.levelsName);
+  
   const [selectedFilters, setSelectedFilters] = useState({
 		geolevel1: "ALL",
 		status: "ALL",
@@ -118,15 +130,7 @@ export const OverallScans = ({
 		lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
 		lastmodifieddateto: new Date(),
 	  });
-    // const [ loggedUserInfo, setloggedUserInfo] = useState({});
     const [showPopup, setshowPopup] = useState(false);
-    const [retailerPopupData,setretailerPopupData] = useState({});
-
-    useEffect (()=>{
-      // let data: any = getLocalStorageData("userData");
-      // let userData = JSON.parse(data);
-      // setloggedUserInfo(userData);
-    },[]);
 
     const handleClosePopup = () => {
       setshowPopup(false);
@@ -140,13 +144,14 @@ export const OverallScans = ({
       // });
     };
 
-    const handleUpdateRetailer = (value: object) => {
-      setretailerPopupData(value)
+    const filterScans = (id:any) => {
+      console.log('filterdid', id)
+      setSearchText(id);
+      setIsFiltered(true);
+      handleClosePopup();
     }
-    // console.log('oneralltableCellIndex', tableCellIndex)
 
     return (
-
       <AUX>
         <div className="">
               <label className="font-weight-bold scanlabel">overall consolidated scans</label>
@@ -156,8 +161,8 @@ export const OverallScans = ({
                   <thead>
                     <tr>
                     <th 
-                     onClick={(e) => handleSort(e, "name", allConsolidatedScans, isAsc,"overallScans")}
-                      key="name">CUSTOMER NAME/ID
+                     onClick={(e) => handleSort(e, "firstname", allConsolidatedScans, isAsc,"overallScans")}
+                      key="firstname">PARTNER NAME/ID
                         {
                           (tableCellIndex === 0 && tableName === 'overallScans') ? (
                             <i
@@ -177,26 +182,26 @@ export const OverallScans = ({
                   <tbody>
                     {allConsolidatedScans?.length > 0 ? (
                       allConsolidatedScans?.map((item: any, idx: number) => {
-                        totalReceivedGoods = totalReceivedGoods + (item.SEND_GOOD);
-                        totalSendGoods = totalSendGoods + (item.RECEIVE_GOOD);
+                        totalReceivedGoods = totalReceivedGoods + (item.RECEIVE_GOOD);
+                        totalSendGoods = totalSendGoods + (item.SEND_GOOD);
                         totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
                         totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
                         return (
                           <tr
                             style={{ cursor: "pointer", backgroundColor : selectedDistributor === idx ? '#F5FCFF' : ''}}
                             key={idx}
-                            onClick = {()=>getSelectedBrands(item.soldbyid, idx, 'selected')}
+                            onClick = {()=>getSelectedBrands(item.soldbyid, idx, 'selected',item.productbrand)}
                           >
-                            <td onClick={(event) => {
-																showRetailerPopup(event);
-                                handleUpdateRetailer(item);
-															}}>
-																	{_.startCase(_.toLower(item.name))}
-																	<img className="retailer-icon" src={ExpandWindowImg} alt="" /><br />
-																  <label style={{fontSize:'9px'}}>{item.soldbyid}</label>
-                              </td>
-                            <td>{item.SEND_GOOD}</td>
+                          <td onClick={(event) => {
+                              showRetailerPopup(event);
+                              handleUpdateRetailer(item);
+                            }}>
+                                {_.startCase(_.toLower(item.firstname))+' '+_.startCase(_.toLower(item.lastname))}
+                                <img className="retailer-icon" src={ExpandWindowImg} alt="" /><br />
+                                <label style={{fontSize:'9px'}}>{item.soldbyid}</label>
+                            </td>
                             <td>{item.RECEIVE_GOOD}</td>
+                            <td>{item.SEND_GOOD}</td>
                             <td>{item.S2F_WALKIN}</td>
                             <td>{item.S2F_ADVISOR}</td>
                           </tr>
@@ -255,17 +260,17 @@ export const OverallScans = ({
                       </td>
                       <td className="text-center">
                         <span className="">
-                          {4324}
+                          {totalSendGoods}
                         </span>
                       </td>
                       <td>
                         <span className="">
-                          {423432}
+                          {totalWalkInSales}
                         </span>
                       </td>
                       <td>
                       <span className="productprice">
-                          {767}
+                          {totalAdvisorSales}
                         </span>
                       </td>
                     </tr>
@@ -295,33 +300,35 @@ export const OverallScans = ({
 								</div>
 								<div className="popup-content">
 									<div className={`popup-title`}>
-										{/* <p>
-											{retailerPopupData.username}, <label>{popupHeader?.sub}</label>{" "}
-										</p> */}
+										<p>
+											{retailerPopupData?.firstname} {retailerPopupData.lastname}{" "}, {partnerType.type === 'Retailers' ? 'Retailer' : 'Distributor'}
+										</p>
 									</div>
 									<div className="popup-content-row">
 										<div className="content-list">
 											<label>Username</label>
-                      <p></p>
-											{/* <p>{retailerPopupData.userid}</p> */}
+											<p>{retailerPopupData.username}</p>
 										</div>
 										<div className="content-list">
 											<label>Store Name</label>
-											{/* <p>{retailerPopupData.accountname}</p> */}
+											<p>{retailerPopupData.accountname}</p>
 										</div>
 										<div className="content-list">
 											<label>Phone Number</label>
-											{/* <p>{retailerPopupData.phonenumber}</p> */}
+											<p>{retailerPopupData.phonenumber}</p>
 										</div>
-										{/* {this.state.locationData?.length > 0 &&
-											this.state.locationData.map((location: any, locationIndex: number) => {
+										{geoLevelsName?.length > 0 &&
+											geoLevelsName?.map((location: any, locationIndex: number) => {
+                        let geolevels = 'geolevel'+locationIndex;
 												return (
+                          (locationIndex > 0 && locationIndex < 5 && locationIndex !== 2) && (
 													<div className="content-list" key={locationIndex}>
-														<label>{_.startCase(_.toLower(location.name))}</label>
-														<p>{retailerPopupData[location.geolevels]}</p>
+														<label>{_.startCase(_.toLower(location))}</label>
+														<p>{retailerPopupData[geolevels]}</p>
 													</div>
+                          )
 												);
-											})} */}
+											})}
 										<div className="content-list">
 											<label>Postal Code</label>
 											{/* <p>{retailerPopupData.billingzipcode}</p> */}
@@ -331,7 +338,7 @@ export const OverallScans = ({
 							</div>
 						</DialogContent>
 						<DialogActions>
-							{/* <CustomButton
+							<CustomButton
 								label="Filter scans"
 								style={{
 									borderRadius: "30px",
@@ -340,8 +347,8 @@ export const OverallScans = ({
 									padding: "7px",
 									border: "1px solid  #7eb343",
 								}}
-								handleClick={() => this.filterScans(retailerPopupData.userid)}
-							/> */}
+								handleClick={()=>filterScans(retailerPopupData.username)}
+							/>
 						</DialogActions>
 					</SimpleDialog>
 				) : (

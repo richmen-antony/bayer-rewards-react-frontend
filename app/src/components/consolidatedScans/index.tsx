@@ -2,6 +2,7 @@
 import React, { useEffect, useState,useCallback } from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import DatePicker from "react-datepicker";
+import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import AUX from "../../hoc/Aux_";
 import Filter from "../../container/grid/Filter";
@@ -25,48 +26,70 @@ import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 import {
 	getGeographicLevel1Options,
-	getGeoLocationFields
+	getGeoLocationFields,
+	setGeolevel1Options
   } from '../../redux/actions/common/common';
   import {
 	getOverallScans,
 	getScannedBrands,
-	setselectedBrandList
+	getScannedProducts,
+	setselectedBrandList,
+	setselectedProductList,
+	setOverallList
   } from '../../redux/actions/consolidatedScans/consolidatedScans';
   import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
   import _ from "lodash";
+import { AnyAaaaRecord } from "node:dns";
 
-let levelsName: any = [];
+let obj: any = getLocalStorageData("userData");
+let userData = JSON.parse(obj);
 
 const ConsolidatedScans = (Props: any) => {
-	const dispatch            = useDispatch();
-	// const geoLevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
+    let closeToggle: any;
+	const dispatch             = useDispatch();
+	const geolevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
+	const geographicFields     = useSelector(({common}:any) => common?.geographicFields);
+	const levelsName        = useSelector(({common}:any) => common?.levelsName);
 	const allConsolidatedScans = useSelector(({consolidatedScans}:any) => consolidatedScans?.allConsolidatedScans);
-	const scannedBrands = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedBrands);
-	console.log('scannedBrands@@',scannedBrands)
-	const [searchText, setSearchText] = useState<string>("");
-	const [retailerOptions, setRetailerOptions] = useState<string[]>([]);
-	const [optionslist, setOptionslist] = useState([]);
-	const [isLoader, setIsLoader] = useState<boolean>(false);
-	const [dateErrMsg, setDateErrMsg] = useState<string>("");
-	const [dropdownOpenFilter,setdropdownOpenFilter] = useState(false);
-	const [partnerTypeList, setpartnerTypeList] = useState(["Retailers", "Distributors"]);
-	const [partnerType, setPartnerType] = useState({ type: "Retailers" });
-	// const [selectedBrandList,setselectedBrandList] = useState([{}]);
-	const [selectedProductList,setselectedProductList] = useState([{}]);
-	const [selectedDistributorName,setselectedDistributorName] = useState('');
-	const [selectedBrandName,setselectedBrandName] = useState('');
-	const [selectedDistributor,setselectedDistributor] = useState(0);
-	const [selectedBrand,setselectedBrand] = useState(0);
-	const [productCategories, setproductCategories] = useState([
-		"ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
-	])
+	const scannedBrands        = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedBrands);
+	const scannedProducts      = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedProducts);
+	const isReduxLoader        = useSelector(({consolidatedScans}:any) => consolidatedScans?.isLoader);
 
-	const [countryList,setcountryList] = useState([{}]);
-	const [geographicFields, setgeographicFields] = useState([]);
-	const [dynamicFields, setdynamicFields] = useState([]);
-	const [level1Options,setlevel1Options] = useState([]);
-	const [geolevel1List,setgeolevel1List] = useState([]);
-	const [scannedPeriodsList, setscannedPeriodsList] = useState([
+	const [searchText, setSearchText]                          = useState<string>("");
+	const [retailerOptions, setRetailerOptions]                = useState<string[]>([]);
+	const [optionslist, setOptionslist]                        = useState([]);
+	const [isLoader, setIsLoader]                              = useState<boolean>(false);
+	const [dateErrMsg, setDateErrMsg]                          = useState<string>("");
+	const [dropdownOpenFilter,setdropdownOpenFilter]           = useState(false);
+	const [partnerTypeList, setpartnerTypeList]                = useState(["Retailers", "Distributors"]);
+	const [partnerType, setPartnerType]                        = useState({ type: "Retailers" });
+	const [selectedDistributorName,setselectedDistributorName] = useState('');
+	const [selectedBrandName,setselectedBrandName]             = useState('');
+	const [selectedDistributor,setselectedDistributor]         = useState(0);
+	const [selectedBrand,setselectedBrand]                     = useState(0);
+	const [countryList,setcountryList]                         = useState([{}]);
+	// const [geographicFields, setgeographicFields]              = useState([]);
+	const [dynamicFields, setdynamicFields]                    = useState([]);
+	const [level1Options,setlevel1Options]                     = useState([]);
+	const [isFiltered, setIsFiltered]                          = useState<boolean>(false);
+	const [overalltableIndex, setoveralltableIndex]            = useState<number>(0);
+	const [brandtableIndex, setbrandtableIndex]                = useState<number>(0);
+	const [producttableIndex, setproducttableIndex]            = useState<number>(0);
+	const [isAsc, setIsAsc]                                    = useState<boolean>(true);
+	const [soldbyid,setSoldbyid]                               = useState('');
+	const [isResetFilter,setIsResetFilter]                         = useState(false);
+
+	const [selectedFilters, setSelectedFilters]                = useState({
+			productgroup: "ALL",
+			geolevel1: "ALL",
+			geolevel2: "ALL",
+			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+			lastmodifieddateto: new Date(),
+			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
+			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
+			scannedPeriod: "",
+	  });
+	  const [scannedPeriodsList, setscannedPeriodsList]         = useState([
 		{label: "Today", value: ""},
 		{ label: "This week (Sun - Sat)", value: "" },
 		{ label: "Last 30 days", value: "" },
@@ -74,406 +97,152 @@ const ConsolidatedScans = (Props: any) => {
 		{ label: "Prev. year (Jan - Dec)", value: "" },
 		{ label: "Custom", value: "" },
 	]);
-	const [isFiltered, setIsFiltered] = useState<boolean>(false);
-	const [overalltableIndex, setoveralltableIndex] = useState<number>(0);
-	const [brandtableIndex, setbrandtableIndex] =useState<number>(0);
-	const [producttableIndex, setproducttableIndex] = useState<number>(0);
-	const [isAsc, setIsAsc] = useState<boolean>(true);
-
-	const [selectedFilters, setSelectedFilters] = useState({
-			productgroup: "ALL",
-			status: "ALL",
-			geolevel1: "ALL",
-			geolevel2: "ALL",
-			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
-			lastmodifieddateto: new Date(),
-			partnerType: "Retailers",
-			scannedPeriod: "Today",
-	  });
-	  const [soldbyid,setSoldbyid] = useState('');
-	//   const [allConsolidatedScans,setAllConsolidatedScans] = useState([
-	// 		{
-	// 			"distributorId" : 1,
-	// 			"name" : "vidhya",
-	// 			"sendgoods" : 3131,
-	// 			"receivegoods" : 3243,
-	// 			"walkinsales" : 432,
-	// 			"advisorsales" :434,
-	// 			"label" : "GCHPU"
-	// 		},
-	// 		{
-	// 		  "distributorId" : 2,
-	// 			"name" : "demo",
-	// 			"sendgoods" : 343,
-	// 			"receivegoods" : 89,
-	// 			"walkinsales" : 978,
-	// 			"advisorsales" :65,
-	// 			"label" : "RANDM"
-	// 		},
-	// 		{
-	// 		  "distributorId" : 3,
-	// 		  "name" : "demo1",
-	// 		  "sendgoods" : 343,
-	// 		  "receivegoods" : 89,
-	// 		  "walkinsales" : 978,
-	// 		  "advisorsales" :65,
-	// 		  "label" : "DHUHN"
-	// 	  },
-	// 	  {
-	// 		  "distributorId" : 4,
-	// 		  "name" : "demo2",
-	// 		  "sendgoods" : 343,
-	// 		  "receivegoods" : 89,
-	// 		  "walkinsales" : 978,
-	// 		  "advisorsales" :65,
-	// 		  "label" : "AMJKHJ"
-	// 	  },
-	// 	  {
-	// 		"distributorId" : 5,
-	// 		"name" : "demo2",
-	// 		"sendgoods" : 343,
-	// 		"receivegoods" : 89,
-	// 		"walkinsales" : 978,
-	// 		"advisorsales" :65,
-	// 		"label" : "AMJKHJ" 
-	// 	},
-	// 	{
-	// 	  "distributorId" : 6,
-	// 	  "name" : "demo2",
-	// 	  "sendgoods" : 343,
-	// 	  "receivegoods" : 89,
-	// 	  "walkinsales" : 978,
-	// 	  "advisorsales" :65,
-	// 	  "label" : "RANDM" 
-	//   },
-	//   {
-	// 	"distributorId" : 7,
-	// 	"name" : "demo2",
-	// 	"sendgoods" : 343,
-	// 	"receivegoods" : 89,
-	// 	"walkinsales" : 978,
-	// 	"advisorsales" :65,
-	// 	"label" : "RANDM"
-	//   },
-	//   {
-	// 	"distributorId" : 8,
-	// 	"name" : "demo2",
-	// 	"sendgoods" : 343,
-	// 	"receivegoods" : 89,
-	// 	"walkinsales" : 978,
-	// 	"advisorsales" :65,
-	// 	"label" : "GCHPU" 
-	//   },
-	// 	{
-	// 	  "distributorId" : 9,
-	// 	  "name" : "demo2",
-	// 	  "sendgoods" : 343,
-	// 	  "receivegoods" : 89,
-	// 	  "walkinsales" : 978,
-	// 	  "advisorsales" :65,
-	// 	  "label" : "GCHPU" 
-	// 	},
-	// 	{
-	// 	  "distributorId" : 10,
-	// 	  "name" : "demo2",
-	// 	  "sendgoods" : 343,
-	// 	  "receivegoods" : 89,
-	// 	  "walkinsales" : 978,
-	// 	  "advisorsales" :65,
-	// 	  "label" : "GCHPU" 
-	// 	},
-	// 	{
-	// 	  "distributorId" :11,
-	// 	  "name" : "demo2",
-	// 	  "sendgoods" : 343,
-	// 	  "receivegoods" : 89,
-	// 	  "walkinsales" : 978,
-	// 	  "advisorsales" :65,
-	// 	  "label" : "GCHPU"
-	// 	}]
-	//   );
-	//   const [scannedBrands,setscannedBrands] = useState([
-	// 	{
-	// 		"distributorId" : 1,
-	// 		"brandId" : 1,
-	// 		"brandname" : "brand1",
-	// 		"sendgoods" : 343,
-	// 		"receivegoods" : 89,
-	// 		"walkinsales" : 978,
-	// 		"advisorsales" :65 
-	// 	  },
-	// 	  {
-	// 		  "distributorId" : 1,
-	// 		  "brandId" : 2,
-	// 		  "brandname" : "arand2",
-	// 		  "sendgoods" : 343,
-	// 		  "receivegoods" : 89,
-	// 		  "walkinsales" : 978,
-	// 		  "advisorsales" :65 
-	// 		},
-	// 	  {
-	// 		"distributorId" : 2,
-	// 		"brandId" : 3,
-	// 		"brandname" : "brand3",
-	// 		"sendgoods" : 343,
-	// 		"receivegoods" : 89,
-	// 		"walkinsales" : 978,
-	// 		"advisorsales" :65 
-	// 	  },
-
-	// 	  {
-	// 		"distributorId" : 2,
-	// 		"brandId" : 4,
-	// 		"brandname" : "brand4",
-	// 		"sendgoods" : 343,
-	// 		"receivegoods" : 89,
-	// 		"walkinsales" : 978,
-	// 		"advisorsales" :65 
-	// 	  },
-	// 	  {
-	// 		  "distributorId" : 1,
-	// 		  "brandId" : 5,
-	// 		  "brandname" : "brand5",
-	// 		  "sendgoods" : 343,
-	// 		  "receivegoods" : 89,
-	// 		  "walkinsales" : 978,
-	// 		  "advisorsales" :65 
-	// 		},
-	// 		{
-	// 			"distributorId" : 1,
-	// 			"brandId" : 6,
-	// 			"brandname" : "brand6",
-	// 			"sendgoods" : 343,
-	// 			"receivegoods" : 89,
-	// 			"walkinsales" : 978,
-	// 			"advisorsales" :65 
-	// 		  },
-	//   ]);
-	  const [scannedProducts,setscannedProducts] = useState([ 
-		{
-			"distributorId" :1,
-			"brandId" : 1,
-			"productId" : 1,
-			"productname" : "product1",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65,
-			"label" : 322324,
-			"packagetype": "SKU" 
-		  },
-		  {
-			"distributorId" :1,
-			"brandId" : 1,
-			"productId" : 2,
-			"productname" : "product2",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65,
-			"label" : 45454,
-			"packagetype": "BOX" 
-		  },
-		  {
-			"distributorId" : 1,
-			"brandId" : 1,
-			"productId" : 3,
-			"productname" : "product3",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65,
-			"label" : 322324,
-			"packagetype": "SKU" 
-		  },
-		  {
-			"distributorId" :1,
-			"brandId" : 2,
-			"productId" : 4,
-			"productname" : "product4",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65,
-			"label" : 322324,
-			"packagetype": "SKU" 
-		  },
-		  {
-			"distributorId" :2,
-			"brandId" : 1,
-			"productId" : 5,
-			"productname" : "product5",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65,
-			"label" : 322324,
-			"packagetype": "BOX" 
-		  },
-		  {
-			"distributorId" :2,
-			"brandId" : 3,
-			"productId" : 6,
-			"productname" : "product6",
-			"sendgoods" : 343,
-			"receivegoods" : 89,
-			"walkinsales" : 978,
-			"advisorsales" :65, 
-			"label" : 322324,
-			"packagetype": "PALATTE"
-		  },
-	  ]);
-
+	const [productCategories, setproductCategories]             = useState([
+		"ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
+	]);
+	const [retailerPopupData,setretailerPopupData]              = useState({});
+  
 	useEffect(()=>{
-		// dispatch(getGeographicLevel1Options());
-		dispatch(getOverallScans());
-		let id = allConsolidatedScans && allConsolidatedScans[0]?.soldbyid;
-		setSoldbyid(id);
+		dispatch(getGeographicLevel1Options());
+		let data = {
+			countrycode: userData?.countrycode,
+			partnertype: (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+			isfiltered:isFiltered,
+		};
+		dispatch(getOverallScans(data));
 		getCountryList();
-		getHierarchyDatas();
-		getGeographicFields();
+		// getHierarchyDatas();
+		dispatch(getGeoLocationFields());
+		// getGeographicFields();
 	},[]);
 
 	useEffect(()=>{
-			dispatch(getScannedBrands(soldbyid));
+		let id = allConsolidatedScans && allConsolidatedScans[0]?.soldbyid;
+		let name = allConsolidatedScans && allConsolidatedScans[0]?.firstname+' '+allConsolidatedScans[0]?.lastname;
+		setSoldbyid(id);
+		if(name){
+			setselectedDistributorName(name);
+		}
+	},[allConsolidatedScans]);
+
+	useEffect(() => {
+		if(soldbyid) {
+			let productgroup = selectedFilters.productgroup;
+			dispatch(getScannedBrands(soldbyid,productgroup));
 			if(scannedBrands?.length > 0) {
 				getSelectedBrands(soldbyid);
 			}
-	},[soldbyid]);
+		} else {
+			dispatch(setselectedBrandList([]));
+			dispatch(setselectedProductList([]));
+			setselectedDistributorName('');
+		}
+	},[soldbyid])
 
-	// useEffect(()=>{
-	// 	if(scannedBrands?.length > 0) {
-	// 		getSelectedBrands(soldbyid);
-	// 	}
-	// },[])
-
-
-	const getSelectedBrands = (soldbyid : string, idx?:any, type?:string)=>{
-		let allBrands = scannedBrands?.filter((brands:any) => brands.soldbyid === soldbyid);
-		let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && (allBrands && allBrands[0]?.brandId === product.brandId) ));
-		dispatch(setselectedBrandList(allBrands));
-		console.log('brands@@', scannedBrands);
-		// setselectedBrandList(allBrands);
-		// setselectedProductList(allProducts);
-		setselectedBrandName(allBrands && allBrands[0]?.productbrand)
-
+	const getSelectedBrands = (soldbyidd : string, idx?:any, type?:string, productbrand?:any)=>{
+		// let allBrands = scannedBrands?.filter((brands:any) => brands.soldbyid === soldbyid);
+		// let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && (allBrands && allBrands[0]?.brandId === product.brandId) ));
+		setSoldbyid(soldbyidd);
 		if ( type === 'selected' ) {
 			setselectedDistributor(idx);
 			setselectedBrand(0);
 		}
 		allConsolidatedScans?.forEach((item:any,index:number)=>{
 			if( item.soldbyid === soldbyid) {
-				setselectedDistributorName(item.firstname);
+				setselectedDistributorName(item.firstname+' '+ item.lastname);
 			}
 		})
+		setselectedBrandName(productbrand);
+		dispatch(getScannedBrands(soldbyidd,selectedFilters.productgroup));
 	};
 
-	const getSelectedProducts = (soldbyid: number, productbrand:string, idx:number, type?:String) => {
-		let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && productbrand === product.productbrand));
-		if ( type === 'selected' ) {
-			setselectedBrand(idx);
-		}
-		scannedBrands?.forEach((item:any,index:number)=>{
+	useEffect(()=>{
+		setselectedBrandName(scannedBrands && scannedBrands[0]?.productbrand);
+	},[scannedBrands]);
+
+	useEffect(()=>{
+		dispatch(getScannedProducts(soldbyid, selectedBrandName));
+	},[selectedBrandName])
+
+	const getSelectedProducts = (soldby : string, productbrand:string, idx:number) => {
+		// let allProducts = scannedProducts?.filter((product:any) => (product.soldbyid === soldbyid && productbrand === product.productbrand));
+		dispatch(getScannedProducts(soldby, productbrand));
+		setselectedBrand(idx);
+		scannedBrands?.forEach((item:any,index:number) => {
 			if( item.productbrand === productbrand && item.soldbyid === soldbyid) {
-				setselectedBrandName(item.brandname);
+				setselectedBrandName(item.productbrand);
 			}
 		})
-		setselectedProductList(allProducts)
+		// setselectedProductList(allProducts)
 	}
+
 	const getCountryList = ()=> {
-		//service call
 		let res = [
 		  { value: "India", text: "India" },
 		  { value: "Malawi", text: "Malawi" },
 		];
 		setcountryList(res);
-	  }
-	const getHierarchyDatas = () => {
-		//To get all level datas
-		setIsLoader(true);
-		const { getHierarchyLevels } = apiURL;
-		let localObj: any = getLocalStorageData("userData");
-		let userData = JSON.parse(localObj);
-		let countrycode = {
-			countryCode: userData?.countrycode,
-		};
-		invokeGetAuthService(getHierarchyLevels, countrycode)
-			.then((response: any) => {
-				let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
-				setIsLoader(true);
-				setgeolevel1List(geolevel1);
-				// this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
-				// 	this.getGeographicFields();
-				// });
-			})
-			.catch((error: any) => {
-				setIsLoader(false);
-				let message = error.message;
-				Alert("warning", message);
-			});
-	}
-	const getGeographicFields = () => {
-		setIsLoader(true);
-		const { getTemplateData } = apiURL;
-		let localObj: any = getLocalStorageData("userData");
-		let userData = JSON.parse(localObj);
-		let countrycode = {
-			countryCode: userData?.countrycode,
-		};
-		invokeGetAuthService(getTemplateData, countrycode)
-			.then((response: any) => {
-				let locationData = response.body[0].locationhierarchy;
-				let levels: any = [];
-				locationData.forEach((item: any) => {
-					levelsName.push(item.name.toLowerCase());
-					let locationhierlevel = item.level;
-					let geolevels = "geolevel" + locationhierlevel;
-					levels.push(geolevels);
-				});
-				let levelsData: any = [];
-				locationData?.length > 0 &&
-					locationData.forEach((item: any, index: number) => {
-						if (index > 0) {
-							let locationhierlevel = item.level;
-							let geolevels = "geolevel" + locationhierlevel;
-							let obj = { name: item.name, geolevels };
-							levelsData.push(obj);
-						}
-					});
-					setIsLoader(false);
-					setgeographicFields(levels);
-					// getDynamicOptionFields();
-				// this.setState(
-				// 	{
-				// 		isLoader: false,
-				// 		geographicFields: levels,
-				// 		locationData: levelsData,
-				// 	},
-				// 	() => {
-				// 		this.getDynamicOptionFields();
-				// 	}
-				// );
-			})
-			.catch((error: any) => {
-				setIsLoader(false);
-				let message = error.message;
-				Alert("warning", message);
-			});
 	}
 
+	// const getGeographicFields = () => {
+	// 	setIsLoader(true);
+	// 	const { getTemplateData } = apiURL;
+	// 	let countrycode = {
+	// 		countryCode: userData?.countrycode,
+	// 	};
+	// 	invokeGetAuthService(getTemplateData, countrycode)
+	// 		.then((response: any) => {
+	// 			let locationData = response.body[0].locationhierarchy;
+	// 			let levels: any = [];
+	// 			locationData.forEach((item: any) => {
+	// 				levelsName.push(item.name.toLowerCase());
+	// 				let locationhierlevel = item.level;
+	// 				let geolevels = "geolevel" + locationhierlevel;
+	// 				levels.push(geolevels);
+	// 			});
+	// 			let levelsData: any = [];
+	// 			locationData?.length > 0 &&
+	// 				locationData.forEach((item: any, index: number) => {
+	// 					if (index > 0) {
+	// 						let locationhierlevel = item.level;
+	// 						let geolevels = "geolevel" + locationhierlevel;
+	// 						let obj = { name: item.name, geolevels };
+	// 						levelsData.push(obj);
+	// 					}
+	// 				});
+	// 				setIsLoader(false);
+	// 				setgeographicFields(levels);
+	// 				// getDynamicOptionFields();
+	// 			// this.setState(
+	// 			// 	{
+	// 			// 		isLoader: false,
+	// 			// 		geographicFields: levels,
+	// 			// 		locationData: levelsData,
+	// 			// 	},
+	// 			// 	() => {
+	// 			// 		this.getDynamicOptionFields();
+	// 			// 	}
+	// 			// );
+	// 		})
+	// 		.catch((error: any) => {
+	// 			setIsLoader(false);
+	// 			let message = error.message;
+	// 			Alert("warning", message);
+	// 		});
+	// }
+
 	useEffect(()=>{
-		// if(geographicFields.length > 0) {
-			getDynamicOptionFields();
-		// }
+		getDynamicOptionFields();
 	},[geographicFields]);
 
 	const getDynamicOptionFields = (reset?: string) => {
 		let level1List:any = geolevel1List;
 		if (!reset) {
 			let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
-			level1List.unshift(allItem);
+			level1List?.unshift(allItem);
 		}
-		setgeolevel1List(level1List);
+		dispatch(setGeolevel1Options(level1List));
+		// setgeolevel1List(level1List);
 		let level1Options: any = [];
 		geolevel1List?.forEach((item: any) => {
 			let level1Info = { label: item.name, code: item.code, value: item.name };
@@ -487,7 +256,7 @@ const ConsolidatedScans = (Props: any) => {
 		let level2Options: any = [];
 		if (userrole === "RSM" ){
 			let filteredLevel1:any = geolevel1List?.filter((list:any) => list.name === userData?.geolevel1);
-			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+			filteredLevel1 && filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
 				let level2Info = { label: item.name, value: item.name, code: item.code };
 				level2Options.push(level2Info);
 			});
@@ -528,7 +297,6 @@ const ConsolidatedScans = (Props: any) => {
 		if (type === "geolevel1") {
 			let filteredLevel1:any = geolevel1List?.filter((level1: any) => level1.name === value);
 			let level2Options: any = [];
-			console.log('filteredLevel1',filteredLevel1)
 			filteredLevel1[0]?.geolevel2.forEach((item: any) => {
 				let level1Info = { label: item.name, value: item.name, code: item.code };
 				level2Options.push(level1Info);
@@ -568,9 +336,43 @@ const ConsolidatedScans = (Props: any) => {
 			// }));
 		}
 	};
-	const handleSearch = () => {
-
+	const handleSearch = (e:any) => {
+		let searchText = e.target.value;
+		setSearchText(searchText);
+		let timeOut: any;
+		if (timeOut) {
+		  clearTimeout(timeOut);
+		}
+		setIsFiltered(true);
 	}
+
+	useEffect(()=>{
+		console.log('filterchange');
+		let { scanneddatefrom ,scanneddateto ,productgroup,geolevel1,geolevel2,scannedPeriod,lastmodifieddatefrom,lastmodifieddateto  }:any = selectedFilters;
+		if ( searchText.length >= 3 || searchText.length === 0) {
+			console.log('serachText', searchText);
+			let data = {
+				countrycode  : userData?.countrycode,
+				partnertype  : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+				isfiltered   : isFiltered,
+				searchtext   : searchText
+			};
+			let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
+			let endDate   = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
+			let filter:any = {
+				scanneddatefrom : startDate ? moment(startDate).format("YYYY-MM-DD") : null,
+				scanneddateto   : endDate ? moment(endDate).format("YYYY-MM-DD") : null,
+				productgroup    : productgroup === "ALL" ? null : productgroup,
+				geolevel1       :  geolevel2 === "ALL" ? null : userData?.geolevel1,
+				geolevel2       : geolevel2 === "ALL" ? null : geolevel2,
+				scannedPeriod   : scannedPeriod
+			}
+			data = { ...data, ...filter };
+			
+			dispatch(getOverallScans(data));
+		}
+	},[searchText, isFiltered])
+
 	const overallDownload = () => {
 
 	}
@@ -580,48 +382,64 @@ const ConsolidatedScans = (Props: any) => {
 	const productWiseDownload = () => {
 
 	}
-	const handlePartnerChange = () => {
+	const handlePartnerChange = (name: string) => {
+		setPartnerType({
+			type: name,
+		});
+		setselectedDistributor(0);
+		setselectedBrand(0);
+	};
+	
+	useEffect(()=>{
+		let { scanneddatefrom ,scanneddateto ,productgroup,geolevel1,geolevel2,scannedPeriod,lastmodifieddatefrom,lastmodifieddateto }:any = selectedFilters;
+		let data = {
+			countrycode : userData?.countrycode,
+			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+			isfiltered  : isFiltered,
+			searchText  : searchText
+		};
+		if(isFiltered) {
+			let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
+			let endDate   = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
+			let filter:any = {
+				scanneddatefrom : startDate ? moment(startDate).format("YYYY-MM-DD") : null,
+				scanneddateto   : endDate ? moment(endDate).format("YYYY-MM-DD") : null,
+				productgroup    : productgroup === "ALL" ? null : productgroup,
+				geolevel1       : geolevel1 === "ALL" ? null : geolevel1 || userData?.geolevel1,
+				geolevel2       : geolevel2 === "ALL" ? null : geolevel2,
+				scannedPeriod   : scannedPeriod
+			}
+			data = { ...data, ...filter };
+		}
+		dispatch(getOverallScans(data));
+	},[partnerType])
 
-	}
-
-	const handleFilterChange = (e: any, name: string, item: any) => {
+	const handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
 		e.stopPropagation();
-		let val: any = selectedFilters;
+		let val:any = selectedFilters;
 		let flag = false;
+		// this.state.dateErrMsg = '';
 		if (name === "type") {
-		  val[name] = e.target.value;
-		  flag = true;
-		} else if (name === "lastmodifieddatefrom") {
-		  if (e.target.value <= val.lastmodifieddateto) {
 			val[name] = e.target.value;
 			flag = true;
-		  } else {
-			setDateErrMsg("Start date should be lesser than End Date");
-		  }
-		} else if (name === "endDate") {
-		  if (e.target.value > new Date().toISOString().substr(0, 10)) {
-			setDateErrMsg("End Date should not be greater than todays date");
-		  } else if (e.target.value <= val.lastmodifieddatefrom) {
-			setDateErrMsg("End Date should be greater than Start Date");
-		  } else {
-			val[name] = e.target.value;
+		} else if (name === "scannedPeriod" && item !== "Custom") {
+			val["scanneddatefrom"] = itemList?.from;
+			val["scanneddateto"] = itemList?.to;
+			val[name] = item;
 			flag = true;
-		  }
-		} else if (name === "isregionmapped") {
-		  const a = item === "Mapped" ? true : item === "UnMapped" ? false : null;
-		  val[name] = a;
-		  flag = true;
 		} else {
-		  val[name] = item;
-		  flag = true;
+			val[name] = item;
+
+			flag = true;
 		}
 		if (flag) {
-		  setSelectedFilters((prevState) => ({
-			...selectedFilters,
-			val,
-		  }));
-		}
-	  };
+			setSelectedFilters((prevState) => ({
+			  ...selectedFilters,
+			  val,
+			}));
+		  }
+	};
+
 	  
 	// const handleGeolevelDropdown = (value: string, label: any) => {
 	// 	setSelectedFilters((prevState) => ({
@@ -631,7 +449,6 @@ const ConsolidatedScans = (Props: any) => {
 	// };
 	const handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
 		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
-		console.log({ condOptionName });
 		setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
 
 		// this.setState({
@@ -642,9 +459,6 @@ const ConsolidatedScans = (Props: any) => {
 		// 	[condOptionName]: selectedOption,
 		// });
 	};
-	console.log('geographicfields',geographicFields);
-	console.log('dynamicFields',dynamicFields);
-	console.log('levelsName',levelsName)
 	const fields = dynamicFields;
 	const locationList = fields?.map((list: any, index: number) => {
 		let nameCapitalized = levelsName[index]?.charAt(0).toUpperCase() + levelsName[index]?.slice(1);
@@ -745,6 +559,8 @@ const ConsolidatedScans = (Props: any) => {
 	};
 
 	const applyFilter = () => {
+		setIsFiltered(true);
+		// closeToggle();
 		// this.setState({ isFiltered: true, inActiveFilter: false }, () => {
 		// 	this.getScanLogs();
 		// 	this.toggleFilter();
@@ -754,15 +570,14 @@ const ConsolidatedScans = (Props: any) => {
 	const onSort = (name: string, data: any, isAsc: boolean,table:string) => {
 		let response: any = sortBy(name, data);
 		if(table === "overallScans"){
-			// setAllConsolidatedScans(response);
+			dispatch(setOverallList(response));
 		} else if (table === "scannedBrands") {
-			// dispatch(setselectedBrandList(response));
-			// setselectedBrandList(response);
+			dispatch(setselectedBrandList(response));
 		} else if(table === "scannedProducts") {
-			setselectedProductList(response)
+			dispatch(setselectedProductList(response));
 		}
 		setIsAsc(!isAsc);
-	  };
+	};
 
 	const handleSort = (
 		e: any,
@@ -788,10 +603,46 @@ const ConsolidatedScans = (Props: any) => {
 		}
 		  onSort(columnname, allConsolidatedScans, isAsc,table);
 	};
-  
+
+	const handleUpdateRetailer = (value: object) => {
+		setretailerPopupData(value)
+	}
+	const resetFilter = (e: any) => {
+		// let conditionIsFilter = searchText ? true : false;
+		const options:any = { value: "ALL", label: "ALL" };
+		getDynamicOptionFields("reset");
+		setSelectedFilters({
+			productgroup: "ALL",
+			geolevel1: "ALL",
+			geolevel2: "ALL",
+			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+			lastmodifieddateto: new Date(),
+			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
+			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
+			scannedPeriod: "",
+		});
+		setDateErrMsg("");
+		setIsFiltered(false);
+		setIsResetFilter(true);
+		setSearchText("")
+	  };
+
+	  useEffect(()=>{
+		  if(!isFiltered) {
+			let data = {
+				countrycode: userData?.countrycode,
+				partnertype: (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+				isfiltered:isFiltered,
+			};
+			dispatch(getOverallScans(data));
+		  }
+	},[isResetFilter])
+
+
 
 	return (
         <AUX>
+			{(isLoader || isReduxLoader) && <Loader />}
             <div className="consolidatedSales-container">
                 <div className="row">
                     <div className="filterSection col-sm-12">
@@ -804,10 +655,13 @@ const ConsolidatedScans = (Props: any) => {
 							downloadPopup={true}
                             isDownload={true}
                             handlePartnerChange={handlePartnerChange}
-                            toolTipText="Search applicable for User Name, Store Name and Owner Name"
+                            toolTipText="Search applicable for Partner Name/ID"
 							overallDownload={overallDownload}
 							brandWiseDownload={brandWiseDownload}
 							productWiseDownload={productWiseDownload}
+							onClose={(node: any) => {
+								closeToggle = node;
+							}}
 					    >
 						<label className="font-weight-bold pt-2">Product Group</label>
 							<div className="form-group pt-1">
@@ -854,7 +708,7 @@ const ConsolidatedScans = (Props: any) => {
 														: "btn rounded-pill boxColor"
 												}
 												size="sm"
-												onClick={(e) => handleFilterChange(e, "scannedPeriod", item.label)}
+												onClick={(e) => handleFilterChange(e, "scannedPeriod", item.label, item)}
 												style={{ marginBottom: "5px" }}
 											>
 												{item.label}
@@ -908,7 +762,7 @@ const ConsolidatedScans = (Props: any) => {
 								<div className="filterFooter pt-3">
 									<button
 										className="cus-btn-scanlog-filter reset"
-										// onClick={(e) => this.resetFilter(e)}
+										onClick={(e) => resetFilter(e)}
 										data-testid="reset-all"
 									>
 										Reset All
@@ -931,14 +785,14 @@ const ConsolidatedScans = (Props: any) => {
                 <div className="row" style={{    marginTop: '-5px'}}>
                         <div className = "col-sm-6">
                             <OverallScans allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
-							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} />
+							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />
                         </div>
                         <div className = "col-sm-6">
                             <div className="row">
                                 <ProductBrandList selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
                             </div>
                             <div className="row">
-                                <ProductList selectedProductList = {selectedProductList} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
+                                <ProductList selectedProductList = {scannedProducts} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
                             </div>
                         </div>
                 </div>

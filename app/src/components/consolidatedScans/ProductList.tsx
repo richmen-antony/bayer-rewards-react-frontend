@@ -54,21 +54,21 @@ export const ProductList = ({
               <tbody>
                 {selectedProductList?.length > 0 ? (
                   selectedProductList?.map((item: any, i: number) => {
-                    totalReceivedGoods = totalReceivedGoods + (item.sendgoods);
-                    totalSendGoods = totalSendGoods + (item.receivegoods);
-                    totalWalkInSales = totalWalkInSales + (item.walkinsales);
-                    totalAdvisorSales = totalAdvisorSales + (item.advisorsales);
+                    totalReceivedGoods = totalReceivedGoods + (item.RECEIVE_GOOD);
+                    totalSendGoods = totalSendGoods + (item.SEND_GOOD);
+                    totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
+                    totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
                     return (
                       <tr
                         style={{ cursor: "pointer" }}
                         key={i}
                       >
                                 <td>{_.startCase(_.toLower(item.productname))}
-                                <br /><label style={{fontSize:'10px'}}>{item.label}-{item.packagetype}</label></td>
-                                <td>{item.sendgoods}</td>
-                                <td>{item.receivegoods}</td>
-                                <td>{item.walkinsales}</td>
-                                <td>{item.advisorsales}</td>
+                                <br /><label style={{fontSize:'10px'}}>{item.productid}-{item.pkglevel}</label></td>
+                                <td>{item.RECEIVE_GOOD}</td>
+                                <td>{item.SEND_GOOD}</td>
+                                <td>{item.S2F_WALKIN}</td>
+                                <td>{item.S2F_ADVISOR}</td>
                         
                       </tr>
                     );
@@ -83,13 +83,13 @@ export const ProductList = ({
               </tbody>
             </table>
           </div>
-          {selectedProductList.length > 0 &&
+          {selectedProductList?.length > 0 &&
           <div>
                 <table  className="table sum-total">
                   <tbody>
                     <tr>
                     <td>
-                        <p className="total">Total({selectedProductList.length})</p>
+                        <p className="total">Total({selectedProductList?.length})</p>
                       </td>
                       <td className="text-center">
                         <span className="">
