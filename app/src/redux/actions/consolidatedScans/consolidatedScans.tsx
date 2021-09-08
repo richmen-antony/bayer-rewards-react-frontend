@@ -53,7 +53,6 @@ export const getScannedBrands = (soldbyid:string,isfiltered:boolean,filteredData
         isfiltered : isfiltered,
         ...filteredDatas
       };
-console.log('vidhu@@@', data)
       invokeGetAuthService(getScannedBrands, data)
         .then(async (response: any) => {
             await dispatch(Success(response));
