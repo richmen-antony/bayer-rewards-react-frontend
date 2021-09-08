@@ -137,7 +137,7 @@ class Pagination extends Component<Props, States> {
 									padding: "0",
 								}}
 							>
-								<div className="col-sm-3 pl-0">
+								<div className="col-sm-4 pl-0">
 									Total {totalLabel || "Users"}: {totalData || 0}
 								</div>
 

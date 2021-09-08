@@ -234,7 +234,7 @@ class SendGoods extends Component<Props, States> {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			scantype: selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
-			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.role ==="ADMIN" ? null:this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -245,7 +245,7 @@ class SendGoods extends Component<Props, States> {
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || this.state.loggedUserInfo?.geolevel1;
+			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
 			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
@@ -399,7 +399,7 @@ class SendGoods extends Component<Props, States> {
 			searchtext: this.state.searchText || null,
 			scantype: this.state.selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
-			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.role ==="ADMIN" ? null:this.state.loggedUserInfo?.geolevel1,
 		};
 		if (this.state.isFiltered) {
 			let filter = { ...this.state.selectedFilters };
@@ -410,7 +410,7 @@ class SendGoods extends Component<Props, States> {
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || this.state.loggedUserInfo?.geolevel1;
+			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
 			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
@@ -493,7 +493,6 @@ class SendGoods extends Component<Props, States> {
 	filterScans = (filterValue: any) => {
 		let name = this.state.condFilterScan === "customer" ? "soldtoid" : "soldbyid";
 		const {retailerOptions,distributorOptions,selectedCustomerOptions} =this.state;
-		console.log({selectedCustomerOptions})
 		let options=selectedCustomerOptions ? {...selectedCustomerOptions} :{label:"ALL",value:"ALL"};
 		let filters = { ...this.state.selectedFilters };
 		let searchText = this.state.searchText;
@@ -739,6 +738,7 @@ class SendGoods extends Component<Props, States> {
 
 	getBatchList = () => {
 		const { getBatchList } = apiURL;
+
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			soldbygeolevel1 : this.state.loggedUserInfo?.geolevel1,
@@ -809,6 +809,7 @@ class SendGoods extends Component<Props, States> {
 			activeSortKeyIcon,
 			selectedBatchOptions,
 			selectedCustomerOptions,
+			loggedUserInfo
 		} = this.state;
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
@@ -1065,7 +1066,8 @@ class SendGoods extends Component<Props, States> {
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
-											{/* <th
+											{loggedUserInfo?.role==="ADMIN" &&
+											 <th
 												style={{ width: "10%" }}
 												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
 											>
@@ -1073,9 +1075,10 @@ class SendGoods extends Component<Props, States> {
 												{activeSortKeyIcon === "soldbygeolevel1" ? (
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
-											</th> */}
+											</th> 
+										}
 											<th
-												style={{ width: this.state.selectedScanType === "SG - D2R" ? "10%" : "16%" }}
+												style={{ width: loggedUserInfo?.role==="ADMIN" ? "10%" : "16%" }}
 												onClick={(e) => this.handleSort(e, "expirydate", allScanLogs, isAsc)}
 											>
 												EXPIRY DATE
@@ -1161,7 +1164,7 @@ class SendGoods extends Component<Props, States> {
 																<label>{value.soldbyid}</label>
 															</div>
 														</td>
-														{/* <td>{value.soldbygeolevel1}</td> */}
+														{loggedUserInfo?.role==="ADMIN" && <td>{value.soldbygeolevel1}</td> }
 														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 													</tr>
 												);

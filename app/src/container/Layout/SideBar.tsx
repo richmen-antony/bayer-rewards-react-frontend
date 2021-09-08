@@ -203,27 +203,12 @@ class Sidebar extends Component<Props, States> {
                     </li>
                   </>
                 )}
-
+                 
                 {this.state.userRole === "RSM" && (
                   <>
                     <li className="menu-title">LOGS</li>
-                    <li className="d-flex">
-                      <span
-                        className={
-                          window.location.pathname.indexOf("scanlogs") > -1
-                            ? "waves-effect active"
-                            : "waves-effect"
-                        }
-                      ></span>
-                      <Link
-                        to="/scanlogs"
-                        onClick={() => this.setActiveTab("scanlogs")}
-                      >
-                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                        <span> Scan Logs </span>
-                      </Link>
-                    </li>
-                    <li className="d-flex">
+                    
+                    {/* <li className="d-flex">
                       <span
                         className={
                           window.location.pathname.indexOf("consolidatedScans") > -1
@@ -238,10 +223,26 @@ class Sidebar extends Component<Props, States> {
                         <img src={scanLogsIcon} alt="Consolidated Scans" width="16" />{" "}
                         <span> Consolidated Sales </span>
                       </Link>
-                    </li>{" "}
+                    </li>{" "} */}
                   </>
                 )}
-
+                  {this.state.userRole === "RSM" || this.state.userRole === "ADMIN" ?<li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("scanlogs") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/scanlogs"
+                        onClick={() => this.setActiveTab("scanlogs")}
+                      >
+                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
+                        <span> Scan Logs </span>
+                      </Link>
+                    </li> :null
+                        }
                 {/* <li className="menu-title">HELP</li>
                 <li className="d-flex">
                   <span
