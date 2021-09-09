@@ -27,7 +27,8 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import {
 	getGeographicLevel1Options,
 	getGeoLocationFields,
-	setGeolevel1Options
+	setGeolevel1Options,
+	downloadScansCsvFile
   } from '../../redux/actions/common/common';
   import {
 	getOverallScans,
@@ -347,15 +348,21 @@ const ConsolidatedScans = (Props: any) => {
 		setIsFiltered(true);
 	}
 
-	const overallDownload = () => {
-
+	const download = (type:string) => {
+		let data = {
+			countrycode : userData?.countrycode,
+			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+			downloadtype  : type,
+			isfiltered : isFiltered
+		};
+		let filteredDatas = {};
+		if(isFiltered) {
+			filteredDatas = getFilteredDatas(filteredDatas);
+			data = { ...data, ...filteredDatas };
+		}
+		dispatch(downloadScansCsvFile(data, type));
 	}
-	const brandWiseDownload = () => {
 
-	}
-	const productWiseDownload = () => {
-
-	}
 	const handlePartnerChange = (name: string) => {
 		setPartnerType({
 			type: name,
@@ -578,9 +585,7 @@ const ConsolidatedScans = (Props: any) => {
                             isDownload={true}
                             handlePartnerChange={handlePartnerChange}
                             toolTipText="Search applicable for Partner Name/ID"
-							overallDownload={overallDownload}
-							brandWiseDownload={brandWiseDownload}
-							productWiseDownload={productWiseDownload}
+							download={download}
 							onClose={(node: any) => {
 								closeToggle = node;
 							}}

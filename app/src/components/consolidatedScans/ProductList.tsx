@@ -28,12 +28,13 @@ export const ProductList = ({
     <AUX>
         <div className="">
           <label className="font-weight-bold scanlabel">product wise scans - {_.startCase(_.toLower(brandName))}</label>
-          <div className="consolidatedSales-table scannedProducts"  style={{height: '22vh', overflowY: 'auto'}}>
+          <div className="consolidatedSales-table scannedProducts"  style={{height: '24vh', overflowY: 'auto'}}>
             <table className="table">
               <thead>
                 <tr>
                 <th 
                      onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc,"scannedProducts")}
+                     style={{width:'20%'}}
                       key="productname">PRODUCT
                       {
                            (tableCellIndex === 0 && tableName === 'scannedProducts') ? (
@@ -85,7 +86,7 @@ export const ProductList = ({
           </div>
           {selectedProductList?.length > 0 &&
           <div className="consolidated-sum-total">
-                <table style={{ width: '100%', marginTop: "10px"}}>
+                <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
                     <tr>
                     <td style={{ width: "20%", paddingLeft: "10px" }}> 

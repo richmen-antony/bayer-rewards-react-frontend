@@ -830,7 +830,7 @@ class SendGoods extends Component<Props, States> {
 									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
 								value={list.value}
-								isDisabled = {list.name === "geolevel1" }
+								// isDisabled = {list.name === "geolevel1" }
 								id="geolevel-test"
 								dataTestId="geolevel-test"
 							/>

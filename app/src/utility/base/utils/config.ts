@@ -40,8 +40,9 @@ export const apiURL = {
     featureToggle:"feature/getFeatures",
     updateFeatureToggle:"feature/EditFeatures",
     consolidatedScans : {
-        getOverallScans : "scangoods/report/level1",
+        getOverallScans  : "scangoods/report/level1",
         getScannedBrands : "scangoods/report/level2",
-        getScannedProducts : "scangoods/report/level3"
+        getScannedProducts : "scangoods/report/level3",
+        downloadScans : "scangoods/report/download"
     }
 }

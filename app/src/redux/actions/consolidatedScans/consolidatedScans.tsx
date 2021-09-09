@@ -7,6 +7,7 @@ import {
   LOADING_REQUEST, 
   GET_OVERALL_CONSOLIDATED_SCANS_SUCCESS,
   GET_OVERALL_CONSOLIDATED_SCANS_ERROR,
+  SET_OVERALL_SCANS,
   GET_BRANDWISE_SCANS_SUCCESS,
   GET_BRANDWISE_SCANS_ERROR,
   SET_SELECTED_BRANDS,
@@ -38,7 +39,7 @@ export const getOverallScans = (data:{}) => {
 
 export const setOverallList = (allScans:any) => {
   return async(dispatch: Dispatch<AnyAction>) => {
-      dispatch({ type : SET_SELECTED_BRANDS, allScans } );
+      dispatch({ type : SET_OVERALL_SCANS, allScans } );
   }
 }
 

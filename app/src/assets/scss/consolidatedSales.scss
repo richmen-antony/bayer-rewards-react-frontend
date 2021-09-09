@@ -196,28 +196,11 @@
     }
   }
 }
-.scannedbrands, .scannedProducts{
-  table {
-    thead {
-      tr {
-        th {
-          padding: 10px 16px;
-        }
-      }
-    }
-  }
+.consolidatedSales-table.scannedProducts > table.table > thead > tr > th {
+  padding: 10px;
+
 }
-.scannedProducts{
-  table {
-    thead {
-      tr {
-        th {
-          padding: 10px 15px;
-        }
-      }
-    }
-  }
-}
+
 .scanlabel {
   font-size: 12px;
   color: black;
@@ -371,7 +354,7 @@ cus-btn-scanlog-filter[disabled] {
 .consolidated-sum-total {
   border: 2px solid #e9ecef;
   border-radius : 15px;
-  height: 47px,
+  height: 35px,
 }
 .popup-partner {
   display: flex;
@@ -455,6 +438,11 @@ cus-btn-scanlog-filter[disabled] {
 //   }
 }
 
+.scannedbrands > table.table > tbody > tr  > td:first-child, .scannedProducts > table.table > tbody > tr  > td:first-child {
+  width : 15%;
+  word-break : break-all;
+}
+
 @media only screen and (min-width: 1400px) and (max-width: 1920px) {
   /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
   .dropdown-menu {
@@ -498,4 +486,14 @@ cus-btn-scanlog-filter[disabled] {
   .consolidatedSales-container {
     height: 80vh;
   }
+  .consolidatedSales-table {
+    height: 71vh !important;
+  }
+  .consolidatedSales-table.scannedbrands {
+    height: 35vh !important;
+  }
+  .consolidatedSales-table.scannedProducts {
+    height: 33vh !important;
+  }
 }
+

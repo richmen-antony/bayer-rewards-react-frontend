@@ -247,7 +247,7 @@ export const OverallScans = ({
               </div>
               {allConsolidatedScans?.length > 0 &&
               <div className ="consolidated-sum-total">
-                <table style={{ width: '100%', marginTop: "10px"}}>
+                <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
                     <tr>
                     <td style={{ width: "20%", paddingLeft: "10px" }}> 
@@ -320,10 +320,11 @@ export const OverallScans = ({
 										{geoLevelsName?.length > 0 &&
 											geoLevelsName?.map((location: any, locationIndex: number) => {
                         let geolevels = 'geolevel'+locationIndex;
+                        let nameCapitalized = (location === 'add' || location === 'epa') ? _.toUpper(location) :  _.startCase(_.toLower(location));
 												return (
-                          (locationIndex > 0 && locationIndex < 5 && locationIndex !== 2) && (
+                          (locationIndex > 0 && locationIndex < 6) && (
 													<div className="content-list" key={locationIndex}>
-														<label>{_.startCase(_.toLower(location))}</label>
+														<label>{nameCapitalized}</label>
 														<p>{retailerPopupData[geolevels]}</p>
 													</div>
                           )

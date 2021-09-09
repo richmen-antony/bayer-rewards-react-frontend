@@ -37,7 +37,7 @@ export default function ReactSelect({
 
   return (
     <div className="react-select">
-        <label>{label}</label>
+        <label className="font-weight-bold">{label}</label>
       <Select
         onChange={handleChange}
         options={options}

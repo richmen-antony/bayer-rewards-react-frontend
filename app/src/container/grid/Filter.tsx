@@ -6,7 +6,7 @@ import { CustomDownload } from "../../utility/widgets/button/download";
 import "../../assets/scss/filter.scss";
 interface Props {
 	handleSearch: (e: any) => any;
-	download?: () => any;
+	download?: Function;
 	downloadPopup?: Boolean;
 	searchText: string;
 	children: any;
@@ -21,9 +21,6 @@ interface Props {
 	buttonChange?: any;
 	condSelectedButton?: string;
 	onClose ?:any;
-	overallDownload?: () => any;
-	brandWiseDownload?: () => any;
-	productWiseDownload?: () => any;
 }
 
 /**
@@ -132,7 +129,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 							</DropdownMenu>
 						</Dropdown>
 					</div>
-					{isDownload && <CustomDownload download={download} downloadPopup={downloadPopup}/>}
+					{isDownload && <CustomDownload download={download} downloadPopup={downloadPopup} />}
 				</div>
 			</div>
 		</div>

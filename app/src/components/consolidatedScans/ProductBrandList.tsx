@@ -38,6 +38,7 @@ const ProductBrandList = ({
                   <tr>
                   <th 
                      onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc,"scannedBrands")}
+                     style={{width:'15%'}}
                       key="productbrand">BRAND
                       {
                          (tableCellIndex === 0 && tableName === 'scannedBrands') ? (
@@ -88,7 +89,7 @@ const ProductBrandList = ({
             </div>
             {selectedBrandList?.length > 0 &&
             <div className="consolidated-sum-total">
-                <table style={{ width: '100%', marginTop: "10px"}}>
+                <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
                     <tr>
                     <td style={{ width: "20%", paddingLeft: "10px" }}> 

@@ -5,7 +5,7 @@ import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import "../../../assets/scss/download.scss";
 
 function CustomDownload(props: any) {
-	const {download, downloadPopup,overallDownload,brandWiseDownload,productWiseDownload } = props;
+	const {download, downloadPopup } = props;
 	const [dropdownOpenDownload,settoggleDownload]= useState<boolean>(false);
 
 	const toggleDownload =()=>{
@@ -51,17 +51,17 @@ function CustomDownload(props: any) {
 					<DropdownMenu right>
 						<div className="p-3 dropdownMenu">
 							<div>
-								<div className="contents" onClick = {overallDownload}>
+								<div className="contents" onClick = {()=>download('overall')}>
 									<i class="fa fa-download" aria-hidden="true"></i>
 									<span className="dropdownContent">Overall Scans</span>
 								</div>
 								<hr />
-								<div className="contents" onClick = {brandWiseDownload}>
+								<div className="contents" onClick = {()=>download('brand')}>
 									<i class="fa fa-download" aria-hidden="true"></i>
-									<span className="dropdownContent">Consolidated Scans</span>
+									<span className="dropdownContent">Brand Wise Scans</span>
 								</div>
 								<hr />
-								<div className="contents" onClick = {productWiseDownload}>
+								<div className="contents" onClick = {()=>download('product')}>
 									<i class="fa fa-download" aria-hidden="true"></i>
 									<span className="dropdownContent">Product Wise Scans</span>
 								</div>

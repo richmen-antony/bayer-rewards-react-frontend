@@ -4,7 +4,7 @@ import {
     SET_GEOLOCATION_LEVEL1_OPTIONS,
     LOADING_REQUEST,
     GET_GEOLOCATION_FIELDS_SUCCESS,
-    GET_GEOLOCATION_FIELDS_ERROR
+    GET_GEOLOCATION_FIELDS_ERROR,
 } from '../actionTypes/commonTypes';
 
 const INITIAL_STATE: any = {
@@ -20,7 +20,6 @@ const INITIAL_STATE: any = {
 };
 
 function commonReducer(state = {INITIAL_STATE}, action: any): any {
-    console.log('geoLevel1Listreducer', state)
     switch (action.type) {
         case LOADING_REQUEST: {
             return {
