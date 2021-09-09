@@ -171,7 +171,7 @@ export const OverallScans = ({
                       </span>
                     </td>
                     <td className="text-center">
-                      <span className="" style={{marginLeft:'8px !important'}}>
+                      <span className="" style={{marginLeft:'8px'}}>
                         {totalSendGoods}
                       </span>
                     </td>

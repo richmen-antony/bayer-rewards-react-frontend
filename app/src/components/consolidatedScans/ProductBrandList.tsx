@@ -101,7 +101,7 @@ const ProductBrandList = ({
                         </span>
                       </td>
                       <td className="text-center">
-                        <span style={{marginLeft:'8px !important'}}>
+                        <span style={{marginLeft:'8px'}}>
                           {totalSendGoods}
                         </span>
                       </td>
