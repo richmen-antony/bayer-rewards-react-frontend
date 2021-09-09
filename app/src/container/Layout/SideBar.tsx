@@ -168,6 +168,22 @@ class Sidebar extends Component<Props, States> {
                         <span> Order History </span>
                       </Link>
                     </li>
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("scanlogs") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/scanlogs"
+                        onClick={() => this.setActiveTab("scanlogs")}
+                      >
+                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
+                        <span> Scan Logs </span>
+                      </Link>
+                    </li>
                     {/* <li className="d-flex">
                                                 <span className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'}></span>
                                                 <Link to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
@@ -205,8 +221,10 @@ class Sidebar extends Component<Props, States> {
                   </>
                 )}
                  
-
-                  {this.state.userRole === "RSM" || this.state.userRole === "ADMIN" ?<li className="d-flex">
+                {this.state.userRole === "RSM" && (
+                  <>
+                    <li className="menu-title">LOGS</li>
+                    <li className="d-flex">
                       <span
                         className={
                           window.location.pathname.indexOf("scanlogs") > -1
@@ -221,11 +239,7 @@ class Sidebar extends Component<Props, States> {
                         <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
                         <span> Scan Logs </span>
                       </Link>
-                    </li> :null
-                        }
-                                        {this.state.userRole === "RSM" && (
-                  <>
-                    <li className="menu-title">LOGS</li>
+                    </li>
                     
                     <li className="d-flex">
                       <span
@@ -242,9 +256,10 @@ class Sidebar extends Component<Props, States> {
                         <img src={consolidatescans} alt="Consolidated Scans" width="16" />{" "}
                         <span> Consolidated Sales </span>
                       </Link>
-                    </li>{" "}
+                    </li>
                   </>
                 )}
+                  
                 {/* <li className="menu-title">HELP</li>
                 <li className="d-flex">
                   <span

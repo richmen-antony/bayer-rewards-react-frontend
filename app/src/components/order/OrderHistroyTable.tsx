@@ -383,7 +383,7 @@ class OrderHistory extends Component<Props, States> {
 		invokeGetAuthService(downloadAdminOrderList, data)
 			.then((response) => {
 				const data = response;
-				downloadCsvFile(data, "order-history.csv");
+				downloadCsvFile(data, "ScanLog_Order_History");
 			})
 			.catch((error) => {});
 	};

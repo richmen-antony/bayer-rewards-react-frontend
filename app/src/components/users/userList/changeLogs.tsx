@@ -129,7 +129,7 @@ class ChangeLogs extends Component<Props, States> {
     invokeGetAuthService(downloadChanglogs, data)
       .then((response) => {
         const data = response;
-        downloadCsvFile(data, "changelogs.csv");
+        downloadCsvFile(data, "User_ChangeLogs");
       })
       .catch((error) => {
         console.log({ error });
