@@ -827,6 +827,7 @@ class SellFarmer extends Component<Props, States> {
 								onClose={(node: any) => {
 									this.closeToggle = node;
 								}}
+								isDownloadHelpText={selectedSalesType === "WALKIN_SALES"? false:true}
 							>
 								{selectedSalesType === "WALKIN_SALES" ? (
 									<React.Fragment>

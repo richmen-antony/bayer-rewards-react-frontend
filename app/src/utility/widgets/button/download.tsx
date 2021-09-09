@@ -5,7 +5,7 @@ import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import "../../../assets/scss/download.scss";
 
 function CustomDownload(props: any) {
-	const {download, downloadPopup } = props;
+	const {download, downloadPopup,overallDownload,brandWiseDownload,productWiseDownload ,isHelpText} = props;
 	const [dropdownOpenDownload,settoggleDownload]= useState<boolean>(false);
 
 	const toggleDownload =()=>{
@@ -70,7 +70,8 @@ function CustomDownload(props: any) {
 					</DropdownMenu>
 				</Dropdown>
 			</div> }
-			{/* <i
+			{isHelpText&&
+			<i
 				className="fa fa-info-circle"
 				style={{
 					fontSize: "16px",
@@ -79,7 +80,8 @@ function CustomDownload(props: any) {
 					marginTop: "-20px",
 				}}
 				title={"Full extract"}
-			></i> */}
+			></i>
+}
 		</Fragment>
 	);
 }

@@ -254,11 +254,13 @@ class ChangeLogs extends Component<Props, States> {
                 </thead>
                 <tbody>
                 {allChangeLogs.length > 0 ? (
-                  allChangeLogs.map((list: any, i: number) => (
-                    <AUX key={i}>
+                  allChangeLogs.map((list: any, i: number) => {
+                    let nameCapitalized = list.fieldname === 'ADD' || list.fieldname === 'EPA' ? list.fieldname: _.startCase(_.toLower(list.fieldname));
+                    return (
+                  <AUX key={i}>
                       <tr>
                         <td>{list.userid}</td>
-                        <td>{_.startCase(_.toLower(list.fieldname))} </td>
+                        <td>{nameCapitalized} </td>
                         <td>{list.oldvalue} </td>
                         <td>{list.newvalue} </td>
                         <td>
@@ -269,7 +271,8 @@ class ChangeLogs extends Component<Props, States> {
                         </td>
                       </tr>
                     </AUX>
-                  ))
+                     )}
+                  )
                   ) : (
                     <tr style={{ height: "250px" }}>
                       <td colSpan={10} className="no-records">
