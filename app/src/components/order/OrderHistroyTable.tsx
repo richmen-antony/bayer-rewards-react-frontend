@@ -670,7 +670,7 @@ class OrderHistory extends Component<Props, States> {
 												<span style={{ padding: "15px" }}>Download</span>
 											</button>
 										</div>
-										<i
+										{/* <i
 											className="fa fa-info-circle"
 											style={{
 												fontSize: "16px",
@@ -679,7 +679,7 @@ class OrderHistory extends Component<Props, States> {
 												marginTop: "-20px",
 											}}
 											title={"Full extract"}
-										></i>
+										></i> */}
 									</div>
 								</div>
 							</div>

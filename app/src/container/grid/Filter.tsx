@@ -21,6 +21,7 @@ interface Props {
 	buttonChange?: any;
 	condSelectedButton?: string;
 	onClose ?:any;
+	isDownloadHelpText?:boolean;
 }
 
 /**
@@ -50,7 +51,8 @@ const Filter: React.FC<Props> = (props: Props) => {
 		buttonChange,
 		condSelectedButton,
 		onClose,
-		downloadPopup
+		downloadPopup,
+		isDownloadHelpText
 	} = props;
 
 	useEffect(() => { 
@@ -129,7 +131,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 							</DropdownMenu>
 						</Dropdown>
 					</div>
-					{isDownload && <CustomDownload download={download} downloadPopup={downloadPopup} />}
+					{isDownload && <CustomDownload download={download} downloadPopup={downloadPopup} isHelpText={isDownloadHelpText}/>}
 				</div>
 			</div>
 		</div>
