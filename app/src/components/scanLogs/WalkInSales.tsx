@@ -235,7 +235,7 @@ class WalkInSales extends PureComponent<Props, States> {
 		invokeGetAuthService(downloadAllScanLogs, data)
 			.then((response) => {
 				const data = response;
-				downloadCsvFile(data, "Walk_in_Sales.csv");
+				downloadCsvFile(data, "ScanLog_Walk_In_Sales");
 			})
 			.catch((error) => {
 				ErrorMsg(error);

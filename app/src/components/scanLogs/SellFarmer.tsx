@@ -345,9 +345,10 @@ class SellFarmer extends Component<Props, States> {
 				dateErrMsg: "",
 				lastUpdatedDateErr: "",
 				ScannedDateErrMsg: "",
+				searchText:""
 			},
 			() => {
-				// this.toggleFilter();
+				this.closeToggle();
 				this.callChildAPI();
 				if (selectedSalesType === "ADVISOR_SALES") this.getRetailerList();
 			}
@@ -829,7 +830,7 @@ class SellFarmer extends Component<Props, States> {
 							>
 								{selectedSalesType === "WALKIN_SALES" ? (
 									<React.Fragment>
-										<label className="pt-2">Product Group</label>
+										<label className="font-weight-bold pt-2">Product Group</label>
 										<div className="form-group pt-1">
 											{this.state.productCategories.map((item: any, i: number) => (
 												<span className="mr-2 chipLabel" key={i}>
@@ -874,7 +875,7 @@ class SellFarmer extends Component<Props, States> {
 												</div>
 											</div>
 										</div>
-										<label className="pt-2"> Scan Status</label>
+										<label className="font-weight-bold pt-2"> Scan Status</label>
 										<div className="pt-1">
 											{this.state.status.map((item: any, statusIndex: number) => (
 												<span className="mr-2" key={statusIndex}>
@@ -892,7 +893,7 @@ class SellFarmer extends Component<Props, States> {
 												</span>
 											))}
 										</div>
-										<label className="pt-2">Scanned Period</label>
+										<label className="font-weight-bold pt-2">Scanned Period</label>
 										<div className="pt-1">
 											{this.state.scannedPeriodsList.map((item: any, i: number) => (
 												<span className="mr-2 chipLabel" key={i}>
@@ -913,10 +914,10 @@ class SellFarmer extends Component<Props, States> {
 										</div>
 										{selectedWalkInFilters.scannedPeriod === "Custom" && (
 											<React.Fragment>
-												<label className="pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+												<label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
 													From
 												</label>
-												<label className="pt-2" htmlFor="order-todate">
+												<label className="font-weight-bold pt-2" htmlFor="order-todate">
 													To
 												</label>
 												<div className="d-flex">

@@ -348,7 +348,7 @@ class UserList extends Component<Props, States> {
     invokeGetAuthService(downloadURL, data)
       .then((response) => {
         const data = response;
-        downloadCsvFile(data, `${downloadName}.csv`);
+        downloadCsvFile(data, downloadName);
       })
       .catch((error) => {
         this.setState({ isLoader: false });

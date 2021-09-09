@@ -373,9 +373,11 @@ class SendGoods extends Component<Props, States> {
 				selectedCustomerOptions: options,
 				selectedGeolevel1Options: options,
 				selectedGeolevel2Options: options,
+				searchText:""
 			},
 			() => {
 				this.getScanLogs();
+				this.closeToggle();
 				// this.getRetailerList();
 			}
 		);
@@ -426,7 +428,7 @@ class SendGoods extends Component<Props, States> {
 		invokeGetAuthService(downloadAllScanLogs, data)
 			.then((response) => {
 				const data = response;
-				downloadCsvFile(data, "scanlogs.csv");
+				downloadCsvFile(data, `ScanLog_${this.state.selectedScanType}`);
 			})
 			.catch((error) => {
 				ErrorMsg(error);
@@ -876,7 +878,7 @@ class SendGoods extends Component<Props, States> {
 										dataTestId="retailer-test"
 									/>
 								</div>
-								<label className="pt-2">Product Group</label>
+								<label className="font-weight-bold pt-2">Product Group</label>
 								<div className="form-group pt-1">
 									{this.state.productCategories.map((item: any, i: number) => (
 										<span className="mr-2 chipLabel" key={i}>
@@ -916,7 +918,7 @@ class SendGoods extends Component<Props, States> {
 										</div>
 									</div>
 								</div>
-								<label className="pt-2"> Scan Status</label>
+								<label className="font-weight-bold pt-2"> Scan Status</label>
 								<div className="pt-1">
 									{this.state.status.map((item: any, statusIndex: number) => (
 										<span className="mr-2" key={statusIndex}>
@@ -932,7 +934,7 @@ class SendGoods extends Component<Props, States> {
 										</span>
 									))}
 								</div>
-								<label className="pt-2">Scanned Period</label>
+								<label className="font-weight-bold pt-2">Scanned Period</label>
 								<div className="pt-1">
 									{this.state.scannedPeriodsList.map((item: any, i: number) => (
 										<span className="mr-2 chipLabel" key={i}>
@@ -953,10 +955,10 @@ class SendGoods extends Component<Props, States> {
 								</div>
 								{selectedFilters.scannedPeriod === "Custom" && (
 									<React.Fragment>
-										<label className="pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+										<label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
 											From
 										</label>
-										<label className="pt-2" htmlFor="order-todate">
+										<label className="font-weight-bold pt-2" htmlFor="order-todate">
 											To
 										</label>
 										<div className="d-flex">

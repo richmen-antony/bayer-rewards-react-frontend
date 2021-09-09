@@ -51,12 +51,13 @@ export const downloadCsvFile = (csv: any, filename: string) => {
 
     // CSV FILE
     csvFile = new Blob([csv], { type: "text/csv" });
+    let DateAndTime =moment(new Date()).format('MM_DD_YYYY_HH_mm_ss');
 
     // Download link
     downloadLink = document.createElement("a");
 
     // File name
-    downloadLink.download = filename;
+    downloadLink.download = `${filename+ "_" + DateAndTime}.csv`;
 
     // We have to create a link to the file
     downloadLink.href = window.URL.createObjectURL(csvFile);

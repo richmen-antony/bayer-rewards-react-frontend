@@ -22,7 +22,8 @@ type States = {
 	isLoader: boolean;
 	userRole: any;
 	adminUsersCount: number;
-	adminOrderHistoryCount:number;
+	adminOrderHistoryCount: number;
+	adminScanLogCount:number
 };
 
 class Dashboard extends Component<Props, States> {
@@ -34,15 +35,14 @@ class Dashboard extends Component<Props, States> {
 			usersCount: 0,
 			isLoader: false,
 			adminUsersCount: 0,
-			adminOrderHistoryCount:0
-
+			adminOrderHistoryCount: 0,
+			adminScanLogCount:0
 		};
 	}
 	componentDidMount() {
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
-		if (userData?.role) 
-		this.setState({ userRole: userData?.role });
+		if (userData?.role) this.setState({ userRole: userData?.role });
 
 		if (userData?.role === "ADMIN") this.getAdminDashboardDetails();
 		if (userData?.role === "RSM") this.getrsmDashboardDetails();
@@ -79,8 +79,9 @@ class Dashboard extends Component<Props, States> {
 					isLoader: false,
 				});
 				this.setState({
-					adminUsersCount: res.usercount,
-					adminOrderHistoryCount:res.scanlogscount
+					adminUsersCount: res?.usercount,
+					adminOrderHistoryCount: res?.scanlogscount,
+					adminScanLogCount:res?.scanlogscount 
 				});
 			})
 			.catch((error: any) => {
@@ -128,13 +129,15 @@ class Dashboard extends Component<Props, States> {
 									background="#FFF4E7"
 									cardClick={() => this.cardClick()}
 								>
-									<span className="count">{this.state.scanLogCount}</span><br />
+									<span className="count">{this.state.scanLogCount}</span>
+									<br />
 									<span className="title">Scan Logs</span>
 								</CustomCard>
 							</div>
 							<div>
 								<CustomCard icon={userlist} border="1px solid #206BDD" background="#DFE8FA">
-									<span className="count">{this.state.usersCount}</span><br/>
+									<span className="count">{this.state.usersCount}</span>
+									<br />
 									<span className="title">Total Users</span>
 								</CustomCard>
 							</div>
@@ -159,7 +162,8 @@ class Dashboard extends Component<Props, States> {
 										background="#DFE8FA"
 										cardClick={() => this.totalUserClick()}
 									>
-										<span className="count">{this.state.adminUsersCount}</span><br />
+										<span className="count">{this.state.adminUsersCount}</span>
+										<br />
 										<span className="title">Total Users</span>
 									</CustomCard>
 								</div>
@@ -175,6 +179,18 @@ class Dashboard extends Component<Props, States> {
 										<span className="title">Total Orders</span>
 									</CustomCard>
 								</div>
+								<div className="card-list">
+								<CustomCard
+									icon={BarCodeIcon}
+									border="1px solid #b2ebf2"
+									background="#f0f8ff"
+									cardClick={() => this.cardClick()}
+								>
+									<span className="count">{this.state.adminScanLogCount}</span>
+									<br />
+									<span className="title">Scan Logs</span>
+								</CustomCard>
+							</div>
 							</div>
 						)
 					)}
