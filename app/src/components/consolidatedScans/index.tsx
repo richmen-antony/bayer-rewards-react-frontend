@@ -125,7 +125,7 @@ const ConsolidatedScans = (Props: any) => {
 	const [retailerPopupData,setretailerPopupData]              = useState({});
   
 	useEffect(()=>{
-		Promise.all([dispatch(getGeographicLevel1Options()),dispatch(getGeoLocationFields())]).then((response) => {
+		Promise.all([dispatch(getGeoLocationFields()),dispatch(getGeographicLevel1Options())]).then((response) => {
 		});
 		let data = {
 			countrycode : userData?.countrycode,
@@ -159,7 +159,6 @@ const ConsolidatedScans = (Props: any) => {
 				data = { ...data, ...filteredDatas };
 			}
 			dispatch(getOverallScans(data));
-			setOverallScanSuccess(new Date().getTime());
 		}
 	},[searchText, partnerType,filterAppliedTime])
 
@@ -178,7 +177,7 @@ const ConsolidatedScans = (Props: any) => {
 			dispatch(setselectedProductList([]));
 			setselectedDistributorName('');
 		}
-	},[soldbyid, overallScanSuccess])
+	},[soldbyid, filterAppliedTime])
 
 	const getSelectedBrands = (soldbyidd : string, idx?:any, type?:string, productbrand?:any)=>{
 		setSoldbyid(soldbyidd);

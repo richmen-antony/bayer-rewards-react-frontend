@@ -89,21 +89,21 @@ export const ProductList = ({
                 <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
                     <tr>
-                    <td style={{ width: "20%", paddingLeft: "10px" }}> 
+                    <td style={{ width: "23%", paddingLeft: "10px" }}> 
                         <span className="total">Total({selectedProductList?.length})</span>
                       </td>
                       <td className="text-center">
-                        <span className="">
+                        <span>
                           {totalReceivedGoods}
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="">
+                        <span style={{marginLeft:'8px'}}>
                           {totalSendGoods}
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="">
+                        <span>
                           {totalWalkInSales}
                         </span>
                       </td>

@@ -250,7 +250,7 @@ export const OverallScans = ({
                 <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
                     <tr>
-                    <td style={{ width: "20%", paddingLeft: "10px" }}> 
+                    <td style={{ width: "26%", paddingLeft: "10px" }}> 
                         <span className="total">Total({allConsolidatedScans?.length})</span>
                       </td>
                       <td className="text-center">
@@ -259,7 +259,7 @@ export const OverallScans = ({
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="">
+                        <span className="" style={{marginLeft:'8px !important'}}>
                           {totalSendGoods}
                         </span>
                       </td>
