@@ -675,16 +675,16 @@ const ConsolidatedScans = (Props: any) => {
 
 								<div className="filterFooter pt-3">
 									<button
-										className="cus-btn-scanlog-filter reset"
+										className="cus-btn-consolidatedscanlog-filter reset"
 										onClick={(e) => resetFilter(e)}
 										data-testid="reset-all"
 									>
 										Reset All
 									</button>
 									<button
-										className="cus-btn-scanlog-filter"
+										className="cus-btn-consolidatedscanlog-filter"
 										onClick={applyFilter}
-										// disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
+										disabled={ dateErrMsg ? true : false}
 										data-testid="apply"
 									>
 										Apply

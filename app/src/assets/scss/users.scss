@@ -528,6 +528,10 @@
   border: 1px solid #dee2e6;
   color: #10384f;
 }
+.cus-btn-user-filter:disabled,
+cus-btn-user-filter[disabled] {
+  background-color: #96a8ae;
+}
 .userlist-table {
   .retailer-id {
     .retailer-icon {

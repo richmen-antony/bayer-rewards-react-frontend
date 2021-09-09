@@ -1276,7 +1276,8 @@ class ChannelPartners extends Component<Props, States> {
 			dateErrMsg: ""
 		  },
 		  () => {
-			
+			this.getChannelPartnersList();
+			this.closeToggle();
 		  }
 		);
 		
@@ -1406,6 +1407,7 @@ class ChannelPartners extends Component<Props, States> {
 						<button
 							className="cus-btn-user-filter"
 							  onClick={this.applyFilter}
+							  disabled={ dateErrMsg ? true : false}
 						>
 							Apply
 							<span>

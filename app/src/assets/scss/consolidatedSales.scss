@@ -296,7 +296,7 @@
   }
 }
 
-.cus-btn-scanlog-filter {
+.cus-btn-consolidatedscanlog-filter {
   color: #ffffff;
   background-color: #7eb343;
   width: 125px;
@@ -321,13 +321,13 @@
     border-bottom-right-radius: 15px;
   }
 }
-.cus-btn-scanlog-filter.reset {
+.cus-btn-consolidatedscanlog-filter.reset {
   background-color: #ffffff;
   border: 1px solid #dee2e6;
   color: #10384f;
 }
-.cus-btn-scanlog-filter:disabled,
-cus-btn-scanlog-filter[disabled] {
+.cus-btn-consolidatedscanlog-filter:disabled,
+cus-btn-consolidatedscanlog-filter[disabled] {
   background-color: #96a8ae;
 }
 
