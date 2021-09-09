@@ -32,7 +32,7 @@ const ProductBrandList = ({
     <AUX>
           <div className="">
             <label className="font-weight-bold scanlabel">product brand wise scans - {_.startCase(_.toLower(distributorName))}</label>
-            <div className="consolidatedSales-table scannedbrands"  style={{height: '22vh', overflowY: 'auto' }}>
+            <div className="consolidatedSales-table scannedbrands"  style={{height: '23vh', overflowY: 'auto' }}>
               <table className="table brandTable">
                 <thead>
                   <tr>
@@ -123,6 +123,5 @@ const ProductBrandList = ({
          </div>
     </AUX>
   );
-
 }
 export default ProductBrandList;

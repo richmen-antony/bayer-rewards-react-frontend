@@ -10,16 +10,9 @@ import OverallScans  from './OverallScans';
 import ProductBrandList from './ProductBrandList';
 import ProductList from './ProductList';
 import { Button} from "reactstrap";
-import { NativeDropdown } from "../../utility/widgets/dropdown/NativeSelect";
-import { apiURL } from "../../utility/base/utils/config";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import { Alert } from "../../utility/widgets/toaster";
-import Pagination from "../../utility/widgets/pagination";
 import Loader from "../../utility/widgets/loader";
-import {
-  invokeGetAuthService,
-  invokePostAuthService,
-} from "../../utility/base/service";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import CalenderIcon from "../../assets/icons/calendar.svg";
 import ArrowIcon from "../../assets/icons/tick.svg";
@@ -30,18 +23,16 @@ import {
 	setGeolevel1Options,
 	downloadScansCsvFile
   } from '../../redux/actions/common/common';
-  import {
-	getOverallScans,
-	getScannedBrands,
-	getScannedProducts,
-	setselectedBrandList,
-	setselectedProductList,
-	setOverallList
-  } from '../../redux/actions/consolidatedScans/consolidatedScans';
-  import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
-  import _ from "lodash";
-import { AnyAaaaRecord } from "node:dns";
-import { SettingsInputAntenna } from "@material-ui/icons";
+import {
+getOverallScans,
+getScannedBrands,
+getScannedProducts,
+setselectedBrandList,
+setselectedProductList,
+setOverallList
+} from '../../redux/actions/consolidatedScans/consolidatedScans';
+import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
+import _ from "lodash";
 
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
@@ -51,18 +42,17 @@ const ConsolidatedScans = (Props: any) => {
 	const dispatch             = useDispatch();
 	const geolevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
 	const geographicFields     = useSelector(({common}:any) => common?.geographicFields);
-	const levelsName        = useSelector(({common}:any) => common?.levelsName);
+	const levelsName           = useSelector(({common}:any) => common?.levelsName);
+	const commonErrorMessage   = useSelector(({common}:any) => common?.errorMessage);
 	const allConsolidatedScans = useSelector(({consolidatedScans}:any) => consolidatedScans?.allConsolidatedScans);
 	const scannedBrands        = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedBrands);
 	const scannedProducts      = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedProducts);
 	const isReduxLoader        = useSelector(({consolidatedScans}:any) => consolidatedScans?.isLoader);
+	// const errorMessage         = useSelector(({consolidatedScans}:any) => consolidatedScans?.errorMessage);
 
 	const [searchText, setSearchText]                          = useState<string>("");
-	const [retailerOptions, setRetailerOptions]                = useState<string[]>([]);
-	const [optionslist, setOptionslist]                        = useState([]);
 	const [isLoader, setIsLoader]                              = useState<boolean>(false);
 	const [dateErrMsg, setDateErrMsg]                          = useState<string>("");
-	const [dropdownOpenFilter,setdropdownOpenFilter]           = useState(false);
 	const [partnerTypeList, setpartnerTypeList]                = useState(["Retailers", "Distributors"]);
 	const [partnerType, setPartnerType]                        = useState({ type: "Retailers" });
 	const [selectedDistributorName,setselectedDistributorName] = useState('');
@@ -70,9 +60,7 @@ const ConsolidatedScans = (Props: any) => {
 	const [selectedDistributor,setselectedDistributor]         = useState(0);
 	const [selectedBrand,setselectedBrand]                     = useState(0);
 	const [countryList,setcountryList]                         = useState([{}]);
-	// const [geographicFields, setgeographicFields]              = useState([]);
 	const [dynamicFields, setdynamicFields]                    = useState([]);
-	const [level1Options,setlevel1Options]                     = useState([]);
 	const [isFiltered, setIsFiltered]                          = useState<boolean>(false);
 	const [overalltableIndex, setoveralltableIndex]            = useState<number>(0);
 	const [brandtableIndex, setbrandtableIndex]                = useState<number>(0);
@@ -83,7 +71,6 @@ const ConsolidatedScans = (Props: any) => {
 	const [filterAppliedTime,setFilterAppliedTime]             = useState(Number);
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
 	
-
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
 			geolevel1: "ALL",
@@ -123,6 +110,12 @@ const ConsolidatedScans = (Props: any) => {
 		"ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
 	]);
 	const [retailerPopupData,setretailerPopupData]              = useState({});
+
+	useEffect(()=>{
+		if(commonErrorMessage) {
+			Alert("warning", commonErrorMessage);
+		}
+	},[commonErrorMessage])
   
 	useEffect(()=>{
 		Promise.all([dispatch(getGeoLocationFields()),dispatch(getGeographicLevel1Options())]).then((response) => {
@@ -358,6 +351,13 @@ const ConsolidatedScans = (Props: any) => {
 		if(isFiltered) {
 			filteredDatas = getFilteredDatas(filteredDatas);
 			data = { ...data, ...filteredDatas };
+		}
+		if( type === 'overall') {
+			type = 'Overall_Scans'
+		} else if(type === 'brand') {
+			type = 'BrandWise_Scans'
+		} else if(type === 'product') {
+			type = 'ProductWise_Scans'
 		}
 		dispatch(downloadScansCsvFile(data, type));
 	}
@@ -696,7 +696,7 @@ const ConsolidatedScans = (Props: any) => {
 					    </Filter>
                     </div>
                 </div>
-                <div className="row" style={{    marginTop: '-5px'}}>
+                <div className="row">
                         <div className = "col-sm-6">
                             <OverallScans allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
 							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />

@@ -83,7 +83,6 @@ export const getScannedProducts = (soldbyid:string,isfiltered:boolean, productbr
         by : "productbrand",
         isfiltered : isfiltered,
         ...filteredDatas
-        // productgroup : productgroup
       };
       invokeGetAuthService(getScannedProducts, data)
         .then(async (response: any) => {

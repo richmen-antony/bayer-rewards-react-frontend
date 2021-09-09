@@ -28,7 +28,7 @@ export const ProductList = ({
     <AUX>
         <div className="">
           <label className="font-weight-bold scanlabel">product wise scans - {_.startCase(_.toLower(brandName))}</label>
-          <div className="consolidatedSales-table scannedProducts"  style={{height: '24vh', overflowY: 'auto'}}>
+          <div className="consolidatedSales-table scannedProducts"  style={{height: '28vh', overflowY: 'auto'}}>
             <table className="table">
               <thead>
                 <tr>
