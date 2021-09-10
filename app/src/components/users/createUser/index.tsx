@@ -1239,8 +1239,10 @@ class CreateUser extends Component<any, any> {
     if (this.state.isEditPage) {
       data = {
         countrycode: this.getStoreData.countryCode,
-        ownerfirstname: userData.ownerRows[0].firstname,
-        ownerlastname: userData.ownerRows[0].lastname,
+        // ownerfirstname: userData.ownerRows[0].firstname,
+        // ownerlastname: userData.ownerRows[0].lastname,
+        ownerfirstname: (userData.ownerRows[0].firstname).trim(),
+        ownerlastname: (userData.ownerRows[0].lastname).trim(),
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
         owneremail: userData.ownerRows[0].email,
         locale: "English (Malawi)",
@@ -1256,13 +1258,19 @@ class CreateUser extends Component<any, any> {
           : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: userData.iscreatedfrommobile,
-        whtaccountname: userData.whtaccountname,
+        whtaccountname: userData?.whtaccountname.trim(),
         taxid: userData.taxid,
+        // whtownername: this.state.accInfo
+        //   ? userData.ownerRows[0].firstname +
+        //     " " +
+        //     userData.ownerRows[0].lastname
+        //   : userData.whtownername,
+
         whtownername: this.state.accInfo
-          ? userData.ownerRows[0].firstname +
-            " " +
-            userData.ownerRows[0].lastname
-          : userData.whtownername,
+        ? (userData.ownerRows[0].firstname).trim() +
+          " " +
+          (userData.ownerRows[0].lastname).trim()
+        : (userData.whtownername).trim(),
         deliverygeolevel0: this.getStoreData.countryCode,
         deliverygeolevel1: geoFields.geolevel1,
         deliverygeolevel2: geoFields.geolevel2,

@@ -11,10 +11,20 @@ function compareByAsc(key: any) {
     // if (nameA <nameB) return -1;
     // if (nameA >nameB) return 1;
     // return 0;
-    let va = (a[key] === null) ? "" : "" + a[key].toUpperCase(),
-        vb = (b[key] === null) ? "" : "" + b[key].toUpperCase();
-
-    return va > vb ? 1 : ( va === vb ? 0 : -1 );
+   
+    var x = a[key]; var y = b[key];
+    if (x === y) { return 0; }
+    if (x === null) {
+        return -1;
+    } else if (y === null) {
+        return 1;
+    } else if (typeof x === 'string') {
+        return x.localeCompare(y);
+    } else if (typeof x === 'number' || typeof x === 'boolean') {
+        if (x < y) return -1;
+        if (x > y) return 1;
+    }
+    return 0;
   };
 }
 function compareByDesc(key: any){
@@ -24,38 +34,22 @@ function compareByDesc(key: any){
     // if (nameA < nameB) return 1;
     // if (nameA > nameB) return -1;
     // return 0;
-    let va = (a[key] === null) ? "" : "" + a[key].toUpperCase(),
-    vb = (b[key] === null) ? "" : "" + b[key].toUpperCase();
 
-    return va > vb ? -1 : ( va === vb ? 0 : -1 );
+    var x = a[key]; var y = b[key];
+    if (x === y) { return 0; }
+    if (x === null) {
+        return 1;
+    } else if (y === null) {
+        return -1;
+    } else if (typeof y === 'string') {
+        return y.localeCompare(x);
+    } else if (typeof y === 'number' || typeof y === 'boolean') {
+        if (x < y) return 1;
+        if (x > y) return -1;
+    }
+    return 0;
   };
 }
-
-// function compareByAsc(key: any) {
-//     return function (a:any, b:any) {
-//       if (a[key] < b[key]) return -1;
-//       if (a[key] > b[key]) return 1;
-//       return 0;
-//     };
-//   }
-
-// function compareByDesc(key: any){
-//     return function (a:any, b:any) {
-//       if (a[key] < b[key]) return 1;
-//       if (a[key] > b[key]) return -1;
-//       return 0;
-//     };
-//   }
-
-//Function for sorting in table header in asc and desc order
-// Usage Implementation
-
-// import {sortBy} from "../../../base/utils/tableSort";
-// onSort(name, data) {
-//   let arrayCopy = sortBy(name, data);
-//   this.setState({ allScanLogs: arrayCopy });
-// }
-// <th>Name<span className="fa fa-caret-down"  onClick={()=>this.onSort('name', allScanLogs)}></span></th>
 
  export const sortBy = (key: any, data: any) => {
     let arrayCopy = [...data];

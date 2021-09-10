@@ -333,7 +333,7 @@ class OrderHistory extends Component<Props, States> {
 				isFiltered: conditionIsFilter,
 				dateErrMsg: "",
 				lastUpdatedDateErr: "",
-				searchText:""
+				// searchText:""
 			},
 			() => {
 				this.getAdminOrderList();

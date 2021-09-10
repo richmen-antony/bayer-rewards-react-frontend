@@ -373,7 +373,7 @@ class SendGoods extends Component<Props, States> {
 				selectedCustomerOptions: options,
 				selectedGeolevel1Options: options,
 				selectedGeolevel2Options: options,
-				searchText:""
+				// searchText:""
 			},
 			() => {
 				this.getScanLogs();

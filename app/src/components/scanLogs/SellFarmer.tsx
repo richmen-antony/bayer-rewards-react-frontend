@@ -139,11 +139,11 @@ class SellFarmer extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			partnerTypeList: ["Retailers"],
-			salesType: ["WALKIN_SALES", "ADVISOR_SALES"],
+			salesType: ["ADVISOR_SALES"], //"WALKIN_SALES", 
 			partnerType: {
 				type: "Retailers",
 			},
-			selectedSalesType: "WALKIN_SALES",
+			selectedSalesType: "ADVISOR_SALES", //"WALKIN_SALES",
 			scannedPeriodsList: [
 				{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
 				{
@@ -345,7 +345,7 @@ class SellFarmer extends Component<Props, States> {
 				dateErrMsg: "",
 				lastUpdatedDateErr: "",
 				ScannedDateErrMsg: "",
-				searchText:""
+				// searchText:""
 			},
 			() => {
 				this.closeToggle();
