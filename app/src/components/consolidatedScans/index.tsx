@@ -67,9 +67,10 @@ const ConsolidatedScans = (Props: any) => {
 	const [producttableIndex, setproducttableIndex]            = useState<number>(0);
 	const [isAsc, setIsAsc]                                    = useState<boolean>(true);
 	const [soldbyid,setSoldbyid]                               = useState('');
-	const [isResetFilter,setIsResetFilter]                     = useState(false);
 	const [filterAppliedTime,setFilterAppliedTime]             = useState(Number);
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
+	const [scannedBrandsSuccess,setScannedBrandsSuccess]           = useState(Number);
+	
 	
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
@@ -118,6 +119,7 @@ const ConsolidatedScans = (Props: any) => {
 	},[commonErrorMessage])
   
 	useEffect(()=>{
+		getCountryList();
 		Promise.all([dispatch(getGeoLocationFields()),dispatch(getGeographicLevel1Options())]).then((response) => {
 		});
 		let data = {
@@ -126,8 +128,11 @@ const ConsolidatedScans = (Props: any) => {
 			isfiltered  : isFiltered,
 		};
 		dispatch(getOverallScans(data));
-		getCountryList();
 	},[]);
+
+	useEffect(()=>{
+		setOverallScanSuccess(new Date().getTime());
+	},[allConsolidatedScans])
 
 	useEffect(()=>{
 		let id = allConsolidatedScans && allConsolidatedScans[0]?.soldbyid;
@@ -136,7 +141,34 @@ const ConsolidatedScans = (Props: any) => {
 		if(name){
 			setselectedDistributorName(name);
 		}
-	},[allConsolidatedScans]);
+	},[overallScanSuccess]);
+
+	useEffect(()=>{
+		if(soldbyid) {
+			let filteredDatas = {};
+			if(isFiltered) {
+				filteredDatas = getFilteredDatas(filteredDatas);
+			}
+			dispatch(getScannedBrands(soldbyid,isFiltered,filteredDatas));
+		} else {
+			dispatch(setselectedBrandList([]));
+			dispatch(setselectedProductList([]));
+			setselectedDistributorName('');
+		}
+	},[selectedDistributorName]);
+
+	useEffect(()=>{
+		setselectedBrandName(scannedBrands && scannedBrands[0]?.productbrand);
+		setScannedBrandsSuccess(new Date().getTime());
+	},[scannedBrands]);
+
+	useEffect(()=>{
+		let filteredDatas = {};
+			if(isFiltered) {
+				filteredDatas = getFilteredDatas(filteredDatas);
+			}
+		dispatch(getScannedProducts(soldbyid,isFiltered, selectedBrandName,filteredDatas));
+	},[scannedBrandsSuccess])
 
 	useEffect(()=>{
 		if ( searchText.length >= 3 || searchText.length === 0) {
@@ -155,23 +187,6 @@ const ConsolidatedScans = (Props: any) => {
 		}
 	},[searchText, partnerType,filterAppliedTime])
 
-	useEffect(() => {
-		if(soldbyid) {
-			let filteredDatas = {};
-			if(isFiltered) {
-				filteredDatas = getFilteredDatas(filteredDatas);
-			}
-			dispatch(getScannedBrands(soldbyid,isFiltered,filteredDatas));
-			if(scannedBrands?.length > 0) {
-				getSelectedBrands(soldbyid);
-			}
-		} else {
-			dispatch(setselectedBrandList([]));
-			dispatch(setselectedProductList([]));
-			setselectedDistributorName('');
-		}
-	},[soldbyid, filterAppliedTime])
-
 	const getSelectedBrands = (soldbyidd : string, idx?:any, type?:string, productbrand?:any)=>{
 		setSoldbyid(soldbyidd);
 		if ( type === 'selected' ) {
@@ -179,29 +194,12 @@ const ConsolidatedScans = (Props: any) => {
 			setselectedBrand(0);
 		}
 		allConsolidatedScans?.forEach((item:any,index:number)=>{
-			if( item.soldbyid === soldbyid) {
+			if( item.soldbyid === soldbyidd) {
 				setselectedDistributorName(item.firstname+' '+ item.lastname);
 			}
 		})
 		setselectedBrandName(productbrand);
-		let filteredDatas = {};
-		if(isFiltered) {
-			filteredDatas = getFilteredDatas(filteredDatas);
-		}
-		dispatch(getScannedBrands(soldbyidd,isFiltered,filteredDatas));
 	};
-
-	useEffect(()=>{
-		setselectedBrandName(scannedBrands && scannedBrands[0]?.productbrand);
-	},[scannedBrands]);
-
-	useEffect(()=>{
-		let filteredDatas = {};
-			if(isFiltered) {
-				filteredDatas = getFilteredDatas(filteredDatas);
-			}
-		dispatch(getScannedProducts(soldbyid,isFiltered, selectedBrandName,filteredDatas));
-	},[selectedBrandName,filterAppliedTime])
 
 	const getSelectedProducts = (soldby : string, productbrand:string, idx:number) => {
 		let filteredDatas = {};
@@ -230,8 +228,8 @@ const ConsolidatedScans = (Props: any) => {
 					scannedPeriod   : scannedPeriod
 				}
 			}
-			return filteredDatas;
-		}
+		return filteredDatas;
+	}
 
 	const getCountryList = ()=> {
 		let res = [
@@ -546,27 +544,10 @@ const ConsolidatedScans = (Props: any) => {
 		});
 		setDateErrMsg("");
 		setIsFiltered(false);
-		setIsResetFilter(true);
 		setSearchText("");
 		setFilterAppliedTime(new Date().getTime());
 		closeToggle&&closeToggle();
-	  };
-
-	  useEffect(()=>{
-		  if(!isFiltered) {
-			let data = {
-				countrycode: userData?.countrycode,
-				partnertype: (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-				isfiltered:isFiltered,
-			};
-			let filteredDatas = {};
-			if(isFiltered) {
-				filteredDatas = getFilteredDatas(filteredDatas);
-				data = { ...data, ...filteredDatas };
-			}
-			dispatch(getOverallScans(data));
-		  }
-	},[isResetFilter])
+	};
 
 	return (
         <AUX>
