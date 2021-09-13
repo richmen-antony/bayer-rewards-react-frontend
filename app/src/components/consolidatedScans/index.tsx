@@ -265,6 +265,7 @@ const ConsolidatedScans = (Props: any) => {
 		let userrole = userData?.role;
 		let level2Options: any = [];
 		if (userrole === "RSM" ){
+			console.log('userrole', userrole)
 			let filteredLevel1:any = geolevel1List?.filter((list:any) => list.name === userData?.geolevel1);
 			filteredLevel1 && filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
 				let level2Info = { label: item.name, value: item.name, code: item.code };
@@ -276,6 +277,7 @@ const ConsolidatedScans = (Props: any) => {
 				code: "ALL",
 			};
 			level2Options.unshift(geolevel2Obj);
+			console.log('level2Options', level2Options)
 		} else {
 			let level1Info = { label: "ALL", value :"ALL" };
 			level2Options.push(level1Info);
@@ -286,7 +288,7 @@ const ConsolidatedScans = (Props: any) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: list ===  "geolevel1" && (userrole === "RSM") ? geolevel1Obj : {label: "ALL",value: "ALL"},
+				value: (list ===  "geolevel1" && userrole === "RSM") ? geolevel1Obj : {label: "ALL",value: "ALL"},
 				options:
 					list === "geolevel0"
 						? countryList

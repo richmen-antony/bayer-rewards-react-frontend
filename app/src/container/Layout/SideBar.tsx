@@ -254,7 +254,7 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("consolidatedScans")}
                       >
                         <img src={consolidatescans} alt="Consolidated Scans" width="16" />{" "}
-                        <span> Consolidated Sales </span>
+                        <span> Consolidated Scans </span>
                       </Link>
                     </li>
                   </>
