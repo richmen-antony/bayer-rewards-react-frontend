@@ -95,26 +95,26 @@ const ProductBrandList = ({
                     <td style={{ width: "18%", paddingLeft: "10px" }}> 
                         <span className="total">Total({selectedBrandList?.length})</span>
                       </td>
-                      <td className="text-center">
-                        <span>
-                          {totalReceivedGoods}
-                        </span>
-                      </td>
-                      <td className="text-center">
-                        <span style={{marginLeft:'8px'}}>
-                          {totalSendGoods}
-                        </span>
-                      </td>
-                      <td className="text-center">
-                        <span>
-                          {totalWalkInSales}
-                        </span>
-                      </td>
-                      <td className="text-center">
+                      <td className="text-center" style={{ width: "15%" }}>
                       <span>
-                          {totalAdvisorSales}
-                        </span>
-                      </td>
+                        {totalReceivedGoods}
+                      </span>
+                    </td>
+                    <td className="text-center" style={{ width: "23%" }}>
+                      <span>
+                        {totalSendGoods}
+                      </span>
+                    </td>
+                    <td className="text-center" style={{ width: "21%" }}>
+                      <span className="">
+                        {totalWalkInSales}
+                      </span>
+                    </td>
+                    <td className="text-center" style={{ width: "23%" }}>
+                    <span className="productprice">
+                        {totalAdvisorSales}
+                      </span>
+                    </td>
                     </tr>
                   </tbody>
                 </table>

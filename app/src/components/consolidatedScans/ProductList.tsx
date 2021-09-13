@@ -85,29 +85,29 @@ export const ProductList = ({
                 <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
                     <tr>
-                    <td style={{ width: "23%", paddingLeft: "10px" }}> 
+                    <td style={{ width: "22%", paddingLeft: "10px" }}> 
                         <span className="total">Total({selectedProductList?.length})</span>
                       </td>
-                      <td className="text-center">
-                        <span>
-                          {totalReceivedGoods}
-                        </span>
-                      </td>
-                      <td className="text-center">
-                        <span style={{marginLeft:'8px'}}>
-                          {totalSendGoods}
-                        </span>
-                      </td>
-                      <td className="text-center">
-                        <span>
-                          {totalWalkInSales}
-                        </span>
-                      </td>
-                      <td className="text-center">
-                      <span className="productprice">
-                          {totalAdvisorSales}
-                        </span>
-                      </td>
+                      <td className="text-center" style={{ width: "15%" }}>
+                      <span>
+                        {totalReceivedGoods}
+                      </span>
+                    </td>
+                    <td className="text-center" style={{ width: "23%" }}>
+                      <span>
+                        {totalSendGoods}
+                      </span>
+                    </td>
+                    <td className="text-center" style={{ width: "21%" }}>
+                      <span className="">
+                        {totalWalkInSales}
+                      </span>
+                    </td>
+                    <td className="text-center" style={{ width: "23%" }}>
+                    <span className="productprice">
+                        {totalAdvisorSales}
+                      </span>
+                    </td>
                     </tr>
                   </tbody>
                 </table>

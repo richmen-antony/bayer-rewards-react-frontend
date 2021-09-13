@@ -25,14 +25,15 @@ export const getOverallScans = (data:{}) => {
        
         invokeGetAuthService(getOverallScans, data)
           .then(async (response: any) => {
-              await dispatch(Success(response));
+            let scans = Object.keys(response.body).length !== 0 ? response.body : []
+              await dispatch(Success(scans));
           })
           .catch((error: any) => {
             dispatch({ type : LOADING_REQUEST, status : false } );
             dispatch(Error(error.message));
         });
 
-      function Success(response: any) { return { type: GET_OVERALL_CONSOLIDATED_SCANS_SUCCESS, response } }
+      function Success(scans: any) { return { type: GET_OVERALL_CONSOLIDATED_SCANS_SUCCESS, scans } }
       function Error(errorMsg: any) { return { type: GET_OVERALL_CONSOLIDATED_SCANS_ERROR, errorMsg } }
     }
 }

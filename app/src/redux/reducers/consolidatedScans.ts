@@ -34,7 +34,7 @@ function ConsolidatedScansReducer(state = {INITIAL_STATE}, action: any): any {
             return {
                 ...state,
                 isLoader: false,
-                allConsolidatedScans: Object.keys(action.response.body).length !== 0 ? action.response.body : []
+                allConsolidatedScans: action.scans
             }
            
         }
