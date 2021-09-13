@@ -817,6 +817,8 @@ class SendGoods extends Component<Props, States> {
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+			let data: any = getLocalStorageData("userData");
+			let userData = JSON.parse(data);
 			return (
 				<React.Fragment key={`geolevels` + index}>
 					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
@@ -832,7 +834,7 @@ class SendGoods extends Component<Props, States> {
 									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
 								value={list.value}
-								// isDisabled = {list.name === "geolevel1" }
+								isDisabled = {userData?.role === 'RSM' && list.name === "geolevel1" }
 								id="geolevel-test"
 								dataTestId="geolevel-test"
 							/>
