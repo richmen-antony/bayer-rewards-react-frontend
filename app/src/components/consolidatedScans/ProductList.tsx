@@ -60,17 +60,13 @@ export const ProductList = ({
                     totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
                     totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
                     return (
-                      <tr
-                        style={{ cursor: "pointer" }}
-                        key={i}
-                      >
-                                <td>{_.startCase(_.toLower(item.productname))}
-                                <br /><label style={{fontSize:'10px'}}>{item.productid}-{item.pkglevel}</label></td>
-                                <td>{item.RECEIVE_GOOD}</td>
-                                <td>{item.SEND_GOOD}</td>
-                                <td>{item.S2F_WALKIN}</td>
-                                <td>{item.S2F_ADVISOR}</td>
-                        
+                      <tr key={i}>
+                        <td>{_.startCase(_.toLower(item.productname))}
+                        <br /><label style={{fontSize:'10px'}}>{item.productid}-{item.pkglevel}</label></td>
+                        <td>{item.RECEIVE_GOOD}</td>
+                        <td>{item.SEND_GOOD}</td>
+                        <td>{item.S2F_WALKIN}</td>
+                        <td>{item.S2F_ADVISOR}</td>
                       </tr>
                     );
                   })

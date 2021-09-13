@@ -70,6 +70,7 @@ const ConsolidatedScans = (Props: any) => {
 	const [filterAppliedTime,setFilterAppliedTime]             = useState(Number);
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
 	const [scannedBrandsSuccess,setScannedBrandsSuccess]           = useState(Number);
+	const [filterSuccess,setFilterSuccess]           = useState(Number);
 	
 	
 	const [selectedFilters, setSelectedFilters]                = useState({
@@ -141,6 +142,7 @@ const ConsolidatedScans = (Props: any) => {
 		if(name){
 			setselectedDistributorName(name);
 		}
+		setFilterSuccess(new Date().getTime())
 	},[overallScanSuccess]);
 
 	useEffect(()=>{
@@ -155,7 +157,7 @@ const ConsolidatedScans = (Props: any) => {
 			dispatch(setselectedProductList([]));
 			setselectedDistributorName('');
 		}
-	},[selectedDistributorName]);
+	},[filterSuccess]);
 
 	useEffect(()=>{
 		setselectedBrandName(scannedBrands && scannedBrands[0]?.productbrand);
@@ -199,6 +201,7 @@ const ConsolidatedScans = (Props: any) => {
 			}
 		})
 		setselectedBrandName(productbrand);
+		setFilterSuccess(new Date().getTime())
 	};
 
 	const getSelectedProducts = (soldby : string, productbrand:string, idx:number) => {

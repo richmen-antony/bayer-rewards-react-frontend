@@ -132,12 +132,12 @@ export const OverallScans = ({
                           key={idx}
                           onClick = {()=>getSelectedBrands(item.soldbyid, idx, 'selected',item.productbrand)}
                         >
-                        <td onClick={(event) => {
+                        <td>
+                              {_.startCase(_.toLower(item.firstname))+' '+_.startCase(_.toLower(item.lastname))}
+                              <img className="retailer-icon" src={ExpandWindowImg} alt=""  onClick={(event) => {
                             showRetailerPopup(event);
                             handleUpdateRetailer(item);
-                          }}>
-                              {_.startCase(_.toLower(item.firstname))+' '+_.startCase(_.toLower(item.lastname))}
-                              <img className="retailer-icon" src={ExpandWindowImg} alt="" /><br />
+                          }}/><br />
                               <label style={{fontSize:'9px'}}>{item.soldbyid}</label>
                           </td>
                           <td>{item.RECEIVE_GOOD}</td>
