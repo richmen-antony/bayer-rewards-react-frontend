@@ -488,6 +488,8 @@ const ConsolidatedScans = (Props: any) => {
 	const applyFilter = () => {
 		setIsFiltered(true);
 		setFilterAppliedTime(new Date().getTime());
+		setselectedDistributor(0);
+		setselectedBrand(0);
 		closeToggle&&closeToggle();
 	};
 
@@ -549,6 +551,8 @@ const ConsolidatedScans = (Props: any) => {
 		setIsFiltered(false);
 		setSearchText("");
 		setFilterAppliedTime(new Date().getTime());
+		setselectedDistributor(0);
+		setselectedBrand(0);
 		closeToggle&&closeToggle();
 	};
 
