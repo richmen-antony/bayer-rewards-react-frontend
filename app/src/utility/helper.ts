@@ -51,7 +51,7 @@ export const downloadCsvFile = (csv: any, filename: string) => {
 
     // CSV FILE
     csvFile = new Blob([csv], { type: "text/csv" });
-    let DateAndTime =moment(new Date()).format('MM_DD_YYYY_HH_mm_ss');
+    let DateAndTime =moment(new Date()).format('MM_DD_YYYY');
 
     // Download link
     downloadLink = document.createElement("a");

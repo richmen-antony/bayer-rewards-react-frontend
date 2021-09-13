@@ -428,7 +428,7 @@ class SendGoods extends Component<Props, States> {
 		invokeGetAuthService(downloadAllScanLogs, data)
 			.then((response) => {
 				const data = response;
-				downloadCsvFile(data, `ScanLog_${this.state.selectedScanType}`);
+				downloadCsvFile(data, `${this.state.selectedScanType}`);
 			})
 			.catch((error) => {
 				ErrorMsg(error);
