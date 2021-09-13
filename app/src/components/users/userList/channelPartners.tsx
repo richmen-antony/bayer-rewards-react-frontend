@@ -227,6 +227,7 @@ class ChannelPartners extends Component<Props, States> {
 		
 	}
 	getChannelPartnersList = (defaultPageNo?: number) => {
+		console.log('serachText', this.state.searchText)
 		this.setState({
 		  allChannelPartners: [],
 		  dropdownOpenFilter: false,
@@ -1272,7 +1273,6 @@ class ChannelPartners extends Component<Props, States> {
 			  lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
 			  lastmodifieddateto: new Date(),
 			},
-			isFiltered: false,
 			dateErrMsg: ""
 		  },
 		  () => {

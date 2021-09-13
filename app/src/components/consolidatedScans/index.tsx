@@ -550,8 +550,6 @@ const ConsolidatedScans = (Props: any) => {
 			scannedPeriod: "",
 		});
 		setDateErrMsg("");
-		setIsFiltered(false);
-		setSearchText("");
 		setFilterAppliedTime(new Date().getTime());
 		setselectedDistributor(0);
 		setselectedBrand(0);
