@@ -304,7 +304,7 @@ class UserList extends Component<Props, States> {
     } else if (this.state.value === 1) {
       stateValue = this.thirdPartyUserRef?.state;
       downloadURL = downloadThirdPartyList;
-      downloadName = "Third_Party_Users";
+      downloadName = "Thirdparty_Users";
     } else if (this.state.value === 2) {
       stateValue = this.internalUserRef;
       downloadURL = downloadInternalList;

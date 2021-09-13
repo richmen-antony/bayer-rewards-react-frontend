@@ -233,7 +233,7 @@ class AdvisorSales extends PureComponent<Props, States> {
 		invokeGetAuthService(downloadScanlogs, data)
 			.then((response) => {
 				const data = response;
-				downloadCsvFile(data, "ScanLog_Advisor_Sales");
+				downloadCsvFile(data, "S2F_ADVISOR");
 			})
 			.catch((error) => {
 				console.log({ error });
