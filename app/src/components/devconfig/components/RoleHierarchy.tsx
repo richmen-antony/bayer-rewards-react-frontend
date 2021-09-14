@@ -33,7 +33,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
        // check for duplicate values from previous list array
       const isDuplicate = list.find(
         (duplicate: any) =>
-          duplicate[name].toLowerCase() === value.toLowerCase()
+          duplicate[name]?.toLowerCase() === value?.toLowerCase()
       );
       if (isDuplicate) {
         list[index][name + "IsDuplicate"] = true;
@@ -176,7 +176,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         <input
                           className="form-control dpstyle label"
                           type="text"
-                          name="rolehierarchyname"
+                          name="name"
                           value={item.name}
                           onChange={(e) => handleInputChange(e, idx)}
                           onBlur={getValidation}

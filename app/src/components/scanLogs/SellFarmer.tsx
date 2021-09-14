@@ -139,11 +139,11 @@ class SellFarmer extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			partnerTypeList: ["Retailers"],
-			salesType: ["ADVISOR_SALES"], //"WALKIN_SALES", 
+			salesType: ["WALKIN_SALES", "ADVISOR_SALES"], //"WALKIN_SALES", 
 			partnerType: {
 				type: "Retailers",
 			},
-			selectedSalesType: "ADVISOR_SALES", //"WALKIN_SALES",
+			selectedSalesType: "WALKIN_SALES", //"WALKIN_SALES",
 			scannedPeriodsList: [
 				{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
 				{
@@ -780,6 +780,8 @@ class SellFarmer extends Component<Props, States> {
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+			let data: any = getLocalStorageData("userData");
+			let userData = JSON.parse(data);
 			return (
 				<React.Fragment key={`geolevels` + index}>
 					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
@@ -795,7 +797,8 @@ class SellFarmer extends Component<Props, States> {
 									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
 								value={list.value}
-								isDisabled={list.name === "geolevel1"}
+								// isDisabled={list.name === "geolevel1"}
+								isDisabled = {userData?.role === 'RSM' && list.name === "geolevel1" }
 								id="geolevel-test"
 								dataTestId="geolevel-test"
 							/>

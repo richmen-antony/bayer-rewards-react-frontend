@@ -227,7 +227,6 @@ class ChannelPartners extends Component<Props, States> {
 		
 	}
 	getChannelPartnersList = (defaultPageNo?: number) => {
-		console.log('serachText', this.state.searchText)
 		this.setState({
 		  allChannelPartners: [],
 		  dropdownOpenFilter: false,
