@@ -82,7 +82,7 @@ class SellFarmer extends Component<Props, States> {
 			actions: ["All", "Distributor", "Retailer"],
 			dropDownValue: "Select action",
 			scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-			productCategories: ["ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
+			productCategories: ["ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
 			status: ["ALL", "VALID", "INVALID"],
 			advisorStatus: ["ALL", "FULFILLED"],
 			list: ["ALL", "Distributor", "Retailer"],

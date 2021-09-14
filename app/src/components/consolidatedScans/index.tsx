@@ -109,7 +109,7 @@ const ConsolidatedScans = (Props: any) => {
 	]);
 	
 	const [productCategories, setproductCategories]             = useState([
-		"ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
+		"ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
 	]);
 	const [retailerPopupData,setretailerPopupData]              = useState({});
 
