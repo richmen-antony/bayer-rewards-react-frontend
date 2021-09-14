@@ -100,7 +100,7 @@ export const OverallScans = ({
               <table className="table scanTable">
                 <thead>
                   <tr>
-                  <th 
+                  <th style= {{width: '25%'}}
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedScans, isAsc,"overallScans")}
                     key="firstname">PARTNER NAME/ID
                       {
@@ -112,6 +112,7 @@ export const OverallScans = ({
                           ></i>
                         ) : null
                       }
+
                     </th>
                     <th>RECEIVE GOODS</th>
                     <th>SEND GOODS</th>
@@ -140,10 +141,10 @@ export const OverallScans = ({
                           }}/><br />
                               <label style={{fontSize:'9px'}}>{item.soldbyid}</label>
                           </td>
-                          <td>{item.RECEIVE_GOOD}</td>
-                          <td>{item.SEND_GOOD}</td>
-                          <td>{item.S2F_WALKIN}</td>
-                          <td>{item.S2F_ADVISOR}</td>
+                          <td className="text-right">{item.RECEIVE_GOOD}</td>
+                          <td className="text-right">{item.SEND_GOOD}</td>
+                          <td className="text-right">{item.S2F_WALKIN}</td>
+                          <td className="text-right">{item.S2F_ADVISOR}</td>
                         </tr>
                       );
                     })
@@ -157,7 +158,7 @@ export const OverallScans = ({
                 </tbody>
               </table>
             </div>
-            {allConsolidatedScans?.length > 0 &&
+            {/* {allConsolidatedScans?.length > 0 &&
             <div className ="consolidated-sum-total">
               <table style={{ width: '100%', marginTop: "5px"}}>
                 <tbody>
@@ -189,7 +190,19 @@ export const OverallScans = ({
                 </tbody>
               </table>
             </div>
-          }
+          } */}
+             {allConsolidatedScans?.length > 0 && (
+          <div className="consolidated-totals">
+            <div style={{ textAlign: "center" }}>
+              Total({allConsolidatedScans?.length})
+            </div>
+            <div style={{ marginRight: "2px" }}>{totalReceivedGoods}</div>
+            <div style={{ marginRight: "37px" }}>{totalSendGoods}</div>
+            <div style={{ marginRight: "33px" }}>{totalWalkInSales}</div>
+            <div style={{ marginRight: "11px" }}>{totalAdvisorSales}</div>
+          </div>
+        )}
+         
           </>
         {/* <div>
           <Pagination

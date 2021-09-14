@@ -400,6 +400,32 @@ cus-btn-consolidatedscanlog-filter[disabled] {
     }
   }
 }
+.consolidated-totals {
+  display: flex;
+  flex-wrap: nowrap;
+  border: 1px solid grey;
+  border-radius: 10px;
+  padding : 5px
+}
+.consolidated-totals > div {
+  width: 100px;
+  text-align: right;
+}
+// .demo {
+//   display: inline-grid;
+//     grid-template-areas:
+//         "head-fixed"
+//         "body-scrollable"
+//         "foot-fixed";
+// }
+// .demoheader {
+//   grid-area: "head-fixed";
+// }
+// .demobody {
+//   grid-area: "body-scrollable";
+//     overflow: auto;
+//     height: calc(65vh - 79px);
+// }
 
 @media only screen and (max-width: 1400px) {
   .dropdown-menu {

@@ -70,10 +70,10 @@ const ProductBrandList = ({
                           onClick ={()=>getSelectedProducts(item.soldbyid,item.productbrand,idx)}
                         >
                             <td>{_.startCase(_.toLower(item.productbrand))}</td>
-                            <td>{item.RECEIVE_GOOD}</td>
-                            <td>{item.SEND_GOOD}</td>
-                            <td>{item.S2F_WALKIN}</td>
-                            <td>{item.S2F_ADVISOR}</td>
+                            <td className="text-right">{item.RECEIVE_GOOD}</td>
+                            <td className="text-right">{item.SEND_GOOD}</td>
+                            <td className="text-right">{item.S2F_WALKIN}</td>
+                            <td className="text-right">{item.S2F_ADVISOR}</td>
                         </tr>
                       );
                     })
@@ -87,7 +87,7 @@ const ProductBrandList = ({
                 </tbody>
               </table>
             </div>
-            {selectedBrandList?.length > 0 &&
+            {/* {selectedBrandList?.length > 0 &&
             <div className="consolidated-sum-total">
                 <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
@@ -119,7 +119,18 @@ const ProductBrandList = ({
                   </tbody>
                 </table>
               </div>
-            }
+            } */}
+             {selectedBrandList?.length > 0 && (
+          <div className="consolidated-totals">
+            <div style={{ textAlign: "center" }}>
+              Total({selectedBrandList?.length})
+            </div>
+            <div style={{ marginRight: "2px" }}>{totalReceivedGoods}</div>
+            <div style={{ marginRight: "37px" }}>{totalSendGoods}</div>
+            <div style={{ marginRight: "33px" }}>{totalWalkInSales}</div>
+            <div style={{ marginRight: "11px" }}>{totalAdvisorSales}</div>
+          </div>
+        )}
          </div>
     </AUX>
   );

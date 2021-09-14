@@ -34,7 +34,7 @@ export const ProductList = ({
                 <tr>
                 <th 
                      onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc,"scannedProducts")}
-                     style={{width:'20%'}}
+                     style={{width:'17%'}}
                       key="productname">PRODUCT
                       {
                            (tableCellIndex === 0 && tableName === 'scannedProducts') ? (
@@ -63,10 +63,10 @@ export const ProductList = ({
                       <tr key={i}>
                         <td>{_.startCase(_.toLower(item.productname))}
                         <br /><label style={{fontSize:'10px'}}>{item.productid}-{item.pkglevel}</label></td>
-                        <td>{item.RECEIVE_GOOD}</td>
-                        <td>{item.SEND_GOOD}</td>
-                        <td>{item.S2F_WALKIN}</td>
-                        <td>{item.S2F_ADVISOR}</td>
+                        <td className="text-right">{item.RECEIVE_GOOD}</td>
+                        <td className="text-right">{item.SEND_GOOD}</td>
+                        <td className="text-right">{item.S2F_WALKIN}</td>
+                        <td className="text-right">{item.S2F_ADVISOR}</td>
                       </tr>
                     );
                   })
@@ -80,7 +80,7 @@ export const ProductList = ({
               </tbody>
             </table>
           </div>
-          {selectedProductList?.length > 0 &&
+          {/* {selectedProductList?.length > 0 &&
           <div className="consolidated-sum-total">
                 <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
@@ -112,7 +112,18 @@ export const ProductList = ({
                   </tbody>
                 </table>
               </div>
-            }
+            } */}
+             {selectedProductList?.length > 0 && (
+          <div className="consolidated-totals">
+            <div style={{ textAlign: "center" }}>
+              Total({selectedProductList?.length})
+            </div>
+            <div style={{ marginRight: "2px" }}>{totalReceivedGoods}</div>
+            <div style={{ marginRight: "37px" }}>{totalSendGoods}</div>
+            <div style={{ marginRight: "33px" }}>{totalWalkInSales}</div>
+            <div style={{ marginRight: "11px" }}>{totalAdvisorSales}</div>
+          </div>
+        )}
         </div>
     </AUX>
   );
