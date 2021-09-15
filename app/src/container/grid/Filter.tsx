@@ -16,6 +16,7 @@ interface Props {
 	handlePartnerChange?: any;
 	toolTipText: string;
 	internalUserTypeFilterHeading?: boolean;
+	isPartnerType?: boolean;
 	condType?: string;
 	condTypeList?: any[];
 	buttonChange?: any;
@@ -52,7 +53,8 @@ const Filter: React.FC<Props> = (props: Props) => {
 		condSelectedButton,
 		onClose,
 		downloadPopup,
-		isDownloadHelpText
+		isDownloadHelpText,
+		isPartnerType
 	} = props;
 
 	useEffect(() => { 
@@ -72,6 +74,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 					tolltip={toolTipText}
 				/>
 				<div className="filter-right-side">
+					{isPartnerType &&
 					<div className="filter-partnertype">
 						<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
 							{internalUserTypeFilterHeading ? "User Type" : "Partner Type"}
@@ -94,7 +97,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 									);
 								})}
 						</div>
-					</div>
+					</div>}
 					{condTypeList && condTypeList.length > 0 && (
 						<div className="filter-partnertype" style={{ marginLeft: "10px" }}>
 							<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>

@@ -6,9 +6,9 @@ import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import AUX from "../../hoc/Aux_";
 import Filter from "../../container/grid/Filter";
-import OverallScans  from './OverallScans';
-import ProductBrandList from './ProductBrandList';
-import ProductList from './ProductList';
+import OverallInventory  from './OverallInventory';
+import BrandwiseInventory from './BrandwiseInventory';
+import ProductwiseInventory from './ProductwiseInventory';
 import { Button} from "reactstrap";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import { Alert } from "../../utility/widgets/toaster";
@@ -37,7 +37,7 @@ import _ from "lodash";
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
 
-const ConsolidatedScans = (Props: any) => {
+const ConsolidatedInventory = (Props: any) => {
     let closeToggle: any;
 	const dispatch             = useDispatch();
 	const geolevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
@@ -343,11 +343,10 @@ const ConsolidatedScans = (Props: any) => {
 
 	const download = (type:string) => {
 		let data = {
-			countrycode  : userData?.countrycode,
-			partnertype  : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			downloadtype : type,
-			searchtext   : searchText || null,
-			isfiltered   : isFiltered
+			countrycode : userData?.countrycode,
+			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+			downloadtype  : type,
+			isfiltered : isFiltered
 		};
 		let filteredDatas = {};
 		if(isFiltered) {
@@ -561,12 +560,12 @@ const ConsolidatedScans = (Props: any) => {
             <div className="consolidatedSales-container">
                 <div className="row">
                     <div className="filterSection col-sm-12">
-                        <label className="font-weight-bold">Consolidated Scans</label>
+                        <label className="font-weight-bold">Distributor Inventory</label>
                         <Filter
                             handleSearch={handleSearch}
                             searchText={searchText}
-                            partnerTypeList={partnerTypeList}
-                            selectedPartnerType={partnerType}
+                            // partnerTypeList={partnerTypeList}
+                            // selectedPartnerType={partnerType}
 							downloadPopup={true}
                             isDownload={true}
                             handlePartnerChange={handlePartnerChange}
@@ -685,15 +684,15 @@ const ConsolidatedScans = (Props: any) => {
                 </div>
                 <div className="row">
                         <div className = "col-sm-6">
-                            <OverallScans allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
+                            <OverallInventory allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
 							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />
                         </div>
                         <div className = "col-sm-6">
                             <div>
-                                <ProductBrandList selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
+                                <BrandwiseInventory selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
                             </div>
                             <div>
-                                <ProductList selectedProductList = {scannedProducts} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
+                                <ProductwiseInventory selectedProductList = {scannedProducts} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
                             </div>
                         </div>
                 </div>
@@ -702,5 +701,5 @@ const ConsolidatedScans = (Props: any) => {
     )
 }
 
-export default ConsolidatedScans;
+export default ConsolidatedInventory;
 

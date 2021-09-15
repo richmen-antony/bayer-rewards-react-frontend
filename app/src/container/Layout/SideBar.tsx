@@ -257,6 +257,23 @@ class Sidebar extends Component<Props, States> {
                         <span> Consolidated Scans </span>
                       </Link>
                     </li>
+
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("consolidatedScans") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/inventory"
+                        onClick={() => this.setActiveTab("inventory")}
+                      >
+                        <img src={consolidatescans} alt="Inventory" width="16" />{" "}
+                        <span> Inventory </span>
+                      </Link>
+                    </li>
                   </>
                 )}
                   
