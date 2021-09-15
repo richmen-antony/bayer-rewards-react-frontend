@@ -343,10 +343,11 @@ const ConsolidatedScans = (Props: any) => {
 
 	const download = (type:string) => {
 		let data = {
-			countrycode : userData?.countrycode,
-			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			downloadtype  : type,
-			isfiltered : isFiltered
+			countrycode  : userData?.countrycode,
+			partnertype  : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+			downloadtype : type,
+			searchtext   : searchText || null,
+			isfiltered   : isFiltered
 		};
 		let filteredDatas = {};
 		if(isFiltered) {
