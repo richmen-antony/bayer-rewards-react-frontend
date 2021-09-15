@@ -119,7 +119,7 @@
 
 /* width */
 ::-webkit-scrollbar {
-  width: 2px !important;
+  width: 3px !important;
 }
 
 /* Handle */
@@ -400,10 +400,22 @@ cus-btn-consolidatedscanlog-filter[disabled] {
   border: 1px solid grey;
   border-radius: 10px;
   padding: 5px;
+  font-size: 12px;
+  font-family: "appRegular" !important;
+  vertical-align: middle;
 }
 .consolidated-totals > div {
   width: 100px;
   text-align: right;
+}
+.bottom-table.table td,
+.table th,
+.bottom-table.table thead th {
+  border-top: 0px;
+  border-bottom: 0px;
+}
+.table.bottom-table {
+  margin-bottom: 0.5rem;
 }
 
 // .brandTable {
@@ -513,12 +525,18 @@ cus-btn-consolidatedscanlog-filter[disabled] {
   }
 }
 
+// @media only screen and (max-width: 2480px) {
+//   .consolidatedSales-table {
+//     height: 56vh !important;
+//   }
+// }
+
 @media only screen and (min-width: 2560px) and (max-width: 2880px) {
   .consolidatedSales-container {
     height: 80vh;
   }
   .consolidatedSales-table {
-    height: 71vh !important;
+    height: 72vh !important;
   }
   .consolidatedSales-table.scannedbrands {
     height: 35vh !important;

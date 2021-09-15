@@ -4,6 +4,9 @@ import {screen , fireEvent, within,cleanup, render, getAllByRole} from '@testing
 import userEvent from '@testing-library/user-event';
 import CreateUser from "../components/users/createUser";
 import {Dropdown} from "../utility/widgets/dropdown";
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from "react-redux";
+import { store } from "../redux/store/index";
 // import getGeographicFields from "../components/users/createUser";
 
 
@@ -33,7 +36,13 @@ describe('Create User component tests', () => {
     beforeEach(() => {
         container = document.createElement('div');
         document.body.appendChild(container);
-        ReactDOM.render(<CreateUser />, container);
+        ReactDOM.render(
+            <Provider store={store}>
+            <BrowserRouter>
+              <CreateUser />
+            </BrowserRouter>
+            </Provider>, 
+          container);
     })
 
     afterEach(() => {

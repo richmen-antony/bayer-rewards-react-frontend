@@ -39,122 +39,121 @@ describe("Order Histroy component tests", () => {
 	it("check the right header column values", () => {
 		const table = screen.getByRole("table");
 		const [columnNames, ...rows] = within(table).getAllByRole("rowgroup");
-		within(columnNames).getByText("ORDER ID");
-		within(columnNames).getByText("RETAILER NAME/ID");
-		within(columnNames).getByText("INTENDED QTY");
-		within(columnNames).getByText("ORDERED QTY");
-		within(columnNames).getByText("TOTAL COST");
-		within(columnNames).getByText("ADVISOR NAME/ID");
-		within(columnNames).getByText("FARMER NAME/ID");
-		within(columnNames).getByText("STATUS");
-		within(columnNames).getByText("UPDATED DATE");
-	});
-	it("Date picker selection order date is valid format DD-MM-YYYY", () => {
-        Object.defineProperty(window, 'getComputedStyle', {
-            value: () => ({
-                paddingLeft: 0,
-                paddingRight: 0,
-                paddingTop: 0,
-                paddingBottom: 0,
-                marginLeft: 0,
-                marginRight: 0,
-                marginTop: 0,
-                marginBottom: 0,
-                borderBottomWidth: 0,
-                borderTopWidth: 0,
-                borderRightWidth: 0,
-                borderLeftWidth: 0
-            })
-        });
-        const fromDate:any = screen.getByLabelText(/Ordered Date/i);
-        fireEvent.click(fromDate);
-        fireEvent.change(fromDate, { target: { value: "29-10-2020" } });
-        expect(fromDate.value).toBe("29-10-2020");
-	});
-	it("Date picker invalid order date DD/MM/YYYY ", () => {
-        const fromDate:any = screen.getByLabelText(/Ordered Date/i);
-        fireEvent.click(fromDate);
-        fireEvent.change(fromDate, { target: { value: "29/10/2020" } });
-        expect(fromDate.value).toBe("29/10/2020");
-	});
-	it("Date picker empty value ", () => {
-        const fromDate:any = screen.getByLabelText(/Ordered Date/i);
-        fireEvent.click(fromDate);
-        fireEvent.change(fromDate, { target: { value: "" } });
-        expect(fromDate.value).toBe("");
-	});
-	it("Ordered Date to check the valid date format DD-MM-YYYY  ", () => {
-        const fromDate:any = screen.getByLabelText(/Ordered Date/i);
-        fireEvent.click(fromDate);
-		//enter the invalid date format
-        fireEvent.change(fromDate, { target: { value: "March 29,2021" } });
-		//expect valid format
-        expect(fromDate.value).toBe("29-03-2021");
-	});
+		within(columnNames).getByText("LABEL/BATCH ID");
+		within(columnNames).getByText("CUSTOMER NAME/ID");
+		within(columnNames).getByText("PRODUCT NAME");
+		within(columnNames).getByText("CHANNEL TYPE");
+		within(columnNames).getByText("SCANNED ON");
+		within(columnNames).getByText("SCANNED BY");
+		within(columnNames).getByText("EXPIRY DATE");
 
-	it("Date picker selection Last updated date is valid format DD-MM-YYYY", () => {
-        const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
-        fireEvent.click(fromDate);
-        fireEvent.change(fromDate, { target: { value: "29-10-2020" } });
-        expect(fromDate.value).toBe("29-10-2020");
 	});
-	it("Date picker invalid Last updated date DD/MM/YYYY ", () => {
-        const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
-        fireEvent.click(fromDate);
-        fireEvent.change(fromDate, { target: { value: "29/10/2020" } });
-        expect(fromDate.value).toBe("29/10/2020");
-	});
-	it("Date picker empty value ", () => {
-        const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
-        fireEvent.click(fromDate);
-        fireEvent.change(fromDate, { target: { value: "" } });
-        expect(fromDate.value).toBe("");
-	});
-	it(" Last Updated Date to check the valid date format DD-MM-YYYY  ", () => {
-        const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
-        fireEvent.click(fromDate);
-		//enter the invalid date format
-        fireEvent.change(fromDate, { target: { value: "March 29,2021" } });
-		//expect valid format
-        expect(fromDate.value).toBe("29-03-2021");
-	});
-	it("Check farmer dropdown element is defined",()=>{
-		const farmerSelect = screen.getByTestId(/farmer-test/i);
-		expect(farmerSelect).toBeDefined();
-		// const allOption = screen.getByText(/All/i);
-		// userEvent.selectOptions(farmerSelect, [allOption]);
-	})
-	it("Check farmer dropdown element is not null",()=>{
-		const farmerSelect = screen.getByTestId(/farmer-test/i);
-        expect(farmerSelect).not.toBeNull();
-	})
-	it("Check farmer dropdown element is appears",()=>{
-		const farmerSelect = screen.getByTestId(/farmer-test/i);
-        expect(farmerSelect).toBeInTheDocument()
-	})
-	it("Check farmer dropdown element is default value",()=>{
-		let options:any = screen.getAllByTestId('ALL')
-		expect(options[0].selected).toBeTruthy();
-	})
+	// it("Date picker selection order date is valid format DD-MM-YYYY", () => {
+    //     Object.defineProperty(window, 'getComputedStyle', {
+    //         value: () => ({
+    //             paddingLeft: 0,
+    //             paddingRight: 0,
+    //             paddingTop: 0,
+    //             paddingBottom: 0,
+    //             marginLeft: 0,
+    //             marginRight: 0,
+    //             marginTop: 0,
+    //             marginBottom: 0,
+    //             borderBottomWidth: 0,
+    //             borderTopWidth: 0,
+    //             borderRightWidth: 0,
+    //             borderLeftWidth: 0
+    //         })
+    //     });
+    //     const fromDate:any = screen.getByLabelText(/Ordered Date/i);
+    //     fireEvent.click(fromDate);
+    //     fireEvent.change(fromDate, { target: { value: "29-10-2020" } });
+    //     expect(fromDate.value).toBe("29-10-2020");
+	// });
+	// it("Date picker invalid order date DD/MM/YYYY ", () => {
+    //     const fromDate:any = screen.getByLabelText(/Ordered Date/i);
+    //     fireEvent.click(fromDate);
+    //     fireEvent.change(fromDate, { target: { value: "29/10/2020" } });
+    //     expect(fromDate.value).toBe("29/10/2020");
+	// });
+	// it("Date picker empty value ", () => {
+    //     const fromDate:any = screen.getByLabelText(/Ordered Date/i);
+    //     fireEvent.click(fromDate);
+    //     fireEvent.change(fromDate, { target: { value: "" } });
+    //     expect(fromDate.value).toBe("");
+	// });
+	// it("Ordered Date to check the valid date format DD-MM-YYYY  ", () => {
+    //     const fromDate:any = screen.getByLabelText(/Ordered Date/i);
+    //     fireEvent.click(fromDate);
+	// 	//enter the invalid date format
+    //     fireEvent.change(fromDate, { target: { value: "March 29,2021" } });
+	// 	//expect valid format
+    //     expect(fromDate.value).toBe("29-03-2021");
+	// });
+
+	// it("Date picker selection Last updated date is valid format DD-MM-YYYY", () => {
+    //     const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
+    //     fireEvent.click(fromDate);
+    //     fireEvent.change(fromDate, { target: { value: "29-10-2020" } });
+    //     expect(fromDate.value).toBe("29-10-2020");
+	// });
+	// it("Date picker invalid Last updated date DD/MM/YYYY ", () => {
+    //     const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
+    //     fireEvent.click(fromDate);
+    //     fireEvent.change(fromDate, { target: { value: "29/10/2020" } });
+    //     expect(fromDate.value).toBe("29/10/2020");
+	// });
+	// it("Date picker empty value ", () => {
+    //     const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
+    //     fireEvent.click(fromDate);
+    //     fireEvent.change(fromDate, { target: { value: "" } });
+    //     expect(fromDate.value).toBe("");
+	// });
+	// it(" Last Updated Date to check the valid date format DD-MM-YYYY  ", () => {
+    //     const fromDate:any = screen.getByLabelText(/Last Updated Date/i);
+    //     fireEvent.click(fromDate);
+	// 	//enter the invalid date format
+    //     fireEvent.change(fromDate, { target: { value: "March 29,2021" } });
+	// 	//expect valid format
+    //     expect(fromDate.value).toBe("29-03-2021");
+	// });
+	// it("Check farmer dropdown element is defined",()=>{
+	// 	const farmerSelect = screen.getByTestId(/farmer-test/i);
+	// 	expect(farmerSelect).toBeDefined();
+	// 	// const allOption = screen.getByText(/All/i);
+	// 	// userEvent.selectOptions(farmerSelect, [allOption]);
+	// })
+	// it("Check farmer dropdown element is not null",()=>{
+	// 	const farmerSelect = screen.getByTestId(/farmer-test/i);
+    //     expect(farmerSelect).not.toBeNull();
+	// })
+	// it("Check farmer dropdown element is appears",()=>{
+	// 	const farmerSelect = screen.getByTestId(/farmer-test/i);
+    //     expect(farmerSelect).toBeInTheDocument()
+	// })
+	// it("Check farmer dropdown element is default value",()=>{
+	// 	let options:any = screen.getAllByTestId('ALL')
+	// 	expect(options[0].selected).toBeTruthy();
+	// })
 	
 	// Retailer select dropdown
-	it("Check Retailer dropdown element is defined",()=>{
-		const retailerSelect = screen.getByTestId(/retailer-test/i);
-		expect(retailerSelect).toBeDefined();
+	// it("Check Retailer dropdown element is defined",()=>{
+	// 	const retailerSelect = screen.getByTestId(/retailer-test/i);
+	// 	expect(retailerSelect).toBeDefined();
 	
-	})
-	it("Check Retailer dropdown element is not null",()=>{
-		const retailerSelect = screen.getByTestId(/retailer-test/i);
-        expect(retailerSelect).not.toBeNull();
-	})
-	it("Check Retailer dropdown element is appears",()=>{
-		const retailerSelect = screen.getByTestId(/retailer-test/i);
-        expect(retailerSelect).toBeInTheDocument()
-	})
-	it("Check Retailer dropdown element is default value",()=>{
-		let options:any = screen.getAllByTestId('ALL')
-		expect(options[0].selected).toBeTruthy();
-	})
+	// })
+	// it("Check Retailer dropdown element is not null",()=>{
+	// 	const retailerSelect = screen.getByTestId(/retailer-test/i);
+    //     expect(retailerSelect).not.toBeNull();
+	// })
+	// it("Check Retailer dropdown element is appears",()=>{
+	// 	const retailerSelect = screen.getByTestId(/retailer-test/i);
+    //     expect(retailerSelect).toBeInTheDocument()
+	// })
+	// it("Check Retailer dropdown element is default value",()=>{
+	// 	let options:any = screen.getAllByTestId('ALL')
+	// 	expect(options[0].selected).toBeTruthy();
+	// })
 	it('Download button is in the document', async () => {
 		Object.defineProperty(window, 'getComputedStyle', {
 			value: () => ({
@@ -179,7 +178,7 @@ describe("Order Histroy component tests", () => {
     });
 	it('renders all buttons', async () => {
 		const btn = container.querySelectorAll("button");
-		expect(btn).toHaveLength(13)
+		expect(btn).toHaveLength(23)
 	  })
 	  it('Reset all button is in the document', async () => {
 		const resetAllBtn = screen.getByTestId("reset-all");

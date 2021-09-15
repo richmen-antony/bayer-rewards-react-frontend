@@ -54,11 +54,9 @@ class Sidebar extends Component<Props, States> {
     });
     //localStorage
     let availableFeature: any = userData?.features;
-    let truthyValues: any = Object.keys(availableFeature).filter(
+    let truthyValues: any = availableFeature &&Object.keys(availableFeature).filter(
       (e) => availableFeature[e]
     );
-    console.log("truthyValues", availableFeature);
-
     this.setState({
       availableSideContent: truthyValues,
     });
@@ -125,7 +123,7 @@ class Sidebar extends Component<Props, States> {
                   >
                     <img
                       src={homeIcon}
-                      alt={NoImage}
+                      alt={"dashboard"}
                       width="16"
                       data-testid="dashboard-icon"
                     />{" "}
@@ -360,7 +358,7 @@ class Sidebar extends Component<Props, States> {
                 <Link to="/landing" onClick={this.logout}>
                   <img
                     src={logoutIcon}
-                    alt={NoImage}
+                    alt={"logout"}
                     width="16"
                     data-testid="logout-icon"
                   />{" "}
