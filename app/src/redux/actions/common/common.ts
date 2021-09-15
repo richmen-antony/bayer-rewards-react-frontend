@@ -12,7 +12,7 @@ import {
   SET_GEOLOCATION_LEVEL1_OPTIONS
 } from '../../actionTypes/commonTypes';
 import Authorization from "../../../utility/authorization";
-import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
+import { downloadCsvFile } from "../../../utility/helper";
 
 const userDetails = Authorization.getAuthUser();
 export const getGeographicLevel1Options = () => {

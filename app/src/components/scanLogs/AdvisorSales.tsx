@@ -3,7 +3,7 @@ import AUX from "../../hoc/Aux_";
 import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
 import moment from "moment";
-import SimpleDialog from "../../container/components/dialog";
+import SimpleDialog from "../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";

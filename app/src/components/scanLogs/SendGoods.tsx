@@ -4,7 +4,7 @@ import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
 import Pagination from "../../utility/widgets/pagination";
 import moment from "moment";
-import SimpleDialog from "../../container/components/dialog";
+import SimpleDialog from "../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -24,10 +24,9 @@ import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
-import Filter from "../../container/grid/Filter";
+import Filter from "../../containers/grid/Filter";
 import { Alert } from "../../utility/widgets/toaster";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
-import ConsolidatedScans from "../consolidatedScans";
 
 type PartnerTypes = {
 	type: String;

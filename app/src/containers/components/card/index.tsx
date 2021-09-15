@@ -43,7 +43,7 @@ export interface StyleProps {
  * rendered with props.
  *
  * @example
- *  import CustomCard from "../../container/components/card";
+ *  import CustomCard from "../../containers/components/card";
  *   // With border and background Color props
  *   <CustomCard icon={icon} border = '1px solid #FFA343' background='#FFF4E7'>
  *       <div style={{fontSize : '24px'}}>108</div>

@@ -4,12 +4,12 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dropdown from "../../../utility/widgets/dropdown";
-import Stepper from "../../../container/components/stepper/Stepper";
+import Stepper from "../../../containers/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
 import { Alert } from "../../../utility/widgets/toaster";
-import CustomSwitch from "../../../container/components/switch";
+import CustomSwitch from "../../../containers/components/switch";
 import { apiURL } from "../../../utility/base/utils/config";
 import {
   invokeGetAuthService,
@@ -28,18 +28,18 @@ import RtButton from "../../../assets/icons/right_btn.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import Loader from "../../../utility/widgets/loader";
 import AUX from "../../../hoc/Aux_";
-import AdminPopup from "../../../container/components/dialog/AdminPopup";
+import AdminPopup from "../../../containers/components/dialog/AdminPopup";
 import _ from "lodash";
-import RouterPrompt from "../../../container/prompt";
-import { AppContext } from "../../../container/context";
+import RouterPrompt from "../../../containers/prompt";
+import { AppContext } from "../../../containers/context";
 import AreaSalesManager from "./AreaSalesManager";
 import { connect } from "react-redux";
 import { getGeographicLevel1Options } from "../../../redux/actions";
 
-type Props = {
-	location?: any;
-	history?: any;
-};
+// type Props = {
+// 	location?: any;
+// 	history?: any;
+// };
 
 const role = [
   { value: "RETAILER", text: "Retailer" },
@@ -2545,7 +2545,6 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
       billingstreetErr,
       billingzipcodeErr,
       accInfo,
-      isLoader,
       asaDatas,
       userroleType
     } = this.state;

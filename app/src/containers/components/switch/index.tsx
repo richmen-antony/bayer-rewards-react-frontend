@@ -17,7 +17,7 @@ interface Styles extends Partial<Record<SwitchClassKey, string>> {
  * rendered with props.
  *
  * @example
- *  import CustomSwitch from '../../../container/components/switch';
+ *  import CustomSwitch from '../../../containers/components/switch';
  *  this.state = {
  *    accInfo = 'true'
  *  }

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router";
-import AdminPopup from "../../container/components/dialog/AdminPopup";
+import AdminPopup from "../../containers/components/dialog/AdminPopup";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";

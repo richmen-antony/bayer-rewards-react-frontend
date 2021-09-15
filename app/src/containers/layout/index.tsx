@@ -1,8 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import AUX from "../../hoc/Aux_";
-import TopBar from "../Layout/TopBar";
-import SideBar from "../Layout/SideBar";
+import TopBar from "./TopBar";
+import SideBar from "./SideBar";
 import Authorization from "../../utility/authorization";
 
 function Layout(props: any) {

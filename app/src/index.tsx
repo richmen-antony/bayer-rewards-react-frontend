@@ -8,7 +8,7 @@ import { store } from "./redux/store/index";
 import PrivateRoute from "./routes/privateRoute";
 import PublicRoute from "./routes/publicRoute";
 import { ROUTE } from "./routes/routes";
-import Layout from "./container/Layout";
+import Layout from "./containers/layout";
 import Loader from "./utility/widgets/loader";
 import { ToastContainer } from "react-toastify";
 // import { clearLocalStorageData } from "./utility/base/localStore";
@@ -20,7 +20,7 @@ import "./assets/scss/index.scss";
 // To enable isRemember Need to logged out
 import { getLocalStorageData } from "./utility/base/localStore";
 import Authorization from "./utility/authorization";
-import AppProvider from "./container/context";
+import AppProvider from "./containers/context";
 
 /**
  * Create the routes dynamically

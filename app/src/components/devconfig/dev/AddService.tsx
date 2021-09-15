@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AdminPopup from "../../../container/components/dialog";
+import AdminPopup from "../../../containers/components/dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";

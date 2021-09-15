@@ -1,11 +1,11 @@
 import React ,{Fragment,useState}from "react";
 import Download from "../../../assets/icons/download.svg";
 import NoImage from "../../../assets/images/Group_4736.svg";
-import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
+import { Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import "../../../assets/scss/download.scss";
 
 function CustomDownload(props: any) {
-	const {download, downloadPopup,overallDownload,brandWiseDownload,productWiseDownload ,isHelpText} = props;
+	const {download, downloadPopup,isHelpText} = props;
 	const [dropdownOpenDownload,settoggleDownload]= useState<boolean>(false);
 
 	const toggleDownload =()=>{

@@ -1,8 +1,8 @@
-import React, { useEffect, useState,useCallback } from "react";
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AUX from "../../hoc/Aux_";
 import "../../assets/scss/consolidatedSales.scss";
-import SimpleDialog from "../../container/components/dialog";
+import SimpleDialog from "../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -14,32 +14,32 @@ import "react-datepicker/dist/react-datepicker.css";
 import { CustomButton } from "../../utility/widgets/button";
 
 const DialogContent = withStyles((theme: Theme) => ({
-	root: {
-		padding: theme.spacing(2),
-	},
+  root: {
+    padding: theme.spacing(2),
+  },
 }))(MuiDialogContent);
 
 const DialogActions = withStyles((theme: Theme) => ({
-	root: {
-		margin: 0,
-		padding: theme.spacing(1),
-		justifyContent: "center",
-		// boxShadow: "0px 3px 6px #c7c7c729",
-		// border: "1px solid #89D329",
-		// borderRadius: "50px",
-	},
-	// button: {
-	//   boxShadow: "0px 3px 6px #c7c7c729",
-	//   border: "1px solid #89D329",
-	//   borderRadius: "50px",
-	// },
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+    justifyContent: "center",
+    // boxShadow: "0px 3px 6px #c7c7c729",
+    // border: "1px solid #89D329",
+    // borderRadius: "50px",
+  },
+  // button: {
+  //   boxShadow: "0px 3px 6px #c7c7c729",
+  //   border: "1px solid #89D329",
+  //   borderRadius: "50px",
+  // },
 }))(MuiDialogActions);
 
 export type OverallScanProps = {
   allConsolidatedScans: any;
   getSelectedBrands: any;
   selectedDistributor: any;
-  handleSort :Function;
+  handleSort: Function;
   isAsc: Boolean;
   tableCellIndex: any;
   tableName?: string;
@@ -62,103 +62,137 @@ export const OverallScans = ({
   retailerPopupData,
   partnerType,
   setSearchText,
-  setIsFiltered
-}:OverallScanProps) => {
-  let totalReceivedGoods:number = 0;
-  let totalSendGoods:number = 0;
-  let totalWalkInSales:number = 0;
-  let totalAdvisorSales:number = 0;
-  const geoLevelsName        = useSelector(({common}:any) => common?.levelsName);
-  
+  setIsFiltered,
+}: OverallScanProps) => {
+  let totalReceivedGoods: number = 0;
+  let totalSendGoods: number = 0;
+  let totalWalkInSales: number = 0;
+  let totalAdvisorSales: number = 0;
+  const geoLevelsName = useSelector(({ common }: any) => common?.levelsName);
+
   const [showPopup, setshowPopup] = useState(false);
 
   const handleClosePopup = () => {
     setshowPopup(false);
   };
-  
+
   const showRetailerPopup = (e: any) => {
     e.stopPropagation();
-    setshowPopup(true)
+    setshowPopup(true);
     // this.setState<never>({
     //   [key]: true,
     // });
   };
 
-  const filterScans = (id:any) => {
-    console.log('filterdid', id)
+  const filterScans = (id: any) => {
+    console.log("filterdid", id);
     setSearchText(id);
     setIsFiltered(true);
     handleClosePopup();
-  }
+  };
 
   return (
     <AUX>
       <div className="">
-            <label className="font-weight-bold scanlabel">overall consolidated scans</label>
-            <>
-            <div className="consolidatedSales-table overallscan" style={{ height: "368px", overflow: "scroll", overflowY: "auto" }}>
-              <table className="table scanTable">
-                <thead>
-                  <tr>
-                  <th style= {{width: '25%'}}
-                    onClick={(e) => handleSort(e, "firstname", allConsolidatedScans, isAsc,"overallScans")}
-                    key="firstname">PARTNER NAME/ID
-                      {
-                        (tableCellIndex === 0 && tableName === 'overallScans') ? (
-                          <i
-                            className={`fas ${
-                              isAsc ? "fa-sort-down" : "fa-sort-up"
-                            } ml-3`}
-                          ></i>
-                        ) : null
-                      }
-
-                    </th>
-                    <th>RECEIVE GOODS</th>
-                    <th>SEND GOODS</th>
-                    <th>S2F-WALK-IN-SALES</th>
-                    <th>S2F-ADVISOR SALES</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allConsolidatedScans?.length > 0 ? (
-                    allConsolidatedScans?.map((item: any, idx: number) => {
-                      totalReceivedGoods = totalReceivedGoods + (item.RECEIVE_GOOD);
-                      totalSendGoods = totalSendGoods + (item.SEND_GOOD);
-                      totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
-                      totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
-                      return (
-                        <tr
-                          style={{ cursor: "pointer", backgroundColor : selectedDistributor === idx ? '#F5FCFF' : ''}}
-                          key={idx}
-                          onClick = {()=>getSelectedBrands(item.soldbyid, idx, 'selected',item.productbrand)}
-                        >
+        <label className="font-weight-bold scanlabel">
+          overall consolidated scans
+        </label>
+        <>
+          <div
+            className="consolidatedSales-table overallscan"
+            style={{ height: "368px", overflow: "scroll", overflowY: "auto" }}
+          >
+            <table className="table scanTable">
+              <thead>
+                <tr>
+                  <th
+                    style={{ width: "25%" }}
+                    onClick={(e) =>
+                      handleSort(
+                        e,
+                        "firstname",
+                        allConsolidatedScans,
+                        isAsc,
+                        "overallScans"
+                      )
+                    }
+                    key="firstname"
+                  >
+                    PARTNER NAME/ID
+                    {tableCellIndex === 0 && tableName === "overallScans" ? (
+                      <i
+                        className={`fas ${
+                          isAsc ? "fa-sort-down" : "fa-sort-up"
+                        } ml-3`}
+                      ></i>
+                    ) : null}
+                  </th>
+                  <th>RECEIVE GOODS</th>
+                  <th>SEND GOODS</th>
+                  <th>S2F-WALK-IN-SALES</th>
+                  <th>S2F-ADVISOR SALES</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allConsolidatedScans?.length > 0 ? (
+                  allConsolidatedScans?.map((item: any, idx: number) => {
+                    totalReceivedGoods = totalReceivedGoods + item.RECEIVE_GOOD;
+                    totalSendGoods = totalSendGoods + item.SEND_GOOD;
+                    totalWalkInSales = totalWalkInSales + item.S2F_WALKIN;
+                    totalAdvisorSales = totalAdvisorSales + item.S2F_ADVISOR;
+                    return (
+                      <tr
+                        style={{
+                          cursor: "pointer",
+                          backgroundColor:
+                            selectedDistributor === idx ? "#F5FCFF" : "",
+                        }}
+                        key={idx}
+                        onClick={() =>
+                          getSelectedBrands(
+                            item.soldbyid,
+                            idx,
+                            "selected",
+                            item.productbrand
+                          )
+                        }
+                      >
                         <td>
-                              {_.startCase(_.toLower(item.firstname))+' '+_.startCase(_.toLower(item.lastname))}
-                              <img className="retailer-icon" src={ExpandWindowImg} alt=""  onClick={(event) => {
-                            showRetailerPopup(event);
-                            handleUpdateRetailer(item);
-                          }}/><br />
-                              <label style={{fontSize:'9px'}}>{item.soldbyid}</label>
-                          </td>
-                          <td className="text-right">{item.RECEIVE_GOOD}</td>
-                          <td className="text-right">{item.SEND_GOOD}</td>
-                          <td className="text-right">{item.S2F_WALKIN}</td>
-                          <td className="text-right">{item.S2F_ADVISOR}</td>
-                        </tr>
-                      );
-                    })
-                  ) :  (
-                    <tr style={{ height: "250px" }}>
-                      <td colSpan={10} className="no-records">
-                        No records found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {/* {allConsolidatedScans?.length > 0 &&
+                          {_.startCase(_.toLower(item.firstname)) +
+                            " " +
+                            _.startCase(_.toLower(item.lastname))}
+                          <img
+                            className="retailer-icon"
+                            src={ExpandWindowImg}
+                            alt=""
+                            onClick={(event) => {
+                              showRetailerPopup(event);
+                              handleUpdateRetailer(item);
+                            }}
+                          />
+                          <br />
+                          <label style={{ fontSize: "9px" }}>
+                            {item.soldbyid}
+                          </label>
+                        </td>
+                        <td className="text-right">{item.RECEIVE_GOOD}</td>
+                        <td className="text-right">{item.SEND_GOOD}</td>
+                        <td className="text-right">{item.S2F_WALKIN}</td>
+                        <td className="text-right">{item.S2F_ADVISOR}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr style={{ height: "250px" }}>
+                    <td colSpan={10} className="no-records">
+                      No records found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {/* {allConsolidatedScans?.length > 0 &&
             <div className ="consolidated-sum-total">
               <table style={{ width: '100%', marginTop: "5px"}}>
                 <tbody>
@@ -191,19 +225,26 @@ export const OverallScans = ({
               </table>
             </div>
           } */}
-             {allConsolidatedScans?.length > 0 && (
-          <div className="consolidated-totals">
-            <div style={{ textAlign: "center" }}>
-              Total({allConsolidatedScans?.length})
+          {allConsolidatedScans?.length > 0 && (
+            <div className="consolidated-totals overall">
+              <div style={{ paddingLeft: "3px", textAlign: "left" }}>
+                Total({allConsolidatedScans?.length})
+              </div>
+              <div className="second-div" style={{ paddingRight: "0px" }}>
+                {totalReceivedGoods}
+              </div>
+              <div className="third-div" style={{ paddingRight: "11px" }}>
+                {totalSendGoods}
+              </div>
+              <div className="fourth-div" style={{ paddingRight: "4px" }}>
+                {totalWalkInSales}
+              </div>
+              <div className="last-div" style={{ width: "116px" }}>
+                {totalAdvisorSales}
+              </div>
             </div>
-            <div style={{ marginRight: "2px" }}>{totalReceivedGoods}</div>
-            <div style={{ marginRight: "37px" }}>{totalSendGoods}</div>
-            <div style={{ marginRight: "33px" }}>{totalWalkInSales}</div>
-            <div style={{ marginRight: "11px" }}>{totalAdvisorSales}</div>
-          </div>
-        )}
-         
-          </>
+          )}
+        </>
         {/* <div>
           <Pagination
             totalData={totalData}
@@ -217,7 +258,11 @@ export const OverallScans = ({
         </div> */}
       </div>
       {showPopup ? (
-        <SimpleDialog open={showPopup} onClose={handleClosePopup} maxWidth={"800px"}>
+        <SimpleDialog
+          open={showPopup}
+          onClose={handleClosePopup}
+          maxWidth={"800px"}
+        >
           <DialogContent>
             <div className="popup-container popup-partner">
               <div className="img">
@@ -226,7 +271,11 @@ export const OverallScans = ({
               <div className="popup-content">
                 <div className={`popup-title`}>
                   <p>
-                    {retailerPopupData?.firstname} {retailerPopupData.lastname}{" "}, {partnerType.type === 'Retailers' ? 'Retailer' : 'Distributor'}
+                    {retailerPopupData?.firstname} {retailerPopupData.lastname}{" "}
+                    ,{" "}
+                    {partnerType.type === "Retailers"
+                      ? "Retailer"
+                      : "Distributor"}
                   </p>
                 </div>
                 <div className="popup-content-row">
@@ -243,18 +292,24 @@ export const OverallScans = ({
                     <p>{retailerPopupData.phonenumber}</p>
                   </div>
                   {geoLevelsName?.length > 0 &&
-                    geoLevelsName?.map((location: any, locationIndex: number) => {
-                      let geolevels = 'geolevel'+locationIndex;
-                      let nameCapitalized = (location === 'add' || location === 'epa') ? _.toUpper(location) :  _.startCase(_.toLower(location));
-                      return (
-                        (locationIndex > 0 && locationIndex < 6) && (
-                        <div className="content-list" key={locationIndex}>
-                          <label>{nameCapitalized}</label>
-                          <p>{retailerPopupData[geolevels]}</p>
-                        </div>
-                        )
-                      );
-                    })}
+                    geoLevelsName?.map(
+                      (location: any, locationIndex: number) => {
+                        let geolevels = "geolevel" + locationIndex;
+                        let nameCapitalized =
+                          location === "add" || location === "epa"
+                            ? _.toUpper(location)
+                            : _.startCase(_.toLower(location));
+                        return (
+                          locationIndex > 0 &&
+                          locationIndex < 6 && (
+                            <div className="content-list" key={locationIndex}>
+                              <label>{nameCapitalized}</label>
+                              <p>{retailerPopupData[geolevels]}</p>
+                            </div>
+                          )
+                        );
+                      }
+                    )}
                   <div className="content-list">
                     <label>Postal Code</label>
                     {/* <p>{retailerPopupData.billingzipcode}</p> */}
@@ -273,7 +328,7 @@ export const OverallScans = ({
                 padding: "7px",
                 border: "1px solid  #7eb343",
               }}
-              handleClick={()=>filterScans(retailerPopupData.username)}
+              handleClick={() => filterScans(retailerPopupData.username)}
             />
           </DialogActions>
         </SimpleDialog>
@@ -282,6 +337,6 @@ export const OverallScans = ({
       )}
     </AUX>
   );
-}
+};
 
 export default OverallScans;

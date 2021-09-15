@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { screen,cleanup } from "@testing-library/react";
-import Sidebar from "../container/Layout/SideBar";
+import Sidebar from "../containers/layout/SideBar";
 import { BrowserRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 

@@ -4,11 +4,11 @@ import _ from "lodash";
 import "../../assets/scss/consolidatedSales.scss";
 
 export type ProductBrandProps = {
-  selectedBrandList : Array<object>;
-  getSelectedProducts : Function;
-  distributorName : String;
-  selectedBrand : Number;
-  handleSort :Function;
+  selectedBrandList: Array<object>;
+  getSelectedProducts: Function;
+  distributorName: String;
+  selectedBrand: Number;
+  handleSort: Function;
   isAsc: Boolean;
   tableCellIndex: any;
   tableName?: string;
@@ -22,72 +22,94 @@ const ProductBrandList = ({
   handleSort,
   isAsc,
   tableCellIndex,
-  tableName
-}:ProductBrandProps) => {
-  let totalReceivedGoods:number = 0;
-  let totalSendGoods:number = 0;
-  let totalWalkInSales:number = 0;
-  let totalAdvisorSales:number = 0;
+  tableName,
+}: ProductBrandProps) => {
+  let totalReceivedGoods: number = 0;
+  let totalSendGoods: number = 0;
+  let totalWalkInSales: number = 0;
+  let totalAdvisorSales: number = 0;
   return (
     <AUX>
-          <div className="">
-            <label className="font-weight-bold scanlabel">product brand wise scans - {_.startCase(_.toLower(distributorName))}</label>
-            <div className="consolidatedSales-table scannedbrands"  style={{height: '23vh', overflowY: 'auto' }}>
-              <table className="table brandTable">
-                <thead>
-                  <tr>
-                  <th 
-                     onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc,"scannedBrands")}
-                     style={{width:'15%'}}
-                      key="productbrand">BRAND
-                      {
-                         (tableCellIndex === 0 && tableName === 'scannedBrands') ? (
-                            <i
-                              className={`fas ${
-                                isAsc ? "fa-sort-down" : "fa-sort-up"
-                              } ml-3`}
-                            ></i>
-                          ) : null
-                       }
-                      </th>
-                      <th>RECEIVE GOODS</th>
-                      <th>SEND GOODS</th>
-                      <th>S2F-WALK-IN-SALES</th>
-                      <th>S2F-ADVISOR SALES</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedBrandList?.length > 0 ? (
-                    selectedBrandList?.map((item: any, idx: number) => {
-                      totalReceivedGoods = totalReceivedGoods + (item.RECEIVE_GOOD);
-                      totalSendGoods = totalSendGoods + (item.SEND_GOOD);
-                      totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
-                      totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
-                      return (
-                        <tr
-                        style={{ cursor: "pointer", backgroundColor : selectedBrand === idx ? '#F5FCFF' : ''}}
-                          key={idx}
-                          onClick ={()=>getSelectedProducts(item.soldbyid,item.productbrand,idx)}
-                        >
-                            <td>{_.startCase(_.toLower(item.productbrand))}</td>
-                            <td className="text-right">{item.RECEIVE_GOOD}</td>
-                            <td className="text-right">{item.SEND_GOOD}</td>
-                            <td className="text-right">{item.S2F_WALKIN}</td>
-                            <td className="text-right">{item.S2F_ADVISOR}</td>
-                        </tr>
-                      );
-                    })
-                  ) :  (
-                    <tr style={{ height: "110px" }}>
-                      <td colSpan={10} className="no-records">
-                        No records found
-                      </td>
+      <div className="">
+        <label className="font-weight-bold scanlabel">
+          product brand wise scans - {_.startCase(_.toLower(distributorName))}
+        </label>
+        <div
+          className="consolidatedSales-table scannedbrands"
+          style={{ height: "23vh", overflowY: "auto" }}
+        >
+          <table className="table brandTable">
+            <thead>
+              <tr>
+                <th
+                  onClick={(e) =>
+                    handleSort(
+                      e,
+                      "productbrand",
+                      selectedBrandList,
+                      isAsc,
+                      "scannedBrands"
+                    )
+                  }
+                  style={{ width: "15%" }}
+                  key="productbrand"
+                >
+                  BRAND
+                  {tableCellIndex === 0 && tableName === "scannedBrands" ? (
+                    <i
+                      className={`fas ${
+                        isAsc ? "fa-sort-down" : "fa-sort-up"
+                      } ml-3`}
+                    ></i>
+                  ) : null}
+                </th>
+                <th>RECEIVE GOODS</th>
+                <th>SEND GOODS</th>
+                <th>S2F-WALK-IN-SALES</th>
+                <th>S2F-ADVISOR SALES</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedBrandList?.length > 0 ? (
+                selectedBrandList?.map((item: any, idx: number) => {
+                  totalReceivedGoods = totalReceivedGoods + item.RECEIVE_GOOD;
+                  totalSendGoods = totalSendGoods + item.SEND_GOOD;
+                  totalWalkInSales = totalWalkInSales + item.S2F_WALKIN;
+                  totalAdvisorSales = totalAdvisorSales + item.S2F_ADVISOR;
+                  return (
+                    <tr
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor: selectedBrand === idx ? "#F5FCFF" : "",
+                      }}
+                      key={idx}
+                      onClick={() =>
+                        getSelectedProducts(
+                          item.soldbyid,
+                          item.productbrand,
+                          idx
+                        )
+                      }
+                    >
+                      <td>{_.startCase(_.toLower(item.productbrand))}</td>
+                      <td className="text-right">{item.RECEIVE_GOOD}</td>
+                      <td className="text-right">{item.SEND_GOOD}</td>
+                      <td className="text-right">{item.S2F_WALKIN}</td>
+                      <td className="text-right">{item.S2F_ADVISOR}</td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {/* {selectedBrandList?.length > 0 &&
+                  );
+                })
+              ) : (
+                <tr style={{ height: "110px" }}>
+                  <td colSpan={10} className="no-records">
+                    No records found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        {/* {selectedBrandList?.length > 0 &&
             <div className="consolidated-sum-total">
                 <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
@@ -120,19 +142,27 @@ const ProductBrandList = ({
                 </table>
               </div>
             } */}
-             {selectedBrandList?.length > 0 && (
+        {selectedBrandList?.length > 0 && (
           <div className="consolidated-totals">
-            <div style={{ textAlign: "center" }}>
+            <div style={{ paddingLeft: "3px", textAlign: "left" }}>
               Total({selectedBrandList?.length})
             </div>
-            <div style={{ marginRight: "2px" }}>{totalReceivedGoods}</div>
-            <div style={{ marginRight: "37px" }}>{totalSendGoods}</div>
-            <div style={{ marginRight: "33px" }}>{totalWalkInSales}</div>
-            <div style={{ marginRight: "11px" }}>{totalAdvisorSales}</div>
+            <div className="second-div" style={{ paddingRight: "34px" }}>
+              {totalReceivedGoods}
+            </div>
+            <div className="third-div" style={{ paddingRight: "38px" }}>
+              {totalSendGoods}
+            </div>
+            <div className="fourth-div" style={{ paddingRight: "9px" }}>
+              {totalWalkInSales}
+            </div>
+            <div className="last-div" style={{ width: "116px" }}>
+              {totalAdvisorSales}
+            </div>
           </div>
         )}
-         </div>
+      </div>
     </AUX>
   );
-}
+};
 export default ProductBrandList;
