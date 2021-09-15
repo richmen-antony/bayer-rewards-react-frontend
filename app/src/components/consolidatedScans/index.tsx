@@ -345,7 +345,8 @@ const ConsolidatedScans = (Props: any) => {
 		let data = {
 			countrycode : userData?.countrycode,
 			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			downloadtype  : type,
+			downloadtype : type,
+			searchtext : searchText || null,
 			isfiltered : isFiltered
 		};
 		let filteredDatas = {};
