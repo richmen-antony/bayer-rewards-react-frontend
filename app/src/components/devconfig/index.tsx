@@ -1,7 +1,7 @@
 import React from "react";
 import "../../assets/scss/configurations.scss";
 import { connect } from "react-redux";
-import Stepper from "../../container/components/stepper/Stepper";
+import Stepper from "../../containers/components/stepper/Stepper";
 import { apiURL } from "../../utility/base/utils/config";
 import { invokePostService } from "../../utility/base/service";
 import { Alert } from "../../utility/widgets/toaster";

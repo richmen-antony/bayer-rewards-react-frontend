@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SimpleDialog from "../../container/components/dialog";
+import SimpleDialog from "../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import advisorImg from "../../assets/images/advisor.svg";

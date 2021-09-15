@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Dropdown from "../../../utility/widgets/dropdown";
-import CustomSwitch from "../../../container/components/switch";
+import CustomSwitch from "../../../containers/components/switch";
 import { Input } from "../../../utility/widgets/input";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";

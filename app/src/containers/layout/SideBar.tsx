@@ -14,7 +14,7 @@ import NoImage from "../../assets/images/no_image.svg";
 import country from "../../assets/images/country.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import Authorization from "../../utility/authorization";
-import { AppContext } from "../../container/context";
+import { AppContext } from "../context";
 
 type Props = {
   history?: any;

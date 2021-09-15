@@ -16,7 +16,7 @@ import BayerRewardsImg from "../../assets/icons/logo.svg";
 import IndiaFLag from "../../assets/icons/india_flag.svg";
 import MalawiFlag from "../../assets/icons/malawi_flag.svg";
 import Authorization from "../../utility/authorization";
-import { AppContext } from "../../container/context";
+import { AppContext } from "../context";
 
 type Props = {
   history?: any;

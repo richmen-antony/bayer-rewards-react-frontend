@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AUX from "../../hoc/Aux_";
 import "../../assets/scss/consolidatedSales.scss";
-import SimpleDialog from "../../container/components/dialog";
+import SimpleDialog from "../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";

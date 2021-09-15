@@ -14,7 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
-import Filter from "../../container/grid/Filter";
+import Filter from "../../containers/grid/Filter";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import AdvisorSales from "./AdvisorSales";
 import WalkInSales from "./WalkInSales";

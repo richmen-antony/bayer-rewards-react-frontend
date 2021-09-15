@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import AUX from "../../hoc/Aux_";
 import adduser from "../../assets/icons/add-user.svg";
 import userlist from "../../assets/images/user-list.png";
-import CustomCard from "../../container/components/card";
+import CustomCard from "../../containers/components/card";
 import "../../assets/scss/rsmDashboard.scss";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { apiURL } from "../../utility/base/utils/config";

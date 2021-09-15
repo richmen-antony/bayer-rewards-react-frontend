@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import AUX from "../../hoc/Aux_";
-import Filter from "../../container/grid/Filter";
+import Filter from "../../containers/grid/Filter";
 import OverallScans  from './OverallScans';
 import ProductBrandList from './ProductBrandList';
 import ProductList from './ProductList';
@@ -345,8 +345,7 @@ const ConsolidatedScans = (Props: any) => {
 		let data = {
 			countrycode : userData?.countrycode,
 			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			downloadtype : type,
-			searchtext : searchText || null,
+			downloadtype  : type,
 			isfiltered : isFiltered
 		};
 		let filteredDatas = {};

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
-import CustomSwitch from "../../../container/components/switch";
+import CustomSwitch from "../../../containers/components/switch";
 
 import {
   setAnticounterfeitSmsAuthentication,

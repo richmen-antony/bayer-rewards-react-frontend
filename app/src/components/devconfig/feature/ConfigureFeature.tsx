@@ -16,10 +16,7 @@ import { apiURL } from "../../../utility/base/utils/config";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import Loader from "../../../utility/widgets/loader";
 import ArrowIcon from "../../../assets/icons/tick.svg";
-import RtButton from "../../../assets/icons/right_btn.svg";
 import reset from "../../../assets/icons/reset.svg";
-
-import _ from "lodash";
 
 /**
  * Toggle styles
