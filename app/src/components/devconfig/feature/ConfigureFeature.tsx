@@ -15,6 +15,10 @@ import {
 import { apiURL } from "../../../utility/base/utils/config";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import Loader from "../../../utility/widgets/loader";
+import ArrowIcon from "../../../assets/icons/tick.svg";
+import RtButton from "../../../assets/icons/right_btn.svg";
+import reset from "../../../assets/icons/reset.svg";
+
 import _ from "lodash";
 
 /**
@@ -93,8 +97,10 @@ const ConfigureFeature: React.FC = (props) => {
   const [tFeatures, setTFeatures] = useState<any>([]);
   const [webRoles, setWebRoles] = useState([]);
   const [mobileRoles, setMobileRoles] = useState<any>([]);
-  const [webRoleFeatures, setWebRoleFeatures] = useState([]);
+  const [webRoleFeatures, setWebRoleFeatures] = useState<any>([]);
   const [mobileRoleFeatures, setMobileRoleFeatures] = useState([]);
+  const [updateToggleData, setUpdateToggleData] = useState<any>([]);
+  const [showApplyButton, setShowApplyButton] = useState<boolean>(true);
 
   /*
    * Function based on change toggle active or inactive
@@ -177,7 +183,10 @@ const ConfigureFeature: React.FC = (props) => {
       activeButton === "mobile" ? mobileRoleFeatures : webRoleFeatures;
     let toggleButtonStateUpdates: any =
       activeButton === "mobile" ? setMobileRoleFeatures : setWebRoleFeatures;
+
     let data = activeRole.map((value: any) => {
+      setShowApplyButton(false);
+
       if (value.role === event.target.name) {
         return (value = {
           ...value,
@@ -195,48 +204,51 @@ const ConfigureFeature: React.FC = (props) => {
   };
 
   const UpdateData = (role: any, selectedRole: any, selectedRoleValue: any) => {
+    if (activeButton === "web") {
+      let newData: any = {
+        featurename: selectedRole,
+        role: role,
+        isfeatureactive: selectedRoleValue,
+        isweb: true,
+      };
+      setUpdateToggleData([...updateToggleData, newData]);
+    } else {
+      let newData: any = {
+        featurename: selectedRole,
+        role: role,
+        isfeatureactive: selectedRoleValue,
+        ismobile: true,
+      };
+      setUpdateToggleData([...updateToggleData, newData]);
+    }
+  };
+
+  const applyFeature = () => {
+    setIsLoader(true);
     const { updateFeatureToggle } = apiURL;
     let obj: any = getLocalStorageData("userData");
     let userData = JSON.parse(obj);
     let APIdata = {
       countrycode: userData?.countrycode,
       loginuser: userData?.username,
+      data: [...updateToggleData],
     };
-    if (activeButton === "web") {
-      let APIdataWebOrMobile = {
-        data: [
-          {
-            featurename: selectedRole,
-            role: role,
-            isfeatureactive: selectedRoleValue,
-            isweb: true,
-          },
-        ],
-      };
-      APIdata = { ...APIdata, ...APIdataWebOrMobile };
-    } else {
-      let APIdataWebOrMobile = {
-        data: [
-          {
-            featurename: selectedRole,
-            role: role,
-            isfeatureactive: selectedRoleValue,
-            ismobile: true,
-          },
-        ],
-      };
-      APIdata = { ...APIdata, ...APIdataWebOrMobile };
-    }
-    console.log("APIdata", APIdata);
     invokePutService(updateFeatureToggle, APIdata)
       .then((response) => {
         console.log("response", response);
+        setIsLoader(false);
+        setShowApplyButton(true);
       })
       .catch((error) => {
         console.log("Error message", error.message);
       });
   };
 
+  const handleResetToggleValues = () => {
+    setUpdateToggleData([]); // here we reset value
+    setShowApplyButton(true);
+    fetchTableData();
+  };
   /**
    * Function to handle active button ,where based on mobile and web category
    * @param value
@@ -350,7 +362,9 @@ const ConfigureFeature: React.FC = (props) => {
               return (
                 <tr key={index}>
                   <td>
-                    <p className="text"> {val}</p>
+                    <p className="text">
+                      <strong>{val}</strong>
+                    </p>
                   </td>
                   {RoleFeatures.map((key: any, ind: any) => (
                     <td key={ind}>
@@ -371,6 +385,41 @@ const ConfigureFeature: React.FC = (props) => {
             })}
           </tbody>
         </table>
+        <div className="bottom-div">
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-lg reset-toggle"
+            disabled={showApplyButton ? true : false}
+            onClick={() => handleResetToggleValues()}
+          >
+            Reset
+            <span style={{ marginLeft: "5px" }}>
+              <img
+                src={reset}
+                alt="reset-icon"
+                width="12"
+                style={{ marginLeft: "5px" }}
+              />
+            </span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary btn-lg apply-feature-toggle"
+            style={{ marginLeft: "10px" }}
+            disabled={showApplyButton ? true : false}
+            onClick={() => applyFeature()}
+          >
+            Apply
+            <span style={{ marginLeft: "5px" }}>
+              <img
+                src={ArrowIcon}
+                className="arrow-i"
+                alt="tick-icon"
+                style={{ marginLeft: "5px" }}
+              />
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );

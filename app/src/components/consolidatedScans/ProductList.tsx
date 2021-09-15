@@ -5,8 +5,8 @@ import "../../assets/scss/consolidatedSales.scss";
 
 export type ProductListProps = {
   selectedProductList: Array<object>;
-  brandName : String;
-  handleSort :Function;
+  brandName: String;
+  handleSort: Function;
   isAsc: Boolean;
   tableCellIndex: any;
   tableName: string;
@@ -18,69 +18,87 @@ export const ProductList = ({
   handleSort,
   isAsc,
   tableCellIndex,
-  tableName
-}:ProductListProps) => {
-  let totalReceivedGoods:number = 0;
-  let totalSendGoods:number = 0;
-  let totalWalkInSales:number = 0;
-  let totalAdvisorSales:number = 0;
+  tableName,
+}: ProductListProps) => {
+  let totalReceivedGoods: number = 0;
+  let totalSendGoods: number = 0;
+  let totalWalkInSales: number = 0;
+  let totalAdvisorSales: number = 0;
   return (
     <AUX>
-        <div className="">
-          <label className="font-weight-bold scanlabel">product wise scans - {_.startCase(_.toLower(brandName))}</label>
-          <div className="consolidatedSales-table scannedProducts"  style={{height: '28vh', overflowY: 'auto'}}>
-            <table className="table">
-              <thead>
-                <tr>
-                <th 
-                     onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc,"scannedProducts")}
-                     style={{width:'17%'}}
-                      key="productname">PRODUCT
-                      {
-                           (tableCellIndex === 0 && tableName === 'scannedProducts') ? (
-                            <i
-                              className={`fas ${
-                                isAsc ? "fa-sort-down" : "fa-sort-up"
-                              } ml-3`}
-                            ></i>
-                          ) : null
-                        }
-                      </th>
-                    <th>RECEIVE GOODS</th>
-                    <th>SEND GOODS</th>
-                    <th>S2F-WALK-IN-SALES</th>
-                    <th>S2F-ADVISOR SALES</th>
+      <div className="">
+        <label className="font-weight-bold scanlabel">
+          product wise scans - {_.startCase(_.toLower(brandName))}
+        </label>
+        <div
+          className="consolidatedSales-table scannedProducts"
+          style={{ height: "28vh", overflowY: "auto" }}
+        >
+          <table className="table listTable">
+            <thead>
+              <tr>
+                <th
+                  onClick={(e) =>
+                    handleSort(
+                      e,
+                      "productname",
+                      selectedProductList,
+                      isAsc,
+                      "scannedProducts"
+                    )
+                  }
+                  style={{ width: "15%" }}
+                  key="productname"
+                >
+                  PRODUCT
+                  {tableCellIndex === 0 && tableName === "scannedProducts" ? (
+                    <i
+                      className={`fas ${
+                        isAsc ? "fa-sort-down" : "fa-sort-up"
+                      } ml-3`}
+                    ></i>
+                  ) : null}
+                </th>
+                <th>RECEIVE GOODS</th>
+                <th>SEND GOODS</th>
+                <th>S2F-WALK-IN-SALES</th>
+                <th>S2F-ADVISOR SALES</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedProductList?.length > 0 ? (
+                selectedProductList?.map((item: any, i: number) => {
+                  totalReceivedGoods = totalReceivedGoods + item.RECEIVE_GOOD;
+                  totalSendGoods = totalSendGoods + item.SEND_GOOD;
+                  totalWalkInSales = totalWalkInSales + item.S2F_WALKIN;
+                  totalAdvisorSales = totalAdvisorSales + item.S2F_ADVISOR;
+                  return (
+                    <tr key={i}>
+                      <td>
+                        {_.startCase(_.toLower(item.productname))}
+                        <br />
+                        <label style={{ fontSize: "10px" }}>
+                          {item.productid}-{item.pkglevel}
+                        </label>
+                      </td>
+                      <td className="text-right">{item.RECEIVE_GOOD}</td>
+                      <td className="text-right">{item.SEND_GOOD}</td>
+                      <td className="text-right">{item.S2F_WALKIN}</td>
+                      <td className="text-right">{item.S2F_ADVISOR}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr style={{ height: "110px" }}>
+                  <td colSpan={10} className="no-records">
+                    No records found
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {selectedProductList?.length > 0 ? (
-                  selectedProductList?.map((item: any, i: number) => {
-                    totalReceivedGoods = totalReceivedGoods + (item.RECEIVE_GOOD);
-                    totalSendGoods = totalSendGoods + (item.SEND_GOOD);
-                    totalWalkInSales = totalWalkInSales + (item.S2F_WALKIN);
-                    totalAdvisorSales = totalAdvisorSales + (item.S2F_ADVISOR);
-                    return (
-                      <tr key={i}>
-                        <td>{_.startCase(_.toLower(item.productname))}
-                        <br /><label style={{fontSize:'10px'}}>{item.productid}-{item.pkglevel}</label></td>
-                        <td className="text-right">{item.RECEIVE_GOOD}</td>
-                        <td className="text-right">{item.SEND_GOOD}</td>
-                        <td className="text-right">{item.S2F_WALKIN}</td>
-                        <td className="text-right">{item.S2F_ADVISOR}</td>
-                      </tr>
-                    );
-                  })
-                ) :  (
-                  <tr style={{ height: "110px" }}>
-                    <td colSpan={10} className="no-records">
-                      No records found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          {/* {selectedProductList?.length > 0 &&
+              )}
+            </tbody>
+          </table>
+        </div>
+        {/* {selectedProductList?.length > 0 &&
           <div className="consolidated-sum-total">
                 <table style={{ width: '100%', marginTop: "5px"}}>
                   <tbody>
@@ -113,20 +131,28 @@ export const ProductList = ({
                 </table>
               </div>
             } */}
-             {selectedProductList?.length > 0 && (
+        {selectedProductList?.length > 0 && (
           <div className="consolidated-totals">
-            <div style={{ textAlign: "center" }}>
+            <div style={{ paddingLeft: "3px", textAlign: "left" }}>
               Total({selectedProductList?.length})
             </div>
-            <div style={{ marginRight: "2px" }}>{totalReceivedGoods}</div>
-            <div style={{ marginRight: "37px" }}>{totalSendGoods}</div>
-            <div style={{ marginRight: "33px" }}>{totalWalkInSales}</div>
-            <div style={{ marginRight: "11px" }}>{totalAdvisorSales}</div>
+            <div className="second-div" style={{ paddingRight: "26px" }}>
+              {totalReceivedGoods}
+            </div>
+            <div className="third-div" style={{ paddingRight: "34px" }}>
+              {totalSendGoods}
+            </div>
+            <div className="fourth-div" style={{ paddingRight: "9px" }}>
+              {totalWalkInSales}
+            </div>
+            <div className="last-div" style={{ width: "116px" }}>
+              {totalAdvisorSales}
+            </div>
           </div>
         )}
-        </div>
+      </div>
     </AUX>
   );
-}
+};
 
 export default ProductList;

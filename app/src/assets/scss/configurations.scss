@@ -53,6 +53,23 @@
   overflow: auto;
   padding: 0;
 }
+
+.bottom-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 10px 20% 10px 10px;
+}
+
+.reset-toggle,
+.apply-feature-toggle {
+  padding: 10px 50px 10px 50px;
+}
+
+.reset-toggle {
+  margin-right: 30px;
+}
+
 .card-body {
   .add-plus-icon {
     position: absolute;

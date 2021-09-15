@@ -12,9 +12,7 @@ import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
 import NoImage from "../../assets/images/no_image.svg";
 import country from "../../assets/images/country.svg";
-import {
-  getLocalStorageData,
-} from "../../utility/base/localStore";
+import { getLocalStorageData } from "../../utility/base/localStore";
 import Authorization from "../../utility/authorization";
 import { AppContext } from "../../container/context";
 
@@ -24,18 +22,20 @@ type Props = {
 type States = {
   activeTab: any;
   userRole: any;
+  availableSideContent: any;
 };
 // interface IProps {
 //   style: any;
 // }
 
 class Sidebar extends Component<Props, States> {
-  static contextType = AppContext
+  static contextType = AppContext;
   constructor(props: any) {
     super(props);
     this.state = {
       activeTab: "dashboard",
       userRole: "",
+      availableSideContent: [],
     };
     // $("body").toggleClass("");
     $("body").addClass("enlarged");
@@ -45,25 +45,33 @@ class Sidebar extends Component<Props, States> {
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
     userData?.role &&
-    this.setState({
-      userRole: userData.role,
-    });
+      this.setState({
+        userRole: userData.role,
+      });
     $(".button-menu-mobile").on("click", (event: any) => {
       event.preventDefault();
       $("body").toggleClass("enlarged");
+    });
+    //localStorage
+    let availableFeature: any = userData?.features;
+    let truthyValues: any = Object.keys(availableFeature).filter(
+      (e) => availableFeature[e]
+    );
+    console.log("truthyValues", availableFeature);
+
+    this.setState({
+      availableSideContent: truthyValues,
     });
   }
   setActiveTab = (tab: any) => {
     this.setState({ activeTab: tab });
   };
   /**
-   * To logout page and check the unsaved change value for Prompt 
+   * To logout page and check the unsaved change value for Prompt
    */
   logout = () => {
-    const {promptMode} =this.context;
-    if(!promptMode)
-    Authorization.logOut();
-    
+    const { promptMode } = this.context;
+    if (!promptMode) Authorization.logOut();
   };
 
   render() {
@@ -74,7 +82,12 @@ class Sidebar extends Component<Props, States> {
     return (
       <AUX>
         <div className="left side-menu ">
-          <img className="sideMenuLine" src={lLogo} data-testid="left-logo" alt={NoImage} />
+          <img
+            className="sideMenuLine"
+            src={lLogo}
+            data-testid="left-logo"
+            alt={NoImage}
+          />
           <div className="sideMenuNav">
             {/* <Scrollbars
               style={scrollHeight}
@@ -98,23 +111,27 @@ class Sidebar extends Component<Props, States> {
             > */}
             <div id="sidebar-menu" className="">
               <ul className="metismenu" id="side-menu">
-                  <li className="d-flex">
-                    <span
-                      className={
-                        window.location.pathname.indexOf("dashboard") > -1
-                          ? "waves-effect active"
-                          : "waves-effect"
-                      }
-                    ></span>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => this.setActiveTab("dashboard")}
-                    >
-                      <img src={homeIcon} alt={NoImage} width="16" data-testid="dashboard-icon" />{" "}
-                      <span> Dashboard </span>
-                    </Link>
-                  </li>
-             
+                <li className="d-flex">
+                  <span
+                    className={
+                      window.location.pathname.indexOf("dashboard") > -1
+                        ? "waves-effect active"
+                        : "waves-effect"
+                    }
+                  ></span>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => this.setActiveTab("dashboard")}
+                  >
+                    <img
+                      src={homeIcon}
+                      alt={NoImage}
+                      width="16"
+                      data-testid="dashboard-icon"
+                    />{" "}
+                    <span> Dashboard </span>
+                  </Link>
+                </li>
 
                 {this.state.userRole === "ADMIN" && (
                   <>
@@ -129,9 +146,18 @@ class Sidebar extends Component<Props, States> {
                       ></span>
                       <Link
                         to="/createUser"
-                        onClick={(e:any) => (window.location.pathname.indexOf("createUser") > -1) ? e.preventDefault(): this.setActiveTab("createUser")}
+                        onClick={(e: any) =>
+                          window.location.pathname.indexOf("createUser") > -1
+                            ? e.preventDefault()
+                            : this.setActiveTab("createUser")
+                        }
                       >
-                        <img src={addUserIcon} alt={NoImage} width="16" data-testid="createuser-icon" />{" "}
+                        <img
+                          src={addUserIcon}
+                          alt={NoImage}
+                          width="16"
+                          data-testid="createuser-icon"
+                        />{" "}
                         <span> Create New User </span>
                       </Link>
                     </li>
@@ -148,7 +174,12 @@ class Sidebar extends Component<Props, States> {
                         to="/userList"
                         onClick={() => this.setActiveTab("userList")}
                       >
-                        <img src={userListIcon} alt={NoImage} width="16" data-testid="listuser-icon" />{" "}
+                        <img
+                          src={userListIcon}
+                          alt={NoImage}
+                          width="16"
+                          data-testid="listuser-icon"
+                        />{" "}
                         <span> User List </span>
                       </Link>
                     </li>
@@ -164,26 +195,35 @@ class Sidebar extends Component<Props, States> {
                         to="/order"
                         onClick={() => this.setActiveTab("order")}
                       >
-                        <img src={orderHistoryIcon} alt={NoImage} width="16" data-testid="order-icon" />{" "}
+                        <img
+                          src={orderHistoryIcon}
+                          alt={NoImage}
+                          width="16"
+                          data-testid="order-icon"
+                        />{" "}
                         <span> Order History </span>
                       </Link>
                     </li>
-                    <li className="d-flex">
-                      <span
-                        className={
-                          window.location.pathname.indexOf("scanlogs") > -1
-                            ? "waves-effect active"
-                            : "waves-effect"
-                        }
-                      ></span>
-                      <Link
-                        to="/scanlogs"
-                        onClick={() => this.setActiveTab("scanlogs")}
-                      >
-                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                        <span> Scan Logs </span>
-                      </Link>
-                    </li>
+
+                    {this.state.userRole === "RSM" && (
+                      <li className="d-flex">
+                        <span
+                          className={
+                            window.location.pathname.indexOf("scanlogs") > -1
+                              ? "waves-effect active"
+                              : "waves-effect"
+                          }
+                        ></span>
+                        <Link
+                          to="/scanlogs"
+                          onClick={() => this.setActiveTab("scanlogs")}
+                        >
+                          <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
+                          <span> Scan Logs </span>
+                        </Link>
+                      </li>
+                    )}
+
                     {/* <li className="d-flex">
                                                 <span className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'}></span>
                                                 <Link to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
@@ -220,10 +260,11 @@ class Sidebar extends Component<Props, States> {
                     </li>
                   </>
                 )}
-                 
+
                 {this.state.userRole === "RSM" && (
                   <>
                     <li className="menu-title">LOGS</li>
+                    {/* {this.state.availableSideContent.includes("Scan logs") ? ( */}
                     <li className="d-flex">
                       <span
                         className={
@@ -240,11 +281,14 @@ class Sidebar extends Component<Props, States> {
                         <span> Scan Logs </span>
                       </Link>
                     </li>
-                    
+                    {/* ) : null} */}
+
                     <li className="d-flex">
                       <span
                         className={
-                          window.location.pathname.indexOf("consolidatedScans") > -1
+                          window.location.pathname.indexOf(
+                            "consolidatedScans"
+                          ) > -1
                             ? "waves-effect active"
                             : "waves-effect"
                         }
@@ -253,13 +297,17 @@ class Sidebar extends Component<Props, States> {
                         to="/consolidatedScans"
                         onClick={() => this.setActiveTab("consolidatedScans")}
                       >
-                        <img src={consolidatescans} alt="Consolidated Scans" width="16" />{" "}
+                        <img
+                          src={consolidatescans}
+                          alt="Consolidated Scans"
+                          width="16"
+                        />{" "}
                         <span> Consolidated Scans </span>
                       </Link>
                     </li>
                   </>
                 )}
-                  
+
                 {/* <li className="menu-title">HELP</li>
                 <li className="d-flex">
                   <span
@@ -310,7 +358,12 @@ class Sidebar extends Component<Props, States> {
                   }
                 ></span>
                 <Link to="/landing" onClick={this.logout}>
-                  <img src={logoutIcon} alt={NoImage} width="16" data-testid="logout-icon" />{" "}
+                  <img
+                    src={logoutIcon}
+                    alt={NoImage}
+                    width="16"
+                    data-testid="logout-icon"
+                  />{" "}
                   <span> Logout </span>
                 </Link>
               </li>
