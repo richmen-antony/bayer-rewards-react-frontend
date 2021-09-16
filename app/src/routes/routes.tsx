@@ -122,6 +122,17 @@ export const ROUTE = [
     component: React.lazy(() => import('../components/consolidatedScans')),
     role:"RSM"
   },
+  {
+    private: true,
+    exact: true,
+    path: '/inventory',
+    meta: {
+      title: siteTitle,
+      description: siteMetaDescription
+    },
+    component: React.lazy(() => import('../components/inventory')),
+    role:"RSM"
+  },
 
   // {
   //   private: true,

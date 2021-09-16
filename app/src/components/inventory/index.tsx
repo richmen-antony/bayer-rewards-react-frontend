@@ -6,9 +6,9 @@ import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import AUX from "../../hoc/Aux_";
 import Filter from "../../containers/grid/Filter";
-import OverallScans  from './OverallScans';
-import ProductBrandList from './ProductBrandList';
-import ProductList from './ProductList';
+import OverallInventory  from './OverallInventory';
+import BrandwiseInventory from './BrandwiseInventory';
+import ProductwiseInventory from './ProductwiseInventory'
 import { Button} from "reactstrap";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import { Alert } from "../../utility/widgets/toaster";
@@ -69,9 +69,9 @@ const ConsolidatedScans = (Props: any) => {
 	const [soldbyid,setSoldbyid]                               = useState('');
 	const [filterAppliedTime,setFilterAppliedTime]             = useState(Number);
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
-	const [scannedBrandsSuccess,setScannedBrandsSuccess]           = useState(Number);
-	const [filterSuccess,setFilterSuccess]           = useState(Number);
-	
+	const [scannedBrandsSuccess,setScannedBrandsSuccess]       = useState(Number);
+	const [filterSuccess,setFilterSuccess]                     = useState(Number);
+	const [selectedYear, setSelectedYear]                      = useState({value : new Date().getFullYear(), label : new Date().getFullYear() })
 	
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
@@ -112,6 +112,14 @@ const ConsolidatedScans = (Props: any) => {
 		"ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
 	]);
 	const [retailerPopupData,setretailerPopupData]              = useState({});
+
+	let i = 1990;
+	let year = [];
+	for ( i === 1990; i <= new Date().getFullYear(); i++) {
+        let yearObj = { label : i , value : i};
+		year.push(yearObj);
+	}
+    year.reverse();	
 
 	useEffect(()=>{
 		if(commonErrorMessage) {
@@ -397,9 +405,15 @@ const ConsolidatedScans = (Props: any) => {
 		  }
 	};
 
-	const handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
-		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
-		setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+	const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
+		if(e.name === 'selectedYear') {
+            setSelectedYear(selectedOption);
+        } else if (e.name === 'selectedType') {
+
+        } else  {
+			let condOptionName = optionName?.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
+			setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+		}
 	};
 
 	const fields = dynamicFields;
@@ -561,13 +575,12 @@ const ConsolidatedScans = (Props: any) => {
             <div className="consolidatedSales-container">
                 <div className="row">
                     <div className="filterSection col-sm-12">
-                        <label className="font-weight-bold">Consolidated Scans</label>
+                        <label className="font-weight-bold">Distributor Inventory</label>
                         <Filter
                             handleSearch={handleSearch}
                             searchText={searchText}
-                            partnerTypeList={partnerTypeList}
-                            selectedPartnerType={partnerType}
-							isPartnerType={true}
+                            // partnerTypeList={partnerTypeList}
+                            // selectedPartnerType={partnerType}
 							downloadPopup={true}
                             isDownload={true}
                             handlePartnerChange={handlePartnerChange}
@@ -576,6 +589,9 @@ const ConsolidatedScans = (Props: any) => {
 							onClose={(node: any) => {
 								closeToggle = node;
 							}}
+							selectedYear={selectedYear}
+							handleReactSelect={handleReactSelect}
+							yearOptions = {year}
 					    >
 						<label className="font-weight-bold pt-2">Product Group</label>
 							<div className="form-group pt-1">
@@ -684,17 +700,17 @@ const ConsolidatedScans = (Props: any) => {
 					    </Filter>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row" style={{ opacity : '0.9'}}>
                         <div className = "col-sm-6">
-                            <OverallScans allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
+                            <OverallInventory allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
 							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />
                         </div>
                         <div className = "col-sm-6">
                             <div>
-                                <ProductBrandList selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
+                                <BrandwiseInventory selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
                             </div>
                             <div>
-                                <ProductList selectedProductList = {scannedProducts} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
+                                <ProductwiseInventory selectedProductList = {scannedProducts} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
                             </div>
                         </div>
                 </div>

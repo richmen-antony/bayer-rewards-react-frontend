@@ -3,6 +3,7 @@ import { SearchInput } from "../../utility/widgets/input/search-input";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import { CustomDownload } from "../../utility/widgets/button/download";
+import { CustomDropdown }  from "../components/customDropdown"
 import "../../assets/scss/filter.scss";
 interface Props {
 	handleSearch: (e: any) => any;
@@ -16,12 +17,16 @@ interface Props {
 	handlePartnerChange?: any;
 	toolTipText: string;
 	internalUserTypeFilterHeading?: boolean;
+	isPartnerType?: boolean;
 	condType?: string;
 	condTypeList?: any[];
 	buttonChange?: any;
 	condSelectedButton?: string;
 	onClose ?:any;
 	isDownloadHelpText?:boolean;
+	selectedYear?: {};
+	handleReactSelect?: any;
+	yearOptions?: {}
 }
 
 /**
@@ -53,7 +58,11 @@ const Filter: React.FC<Props> = (props: Props) => {
 		condSelectedButton,
 		onClose,
 		downloadPopup,
-		isDownloadHelpText
+		isDownloadHelpText,
+		isPartnerType,
+		selectedYear,
+		handleReactSelect,
+		yearOptions
 	} = props;
 
 	useEffect(() => { 
@@ -72,7 +81,10 @@ const Filter: React.FC<Props> = (props: Props) => {
 					value={searchText}
 					tolltip={toolTipText}
 				/>
+				<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" />
+
 				<div className="filter-right-side">
+					{isPartnerType &&
 					<div className="filter-partnertype">
 						<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
 							{internalUserTypeFilterHeading ? "User Type" : "Partner Type"}
@@ -95,7 +107,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 									);
 								})}
 						</div>
-					</div>
+					</div>}
 					{condTypeList && condTypeList.length > 0 && (
 						<div className="filter-partnertype" style={{ marginLeft: "10px" }}>
 							<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
