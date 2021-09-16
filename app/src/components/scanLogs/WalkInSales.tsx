@@ -1,4 +1,4 @@
-import React, {PureComponent } from "react";
+import React, { PureComponent } from "react";
 import AUX from "../../hoc/Aux_";
 import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
@@ -18,9 +18,6 @@ import { invokeGetAuthService } from "../../utility/base/service";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
 
-
-
-
 const popupHeader = {
 	title: "Maria Joseph",
 	sub: "Retailer",
@@ -38,18 +35,17 @@ const DialogActions = withStyles((theme: Theme) => ({
 		padding: theme.spacing(1),
 		justifyContent: "center",
 	},
-	
 }))(MuiDialogActions);
 
 type Props = {
-    onRef?: any;
-	paginationRef:any;
-	handleUpdate:any;
-	loggedUser:any;
-	searchText:string;
-	selectedFilters:any;
-	isFiltered:boolean;
-	updateSearch:any;
+	onRef?: any;
+	paginationRef: any;
+	handleUpdate: any;
+	loggedUser: any;
+	searchText: string;
+	selectedFilters: any;
+	isFiltered: boolean;
+	updateSearch: any;
 };
 
 type States = {
@@ -84,21 +80,21 @@ class WalkInSales extends PureComponent<Props, States> {
 		this.timeOut = 0;
 	}
 	componentDidMount() {
-        // assign a refrence
+		// assign a refrence
 		this.props.onRef && this.props.onRef(this);
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
-	
+
 		this.setState(
 			{
 				loggedUserInfo: userData,
 			},
 			() => {
-				this.getWalkInSales()
-				this.getLocationHierachyOrder()
-			})
-	
-}
+				this.getWalkInSales();
+				this.getLocationHierachyOrder();
+			}
+		);
+	}
 
 	getWalkInSales = (defaultPageNo?: any) => {
 		const { getScanLog } = apiURL;
@@ -110,7 +106,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			setDefaultPage();
 		}
 		this.setState({ isLoader: true });
-		const { selectedFilters, isFiltered,searchText } = this.props;
+		const { selectedFilters, isFiltered, searchText } = this.props;
 		let data = {
 			page: pageNo,
 			searchtext: searchText || null,
@@ -119,18 +115,24 @@ class WalkInSales extends PureComponent<Props, States> {
 			countrycode: this.props.loggedUser?.countrycode,
 			scantype: "S2F_WALKIN",
 			soldbyrole: "RETAILER",
-			soldbygeolevel1:this.props.loggedUser?.role ==="ADMIN" ? null: this.props.loggedUser?.geolevel1,
+			soldbygeolevel1: this.props.loggedUser?.role === "ADMIN" ? null : this.props.loggedUser?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
-			let startDate = filter.scannedPeriod === "Custom" ? filter.scannedDateFrom : filter.scannedPeriod==="" ?null:filter.scandatefrom;
-			let endDate = filter.scannedPeriod === "Custom" ? filter.scannedDateTo : filter.scannedPeriod==="" ?null:filter.scandateto;
-			filter.scandatefrom =  startDate ?moment(startDate).format("YYYY-MM-DD") :null;
-			filter.scandateto = endDate?moment(endDate).format("YYYY-MM-DD"):null;
+			let startDate =
+				filter.scannedPeriod === "Custom"
+					? filter.scannedDateFrom
+					: filter.scannedPeriod === ""
+					? null
+					: filter.scandatefrom;
+			let endDate =
+				filter.scannedPeriod === "Custom" ? filter.scannedDateTo : filter.scannedPeriod === "" ? null : filter.scandateto;
+			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ||  data.soldbygeolevel1;
+			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
 			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
@@ -147,15 +149,16 @@ class WalkInSales extends PureComponent<Props, States> {
 			.then((response) => {
 				let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
 				const total = response?.totalrows;
-				this.setState({
-					isLoader: false,
-					allWalkInSalesData: data,
-					totalWalkInData: Number(total) 
-				},()=>{
-					this.props.handleUpdate(this.state.allAdvisorSalesData,this.state.totalAdvisorSalesData);
-				});
-				
-				
+				this.setState(
+					{
+						isLoader: false,
+						allWalkInSalesData: data,
+						totalWalkInData: Number(total),
+					},
+					() => {
+						this.props.handleUpdate(this.state.allAdvisorSalesData, this.state.totalAdvisorSalesData);
+					}
+				);
 			})
 			.catch((error) => {
 				this.setState({ isLoader: false, allWalkInSalesData: [] }, () => {});
@@ -187,7 +190,6 @@ class WalkInSales extends PureComponent<Props, States> {
 			condFilterScan: name,
 		});
 	}
-	;
 	onSort = (name: string, datas: any, isAsc: Boolean) => {
 		let response = sortBy(name, datas);
 		this.setState({ allWalkInSalesData: response, isAsc: !isAsc });
@@ -202,21 +204,27 @@ class WalkInSales extends PureComponent<Props, States> {
 	}
 	download = () => {
 		const { downloadAllScanLogs } = apiURL;
-		const { selectedFilters, isFiltered,searchText } = this.props;
+		const { selectedFilters, isFiltered, searchText } = this.props;
 		let data = {
 			countrycode: this.props.loggedUser?.countrycode,
 			isfiltered: isFiltered,
 			searchtext: searchText || null,
 			scantype: "S2F_WALKIN",
 			soldbyrole: "RETAILER",
-			soldbygeolevel1:this.props.loggedUser?.role ==="ADMIN" ? null: this.props.loggedUser?.geolevel1,
+			soldbygeolevel1: this.props.loggedUser?.role === "ADMIN" ? null : this.props.loggedUser?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
-			let startDate = filter.scannedPeriod === "Custom" ? filter.scannedDateFrom : filter.scannedPeriod==="" ?null:filter.scandatefrom;
-			let endDate = filter.scannedPeriod === "Custom" ? filter.scannedDateTo : filter.scannedPeriod==="" ?null:filter.scandateto;
-			filter.scandatefrom =  startDate ?moment(startDate).format("YYYY-MM-DD") :null;
-			filter.scandateto = endDate?moment(endDate).format("YYYY-MM-DD"):null;
+			let startDate =
+				filter.scannedPeriod === "Custom"
+					? filter.scannedDateFrom
+					: filter.scannedPeriod === ""
+					? null
+					: filter.scandatefrom;
+			let endDate =
+				filter.scannedPeriod === "Custom" ? filter.scannedDateTo : filter.scannedPeriod === "" ? null : filter.scandateto;
+			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
@@ -242,212 +250,190 @@ class WalkInSales extends PureComponent<Props, States> {
 			});
 	};
 
-
-
-
 	/**
-	 * 
-	 * @param filterValue 
+	 *
+	 * @param filterValue
 	 */
 	filterScans = (filterValue: any) => {
 		// pass the search text value to parent component (Scanned By params)
-		this.props.updateSearch(filterValue );
+		this.props.updateSearch(filterValue);
 		this.handleClosePopup();
-		
 	};
 
-	
-/**
+	/**
 	 * To get location hierachy data order list
 	 */
- getLocationHierachyOrder = () => {
-	const { getTemplateData } = apiURL;
-	let data = {
-		countryCode: this.props.loggedUser?.countrycode,
-	};
-	invokeGetAuthService(getTemplateData, data).then((response: any) => {
-		let locationData = response.body[0].locationhierarchy;
-		let levels: any = [];
-		locationData?.length > 0 &&
-			locationData.forEach((item: any, index: number) => {
-				if (index > 0) {
-					let locationhierlevel = item.level;
-					let geolevels = "geolevel" + locationhierlevel;
-					let obj = { name: item.name, geolevels };
-					levels.push(obj);
-				}
+	getLocationHierachyOrder = () => {
+		const { getTemplateData } = apiURL;
+		let data = {
+			countryCode: this.props.loggedUser?.countrycode,
+		};
+		invokeGetAuthService(getTemplateData, data).then((response: any) => {
+			let locationData = response.body[0].locationhierarchy;
+			let levels: any = [];
+			locationData?.length > 0 &&
+				locationData.forEach((item: any, index: number) => {
+					if (index > 0) {
+						let locationhierlevel = item.level;
+						let geolevels = "geolevel" + locationhierlevel;
+						let obj = { name: item.name, geolevels };
+						levels.push(obj);
+					}
+				});
+			this.setState({
+				locationData: levels,
 			});
-		this.setState({
-			locationData: levels,
 		});
-	});
-};
-	
+	};
+
 	render() {
-		const {
-			retailerPopupData,
-			showProductPopup,
-			isAsc,
-			allWalkInSalesData,
-			isLoader,
-			condFilterScan,
-			activeSortKeyIcon,
-		} = this.state;
-     const {loggedUser} =this.props;
+		const { retailerPopupData, showProductPopup, isAsc, allWalkInSalesData, isLoader, condFilterScan, activeSortKeyIcon } =
+			this.state;
+		const { loggedUser } = this.props;
 		return (
 			<AUX>
 				{isLoader && <Loader />}
 				<div>
-					
-								<table className="table">
-									<thead>
-										<tr>
-											<th
-												style={{ width: this.state.selectedScanType === "SG - D2R" ? "12%" : "15%" }}
-												onClick={(e) => this.handleSort(e, "labelid", allWalkInSalesData, isAsc)}
+					<table className="table">
+						<thead>
+							<tr>
+								<th
+									style={{ width: this.state.selectedScanType === "SG - D2R" ? "12%" : "15%" }}
+									onClick={(e) => this.handleSort(e, "labelid", allWalkInSalesData, isAsc)}
+								>
+									LABEL/BATCH ID
+									{activeSortKeyIcon === "labelid" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+								<th style={{ width: "18%" }} onClick={(e) => this.handleSort(e, "soldtoname", allWalkInSalesData, isAsc)}>
+									FARMER NAME/ID
+									{activeSortKeyIcon === "soldtoname" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+
+								<th style={{ width: "18%" }} onClick={(e) => this.handleSort(e, "productname", allWalkInSalesData, isAsc)}>
+									PRODUCT NAME
+									{activeSortKeyIcon === "productname" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+								<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "scanneddate", allWalkInSalesData, isAsc)}>
+									SCANNED ON
+									{activeSortKeyIcon === "scanneddate" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+								<th style={{ width: "18%" }} onClick={(e) => this.handleSort(e, "soldbyname", allWalkInSalesData, isAsc)}>
+									SCANNED BY
+									{activeSortKeyIcon === "soldbyname" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+								<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "soldbystore", allWalkInSalesData, isAsc)}>
+									STORE NAME
+									{activeSortKeyIcon === "soldbystore" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+								{loggedUser?.role === "ADMIN" && (
+									<th
+										style={{ width: "10%" }}
+										onClick={(e) => this.handleSort(e, "soldbygeolevel1", allWalkInSalesData, isAsc)}
+									>
+										REGION
+										{activeSortKeyIcon === "soldbygeolevel1" ? (
+											<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+										) : null}
+									</th>
+								)}
+
+								<th
+									style={{ width: loggedUser?.role === "ADMIN" ? "10%" : "10%" }}
+									onClick={(e) => this.handleSort(e, "expirydate", allWalkInSalesData, isAsc)}
+								>
+									EXPIRY DATE
+									{activeSortKeyIcon === "expirydate" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{allWalkInSalesData.length > 0 ? (
+								allWalkInSalesData.map((value: any, i: number) => {
+									return (
+										<tr
+											onClick={(event) => {
+												this.updateOrderData(value);
+											}}
+											key={i}
+										>
+											<td>
+												{value.labelid}
+												<p>
+													<span className={`status-label ${value.scanstatus === "VALID" ? "active" : "inactive"}`}>
+														{_.capitalize(value.scanstatus)}
+													</span>
+													- #{value.batchno}
+												</p>
+											</td>
+											<td>
+												<div className="retailer-id">
+													<p>
+														<span>{value.soldtoname}</span>
+													</p>
+													<label>{value.soldtoid}</label>
+												</div>
+											</td>
+
+											<td>
+												<div className="farmer-id">
+													<p>{value.productname}</p>
+													<label>
+														{value.productid === null ? "" : value.productid + " - " + _.capitalize(value.productgroup)}
+													</label>
+												</div>
+											</td>
+											<td>{value.scanneddate && moment(value.scanneddate).format("DD/MM/YYYY")}</td>
+											<td
+												onClick={(event) => {
+													this.showPopup(event, "showPopup");
+													this.handleUpdateRetailer(value, "scannedBy");
+												}}
+												style={{ cursor: "pointer" }}
 											>
-												LABEL/BATCH ID
-												{activeSortKeyIcon === "labelid" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "18%" }} onClick={(e) => this.handleSort(e, "soldtoname", allWalkInSalesData, isAsc)}>
-                                               FARMER NAME/ID
-												{activeSortKeyIcon === "soldtoname" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-										
-											
-											
-											<th style={{ width: "18%" }} onClick={(e) => this.handleSort(e, "productname", allWalkInSalesData, isAsc)}>
-												PRODUCT NAME
-												{activeSortKeyIcon === "productname" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "scanneddate", allWalkInSalesData, isAsc)}>
-												SCANNED ON
-												{activeSortKeyIcon === "scanneddate" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "18%" }} onClick={(e) => this.handleSort(e, "soldbyname", allWalkInSalesData, isAsc)}>
-												SCANNED BY
-												{activeSortKeyIcon === "soldbyname" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "soldbystore", allWalkInSalesData, isAsc)}>
-													STORE NAME
-													{activeSortKeyIcon === "soldbystore" ? (
-														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-													) : null}
-												</th>
-												{
-													loggedUser?.role === "ADMIN" &&
-													<th
-												style={{ width: "10%" }}
-												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allWalkInSalesData, isAsc)}
-											>
-												REGION
-												{activeSortKeyIcon === "soldbygeolevel1" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-												}
-											
-											<th
-												style={{ width: loggedUser?.role === "ADMIN" ? "10%" : "10%" }}
-												onClick={(e) => this.handleSort(e, "expirydate", allWalkInSalesData, isAsc)}
-											>
-												EXPIRY DATE
-												{activeSortKeyIcon === "expirydate" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{allWalkInSalesData.length > 0 ? (
-											allWalkInSalesData.map((value: any, i: number) => {
-												return (
-													<tr
-														onClick={(event) => {
-															this.updateOrderData(value);
+												<div className="retailer-id">
+													<p
+														style={{
+															display: "flex",
+															alignItems: "center",
 														}}
-														key={i}
 													>
-														<td>
-															{value.labelid}
-															<p>
-																<span className={`status-label ${value.scanstatus === "VALID" ? "active" : "inactive"}`}>
-																	{_.capitalize(value.scanstatus)}
-																</span>
-																- #{value.batchno}
-															</p>
-														</td>
-														<td>
-															<div className="retailer-id">
-																<p>
-																	<span>
-																		{value.soldtoname}
-																	</span>
-																</p>
-																<label>{value.soldtoid}</label>
-															</div>
-														</td>
-													
-														<td>
-															<div className="farmer-id">
-																<p>{value.productname}</p>
-																<label>
-																	{value.productid === null
-																		? ""
-																		: value.productid + " - " + _.capitalize(value.productgroup)}
-																</label>
-															</div>
-														</td>
-														<td>{value.scanneddate && moment(value.scanneddate).format("DD/MM/YYYY")}</td>
-														<td
-															onClick={(event) => {
-																this.showPopup(event, "showPopup");
-																this.handleUpdateRetailer(value, "scannedBy");
-															}}
-															style={{ cursor: "pointer" }}
-														>
-															<div className="retailer-id">
-																<p
-																	style={{
-																		display: "flex",
-																		alignItems: "center",
-																	}}
-																>
-																	<span style={{ flex: "1", whiteSpace: "nowrap" }}>
-																		{_.startCase(_.toLower(value.soldbyname))}
-																		<img className="retailer-icon" src={ExpandWindowImg} alt="" />
-																	</span>
-																</p>
-																<label>{value.soldbyid}</label>
-															</div>
-														</td>
-														<td>{_.startCase(_.toLower(value.soldbystore))}</td>
-														{loggedUser?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td> }
-														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
-													</tr>
-												);
-											})
-										) : (
-											<tr style={{ height: "250px" }}>
-												<td colSpan={10} className="no-records">
-													No records found
-												</td>
-											</tr>
-										)}
-									</tbody>
-								</table>
-							
-					
+														<span style={{ flex: "1", whiteSpace: "nowrap" }}>
+															{_.startCase(_.toLower(value.soldbyname))}
+															<img className="retailer-icon" src={ExpandWindowImg} alt="" />
+														</span>
+													</p>
+													<label>{value.soldbyid}</label>
+												</div>
+											</td>
+											<td>{_.startCase(_.toLower(value.soldbystore))}</td>
+											{loggedUser?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
+											<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
+										</tr>
+									);
+								})
+							) : (
+								<tr style={{ height: "250px" }}>
+									<td colSpan={10} className="no-records">
+										No records found
+									</td>
+								</tr>
+							)}
+						</tbody>
+					</table>
 				</div>
 				{this.state.showPopup ? (
 					<SimpleDialog open={this.state.showPopup} onClose={this.handleClosePopup} header={popupHeader} maxWidth={"800px"}>
@@ -460,11 +446,7 @@ class WalkInSales extends PureComponent<Props, States> {
 									<div className={`popup-title`}>
 										<p>
 											{retailerPopupData["soldbyname"]},
-											<label>
-												{_.startCase(
-													_.toLower(retailerPopupData["soldbyrole"])
-												)}
-											</label>
+											<label>{_.startCase(_.toLower(retailerPopupData["soldbyrole"]))}</label>
 										</p>
 									</div>
 									<div className="popup-content-row">
@@ -482,17 +464,14 @@ class WalkInSales extends PureComponent<Props, States> {
 										</div>
 										{this.state.locationData?.length > 0 &&
 											this.state.locationData.map((location: any, locationIndex: number) => {
-												let nameCapitalized = location.name === 'ADD' || location.name === 'EPA' ? location.name: _.startCase(_.toLower(location.name));
+												let nameCapitalized =
+													location.name === "ADD" || location.name === "EPA"
+														? location.name
+														: _.startCase(_.toLower(location.name));
 												return (
 													<div className="content-list" key={locationIndex}>
 														<label>{nameCapitalized}</label>
-														<p>
-															{
-																retailerPopupData[
-															 "soldby" + location.geolevels
-																]
-															}
-														</p>
+														<p>{retailerPopupData["soldby" + location.geolevels]}</p>
 													</div>
 												);
 											})}

@@ -12,12 +12,13 @@ import "../../assets/scss/scanLogs.scss";
 
 import SendGoods from "./SendGoods";
 
+//Define types of variable in states
 type States = {
 	userRole: string;
 	isLoader: boolean;
 	value: number;
 };
-
+// Material AntTabs styles
 const AntTabs = withStyles({
 	root: {
 		borderBottom: "0",
@@ -27,6 +28,7 @@ const AntTabs = withStyles({
 		height: "4px",
 	},
 })(Tabs);
+
 const useStyles = (theme: Theme) => ({
 	root: {
 		flexGrow: 1,
@@ -81,6 +83,11 @@ interface TabPanelProps {
 	value: any;
 	classes?: any;
 }
+/**
+ * Define the tab panel values 
+ * @param props 
+ * @returns 
+ */
 function TabPanel(props: TabPanelProps) {
 	const { children, value, index, classes, ...other } = props;
 	return (
@@ -100,10 +107,17 @@ function TabPanel(props: TabPanelProps) {
 	);
 }
 interface Props extends WithStyles<typeof useStyles> { }
+/**
+ * ScanLogs component 
+ * @param props  define types
+ * @param states define types
+ */
 class ScanLogs extends Component<Props, States> {
 	timeOut: any;
 	constructor(props: any) {
+		//accessed parent props variable 
 		super(props);
+		// To maintain the default initial state management
 		this.state = {
 			userRole: "",
 			isLoader: false,
@@ -111,14 +125,19 @@ class ScanLogs extends Component<Props, States> {
 		};
 		this.timeOut = 0;
 	}
-
+/**
+ * Handle the tab changes 
+ * @param event 
+ * @param newValue 
+ */
 	handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+		//update value state 
 		this.setState({ value: newValue });
 	};
+	//render the ui elements
 	render() {
 		const { isLoader } = this.state;
 		const { classes } = this.props;
-
 		return (
 			<AUX>
 				{isLoader && <Loader />}
@@ -143,4 +162,5 @@ class ScanLogs extends Component<Props, States> {
 		);
 	}
 }
+//export the component and wrapped material ui styles
 export default withStyles(useStyles)(ScanLogs);
