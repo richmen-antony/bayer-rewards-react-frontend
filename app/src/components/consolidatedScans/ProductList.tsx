@@ -32,7 +32,7 @@ export const ProductList = ({
         </label>
         <div
           className="consolidatedSales-table scannedProducts"
-          style={{ height: "28vh", overflowY: "auto" }}
+          style={{ height: "26vh", overflowY: "auto" }}
         >
           <table className="table listTable">
             <thead>
@@ -47,7 +47,7 @@ export const ProductList = ({
                       "scannedProducts"
                     )
                   }
-                  style={{ width: "15%" }}
+                  style={{ width: "18%", padding: "5px" }}
                   key="productname"
                 >
                   PRODUCT
@@ -59,10 +59,47 @@ export const ProductList = ({
                     ></i>
                   ) : null}
                 </th>
-                <th>RECEIVE GOODS</th>
-                <th>SEND GOODS</th>
-                <th>S2F-WALK-IN-SALES</th>
-                <th>S2F-ADVISOR SALES</th>
+                <th
+                  className="rtl"
+                  style={{
+                    width: "20%",
+                    padding: "5px",
+                    textAlign: "right",
+                    direction: "rtl",
+                  }}
+                >
+                  RECEIVE GOODS
+                </th>
+                <th
+                  style={{
+                    width: "20%",
+                    padding: "5px",
+                    textAlign: "right",
+                    direction: "rtl",
+                  }}
+                >
+                  SEND GOODS
+                </th>
+                <th
+                  style={{
+                    width: "20%",
+                    padding: "5px",
+                    textAlign: "right",
+                    direction: "rtl",
+                  }}
+                >
+                  S2F-WALK-IN-SALES
+                </th>
+                <th
+                  style={{
+                    width: "22%",
+                    padding: "5px",
+                    textAlign: "right",
+                    direction: "rtl",
+                  }}
+                >
+                  S2F-ADVISOR SALES
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -74,17 +111,37 @@ export const ProductList = ({
                   totalAdvisorSales = totalAdvisorSales + item.S2F_ADVISOR;
                   return (
                     <tr key={i}>
-                      <td>
+                      <td style={{ width: "18%", padding: "5px" }}>
                         {_.startCase(_.toLower(item.productname))}
                         <br />
                         <label style={{ fontSize: "10px" }}>
                           {item.productid}-{item.pkglevel}
                         </label>
                       </td>
-                      <td className="text-right">{item.RECEIVE_GOOD}</td>
-                      <td className="text-right">{item.SEND_GOOD}</td>
-                      <td className="text-right">{item.S2F_WALKIN}</td>
-                      <td className="text-right">{item.S2F_ADVISOR}</td>
+                      <td
+                        className="text-right"
+                        style={{ width: "20%", paddingRight: "0.5em" }}
+                      >
+                        {item.RECEIVE_GOOD}
+                      </td>
+                      <td
+                        className="text-right"
+                        style={{ width: "20%", paddingRight: "0.5em" }}
+                      >
+                        {item.SEND_GOOD}
+                      </td>
+                      <td
+                        className="text-right"
+                        style={{ width: "20%", paddingRight: "0.5em" }}
+                      >
+                        {item.S2F_WALKIN}
+                      </td>
+                      <td
+                        className="text-right"
+                        style={{ width: "22%", paddingRight: "0.5em" }}
+                      >
+                        {item.S2F_ADVISOR}
+                      </td>
                     </tr>
                   );
                 })
@@ -132,23 +189,42 @@ export const ProductList = ({
               </div>
             } */}
         {selectedProductList?.length > 0 && (
-          <div className="consolidated-totals">
-            <div style={{ paddingLeft: "3px", textAlign: "left" }}>
-              Total({selectedProductList?.length})
-            </div>
-            <div className="second-div" style={{ paddingRight: "26px" }}>
-              {totalReceivedGoods}
-            </div>
-            <div className="third-div" style={{ paddingRight: "34px" }}>
-              {totalSendGoods}
-            </div>
-            <div className="fourth-div" style={{ paddingRight: "9px" }}>
-              {totalWalkInSales}
-            </div>
-            <div className="last-div" style={{ width: "116px" }}>
-              {totalAdvisorSales}
-            </div>
-          </div>
+          <table
+            className="table listTable bottom-table"
+            style={{
+              border: "1px solid grey",
+              borderRadius: "10px",
+              borderCollapse: "separate",
+            }}
+          >
+            <thead>
+              <tr>
+                <th style={{ width: "18%", padding: "5px" }}>
+                  Total&nbsp;({selectedProductList?.length})
+                </th>
+                <th
+                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                >
+                  {totalReceivedGoods}
+                </th>
+                <th
+                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                >
+                  {totalReceivedGoods}
+                </th>
+                <th
+                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                >
+                  {totalReceivedGoods}
+                </th>
+                <th
+                  style={{ width: "22%", padding: "5px", textAlign: "right" }}
+                >
+                  {totalReceivedGoods}
+                </th>
+              </tr>
+            </thead>
+          </table>
         )}
       </div>
     </AUX>

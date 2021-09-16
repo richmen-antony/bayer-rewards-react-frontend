@@ -282,10 +282,12 @@ class CreateUser extends Component<any, any> {
 	//   };
 
   getCountryList() {
-    //service call
+     //service call
     let res = [
       { value: "India", text: "India" },
       { value: "Malawi", text: "Malawi" },
+      { value: "South Africa", text:"South Africa"},
+      { value: "Egypt", text:"Egypt"}
     ];
     this.setState({ countryList: res });
   }

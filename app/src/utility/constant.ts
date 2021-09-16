@@ -117,7 +117,7 @@ const OrderHistroyHeader: any = {
 const removeRegionList=()=>{
 	const currentUser=authorization.getAuthUser();
 	// If current user is RSM admin and remove region column values
-	if(currentUser.role==="RSM"){
+	if(currentUser?.role==="RSM"){
 		WALKIN_SALES.splice(7,1);
 	}
 
