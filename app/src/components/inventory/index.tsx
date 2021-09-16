@@ -592,6 +592,7 @@ const ConsolidatedScans = (Props: any) => {
 							selectedYear={selectedYear}
 							handleReactSelect={handleReactSelect}
 							yearOptions = {year}
+							isCustomDropdown = {true}
 					    >
 						<label className="font-weight-bold pt-2">Product Group</label>
 							<div className="form-group pt-1">

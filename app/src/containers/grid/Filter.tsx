@@ -26,7 +26,8 @@ interface Props {
 	isDownloadHelpText?:boolean;
 	selectedYear?: {};
 	handleReactSelect?: any;
-	yearOptions?: {}
+	yearOptions?: {};
+	isCustomDropdown? : Boolean;
 }
 
 /**
@@ -35,7 +36,6 @@ interface Props {
  * @returns
  */
 const Filter: React.FC<Props> = (props: Props) => {
-	console.log('text')
   const [dropdownOpenFilter,setToggleFilter]= useState<boolean>(false);
 
   const toggleFilter =()=>{
@@ -62,7 +62,8 @@ const Filter: React.FC<Props> = (props: Props) => {
 		isPartnerType,
 		selectedYear,
 		handleReactSelect,
-		yearOptions
+		yearOptions,
+		isCustomDropdown
 	} = props;
 
 	useEffect(() => { 
@@ -81,7 +82,8 @@ const Filter: React.FC<Props> = (props: Props) => {
 					value={searchText}
 					tolltip={toolTipText}
 				/>
-				<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" />
+				{ isCustomDropdown &&
+				<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" /> }
 
 				<div className="filter-right-side">
 					{isPartnerType &&
