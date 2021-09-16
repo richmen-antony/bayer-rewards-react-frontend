@@ -5,10 +5,10 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import AUX from "../../hoc/Aux_";
-import Filter from "../../container/grid/Filter";
+import Filter from "../../containers/grid/Filter";
 import OverallInventory  from './OverallInventory';
 import BrandwiseInventory from './BrandwiseInventory';
-import ProductwiseInventory from './ProductwiseInventory';
+import ProductwiseInventory from './ProductwiseInventory'
 import { Button} from "reactstrap";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import { Alert } from "../../utility/widgets/toaster";
@@ -37,7 +37,7 @@ import _ from "lodash";
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
 
-const ConsolidatedInventory = (Props: any) => {
+const ConsolidatedScans = (Props: any) => {
     let closeToggle: any;
 	const dispatch             = useDispatch();
 	const geolevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
@@ -69,9 +69,9 @@ const ConsolidatedInventory = (Props: any) => {
 	const [soldbyid,setSoldbyid]                               = useState('');
 	const [filterAppliedTime,setFilterAppliedTime]             = useState(Number);
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
-	const [scannedBrandsSuccess,setScannedBrandsSuccess]           = useState(Number);
-	const [filterSuccess,setFilterSuccess]           = useState(Number);
-	
+	const [scannedBrandsSuccess,setScannedBrandsSuccess]       = useState(Number);
+	const [filterSuccess,setFilterSuccess]                     = useState(Number);
+	const [selectedYear, setSelectedYear]                      = useState({value : new Date().getFullYear(), label : new Date().getFullYear() })
 	
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
@@ -112,6 +112,14 @@ const ConsolidatedInventory = (Props: any) => {
 		"ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
 	]);
 	const [retailerPopupData,setretailerPopupData]              = useState({});
+
+	let i = 1990;
+	let year = [];
+	for ( i === 1990; i <= new Date().getFullYear(); i++) {
+        let yearObj = { label : i , value : i};
+		year.push(yearObj);
+	}
+    year.reverse();	
 
 	useEffect(()=>{
 		if(commonErrorMessage) {
@@ -343,10 +351,11 @@ const ConsolidatedInventory = (Props: any) => {
 
 	const download = (type:string) => {
 		let data = {
-			countrycode : userData?.countrycode,
-			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			downloadtype  : type,
-			isfiltered : isFiltered
+			countrycode  : userData?.countrycode,
+			partnertype  : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
+			downloadtype : type,
+			searchtext   : searchText || null,
+			isfiltered   : isFiltered
 		};
 		let filteredDatas = {};
 		if(isFiltered) {
@@ -396,9 +405,15 @@ const ConsolidatedInventory = (Props: any) => {
 		  }
 	};
 
-	const handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
-		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
-		setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+	const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
+		if(e.name === 'selectedYear') {
+            setSelectedYear(selectedOption);
+        } else if (e.name === 'selectedType') {
+
+        } else  {
+			let condOptionName = optionName?.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
+			setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+		}
 	};
 
 	const fields = dynamicFields;
@@ -574,6 +589,9 @@ const ConsolidatedInventory = (Props: any) => {
 							onClose={(node: any) => {
 								closeToggle = node;
 							}}
+							selectedYear={selectedYear}
+							handleReactSelect={handleReactSelect}
+							yearOptions = {year}
 					    >
 						<label className="font-weight-bold pt-2">Product Group</label>
 							<div className="form-group pt-1">
@@ -682,7 +700,7 @@ const ConsolidatedInventory = (Props: any) => {
 					    </Filter>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row" style={{ opacity : '0.9'}}>
                         <div className = "col-sm-6">
                             <OverallInventory allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
 							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />
@@ -701,5 +719,5 @@ const ConsolidatedInventory = (Props: any) => {
     )
 }
 
-export default ConsolidatedInventory;
+export default ConsolidatedScans;
 

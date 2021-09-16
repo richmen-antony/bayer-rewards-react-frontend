@@ -567,6 +567,7 @@ const ConsolidatedScans = (Props: any) => {
                             searchText={searchText}
                             partnerTypeList={partnerTypeList}
                             selectedPartnerType={partnerType}
+							isPartnerType={true}
 							downloadPopup={true}
                             isDownload={true}
                             handlePartnerChange={handlePartnerChange}

@@ -3,6 +3,7 @@ import { SearchInput } from "../../utility/widgets/input/search-input";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import { CustomDownload } from "../../utility/widgets/button/download";
+import { CustomDropdown }  from "../components/customDropdown"
 import "../../assets/scss/filter.scss";
 interface Props {
 	handleSearch: (e: any) => any;
@@ -23,6 +24,9 @@ interface Props {
 	condSelectedButton?: string;
 	onClose ?:any;
 	isDownloadHelpText?:boolean;
+	selectedYear?: {};
+	handleReactSelect?: any;
+	yearOptions?: {}
 }
 
 /**
@@ -54,7 +58,10 @@ const Filter: React.FC<Props> = (props: Props) => {
 		onClose,
 		downloadPopup,
 		isDownloadHelpText,
-		isPartnerType
+		isPartnerType,
+		selectedYear,
+		handleReactSelect,
+		yearOptions
 	} = props;
 
 	useEffect(() => { 
@@ -73,6 +80,8 @@ const Filter: React.FC<Props> = (props: Props) => {
 					value={searchText}
 					tolltip={toolTipText}
 				/>
+				<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" />
+
 				<div className="filter-right-side">
 					{isPartnerType &&
 					<div className="filter-partnertype">

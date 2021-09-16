@@ -8,6 +8,7 @@ import userListIcon from "../../assets/icons/list_user_icon.svg";
 import scanLogsIcon from "../../assets/icons/scan_logs_icon.svg";
 import consolidatescans from "../../assets/icons/consolidated_scan.svg";
 import orderHistoryIcon from "../../assets/icons/order_history.svg";
+import inventory from "../../assets/icons/inventory.svg";
 import logoutIcon from "../../assets/icons/logout_icon.svg";
 import lLogo from "../../assets/icons/large_logo_holder.svg";
 import NoImage from "../../assets/images/no_image.svg";
@@ -316,7 +317,7 @@ class Sidebar extends Component<Props, States> {
                         to="/inventory"
                         onClick={() => this.setActiveTab("inventory")}
                       >
-                        <img src={consolidatescans} alt="Inventory" width="16" />{" "}
+                        <img src={inventory} alt="Inventory" width="16" />{" "}
                         <span> Inventory </span>
                       </Link>
                     </li>
