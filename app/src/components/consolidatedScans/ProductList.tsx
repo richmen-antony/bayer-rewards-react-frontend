@@ -47,7 +47,7 @@ export const ProductList = ({
                       "scannedProducts"
                     )
                   }
-                  style={{ width: "18%", padding: "5px" }}
+                  style={{ width: "23%", padding: "5px" }}
                   key="productname"
                 >
                   PRODUCT
@@ -60,7 +60,6 @@ export const ProductList = ({
                   ) : null}
                 </th>
                 <th
-                  className="rtl"
                   style={{
                     width: "20%",
                     padding: "5px",
@@ -72,7 +71,7 @@ export const ProductList = ({
                 </th>
                 <th
                   style={{
-                    width: "20%",
+                    width: "15%",
                     padding: "5px",
                     textAlign: "right",
                     direction: "rtl",
@@ -111,7 +110,7 @@ export const ProductList = ({
                   totalAdvisorSales = totalAdvisorSales + item.S2F_ADVISOR;
                   return (
                     <tr key={i}>
-                      <td style={{ width: "18%", padding: "5px" }}>
+                      <td style={{ width: "23%", padding: "5px" }}>
                         {_.startCase(_.toLower(item.productname))}
                         <br />
                         <label style={{ fontSize: "10px" }}>
@@ -126,7 +125,7 @@ export const ProductList = ({
                       </td>
                       <td
                         className="text-right"
-                        style={{ width: "20%", paddingRight: "0.5em" }}
+                        style={{ width: "15%", paddingRight: "0.5em" }}
                       >
                         {item.SEND_GOOD}
                       </td>
@@ -155,39 +154,7 @@ export const ProductList = ({
             </tbody>
           </table>
         </div>
-        {/* {selectedProductList?.length > 0 &&
-          <div className="consolidated-sum-total">
-                <table style={{ width: '100%', marginTop: "5px"}}>
-                  <tbody>
-                    <tr>
-                    <td style={{ width: "22%", paddingLeft: "10px" }}> 
-                        <span className="total">Total({selectedProductList?.length})</span>
-                      </td>
-                      <td className="text-center" style={{ width: "15%" }}>
-                      <span>
-                        {totalReceivedGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                      <span>
-                        {totalSendGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "21%" }}>
-                      <span className="">
-                        {totalWalkInSales}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                    <span className="productprice">
-                        {totalAdvisorSales}
-                      </span>
-                    </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            } */}
+
         {selectedProductList?.length > 0 && (
           <table
             className="table listTable bottom-table"
@@ -199,7 +166,7 @@ export const ProductList = ({
           >
             <thead>
               <tr>
-                <th style={{ width: "18%", padding: "5px" }}>
+                <th style={{ width: "23%", padding: "5px" }}>
                   Total&nbsp;({selectedProductList?.length})
                 </th>
                 <th
@@ -208,7 +175,7 @@ export const ProductList = ({
                   {totalReceivedGoods}
                 </th>
                 <th
-                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
                 >
                   {totalReceivedGoods}
                 </th>

@@ -394,20 +394,6 @@ cus-btn-consolidatedscanlog-filter[disabled] {
     }
   }
 }
-.consolidated-totals {
-  display: flex;
-  flex-wrap: nowrap;
-  border: 1px solid grey;
-  border-radius: 10px;
-  padding: 5px;
-  font-size: 12px;
-  font-family: "appRegular" !important;
-  vertical-align: middle;
-}
-.consolidated-totals > div {
-  width: 100px;
-  text-align: right;
-}
 .bottom-table.table td,
 .table th,
 .bottom-table.table thead th {
@@ -416,6 +402,7 @@ cus-btn-consolidatedscanlog-filter[disabled] {
 }
 .table.bottom-table {
   margin-bottom: 0.5rem;
+  font-size: 12px;
 }
 
 // .brandTable {
@@ -543,26 +530,5 @@ cus-btn-consolidatedscanlog-filter[disabled] {
   }
   .consolidatedSales-table.scannedProducts {
     height: 33vh !important;
-  }
-  .consolidated-totals > div {
-    width: 264px !important;
-  }
-
-  .consolidated-totals > div.second-div {
-    padding-right: 77px !important;
-  }
-
-  .consolidated-totals > div.third-div {
-    padding-right: 114px !important;
-  }
-
-  .consolidated-totals > div.fourth-div {
-    padding-right: 57px !important;
-  }
-
-  .consolidated-totals.overall > div.second-div,
-  .consolidated-totals.overall > div.third-div,
-  .consolidated-totals.overall > div.fourth-div {
-    padding-right: 0px !important;
   }
 }

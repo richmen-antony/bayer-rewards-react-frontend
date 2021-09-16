@@ -106,7 +106,7 @@ export const OverallScans = ({
               <thead>
                 <tr>
                   <th
-                    style={{ width: "25%", padding: "5px" }}
+                    style={{ width: "28%", padding: "5px" }}
                     onClick={(e) =>
                       handleSort(
                         e,
@@ -128,9 +128,8 @@ export const OverallScans = ({
                     ) : null}
                   </th>
                   <th
-                    className="rtl"
                     style={{
-                      width: "20%",
+                      width: "17%",
                       padding: "5px",
                       textAlign: "right",
                       direction: "rtl",
@@ -139,7 +138,6 @@ export const OverallScans = ({
                     RECEIVE GOODS
                   </th>
                   <th
-                    className="rtl"
                     style={{
                       width: "15%",
                       padding: "5px",
@@ -150,7 +148,6 @@ export const OverallScans = ({
                     SEND GOODS
                   </th>
                   <th
-                    className="rtl"
                     style={{
                       width: "20%",
                       padding: "5px",
@@ -161,7 +158,6 @@ export const OverallScans = ({
                     S2F-WALK-IN-SALES
                   </th>
                   <th
-                    className="rtl"
                     style={{
                       width: "20%",
                       padding: "5px",
@@ -197,7 +193,7 @@ export const OverallScans = ({
                           )
                         }
                       >
-                        <td style={{ width: "25%", padding: "5px" }}>
+                        <td style={{ width: "28%", padding: "5px" }}>
                           {_.startCase(_.toLower(item.firstname)) +
                             " " +
                             _.startCase(_.toLower(item.lastname))}
@@ -216,7 +212,7 @@ export const OverallScans = ({
                           </label>
                         </td>
                         <td
-                          style={{ width: "20%", padding: "5px" }}
+                          style={{ width: "17%", padding: "5px" }}
                           className="text-right"
                         >
                           {item.RECEIVE_GOOD}
@@ -252,39 +248,6 @@ export const OverallScans = ({
               </tbody>
             </table>
           </div>
-          {/* {allConsolidatedScans?.length > 0 &&
-            <div className ="consolidated-sum-total">
-              <table style={{ width: '100%', marginTop: "5px"}}>
-                <tbody>
-                  <tr>
-                  <td style={{ width: "23%", paddingLeft: "10px" }}> 
-                      <span className="total">Total({allConsolidatedScans?.length})</span>
-                    </td>
-                    <td className="text-center" style={{ width: "15%" }}>
-                      <span>
-                        {totalReceivedGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                      <span>
-                        {totalSendGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "21%" }}>
-                      <span className="">
-                        {totalWalkInSales}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                    <span className="productprice">
-                        {totalAdvisorSales}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          } */}
 
           {allConsolidatedScans?.length > 0 && (
             <table
@@ -297,11 +260,11 @@ export const OverallScans = ({
             >
               <thead>
                 <tr>
-                  <th style={{ width: "25%", padding: "5px" }}>
+                  <th style={{ width: "28%", padding: "5px" }}>
                     Total&nbsp;({allConsolidatedScans?.length})
                   </th>
                   <th
-                    style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                    style={{ width: "17%", padding: "5px", textAlign: "right" }}
                   >
                     {totalReceivedGoods}
                   </th>

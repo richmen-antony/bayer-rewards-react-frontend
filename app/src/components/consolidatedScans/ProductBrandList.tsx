@@ -51,7 +51,7 @@ const ProductBrandList = ({
                       "scannedBrands"
                     )
                   }
-                  style={{ width: "18%", padding: "5px" }}
+                  style={{ width: "23%", padding: "5px" }}
                   key="productbrand"
                 >
                   BRAND
@@ -64,7 +64,6 @@ const ProductBrandList = ({
                   ) : null}
                 </th>
                 <th
-                  className="rtl"
                   style={{
                     width: "20%",
                     padding: "5px",
@@ -76,7 +75,7 @@ const ProductBrandList = ({
                 </th>
                 <th
                   style={{
-                    width: "20%",
+                    width: "15%",
                     padding: "5px",
                     textAlign: "right",
                     direction: "rtl",
@@ -128,7 +127,7 @@ const ProductBrandList = ({
                         )
                       }
                     >
-                      <td style={{ width: "18%", padding: "5px" }}>
+                      <td style={{ width: "23%", padding: "5px" }}>
                         {_.startCase(_.toLower(item.productbrand))}
                       </td>
                       <td
@@ -138,7 +137,7 @@ const ProductBrandList = ({
                         {item.RECEIVE_GOOD}
                       </td>
                       <td
-                        style={{ width: "20%", paddingRight: "0.5em" }}
+                        style={{ width: "15%", paddingRight: "0.5em" }}
                         className="text-right"
                       >
                         {item.SEND_GOOD}
@@ -168,39 +167,6 @@ const ProductBrandList = ({
             </tbody>
           </table>
         </div>
-        {/* {selectedBrandList?.length > 0 &&
-            <div className="consolidated-sum-total">
-                <table style={{ width: '100%', marginTop: "5px"}}>
-                  <tbody>
-                    <tr>
-                    <td style={{ width: "18%", paddingLeft: "10px" }}> 
-                        <span className="total">Total({selectedBrandList?.length})</span>
-                      </td>
-                      <td className="text-center" style={{ width: "15%" }}>
-                      <span>
-                        {totalReceivedGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                      <span>
-                        {totalSendGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "21%" }}>
-                      <span className="">
-                        {totalWalkInSales}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                    <span className="productprice">
-                        {totalAdvisorSales}
-                      </span>
-                    </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            } */}
 
         {selectedBrandList?.length > 0 && (
           <table
@@ -213,7 +179,7 @@ const ProductBrandList = ({
           >
             <thead>
               <tr>
-                <th style={{ width: "18%", padding: "5px" }}>
+                <th style={{ width: "23%", padding: "5px" }}>
                   Total&nbsp;({selectedBrandList?.length})
                 </th>
                 <th
@@ -222,7 +188,7 @@ const ProductBrandList = ({
                   {totalReceivedGoods}
                 </th>
                 <th
-                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
                 >
                   {totalSendGoods}
                 </th>
