@@ -30,6 +30,7 @@ interface Props {
  * @returns
  */
 const Filter: React.FC<Props> = (props: Props) => {
+	console.log('text')
   const [dropdownOpenFilter,setToggleFilter]= useState<boolean>(false);
 
   const toggleFilter =()=>{
