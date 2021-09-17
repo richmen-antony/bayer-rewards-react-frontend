@@ -62,7 +62,6 @@ function CustomDropdown({
                     id="batchno-test"
                     dataTestId="batchno-test"
                 />
-                <img src={Layout} className="layout" alt=""/>
             </div>
         </div>
 	);

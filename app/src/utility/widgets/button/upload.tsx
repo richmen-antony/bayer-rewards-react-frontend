@@ -1,14 +1,14 @@
-import React, { Fragment, useState } from "react";
-import Download from "../../../assets/icons/upload.svg";
-import "../../../assets/scss/download.scss";
+import React, { useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import SimpleDialog from "../../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
+import Download from "../../../assets/icons/upload.svg";
+import uploadIcon from "../../../assets/icons/upload_cloud.png";
+import SimpleDialog from "../../../containers/components/dialog";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
 import "../../../assets/scss/upload.scss";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { CustomButton } from ".";
 
 const DialogContent = withStyles((theme: Theme) => ({
@@ -68,7 +68,7 @@ const UploadButton = (Props: any) => {
   const onChangeHandler = (event: any) => {
     let files = event.target.files;
     let size = 1280;
-    const types = ["image/png", "image/jpeg", "image/gif"];
+    const types = [".csv", ".XSLS"];
     let err = "";
     for (var x = 0; x < files.length; x++) {
       if (types.every((type) => files[x].type !== type)) {
@@ -95,7 +95,7 @@ const UploadButton = (Props: any) => {
             open={showPopup}
             onClose={handleClosePopup}
             header={"Upload Inventory Files"}
-            maxWidth={"800px"}
+            maxWidth={"685px"}
           >
             <DialogContent>
               <div
@@ -103,46 +103,41 @@ const UploadButton = (Props: any) => {
                 style={{ height: "355px" }}
               >
                 <div className="popup-content">
-                  <div className={`popup-title`}>
+                  <div>
                     <p className="upload-heading">Upload Inventory Files</p>
                   </div>
-                  <div className="sub-topics">
+                  <div className="file-size-and-length">
                     <p>Files Supported XSLS, CSV</p>
                     <p>Max upload size: 5 MB</p>
                   </div>
-                  <div className="popup-content-row">
-                    <div className="zone">
-                      <div id="dropZ">
-                        <i className="fa fa-cloud-upload"></i>
-                        <div className="popup-content">
-                          Drag and drop your file here
-                        </div>
-                        <span>or</span>
-                        <div className="selectFile">
-                          <label htmlFor="file">Browse</label>
-                          <input
-                            type="file"
-                            name="file"
-                            id="file"
-                            accept=".csv"
-                            onChange={onChangeHandler}
-                          />
-                        </div>
+                  <div className="browse-content">
+                    <div className="browse">
+                      <img
+                        className="upload-cloud-image"
+                        src={uploadIcon}
+                        alt="upload cloud icon"
+                      />
+                      <div>Drag and drop your file here</div>
+                      <span>or</span>
+                      <div className="selectFile">
+                        <label htmlFor="file">Browse</label>
+                        <input
+                          type="file"
+                          name="file"
+                          id="file"
+                          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                          onChange={onChangeHandler}
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="sub-topicss">
+                  <div className="updated-year">
                     <p>Updated Year</p>
-
                     <DatePicker
                       id="update-date"
-                      //value={selectedFilters.lastmodifieddatefrom}
+                      //value={selectedval}
                       dateFormat="yyyy"
                       customInput={<DateInput ref={ref} />}
-                      // selected={selectedFilters.lastmodifieddatefrom}
-                      // onChange={(date: any) =>
-                      //   this.handleDateChange(date, "lastmodifieddatefrom")
-                      // }
                       showYearPicker
                       maxDate={new Date()}
                     />
@@ -161,7 +156,7 @@ const UploadButton = (Props: any) => {
                   padding: "7px",
                   border: "1px solid  #7eb343",
                 }}
-                //	handleClick={() => this.filterScans(retailerPopupData.username)}
+                //	handleClick={}
               />
             </DialogActions>
           </SimpleDialog>
