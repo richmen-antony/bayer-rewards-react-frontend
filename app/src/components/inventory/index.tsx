@@ -24,37 +24,39 @@ import {
 	downloadScansCsvFile
   } from '../../redux/actions/common/common';
 import {
-getOverallScans,
-getScannedBrands,
-getScannedProducts,
-setselectedBrandList,
-setselectedProductList,
-setOverallList
-} from '../../redux/actions/consolidatedScans/consolidatedScans';
+	getOverallInventory,
+	getBrandwiseInventory,
+	getProductwiseInventory,
+	setBrandwiseInventory,
+	setProductwiseInventory,
+	setOverallInventory
+} from '../../redux/actions/inventory/inventory';
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import _ from "lodash";
+import * as myConstClass from "../../utility/constant";
 
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
 
-const ConsolidatedScans = (Props: any) => {
+const Inventory = (Props: any) => {
+	let package_type = myConstClass.package_type;
     let closeToggle: any;
 	const dispatch             = useDispatch();
 	const geolevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
 	const geographicFields     = useSelector(({common}:any) => common?.geographicFields);
 	const levelsName           = useSelector(({common}:any) => common?.levelsName);
 	const commonErrorMessage   = useSelector(({common}:any) => common?.errorMessage);
-	const allConsolidatedScans = useSelector(({consolidatedScans}:any) => consolidatedScans?.allConsolidatedScans);
-	const scannedBrands        = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedBrands);
-	const scannedProducts      = useSelector(({consolidatedScans}:any) => consolidatedScans?.scannedProducts);
-	const isReduxLoader        = useSelector(({consolidatedScans}:any) => consolidatedScans?.isLoader);
+	const allConsolidatedInventory = useSelector(({inventory}:any) => inventory?.allConsolidatedInventory);
+	const BrandwiseInventories        = useSelector(({inventory}:any) => inventory?.BrandwiseInventory);
+	const ProductwiseInventories      = useSelector(({inventory}:any) => inventory?.ProductwiseInventory);
+	const isReduxLoader        = useSelector(({inventory}:any) => inventory?.isLoader);
 	// const errorMessage         = useSelector(({consolidatedScans}:any) => consolidatedScans?.errorMessage);
 
 	const [searchText, setSearchText]                          = useState<string>("");
 	const [isLoader, setIsLoader]                              = useState<boolean>(false);
 	const [dateErrMsg, setDateErrMsg]                          = useState<string>("");
 	const [partnerTypeList, setpartnerTypeList]                = useState(["Retailers", "Distributors"]);
-	const [partnerType, setPartnerType]                        = useState({ type: "Retailers" });
+	const [partnerType, setPartnerType]                        = useState({ type: "Distributors" });
 	const [selectedDistributorName,setselectedDistributorName] = useState('');
 	const [selectedBrandName,setselectedBrandName]             = useState('');
 	const [selectedDistributor,setselectedDistributor]         = useState(0);
@@ -72,6 +74,7 @@ const ConsolidatedScans = (Props: any) => {
 	const [scannedBrandsSuccess,setScannedBrandsSuccess]       = useState(Number);
 	const [filterSuccess,setFilterSuccess]                     = useState(Number);
 	const [selectedYear, setSelectedYear]                      = useState({value : new Date().getFullYear(), label : new Date().getFullYear() })
+	const [packageType, setPackageType]                      = useState({value : package_type[0], label : package_type[0] })
 	
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
@@ -113,6 +116,7 @@ const ConsolidatedScans = (Props: any) => {
 	]);
 	const [retailerPopupData,setretailerPopupData]              = useState({});
 
+
 	let i = 1990;
 	let year = [];
 	for ( i === 1990; i <= new Date().getFullYear(); i++) {
@@ -120,6 +124,13 @@ const ConsolidatedScans = (Props: any) => {
 		year.push(yearObj);
 	}
     year.reverse();	
+
+	let packType:any = [];
+	package_type.forEach((type:string) => {
+		let packageObj = { label : type, value : type};
+		packType.push(packageObj);
+	})
+	console.log('packType',packType)
 
 	useEffect(()=>{
 		if(commonErrorMessage) {
@@ -136,16 +147,16 @@ const ConsolidatedScans = (Props: any) => {
 			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
 			isfiltered  : isFiltered,
 		};
-		dispatch(getOverallScans(data));
+		dispatch(getOverallInventory(data));
 	},[]);
 
 	useEffect(()=>{
 		setOverallScanSuccess(new Date().getTime());
-	},[allConsolidatedScans])
+	},[allConsolidatedInventory])
 
 	useEffect(()=>{
-		let id = allConsolidatedScans && allConsolidatedScans[0]?.soldbyid;
-		let name = allConsolidatedScans && allConsolidatedScans[0]?.firstname+' '+allConsolidatedScans[0]?.lastname;
+		let id = allConsolidatedInventory && allConsolidatedInventory[0]?.rtmppartnerid;
+		let name = allConsolidatedInventory && allConsolidatedInventory[0]?.firstname+' '+allConsolidatedInventory[0]?.lastname;
 		setSoldbyid(id);
 		if(name){
 			setselectedDistributorName(name);
@@ -159,25 +170,25 @@ const ConsolidatedScans = (Props: any) => {
 			if(isFiltered) {
 				filteredDatas = getFilteredDatas(filteredDatas);
 			}
-			dispatch(getScannedBrands(soldbyid,isFiltered,filteredDatas));
+			dispatch(getBrandwiseInventory(soldbyid,isFiltered,filteredDatas));
 		} else {
-			dispatch(setselectedBrandList([]));
-			dispatch(setselectedProductList([]));
+			dispatch(setBrandwiseInventory([]));
+			dispatch(setProductwiseInventory([]));
 			setselectedDistributorName('');
 		}
 	},[filterSuccess]);
 
 	useEffect(()=>{
-		setselectedBrandName(scannedBrands && scannedBrands[0]?.productbrand);
+		setselectedBrandName(BrandwiseInventories && BrandwiseInventories[0]?.productbrand);
 		setScannedBrandsSuccess(new Date().getTime());
-	},[scannedBrands]);
+	},[BrandwiseInventories]);
 
 	useEffect(()=>{
 		let filteredDatas = {};
 			if(isFiltered) {
 				filteredDatas = getFilteredDatas(filteredDatas);
 			}
-		dispatch(getScannedProducts(soldbyid,isFiltered, selectedBrandName,filteredDatas));
+		dispatch(getProductwiseInventory(soldbyid,isFiltered, selectedBrandName,filteredDatas));
 	},[scannedBrandsSuccess])
 
 	useEffect(()=>{
@@ -193,7 +204,7 @@ const ConsolidatedScans = (Props: any) => {
 				filteredDatas = getFilteredDatas(filteredDatas);
 				data = { ...data, ...filteredDatas };
 			}
-			dispatch(getOverallScans(data));
+			dispatch(getOverallInventory(data));
 		}
 	},[searchText, partnerType,filterAppliedTime])
 
@@ -203,7 +214,7 @@ const ConsolidatedScans = (Props: any) => {
 			setselectedDistributor(idx);
 			setselectedBrand(0);
 		}
-		allConsolidatedScans?.forEach((item:any,index:number)=>{
+		allConsolidatedInventory?.forEach((item:any,index:number)=>{
 			if( item.soldbyid === soldbyidd) {
 				setselectedDistributorName(item.firstname+' '+ item.lastname);
 			}
@@ -217,10 +228,10 @@ const ConsolidatedScans = (Props: any) => {
 			if(isFiltered) {
 				filteredDatas = getFilteredDatas(filteredDatas);
 			}
-		dispatch(getScannedProducts(soldby,isFiltered, productbrand,filteredDatas));
+		dispatch(getProductwiseInventory(soldby,isFiltered, productbrand,filteredDatas));
 		setselectedBrand(idx);
-		scannedBrands?.forEach((item:any,index:number) => {
-			if( item.productbrand === productbrand && item.soldbyid === soldbyid) {
+		BrandwiseInventories?.forEach((item:any,index:number) => {
+			if( item.productbrand === productbrand && item.rtmppartnerid === soldbyid) {
 				setselectedBrandName(item.productbrand);
 			}
 		})
@@ -408,8 +419,8 @@ const ConsolidatedScans = (Props: any) => {
 	const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
 		if(e.name === 'selectedYear') {
             setSelectedYear(selectedOption);
-        } else if (e.name === 'selectedType') {
-
+        } else if (e.name === 'packageType') {
+			setPackageType(selectedOption);
         } else  {
 			let condOptionName = optionName?.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
 			setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
@@ -511,11 +522,11 @@ const ConsolidatedScans = (Props: any) => {
 	const onSort = (name: string, data: any, isAsc: boolean,table:string) => {
 		let response: any = sortBy(name, data);
 		if(table === "overallScans"){
-			dispatch(setOverallList(response));
-		} else if (table === "scannedBrands") {
-			dispatch(setselectedBrandList(response));
-		} else if(table === "scannedProducts") {
-			dispatch(setselectedProductList(response));
+			dispatch(setOverallInventory(response));
+		} else if (table === "BrandwiseInventory") {
+			dispatch(setBrandwiseInventory(response));
+		} else if(table === "ProductwiseInventory") {
+			dispatch(setProductwiseInventory(response));
 		}
 		setIsAsc(!isAsc);
 	};
@@ -523,7 +534,7 @@ const ConsolidatedScans = (Props: any) => {
 	const handleSort = (
 		e: any,
 		columnname: string,
-		allConsolidatedScans: any,
+		allConsolidatedInventory: any,
 		isAsc: boolean,
 		table : string
 	  ) => {
@@ -532,17 +543,17 @@ const ConsolidatedScans = (Props: any) => {
 			setbrandtableIndex(1);
 			setproducttableIndex(1);
 			// console.log('###', overalltableIndex)
-		} else if (table === "scannedBrands") {
+		} else if (table === "BrandwiseInventory") {
 			setbrandtableIndex(e.currentTarget.cellIndex);
 			setoveralltableIndex(1);
 			setproducttableIndex(1);
 			// console.log('###brands', brandtableIndex)
-		} else if(table === "scannedProducts") {
+		} else if(table === "ProductwiseInventory") {
 			setproducttableIndex(e.currentTarget.cellIndex);
 			setoveralltableIndex(1);
 			setbrandtableIndex(1);
 		}
-		  onSort(columnname, allConsolidatedScans, isAsc,table);
+		  onSort(columnname, allConsolidatedInventory, isAsc,table);
 	};
 
 	const handleUpdateRetailer = (value: object) => {
@@ -593,6 +604,8 @@ const ConsolidatedScans = (Props: any) => {
 							handleReactSelect={handleReactSelect}
 							yearOptions = {year}
 							isCustomDropdown = {true}
+							packageType ={packageType}
+							packageTypeOptions ={packType}
 					    >
 						<label className="font-weight-bold pt-2">Product Group</label>
 							<div className="form-group pt-1">
@@ -702,23 +715,23 @@ const ConsolidatedScans = (Props: any) => {
                     </div>
                 </div>
                 <div className="row" style={{ opacity : '0.9'}}>
-                        <div className = "col-sm-6">
-                            <OverallInventory allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
-							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />
-                        </div>
-                        <div className = "col-sm-6">
-                            <div>
-                                <BrandwiseInventory selectedBrandList={scannedBrands} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'scannedBrands'} />
-                            </div>
-                            <div>
-                                <ProductwiseInventory selectedProductList = {scannedProducts} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'scannedProducts'} />
-                            </div>
-                        </div>
+					<div className = "col-sm-6">
+						<OverallInventory allConsolidatedInventory={allConsolidatedInventory} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
+						isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />
+					</div>
+					<div className = "col-sm-6">
+						<div>
+							<BrandwiseInventory selectedBrandList={BrandwiseInventories} getSelectedProducts ={getSelectedProducts}  distributorName={selectedDistributorName} selectedBrand={selectedBrand} handleSort={handleSort} isAsc={isAsc} tableCellIndex={brandtableIndex} tableName={'BrandwiseInventory'} />
+						</div>
+						<div>
+							<ProductwiseInventory selectedProductList = {ProductwiseInventories} brandName={selectedBrandName} handleSort={handleSort} isAsc={isAsc} tableCellIndex={producttableIndex} tableName={'ProductwiseInventory'} />
+						</div>
+					</div>
                 </div>
             </div>
         </AUX>
     )
 }
 
-export default ConsolidatedScans;
+export default Inventory;
 

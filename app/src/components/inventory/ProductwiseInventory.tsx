@@ -20,10 +20,10 @@ export const ProductwiseInventory = ({
   tableCellIndex,
   tableName,
 }: ProductListProps) => {
-  let totalReceivedGoods: number = 0;
-  let totalSendGoods: number = 0;
-  let totalWalkInSales: number = 0;
-  let totalAdvisorSales: number = 0;
+  let totalOpeningInventory: number = 0;
+  let totalSellIn: number = 0;
+  let totalSellOut: number = 0;
+  let totalReturns: number = 0;
   return (
     <AUX>
       <div className="">
@@ -44,14 +44,14 @@ export const ProductwiseInventory = ({
                       "productname",
                       selectedProductList,
                       isAsc,
-                      "scannedProducts"
+                      "ProductwiseInventory"
                     )
                   }
                   style={{ width: "18%", padding: "5px" }}
                   key="productname"
                 >
                   PRODUCT
-                  {tableCellIndex === 0 && tableName === "scannedProducts" ? (
+                  {tableCellIndex === 0 && tableName === "ProductwiseInventory" ? (
                     <i
                       className={`fas ${
                         isAsc ? "fa-sort-down" : "fa-sort-up"
@@ -105,10 +105,10 @@ export const ProductwiseInventory = ({
             <tbody>
               {selectedProductList?.length > 0 ? (
                 selectedProductList?.map((item: any, i: number) => {
-                  totalReceivedGoods = totalReceivedGoods + item.RECEIVE_GOOD;
-                  totalSendGoods = totalSendGoods + item.SEND_GOOD;
-                  totalWalkInSales = totalWalkInSales + item.S2F_WALKIN;
-                  totalAdvisorSales = totalAdvisorSales + item.S2F_ADVISOR;
+                  totalOpeningInventory = totalOpeningInventory + item.openinginventory;
+                  totalSellIn = totalSellIn + item.sellin;
+                  totalSellOut = totalSellOut + item.sellout;
+                  totalReturns = totalReturns + item.returns;
                   return (
                     <tr key={i}>
                       <td style={{ width: "18%", padding: "5px" }}>
@@ -122,25 +122,25 @@ export const ProductwiseInventory = ({
                         className="text-right"
                         style={{ width: "20%", paddingRight: "0.5em" }}
                       >
-                        {item.RECEIVE_GOOD}
+                        {item.openinginventory}
                       </td>
                       <td
                         className="text-right"
                         style={{ width: "20%", paddingRight: "0.5em" }}
                       >
-                        {item.SEND_GOOD}
+                        {item.sellin}
                       </td>
                       <td
                         className="text-right"
                         style={{ width: "20%", paddingRight: "0.5em" }}
                       >
-                        {item.S2F_WALKIN}
+                        {item.sellout}
                       </td>
                       <td
                         className="text-right"
                         style={{ width: "22%", paddingRight: "0.5em" }}
                       >
-                        {item.S2F_ADVISOR}
+                        {item.returns}
                       </td>
                     </tr>
                   );
@@ -155,39 +155,6 @@ export const ProductwiseInventory = ({
             </tbody>
           </table>
         </div>
-        {/* {selectedProductList?.length > 0 &&
-          <div className="consolidated-sum-total">
-                <table style={{ width: '100%', marginTop: "5px"}}>
-                  <tbody>
-                    <tr>
-                    <td style={{ width: "22%", paddingLeft: "10px" }}> 
-                        <span className="total">Total({selectedProductList?.length})</span>
-                      </td>
-                      <td className="text-center" style={{ width: "15%" }}>
-                      <span>
-                        {totalReceivedGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                      <span>
-                        {totalSendGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "21%" }}>
-                      <span className="">
-                        {totalWalkInSales}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                    <span className="productprice">
-                        {totalAdvisorSales}
-                      </span>
-                    </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            } */}
         {selectedProductList?.length > 0 && (
           <table
             className="table listTable bottom-table"
@@ -205,22 +172,22 @@ export const ProductwiseInventory = ({
                 <th
                   style={{ width: "20%", padding: "5px", textAlign: "right" }}
                 >
-                  {totalReceivedGoods}
+                  {totalOpeningInventory}
                 </th>
                 <th
                   style={{ width: "20%", padding: "5px", textAlign: "right" }}
                 >
-                  {totalReceivedGoods}
+                  {totalSellIn}
                 </th>
                 <th
                   style={{ width: "20%", padding: "5px", textAlign: "right" }}
                 >
-                  {totalReceivedGoods}
+                  {totalSellOut}
                 </th>
                 <th
                   style={{ width: "22%", padding: "5px", textAlign: "right" }}
                 >
-                  {totalReceivedGoods}
+                  {totalReturns}
                 </th>
               </tr>
             </thead>

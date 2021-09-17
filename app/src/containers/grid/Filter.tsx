@@ -28,6 +28,8 @@ interface Props {
 	handleReactSelect?: any;
 	yearOptions?: {};
 	isCustomDropdown? : Boolean;
+	packageType?: any;
+	packageTypeOptions?: any
 }
 
 /**
@@ -63,7 +65,9 @@ const Filter: React.FC<Props> = (props: Props) => {
 		selectedYear,
 		handleReactSelect,
 		yearOptions,
-		isCustomDropdown
+		isCustomDropdown,
+		packageType,
+		packageTypeOptions
 	} = props;
 
 	useEffect(() => { 
@@ -83,7 +87,11 @@ const Filter: React.FC<Props> = (props: Props) => {
 					tolltip={toolTipText}
 				/>
 				{ isCustomDropdown &&
-				<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" /> }
+				<div>
+					<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" /> 
+					<CustomDropdown name="packageType" value={packageType} options={packageTypeOptions} handleReactSelect={handleReactSelect} title="Package Type" />
+				</div>
+				}
 
 				<div className="filter-right-side">
 					{isPartnerType &&

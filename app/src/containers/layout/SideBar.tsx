@@ -308,7 +308,7 @@ class Sidebar extends Component<Props, States> {
                     <li className="d-flex">
                       <span
                         className={
-                          window.location.pathname.indexOf("consolidatedScans") > -1
+                          window.location.pathname.indexOf("inventory") > -1
                             ? "waves-effect active"
                             : "waves-effect"
                         }

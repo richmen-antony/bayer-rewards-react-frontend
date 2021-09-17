@@ -36,7 +36,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 export type OverallScanProps = {
-  allConsolidatedScans: any;
+  allConsolidatedInventory: any;
   getSelectedBrands: any;
   selectedDistributor: any;
   handleSort: Function;
@@ -51,7 +51,7 @@ export type OverallScanProps = {
 };
 
 export const OverallInventory = ({
-  allConsolidatedScans,
+  allConsolidatedInventory,
   getSelectedBrands,
   selectedDistributor,
   handleSort,
@@ -64,10 +64,10 @@ export const OverallInventory = ({
   setSearchText,
   setIsFiltered,
 }: OverallScanProps) => {
-  let totalReceivedGoods: number = 0;
-  let totalSendGoods: number = 0;
-  let totalWalkInSales: number = 0;
-  let totalAdvisorSales: number = 0;
+  let totalOpeningInventory: number = 0;
+  let totalSellIn: number = 0;
+  let totalSellOut: number = 0;
+  let totalReturns: number = 0;
   const geoLevelsName = useSelector(({ common }: any) => common?.levelsName);
 
   const [showPopup, setshowPopup] = useState(false);
@@ -111,7 +111,7 @@ export const OverallInventory = ({
                       handleSort(
                         e,
                         "firstname",
-                        allConsolidatedScans,
+                        allConsolidatedInventory,
                         isAsc,
                         "overallScans"
                       )
@@ -174,12 +174,12 @@ export const OverallInventory = ({
                 </tr>
               </thead>
               <tbody>
-                {allConsolidatedScans?.length > 0 ? (
-                  allConsolidatedScans?.map((item: any, idx: number) => {
-                    totalReceivedGoods = totalReceivedGoods + item.RECEIVE_GOOD;
-                    totalSendGoods = totalSendGoods + item.SEND_GOOD;
-                    totalWalkInSales = totalWalkInSales + item.S2F_WALKIN;
-                    totalAdvisorSales = totalAdvisorSales + item.S2F_ADVISOR;
+                {allConsolidatedInventory?.length > 0 ? (
+                  allConsolidatedInventory?.map((item: any, idx: number) => {
+                    totalOpeningInventory = totalOpeningInventory + item.openinginventory;
+                    totalSellIn = totalSellIn + item.sellin;
+                    totalSellOut = totalSellOut + item.sellout;
+                    totalReturns = totalReturns + item.returns;
                     return (
                       <tr
                         style={{
@@ -190,7 +190,7 @@ export const OverallInventory = ({
                         key={idx}
                         onClick={() =>
                           getSelectedBrands(
-                            item.soldbyid,
+                            item.rtmppartnerid,
                             idx,
                             "selected",
                             item.productbrand
@@ -212,32 +212,32 @@ export const OverallInventory = ({
                           />
                           <br />
                           <label style={{ fontSize: "9px" }}>
-                            {item.soldbyid}
+                            {item.rtmppartnerid}
                           </label>
                         </td>
                         <td
                           style={{ width: "20%", padding: "5px" }}
                           className="text-right"
                         >
-                          {item.RECEIVE_GOOD}
+                          {item.openinginventory}
                         </td>
                         <td
                           style={{ width: "15%", padding: "5px" }}
                           className="text-right"
                         >
-                          {item.SEND_GOOD}
+                          {item.sellin}
                         </td>
                         <td
                           style={{ width: "20%", padding: "5px" }}
                           className="text-right"
                         >
-                          {item.S2F_WALKIN}
+                          {item.sellout}
                         </td>
                         <td
                           style={{ width: "20%", padding: "5px" }}
                           className="text-right"
                         >
-                          {item.S2F_ADVISOR}
+                          {item.returns}
                         </td>
                       </tr>
                     );
@@ -252,41 +252,8 @@ export const OverallInventory = ({
               </tbody>
             </table>
           </div>
-          {/* {allConsolidatedScans?.length > 0 &&
-            <div className ="consolidated-sum-total">
-              <table style={{ width: '100%', marginTop: "5px"}}>
-                <tbody>
-                  <tr>
-                  <td style={{ width: "23%", paddingLeft: "10px" }}> 
-                      <span className="total">Total({allConsolidatedScans?.length})</span>
-                    </td>
-                    <td className="text-center" style={{ width: "15%" }}>
-                      <span>
-                        {totalReceivedGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                      <span>
-                        {totalSendGoods}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "21%" }}>
-                      <span className="">
-                        {totalWalkInSales}
-                      </span>
-                    </td>
-                    <td className="text-center" style={{ width: "23%" }}>
-                    <span className="productprice">
-                        {totalAdvisorSales}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          } */}
 
-          {allConsolidatedScans?.length > 0 && (
+          {allConsolidatedInventory?.length > 0 && (
             <table
               className="table listTable bottom-table"
               style={{
@@ -298,44 +265,33 @@ export const OverallInventory = ({
               <thead>
                 <tr>
                   <th style={{ width: "25%", padding: "5px" }}>
-                    Total&nbsp;({allConsolidatedScans?.length})
+                    Total&nbsp;({allConsolidatedInventory?.length})
                   </th>
                   <th
                     style={{ width: "20%", padding: "5px", textAlign: "right" }}
                   >
-                    {totalReceivedGoods}
+                    {totalOpeningInventory}
                   </th>
                   <th
                     style={{ width: "15%", padding: "5px", textAlign: "right" }}
                   >
-                    {totalSendGoods}
+                    {totalSellIn}
                   </th>
                   <th
                     style={{ width: "20%", padding: "5px", textAlign: "right" }}
                   >
-                    {totalWalkInSales}
+                    {totalSellOut}
                   </th>
                   <th
                     style={{ width: "20%", padding: "5px", textAlign: "right" }}
                   >
-                    {totalAdvisorSales}
+                    {totalReturns}
                   </th>
                 </tr>
               </thead>
             </table>
           )}
         </>
-        {/* <div>
-          <Pagination
-            totalData={totalData}
-            data={allScanLogs}
-            totalLabel={"Sales"}
-            onRef={(node:any)=>{
-              this.paginationRef= node;
-            }}
-            getRecords={this.getScanLogs}
-          />
-        </div> */}
       </div>
       {showPopup ? (
         <SimpleDialog
