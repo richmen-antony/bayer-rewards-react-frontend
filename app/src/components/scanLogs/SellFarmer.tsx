@@ -63,6 +63,11 @@ type States = {
 	partnerType: PartnerTypes;
 };
 let levelsName: any = [];
+/**
+ * SellFarmer component implement to WalkinSales and Advisor Sales management
+ * @param props  define types
+ * @param states define types
+ */
 class SellFarmer extends Component<Props, States> {
 	tableCellIndex: any = 0;
 	timeOut: any;
@@ -72,6 +77,7 @@ class SellFarmer extends Component<Props, States> {
 	advisorSalesRef: any;
 	constructor(props: any) {
 		super(props);
+		// To maintain the default initial state management for rendering components
 		this.state = {
 			showPopup: false,
 			showProductPopup: false,
@@ -171,7 +177,11 @@ class SellFarmer extends Component<Props, States> {
 		};
 		this.timeOut = 0;
 	}
+	/**
+	 * Inital rendering API calls to mount the component
+	 */
 	componentDidMount() {
+		//To get the logged current user information
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
 		const condSalesType=userData?.role==="RSM"? this.state.salesType: ["WALKIN_SALES"];
@@ -190,7 +200,10 @@ class SellFarmer extends Component<Props, States> {
 			}
 		);
 	}
-
+    
+	/**
+	 * Get the country list and shown up  dropdown options values
+	 */
 	getCountryList() {
 		let res = [
 			{ value: "India", label: "India" },
@@ -212,6 +225,7 @@ class SellFarmer extends Component<Props, States> {
 			retailerid: selectedAdvisorFilters.retailer === "ALL" ? null : selectedAdvisorFilters.retailer,
 		};
 		let oneTimeUpdate = selectedAdvisorFilters.retailer !== "ALL" && condIf ? true : false;
+		// TO call the retailer list api with filters
 		invokeGetAuthService(rsmRetailerList, queryParams)
 			.then((response) => {
 				if (response.data) {
@@ -243,6 +257,7 @@ class SellFarmer extends Component<Props, States> {
 			})
 			.catch((error) => {
 				this.setState({ isLoader: false });
+				// handle the error message and display toaster message
 				ErrorMsg(error);
 			});
 	};
@@ -272,7 +287,10 @@ class SellFarmer extends Component<Props, States> {
 			});
 		});
 	};
-
+    /**
+	 * To handle the searchText value
+	 * @param e 
+	 */
 	handleSearch = (e: any) => {
 		let searchText = e.target.value;
 		this.setState({ searchText: searchText, isFiltered: true });
@@ -285,6 +303,13 @@ class SellFarmer extends Component<Props, States> {
 			}, 1000);
 		}
 	};
+	/**
+	 * To hanlde the filter values 
+	 * @param e 
+	 * @param name 
+	 * @param item 
+	 * @param itemList 
+	 */
 	handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
 		e.stopPropagation();
 		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
@@ -308,6 +333,10 @@ class SellFarmer extends Component<Props, States> {
 			this.setState({ [name]: val });
 		}
 	};
+	/**
+	 * This method handle reset the filter values in state
+	 * @param e 
+	 */
 	resetFilter = (e?: any) => {
 		let conditionIsFilter = this.state.searchText ? true : false;
 		const { selectedSalesType } = this.state;
@@ -354,18 +383,28 @@ class SellFarmer extends Component<Props, States> {
 			}
 		);
 	};
-
+    /**
+	 * To hanlde applicable to filter values and call the get list API 
+	 */
 	applyFilter = () => {
 		this.setState({ isFiltered: true }, () => {
 			this.callChildAPI();
+			//To close the filter toggle 
 			this.closeToggle();
 		});
 	};
-
+   /**
+	* To accesssed the download features
+	*/
 	download = () => {
 		const { selectedSalesType } = this.state;
 		selectedSalesType === "WALKIN_SALES" ? this.walkinSalesRef?.download() : this.advisorSalesRef?.download();
 	};
+	/**
+	 * To handle date fields for filter values 
+	 * @param date 
+	 * @param name 
+	 */
 	handleDateChange = (date: any, name: string) => {
 		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
 		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
@@ -471,7 +510,7 @@ class SellFarmer extends Component<Props, States> {
 			[condName]: { ...this.state[condName], [name]: date },
 		});
 	};
-
+    
 	handleSelect = (event: any, name: string) => {
 		this.setState(
 			{
@@ -488,7 +527,7 @@ class SellFarmer extends Component<Props, States> {
 			}
 		);
 	};
-
+   
 	handlePartnerChange = (name: string) => {
 		this.setState({
 			partnerType: {
@@ -794,10 +833,8 @@ class SellFarmer extends Component<Props, States> {
 									list.value = selectedOptions.value;
 									this.getOptionLists("manual", list.name, selectedOptions.value, index);
 									this.handleReactSelect(selectedOptions, e, list.name);
-									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
 								value={list.value}
-								// isDisabled={list.name === "geolevel1"}
 								isDisabled = {userData?.role === 'RSM' && list.name === "geolevel1" }
 								id="geolevel-test"
 								dataTestId="geolevel-test"
@@ -983,19 +1020,6 @@ class SellFarmer extends Component<Props, States> {
 								) : (
 									<React.Fragment>
 										<div className="form-group" onClick={(e) => e.stopPropagation()}>
-											{/* <ReactSelect
-												name="retailer"
-												value={selectedRetailerOptions}
-												label={"Retailer"}
-												handleChange={(selectedOptions: any, e: any) =>
-													this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
-												}
-												// handleChange={(e: any) => this.handleSelect(e, "retailer")}
-												options={retailerOptions}
-												defaultValue="ALL"
-												id="retailer-test"
-												dataTestId="retailer-test"
-											/> */}
 											<ReactSelect
 												name="retailer"
 												value={
@@ -1008,7 +1032,6 @@ class SellFarmer extends Component<Props, States> {
 												handleChange={(selectedOptions: any, e: any) =>
 													this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
 												}
-												// handleChange={(e: any) => this.handleSelect(e, "retailer")}
 												options={retailerOptions}
 												defaultValue="ALL"
 												id="retailer-test"
@@ -1017,19 +1040,6 @@ class SellFarmer extends Component<Props, States> {
 										</div>
 
 										<div className="form-group" onClick={(e) => e.stopPropagation()}>
-											{/* <ReactSelect
-												name="farmer"
-												value={selectedFarmerOptions}
-												label={"Farmer"}
-												handleChange={(selectedOptions: any, e: any) =>
-													this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
-												}
-												// handleChange={(e: any) => this.handleSelect(e, "farmer")}
-												options={farmerOptions}
-												defaultValue="ALL"
-												id="farmer-test"
-												dataTestId="farmer-test"
-											/> */}
 											<ReactSelect
 												name="farmer"
 												value={
@@ -1042,7 +1052,6 @@ class SellFarmer extends Component<Props, States> {
 												handleChange={(selectedOptions: any, e: any) =>
 													this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
 												}
-												// handleChange={(e: any) => this.handleSelect(e, "farmer")}
 												options={farmerOptions}
 												defaultValue="ALL"
 												id="farmer-test"

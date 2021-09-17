@@ -182,6 +182,7 @@ class Sidebar extends Component<Props, States> {
                         <span> User List </span>
                       </Link>
                     </li>
+
                     <li className="d-flex">
                       <span
                         className={
@@ -204,31 +205,23 @@ class Sidebar extends Component<Props, States> {
                       </Link>
                     </li>
 
-                    {this.state.userRole === "RSM" && (
-                      <li className="d-flex">
-                        <span
-                          className={
-                            window.location.pathname.indexOf("scanlogs") > -1
-                              ? "waves-effect active"
-                              : "waves-effect"
-                          }
-                        ></span>
-                        <Link
-                          to="/scanlogs"
-                          onClick={() => this.setActiveTab("scanlogs")}
-                        >
-                          <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                          <span> Scan Logs </span>
-                        </Link>
-                      </li>
-                    )}
+                    <li className="d-flex">
+                      <span
+                        className={
+                          window.location.pathname.indexOf("scanlogs") > -1
+                            ? "waves-effect active"
+                            : "waves-effect"
+                        }
+                      ></span>
+                      <Link
+                        to="/scanlogs"
+                        onClick={() => this.setActiveTab("scanlogs")}
+                      >
+                        <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
+                        <span> Scan Logs </span>
+                      </Link>
+                    </li>
 
-                    {/* <li className="d-flex">
-                                                <span className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'}></span>
-                                                <Link to="/configurations" className={activeTab === 'configurations' ? 'waves-effect active' : 'waves-effect'} onClick={() => this.setActiveTab('configurations')}>
-                                                    <img src={pointLogsIcon} alt="User" width="16" /> <span> Configurations </span>
-                                                </Link>
-                                            </li> */}
                   </>
                 )}
 
