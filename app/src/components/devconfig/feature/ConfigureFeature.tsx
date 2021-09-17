@@ -17,6 +17,7 @@ import { getLocalStorageData } from "../../../utility/base/localStore";
 import Loader from "../../../utility/widgets/loader";
 import ArrowIcon from "../../../assets/icons/tick.svg";
 import reset from "../../../assets/icons/reset.svg";
+import RouterPrompt from "../../../containers/prompt";
 
 /**
  * Toggle styles
@@ -270,6 +271,14 @@ const ConfigureFeature: React.FC = (props) => {
   return (
     <div>
       {isLoader && <Loader />}
+      <RouterPrompt
+        when={!showApplyButton}
+        title="Leave this page"
+        cancelText="Cancel"
+        okText="Confirm"
+        onOK={() => true}
+        onCancel={() => false}
+      />
       <div className="configure-title mt-2">
         <div className="breadcrums sub-title">
           <Breadcrumbs
