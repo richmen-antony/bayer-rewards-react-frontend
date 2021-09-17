@@ -24,6 +24,7 @@ export const ProductwiseInventory = ({
   let totalSellIn: number = 0;
   let totalSellOut: number = 0;
   let totalReturns: number = 0;
+  let totalClosingInventory: number = 0;
   return (
     <AUX>
       <div className="">
@@ -100,15 +101,27 @@ export const ProductwiseInventory = ({
                 >
                  RETURNS
                 </th>
+                <th
+                    className="rtl"
+                    style={{
+                      width: "20%",
+                      padding: "5px",
+                      textAlign: "right",
+                      direction: "rtl",
+                    }}
+                  >
+                    CLOSING
+                  </th>
               </tr>
             </thead>
             <tbody>
               {selectedProductList?.length > 0 ? (
                 selectedProductList?.map((item: any, i: number) => {
-                  totalOpeningInventory = totalOpeningInventory + item.openinginventory;
-                  totalSellIn = totalSellIn + item.sellin;
-                  totalSellOut = totalSellOut + item.sellout;
-                  totalReturns = totalReturns + item.returns;
+                    totalOpeningInventory = totalOpeningInventory + Number(item.openinginventory);
+                    totalSellIn = totalSellIn + Number(item.sellin);
+                    totalSellOut = totalSellOut + Number(item.sellout);
+                    totalReturns = totalReturns + Number(item.returns);
+                    totalClosingInventory = totalClosingInventory + Number(item.closinginventory);
                   return (
                     <tr key={i}>
                       <td style={{ width: "18%", padding: "5px" }}>
@@ -142,6 +155,12 @@ export const ProductwiseInventory = ({
                       >
                         {item.returns}
                       </td>
+                      <td
+                          style={{ width: "15%", padding: "5px" }}
+                          className="text-right"
+                        >
+                          {item.closinginventory}
+                        </td>
                     </tr>
                   );
                 })
@@ -189,6 +208,11 @@ export const ProductwiseInventory = ({
                 >
                   {totalReturns}
                 </th>
+                <th
+                    style={{ width: "15%", padding: "5px", textAlign: "right" }}
+                  >
+                    {totalClosingInventory}
+                  </th>
               </tr>
             </thead>
           </table>

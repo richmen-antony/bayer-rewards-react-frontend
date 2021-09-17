@@ -87,7 +87,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 					tolltip={toolTipText}
 				/>
 				{ isCustomDropdown &&
-				<div>
+				<div className="customDropdown">
 					<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" /> 
 					<CustomDropdown name="packageType" value={packageType} options={packageTypeOptions} handleReactSelect={handleReactSelect} title="Package Type" />
 				</div>

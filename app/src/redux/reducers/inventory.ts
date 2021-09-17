@@ -34,7 +34,7 @@ function InventoryReducer(state = {INITIAL_STATE}, action: any): any {
         case GET_OVERALL_INVENTORY_SUCCESS: {
             return {
                 ...state,
-                isLoader: false,
+                // isLoader: false,
                 allConsolidatedInventory: action.scans
             }
            

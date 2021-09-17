@@ -48,7 +48,7 @@ function CustomDropdown({
 	return (
         <div className="dropdown-year">
             <div className="yearlabel">
-                <label className="yeartext">{title}</label>
+                <label className="font-weight-bold yeartext">{title}</label>
             </div>
             <div className="select">
                 <ReactSelect

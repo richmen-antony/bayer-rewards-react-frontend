@@ -68,6 +68,7 @@ export const OverallInventory = ({
   let totalSellIn: number = 0;
   let totalSellOut: number = 0;
   let totalReturns: number = 0;
+  let totalClosingInventory: number = 0;
   const geoLevelsName = useSelector(({ common }: any) => common?.levelsName);
 
   const [showPopup, setshowPopup] = useState(false);
@@ -171,15 +172,27 @@ export const OverallInventory = ({
                   >
                     RETURNS
                   </th>
+                  <th
+                    className="rtl"
+                    style={{
+                      width: "20%",
+                      padding: "5px",
+                      textAlign: "right",
+                      direction: "rtl",
+                    }}
+                  >
+                    CLOSING
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {allConsolidatedInventory?.length > 0 ? (
                   allConsolidatedInventory?.map((item: any, idx: number) => {
-                    totalOpeningInventory = totalOpeningInventory + item.openinginventory;
-                    totalSellIn = totalSellIn + item.sellin;
-                    totalSellOut = totalSellOut + item.sellout;
-                    totalReturns = totalReturns + item.returns;
+                    totalOpeningInventory = totalOpeningInventory + Number(item.openinginventory);
+                    totalSellIn = totalSellIn + Number(item.sellin);
+                    totalSellOut = totalSellOut + Number(item.sellout);
+                    totalReturns = totalReturns + Number(item.returns);
+                    totalClosingInventory = totalClosingInventory + Number(item.closinginventory);
                     return (
                       <tr
                         style={{
@@ -216,7 +229,7 @@ export const OverallInventory = ({
                           </label>
                         </td>
                         <td
-                          style={{ width: "20%", padding: "5px" }}
+                          style={{ width: "15%", padding: "5px" }}
                           className="text-right"
                         >
                           {item.openinginventory}
@@ -228,16 +241,22 @@ export const OverallInventory = ({
                           {item.sellin}
                         </td>
                         <td
-                          style={{ width: "20%", padding: "5px" }}
+                          style={{ width: "15%", padding: "5px" }}
                           className="text-right"
                         >
                           {item.sellout}
                         </td>
                         <td
-                          style={{ width: "20%", padding: "5px" }}
+                          style={{ width: "15%", padding: "5px" }}
                           className="text-right"
                         >
                           {item.returns}
+                        </td>
+                        <td
+                          style={{ width: "15%", padding: "5px" }}
+                          className="text-right"
+                        >
+                          {item.closinginventory}
                         </td>
                       </tr>
                     );
@@ -268,7 +287,7 @@ export const OverallInventory = ({
                     Total&nbsp;({allConsolidatedInventory?.length})
                   </th>
                   <th
-                    style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                    style={{ width: "15%", padding: "5px", textAlign: "right" }}
                   >
                     {totalOpeningInventory}
                   </th>
@@ -278,14 +297,19 @@ export const OverallInventory = ({
                     {totalSellIn}
                   </th>
                   <th
-                    style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                    style={{ width: "15%", padding: "5px", textAlign: "right" }}
                   >
                     {totalSellOut}
                   </th>
                   <th
-                    style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                    style={{ width: "15%", padding: "5px", textAlign: "right" }}
                   >
                     {totalReturns}
+                  </th>
+                  <th
+                    style={{ width: "%", padding: "5px", textAlign: "right" }}
+                  >
+                    {totalClosingInventory}
                   </th>
                 </tr>
               </thead>

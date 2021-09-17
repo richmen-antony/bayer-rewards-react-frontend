@@ -28,6 +28,7 @@ const BrandwiseInventory = ({
   let totalSellIn: number = 0;
   let totalSellOut: number = 0;
   let totalReturns: number = 0;
+  let totalClosingInventory: number = 0;
   return (
     <AUX>
       <div className="">
@@ -104,15 +105,27 @@ const BrandwiseInventory = ({
                 >
                  RETURNS
                 </th>
+                <th
+                    className="rtl"
+                    style={{
+                      width: "20%",
+                      padding: "5px",
+                      textAlign: "right",
+                      direction: "rtl",
+                    }}
+                  >
+                    CLOSING
+                  </th>
               </tr>
             </thead>
             <tbody>
               {selectedBrandList?.length > 0 ? (
                 selectedBrandList?.map((item: any, idx: number) => {
-                  totalOpeningInventory = totalOpeningInventory + item.openinginventory;
-                  totalSellIn = totalSellIn + item.sellin;
-                  totalSellOut = totalSellOut + item.sellout;
-                  totalReturns = totalReturns + item.returns;
+                    totalOpeningInventory = totalOpeningInventory + Number(item.openinginventory);
+                    totalSellIn = totalSellIn + Number(item.sellin);
+                    totalSellOut = totalSellOut + Number(item.sellout);
+                    totalReturns = totalReturns + Number(item.returns);
+                    totalClosingInventory = totalClosingInventory + Number(item.closinginventory);
                   return (
                     <tr
                       style={{
@@ -155,6 +168,12 @@ const BrandwiseInventory = ({
                       >
                         {item.returns}
                       </td>
+                      <td
+                          style={{ width: "15%", padding: "5px" }}
+                          className="text-right"
+                        >
+                          {item.closinginventory}
+                        </td>
                     </tr>
                   );
                 })
@@ -202,6 +221,11 @@ const BrandwiseInventory = ({
                 >
                   {totalReturns}
                 </th>
+                <th
+                    style={{ width: "15%", padding: "5px", textAlign: "right" }}
+                  >
+                    {totalClosingInventory}
+                  </th>
               </tr>
             </thead>
           </table>

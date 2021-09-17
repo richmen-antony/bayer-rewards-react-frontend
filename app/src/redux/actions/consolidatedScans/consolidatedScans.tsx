@@ -46,7 +46,7 @@ export const setOverallList = (allScans:any) => {
 
 export const getScannedBrands = (soldbyid:string,isfiltered:boolean,filteredDatas:{}) => {
   return async(dispatch: Dispatch<AnyAction>) => {
-      dispatch({ type : LOADING_REQUEST, status : true } );
+      // dispatch({ type : LOADING_REQUEST, status : true } );
       const { getScannedBrands } = apiURL.consolidatedScans;
       let data = {
         countrycode: userDetails.countrycode,

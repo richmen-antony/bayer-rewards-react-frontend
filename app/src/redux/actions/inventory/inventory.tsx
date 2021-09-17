@@ -46,7 +46,7 @@ export const setOverallInventory = (allScans:any) => {
 
 export const getBrandwiseInventory = (soldbyid:string,isfiltered:boolean,filteredDatas:{}) => {
   return async(dispatch: Dispatch<AnyAction>) => {
-      dispatch({ type : LOADING_REQUEST, status : true } );
+    //   dispatch({ type : LOADING_REQUEST, status : true } );
       const { getBrandwiseInventory } = apiURL.inventory;
       let data = {
         countrycode: userDetails.countrycode,

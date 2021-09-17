@@ -40,15 +40,21 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    // width : 100px;
+    margin-right: 10px;
    
     .yeartext {
-      width: 73px;
+      padding-right: 10px;
+      // color: rgb(54, 54, 54);
+      font-size: 12px;
     }
     .select {
       width: 100px;
       height: 46px;
       margin-top: -37px;
     }
-}
+  }
+  .customDropdown {
+    display: flex;
+    align-items: center;
+  }
   

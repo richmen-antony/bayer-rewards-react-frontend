@@ -32,7 +32,7 @@ function ConsolidatedScansReducer(state = {INITIAL_STATE}, action: any): any {
         case GET_OVERALL_CONSOLIDATED_SCANS_SUCCESS: {
             return {
                 ...state,
-                isLoader: false,
+                // isLoader: false,
                 allConsolidatedScans: action.scans
             }
            
