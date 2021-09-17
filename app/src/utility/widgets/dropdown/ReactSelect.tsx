@@ -1,5 +1,6 @@
 import React from 'react';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
+import DropDownLayout from "../../../assets/icons/dropdown_background.png";
 import  '../../../assets/scss/dropdown.scss'
 export interface DropdownProps {
     label?: string;
@@ -16,7 +17,28 @@ export interface DropdownProps {
     id?:string;
     dataTestId?:string
   }
+  const customStyles = {
+    indicatorSeparator:(provided:any, state:any)=>({
+      ...provided,
+      display:"none"
+    }),
+    dropdownIndicator:
+    (provided:any, state:any)=>({
+      ...provided,
+      padding:0
+    }),
 
+  }
+  const DropdownIndicator = (
+    props: any
+  ) => {
+    return (
+      <components.DropdownIndicator {...props}>
+        <img src={DropDownLayout} alt="" className="layout"/>
+      </components.DropdownIndicator>
+     
+    );
+  };
 export default function ReactSelect({
     label,
     control,
@@ -49,6 +71,8 @@ export default function ReactSelect({
         defaultValue={defaultOptions&&defaultOptions[0]}
         isDisabled={isDisabled}
         noOptionsMessage={() => 'No records found!'}
+        components={{ DropdownIndicator }}
+        styles={customStyles}
       />
     </div>
   );

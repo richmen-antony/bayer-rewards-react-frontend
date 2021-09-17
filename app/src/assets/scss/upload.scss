@@ -4,10 +4,11 @@
   opacity: 1;
   font-weight: bold;
   font-size: 20px;
+  text-align: center;
 }
 
-.sub-topics {
-  width: 80%;
+.file-size-and-length {
+  width: 90%;
   margin: 0 auto !important;
   display: flex;
   flex-direction: row;
@@ -16,10 +17,15 @@
   font-size: 12px;
 }
 
+.upload-cloud-image {
+  margin-top: 20px;
+}
+
 .popup-content {
   color: #676767;
 }
-.sub-topicss {
+
+.updated-year {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -27,31 +33,31 @@
   color: #000000;
   font-size: 12px;
   font-weight: bold;
-  margin: 2% 0 0 7%;
+  margin: 2% 0 0 4%;
   width: 30%;
 }
-.zone {
+
+.browse-content {
+  width: 90%;
+  display: flex;
+  justify-content: center;
   margin: auto;
-  width: 80%;
-  height: 50%;
   border: 2px dashed #adb5bd;
   background-color: #f5fcff;
-  text-align: center;
   color: #3e3c3c;
-  z-index: 20;
 
-  i {
-    text-align: center;
-    font-size: 10em;
-    color: rgb(236, 8, 8);
-    margin-top: 50px;
+  .browse {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 2;
   }
+
   .selectFile {
     height: 38px;
     margin: 10px auto 20px auto;
     position: relative;
     width: 150px;
-
     background: #00bcff1a 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 5px;
