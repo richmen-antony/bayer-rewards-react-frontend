@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import { Progress } from "reactstrap";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -8,7 +9,9 @@ import Download from "../../../assets/icons/upload.svg";
 import uploadIcon from "../../../assets/icons/upload_cloud.png";
 import SimpleDialog from "../../../containers/components/dialog";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
+import Cancel from "../../../assets/images/cancel.svg";
 import "../../../assets/scss/upload.scss";
+import { Alert } from "../../../utility/widgets/toaster";
 import { CustomButton } from ".";
 
 const DialogContent = withStyles((theme: Theme) => ({
@@ -56,8 +59,12 @@ const DateInput = React.forwardRef(
 
 const UploadButton = (Props: any) => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [loaded, setLoaded] = useState(0);
 
-  const upload = () => {
+  const uploadPopup = () => {
     setShowPopup(true);
   };
 
@@ -65,28 +72,52 @@ const UploadButton = (Props: any) => {
     setShowPopup(false);
   };
 
+  const cancelUpload = () => {
+    setSelectedFile(null);
+    setFileName("");
+  };
+
+  const overrideEventDefaults = (event: any) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDragAndDropFiles = (event: any) => {
+    overrideEventDefaults(event);
+    if (!event.dataTransfer) return;
+    let files = event.dataTransfer.files;
+    const theFileName = files.item(0).name;
+    handleValidations(files, theFileName);
+  };
+
   const onChangeHandler = (event: any) => {
     let files = event.target.files;
-    let size = 1280;
-    const types = [".csv", ".XSLS"];
+    const theFileName = files.item(0).name;
+    handleValidations(files, theFileName);
+  };
+
+  const handleValidations = (files: any, theFileName: any) => {
+    let size = 5 * 1024 * 1024;
+    const types = ["application/vnd.ms-excel", ".xls", ".xlsx"];
     let err = "";
     for (var x = 0; x < files.length; x++) {
       if (types.every((type) => files[x].type !== type)) {
-        alert((err += files[x].type + " is not a supported format\n"));
-      }
-      if (files[x].size > size) {
-        alert(
-          (err += files[x].type + "is too large, please pick a smaller file\n")
-        );
+        Alert("warning", (err += files[x].type + " is not a supported format"));
+      } else {
+        if (files[x].size > size) {
+          Alert(
+            "warning",
+            (err += files[x].type + "is too large, please pick a smaller file")
+          );
+        } else {
+          setSelectedFile(files);
+          setFileName(theFileName);
+        }
       }
     }
-    // if (err !== "") {
-    //   event.target.value = null;
-    //   console.log(err);
-    //   return false;
-    // }
-    // return true;
+    setLoaded(100);
   };
+
   return (
     <>
       <div>
@@ -111,35 +142,78 @@ const UploadButton = (Props: any) => {
                     <p>Max upload size: 5 MB</p>
                   </div>
                   <div className="browse-content">
-                    <div className="browse">
-                      <img
-                        className="upload-cloud-image"
-                        src={uploadIcon}
-                        alt="upload cloud icon"
-                      />
-                      <div>Drag and drop your file here</div>
-                      <span>or</span>
-                      <div className="selectFile">
-                        <label htmlFor="file">Browse</label>
-                        <input
-                          type="file"
-                          name="file"
-                          id="file"
-                          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                          onChange={onChangeHandler}
-                        />
+                    {selectedFile === null ? (
+                      <div
+                        id="dragAndDropContainer"
+                        className="dragAndDropContainer"
+                        onDrop={overrideEventDefaults}
+                        onDragEnter={overrideEventDefaults}
+                        onDragLeave={overrideEventDefaults}
+                        onDragOver={overrideEventDefaults}
+                      >
+                        <div
+                          id="dragAndDropArea"
+                          className="dragAndDropArea"
+                          onDrop={handleDragAndDropFiles}
+                          onDragEnter={overrideEventDefaults}
+                          onDragLeave={overrideEventDefaults}
+                          onDragOver={overrideEventDefaults}
+                        >
+                          <div className="browse">
+                            <img
+                              className="upload-cloud-image"
+                              src={uploadIcon}
+                              alt="upload cloud icon"
+                            />
+                            <div>Drag and drop your file here</div>
+                            <span>or</span>
+                            <div className="selectFile">
+                              <label htmlFor="file">Browse</label>
+                              <input
+                                type="file"
+                                name="file"
+                                id="file"
+                                className="input-file"
+                                //  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                onChange={onChangeHandler}
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div
+                        className="browse"
+                        style={{ height: "197px", justifyContent: "center" }}
+                      >
+                        <div>
+                          {"Addded file" + " " + fileName}&nbsp;&nbsp;
+                          <img
+                            className="cancel-uploaded-file"
+                            src={Cancel}
+                            alt="upload cloud icon"
+                            onClick={cancelUpload}
+                          />
+                        </div>
+                        <div>
+                          <Progress max="100" color="success" value={loaded}>
+                            {Math.round(loaded)}%
+                          </Progress>{" "}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="updated-year">
                     <p>Updated Year</p>
                     <DatePicker
                       id="update-date"
-                      //value={selectedval}
+                      disabled
+                      selected={startDate}
+                      value={startDate}
                       dateFormat="yyyy"
                       customInput={<DateInput ref={ref} />}
-                      showYearPicker
-                      maxDate={new Date()}
+                      // showYearPicker
+                      // maxDate={new Date()}
                     />
                   </div>
                 </div>
@@ -162,7 +236,7 @@ const UploadButton = (Props: any) => {
           </SimpleDialog>
         )}
 
-        <button className="btn btn-success" onClick={upload}>
+        <button className="btn btn-success" onClick={uploadPopup}>
           <img src={Download} width="17" alt="upload file" />
           <span style={{ padding: "15px" }}>Upload</span>
         </button>

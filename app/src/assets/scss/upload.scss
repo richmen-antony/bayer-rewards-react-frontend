@@ -25,6 +25,10 @@
   color: #676767;
 }
 
+.cancel-uploaded-file {
+  cursor: pointer;
+}
+
 .updated-year {
   display: flex;
   flex-direction: row;
@@ -43,6 +47,7 @@
   justify-content: center;
   margin: auto;
   border: 2px dashed #adb5bd;
+  border-radius: 15px;
   background-color: #f5fcff;
   color: #3e3c3c;
 
@@ -63,6 +68,10 @@
     border-radius: 5px;
     opacity: 1;
     background-color: #00bcff1a;
+  }
+
+  .input-file {
+    display: none;
   }
 
   label,
