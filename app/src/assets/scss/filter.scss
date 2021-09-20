@@ -43,18 +43,27 @@
     margin-right: 10px;
    
     .yeartext {
-      padding-right: 10px;
-      // color: rgb(54, 54, 54);
+      padding-top: .5rem!important;
+      padding-right: .5rem;
+      color: rgb(54, 54, 54);
       font-size: 12px;
+      font-weight: 700!important;
     }
     .select {
       width: 100px;
       height: 46px;
       margin-top: -37px;
+      font-size: 14px;
     }
   }
-  .customDropdown {
-    display: flex;
-    align-items: center;
-  }
+    .customDropdown {
+      display: flex;
+      align-items: center;
+    }  
+
   
+@media only screen and (max-width: 1400px) {
+  .select{
+     font-size: 12px;
+  }
+}

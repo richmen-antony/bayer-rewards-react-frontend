@@ -1,32 +1,25 @@
 import React, { Component } from "react";
-import AUX from "../../hoc/Aux_";
-import "../../assets/scss/scanLogs.scss";
-import Loader from "../../utility/widgets/loader";
-import Pagination from "../../utility/widgets/pagination";
+import AUX from "../../../hoc/Aux_";
+import "../../../assets/scss/scanLogs.scss";
+import Loader from "../../../utility/widgets/loader";
 import moment from "moment";
-import SimpleDialog from "../../containers/components/dialog";
+import SimpleDialog from "../../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import NoImage from "../../assets/images/Group_4736.svg";
-import OrderTable from "./Order";
-import ExpandWindowImg from "../../assets/images/expand-window.svg";
-import CalenderIcon from "../../assets/icons/calendar.svg";
-import { sortBy } from "../../utility/base/utils/tableSort";
-import { Button } from "reactstrap";
+import NoImage from "../../../assets/images/Group_4736.svg";
+import OrderTable from "../Order";
+import ExpandWindowImg from "../../../assets/images/expand-window.svg";
+import CalenderIcon from "../../../assets/icons/calendar.svg";
+import { sortBy } from "../../../utility/base/utils/tableSort";
 import _ from "lodash";
-import { downloadCsvFile, ErrorMsg } from "../../utility/helper";
-import { apiURL } from "../../utility/base/utils/config";
-import { invokeGetAuthService } from "../../utility/base/service";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import ArrowIcon from "../../assets/icons/tick.svg";
-import RtButton from "../../assets/icons/right_btn.svg";
-import { getLocalStorageData } from "../../utility/base/localStore";
-import { CustomButton } from "../../utility/widgets/button";
-import Filter from "../../containers/grid/Filter";
-import { Alert } from "../../utility/widgets/toaster";
-import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
+import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
+import { apiURL } from "../../../utility/base/utils/config";
+import { invokeGetAuthService } from "../../../utility/base/service";
+import { getLocalStorageData } from "../../../utility/base/localStore";
+import { CustomButton } from "../../../utility/widgets/button";
+import { Alert } from "../../../utility/widgets/toaster";
+import ReactSelect from "../../../utility/widgets/dropdown/ReactSelect";
 
 type PartnerTypes = {
 	type: String;
@@ -89,7 +82,18 @@ const DialogActions = withStyles((theme: Theme) => ({
 	// },
 }))(MuiDialogActions);
 
-type Props = {};
+type Props = {
+    onRef?: any;
+    paginationRef: any;
+    handleUpdate: any;
+    loggedUser: any;
+    searchText: string;
+    selectedFilters: any;
+    isFiltered: boolean;
+    updateSearch: any;
+    selectedScanType:string;
+    
+};
 
 type States = {
 	showPopup: boolean;
@@ -101,11 +105,11 @@ type States = {
 
 let levelsName: any = [];
 /**
- * SendGoods Class Component
+ * Warehouse Class Component
  * @param props
  * @param states
  */
-class SendGoods extends Component<Props, States> {
+class Warehouse extends Component<Props, States> {
 	tableCellIndex: any;
 	timeOut: any;
 	paginationRef: any;
@@ -184,13 +188,24 @@ class SendGoods extends Component<Props, States> {
 				},
 				{ label: "Custom", value: "" },
 			],
-			scanTypeList: ["SG - ST", "SG - D2R"],
+			// scanTypeList: ["SG - ST", "SG - D2R"],
 			selectedScanType: "SG - ST",
+			selectedScannedBy:"Distributor",
 			activeSortKeyIcon: "labelid",
+			scannedByList: [
+				{ value: "Distributor", label: "Distributor" },
+				{ value: "Warehouse Ops", label: "Warehouse Ops" },
+			],
+			scanTypeList: [
+				{ value: "SG - ST", label: "SG - ST" },
+				{ value: "SG - D2R", label: "SG - D2R" },
+			],
 		};
 		this.timeOut = 0;
 	}
 	componentDidMount() {
+		// assign a refrence
+		this.props.onRef && this.props.onRef(this);
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
 		this.setState(
@@ -217,7 +232,7 @@ class SendGoods extends Component<Props, States> {
 
 	getScanLogs = (defaultPageNo?: any) => {
 		const { getScanLog } = apiURL;
-		const { state, setDefaultPage } = this.paginationRef;
+		const { state, setDefaultPage } = this.props?.paginationRef;
 		const pageNo = !defaultPageNo ? 1 : state.pageNo;
 
 		// set default pagination number 1 and  call the method
@@ -234,14 +249,20 @@ class SendGoods extends Component<Props, States> {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			scantype: selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
-			soldbygeolevel1: this.state.loggedUserInfo?.role ==="ADMIN" ? null:this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
-			let startDate = filter.scannedPeriod === "Custom" ? filter.ordereddatefrom : filter.scannedPeriod==="" ?null:filter.scandatefrom;
-			let endDate = filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod==="" ?null:filter.scandateto;
-			filter.scandatefrom =  startDate ?moment(startDate).format("YYYY-MM-DD") :null;
-			filter.scandateto = endDate?moment(endDate).format("YYYY-MM-DD"):null;
+			let startDate =
+				filter.scannedPeriod === "Custom"
+					? filter.ordereddatefrom
+					: filter.scannedPeriod === ""
+					? null
+					: filter.scandatefrom;
+			let endDate =
+				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
+			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
@@ -401,14 +422,20 @@ class SendGoods extends Component<Props, States> {
 			searchtext: this.state.searchText || null,
 			scantype: this.state.selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
-			soldbygeolevel1: this.state.loggedUserInfo?.role ==="ADMIN" ? null:this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (this.state.isFiltered) {
 			let filter = { ...this.state.selectedFilters };
-			let startDate = filter.scannedPeriod === "Custom" ? filter.ordereddatefrom : filter.scannedPeriod==="" ?null:filter.scandatefrom;
-			let endDate = filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod==="" ?null:filter.scandateto;
-			filter.scandatefrom =  startDate ?moment(startDate).format("YYYY-MM-DD") :null;
-			filter.scandateto = endDate?moment(endDate).format("YYYY-MM-DD"):null;
+			let startDate =
+				filter.scannedPeriod === "Custom"
+					? filter.ordereddatefrom
+					: filter.scannedPeriod === ""
+					? null
+					: filter.scandatefrom;
+			let endDate =
+				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
+			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
@@ -481,44 +508,60 @@ class SendGoods extends Component<Props, States> {
 			},
 		});
 	};
-	handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
-		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
-		this.setState({
-			selectedFilters: {
-				...this.state.selectedFilters,
-				[e.name]: selectedOption.value,
-			},
-			[condOptionName]: selectedOption,
-		});
+	handleReactSelect = (selectedOption: any, e: any, inActiveFilter?: boolean) => {
+		if (inActiveFilter) {
+			this.setState(
+				{
+					[e.name]: selectedOption.value,
+				},
+				() => {
+					
+				}
+			);
+		} else {
+			this.setState({
+				selectedFilters: {
+					...this.state.selectedFilters,
+					[e.name]: selectedOption.value,
+				},
+			});
+		}
 	};
 
 	filterScans = (filterValue: any) => {
 		let name = this.state.condFilterScan === "customer" ? "soldtoid" : "soldbyid";
-		const {retailerOptions,distributorOptions,selectedCustomerOptions} =this.state;
-		let options=selectedCustomerOptions ? {...selectedCustomerOptions} :{label:"ALL",value:"ALL"};
+		const { retailerOptions, distributorOptions, selectedCustomerOptions } = this.state;
+		let options = selectedCustomerOptions ? { ...selectedCustomerOptions } : { label: "ALL", value: "ALL" };
 		let filters = { ...this.state.selectedFilters };
 		let searchText = this.state.searchText;
 		if (name === "soldtoid") {
 			filters[name] = filterValue;
 			// filters["soldbyid"] = null;
-			if(this.state.selectedScanType === "SG - D2R"){
-				const data=retailerOptions?.length>0&&retailerOptions.filter((el:any)=>el.value===filterValue);
-				if(data?.length>0)
-				options={...data[0]}
-			}else{
-				const data=distributorOptions?.length>0&&distributorOptions.filter((el:any)=>el.value===filterValue);
-				if(data?.length>0)
-				options={...data[0]}
+			if (this.state.selectedScanType === "SG - D2R") {
+				const data = retailerOptions?.length > 0 && retailerOptions.filter((el: any) => el.value === filterValue);
+				if (data?.length > 0) options = { ...data[0] };
+			} else {
+				const data = distributorOptions?.length > 0 && distributorOptions.filter((el: any) => el.value === filterValue);
+				if (data?.length > 0) options = { ...data[0] };
 			}
 		}
 		if (name === "soldbyid") {
 			searchText = filterValue;
 		}
 
-		this.setState({ isFiltered: true, inActiveFilter: false, selectedFilters: { ...filters }, searchText,selectedCustomerOptions:options }, () => {
-			this.getScanLogs();
-			this.handleClosePopup();
-		});
+		this.setState(
+			{
+				isFiltered: true,
+				inActiveFilter: false,
+				selectedFilters: { ...filters },
+				searchText,
+				selectedCustomerOptions: options,
+			},
+			() => {
+				this.getScanLogs();
+				this.handleClosePopup();
+			}
+		);
 	};
 
 	handlePartnerChange = (name: string) => {
@@ -544,18 +587,18 @@ class SendGoods extends Component<Props, States> {
 	 */
 	handleButtonChange = (name: string, value: string) => {
 		let oneTimeAPI = false;
-		let customerOptions=this.state.selectedCustomerOptions;
-		const filters ={...this.state.selectedFilters}
+		let customerOptions = this.state.selectedCustomerOptions;
+		const filters = { ...this.state.selectedFilters };
 		if (value !== this.state[name]) {
 			oneTimeAPI = true;
-			customerOptions={value:"ALL",label:"ALL"}
-		    filters['soldtoid'] = null;
+			customerOptions = { value: "ALL", label: "ALL" };
+			filters["soldtoid"] = null;
 		}
 		this.setState(
 			{
 				[name]: value,
 				selectedCustomerOptions: customerOptions,
-				selectedFilters:filters
+				selectedFilters: filters,
 			},
 			() => {
 				if (oneTimeAPI) {
@@ -640,16 +683,15 @@ class SendGoods extends Component<Props, States> {
 			let level1Info = { label: item.name, code: item.code, value: item.name };
 			level1Options.push(level1Info);
 		});
-		
 
 		let setFormArray: any = [];
 		let localObj: any = getLocalStorageData("userData");
 		let userData = JSON.parse(localObj);
-		
+
 		let userrole = userData?.role;
 		let level2Options: any = [];
-		if (userrole === "RSM" ){
-			let filteredLevel1:any = this.state.geolevel1List?.filter((list:any) => list.name === userData?.geolevel1);
+		if (userrole === "RSM") {
+			let filteredLevel1: any = this.state.geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
 			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
 				let level2Info = { label: item.name, value: item.name, code: item.code };
 				level2Options.push(level2Info);
@@ -661,16 +703,16 @@ class SendGoods extends Component<Props, States> {
 			};
 			level2Options.unshift(geolevel2Obj);
 		} else {
-			let level1Info = { label: "ALL", value :"ALL" };
+			let level1Info = { label: "ALL", value: "ALL" };
 			level2Options.push(level1Info);
 		}
 		let usergeolevel1 = userData?.geolevel1;
-		let geolevel1Obj = { label : usergeolevel1, value : usergeolevel1};
+		let geolevel1Obj = { label: usergeolevel1, value: usergeolevel1 };
 		this.state.geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: list ===  "geolevel1" && (userrole === "RSM") ? geolevel1Obj : {label: "ALL",value: "ALL"},
+				value: list === "geolevel1" && userrole === "RSM" ? geolevel1Obj : { label: "ALL", value: "ALL" },
 				options:
 					list === "geolevel0"
 						? this.state.countryList
@@ -686,7 +728,7 @@ class SendGoods extends Component<Props, States> {
 	};
 
 	getOptionLists = (cron: any, type: any, value: any, index: any) => {
-		let newvalue = {label : value, name : value};
+		let newvalue = { label: value, name: value };
 		let geolevel1List = this.state.geolevel1List;
 		this.setState({ level1Options: geolevel1List });
 		let dynamicFieldVal = this.state.dynamicFields;
@@ -708,8 +750,8 @@ class SendGoods extends Component<Props, States> {
 			this.setState({ dynamicFields: dynamicFieldVal });
 			dynamicFieldVal[index + 2].options = geolevel3Obj;
 			dynamicFieldVal[index].value = newvalue;
-			dynamicFieldVal[index + 1].value = {label: "ALL",value: "ALL"};
-			dynamicFieldVal[index + 2].value = {label: "ALL",value: "ALL"};
+			dynamicFieldVal[index + 1].value = { label: "ALL", value: "ALL" };
+			dynamicFieldVal[index + 2].value = { label: "ALL", value: "ALL" };
 			this.setState((prevState: any) => ({
 				dynamicFields: dynamicFieldVal,
 				selectedFilters: {
@@ -743,7 +785,7 @@ class SendGoods extends Component<Props, States> {
 
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			soldbygeolevel1 : this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
 		};
 		invokeGetAuthService(getBatchList, countrycode)
 			.then((response: any) => {
@@ -792,6 +834,8 @@ class SendGoods extends Component<Props, States> {
 				Alert("warning", message);
 			});
 	};
+
+	handleScanDropdown = () => {};
 	render() {
 		const {
 			retailerPopupData,
@@ -811,7 +855,11 @@ class SendGoods extends Component<Props, States> {
 			activeSortKeyIcon,
 			selectedBatchOptions,
 			selectedCustomerOptions,
-			loggedUserInfo
+			loggedUserInfo,
+			scannedByList,
+			scanTypeList,
+			selectedScanType,
+			selectedScannedBy
 		} = this.state;
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
@@ -829,11 +877,11 @@ class SendGoods extends Component<Props, States> {
 								handleChange={(selectedOptions: any, e: any) => {
 									list.value = selectedOptions.value;
 									this.getOptionLists("manual", list.name, selectedOptions.value, index);
-									this.handleReactSelect(selectedOptions, e, list.name);
+									this.handleReactSelect(selectedOptions, e);
 									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
 								}}
 								value={list.value}
-								isDisabled = {userData?.role === 'RSM' && list.name === "geolevel1" }
+								isDisabled={userData?.role === "RSM" && list.name === "geolevel1"}
 								id="geolevel-test"
 								dataTestId="geolevel-test"
 							/>
@@ -842,184 +890,10 @@ class SendGoods extends Component<Props, States> {
 				</React.Fragment>
 			);
 		});
+		const CustomerOptions = this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions;
 		return (
 			<AUX>
 				{isLoader && <Loader />}
-				<div>
-					<div>
-						<div className="scanlog-table">
-							<Filter
-								handleSearch={this.handleSearch}
-								searchText={searchText}
-								download={this.download}
-								partnerTypeList={this.state.partnerTypeList}
-								isDownload={true}
-								selectedPartnerType={this.state.partnerType}
-								handlePartnerChange={this.handlePartnerChange}
-								toolTipText={`Search applicable for Label,Customer Name,Product Name,Channel Type,${this.state.selectedScanType === "SG - D2R" ?"Store Name":""} and ScannedBy.`}
-								condType="Scan Type"
-								condTypeList={this.state.scanTypeList}
-								buttonChange={this.handleButtonChange}
-								condSelectedButton={this.state.selectedScanType}
-								onClose={(node: any) => {
-									this.closeToggle = node;
-								}}
-							>
-								<div className="form-group" onClick={(e) => e.stopPropagation()}>
-									<ReactSelect
-										name="soldtoid"
-										value={selectedCustomerOptions}
-										label={`Customer Name (${this.state.selectedScanType === "SG - D2R" ? "Retailer" : "Distributor"})`}
-										handleChange={(selectedOptions: any, e: any) =>
-											this.handleReactSelect(selectedOptions, e, "selectedCustomerOptions")
-										}
-										options={this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions}
-										defaultValue="ALL"
-										id="retailer-test"
-										dataTestId="retailer-test"
-									/>
-								</div>
-								<label className="font-weight-bold pt-2">Product Group</label>
-								<div className="form-group pt-1">
-									{this.state.productCategories.map((item: any, i: number) => (
-										<span className="mr-2 chipLabel" key={i}>
-											<Button
-												color={
-													selectedFilters.productgroup === item
-														? "btn activeColor rounded-pill"
-														: "btn rounded-pill boxColor"
-												}
-												size="sm"
-												onClick={(e) => this.handleFilterChange(e, "productgroup", item)}
-												style={{ marginBottom: "5px" }}
-											>
-												{item}
-											</Button>
-										</span>
-									))}
-								</div>
-								<div className="form-group container" onClick={(e) => e.stopPropagation()}>
-									<div className="row column-dropdown">{locationList}</div>
-								</div>
-								<div className="form-group container" onClick={(e) => e.stopPropagation()}>
-									<div className="row column-dropdown">
-										<div className="col">
-											<ReactSelect
-												name="batchno"
-												value={selectedBatchOptions}
-												label={"Batch #"}
-												handleChange={(selectedOptions: any, e: any) =>
-													this.handleReactSelect(selectedOptions, e, "selectedBatchOptions")
-												}
-												options={batchOptions}
-												defaultValue="ALL"
-												id="batchno-test"
-												dataTestId="batchno-test"
-											/>
-										</div>
-									</div>
-								</div>
-								<label className="font-weight-bold pt-2"> Scan Status</label>
-								<div className="pt-1">
-									{this.state.status.map((item: any, statusIndex: number) => (
-										<span className="mr-2" key={statusIndex}>
-											<Button
-												color={
-													selectedFilters.scanstatus === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
-												}
-												size="sm"
-												onClick={(e) => this.handleFilterChange(e, "scanstatus", item)}
-											>
-												{item}
-											</Button>
-										</span>
-									))}
-								</div>
-								<label className="font-weight-bold pt-2">Scanned Period</label>
-								<div className="pt-1">
-									{this.state.scannedPeriodsList.map((item: any, i: number) => (
-										<span className="mr-2 chipLabel" key={i}>
-											<Button
-												color={
-													selectedFilters.scannedPeriod === item.label
-														? "btn activeColor rounded-pill"
-														: "btn rounded-pill boxColor"
-												}
-												size="sm"
-												onClick={(e) => this.handleFilterChange(e, "scannedPeriod", item.label, item)}
-												style={{ marginBottom: "5px" }}
-											>
-												{item.label}
-											</Button>
-										</span>
-									))}
-								</div>
-								{selectedFilters.scannedPeriod === "Custom" && (
-									<React.Fragment>
-										<label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
-											From
-										</label>
-										<label className="font-weight-bold pt-2" htmlFor="order-todate">
-											To
-										</label>
-										<div className="d-flex">
-											<div className="user-filter-date-picker">
-												<DatePicker
-													id="order-date"
-													value={selectedFilters.ordereddatefrom}
-													dateFormat="dd-MM-yyyy"
-													customInput={<Input ref={ref} />}
-													selected={selectedFilters.ordereddatefrom}
-													onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
-													showMonthDropdown
-													showYearDropdown
-													dropdownMode="select"
-													// maxDate={new Date()}
-												/>
-											</div>
-											<div className="p-2">-</div>
-
-											<div className="user-filter-date-picker">
-												<DatePicker
-													value={selectedFilters.ordereddateto}
-													dateFormat="dd-MM-yyyy"
-													customInput={<Input ref={ref} />}
-													selected={selectedFilters.ordereddateto}
-													onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
-													showMonthDropdown
-													showYearDropdown
-													dropdownMode="select"
-													// maxDate={new Date()}
-												/>
-											</div>
-										</div>
-										{dateErrMsg && <span className="error">{dateErrMsg} </span>}
-									</React.Fragment>
-								)}
-
-								<div className="filterFooter pt-3">
-									<button
-										className="cus-btn-scanlog-filter reset"
-										onClick={(e) => this.resetFilter(e)}
-										data-testid="reset-all"
-									>
-										Reset All
-									</button>
-									<button
-										className="cus-btn-scanlog-filter"
-										onClick={this.applyFilter}
-										disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
-										data-testid="apply"
-									>
-										Apply
-										<span>
-											<img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
-										</span>
-									</button>
-								</div>
-							</Filter>
-							
-							<div className="scanlog-container">
 								<table className="table">
 									<thead>
 										<tr>
@@ -1070,19 +944,19 @@ class SendGoods extends Component<Props, States> {
 													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 												) : null}
 											</th>
-											{loggedUserInfo?.role==="ADMIN" &&
-											 <th
-												style={{ width: "10%" }}
-												onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
-											>
-												REGION
-												{activeSortKeyIcon === "soldbygeolevel1" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th> 
-										}
+											{loggedUserInfo?.role === "ADMIN" && (
+												<th
+													style={{ width: "10%" }}
+													onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
+												>
+													REGION
+													{activeSortKeyIcon === "soldbygeolevel1" ? (
+														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+													) : null}
+												</th>
+											)}
 											<th
-												style={{ width: loggedUserInfo?.role==="ADMIN" ? "10%" : "16%" }}
+												style={{ width: loggedUserInfo?.role === "ADMIN" ? "10%" : "16%" }}
 												onClick={(e) => this.handleSort(e, "expirydate", allScanLogs, isAsc)}
 											>
 												EXPIRY DATE
@@ -1133,7 +1007,9 @@ class SendGoods extends Component<Props, States> {
 																<label>{value.soldtoid + " - " + _.startCase(_.toLower(value.soldtorole))}</label>
 															</div>
 														</td>
-														{this.state.selectedScanType === "SG - D2R" && <td>{_.startCase(_.toLower(value.soldtostore))}</td>}
+														{this.state.selectedScanType === "SG - D2R" && (
+															<td>{_.startCase(_.toLower(value.soldtostore))}</td>
+														)}
 														<td>
 															<div className="farmer-id">
 																<p>{value.productname}</p>
@@ -1168,7 +1044,7 @@ class SendGoods extends Component<Props, States> {
 																<label>{value.soldbyid}</label>
 															</div>
 														</td>
-														{loggedUserInfo?.role==="ADMIN" && <td>{value.soldbygeolevel1}</td> }
+														{loggedUserInfo?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
 														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 													</tr>
 												);
@@ -1182,21 +1058,9 @@ class SendGoods extends Component<Props, States> {
 										)}
 									</tbody>
 								</table>
-							</div>
-						</div>
-					</div>
-					<div>
-						<Pagination
-							totalData={totalData}
-							data={allScanLogs}
-							totalLabel={"Send Goods"}
-							onRef={(node: any) => {
-								this.paginationRef = node;
-							}}
-							getRecords={this.getScanLogs}
-						/>
-					</div>
-				</div>
+							
+					
+				
 				{this.state.showPopup ? (
 					<SimpleDialog open={this.state.showPopup} onClose={this.handleClosePopup} header={popupHeader} maxWidth={"800px"}>
 						<DialogContent>
@@ -1230,7 +1094,10 @@ class SendGoods extends Component<Props, States> {
 										</div>
 										{this.state.locationData?.length > 0 &&
 											this.state.locationData.map((location: any, locationIndex: number) => {
-												let nameCapitalized = location.name === 'ADD' || location.name === 'EPA' ? location.name: _.startCase(_.toLower(location.name));
+												let nameCapitalized =
+													location.name === "ADD" || location.name === "EPA"
+														? location.name
+														: _.startCase(_.toLower(location.name));
 												return (
 													<div className="content-list" key={locationIndex}>
 														<label>{nameCapitalized}</label>
@@ -1284,4 +1151,4 @@ class SendGoods extends Component<Props, States> {
 	}
 }
 
-export default SendGoods;
+export default Warehouse;

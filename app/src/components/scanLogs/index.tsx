@@ -10,7 +10,7 @@ import SellFarmer from "./SellFarmer";
 //scss
 import "../../assets/scss/scanLogs.scss";
 
-import SendGoods from "./SendGoods";
+import SendGoods from "./sendGoods/index";
 
 //Define types of variable in states
 type States = {

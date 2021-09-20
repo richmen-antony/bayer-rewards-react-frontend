@@ -28,6 +28,12 @@ interface Props {
 	handleReactSelect?: any;
 	yearOptions?: {};
 	isCustomDropdown? : Boolean;
+	isScannedBy?:boolean;
+	isScanType?:boolean;
+	scannedByList?:any[];
+	scanTypeList?:any[];
+	selectedScannedBy?:string;
+	selectedScanType?:string;
 	packageType?: any;
 	packageTypeOptions?: any
 }
@@ -66,6 +72,12 @@ const Filter: React.FC<Props> = (props: Props) => {
 		handleReactSelect,
 		yearOptions,
 		isCustomDropdown,
+		isScannedBy,
+		scannedByList,
+		isScanType,
+		scanTypeList,
+		selectedScanType,
+		selectedScannedBy,
 		packageType,
 		packageTypeOptions
 	} = props;
@@ -92,8 +104,11 @@ const Filter: React.FC<Props> = (props: Props) => {
 					<CustomDropdown name="packageType" value={packageType} options={packageTypeOptions} handleReactSelect={handleReactSelect} title="Package Type" />
 				</div>
 				}
+				{isScannedBy&&<CustomDropdown name="selectedScannedBy" value={selectedScannedBy} options={scannedByList} handleReactSelect={handleReactSelect} title="Scanned By" width="150px"  inActiveFilter />  }
+				{isScanType&&<CustomDropdown name="selectedScanType" value={selectedScanType} options={scanTypeList} handleReactSelect={handleReactSelect} title="Scan Type" width="150px" inActiveFilter/>  }
 
 				<div className="filter-right-side">
+				
 					{isPartnerType &&
 					<div className="filter-partnertype">
 						<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
@@ -118,7 +133,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 								})}
 						</div>
 					</div>}
-					{condTypeList && condTypeList.length > 0 && (
+					{/* {condTypeList && condTypeList.length > 0 && (
 						<div className="filter-partnertype" style={{ marginLeft: "10px" }}>
 							<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
 								{condType}
@@ -142,7 +157,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 									})}
 							</div>
 						</div>
-					)}
+					)} */}
 					<div className="filterRow">
 						<Dropdown isOpen={dropdownOpenFilter} toggle={toggleFilter}>
 							<DropdownToggle>{!dropdownOpenFilter && <img src={filterIcon} width="17" alt="filter" />}</DropdownToggle>

@@ -19,6 +19,7 @@ import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import AdvisorSales from "./AdvisorSales";
 import WalkInSales from "./WalkInSales";
 import { Alert } from "../../utility/widgets/toaster";
+import {salesTypeSellToFarmer,scannedBySellToFarmer} from "../../utility/constant";
 
 type PartnerTypes = {
 	type: String;
@@ -149,7 +150,6 @@ class SellFarmer extends Component<Props, States> {
 			partnerType: {
 				type: "Retailers",
 			},
-			selectedSalesType: "WALKIN_SALES", //"WALKIN_SALES",
 			scannedPeriodsList: [
 				{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
 				{
@@ -174,6 +174,11 @@ class SellFarmer extends Component<Props, States> {
 				},
 				{ label: "Custom", value: "" },
 			],
+			selectedScanType: "WALKIN_SALES",
+			selectedScannedBy: "Retailer",
+			scannedByList:scannedBySellToFarmer,
+			scanTypeList:salesTypeSellToFarmer
+
 		};
 		this.timeOut = 0;
 	}
@@ -184,14 +189,15 @@ class SellFarmer extends Component<Props, States> {
 		//To get the logged current user information
 		let data: any = getLocalStorageData("userData");
 		let userData = JSON.parse(data);
-		const condSalesType=userData?.role==="RSM"? this.state.salesType: ["WALKIN_SALES"];
+		const condSalesType=userData?.role==="RSM"? this.state.scanTypeList: [{value:"WALKIN_SALES",label:"Walk-In Sales"}];
 		this.setState(
 			{
 				loggedUserInfo: userData,
-				salesType:condSalesType
+				scanTypeList:condSalesType
 
 			},
 			() => {
+			
 				this.getRetailerList();
 				this.getLocationHierachyOrder();
 				this.getCountryList();
@@ -312,8 +318,8 @@ class SellFarmer extends Component<Props, States> {
 	 */
 	handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
 		e.stopPropagation();
-		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
-		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
+		const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
 		let flag = false;
 		if (name === "type") {
 			val[name] = e.target.value;
@@ -329,7 +335,7 @@ class SellFarmer extends Component<Props, States> {
 			flag = true;
 		}
 		if (flag) {
-			const name = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+			const name = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
 			this.setState({ [name]: val });
 		}
 	};
@@ -339,10 +345,10 @@ class SellFarmer extends Component<Props, States> {
 	 */
 	resetFilter = (e?: any) => {
 		let conditionIsFilter = this.state.searchText ? true : false;
-		const { selectedSalesType } = this.state;
-		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+		const { selectedScanType } = this.state;
+		const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
 		let val =
-			selectedSalesType === "WALKIN_SALES"
+			selectedScanType === "WALKIN_SALES"
 				? {
 						productgroup: "ALL",
 						scanstatus: "ALL",
@@ -379,7 +385,7 @@ class SellFarmer extends Component<Props, States> {
 			() => {
 				this.closeToggle();
 				this.callChildAPI();
-				if (selectedSalesType === "ADVISOR_SALES") this.getRetailerList();
+				if (selectedScanType === "ADVISOR_SALES") this.getRetailerList();
 			}
 		);
 	};
@@ -397,8 +403,8 @@ class SellFarmer extends Component<Props, States> {
 	* To accesssed the download features
 	*/
 	download = () => {
-		const { selectedSalesType } = this.state;
-		selectedSalesType === "WALKIN_SALES" ? this.walkinSalesRef?.download() : this.advisorSalesRef?.download();
+		const { selectedScanType } = this.state;
+		selectedScanType === "WALKIN_SALES" ? this.walkinSalesRef?.download() : this.advisorSalesRef?.download();
 	};
 	/**
 	 * To handle date fields for filter values 
@@ -406,8 +412,8 @@ class SellFarmer extends Component<Props, States> {
 	 * @param name 
 	 */
 	handleDateChange = (date: any, name: string) => {
-		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
-		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
+		const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
 		// Custom scanned date - check End date
 		if (name === "scannedDateTo") {
 			if (date >= val.scannedDateFrom) {
@@ -505,7 +511,7 @@ class SellFarmer extends Component<Props, States> {
 				});
 			}
 		}
-		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+		const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
 		this.setState({
 			[condName]: { ...this.state[condName], [name]: date },
 		});
@@ -546,25 +552,35 @@ class SellFarmer extends Component<Props, States> {
 			}
 		);
 	};
-	handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
-		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
-		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
-		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
-		this.setState(
-			{
-				[condName]: {
-					...val,
-					[e.name]: selectedOption.value,
+	handleReactSelect = (selectedOption: any, e: any, inActiveFilter?: boolean) => {
+		const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+		let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
+		if(inActiveFilter){
+			this.setState(
+				{
+				[e.name]: selectedOption.value},()=>{
+					this.callChildAPI();
+
+				})
+
+		}else{
+			this.setState(
+				{
+					[condName]: {
+						...val,
+						[e.name]: selectedOption.value,
+					},
 				},
-				[optionName]: selectedOption,
-			},
-			() => {
-				if (e.name === "retailer") {
-					let condIf = "retailer";
-					this.getRetailerList(condIf);
+				() => {
+					if (e.name === "retailer") {
+						let condIf = "retailer";
+						this.getRetailerList(condIf);
+					}
 				}
-			}
-		);
+			);
+		}
+		
 	};
 	handleGeolevelDropdown = (value: string, label: any) => {
 		this.setState((prevState: any) => ({
@@ -578,7 +594,7 @@ class SellFarmer extends Component<Props, States> {
 		const { getBatchList } = apiURL;
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		invokeGetAuthService(getBatchList, countrycode)
 			.then((response: any) => {
@@ -769,9 +785,9 @@ class SellFarmer extends Component<Props, States> {
 	};
 
 	hanldeUpdateFilterScan = (value: any, name: string) => {
-		const { selectedSalesType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
-		const condName = selectedSalesType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
-		let val = selectedSalesType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
+		const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+		const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
+		let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
 		this.setState(
 			{
 				[condName]: {
@@ -786,8 +802,8 @@ class SellFarmer extends Component<Props, States> {
 		);
 	};
 	callChildAPI = () => {
-		const { selectedSalesType } = this.state;
-		selectedSalesType === "WALKIN_SALES" ? this.walkinSalesRef?.getWalkInSales() : this.advisorSalesRef?.getAdvisorSales();
+		const { selectedScanType } = this.state;
+		selectedScanType === "WALKIN_SALES" ? this.walkinSalesRef?.getWalkInSales() : this.advisorSalesRef?.getAdvisorSales();
 	};
 	handleUpdateSearch = (value: string) => {
 		this.setState(
@@ -809,12 +825,14 @@ class SellFarmer extends Component<Props, States> {
 			lastUpdatedDateErr,
 			farmerOptions,
 			retailerOptions,
-			selectedSalesType,
 			batchOptions,
 			selectedWalkInFilters,
 			selectedAdvisorFilters,
 			isFiltered,
 			ScannedDateErrMsg,
+			scannedByList,
+			selectedScannedBy,
+			selectedScanType
 		} = this.state;
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
@@ -832,7 +850,7 @@ class SellFarmer extends Component<Props, States> {
 								handleChange={(selectedOptions: any, e: any) => {
 									list.value = selectedOptions.value;
 									this.getOptionLists("manual", list.name, selectedOptions.value, index);
-									this.handleReactSelect(selectedOptions, e, list.name);
+									this.handleReactSelect(selectedOptions, e);
 								}}
 								value={list.value}
 								isDisabled = {userData?.role === 'RSM' && list.name === "geolevel1" }
@@ -844,7 +862,7 @@ class SellFarmer extends Component<Props, States> {
 				</React.Fragment>
 			);
 		});
-		const condToolTipText=selectedSalesType === "WALKIN_SALES" ? "Label,Farmer Name,Product Name,Store Name and ScannedBy" :"Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID,Store Name"
+		const condToolTipText=selectedScanType === "WALKIN_SALES" ? "Label,Farmer Name,Product Name,Store Name and ScannedBy" :"Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID,Store Name"
 		return (
 			<AUX>
 				{isLoader && <Loader />}
@@ -855,22 +873,21 @@ class SellFarmer extends Component<Props, States> {
 								handleSearch={this.handleSearch}
 								searchText={searchText}
 								download={this.download}
-								partnerTypeList={this.state.partnerTypeList}
-								condType="Sales Type"
-								condTypeList={this.state.salesType}
 								isDownload={true}
-								selectedPartnerType={this.state.partnerType}
-								handlePartnerChange={this.handlePartnerChange}
 								toolTipText={`Search applicable for ${condToolTipText}.`}
-								buttonChange={this.handleButtonChange}
-								condSelectedButton={this.state.selectedSalesType}
 								onClose={(node: any) => {
 									this.closeToggle = node;
 								}}
-								isDownloadHelpText={selectedSalesType === "WALKIN_SALES"? false:true}
-								isPartnerType
+								isDownloadHelpText={selectedScanType === "WALKIN_SALES"? false:true}
+								isScannedBy
+								scannedByList={scannedByList}
+								isScanType
+								scanTypeList={this.state.scanTypeList}
+								handleReactSelect={this.handleReactSelect}
+								selectedScannedBy={selectedScannedBy}
+								selectedScanType={selectedScanType}
 							>
-								{selectedSalesType === "WALKIN_SALES" ? (
+								{selectedScanType === "WALKIN_SALES" ? (
 									<React.Fragment>
 										<label className="font-weight-bold pt-2">Product Group</label>
 										<div className="form-group pt-1">
@@ -900,14 +917,11 @@ class SellFarmer extends Component<Props, States> {
 													<ReactSelect
 														name="batchno"
 														value={
-															batchOptions?.length > 0 &&
-															batchOptions.filter(function (option: any) {
-																return option.value === selectedWalkInFilters.batchno;
-															})
+															selectedWalkInFilters.batchno
 														}
 														label={"Batch #"}
 														handleChange={(selectedOptions: any, e: any) =>
-															this.handleReactSelect(selectedOptions, e, "selectedBatchOptions")
+															this.handleReactSelect(selectedOptions, e)
 														}
 														options={batchOptions}
 														defaultValue="ALL"
@@ -1023,15 +1037,10 @@ class SellFarmer extends Component<Props, States> {
 										<div className="form-group" onClick={(e) => e.stopPropagation()}>
 											<ReactSelect
 												name="retailer"
-												value={
-													retailerOptions?.length > 0 &&
-													retailerOptions.filter(function (option: any) {
-														return option.value === selectedAdvisorFilters.retailer;
-													})
-												}
+												value={selectedAdvisorFilters.retailer}
 												label={"Retailer"}
 												handleChange={(selectedOptions: any, e: any) =>
-													this.handleReactSelect(selectedOptions, e, "selectedRetailerOptions")
+													this.handleReactSelect(selectedOptions, e)
 												}
 												options={retailerOptions}
 												defaultValue="ALL"
@@ -1043,15 +1052,10 @@ class SellFarmer extends Component<Props, States> {
 										<div className="form-group" onClick={(e) => e.stopPropagation()}>
 											<ReactSelect
 												name="farmer"
-												value={
-													farmerOptions?.length > 0 &&
-													farmerOptions.filter(function (option: any) {
-														return option.value === selectedAdvisorFilters.farmer;
-													})
-												}
+												value={selectedAdvisorFilters.farmer}
 												label={"Farmer"}
 												handleChange={(selectedOptions: any, e: any) =>
-													this.handleReactSelect(selectedOptions, e, "selectedFarmerOptions")
+													this.handleReactSelect(selectedOptions, e)
 												}
 												options={farmerOptions}
 												defaultValue="ALL"
@@ -1194,7 +1198,7 @@ class SellFarmer extends Component<Props, States> {
 							</Filter>
 
 							<div className="scanlog-container">
-								{selectedSalesType === "WALKIN_SALES" ? (
+								{selectedScanType === "WALKIN_SALES" ? (
 									<WalkInSales
 										onRef={(node: any) => {
 											this.walkinSalesRef = node;
@@ -1227,12 +1231,12 @@ class SellFarmer extends Component<Props, States> {
 					<div>
 						<Pagination
 							totalData={
-								selectedSalesType === "WALKIN_SALES"
+								selectedScanType === "WALKIN_SALES"
 									? this.walkinSalesRef?.state?.totalWalkInData
 									: this.advisorSalesRef?.state?.totalAdvisorSalesData
 							}
 							data={
-								selectedSalesType === "WALKIN_SALES"
+								selectedScanType === "WALKIN_SALES"
 									? this.walkinSalesRef?.state?.allWalkInSalesData
 									: this.advisorSalesRef?.state?.allAdvisorSalesData
 							}
@@ -1241,7 +1245,7 @@ class SellFarmer extends Component<Props, States> {
 								this.paginationRef = node;
 							}}
 							getRecords={
-								selectedSalesType === "WALKIN_SALES"
+								selectedScanType === "WALKIN_SALES"
 									? this.walkinSalesRef?.getWalkInSales
 									: this.advisorSalesRef?.getAdvisorSales
 							}

@@ -9,6 +9,8 @@ export type CustomDropdownProps = {
     options : any;
     handleReactSelect : any;
     title? : String;
+    width?:string;
+    inActiveFilter?:boolean;
 }
 
 /**
@@ -35,7 +37,9 @@ function CustomDropdown({
     value,
     options,
     handleReactSelect,
-    title
+    title,
+    width,
+    inActiveFilter
 }:CustomDropdownProps)  {
     let i = 1990;
 	let year = [];
@@ -46,16 +50,16 @@ function CustomDropdown({
     year.reverse();	
    
 	return (
-        <div className="dropdown-year">
+        <div className="dropdown-year" >
             <div className="yearlabel">
                 <label className="font-weight-bold yeartext">{title}</label>
             </div>
-            <div className="select">
+            <div className="select" style={{width:width}}>
                 <ReactSelect
                     name={name}
                     value={value}
                     handleChange={(selectedOptions: any, e: any) =>
-                    	handleReactSelect(selectedOptions, e)
+                    	handleReactSelect(selectedOptions, e ,inActiveFilter)
                     }
                     options={options}
                     defaultValue={value}
