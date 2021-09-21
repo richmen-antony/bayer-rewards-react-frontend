@@ -126,9 +126,17 @@ const removeRegionList=()=>{
 
 }
 removeRegionList();
+
+const salesTypeSellToFarmer=[
+{value:"WALKIN_SALES",label:"Walk-In Sales"},
+{value:"ADVISOR_SALES",label:"Advisor Sales"},
+]
+const scannedBySellToFarmer=[
+	{value:"Retailer",label:"Retailer"}
+	]
 const ScanlogHeader: any = {
 	ADVISOR_SALES,
 	WALKIN_SALES,
 
 };
-export { MENU_ITEMS, OrderHistroyHeader ,ScanlogHeader};
+export { MENU_ITEMS, OrderHistroyHeader ,ScanlogHeader ,salesTypeSellToFarmer,scannedBySellToFarmer};
