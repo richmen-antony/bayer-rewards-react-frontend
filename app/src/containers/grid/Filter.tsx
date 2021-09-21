@@ -37,7 +37,8 @@ interface Props {
 	selectedScannedBy?:string;
 	selectedScanType?:string;
 	packageType?: any;
-	packageTypeOptions?: any
+	packageTypeOptions?: any,
+  isUploadAvailable?: boolean;
 }
 
 /**
@@ -81,7 +82,8 @@ const Filter: React.FC<Props> = (props: Props) => {
 		selectedScanType,
 		selectedScannedBy,
 		packageType,
-		packageTypeOptions
+		packageTypeOptions,
+    isUploadAvailable = false,
 	} = props;
 
   useEffect(() => {
@@ -215,7 +217,7 @@ const Filter: React.FC<Props> = (props: Props) => {
               </DropdownMenu>
             </Dropdown>
           </div>
-          {/* {<UploadButton />} */}
+          {isUploadAvailable && <UploadButton />}
           {isDownload && (
             <CustomDownload
               download={download}
