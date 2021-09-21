@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import { Progress } from "reactstrap";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -42,7 +41,7 @@ const DateInput = React.forwardRef(
       <input
         style={{
           border: "none",
-          width: "60px",
+          width: "37px",
           height: "31px",
           outline: "none",
         }}
@@ -52,6 +51,7 @@ const DateInput = React.forwardRef(
         id={id}
         onClick={onClick}
         ref={ref}
+        disabled={true}
       />
     </div>
   )
@@ -62,7 +62,6 @@ const UploadButton = (Props: any) => {
   const [startDate, setStartDate] = useState(new Date());
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState("");
-  const [loaded, setLoaded] = useState(0);
 
   const uploadPopup = () => {
     setShowPopup(true);
@@ -87,7 +86,11 @@ const UploadButton = (Props: any) => {
     if (!event.dataTransfer) return;
     let files = event.dataTransfer.files;
     const theFileName = files.item(0).name;
-    handleValidations(files, theFileName);
+    if (files.length > 1) {
+      Alert("warning", "Select only one file");
+    } else {
+      handleValidations(files, theFileName);
+    }
   };
 
   const onChangeHandler = (event: any) => {
@@ -115,7 +118,6 @@ const UploadButton = (Props: any) => {
         }
       }
     }
-    setLoaded(100);
   };
 
   return (
@@ -129,10 +131,7 @@ const UploadButton = (Props: any) => {
             maxWidth={"685px"}
           >
             <DialogContent>
-              <div
-                className="popup-container popup-partner"
-                style={{ height: "355px" }}
-              >
+              <div className="popup-container" style={{ height: "355px" }}>
                 <div className="popup-content">
                   <div>
                     <p className="upload-heading">Upload Inventory Files</p>
@@ -141,24 +140,24 @@ const UploadButton = (Props: any) => {
                     <p>Files Supported XSLS, CSV</p>
                     <p>Max upload size: 5 MB</p>
                   </div>
-                  <div className="browse-content">
-                    {selectedFile === null ? (
-                      <div
-                        id="dragAndDropContainer"
-                        className="dragAndDropContainer"
-                        onDrop={overrideEventDefaults}
-                        onDragEnter={overrideEventDefaults}
-                        onDragLeave={overrideEventDefaults}
-                        onDragOver={overrideEventDefaults}
-                      >
-                        <div
-                          id="dragAndDropArea"
-                          className="dragAndDropArea"
-                          onDrop={handleDragAndDropFiles}
-                          onDragEnter={overrideEventDefaults}
-                          onDragLeave={overrideEventDefaults}
-                          onDragOver={overrideEventDefaults}
-                        >
+                  <div
+                    id="dragAndDropContainer"
+                    className="dragAndDropContainer"
+                    onDrop={overrideEventDefaults}
+                    onDragEnter={overrideEventDefaults}
+                    onDragLeave={overrideEventDefaults}
+                    onDragOver={overrideEventDefaults}
+                  >
+                    <div
+                      id="dragAndDropArea"
+                      className="dragAndDropArea"
+                      onDrop={handleDragAndDropFiles}
+                      onDragEnter={overrideEventDefaults}
+                      onDragLeave={overrideEventDefaults}
+                      onDragOver={overrideEventDefaults}
+                    >
+                      <div className="browse-content">
+                        {selectedFile === null ? (
                           <div className="browse">
                             <img
                               className="upload-cloud-image"
@@ -179,41 +178,41 @@ const UploadButton = (Props: any) => {
                               />
                             </div>
                           </div>
-                        </div>
+                        ) : (
+                          <div
+                            className="browse"
+                            style={{
+                              height: "185px",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <div class="selected-file-name">
+                              <strong>
+                                <h3>{fileName}</h3>
+                              </strong>
+                              &nbsp;&nbsp;
+                              <img
+                                className="cancel-uploaded-file"
+                                src={Cancel}
+                                alt="upload cloud icon"
+                                title="remove file"
+                                onClick={cancelUpload}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      <div
-                        className="browse"
-                        style={{ height: "197px", justifyContent: "center" }}
-                      >
-                        <div>
-                          {"Addded file" + " " + fileName}&nbsp;&nbsp;
-                          <img
-                            className="cancel-uploaded-file"
-                            src={Cancel}
-                            alt="upload cloud icon"
-                            onClick={cancelUpload}
-                          />
-                        </div>
-                        <div>
-                          <Progress max="100" color="success" value={loaded}>
-                            {Math.round(loaded)}%
-                          </Progress>{" "}
-                        </div>
-                      </div>
-                    )}
+                    </div>
                   </div>
                   <div className="updated-year">
                     <p>Updated Year</p>
                     <DatePicker
                       id="update-date"
-                      disabled
+                      disabled={true}
                       selected={startDate}
                       value={startDate}
                       dateFormat="yyyy"
                       customInput={<DateInput ref={ref} />}
-                      // showYearPicker
-                      // maxDate={new Date()}
                     />
                   </div>
                 </div>

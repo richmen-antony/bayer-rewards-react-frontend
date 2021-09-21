@@ -192,7 +192,9 @@ class SendGoods extends Component<Props, States> {
 			],
 			warehouseScanTypeList:[
 			{ value: "SG - W2D", label: "SG - W2D" },
-			{ value: "SG - W2R", label: "SG - W2R" },]
+			{ value: "SG - W2R", label: "SG - W2R" },],
+			goodStatus:[ {value:"ALL",label:"ALL"},{value:"Dispatch Sent",label:"Dispatch Sent"},{value:"Dispatch Received",label:"Dispatch Received"},]
+
 		};
 		this.timeOut = 0;
 	}
@@ -402,23 +404,41 @@ class SendGoods extends Component<Props, States> {
 	handleReactSelect = (selectedOption: any, e: any, inActiveFilter?: boolean) => {
 		const {scanTypeList,distributorScanTypeList,warehouseScanTypeList} =this.state;
 		if (inActiveFilter) {
+			//not filter activity 
+			const { filter, stateFilterName } = this.activeFilter();
+			let condSelectedScanType= "";
+			let oneTimeAPI= false
+			const filters =filter;
+			if (selectedOption.value !== this.state[e.name]) {
+				filters["soldtoid"] = "ALL";
+				oneTimeAPI= true
+			}
 			let scanTypeListValue:any[]=[...scanTypeList];
 			if(e.name==="selectedScannedBy"){
-				scanTypeListValue=selectedOption.value ==="Distributor"? [...distributorScanTypeList] :[...warehouseScanTypeList];	
+				scanTypeListValue=selectedOption.value ==="Distributor"? [...distributorScanTypeList] :[...warehouseScanTypeList];
+				condSelectedScanType=scanTypeListValue[0].value;	
 			}
-			
+			if(e.name==="selectedScanType"){
+				condSelectedScanType=selectedOption.value;
+			}
 			this.setState(
 				{
 					[e.name]: selectedOption.value,
 					scanTypeList:scanTypeListValue,
-					selectedScanType:scanTypeListValue[0].value
+					selectedScanType:condSelectedScanType,
+					[stateFilterName]: filters,
 				},
 				() => {
-					if(e.name==="selectedScanType")
-                    this.handleScanTypeChange(e.name,selectedOption.value)
+					// when change scantype value after call the API
+					if(e.name==="selectedScanType" && oneTimeAPI){
+  						this.callChildAPI();
+			 			this.getPartnerList();
+					}
+                 
 				}
 			);
 		} else {
+			//  handle filter activity on react-select
 			const { filter, stateFilterName } = this.activeFilter();
 			this.setState({
 				[stateFilterName]: {
@@ -445,10 +465,6 @@ class SendGoods extends Component<Props, States> {
 				[name]: value,
 				[stateFilterName]: filters,
 			},
-			() => {
-			 this.callChildAPI();
-			 this.getPartnerList();
-			}
 		);
 	};
 	getGeographicFields() {
@@ -685,7 +701,7 @@ class SendGoods extends Component<Props, States> {
 	};
 	callChildAPI = () => {
 		const { selectedScannedBy } = this.state;
-		selectedScannedBy === "Distributor" ? this.distributorRef?.getDistributor() : this.warehouseRef?.getAdvisorSales();
+		selectedScannedBy === "Distributor" ? this.distributorRef?.getDistributor() : this.warehouseRef?.getWarehouse();
 	};
 	handleUpdateSearch = (value: string,selectedFilters?:Object) => {
         const {stateFilterName}= this.activeFilter();
@@ -707,7 +723,7 @@ class SendGoods extends Component<Props, States> {
 	activeFilter = () => {
 		const { selectedScannedBy, selectedDistributorFilters, selectedWarehouseFilters } = this.state;
 		let filter = selectedScannedBy === "Distributor" ? { ...selectedDistributorFilters } : { ...selectedWarehouseFilters };
-		let stateFilterName = selectedScannedBy === "Distributor" ? "selectedDistributorFilters" : selectedWarehouseFilters;
+		let stateFilterName = selectedScannedBy === "Distributor" ? "selectedDistributorFilters" : "selectedWarehouseFilters";
 		return { filter, stateFilterName };
 	};
 	render() {
@@ -930,7 +946,131 @@ class SendGoods extends Component<Props, States> {
 										</div>
 									</Fragment>
 								) : (
-									""
+									<Fragment>
+										<div className="form-group" onClick={(e) => e.stopPropagation()}>
+											<ReactSelect
+												name="soldtoid"
+												value={filter.soldtoid}
+												label={`Warehouse Name`}
+												handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
+												options={this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions}
+												defaultValue="ALL"
+												id="retailer-test"
+												dataTestId="retailer-test"
+											/>
+										</div>
+										<div className="form-group" onClick={(e) => e.stopPropagation()}>
+											<ReactSelect
+												name="soldtoid"
+												value={filter.soldtoid}
+												label={`Retailer Name`}
+												handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
+												options={this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions}
+												defaultValue="ALL"
+												id="retailer-test"
+												dataTestId="retailer-test"
+											/>
+										</div>
+										<div className="form-group container" onClick={(e) => e.stopPropagation()}>
+											<div className="row column-dropdown">{locationList}</div>
+										</div>
+										<label className="font-weight-bold pt-2"> Scan Status</label>
+										<div className="pt-1">
+											{this.state.goodStatus.map((item: any, statusIndex: number) => (
+												<span className="mr-2" key={statusIndex}>
+													<Button
+														color={filter.scanstatus === item.value ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"}
+														size="sm"
+														onClick={(e) => this.handleFilterChange(e, "scanstatus", item.value)}
+													>
+														{item.label}
+													</Button>
+												</span>
+											))}
+										</div>
+										<label className="font-weight-bold pt-2">Scanned Period</label>
+										<div className="pt-1">
+											{this.state.scannedPeriodsList.map((item: any, i: number) => (
+												<span className="mr-2 chipLabel" key={i}>
+													<Button
+														color={
+															filter.scannedPeriod === item.label
+																? "btn activeColor rounded-pill"
+																: "btn rounded-pill boxColor"
+														}
+														size="sm"
+														onClick={(e) => this.handleFilterChange(e, "scannedPeriod", item.label, item)}
+														style={{ marginBottom: "5px" }}
+													>
+														{item.label}
+													</Button>
+												</span>
+											))}
+										</div>
+										{filter.scannedPeriod === "Custom" && (
+											<React.Fragment>
+												<label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+													From
+												</label>
+												<label className="font-weight-bold pt-2" htmlFor="order-todate">
+													To
+												</label>
+												<div className="d-flex">
+													<div className="user-filter-date-picker">
+														<DatePicker
+															id="order-date"
+															value={filter.ordereddatefrom}
+															dateFormat="dd-MM-yyyy"
+															customInput={<Input ref={ref} />}
+															selected={filter.ordereddatefrom}
+															onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
+															showMonthDropdown
+															showYearDropdown
+															dropdownMode="select"
+															// maxDate={new Date()}
+														/>
+													</div>
+													<div className="p-2">-</div>
+
+													<div className="user-filter-date-picker">
+														<DatePicker
+															value={filter.ordereddateto}
+															dateFormat="dd-MM-yyyy"
+															customInput={<Input ref={ref} />}
+															selected={filter.ordereddateto}
+															onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
+															showMonthDropdown
+															showYearDropdown
+															dropdownMode="select"
+															// maxDate={new Date()}
+														/>
+													</div>
+												</div>
+												{dateErrMsg && <span className="error">{dateErrMsg} </span>}
+											</React.Fragment>
+										)}
+
+										<div className="filterFooter pt-3">
+											<button
+												className="cus-btn-scanlog-filter reset"
+												onClick={(e) => this.resetFilter(e)}
+												data-testid="reset-all"
+											>
+												Reset All
+											</button>
+											<button
+												className="cus-btn-scanlog-filter"
+												onClick={this.applyFilter}
+												disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
+												data-testid="apply"
+											>
+												Apply
+												<span>
+													<img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
+												</span>
+											</button>
+										</div>
+									</Fragment>
 								)}
 							</Filter>
 
@@ -972,12 +1112,12 @@ class SendGoods extends Component<Props, States> {
 							totalData={
 								selectedScannedBy === "Distributor"
 									? this.distributorRef?.state?.totalDistributorCount
-									: this.warehouseRef?.state?.totalAdvisorSalesData
+									: this.warehouseRef?.state?.totalWarehouseCount
 							}
 							data={
 								selectedScannedBy === "Distributor"
 									? this.distributorRef?.state?.allDistributorData
-									: this.warehouseRef?.state?.allAdvisorSalesData
+									: this.warehouseRef?.state?.allWarehouseData
 							}
 							totalLabel={"Sales"}
 							onRef={(node: any) => {
@@ -986,7 +1126,7 @@ class SendGoods extends Component<Props, States> {
 							getRecords={
 								selectedScannedBy === "Distributor"
 									? this.distributorRef?.getDistributor
-									: this.warehouseRef?.getAdvisorSales
+									: this.warehouseRef?.getWarehouse
 							}
 						/>
 					</div>
