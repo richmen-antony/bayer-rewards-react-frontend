@@ -40,6 +40,7 @@ let userData = JSON.parse(obj);
 
 const Inventory = (Props: any) => {
 	let package_type = myConstClass.package_type;
+
     let closeToggle: any;
 	const dispatch             = useDispatch();
 	const geolevel1List        = useSelector(({common}:any) => common?.geoLevel1List);
@@ -73,43 +74,32 @@ const Inventory = (Props: any) => {
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
 	const [scannedBrandsSuccess,setScannedBrandsSuccess]       = useState(Number);
 	const [filterSuccess,setFilterSuccess]                     = useState(Number);
-	const [selectedYear, setSelectedYear]                      = useState({value : new Date().getFullYear(), label : new Date().getFullYear() })
+	const [selectedYear, setSelectedYear]                      = useState(new Date().getFullYear())
 	const [packageType, setPackageType]                      = useState({value : package_type[0], label : package_type[0] })
-	
+
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
 			geolevel1: "ALL",
 			geolevel2: "ALL",
-			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
-			lastmodifieddateto: new Date(),
+			lastmodifieddatefrom: new Date(new Date().getFullYear(), 0, 1),
+			lastmodifieddateto: new Date(new Date().getFullYear(), 11, 31),
 			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
 			scannedPeriod: "",
 	  });
+
 	  const [scannedPeriodsList, setscannedPeriodsList]         = useState([
-		{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
 		{
-			label: "This week (Sun - Sat)",
-			from: moment().startOf("week").format("YYYY-MM-DD"),
-			to: moment().endOf("week").format("YYYY-MM-DD"),
-		},
-		{
-			label: "Last 30 days",
-			from: moment().subtract(30, "days").format("YYYY-MM-DD"),
-			to: moment(new Date()).format("YYYY-MM-DD"),
-		},
-		{
-			label: "This year (Jan - Dec)",
+			label: "All Months",
 			from: moment().startOf("year").format("YYYY-MM-DD"),
 			to: moment().endOf("year").format("YYYY-MM-DD"),
 		},
-		{
-			label: "Prev. year (Jan - Dec)",
-			from: moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"),
-			to: moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"),
-		},
 		{ label: "Custom", value: "" },
 	]);
+
+
+	const [selectedFromDateOfYear,setSelectedFromDateOfYear] = useState(`01/01/${new Date().getFullYear()}`);
+	const [selectedToDateOfYear,setSelectedToDateOfYear] = useState(`12/31/${new Date().getFullYear()}`);
 	
 	const [productCategories, setproductCategories]             = useState([
 		"ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"
@@ -145,9 +135,13 @@ const Inventory = (Props: any) => {
 		let data = {
 			countrycode : userData?.countrycode,
 			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			isfiltered  : isFiltered,
+			isfiltered  : true,
+			scanneddatefrom :  moment(selectedFilters.lastmodifieddatefrom).format("YYYY-MM-DD"),
+			scanneddateto   :   moment(selectedFilters.lastmodifieddateto).format("YYYY-MM-DD")
 		};
-		dispatch(getOverallInventory(data));
+		console.log('onload', data)
+
+		// dispatch(getOverallInventory(data));
 	},[]);
 
 	useEffect(()=>{
@@ -204,7 +198,7 @@ const Inventory = (Props: any) => {
 				filteredDatas = getFilteredDatas(filteredDatas);
 				data = { ...data, ...filteredDatas };
 			}
-			dispatch(getOverallInventory(data));
+			// dispatch(getOverallInventory(data));
 		}
 	},[searchText, partnerType,filterAppliedTime])
 
@@ -417,14 +411,22 @@ const Inventory = (Props: any) => {
 	};
 
 	const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
+		console.log('selectedOption',selectedOption.value)
+		setDateErrMsg("");
+		setIsFiltered(true);
 		if(e.name === 'selectedYear') {
-            setSelectedYear(selectedOption);
+            setSelectedYear(selectedOption.value);
+			setSelectedFromDateOfYear(`01/01/${selectedOption.value}`);
+			setSelectedToDateOfYear(`12/31/${selectedOption.value}`);
+			let fiscalStartDate= new Date(selectedOption.value, 0, 1);
+			let fiscalEndDate= new Date(selectedOption.value, 11, 31);
+			setSelectedFilters({...selectedFilters, lastmodifieddatefrom: fiscalStartDate,lastmodifieddateto : fiscalEndDate });
         } else if (e.name === 'packageType') {
 			setPackageType(selectedOption);
-        } else  {
-			let condOptionName = optionName?.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
+        } else {
 			setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
 		}
+
 	};
 
 	const fields = dynamicFields;
@@ -567,7 +569,7 @@ const Inventory = (Props: any) => {
 			productgroup: "ALL",
 			geolevel1: "ALL",
 			geolevel2: "ALL",
-			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+			lastmodifieddatefrom: new Date(new Date().getFullYear(), 0, 1),
 			lastmodifieddateto: new Date(),
 			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
@@ -579,8 +581,10 @@ const Inventory = (Props: any) => {
 		setselectedBrand(0);
 		closeToggle&&closeToggle();
 	};
+	console.log('lastmodifieddatefrom', selectedFilters.lastmodifieddatefrom);
 
 	return (
+
         <AUX>
 			{(isLoader || isReduxLoader) && <Loader />}
             <div className="consolidatedSales-container">
@@ -666,9 +670,11 @@ const Inventory = (Props: any) => {
 													selected={selectedFilters.lastmodifieddatefrom}
 													onChange={(date: any) => handleDateChange(date, "lastmodifieddatefrom")}
 													showMonthDropdown
-													showYearDropdown
+													// showYearDropdown
 													dropdownMode="select"
-													maxDate={new Date()}
+													// maxDate={new Date()}
+													minDate ={new Date(selectedFromDateOfYear)}
+													maxDate={new Date(selectedToDateOfYear)}
 												/>
 											</div>
 											<div className="p-2">-</div>
@@ -681,9 +687,11 @@ const Inventory = (Props: any) => {
 													selected={selectedFilters.lastmodifieddateto}
 													onChange={(date: any) => handleDateChange(date, "lastmodifieddateto")}
 													showMonthDropdown
-													showYearDropdown
-													dropdownMode="select"
-													maxDate={new Date()}
+													// showYearDropdown
+													dropdownMode="scroll"
+													minDate ={new Date(selectedFromDateOfYear)}
+													maxDate={new Date(selectedToDateOfYear)}
+													// showDateMonthPicker
 												/>
 											</div>
 										</div>

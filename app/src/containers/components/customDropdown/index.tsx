@@ -37,14 +37,7 @@ function CustomDropdown({
     handleReactSelect,
     title
 }:CustomDropdownProps)  {
-    let i = 1990;
-	let year = [];
-	for ( i === 1990; i <= new Date().getFullYear(); i++) {
-        let yearObj = { label : i , value : i};
-		year.push(yearObj);
-	}
-    year.reverse();	
-   
+  
 	return (
         <div className="dropdown-year">
             <div className="yearlabel">

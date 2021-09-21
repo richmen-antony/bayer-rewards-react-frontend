@@ -69,6 +69,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 		packageType,
 		packageTypeOptions
 	} = props;
+	console.log('selectedYear',selectedYear)
 
 	useEffect(() => { 
 		onClose&& onClose(toggleFilter)
@@ -92,6 +93,26 @@ const Filter: React.FC<Props> = (props: Props) => {
 					<CustomDropdown name="packageType" value={packageType} options={packageTypeOptions} handleReactSelect={handleReactSelect} title="Package Type" />
 				</div>
 				}
+
+				{/* 
+				{ isCustomDropdown &&
+					<div className="customDropdown">
+						<div className="yearlabel">
+							<label className="font-weight-bold yeartext">Fiscal Year</label>
+						</div>
+						<ReactSelect
+							name="selectedYear"
+							options={yearOptions}
+							handleChange={(selectedOptions: any, e: any) => {
+								handleReactSelect(selectedOptions, e);
+							}}
+							value={selectedYear}
+							defaultValue={selectedYear}
+							id="year-test"
+							dataTestId="year-test"
+						/>
+					</div>
+				} */}
 
 				<div className="filter-right-side">
 					{isPartnerType &&
