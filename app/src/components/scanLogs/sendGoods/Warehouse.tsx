@@ -10,7 +10,6 @@ import { Theme, withStyles } from "@material-ui/core/styles";
 import NoImage from "../../../assets/images/Group_4736.svg";
 import OrderTable from "../Order";
 import ExpandWindowImg from "../../../assets/images/expand-window.svg";
-import CalenderIcon from "../../../assets/icons/calendar.svg";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import _ from "lodash";
 import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
@@ -19,41 +18,9 @@ import { invokeGetAuthService } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { CustomButton } from "../../../utility/widgets/button";
 import { Alert } from "../../../utility/widgets/toaster";
-import ReactSelect from "../../../utility/widgets/dropdown/ReactSelect";
+import maxImg from "../../../assets/images/maximize.svg";
 
-type PartnerTypes = {
-	type: String;
-};
 
-interface IProps {
-	onChange?: any;
-	placeholder?: any;
-	value?: any;
-	id?: any;
-	onClick?: any;
-	// any other props that come into the component
-}
-
-const ref = React.createRef();
-const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
-	<div style={{ border: "1px solid grey", borderRadius: "4px" }}>
-		<img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
-		<input
-			style={{
-				border: "none",
-				width: "120px",
-				height: "31px",
-				outline: "none",
-			}}
-			onChange={onChange}
-			placeholder={placeholder}
-			value={value}
-			id={id}
-			onClick={onClick}
-			ref={ref}
-		/>
-	</div>
-));
 
 const popupHeader = {
 	title: "Maria Joseph",
@@ -83,16 +50,15 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 type Props = {
-    onRef?: any;
-    paginationRef: any;
-    handleUpdate: any;
-    loggedUser: any;
-    searchText: string;
-    selectedFilters: any;
-    isFiltered: boolean;
-    updateSearch: any;
-    selectedScanType:string;
-    
+	onRef?: any;
+	paginationRef: any;
+	handleUpdate: any;
+	loggedUser: any;
+	searchText: string;
+	selectedFilters: any;
+	isFiltered: boolean;
+	updateSearch: any;
+	selectedScanType: string;
 };
 
 type States = {
@@ -100,7 +66,6 @@ type States = {
 	showProductPopup: boolean;
 	[key: string]: any;
 	isAsc: Boolean;
-	partnerType: PartnerTypes;
 };
 
 let levelsName: any = [];
@@ -122,29 +87,7 @@ class Warehouse extends Component<Props, States> {
 			isAsc: true,
 			selectIndex: "",
 			isRendered: false,
-			allScanLogs: [],
-			actions: ["All", "Distributor", "Retailer"],
-			dropDownValue: "Select action",
-			scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-			productCategories: ["ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
-			status: ["ALL", "VALID", "INVALID"],
-			// status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
-			list: ["ALL", "Distributor", "Retailer"],
-			selectedFilters: {
-				productgroup: "ALL",
-				scanstatus: "ALL",
-				ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
-				ordereddateto: new Date(),
-				retailer: "ALL",
-				partnerType: "Retailers",
-				scannedPeriod: "",
-				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
-				scandateto: moment(new Date()).format("YYYY-MM-DD"),
-				batchno: "ALL",
-				soldtoid: "ALL",
-			},
-			dateErrMsg: "",
-			searchText: "",
+			allWarehouseData: [],
 			totalData: 0,
 			isFiltered: false,
 			userRole: "",
@@ -160,46 +103,7 @@ class Warehouse extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			partnerTypeList: ["Distributors"],
-			partnerType: {
-				type: "Distributors",
-			},
-			scannedPeriodsList: [
-				{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
-				{
-					label: "This week (Sun - Sat)",
-					from: moment().startOf("week").format("YYYY-MM-DD"),
-					to: moment().endOf("week").format("YYYY-MM-DD"),
-				},
-				{
-					label: "Last 30 days",
-					from: moment().subtract(30, "days").format("YYYY-MM-DD"),
-					to: moment(new Date()).format("YYYY-MM-DD"),
-				},
-				{
-					label: "This year (Jan - Dec)",
-					from: moment().startOf("year").format("YYYY-MM-DD"),
-					to: moment().endOf("year").format("YYYY-MM-DD"),
-				},
-				{
-					label: "Prev. year (Jan - Dec)",
-					from: moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"),
-					to: moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"),
-				},
-				{ label: "Custom", value: "" },
-			],
-			// scanTypeList: ["SG - ST", "SG - D2R"],
-			selectedScanType: "SG - ST",
-			selectedScannedBy:"Distributor",
 			activeSortKeyIcon: "labelid",
-			scannedByList: [
-				{ value: "Distributor", label: "Distributor" },
-				{ value: "Warehouse Ops", label: "Warehouse Ops" },
-			],
-			scanTypeList: [
-				{ value: "SG - ST", label: "SG - ST" },
-				{ value: "SG - D2R", label: "SG - D2R" },
-			],
 		};
 		this.timeOut = 0;
 	}
@@ -213,24 +117,13 @@ class Warehouse extends Component<Props, States> {
 				loggedUserInfo: userData,
 			},
 			() => {
-				this.getScanLogs();
-				//API to get country and language settings
-				this.getCountryList();
-				this.getHierarchyDatas();
-				this.getBatchList();
-				this.getPartnerList();
+				this.getWarehouse();
+				this.getGeographicFields();
 			}
 		);
 	}
-	getCountryList() {
-		let res = [
-			{ value: "India", label: "India" },
-			{ value: "Malawi", label: "Malawi" },
-		];
-		this.setState({ countryList: res });
-	}
 
-	getScanLogs = (defaultPageNo?: any) => {
+	getWarehouse = (defaultPageNo?: any) => {
 		const { getScanLog } = apiURL;
 		const { state, setDefaultPage } = this.props?.paginationRef;
 		const pageNo = !defaultPageNo ? 1 : state.pageNo;
@@ -240,12 +133,12 @@ class Warehouse extends Component<Props, States> {
 			setDefaultPage();
 		}
 		this.setState({ isLoader: true });
-		const { selectedFilters, isFiltered, selectedScanType } = this.state;
+		const { selectedFilters, isFiltered, selectedScanType, searchText } = this.props;
 		let data = {
 			page: pageNo,
-			searchtext: this.state.searchText || null,
+			searchtext: searchText || null,
 			rowsperpage: state.rowsPerPage,
-			isfiltered: this.state.isFiltered,
+			isfiltered: isFiltered,
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			scantype: selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
@@ -282,15 +175,20 @@ class Warehouse extends Component<Props, States> {
 		invokeGetAuthService(getScanLog, data)
 			.then((response) => {
 				let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
-				this.setState({
-					isLoader: false,
-					allScanLogs: data,
-				});
 				const total = response?.totalrows;
-				this.setState({ totalData: Number(total) });
+				this.setState(
+					{
+						isLoader: false,
+						allWarehouseData: data,
+						totalWarehouseCount: Number(total),
+					},
+					() => {
+						this.props.handleUpdate();
+					}
+				);
 			})
 			.catch((error) => {
-				this.setState({ isLoader: false, allScanLogs: [] }, () => {});
+				this.setState({ isLoader: false, allWarehouseData: [] }, () => {});
 				ErrorMsg(error);
 			});
 	};
@@ -319,21 +217,9 @@ class Warehouse extends Component<Props, States> {
 			condFilterScan: name,
 		});
 	}
-	handleSearch = (e: any) => {
-		let searchText = e.target.value;
-		this.setState({ searchText: searchText, isFiltered: true, inActiveFilter: false });
-		if (this.timeOut) {
-			clearTimeout(this.timeOut);
-		}
-		if (searchText.length >= 3 || searchText.length === 0) {
-			this.timeOut = setTimeout(() => {
-				this.getScanLogs();
-			}, 1000);
-		}
-	};
 	onSort = (name: string, datas: any, isAsc: Boolean) => {
 		let response = sortBy(name, datas);
-		this.setState({ allScanLogs: response, isAsc: !isAsc });
+		this.setState({ allWarehouseData: response, isAsc: !isAsc });
 	};
 
 	handleSort(e: any, columnname: string, data: any, isAsc: Boolean) {
@@ -343,75 +229,6 @@ class Warehouse extends Component<Props, States> {
 			activeSortKeyIcon: columnname,
 		});
 	}
-
-	handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
-		e.stopPropagation();
-		let val = this.state.selectedFilters;
-		let flag = false;
-		// this.state.dateErrMsg = '';
-		if (name === "type") {
-			val[name] = e.target.value;
-			flag = true;
-		} else if (name === "scannedPeriod" && item !== "Custom") {
-			val["scandatefrom"] = itemList?.from;
-			val["scandateto"] = itemList?.to;
-			val[name] = item;
-			flag = true;
-		} else {
-			val[name] = item;
-
-			flag = true;
-		}
-		if (flag) {
-			this.setState({ selectedFilters: val });
-		}
-	};
-
-	resetFilter = (e?: any) => {
-		let conditionIsFilter = this.state.searchText ? true : false;
-		const options = [{ value: "ALL", label: "ALL" }];
-		this.getDynamicOptionFields("reset");
-		this.setState(
-			{
-				selectedFilters: {
-					productgroup: "ALL",
-					scanstatus: "ALL",
-					ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
-					ordereddateto: new Date(),
-					scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
-					scandateto: moment(new Date()).format("YYYY-MM-DD"),
-					retailer: "ALL",
-					partnerType: "Retailers",
-					scannedPeriod: "",
-					batchno: "ALL",
-					soldtoid: "ALL",
-				},
-				isFiltered: conditionIsFilter,
-				dateErrMsg: "",
-				lastUpdatedDateErr: "",
-				selectedBatchOptions: options,
-				selectedCustomerOptions: options,
-				selectedGeolevel1Options: options,
-				selectedGeolevel2Options: options,
-				// searchText:""
-			},
-			() => {
-				this.getScanLogs();
-				this.closeToggle();
-				// this.getRetailerList();
-			}
-		);
-	};
-
-	applyFilter = () => {
-		this.setState({ isFiltered: true, inActiveFilter: false }, () => {
-			this.getScanLogs();
-			this.closeToggle();
-		});
-	};
-	toggle = () => {
-		this.setState({ tooltipOpen: !this.state.tooltipOpen });
-	};
 
 	download = () => {
 		const { downloadAllScanLogs } = apiURL;
@@ -460,73 +277,6 @@ class Warehouse extends Component<Props, States> {
 				ErrorMsg(error);
 			});
 	};
-	handleDateChange = (date: any, name: string) => {
-		let val = this.state.selectedFilters;
-
-		// order date - check End date
-		if (name === "ordereddateto") {
-			if (date >= val.ordereddatefrom) {
-				this.setState({
-					dateErrMsg: "",
-				});
-			} else if (date <= val.ordereddatefrom) {
-				this.setState({
-					dateErrMsg: "Scanned End Date should be greater than  Scanned Start Date",
-				});
-			} else {
-				this.setState({
-					dateErrMsg: "Scanned Start Date should be lesser than  Scanned End Date",
-				});
-			}
-		}
-		// order date - check Start date
-		if (name === "ordereddatefrom") {
-			if (date <= val.ordereddateto) {
-				this.setState({
-					dateErrMsg: "",
-				});
-			} else if (date >= val.ordereddateto) {
-				this.setState({
-					dateErrMsg: "Scanned Start Date should be lesser than Scanned End Date",
-				});
-			} else {
-				this.setState({
-					dateErrMsg: "Ordered Start Date should be greater than Ordered End Date",
-				});
-			}
-		}
-		this.setState({
-			selectedFilters: { ...this.state.selectedFilters, [name]: date },
-		});
-	};
-
-	handleSelect = (event: any, name: string) => {
-		this.setState({
-			selectedFilters: {
-				...this.state.selectedFilters,
-				[name]: event.target.value,
-			},
-		});
-	};
-	handleReactSelect = (selectedOption: any, e: any, inActiveFilter?: boolean) => {
-		if (inActiveFilter) {
-			this.setState(
-				{
-					[e.name]: selectedOption.value,
-				},
-				() => {
-					
-				}
-			);
-		} else {
-			this.setState({
-				selectedFilters: {
-					...this.state.selectedFilters,
-					[e.name]: selectedOption.value,
-				},
-			});
-		}
-	};
 
 	filterScans = (filterValue: any) => {
 		let name = this.state.condFilterScan === "customer" ? "soldtoid" : "soldbyid";
@@ -558,53 +308,8 @@ class Warehouse extends Component<Props, States> {
 				selectedCustomerOptions: options,
 			},
 			() => {
-				this.getScanLogs();
+				this.getWarehouse();
 				this.handleClosePopup();
-			}
-		);
-	};
-
-	handlePartnerChange = (name: string) => {
-		let oneTimeAPI = false;
-		if (name !== this.state.partnerType.type) {
-			oneTimeAPI = true;
-		}
-		this.setState(
-			{
-				partnerType: {
-					type: name,
-				},
-			},
-			() => {
-				oneTimeAPI && this.getScanLogs();
-			}
-		);
-	};
-	/**
-	 * Handle scan type
-	 * @param name
-	 * @param value
-	 */
-	handleButtonChange = (name: string, value: string) => {
-		let oneTimeAPI = false;
-		let customerOptions = this.state.selectedCustomerOptions;
-		const filters = { ...this.state.selectedFilters };
-		if (value !== this.state[name]) {
-			oneTimeAPI = true;
-			customerOptions = { value: "ALL", label: "ALL" };
-			filters["soldtoid"] = null;
-		}
-		this.setState(
-			{
-				[name]: value,
-				selectedCustomerOptions: customerOptions,
-				selectedFilters: filters,
-			},
-			() => {
-				if (oneTimeAPI) {
-					this.getScanLogs();
-					this.getPartnerList();
-				}
 			}
 		);
 	};
@@ -634,35 +339,10 @@ class Warehouse extends Component<Props, States> {
 							levelsData.push(obj);
 						}
 					});
-				this.setState(
-					{
-						isLoader: false,
-						geographicFields: levels,
-						locationData: levelsData,
-					},
-					() => {
-						this.getDynamicOptionFields();
-					}
-				);
-			})
-			.catch((error: any) => {
-				this.setState({ isLoader: false });
-				let message = error.message;
-				Alert("warning", message);
-			});
-	}
-	getHierarchyDatas() {
-		//To get all level datas
-		this.setState({ isLoader: true });
-		const { getHierarchyLevels } = apiURL;
-		let countrycode = {
-			countryCode: this.state.loggedUserInfo?.countrycode,
-		};
-		invokeGetAuthService(getHierarchyLevels, countrycode)
-			.then((response: any) => {
-				let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
-				this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
-					this.getGeographicFields();
+				this.setState({
+					isLoader: false,
+					geographicFields: levels,
+					locationData: levelsData,
 				});
 			})
 			.catch((error: any) => {
@@ -671,396 +351,172 @@ class Warehouse extends Component<Props, States> {
 				Alert("warning", message);
 			});
 	}
-	getDynamicOptionFields = (reset?: string) => {
-		let level1List = this.state.geolevel1List;
-		if (!reset) {
-			let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
-			level1List.unshift(allItem);
-		}
-		this.setState({ geolevel1List: level1List });
-		let level1Options: any = [];
-		this.state.geolevel1List?.forEach((item: any) => {
-			let level1Info = { label: item.name, code: item.code, value: item.name };
-			level1Options.push(level1Info);
-		});
-
-		let setFormArray: any = [];
-		let localObj: any = getLocalStorageData("userData");
-		let userData = JSON.parse(localObj);
-
-		let userrole = userData?.role;
-		let level2Options: any = [];
-		if (userrole === "RSM") {
-			let filteredLevel1: any = this.state.geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
-			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-				let level2Info = { label: item.name, value: item.name, code: item.code };
-				level2Options.push(level2Info);
-			});
-			let geolevel2Obj = {
-				label: "ALL",
-				value: "ALL",
-				code: "ALL",
-			};
-			level2Options.unshift(geolevel2Obj);
-		} else {
-			let level1Info = { label: "ALL", value: "ALL" };
-			level2Options.push(level1Info);
-		}
-		let usergeolevel1 = userData?.geolevel1;
-		let geolevel1Obj = { label: usergeolevel1, value: usergeolevel1 };
-		this.state.geographicFields?.forEach((list: any, i: number) => {
-			setFormArray.push({
-				name: list,
-				placeHolder: true,
-				value: list === "geolevel1" && userrole === "RSM" ? geolevel1Obj : { label: "ALL", value: "ALL" },
-				options:
-					list === "geolevel0"
-						? this.state.countryList
-						: list === "geolevel1"
-						? level1Options
-						: list === "geolevel2"
-						? level2Options
-						: [{ label: "ALL", name: "ALL" }],
-				error: "",
-			});
-		});
-		this.setState({ dynamicFields: setFormArray });
-	};
-
-	getOptionLists = (cron: any, type: any, value: any, index: any) => {
-		let newvalue = { label: value, name: value };
-		let geolevel1List = this.state.geolevel1List;
-		this.setState({ level1Options: geolevel1List });
-		let dynamicFieldVal = this.state.dynamicFields;
-		if (type === "geolevel1") {
-			let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
-			let level2Options: any = [];
-			filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-				let level1Info = { label: item.name, value: item.name, code: item.code };
-				level2Options.push(level1Info);
-			});
-			let geolevel1Obj = {
-				label: "ALL",
-				value: "ALL",
-				code: "ALL",
-			};
-			let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
-			level2Options.unshift(geolevel1Obj);
-			dynamicFieldVal[index + 1].options = level2Options;
-			this.setState({ dynamicFields: dynamicFieldVal });
-			dynamicFieldVal[index + 2].options = geolevel3Obj;
-			dynamicFieldVal[index].value = newvalue;
-			dynamicFieldVal[index + 1].value = { label: "ALL", value: "ALL" };
-			dynamicFieldVal[index + 2].value = { label: "ALL", value: "ALL" };
-			this.setState((prevState: any) => ({
-				dynamicFields: dynamicFieldVal,
-				selectedFilters: {
-					...prevState.selectedFilters,
-					geolevel2: "ALL",
-				},
-				selectedGeolevel2Options: geolevel1Obj,
-			}));
-		} else if (type === "geolevel2") {
-			dynamicFieldVal[index].value = newvalue;
-			this.setState((prevState: any) => ({
-				dynamicFields: dynamicFieldVal,
-				selectedFilters: {
-					...prevState.selectedFilters,
-				},
-			}));
-		}
-	};
-
-	handleGeolevelDropdown = (value: string, label: any) => {
-		this.setState((prevState: any) => ({
-			selectedFilters: {
-				...prevState.selectedFilters,
-				[label.toLocaleLowerCase()]: value,
-			},
-		}));
-	};
-
-	getBatchList = () => {
-		const { getBatchList } = apiURL;
-
-		let countrycode = {
-			countrycode: this.state.loggedUserInfo?.countrycode,
-			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
-		};
-		invokeGetAuthService(getBatchList, countrycode)
-			.then((response: any) => {
-				let data = Object.keys(response.data).length !== 0 ? response.data : [];
-				let options = [{ value: "ALL", label: "ALL" }];
-				const temp =
-					data?.length > 0
-						? data.map((val: any) => {
-								return { value: val.batchno, label: val.batchno };
-						  })
-						: [];
-				const list = [...options, ...temp];
-				this.setState({ isLoader: false, batchOptions: list });
-			})
-			.catch((error: any) => {
-				this.setState({ isLoader: false });
-				let message = error.message;
-				Alert("warning", message);
-			});
-	};
-	getPartnerList = () => {
-		const { getPartnerList } = apiURL;
-		let countrycode = {
-			countrycode: this.state.loggedUserInfo?.countrycode,
-			soldtorole: this.state.selectedScanType === "SG - D2R" ? "RETAILER" : "DISTRIBUTOR",
-			isfiltered: true,
-			soldbygeolevel1: this.state.loggedUserInfo?.geolevel1,
-		};
-		let condName = this.state.selectedScanType === "SG - D2R" ? "retailerOptions" : "distributorOptions";
-		invokeGetAuthService(getPartnerList, countrycode)
-			.then((response: any) => {
-				let data = Object.keys(response.data).length !== 0 ? response.data : [];
-				let options = [{ value: "ALL", label: "ALL" }];
-				const temp =
-					data?.length > 0
-						? data.map((val: any) => {
-								return { value: val.soldtoid, label: val.soldtoname };
-						  })
-						: [];
-				const list = [...options, ...temp];
-				this.setState({ isLoader: false, [condName]: list });
-			})
-			.catch((error: any) => {
-				this.setState({ isLoader: false });
-				let message = error.message;
-				Alert("warning", message);
-			});
-	};
-
-	handleScanDropdown = () => {};
 	render() {
 		const {
 			retailerPopupData,
 			showProductPopup,
 			isAsc,
-			allScanLogs,
-			selectedFilters,
+			allWarehouseData,
 			isLoader,
-			dateErrMsg,
-			searchText,
-			totalData,
-			lastUpdatedDateErr,
-			retailerOptions,
 			condFilterScan,
-			batchOptions,
-			distributorOptions,
 			activeSortKeyIcon,
-			selectedBatchOptions,
-			selectedCustomerOptions,
 			loggedUserInfo,
-			scannedByList,
-			scanTypeList,
-			selectedScanType,
-			selectedScannedBy
 		} = this.state;
-		const fields = this.state.dynamicFields;
-		const locationList = fields?.map((list: any, index: number) => {
-			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-			let data: any = getLocalStorageData("userData");
-			let userData = JSON.parse(data);
-			return (
-				<React.Fragment key={`geolevels` + index}>
-					{index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
-						<div className="col" style={{ marginBottom: "5px" }}>
-							<ReactSelect
-								name={list.name}
-								label={`Scanned by - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
-								options={list.options}
-								handleChange={(selectedOptions: any, e: any) => {
-									list.value = selectedOptions.value;
-									this.getOptionLists("manual", list.name, selectedOptions.value, index);
-									this.handleReactSelect(selectedOptions, e);
-									// this.handleGeolevelDropdown(selectedOptions.value, list.name);
-								}}
-								value={list.value}
-								isDisabled={userData?.role === "RSM" && list.name === "geolevel1"}
-								id="geolevel-test"
-								dataTestId="geolevel-test"
-							/>
-						</div>
-					)}
-				</React.Fragment>
-			);
-		});
-		const CustomerOptions = this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions;
 		return (
 			<AUX>
 				{isLoader && <Loader />}
-								<table className="table">
-									<thead>
-										<tr>
-											<th
-												style={{ width: this.state.selectedScanType === "SG - D2R" ? "12%" : "15%" }}
-												onClick={(e) => this.handleSort(e, "labelid", allScanLogs, isAsc)}
-											>
-												LABEL/BATCH ID
-												{activeSortKeyIcon === "labelid" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "soldtoname", allScanLogs, isAsc)}>
-												CUSTOMER NAME/ID
-												{activeSortKeyIcon === "soldtoname" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											{this.state.selectedScanType === "SG - D2R" && (
-												<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "soldtostore", allScanLogs, isAsc)}>
-													STORE NAME
-													{activeSortKeyIcon === "soldtostore" ? (
-														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-													) : null}
-												</th>
-											)}
-											<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "productname", allScanLogs, isAsc)}>
-												PRODUCT NAME
-												{activeSortKeyIcon === "productname" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "channeltype", allScanLogs, isAsc)}>
-												CHANNEL TYPE
-												{activeSortKeyIcon === "channeltype" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "scanneddate", allScanLogs, isAsc)}>
-												SCANNED ON
-												{activeSortKeyIcon === "scanneddate" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											<th style={{ width: "15%" }} onClick={(e) => this.handleSort(e, "soldbyname", allScanLogs, isAsc)}>
-												SCANNED BY
-												{activeSortKeyIcon === "soldbyname" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-											{loggedUserInfo?.role === "ADMIN" && (
-												<th
-													style={{ width: "10%" }}
-													onClick={(e) => this.handleSort(e, "soldbygeolevel1", allScanLogs, isAsc)}
+				<table className="table">
+					<thead>
+						<tr>
+							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "labelid", allWarehouseData, isAsc)}>
+								DELIVERY #
+								{activeSortKeyIcon === "labelid" ? (
+									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+								) : null}
+							</th>
+							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "soldtoname", allWarehouseData, isAsc)}>
+								WAREHOUSE NAME/ID
+								{activeSortKeyIcon === "soldtoname" ? (
+									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+								) : null}
+							</th>
+
+							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "productname", allWarehouseData, isAsc)}>
+								RETAILER NAME/ID
+								{activeSortKeyIcon === "productname" ? (
+									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+								) : null}
+							</th>
+							{this.props.selectedScanType === "SG - W2R" && (
+								<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "soldtostore", allWarehouseData, isAsc)}>
+									STORE NAME
+									{activeSortKeyIcon === "soldtostore" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+							)}
+							<th style={{ width: "15%" }} onClick={(e) => this.handleSort(e, "soldbyname", allWarehouseData, isAsc)}>
+								SCANNED BY
+								{activeSortKeyIcon === "soldbyname" ? (
+									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+								) : null}
+							</th>
+							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "channeltype", allWarehouseData, isAsc)}>
+								TOTAL QTY
+								{activeSortKeyIcon === "channeltype" ? (
+									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+								) : null}
+							</th>
+							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "scanneddate", allWarehouseData, isAsc)}>
+								GOODS STATUS
+								{activeSortKeyIcon === "scanneddate" ? (
+									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+								) : null}
+							</th>
+
+							<th
+								style={{ width: loggedUserInfo?.role === "ADMIN" ? "10%" : "16%" }}
+								onClick={(e) => this.handleSort(e, "expirydate", allWarehouseData, isAsc)}
+							>
+								UPDATED DATE
+								{activeSortKeyIcon === "expirydate" ? (
+									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+								) : null}
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{allWarehouseData.length > 0 ? (
+							allWarehouseData.map((value: any, i: number) => {
+								return (
+									<tr
+										onClick={(event) => {
+											this.updateOrderData(value);
+											this.showPopup(event, "showProductPopup");
+										}}
+										style={{ cursor: "pointer" }}
+										key={i}
+									>
+										<td>{value.labelid}</td>
+										<td
+											onClick={(event) => {
+												this.showPopup(event, "showPopup");
+												this.handleUpdateRetailer(value, "customer");
+											}}
+											style={{ cursor: "pointer" }}
+										>
+											<div className="retailer-id">
+												<p
+													style={{
+														display: "flex",
+														alignItems: "center",
+													}}
 												>
-													REGION
-													{activeSortKeyIcon === "soldbygeolevel1" ? (
-														<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-													) : null}
-												</th>
-											)}
-											<th
-												style={{ width: loggedUserInfo?.role === "ADMIN" ? "10%" : "16%" }}
-												onClick={(e) => this.handleSort(e, "expirydate", allScanLogs, isAsc)}
-											>
-												EXPIRY DATE
-												{activeSortKeyIcon === "expirydate" ? (
-													<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-												) : null}
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{allScanLogs.length > 0 ? (
-											allScanLogs.map((value: any, i: number) => {
-												return (
-													<tr
-														onClick={(event) => {
-															this.updateOrderData(value);
-														}}
-														key={i}
-													>
-														<td>
-															{value.labelid}
-															<p>
-																<span className={`status-label ${value.scanstatus === "VALID" ? "active" : "inactive"}`}>
-																	{_.capitalize(value.scanstatus)}
-																</span>
-																- #{value.batchno}
-															</p>
-														</td>
-														<td
-															onClick={(event) => {
-																this.showPopup(event, "showPopup");
-																this.handleUpdateRetailer(value, "customer");
-															}}
-															style={{ cursor: "pointer" }}
-														>
-															<div className="retailer-id">
-																<p
-																	style={{
-																		display: "flex",
-																		alignItems: "center",
-																	}}
-																>
-																	<span style={{ flex: "1", whiteSpace: "nowrap" }}>
-																		{_.startCase(_.toLower(value.soldtoname))}
-																		<img className="retailer-icon" src={ExpandWindowImg} alt="" />
-																	</span>
-																</p>
-																<label>{value.soldtoid + " - " + _.startCase(_.toLower(value.soldtorole))}</label>
-															</div>
-														</td>
-														{this.state.selectedScanType === "SG - D2R" && (
-															<td>{_.startCase(_.toLower(value.soldtostore))}</td>
-														)}
-														<td>
-															<div className="farmer-id">
-																<p>{value.productname}</p>
-																<label>
-																	{value.productid === null
-																		? ""
-																		: value.productid + " - " + _.capitalize(value.productgroup)}
-																</label>
-															</div>
-														</td>
-														<td>{value.channeltype}</td>
-														<td>{value.scanneddate && moment(value.scanneddate).format("DD/MM/YYYY")}</td>
-														<td
-															onClick={(event) => {
-																this.showPopup(event, "showPopup");
-																this.handleUpdateRetailer(value, "scannedBy");
-															}}
-															style={{ cursor: "pointer" }}
-														>
-															<div className="retailer-id">
-																<p
-																	style={{
-																		display: "flex",
-																		alignItems: "center",
-																	}}
-																>
-																	<span style={{ flex: "1", whiteSpace: "nowrap" }}>
-																		{_.startCase(_.toLower(value.soldbyname))}
-																		<img className="retailer-icon" src={ExpandWindowImg} alt="" />
-																	</span>
-																</p>
-																<label>{value.soldbyid}</label>
-															</div>
-														</td>
-														{loggedUserInfo?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
-														<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
-													</tr>
-												);
-											})
-										) : (
-											<tr style={{ height: "250px" }}>
-												<td colSpan={10} className="no-records">
-													No records found
-												</td>
-											</tr>
-										)}
-									</tbody>
-								</table>
-							
-					
-				
+													<span style={{ flex: "1", whiteSpace: "nowrap" }}>
+														{_.startCase(_.toLower(value.soldtoname))}
+														<img className="retailer-icon" src={ExpandWindowImg} alt="" />
+													</span>
+												</p>
+												<label>{value.soldtoid + " - " + _.startCase(_.toLower(value.soldtorole))}</label>
+											</div>
+										</td>
+
+										<td>
+											<div className="farmer-id">
+												<p>{value.productname}</p>
+												<label>
+													{value.productid === null ? "" : value.productid + " - " + _.capitalize(value.productgroup)}
+												</label>
+											</div>
+										</td>
+										{this.props.selectedScanType === "SG - W2R" && <td>{_.startCase(_.toLower(value.soldtostore))}</td>}
+										<td
+											onClick={(event) => {
+												this.showPopup(event, "showPopup");
+												this.handleUpdateRetailer(value, "scannedBy");
+											}}
+											style={{ cursor: "pointer" }}
+										>
+											<div className="retailer-id">
+												<p
+													style={{
+														display: "flex",
+														alignItems: "center",
+													}}
+												>
+													<span style={{ flex: "1", whiteSpace: "nowrap" }}>
+														{_.startCase(_.toLower(value.soldbyname))}
+														<img className="retailer-icon" src={ExpandWindowImg} alt="" />
+													</span>
+												</p>
+												<label>{value.soldbyid}</label>
+											</div>
+										</td>
+										<td>{value.scanneddate && moment(value.scanneddate).format("DD/MM/YYYY")}</td>
+										<td>
+											<span className="status active">
+												<i className="fas fa-clock"></i>
+												{"Dispatch Sent"}
+											</span>
+										</td>
+										{loggedUserInfo?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
+										<td>
+											{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}
+											<img className="max-image" src={maxImg} alt="" />
+										</td>
+									</tr>
+								);
+							})
+						) : (
+							<tr style={{ height: "250px" }}>
+								<td colSpan={10} className="no-records">
+									No records found
+								</td>
+							</tr>
+						)}
+					</tbody>
+				</table>
+
 				{this.state.showPopup ? (
 					<SimpleDialog open={this.state.showPopup} onClose={this.handleClosePopup} header={popupHeader} maxWidth={"800px"}>
 						<DialogContent>

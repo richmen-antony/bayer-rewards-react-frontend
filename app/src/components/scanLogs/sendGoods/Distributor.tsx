@@ -8,7 +8,6 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import NoImage from "../../../assets/images/Group_4736.svg";
-import OrderTable from "../Order";
 import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import _ from "lodash";
@@ -18,9 +17,7 @@ import { invokeGetAuthService } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { CustomButton } from "../../../utility/widgets/button";
 import { Alert } from "../../../utility/widgets/toaster";
-type PartnerTypes = {
-	type: String;
-};
+
 
 const popupHeader = {
 	title: "Maria Joseph",
@@ -66,7 +63,6 @@ type States = {
 	showProductPopup: boolean;
 	[key: string]: any;
 	isAsc: Boolean;
-	partnerType: PartnerTypes;
 };
 
 let levelsName: any = [];
@@ -89,28 +85,6 @@ class Distributor extends Component<Props, States> {
 			selectIndex: "",
 			isRendered: false,
 			allDistributorData: [],
-			actions: ["All", "Distributor", "Retailer"],
-			dropDownValue: "Select action",
-			scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-			productCategories: ["ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
-			status: ["ALL", "VALID", "INVALID"],
-			// status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
-			list: ["ALL", "Distributor", "Retailer"],
-			selectedFilters: {
-				productgroup: "ALL",
-				scanstatus: "ALL",
-				ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
-				ordereddateto: new Date(),
-				retailer: "ALL",
-				partnerType: "Retailers",
-				scannedPeriod: "",
-				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
-				scandateto: moment(new Date()).format("YYYY-MM-DD"),
-				batchno: "ALL",
-				soldtoid: "ALL",
-			},
-			dateErrMsg: "",
-			searchText: "",
 			totalData: 0,
 			isFiltered: false,
 			userRole: "",
@@ -126,46 +100,7 @@ class Distributor extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			partnerTypeList: ["Distributors"],
-			partnerType: {
-				type: "Distributors",
-			},
-			scannedPeriodsList: [
-				{ label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
-				{
-					label: "This week (Sun - Sat)",
-					from: moment().startOf("week").format("YYYY-MM-DD"),
-					to: moment().endOf("week").format("YYYY-MM-DD"),
-				},
-				{
-					label: "Last 30 days",
-					from: moment().subtract(30, "days").format("YYYY-MM-DD"),
-					to: moment(new Date()).format("YYYY-MM-DD"),
-				},
-				{
-					label: "This year (Jan - Dec)",
-					from: moment().startOf("year").format("YYYY-MM-DD"),
-					to: moment().endOf("year").format("YYYY-MM-DD"),
-				},
-				{
-					label: "Prev. year (Jan - Dec)",
-					from: moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"),
-					to: moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"),
-				},
-				{ label: "Custom", value: "" },
-			],
-			// scanTypeList: ["SG - ST", "SG - D2R"],
-			selectedScanType: "SG - ST",
-			selectedScannedBy: "Distributor",
 			activeSortKeyIcon: "labelid",
-			scannedByList: [
-				{ value: "Distributor", label: "Distributor" },
-				{ value: "Warehouse Ops", label: "Warehouse Ops" },
-			],
-			scanTypeList: [
-				{ value: "SG - ST", label: "SG - ST" },
-				{ value: "SG - D2R", label: "SG - D2R" },
-			],
 		};
 		this.timeOut = 0;
 	}
@@ -463,7 +398,6 @@ class Distributor extends Component<Props, States> {
 	render() {
 		const {
 			retailerPopupData,
-			showProductPopup,
 			isAsc,
 			allDistributorData,
 			isLoader,
@@ -550,12 +484,7 @@ class Distributor extends Component<Props, States> {
 						{allDistributorData.length > 0 ? (
 							allDistributorData.map((value: any, i: number) => {
 								return (
-									<tr
-										onClick={(event) => {
-											this.updateOrderData(value);
-										}}
-										key={i}
-									>
+									<tr key={i}>
 										<td>
 											{value.labelid}
 											<p>
@@ -711,12 +640,6 @@ class Distributor extends Component<Props, States> {
 							/>
 						</DialogActions>
 					</SimpleDialog>
-				) : (
-					""
-				)}
-
-				{showProductPopup ? (
-					<OrderTable open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
 				) : (
 					""
 				)}

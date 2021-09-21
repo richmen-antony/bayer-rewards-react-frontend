@@ -8,7 +8,6 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import NoImage from "../../assets/images/Group_4736.svg";
-import OrderTable from "./Order";
 import ExpandWindowImg from "../../assets/images/expand-window.svg";
 import { sortBy } from "../../utility/base/utils/tableSort";
 import _ from "lodash";
@@ -287,7 +286,7 @@ class WalkInSales extends PureComponent<Props, States> {
 	};
 
 	render() {
-		const { retailerPopupData, showProductPopup, isAsc, allWalkInSalesData, isLoader, condFilterScan, activeSortKeyIcon } =
+		const { retailerPopupData, isAsc, allWalkInSalesData, isLoader, condFilterScan, activeSortKeyIcon } =
 			this.state;
 		const { loggedUser } = this.props;
 		return (
@@ -337,18 +336,6 @@ class WalkInSales extends PureComponent<Props, States> {
 										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 									) : null}
 								</th>
-								{loggedUser?.role === "ADMIN" && (
-									<th
-										style={{ width: "10%" }}
-										onClick={(e) => this.handleSort(e, "soldbygeolevel1", allWalkInSalesData, isAsc)}
-									>
-										REGION
-										{activeSortKeyIcon === "soldbygeolevel1" ? (
-											<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
-										) : null}
-									</th>
-								)}
-
 								<th
 									style={{ width: loggedUser?.role === "ADMIN" ? "10%" : "10%" }}
 									onClick={(e) => this.handleSort(e, "expirydate", allWalkInSalesData, isAsc)}
@@ -364,12 +351,7 @@ class WalkInSales extends PureComponent<Props, States> {
 							{allWalkInSalesData.length > 0 ? (
 								allWalkInSalesData.map((value: any, i: number) => {
 									return (
-										<tr
-											onClick={(event) => {
-												this.updateOrderData(value);
-											}}
-											key={i}
-										>
+										<tr key={i}>
 											<td>
 												{value.labelid}
 												<p>
@@ -499,12 +481,6 @@ class WalkInSales extends PureComponent<Props, States> {
 							/>
 						</DialogActions>
 					</SimpleDialog>
-				) : (
-					""
-				)}
-
-				{showProductPopup ? (
-					<OrderTable open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
 				) : (
 					""
 				)}

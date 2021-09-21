@@ -129,9 +129,8 @@ export const OverallInventory = ({
                     ) : null}
                   </th>
                   <th
-                    className="rtl"
                     style={{
-                      width: "20%",
+                      width: "15%",
                       padding: "5px",
                       textAlign: "right",
                       direction: "rtl",
@@ -140,7 +139,6 @@ export const OverallInventory = ({
                     OPENING
                   </th>
                   <th
-                    className="rtl"
                     style={{
                       width: "15%",
                       padding: "5px",
@@ -148,12 +146,11 @@ export const OverallInventory = ({
                       direction: "rtl",
                     }}
                   >
-                   SELL-IN
+                    SELL-IN
                   </th>
                   <th
-                    className="rtl"
                     style={{
-                      width: "20%",
+                      width: "15%",
                       padding: "5px",
                       textAlign: "right",
                       direction: "rtl",
@@ -162,9 +159,8 @@ export const OverallInventory = ({
                     SELL-OUT
                   </th>
                   <th
-                    className="rtl"
                     style={{
-                      width: "20%",
+                      width: "15%",
                       padding: "5px",
                       textAlign: "right",
                       direction: "rtl",
@@ -173,9 +169,8 @@ export const OverallInventory = ({
                     RETURNS
                   </th>
                   <th
-                    className="rtl"
                     style={{
-                      width: "20%",
+                      width: "15%",
                       padding: "5px",
                       textAlign: "right",
                       direction: "rtl",
@@ -188,11 +183,13 @@ export const OverallInventory = ({
               <tbody>
                 {allConsolidatedInventory?.length > 0 ? (
                   allConsolidatedInventory?.map((item: any, idx: number) => {
-                    totalOpeningInventory = totalOpeningInventory + Number(item.openinginventory);
+                    totalOpeningInventory =
+                      totalOpeningInventory + Number(item.openinginventory);
                     totalSellIn = totalSellIn + Number(item.sellin);
                     totalSellOut = totalSellOut + Number(item.sellout);
                     totalReturns = totalReturns + Number(item.returns);
-                    totalClosingInventory = totalClosingInventory + Number(item.closinginventory);
+                    totalClosingInventory =
+                      totalClosingInventory + Number(item.closinginventory);
                     return (
                       <tr
                         style={{
@@ -307,7 +304,7 @@ export const OverallInventory = ({
                     {totalReturns}
                   </th>
                   <th
-                    style={{ width: "%", padding: "5px", textAlign: "right" }}
+                    style={{ width: "15%", padding: "5px", textAlign: "right" }}
                   >
                     {totalClosingInventory}
                   </th>

@@ -236,7 +236,7 @@ class AdvisorSales extends PureComponent<Props, States> {
 				downloadCsvFile(data, "S2F_ADVISOR");
 			})
 			.catch((error) => {
-				console.log({ error });
+				ErrorMsg(error);
 			});
 	};
 	
