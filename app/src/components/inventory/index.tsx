@@ -64,7 +64,7 @@ const Inventory = (Props: any) => {
 	const [selectedBrand,setselectedBrand]                     = useState(0);
 	const [countryList,setcountryList]                         = useState([{}]);
 	const [dynamicFields, setdynamicFields]                    = useState([]);
-	const [isFiltered, setIsFiltered]                          = useState<boolean>(false);
+	const [isFiltered, setIsFiltered]                          = useState<boolean>(true);
 	const [overalltableIndex, setoveralltableIndex]            = useState<number>(0);
 	const [brandtableIndex, setbrandtableIndex]                = useState<number>(0);
 	const [producttableIndex, setproducttableIndex]            = useState<number>(0);
@@ -74,8 +74,8 @@ const Inventory = (Props: any) => {
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
 	const [scannedBrandsSuccess,setScannedBrandsSuccess]       = useState(Number);
 	const [filterSuccess,setFilterSuccess]                     = useState(Number);
-	const [selectedYear, setSelectedYear]                      = useState(new Date().getFullYear())
-	const [packageType, setPackageType]                      = useState({value : package_type[0], label : package_type[0] })
+	const [fiscalYear, setFiscalYear]                      = useState(new Date().getFullYear())
+	const [packageType, setPackageType]                      = useState(package_type[0])
 
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
@@ -83,16 +83,17 @@ const Inventory = (Props: any) => {
 			geolevel2: "ALL",
 			lastmodifieddatefrom: new Date(new Date().getFullYear(), 0, 1),
 			lastmodifieddateto: new Date(new Date().getFullYear(), 11, 31),
-			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
-			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
-			scannedPeriod: "",
+			scanneddatefrom: new Date(new Date().getFullYear(), 0, 1),
+			scanneddateto: new Date(new Date().getFullYear(), 11, 31),
+			scannedPeriod: "All Months",
 	  });
 
 	  const [scannedPeriodsList, setscannedPeriodsList]         = useState([
 		{
 			label: "All Months",
-			from: moment().startOf("year").format("YYYY-MM-DD"),
-			to: moment().endOf("year").format("YYYY-MM-DD"),
+			from :moment(selectedFilters.lastmodifieddatefrom).format("YYYY-MM-DD"),
+			// from: moment().startOf("year").format("YYYY-MM-DD"),
+			to: moment(selectedFilters.lastmodifieddateto).format("YYYY-MM-DD"),
 		},
 		{ label: "Custom", value: "" },
 	]);
@@ -107,9 +108,9 @@ const Inventory = (Props: any) => {
 	const [retailerPopupData,setretailerPopupData]              = useState({});
 
 
-	let i = 1990;
+	let i = 2018;
 	let year = [];
-	for ( i === 1990; i <= new Date().getFullYear(); i++) {
+	for ( i === 2018; i <= new Date().getFullYear(); i++) {
         let yearObj = { label : i , value : i};
 		year.push(yearObj);
 	}
@@ -120,7 +121,6 @@ const Inventory = (Props: any) => {
 		let packageObj = { label : type, value : type};
 		packType.push(packageObj);
 	})
-	console.log('packType',packType)
 
 	useEffect(()=>{
 		if(commonErrorMessage) {
@@ -135,13 +135,14 @@ const Inventory = (Props: any) => {
 		let data = {
 			countrycode : userData?.countrycode,
 			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
-			isfiltered  : true,
-			scanneddatefrom :  moment(selectedFilters.lastmodifieddatefrom).format("YYYY-MM-DD"),
-			scanneddateto   :   moment(selectedFilters.lastmodifieddateto).format("YYYY-MM-DD")
+			isfiltered  : isFiltered,
 		};
-		console.log('onload', data)
+		let filteredDatas = {};
 
-		// dispatch(getOverallInventory(data));
+		filteredDatas = getFilteredDatas(filteredDatas);
+		data = { ...data, ...filteredDatas };
+
+		dispatch(getOverallInventory(data));
 	},[]);
 
 	useEffect(()=>{
@@ -173,8 +174,10 @@ const Inventory = (Props: any) => {
 	},[filterSuccess]);
 
 	useEffect(()=>{
-		setselectedBrandName(BrandwiseInventories && BrandwiseInventories[0]?.productbrand);
-		setScannedBrandsSuccess(new Date().getTime());
+		if (BrandwiseInventories?.length > 0) {
+			setselectedBrandName(BrandwiseInventories && BrandwiseInventories[0]?.productbrand);
+			setScannedBrandsSuccess(new Date().getTime());
+		}
 	},[BrandwiseInventories]);
 
 	useEffect(()=>{
@@ -198,9 +201,9 @@ const Inventory = (Props: any) => {
 				filteredDatas = getFilteredDatas(filteredDatas);
 				data = { ...data, ...filteredDatas };
 			}
-			// dispatch(getOverallInventory(data));
+			dispatch(getOverallInventory(data));
 		}
-	},[searchText, partnerType,filterAppliedTime])
+	},[searchText, partnerType,filterAppliedTime, fiscalYear, packageType])
 
 	const getSelectedBrands = (soldbyidd : string, idx?:any, type?:string, productbrand?:any)=>{
 		setSoldbyid(soldbyidd);
@@ -233,7 +236,7 @@ const Inventory = (Props: any) => {
 	const getFilteredDatas = (filteredDatas:{}) => {
 		let { scanneddatefrom ,scanneddateto ,productgroup,geolevel1,geolevel2,scannedPeriod,lastmodifieddatefrom,lastmodifieddateto  }:any = selectedFilters;
 		let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
-			let endDate   = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
+		let endDate   = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
 			if(isFiltered) {
 				filteredDatas = {
 					scanneddatefrom : startDate ? moment(startDate).format("YYYY-MM-DD") : null,
@@ -241,7 +244,8 @@ const Inventory = (Props: any) => {
 					productgroup    : productgroup === "ALL" ? null : productgroup,
 					geolevel1       :  geolevel1 === "ALL" ? null : userData?.geolevel1,
 					geolevel2       : geolevel2 === "ALL" ? null : geolevel2,
-					scannedPeriod   : scannedPeriod
+					scannedPeriod   : scannedPeriod,
+					pkglevel        : "SKU"
 				}
 			}
 		return filteredDatas;
@@ -393,8 +397,9 @@ const Inventory = (Props: any) => {
 			val[name] = e.target.value;
 			flag = true;
 		} else if (name === "scannedPeriod" && item !== "Custom") {
-			val["scanneddatefrom"] = itemList?.from;
-			val["scanneddateto"] = itemList?.to;
+		
+			val["scanneddatefrom"] = new Date(fiscalYear, 0, 1);
+			val["scanneddateto"] = new Date(fiscalYear, 11, 31);
 			val[name] = item;
 			flag = true;
 		} else {
@@ -411,23 +416,23 @@ const Inventory = (Props: any) => {
 	};
 
 	const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
-		console.log('selectedOption',selectedOption.value)
 		setDateErrMsg("");
 		setIsFiltered(true);
-		if(e.name === 'selectedYear') {
-            setSelectedYear(selectedOption.value);
+		if(e.name === 'fiscalYear') {
+            setFiscalYear(selectedOption.value);
 			setSelectedFromDateOfYear(`01/01/${selectedOption.value}`);
 			setSelectedToDateOfYear(`12/31/${selectedOption.value}`);
 			let fiscalStartDate= new Date(selectedOption.value, 0, 1);
 			let fiscalEndDate= new Date(selectedOption.value, 11, 31);
-			setSelectedFilters({...selectedFilters, lastmodifieddatefrom: fiscalStartDate,lastmodifieddateto : fiscalEndDate });
+			setSelectedFilters({...selectedFilters, lastmodifieddatefrom: fiscalStartDate,lastmodifieddateto : fiscalEndDate, scanneddatefrom :  fiscalStartDate , scanneddateto :  fiscalEndDate});
         } else if (e.name === 'packageType') {
-			setPackageType(selectedOption);
+			setPackageType(selectedOption.value);
         } else {
 			setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
 		}
 
 	};
+	console.log('selectedFilters', selectedFilters)
 
 	const fields = dynamicFields;
 	const locationList = fields?.map((list: any, index: number) => {
@@ -562,6 +567,8 @@ const Inventory = (Props: any) => {
 		setretailerPopupData(value)
 	}
 	const resetFilter = (e: any) => {
+		let fiscalStartDate= new Date(fiscalYear, 0, 1);
+			let fiscalEndDate= new Date(fiscalYear, 11, 31);
 		// let conditionIsFilter = searchText ? true : false;
 		const options:any = { value: "ALL", label: "ALL" };
 		getDynamicOptionFields("reset");
@@ -569,11 +576,11 @@ const Inventory = (Props: any) => {
 			productgroup: "ALL",
 			geolevel1: "ALL",
 			geolevel2: "ALL",
-			lastmodifieddatefrom: new Date(new Date().getFullYear(), 0, 1),
-			lastmodifieddateto: new Date(),
-			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
-			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
-			scannedPeriod: "",
+			lastmodifieddatefrom: fiscalStartDate,
+			lastmodifieddateto: fiscalEndDate,
+			scanneddatefrom: fiscalStartDate,
+			scanneddateto: fiscalEndDate,
+			scannedPeriod: "All Months",
 		});
 		setDateErrMsg("");
 		setFilterAppliedTime(new Date().getTime());
@@ -581,7 +588,6 @@ const Inventory = (Props: any) => {
 		setselectedBrand(0);
 		closeToggle&&closeToggle();
 	};
-	console.log('lastmodifieddatefrom', selectedFilters.lastmodifieddatefrom);
 
 	return (
 
@@ -604,7 +610,7 @@ const Inventory = (Props: any) => {
 							onClose={(node: any) => {
 								closeToggle = node;
 							}}
-							selectedYear={selectedYear}
+							fiscalYear={fiscalYear}
 							handleReactSelect={handleReactSelect}
 							yearOptions = {year}
 							isCustomDropdown = {true}

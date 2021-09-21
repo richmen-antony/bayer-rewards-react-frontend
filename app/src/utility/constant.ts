@@ -35,7 +35,7 @@ export const NON_BAYER_LABEL = "Non Bayer Labels";
 export const NON_BAYER_LABEL_DESC = "Label not recognized";
 export const DUPLICATE_LABEL = "Duplicate Labels";
 export const DUPLICATE_LABEL_DESC = "This product is already scanned";
-export const package_type = ['Box', 'Palette', 'Shipper'];
+export const package_type = ['Shipper', 'Cost(Mk)', 'Quantity'];
 
 // order histroy table header
 const FULFILLED = [

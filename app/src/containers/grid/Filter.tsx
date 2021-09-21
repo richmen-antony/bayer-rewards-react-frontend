@@ -3,7 +3,8 @@ import { SearchInput } from "../../utility/widgets/input/search-input";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import { CustomDownload } from "../../utility/widgets/button/download";
-import { CustomDropdown }  from "../components/customDropdown"
+import { CustomDropdown }  from "../components/customDropdown";
+import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import "../../assets/scss/filter.scss";
 interface Props {
 	handleSearch: (e: any) => any;
@@ -24,7 +25,7 @@ interface Props {
 	condSelectedButton?: string;
 	onClose ?:any;
 	isDownloadHelpText?:boolean;
-	selectedYear?: {};
+	fiscalYear?: Number;
 	handleReactSelect?: any;
 	yearOptions?: {};
 	isCustomDropdown? : Boolean;
@@ -68,7 +69,7 @@ const Filter: React.FC<Props> = (props: Props) => {
 		downloadPopup,
 		isDownloadHelpText,
 		isPartnerType,
-		selectedYear,
+		fiscalYear,
 		handleReactSelect,
 		yearOptions,
 		isCustomDropdown,
@@ -81,7 +82,6 @@ const Filter: React.FC<Props> = (props: Props) => {
 		packageType,
 		packageTypeOptions
 	} = props;
-	console.log('selectedYear',selectedYear)
 
 	useEffect(() => { 
 		onClose&& onClose(toggleFilter)
@@ -99,34 +99,55 @@ const Filter: React.FC<Props> = (props: Props) => {
 					value={searchText}
 					tolltip={toolTipText}
 				/>
-				{ isCustomDropdown &&
+				{/* { isCustomDropdown &&
 				<div className="customDropdown">
-					<CustomDropdown name="selectedYear" value={selectedYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" /> 
+					<CustomDropdown name="fiscalYear" value={fiscalYear} options={yearOptions} handleReactSelect={handleReactSelect} title="Fiscal Year" /> 
 					<CustomDropdown name="packageType" value={packageType} options={packageTypeOptions} handleReactSelect={handleReactSelect} title="Package Type" />
 				</div>
-				}
+				} */}
 				{isScannedBy&&<CustomDropdown name="selectedScannedBy" value={selectedScannedBy} options={scannedByList} handleReactSelect={handleReactSelect} title="Scanned By" width="150px"  inActiveFilter />  }
 				{isScanType&&<CustomDropdown name="selectedScanType" value={selectedScanType} options={scanTypeList} handleReactSelect={handleReactSelect} title="Scan Type" width="150px" inActiveFilter/>  }
 
-				{/* 
 				{ isCustomDropdown &&
+				<>
 					<div className="customDropdown">
 						<div className="yearlabel">
 							<label className="font-weight-bold yeartext">Fiscal Year</label>
 						</div>
+						<div style={{width : '100%'}}>
+							<ReactSelect
+								name="fiscalYear"
+								options={yearOptions}
+								handleChange={(selectedOptions: any, e: any) => {
+									handleReactSelect(selectedOptions, e);
+								}}
+								value={fiscalYear}
+								defaultValue={fiscalYear}
+								id="year-test"
+								dataTestId="year-test"
+							/>
+						</div>
+					</div>
+					<div className="customDropdown">
+						<div className="yearlabel">
+							<label className="font-weight-bold yeartext">Package Type</label>
+						</div>
+						<div style={{width : '105px'}}> 
 						<ReactSelect
-							name="selectedYear"
-							options={yearOptions}
+							name="packageType"
+							options={packageTypeOptions}
 							handleChange={(selectedOptions: any, e: any) => {
 								handleReactSelect(selectedOptions, e);
 							}}
-							value={selectedYear}
-							defaultValue={selectedYear}
+							value={packageType}
+							defaultValue={packageType}
 							id="year-test"
 							dataTestId="year-test"
 						/>
+						</div>
 					</div>
-				} */}
+				</>
+				}
 
 				<div className="filter-right-side">
 				

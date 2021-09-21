@@ -281,12 +281,11 @@ const ConsolidatedScans = (Props: any) => {
 			level2Options.push(level1Info);
 		}
 		let usergeolevel1 = userData?.geolevel1;
-		let geolevel1Obj = { label : usergeolevel1, value : usergeolevel1};
 		geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: (list ===  "geolevel1" && userrole === "RSM") ? geolevel1Obj : {label: "ALL",value: "ALL"},
+				value: (list ===  "geolevel1" && userrole === "RSM") ? usergeolevel1 : "ALL",
 				options:
 					list === "geolevel0"
 						? countryList
@@ -320,13 +319,13 @@ const ConsolidatedScans = (Props: any) => {
 			level2Options.unshift(geolevel1Obj);
 			dynamicFieldVal[index + 1].options = level2Options;
 			dynamicFieldVal[index + 2].options = geolevel3Obj;
-			dynamicFieldVal[index].value = newvalue;
-			dynamicFieldVal[index + 1].value = {label: "ALL",value: "ALL"};
-			dynamicFieldVal[index + 2].value = {label: "ALL",value: "ALL"};
+			dynamicFieldVal[index].value = value;
+			dynamicFieldVal[index + 1].value = "ALL";
+			dynamicFieldVal[index + 2].value = "ALL";
 			setdynamicFields(dynamicFieldVal);
 			setSelectedFilters({...selectedFilters, geolevel2: "ALL"});
 		} else if (type === "geolevel2") {
-			dynamicFieldVal[index].value = newvalue;
+			dynamicFieldVal[index].value = value;
 			setdynamicFields(dynamicFieldVal);
 		}
 	};
