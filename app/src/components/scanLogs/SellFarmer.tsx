@@ -676,12 +676,12 @@ class SellFarmer extends Component<Props, States> {
 			level2Options.push(level1Info);
 		}
 		let usergeolevel1 = userData?.geolevel1;
-		let geolevel1Obj = { label: usergeolevel1, value: usergeolevel1 };
+		// let geolevel1Obj = { label: usergeolevel1, value: usergeolevel1 };
 		this.state.geographicFields?.forEach((list: any, i: number) => {
 			setFormArray.push({
 				name: list,
 				placeHolder: true,
-				value: list === "geolevel1" && userrole === "RSM" ? geolevel1Obj : { label: "ALL", value: "ALL" },
+				value: list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "ALL",
 				options:
 					list === "geolevel0"
 						? this.state.countryList
@@ -717,9 +717,9 @@ class SellFarmer extends Component<Props, States> {
 			dynamicFieldVal[index + 1].options = level2Options;
 			this.setState({ dynamicFields: dynamicFieldVal });
 			dynamicFieldVal[index + 2].options = geolevel3Obj;
-			dynamicFieldVal[index].value = newvalue;
-			dynamicFieldVal[index + 1].value = { label: "ALL", value: "ALL" };
-			dynamicFieldVal[index + 2].value = { label: "ALL", value: "ALL" };
+			dynamicFieldVal[index].value = value;
+			dynamicFieldVal[index + 1].value = "ALL" ;
+			dynamicFieldVal[index + 2].value = "ALL" ;
 			this.setState((prevState: any) => ({
 				dynamicFields: dynamicFieldVal,
 				selectedFilters: {
@@ -729,7 +729,7 @@ class SellFarmer extends Component<Props, States> {
 				selectedGeolevel2Options: geolevel1Obj,
 			}));
 		} else if (type === "geolevel2") {
-			dynamicFieldVal[index].value = newvalue;
+			dynamicFieldVal[index].value = value;
 			this.setState((prevState: any) => ({
 				dynamicFields: dynamicFieldVal,
 				selectedFilters: {

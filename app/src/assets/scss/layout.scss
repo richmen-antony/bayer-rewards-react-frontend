@@ -49,15 +49,14 @@
     width: 50px;
   }
   .content {
-    padding:5px 10px;
+    padding: 5px 10px;
     span {
       font-size: 12px;
     }
-    .sub-title{
+    .sub-title {
       font-size: 12px;
-      color: #1D1D1D;
+      color: #1d1d1d;
       margin-top: 10px;
-     
     }
   }
   .title {
@@ -403,7 +402,8 @@
     background-color: #ffffff;
     outline: none;
     width: 260px;
-    height: 40px;
+    //height: 40px;
+    height: 33px;
     padding-left: 15px;
     border-radius: 5px;
     font-size: 14px;
@@ -415,15 +415,18 @@
   }
   .layout {
     position: relative;
-    right: 52px;
-    height: 40px;
+    // right: 52px;
+    right: 42px;
+    // height: 40px;
+    height: 33px;
     bottom: 1px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
   }
   i {
     position: relative;
-    right: 45px;
+    //right: 45px;
+    right: 38px;
     bottom: 13px;
   }
 }
