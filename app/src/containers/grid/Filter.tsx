@@ -3,42 +3,43 @@ import { SearchInput } from "../../utility/widgets/input/search-input";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import { CustomDownload } from "../../utility/widgets/button/download";
-import { CustomDropdown }  from "../components/customDropdown";
+import { CustomDropdown } from "../components/customDropdown";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import "../../assets/scss/filter.scss";
 import UploadButton from "../../utility/widgets/button/upload";
 interface Props {
-	handleSearch: (e: any) => any;
-	download?: Function;
-	downloadPopup?: Boolean;
-	searchText: string;
-	children: any;
-	partnerTypeList?: any[];
-	isDownload?: boolean;
-	selectedPartnerType?: any;
-	handlePartnerChange?: any;
-	toolTipText: string;
-	internalUserTypeFilterHeading?: boolean;
-	isPartnerType?: boolean;
-	condType?: string;
-	condTypeList?: any[];
-	buttonChange?: any;
-	condSelectedButton?: string;
-	onClose ?:any;
-	isDownloadHelpText?:boolean;
-	fiscalYear?: Number;
-	handleReactSelect?: any;
-	yearOptions?: {};
-	isCustomDropdown? : Boolean;
-	isScannedBy?:boolean;
-	isScanType?:boolean;
-	scannedByList?:any[];
-	scanTypeList?:any[];
-	selectedScannedBy?:string;
-	selectedScanType?:string;
-	packageType?: any;
-	packageTypeOptions?: any,
+  handleSearch: (e: any) => any;
+  download?: Function;
+  downloadPopup?: Boolean;
+  searchText: string;
+  children: any;
+  partnerTypeList?: any[];
+  isDownload?: boolean;
+  selectedPartnerType?: any;
+  handlePartnerChange?: any;
+  toolTipText: string;
+  internalUserTypeFilterHeading?: boolean;
+  isPartnerType?: boolean;
+  condType?: string;
+  condTypeList?: any[];
+  buttonChange?: any;
+  condSelectedButton?: string;
+  onClose?: any;
+  isDownloadHelpText?: boolean;
+  fiscalYear?: Number;
+  handleReactSelect?: any;
+  yearOptions?: {};
+  isCustomDropdown?: Boolean;
+  isScannedBy?: boolean;
+  isScanType?: boolean;
+  scannedByList?: any[];
+  scanTypeList?: any[];
+  selectedScannedBy?: string;
+  selectedScanType?: string;
+  packageType?: any;
+  packageTypeOptions?: any;
   isUploadAvailable?: boolean;
+  isInventoryDownloadPopup?: boolean;
 }
 
 /**
@@ -49,42 +50,43 @@ interface Props {
 const Filter: React.FC<Props> = (props: Props) => {
   const [dropdownOpenFilter, setToggleFilter] = useState<boolean>(false);
 
-  const toggleFilter =()=>{
-    setToggleFilter(!dropdownOpenFilter)
-  }
-	const {
-		handleSearch,
-		searchText,
-		download,
-		children,
-		partnerTypeList,
-		isDownload,
-		selectedPartnerType,
-		handlePartnerChange,
-		toolTipText,
-		internalUserTypeFilterHeading = false,
-		condType,
-		condTypeList,
-		buttonChange,
-		condSelectedButton,
-		onClose,
-		downloadPopup,
-		isDownloadHelpText,
-		isPartnerType,
-		fiscalYear,
-		handleReactSelect,
-		yearOptions,
-		isCustomDropdown,
-		isScannedBy,
-		scannedByList,
-		isScanType,
-		scanTypeList,
-		selectedScanType,
-		selectedScannedBy,
-		packageType,
-		packageTypeOptions,
+  const toggleFilter = () => {
+    setToggleFilter(!dropdownOpenFilter);
+  };
+  const {
+    handleSearch,
+    searchText,
+    download,
+    children,
+    partnerTypeList,
+    isDownload,
+    selectedPartnerType,
+    handlePartnerChange,
+    toolTipText,
+    internalUserTypeFilterHeading = false,
+    condType,
+    condTypeList,
+    buttonChange,
+    condSelectedButton,
+    onClose,
+    downloadPopup,
+    isDownloadHelpText,
+    isPartnerType,
+    fiscalYear,
+    handleReactSelect,
+    yearOptions,
+    isCustomDropdown,
+    isScannedBy,
+    scannedByList,
+    isScanType,
+    scanTypeList,
+    selectedScanType,
+    selectedScannedBy,
+    packageType,
+    packageTypeOptions,
     isUploadAvailable = false,
-	} = props;
+    isInventoryDownloadPopup,
+  } = props;
 
   useEffect(() => {
     onClose && onClose(toggleFilter);
@@ -101,48 +103,48 @@ const Filter: React.FC<Props> = (props: Props) => {
           value={searchText}
           tolltip={toolTipText}
         />
-		 </div>
-		<div className="filter-right-side">
-        	{ isCustomDropdown &&
-				<>
-					<div className="customDropdown">
-						<div className="yearlabel">
-							<label className="font-weight-bold yeartext">Fiscal Year</label>
-						</div>
-						<div style={{width : '100%'}}>
-							<ReactSelect
-								name="fiscalYear"
-								options={yearOptions}
-								handleChange={(selectedOptions: any, e: any) => {
-									handleReactSelect(selectedOptions, e);
-								}}
-								value={fiscalYear}
-								defaultValue={fiscalYear}
-								id="year-test"
-								dataTestId="year-test"
-							/>
-						</div>
-					</div>
-					<div className="customDropdown">
-						<div className="yearlabel">
-							<label className="font-weight-bold yeartext">Package Type</label>
-						</div>
-						<div style={{width : '105px'}}> 
-						<ReactSelect
-							name="packageType"
-							options={packageTypeOptions}
-							handleChange={(selectedOptions: any, e: any) => {
-								handleReactSelect(selectedOptions, e);
-							}}
-							value={selectedPartnerType}
-							defaultValue={selectedPartnerType}
-							id="partner-test"
-							dataTestId="partner-test"
-						/>
-						</div>
-					</div>
-				</>
-				}
+      </div>
+      <div className="filter-right-side">
+        {isCustomDropdown && (
+          <>
+            <div className="customDropdown">
+              <div className="yearlabel">
+                <label className="font-weight-bold yeartext">Fiscal Year</label>
+              </div>
+              <div style={{ width: "100%" }}>
+                <ReactSelect
+                  name="fiscalYear"
+                  options={yearOptions}
+                  handleChange={(selectedOptions: any, e: any) => {
+                    handleReactSelect(selectedOptions, e);
+                  }}
+                  value={fiscalYear}
+                  defaultValue={fiscalYear}
+                  id="year-test"
+                  dataTestId="year-test"
+                />
+              </div>
+            </div>
+            <div className="customDropdown">
+              <div className="yearlabel">
+                <label className="font-weight-bold yeartext">Package Type</label>
+              </div>
+              <div style={{ width: "105px" }}>
+                <ReactSelect
+                  name="packageType"
+                  options={packageTypeOptions}
+                  handleChange={(selectedOptions: any, e: any) => {
+                    handleReactSelect(selectedOptions, e);
+                  }}
+                  value={packageType}
+                  defaultValue={packageType}
+                  id="partner-test"
+                  dataTestId="partner-test"
+                />
+              </div>
+            </div>
+          </>
+        )}
         {isScannedBy && (
           <CustomDropdown
             name="selectedScannedBy"
@@ -166,28 +168,26 @@ const Filter: React.FC<Props> = (props: Props) => {
           />
         )}
 
-		{isPartnerType && (
-			<div className="customDropdown">
-				<div className="yearlabel">
-					<label className="font-weight-bold yeartext">Partner Type</label>
-				</div>
-				<div style={{width : '115px'}}> 
-				<ReactSelect
-					name="partnerType"
-					options={partnerTypeList}
-					handleChange={(selectedOptions: any, e: any) => {
-						handlePartnerChange(selectedOptions, e);
-					}}
-					value={selectedPartnerType.type}
-					defaultValue={selectedPartnerType.type}
-					id="year-test"
-					dataTestId="year-test"
-				/>
-				</div>
-			</div>
-		)
-		}
-	
+        {isPartnerType && (
+          <div className="customDropdown">
+            <div className="yearlabel">
+              <label className="font-weight-bold yeartext">Partner Type</label>
+            </div>
+            <div style={{ width: "115px" }}>
+              <ReactSelect
+                name="partnerType"
+                options={partnerTypeList}
+                handleChange={(selectedOptions: any, e: any) => {
+                  handlePartnerChange(selectedOptions, e);
+                }}
+                value={selectedPartnerType.type}
+                defaultValue={selectedPartnerType.type}
+                id="year-test"
+                dataTestId="year-test"
+              />
+            </div>
+          </div>
+        )}
 
         {/* <div className="filter-right-side">
           {isPartnerType && (
@@ -220,7 +220,7 @@ const Filter: React.FC<Props> = (props: Props) => {
               </div>
             </div>
           )} */}
-          {/* {condTypeList && condTypeList.length > 0 && (
+        {/* {condTypeList && condTypeList.length > 0 && (
 						<div className="filter-partnertype" style={{ marginLeft: "10px" }}>
 							<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
 								{condType}
@@ -245,36 +245,28 @@ const Filter: React.FC<Props> = (props: Props) => {
 							</div>
 						</div>
 					)} */}
-          <div className="filterRow">
-            <Dropdown isOpen={dropdownOpenFilter} toggle={toggleFilter}>
-              <DropdownToggle>
-                {!dropdownOpenFilter && (
-                  <img src={filterIcon} width="17" alt="filter" />
-                )}
-              </DropdownToggle>
-              <DropdownMenu right>
-                <div className="p-3" style={{ minWidth: "23rem" }}>
-                  <i
-                    className="fa fa-filter boxed float-right"
-                    aria-hidden="true"
-                    onClick={toggleFilter}
-                  ></i>
-                  {children}
-                </div>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-          {isUploadAvailable && <UploadButton />}
-          {isDownload && (
-            <CustomDownload
-              download={download}
-              downloadPopup={downloadPopup}
-              isHelpText={isDownloadHelpText}
-            />
-          )}
-		</div>
-       
+        <div className="filterRow">
+          <Dropdown isOpen={dropdownOpenFilter} toggle={toggleFilter}>
+            <DropdownToggle>{!dropdownOpenFilter && <img src={filterIcon} width="17" alt="filter" />}</DropdownToggle>
+            <DropdownMenu right>
+              <div className="p-3" style={{ minWidth: "23rem" }}>
+                <i className="fa fa-filter boxed float-right" aria-hidden="true" onClick={toggleFilter}></i>
+                {children}
+              </div>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+        {isUploadAvailable && <UploadButton />}
+        {isDownload && (
+          <CustomDownload
+            download={download}
+            downloadPopup={downloadPopup}
+            isHelpText={isDownloadHelpText}
+            isInventoryDownloadPopup={isInventoryDownloadPopup}
+          />
+        )}
       </div>
+    </div>
   );
 };
 

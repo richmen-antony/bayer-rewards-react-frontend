@@ -34,33 +34,18 @@ const ProductBrandList = ({
         <label className="font-weight-bold scanlabel">
           product brand wise scans - {_.startCase(_.toLower(distributorName))}
         </label>
-        <div
-          className="consolidatedSales-table scannedbrands"
-          style={{ height: "23vh", overflowY: "auto" }}
-        >
+        <div className="consolidatedSales-table scannedbrands" style={{ height: "23vh", overflowY: "auto" }}>
           <table className="table brandTable">
             <thead>
               <tr>
                 <th
-                  onClick={(e) =>
-                    handleSort(
-                      e,
-                      "productbrand",
-                      selectedBrandList,
-                      isAsc,
-                      "scannedBrands"
-                    )
-                  }
+                  onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc, "scannedBrands")}
                   style={{ width: "23%", padding: "5px" }}
                   key="productbrand"
                 >
                   BRAND
                   {tableCellIndex === 0 && tableName === "scannedBrands" ? (
-                    <i
-                      className={`fas ${
-                        isAsc ? "fa-sort-down" : "fa-sort-up"
-                      } ml-3`}
-                    ></i>
+                    <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                   ) : null}
                 </th>
                 <th
@@ -119,39 +104,19 @@ const ProductBrandList = ({
                         backgroundColor: selectedBrand === idx ? "#F5FCFF" : "",
                       }}
                       key={idx}
-                      onClick={() =>
-                        getSelectedProducts(
-                          item.soldbyid,
-                          item.productbrand,
-                          idx
-                        )
-                      }
+                      onClick={() => getSelectedProducts(item.soldbyid, item.productbrand, idx)}
                     >
-                      <td style={{ width: "23%", padding: "5px" }}>
-                        {_.startCase(_.toLower(item.productbrand))}
-                      </td>
-                      <td
-                        style={{ width: "15%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "23%", padding: "5px" }}>{_.startCase(_.toLower(item.productbrand))}</td>
+                      <td style={{ width: "15%", paddingRight: "0.5em" }} className="text-right">
                         {item.SEND_GOOD}
                       </td>
-                      <td
-                        style={{ width: "20%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "20%", paddingRight: "0.5em" }} className="text-right">
                         {item.RECEIVE_GOOD}
                       </td>
-                      <td
-                        style={{ width: "20%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "20%", paddingRight: "0.5em" }} className="text-right">
                         {item.S2F_WALKIN}
                       </td>
-                      <td
-                        style={{ width: "22%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "22%", paddingRight: "0.5em" }} className="text-right">
                         {item.S2F_ADVISOR}
                       </td>
                     </tr>
@@ -179,29 +144,11 @@ const ProductBrandList = ({
           >
             <thead>
               <tr>
-                <th style={{ width: "23%", padding: "5px" }}>
-                  Total&nbsp;({selectedBrandList?.length})
-                </th>
-                <th
-                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalSendGoods}
-                </th>
-                <th
-                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalReceivedGoods}
-                </th>
-                <th
-                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalWalkInSales}
-                </th>
-                <th
-                  style={{ width: "22%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalAdvisorSales}
-                </th>
+                <th style={{ width: "23%", padding: "5px" }}>Total&nbsp;({selectedBrandList?.length})</th>
+                <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSendGoods}</th>
+                <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalReceivedGoods}</th>
+                <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalWalkInSales}</th>
+                <th style={{ width: "22%", padding: "5px", textAlign: "right" }}>{totalAdvisorSales}</th>
               </tr>
             </thead>
           </table>

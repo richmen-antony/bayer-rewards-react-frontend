@@ -33,37 +33,20 @@ const BrandwiseInventory = ({
     <AUX>
       <div className="">
         <label className="font-weight-bold scanlabel">
-          product brand wise inventory -{" "}
-          {_.startCase(_.toLower(distributorName))}
+          product brand wise inventory - {_.startCase(_.toLower(distributorName))}
         </label>
-        <div
-          className="consolidatedSales-table scannedbrands"
-          style={{ height: "23vh", overflowY: "auto" }}
-        >
+        <div className="consolidatedSales-table scannedbrands" style={{ height: "23vh", overflowY: "auto" }}>
           <table className="table brandTable">
             <thead>
               <tr>
                 <th
-                  onClick={(e) =>
-                    handleSort(
-                      e,
-                      "productbrand",
-                      selectedBrandList,
-                      isAsc,
-                      "BrandwiseInventory"
-                    )
-                  }
+                  onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc, "BrandwiseInventory")}
                   style={{ width: "25%", padding: "5px" }}
                   key="productbrand"
                 >
                   BRAND
-                  {tableCellIndex === 0 &&
-                  tableName === "BrandwiseInventory" ? (
-                    <i
-                      className={`fas ${
-                        isAsc ? "fa-sort-down" : "fa-sort-up"
-                      } ml-3`}
-                    ></i>
+                  {tableCellIndex === 0 && tableName === "BrandwiseInventory" ? (
+                    <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                   ) : null}
                 </th>
                 <th
@@ -121,13 +104,11 @@ const BrandwiseInventory = ({
             <tbody>
               {selectedBrandList?.length > 0 ? (
                 selectedBrandList?.map((item: any, idx: number) => {
-                  totalOpeningInventory =
-                    totalOpeningInventory + Number(item.openinginventory);
+                  totalOpeningInventory = totalOpeningInventory + Number(item.openinginventory);
                   totalSellIn = totalSellIn + Number(item.sellin);
                   totalSellOut = totalSellOut + Number(item.sellout);
                   totalReturns = totalReturns + Number(item.returns);
-                  totalClosingInventory =
-                    totalClosingInventory + Number(item.closinginventory);
+                  totalClosingInventory = totalClosingInventory + Number(item.closinginventory);
                   return (
                     <tr
                       style={{
@@ -135,45 +116,22 @@ const BrandwiseInventory = ({
                         backgroundColor: selectedBrand === idx ? "#F5FCFF" : "",
                       }}
                       key={idx}
-                      onClick={() =>
-                        getSelectedProducts(
-                          item.rtmppartnerid,
-                          item.productbrand,
-                          idx
-                        )
-                      }
+                      onClick={() => getSelectedProducts(item.rtmppartnerid, item.productbrand, idx)}
                     >
-                      <td style={{ width: "25%", padding: "5px" }}>
-                        {_.startCase(_.toLower(item.productbrand))}
-                      </td>
-                      <td
-                        style={{ width: "15%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "25%", padding: "5px" }}>{_.startCase(_.toLower(item.productbrand))}</td>
+                      <td style={{ width: "15%", paddingRight: "0.5em" }} className="text-right">
                         {item.openinginventory}
                       </td>
-                      <td
-                        style={{ width: "15%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "15%", paddingRight: "0.5em" }} className="text-right">
                         {item.sellin}
                       </td>
-                      <td
-                        style={{ width: "15%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "15%", paddingRight: "0.5em" }} className="text-right">
                         {item.sellout}
                       </td>
-                      <td
-                        style={{ width: "15%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "15%", paddingRight: "0.5em" }} className="text-right">
                         {item.returns}
                       </td>
-                      <td
-                        style={{ width: "15%", padding: "5px" }}
-                        className="text-right"
-                      >
+                      <td style={{ width: "15%", padding: "5px" }} className="text-right">
                         {item.closinginventory}
                       </td>
                     </tr>
@@ -200,34 +158,12 @@ const BrandwiseInventory = ({
           >
             <thead>
               <tr>
-                <th style={{ width: "25%", padding: "5px" }}>
-                  Total&nbsp;({selectedBrandList?.length})
-                </th>
-                <th
-                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalOpeningInventory}
-                </th>
-                <th
-                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalSellIn}
-                </th>
-                <th
-                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalSellOut}
-                </th>
-                <th
-                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalReturns}
-                </th>
-                <th
-                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalClosingInventory}
-                </th>
+                <th style={{ width: "25%", padding: "5px" }}>Total&nbsp;({selectedBrandList?.length})</th>
+                <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalOpeningInventory}</th>
+                <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSellIn}</th>
+                <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSellOut}</th>
+                <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalReturns}</th>
+                <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalClosingInventory}</th>
               </tr>
             </thead>
           </table>

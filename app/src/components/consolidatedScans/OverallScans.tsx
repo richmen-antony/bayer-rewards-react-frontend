@@ -94,9 +94,7 @@ export const OverallScans = ({
   return (
     <AUX>
       <div className="">
-        <label className="font-weight-bold scanlabel">
-          overall consolidated scans
-        </label>
+        <label className="font-weight-bold scanlabel">overall consolidated scans</label>
         <>
           <div
             className="consolidatedSales-table overallscan"
@@ -107,27 +105,15 @@ export const OverallScans = ({
                 <tr>
                   <th
                     style={{ width: "28%", padding: "5px" }}
-                    onClick={(e) =>
-                      handleSort(
-                        e,
-                        "firstname",
-                        allConsolidatedScans,
-                        isAsc,
-                        "overallScans"
-                      )
-                    }
+                    onClick={(e) => handleSort(e, "firstname", allConsolidatedScans, isAsc, "overallScans")}
                     key="firstname"
                   >
                     PARTNER NAME/ID
                     {tableCellIndex === 0 && tableName === "overallScans" ? (
-                      <i
-                        className={`fas ${
-                          isAsc ? "fa-sort-down" : "fa-sort-up"
-                        } ml-3`}
-                      ></i>
+                      <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                     ) : null}
                   </th>
-                   <th
+                  <th
                     style={{
                       width: "15%",
                       padding: "5px",
@@ -180,23 +166,13 @@ export const OverallScans = ({
                       <tr
                         style={{
                           cursor: "pointer",
-                          backgroundColor:
-                            selectedDistributor === idx ? "#F5FCFF" : "",
+                          backgroundColor: selectedDistributor === idx ? "#F5FCFF" : "",
                         }}
                         key={idx}
-                        onClick={() =>
-                          getSelectedBrands(
-                            item.soldbyid,
-                            idx,
-                            "selected",
-                            item.productbrand
-                          )
-                        }
+                        onClick={() => getSelectedBrands(item.soldbyid, idx, "selected", item.productbrand)}
                       >
                         <td style={{ width: "28%", padding: "5px" }}>
-                          {_.startCase(_.toLower(item.firstname)) +
-                            " " +
-                            _.startCase(_.toLower(item.lastname))}
+                          {_.startCase(_.toLower(item.firstname)) + " " + _.startCase(_.toLower(item.lastname))}
                           <img
                             className="retailer-icon"
                             src={ExpandWindowImg}
@@ -207,32 +183,18 @@ export const OverallScans = ({
                             }}
                           />
                           <br />
-                          <label style={{ fontSize: "9px" }}>
-                            {item.soldbyid}
-                          </label>
+                          <label style={{ fontSize: "9px" }}>{item.soldbyid}</label>
                         </td>
-                        <td
-                          style={{ width: "15%", padding: "5px" }}
-                          className="text-right"
-                        >
+                        <td style={{ width: "15%", padding: "5px" }} className="text-right">
                           {item.SEND_GOOD}
                         </td>
-                        <td
-                          style={{ width: "17%", padding: "5px" }}
-                          className="text-right"
-                        >
+                        <td style={{ width: "17%", padding: "5px" }} className="text-right">
                           {item.RECEIVE_GOOD}
                         </td>
-                        <td
-                          style={{ width: "20%", padding: "5px" }}
-                          className="text-right"
-                        >
+                        <td style={{ width: "20%", padding: "5px" }} className="text-right">
                           {item.S2F_WALKIN}
                         </td>
-                        <td
-                          style={{ width: "20%", padding: "5px" }}
-                          className="text-right"
-                        >
+                        <td style={{ width: "20%", padding: "5px" }} className="text-right">
                           {item.S2F_ADVISOR}
                         </td>
                       </tr>
@@ -260,29 +222,11 @@ export const OverallScans = ({
             >
               <thead>
                 <tr>
-                  <th style={{ width: "28%", padding: "5px" }}>
-                    Total&nbsp;({allConsolidatedScans?.length})
-                  </th>
-                  <th
-                    style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                  >
-                    {totalSendGoods}
-                  </th>
-                  <th
-                    style={{ width: "17%", padding: "5px", textAlign: "right" }}
-                  >
-                    {totalReceivedGoods}
-                  </th>
-                  <th
-                    style={{ width: "20%", padding: "5px", textAlign: "right" }}
-                  >
-                    {totalWalkInSales}
-                  </th>
-                  <th
-                    style={{ width: "20%", padding: "5px", textAlign: "right" }}
-                  >
-                    {totalAdvisorSales}
-                  </th>
+                  <th style={{ width: "28%", padding: "5px" }}>Total&nbsp;({allConsolidatedScans?.length})</th>
+                  <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSendGoods}</th>
+                  <th style={{ width: "17%", padding: "5px", textAlign: "right" }}>{totalReceivedGoods}</th>
+                  <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalWalkInSales}</th>
+                  <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalAdvisorSales}</th>
                 </tr>
               </thead>
             </table>
@@ -301,11 +245,7 @@ export const OverallScans = ({
         </div> */}
       </div>
       {showPopup ? (
-        <SimpleDialog
-          open={showPopup}
-          onClose={handleClosePopup}
-          maxWidth={"800px"}
-        >
+        <SimpleDialog open={showPopup} onClose={handleClosePopup} maxWidth={"800px"}>
           <DialogContent>
             <div className="popup-container popup-partner">
               <div className="img">
@@ -314,11 +254,8 @@ export const OverallScans = ({
               <div className="popup-content">
                 <div className={`popup-title`}>
                   <p>
-                    {retailerPopupData?.firstname} {retailerPopupData.lastname}{" "}
-                    ,{" "}
-                    {partnerType.type === "Retailers"
-                      ? "Retailer"
-                      : "Distributor"}
+                    {retailerPopupData?.firstname} {retailerPopupData.lastname} ,{" "}
+                    {partnerType.type === "Retailers" ? "Retailer" : "Distributor"}
                   </p>
                 </div>
                 <div className="popup-content-row">
@@ -335,24 +272,20 @@ export const OverallScans = ({
                     <p>{retailerPopupData.phonenumber}</p>
                   </div>
                   {geoLevelsName?.length > 0 &&
-                    geoLevelsName?.map(
-                      (location: any, locationIndex: number) => {
-                        let geolevels = "geolevel" + locationIndex;
-                        let nameCapitalized =
-                          location === "add" || location === "epa"
-                            ? _.toUpper(location)
-                            : _.startCase(_.toLower(location));
-                        return (
-                          locationIndex > 0 &&
-                          locationIndex < 6 && (
-                            <div className="content-list" key={locationIndex}>
-                              <label>{nameCapitalized}</label>
-                              <p>{retailerPopupData[geolevels]}</p>
-                            </div>
-                          )
-                        );
-                      }
-                    )}
+                    geoLevelsName?.map((location: any, locationIndex: number) => {
+                      let geolevels = "geolevel" + locationIndex;
+                      let nameCapitalized =
+                        location === "add" || location === "epa" ? _.toUpper(location) : _.startCase(_.toLower(location));
+                      return (
+                        locationIndex > 0 &&
+                        locationIndex < 6 && (
+                          <div className="content-list" key={locationIndex}>
+                            <label>{nameCapitalized}</label>
+                            <p>{retailerPopupData[geolevels]}</p>
+                          </div>
+                        )
+                      );
+                    })}
                   <div className="content-list">
                     <label>Postal Code</label>
                     {/* <p>{retailerPopupData.billingzipcode}</p> */}
