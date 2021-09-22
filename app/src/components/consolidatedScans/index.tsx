@@ -53,7 +53,12 @@ const ConsolidatedScans = (Props: any) => {
 	const [searchText, setSearchText]                          = useState<string>("");
 	const [isLoader, setIsLoader]                              = useState<boolean>(false);
 	const [dateErrMsg, setDateErrMsg]                          = useState<string>("");
-	const [partnerTypeList, setpartnerTypeList]                = useState(["Retailers", "Distributors"]);
+	const [partnerTypeList, setpartnerTypeList]                = useState(
+		[
+			{ value: "Distributors", label: "Distributors" },
+			{ value: "Retailers", label: "Retailers" },
+		]
+	);
 	const [partnerType, setPartnerType]                        = useState({ type: "Retailers" });
 	const [selectedDistributorName,setselectedDistributorName] = useState('');
 	const [selectedBrandName,setselectedBrandName]             = useState('');
@@ -69,15 +74,13 @@ const ConsolidatedScans = (Props: any) => {
 	const [soldbyid,setSoldbyid]                               = useState('');
 	const [filterAppliedTime,setFilterAppliedTime]             = useState(Number);
 	const [overallScanSuccess,setOverallScanSuccess]           = useState(Number);
-	const [scannedBrandsSuccess,setScannedBrandsSuccess]           = useState(Number);
-	const [filterSuccess,setFilterSuccess]           = useState(Number);
-	
-	
+	const [scannedBrandsSuccess,setScannedBrandsSuccess]       = useState(Number);
+	const [filterSuccess,setFilterSuccess]                     = useState(Number);
 	const [selectedFilters, setSelectedFilters]                = useState({
 			productgroup: "ALL",
 			geolevel1: "ALL",
 			geolevel2: "ALL",
-			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
 			lastmodifieddateto: new Date(),
 			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
@@ -121,8 +124,9 @@ const ConsolidatedScans = (Props: any) => {
   
 	useEffect(()=>{
 		getCountryList();
-		Promise.all([dispatch(getGeoLocationFields()),dispatch(getGeographicLevel1Options())]).then((response) => {
-		});
+		dispatch(getGeoLocationFields());
+		// Promise.all([dispatch(getGeoLocationFields()),dispatch(getGeographicLevel1Options())]).then((response) => {
+		// });
 		let data = {
 			countrycode : userData?.countrycode,
 			partnertype : (partnerType.type === "Retailers") ? "RETAILER" : "DISTRIBUTOR",
@@ -243,8 +247,12 @@ const ConsolidatedScans = (Props: any) => {
 	}
 
 	useEffect(()=>{
-		getDynamicOptionFields();
+		dispatch(getGeographicLevel1Options());
 	},[geographicFields]);
+	
+	useEffect(()=>{
+		getDynamicOptionFields();
+	},[geolevel1List]);
 
 	const getDynamicOptionFields = (reset?: string) => {
 		let level1List:any = geolevel1List;
@@ -396,9 +404,17 @@ const ConsolidatedScans = (Props: any) => {
 		  }
 	};
 
-	const handleReactSelect = (selectedOption: any, e: any, optionName: string) => {
-		let condOptionName = optionName.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
-		setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+	const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
+		if (e.name === 'partnerType') {
+			setPartnerType({
+				type: selectedOption.value,
+			});
+		} else {
+			setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+		}
+		let condOptionName = optionName?.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
+		setselectedDistributor(0);
+		setselectedBrand(0);
 	};
 
 	const fields = dynamicFields;
@@ -535,13 +551,12 @@ const ConsolidatedScans = (Props: any) => {
 	}
 	const resetFilter = (e: any) => {
 		// let conditionIsFilter = searchText ? true : false;
-		const options:any = { value: "ALL", label: "ALL" };
 		getDynamicOptionFields("reset");
 		setSelectedFilters({
 			productgroup: "ALL",
 			geolevel1: "ALL",
 			geolevel2: "ALL",
-			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+			lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
 			lastmodifieddateto: new Date(),
 			scanneddatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 			scanneddateto: moment(new Date()).format("YYYY-MM-DD"),
@@ -569,7 +584,7 @@ const ConsolidatedScans = (Props: any) => {
 							isPartnerType={true}
 							downloadPopup={true}
                             isDownload={true}
-                            handlePartnerChange={handlePartnerChange}
+                            handlePartnerChange={handleReactSelect}
                             toolTipText="Search applicable for Partner Name/ID"
 							download={download}
 							onClose={(node: any) => {
@@ -683,7 +698,7 @@ const ConsolidatedScans = (Props: any) => {
 					    </Filter>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row" style={{opacity:'0.9999'}}>
                         <div className = "col-sm-6">
                             <OverallScans allConsolidatedScans={allConsolidatedScans} getSelectedBrands={getSelectedBrands} selectedDistributor={selectedDistributor} handleSort={handleSort} 
 							isAsc={isAsc} tableCellIndex={overalltableIndex} tableName={'overallScans'} handleUpdateRetailer={handleUpdateRetailer} retailerPopupData={retailerPopupData} partnerType = {partnerType} setSearchText={setSearchText} setIsFiltered={setIsFiltered} />

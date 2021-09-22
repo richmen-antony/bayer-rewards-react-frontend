@@ -1,4 +1,7 @@
 .grid-filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background-color: rgb(255, 255, 255);
     padding: 10px 20px;
     border-top-right-radius: 5px;
@@ -58,8 +61,18 @@
   }
     .customDropdown {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
+      margin-right: 25px;
+      margin-top: -14px;
+      
     }  
+    .yearlabel {
+      padding-right: .5rem;
+      color: rgb(54, 54, 54);
+      font-size: 12px;
+      font-weight: 700!important;
+    }
+
 
   
 @media only screen and (max-width: 1400px) {

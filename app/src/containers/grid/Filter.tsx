@@ -101,6 +101,8 @@ const Filter: React.FC<Props> = (props: Props) => {
           value={searchText}
           tolltip={toolTipText}
         />
+		 </div>
+		<div className="filter-right-side">
         	{ isCustomDropdown &&
 				<>
 					<div className="customDropdown">
@@ -132,10 +134,10 @@ const Filter: React.FC<Props> = (props: Props) => {
 							handleChange={(selectedOptions: any, e: any) => {
 								handleReactSelect(selectedOptions, e);
 							}}
-							value={packageType}
-							defaultValue={packageType}
-							id="year-test"
-							dataTestId="year-test"
+							value={selectedPartnerType}
+							defaultValue={selectedPartnerType}
+							id="partner-test"
+							dataTestId="partner-test"
 						/>
 						</div>
 					</div>
@@ -164,7 +166,30 @@ const Filter: React.FC<Props> = (props: Props) => {
           />
         )}
 
-        <div className="filter-right-side">
+		{isPartnerType && (
+			<div className="customDropdown">
+				<div className="yearlabel">
+					<label className="font-weight-bold yeartext">Partner Type</label>
+				</div>
+				<div style={{width : '115px'}}> 
+				<ReactSelect
+					name="partnerType"
+					options={partnerTypeList}
+					handleChange={(selectedOptions: any, e: any) => {
+						handlePartnerChange(selectedOptions, e);
+					}}
+					value={selectedPartnerType.type}
+					defaultValue={selectedPartnerType.type}
+					id="year-test"
+					dataTestId="year-test"
+				/>
+				</div>
+			</div>
+		)
+		}
+	
+
+        {/* <div className="filter-right-side">
           {isPartnerType && (
             <div className="filter-partnertype">
               <label
@@ -194,7 +219,7 @@ const Filter: React.FC<Props> = (props: Props) => {
                   })}
               </div>
             </div>
-          )}
+          )} */}
           {/* {condTypeList && condTypeList.length > 0 && (
 						<div className="filter-partnertype" style={{ marginLeft: "10px" }}>
 							<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
@@ -247,9 +272,9 @@ const Filter: React.FC<Props> = (props: Props) => {
               isHelpText={isDownloadHelpText}
             />
           )}
-        </div>
+		</div>
+       
       </div>
-    </div>
   );
 };
 

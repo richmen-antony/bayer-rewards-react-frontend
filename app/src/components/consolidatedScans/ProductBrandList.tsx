@@ -65,16 +65,6 @@ const ProductBrandList = ({
                 </th>
                 <th
                   style={{
-                    width: "20%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  RECEIVE GOODS
-                </th>
-                <th
-                  style={{
                     width: "15%",
                     padding: "5px",
                     textAlign: "right",
@@ -82,6 +72,16 @@ const ProductBrandList = ({
                   }}
                 >
                   SEND GOODS
+                </th>
+                <th
+                  style={{
+                    width: "20%",
+                    padding: "5px",
+                    textAlign: "right",
+                    direction: "rtl",
+                  }}
+                >
+                  RECEIVE GOODS
                 </th>
                 <th
                   style={{
@@ -131,16 +131,16 @@ const ProductBrandList = ({
                         {_.startCase(_.toLower(item.productbrand))}
                       </td>
                       <td
-                        style={{ width: "20%", paddingRight: "0.5em" }}
-                        className="text-right"
-                      >
-                        {item.RECEIVE_GOOD}
-                      </td>
-                      <td
                         style={{ width: "15%", paddingRight: "0.5em" }}
                         className="text-right"
                       >
                         {item.SEND_GOOD}
+                      </td>
+                      <td
+                        style={{ width: "20%", paddingRight: "0.5em" }}
+                        className="text-right"
+                      >
+                        {item.RECEIVE_GOOD}
                       </td>
                       <td
                         style={{ width: "20%", paddingRight: "0.5em" }}
@@ -183,14 +183,14 @@ const ProductBrandList = ({
                   Total&nbsp;({selectedBrandList?.length})
                 </th>
                 <th
-                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalReceivedGoods}
-                </th>
-                <th
                   style={{ width: "15%", padding: "5px", textAlign: "right" }}
                 >
                   {totalSendGoods}
+                </th>
+                <th
+                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
+                >
+                  {totalReceivedGoods}
                 </th>
                 <th
                   style={{ width: "20%", padding: "5px", textAlign: "right" }}

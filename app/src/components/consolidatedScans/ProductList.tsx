@@ -61,16 +61,6 @@ export const ProductList = ({
                 </th>
                 <th
                   style={{
-                    width: "20%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  RECEIVE GOODS
-                </th>
-                <th
-                  style={{
                     width: "15%",
                     padding: "5px",
                     textAlign: "right",
@@ -78,6 +68,16 @@ export const ProductList = ({
                   }}
                 >
                   SEND GOODS
+                </th>
+                <th
+                  style={{
+                    width: "20%",
+                    padding: "5px",
+                    textAlign: "right",
+                    direction: "rtl",
+                  }}
+                >
+                  RECEIVE GOODS
                 </th>
                 <th
                   style={{
@@ -119,15 +119,15 @@ export const ProductList = ({
                       </td>
                       <td
                         className="text-right"
-                        style={{ width: "20%", paddingRight: "0.5em" }}
-                      >
-                        {item.RECEIVE_GOOD}
-                      </td>
-                      <td
-                        className="text-right"
                         style={{ width: "15%", paddingRight: "0.5em" }}
                       >
                         {item.SEND_GOOD}
+                      </td>
+                      <td
+                        className="text-right"
+                        style={{ width: "20%", paddingRight: "0.5em" }}
+                      >
+                        {item.RECEIVE_GOOD}
                       </td>
                       <td
                         className="text-right"
@@ -172,7 +172,7 @@ export const ProductList = ({
                 <th
                   style={{ width: "20%", padding: "5px", textAlign: "right" }}
                 >
-                  {totalReceivedGoods}
+                  {totalSendGoods}
                 </th>
                 <th
                   style={{ width: "15%", padding: "5px", textAlign: "right" }}
@@ -182,12 +182,12 @@ export const ProductList = ({
                 <th
                   style={{ width: "20%", padding: "5px", textAlign: "right" }}
                 >
-                  {totalReceivedGoods}
+                  {totalWalkInSales}
                 </th>
                 <th
                   style={{ width: "22%", padding: "5px", textAlign: "right" }}
                 >
-                  {totalReceivedGoods}
+                  {totalAdvisorSales}
                 </th>
               </tr>
             </thead>

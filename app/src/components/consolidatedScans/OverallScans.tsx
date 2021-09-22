@@ -127,6 +127,16 @@ export const OverallScans = ({
                       ></i>
                     ) : null}
                   </th>
+                   <th
+                    style={{
+                      width: "15%",
+                      padding: "5px",
+                      textAlign: "right",
+                      direction: "rtl",
+                    }}
+                  >
+                    SEND GOODS
+                  </th>
                   <th
                     style={{
                       width: "17%",
@@ -136,16 +146,6 @@ export const OverallScans = ({
                     }}
                   >
                     RECEIVE GOODS
-                  </th>
-                  <th
-                    style={{
-                      width: "15%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    SEND GOODS
                   </th>
                   <th
                     style={{
@@ -212,16 +212,16 @@ export const OverallScans = ({
                           </label>
                         </td>
                         <td
-                          style={{ width: "17%", padding: "5px" }}
-                          className="text-right"
-                        >
-                          {item.RECEIVE_GOOD}
-                        </td>
-                        <td
                           style={{ width: "15%", padding: "5px" }}
                           className="text-right"
                         >
                           {item.SEND_GOOD}
+                        </td>
+                        <td
+                          style={{ width: "17%", padding: "5px" }}
+                          className="text-right"
+                        >
+                          {item.RECEIVE_GOOD}
                         </td>
                         <td
                           style={{ width: "20%", padding: "5px" }}
@@ -264,14 +264,14 @@ export const OverallScans = ({
                     Total&nbsp;({allConsolidatedScans?.length})
                   </th>
                   <th
-                    style={{ width: "17%", padding: "5px", textAlign: "right" }}
-                  >
-                    {totalReceivedGoods}
-                  </th>
-                  <th
                     style={{ width: "15%", padding: "5px", textAlign: "right" }}
                   >
                     {totalSendGoods}
+                  </th>
+                  <th
+                    style={{ width: "17%", padding: "5px", textAlign: "right" }}
+                  >
+                    {totalReceivedGoods}
                   </th>
                   <th
                     style={{ width: "20%", padding: "5px", textAlign: "right" }}
