@@ -616,6 +616,7 @@ const Inventory = (Props: any) => {
 							isCustomDropdown = {true}
 							packageType ={packageType}
 							packageTypeOptions ={packType}
+							isUploadAvailable={true}
 					    >
 						<label className="font-weight-bold pt-2">Product Group</label>
 							<div className="form-group pt-1">
