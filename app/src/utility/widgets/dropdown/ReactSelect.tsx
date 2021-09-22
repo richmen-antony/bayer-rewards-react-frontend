@@ -63,7 +63,6 @@ export default function ReactSelect({
       <Select
         onChange={handleChange}
         options={options}
-        // value={value}
         value={
           options?.length > 0 &&
           options.filter(function (option: any) {

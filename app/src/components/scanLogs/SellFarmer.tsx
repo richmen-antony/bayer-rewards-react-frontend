@@ -872,7 +872,7 @@ class SellFarmer extends Component<Props, States> {
 				: "Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID,Store Name";
 		return (
 			<AUX>
-				{isLoader && <Loader />}
+				{isLoader ? <Loader /> :
 				<div>
 					<div>
 						<div className="scanlog-table">
@@ -1251,6 +1251,7 @@ class SellFarmer extends Component<Props, States> {
 						/>
 					</div>
 				</div>
+				}
 			</AUX>
 		);
 	}

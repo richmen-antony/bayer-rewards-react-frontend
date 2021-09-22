@@ -49,5 +49,7 @@ export const apiURL = {
         getOverallInventory : "inventory/report/level1",
         getBrandwiseInventory : "inventory/report/level2",
         getProductwiseInventory : "inventory/report/level3"
-    }
+    }, 
+    getWarehouse:"scangoods/dispatch/history",
+    getWarehouseDownload:"scangoods/dispatch/history/download"
 }

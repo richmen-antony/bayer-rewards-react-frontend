@@ -103,7 +103,7 @@ class Warehouse extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			activeSortKeyIcon: "labelid",
+			activeSortKeyIcon: "did",
 		};
 		this.timeOut = 0;
 	}
@@ -124,7 +124,7 @@ class Warehouse extends Component<Props, States> {
 	}
 
 	getWarehouse = (defaultPageNo?: any) => {
-		const { getScanLog } = apiURL;
+		const { getWarehouse } = apiURL;
 		const { state, setDefaultPage } = this.props?.paginationRef;
 		const pageNo = !defaultPageNo ? 1 : state.pageNo;
 
@@ -140,9 +140,9 @@ class Warehouse extends Component<Props, States> {
 			rowsperpage: state.rowsPerPage,
 			isfiltered: isFiltered,
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			scantype: selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
-			soldbyrole: "DISTRIBUTOR",
-			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+			scantype: selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
+			// soldbyrole: "DISTRIBUTOR",
+			//soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -159,7 +159,7 @@ class Warehouse extends Component<Props, States> {
 			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
 			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
 			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
+			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
 			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
@@ -172,10 +172,10 @@ class Warehouse extends Component<Props, States> {
 			data = { ...data, ...filter };
 		}
 
-		invokeGetAuthService(getScanLog, data)
+		invokeGetAuthService(getWarehouse, data)
 			.then((response) => {
-				let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
-				const total = response?.totalrows;
+				let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body : [];
+				const total = response?.totalrows || 0;
 				this.setState(
 					{
 						isLoader: false,
@@ -231,13 +231,13 @@ class Warehouse extends Component<Props, States> {
 	}
 
 	download = () => {
-		const { downloadAllScanLogs } = apiURL;
+		const { getWarehouseDownload } = apiURL;
 
 		let data = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
-			scantype: this.state.selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
+			scantype: this.state.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
 			soldbyrole: "DISTRIBUTOR",
 			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
@@ -268,7 +268,7 @@ class Warehouse extends Component<Props, States> {
 			filter.geolevel2 = null;
 			data = { ...data, ...filter };
 		}
-		invokeGetAuthService(downloadAllScanLogs, data)
+		invokeGetAuthService(getWarehouseDownload, data)
 			.then((response) => {
 				const data = response;
 				downloadCsvFile(data, `${this.state.selectedScanType}`);
@@ -368,22 +368,22 @@ class Warehouse extends Component<Props, States> {
 				<table className="table">
 					<thead>
 						<tr>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "labelid", allWarehouseData, isAsc)}>
+							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "did", allWarehouseData, isAsc)}>
 								DELIVERY #
-								{activeSortKeyIcon === "labelid" ? (
+								{activeSortKeyIcon === "did" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "soldtoname", allWarehouseData, isAsc)}>
+							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "warehousename", allWarehouseData, isAsc)}>
 								WAREHOUSE NAME/ID
-								{activeSortKeyIcon === "soldtoname" ? (
+								{activeSortKeyIcon === "warehousename" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
 
-							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "productname", allWarehouseData, isAsc)}>
+							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "tousername", allWarehouseData, isAsc)}>
 								RETAILER NAME/ID
-								{activeSortKeyIcon === "productname" ? (
+								{activeSortKeyIcon === "tousername" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
@@ -395,21 +395,21 @@ class Warehouse extends Component<Props, States> {
 									) : null}
 								</th>
 							)}
-							<th style={{ width: "15%" }} onClick={(e) => this.handleSort(e, "soldbyname", allWarehouseData, isAsc)}>
+							<th style={{ width: "15%" }} onClick={(e) => this.handleSort(e, "scannedbyname", allWarehouseData, isAsc)}>
 								SCANNED BY
-								{activeSortKeyIcon === "soldbyname" ? (
+								{activeSortKeyIcon === "scannedbyname" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "channeltype", allWarehouseData, isAsc)}>
+							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "totalqty", allWarehouseData, isAsc)}>
 								TOTAL QTY
-								{activeSortKeyIcon === "channeltype" ? (
+								{activeSortKeyIcon === "totalqty" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "scanneddate", allWarehouseData, isAsc)}>
+							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "deliverystatus", allWarehouseData, isAsc)}>
 								GOODS STATUS
-								{activeSortKeyIcon === "scanneddate" ? (
+								{activeSortKeyIcon === "deliverystatus" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
@@ -419,7 +419,7 @@ class Warehouse extends Component<Props, States> {
 								onClick={(e) => this.handleSort(e, "expirydate", allWarehouseData, isAsc)}
 							>
 								UPDATED DATE
-								{activeSortKeyIcon === "expirydate" ? (
+								{activeSortKeyIcon === "updateddate" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
@@ -437,15 +437,23 @@ class Warehouse extends Component<Props, States> {
 										style={{ cursor: "pointer" }}
 										key={i}
 									>
-										<td>{value.labelid}</td>
-										<td
-											onClick={(event) => {
+										<td>{value.did}</td>
+										<td>
+											<div className="farmer-id">
+												<p>{value.warehousename}</p>
+												<label>
+													{value.warehouseid === null ? "" : value.warehouseid }
+												</label>
+											</div>
+											
+										</td>
+
+										<td onClick={(event) => {
 												this.showPopup(event, "showPopup");
 												this.handleUpdateRetailer(value, "customer");
 											}}
-											style={{ cursor: "pointer" }}
-										>
-											<div className="retailer-id">
+											style={{ cursor: "pointer" }}>
+										<div className="retailer-id">
 												<p
 													style={{
 														display: "flex",
@@ -453,21 +461,13 @@ class Warehouse extends Component<Props, States> {
 													}}
 												>
 													<span style={{ flex: "1", whiteSpace: "nowrap" }}>
-														{_.startCase(_.toLower(value.soldtoname))}
+														{_.startCase(_.toLower(value.tousername))}
 														<img className="retailer-icon" src={ExpandWindowImg} alt="" />
 													</span>
 												</p>
-												<label>{value.soldtoid + " - " + _.startCase(_.toLower(value.soldtorole))}</label>
+												<label>{value.touserid}</label>
 											</div>
-										</td>
-
-										<td>
-											<div className="farmer-id">
-												<p>{value.productname}</p>
-												<label>
-													{value.productid === null ? "" : value.productid + " - " + _.capitalize(value.productgroup)}
-												</label>
-											</div>
+					
 										</td>
 										{this.props.selectedScanType === "SG - W2R" && <td>{_.startCase(_.toLower(value.soldtostore))}</td>}
 										<td
@@ -485,23 +485,23 @@ class Warehouse extends Component<Props, States> {
 													}}
 												>
 													<span style={{ flex: "1", whiteSpace: "nowrap" }}>
-														{_.startCase(_.toLower(value.soldbyname))}
+														{_.startCase(_.toLower(value.scannedbyname))}
 														<img className="retailer-icon" src={ExpandWindowImg} alt="" />
 													</span>
 												</p>
-												<label>{value.soldbyid}</label>
+												<label>{value.scannedbyid}</label>
 											</div>
 										</td>
-										<td>{value.scanneddate && moment(value.scanneddate).format("DD/MM/YYYY")}</td>
+										<td>{value.totalqty}</td>
 										<td>
 											<span className="status active">
 												<i className="fas fa-clock"></i>
-												{"Dispatch Sent"}
+												{value.deliverystatus}
 											</span>
 										</td>
 										{loggedUserInfo?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
 										<td>
-											{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}
+											{value.updateddate && moment(value.updateddate).format("DD/MM/YYYY")}
 											<img className="max-image" src={maxImg} alt="" />
 										</td>
 									</tr>

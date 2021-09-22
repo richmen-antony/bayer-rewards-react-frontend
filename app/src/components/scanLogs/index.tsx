@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import AUX from "../../hoc/Aux_";
-import Loader from "../../utility/widgets/loader";
 import { withStyles, Theme, createStyles, WithStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -15,7 +14,6 @@ import SendGoods from "./sendGoods/index";
 //Define types of variable in states
 type States = {
 	userRole: string;
-	isLoader: boolean;
 	value: number;
 };
 // Material AntTabs styles
@@ -120,7 +118,6 @@ class ScanLogs extends Component<Props, States> {
 		// To maintain the default initial state management
 		this.state = {
 			userRole: "",
-			isLoader: false,
 			value: 0,
 		};
 		this.timeOut = 0;
@@ -136,11 +133,9 @@ class ScanLogs extends Component<Props, States> {
 	};
 	//render the ui elements
 	render() {
-		const { isLoader } = this.state;
 		const { classes } = this.props;
 		return (
 			<AUX>
-				{isLoader && <Loader />}
 				<div>
 					<div className={classes?.root}>
 						<div className="tab-header"><p>Scan Logs</p></div>

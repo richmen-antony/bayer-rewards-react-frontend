@@ -774,7 +774,7 @@ class SendGoods extends Component<Props, States> {
 		const { filter } = this.activeFilter();
 		return (
 			<AUX>
-				{isLoader && <Loader />}
+				{isLoader ? <Loader /> :
 				<div>
 					<div>
 						<div className="scanlog-table">
@@ -1131,7 +1131,7 @@ class SendGoods extends Component<Props, States> {
 						/>
 					</div>
 				</div>
-			</AUX>
+	}</AUX>
 		);
 	}
 }
