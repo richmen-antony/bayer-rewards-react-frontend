@@ -99,24 +99,46 @@ const Filter: React.FC<Props> = (props: Props) => {
           value={searchText}
           tolltip={toolTipText}
         />
-        {isCustomDropdown && (
-          <div className="customDropdown">
-            <CustomDropdown
-              name="selectedYear"
-              value={fiscalYear}
-              options={yearOptions}
-              handleReactSelect={handleReactSelect}
-              title="Fiscal Year"
-            />
-            <CustomDropdown
-              name="packageType"
-              value={packageType}
-              options={packageTypeOptions}
-              handleReactSelect={handleReactSelect}
-              title="Package Type"
-            />
-          </div>
-        )}
+        	{ isCustomDropdown &&
+				<>
+					<div className="customDropdown">
+						<div className="yearlabel">
+							<label className="font-weight-bold yeartext">Fiscal Year</label>
+						</div>
+						<div style={{width : '100%'}}>
+							<ReactSelect
+								name="fiscalYear"
+								options={yearOptions}
+								handleChange={(selectedOptions: any, e: any) => {
+									handleReactSelect(selectedOptions, e);
+								}}
+								value={fiscalYear}
+								defaultValue={fiscalYear}
+								id="year-test"
+								dataTestId="year-test"
+							/>
+						</div>
+					</div>
+					<div className="customDropdown">
+						<div className="yearlabel">
+							<label className="font-weight-bold yeartext">Package Type</label>
+						</div>
+						<div style={{width : '105px'}}> 
+						<ReactSelect
+							name="packageType"
+							options={packageTypeOptions}
+							handleChange={(selectedOptions: any, e: any) => {
+								handleReactSelect(selectedOptions, e);
+							}}
+							value={packageType}
+							defaultValue={packageType}
+							id="year-test"
+							dataTestId="year-test"
+						/>
+						</div>
+					</div>
+				</>
+				}
         {isScannedBy && (
           <CustomDropdown
             name="selectedScannedBy"
