@@ -1,18 +1,18 @@
-.react-select{
-    label{
-        font-size: 14px;
-    }
-    img {
-        height: 36px;
-        margin-right: -1px;
-      }
-   
+.react-select {
+  label {
+    font-size: 14px;
+  }
+  img {
+    //height: 36px;
+    height: 33px;
+    margin-right: -1px;
+  }
 }
 
 @media only screen and (max-width: 1400px) {
-    .react-select{
-        label{
-            font-size: 11px;
-        }
+  .react-select {
+    label {
+      font-size: 11px;
     }
+  }
 }

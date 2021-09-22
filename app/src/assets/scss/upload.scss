@@ -27,6 +27,11 @@
   flex-direction: row;
   text-transform: capitalize;
   align-items: center;
+  padding: 0px 15px;
+}
+
+.selected-file {
+  flex-wrap: wrap;
 }
 
 .popup-content {

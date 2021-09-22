@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
-import Download from "../../../assets/icons/upload.svg";
+import Upload from "../../../assets/icons/upload.svg";
 import uploadIcon from "../../../assets/icons/upload_cloud.png";
 import SimpleDialog from "../../../containers/components/dialog";
 import CalenderIcon from "../../../assets/icons/calendar.svg";
@@ -188,7 +188,7 @@ const UploadButton = (Props: any) => {
                           >
                             <div class="selected-file-name">
                               <strong>
-                                <h3>{fileName}</h3>
+                                <h3 className="selected-file">{fileName}</h3>
                               </strong>
                               &nbsp;&nbsp;
                               <img
@@ -236,7 +236,7 @@ const UploadButton = (Props: any) => {
         )}
 
         <button className="btn btn-success" onClick={uploadPopup}>
-          <img src={Download} width="17" alt="upload file" />
+          <img src={Upload} width="17" alt="upload file" />
           <span style={{ padding: "15px" }}>Upload</span>
         </button>
       </div>
