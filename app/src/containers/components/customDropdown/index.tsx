@@ -43,7 +43,7 @@ function CustomDropdown({
 }:CustomDropdownProps)  {
   
 	return (
-        <div className="dropdown-year" >
+        <div className="dropdown-year">
             <div className="yearlabel">
                 <label className="font-weight-bold yeartext">{title}</label>
             </div>

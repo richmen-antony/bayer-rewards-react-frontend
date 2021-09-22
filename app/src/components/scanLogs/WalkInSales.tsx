@@ -336,6 +336,17 @@ class WalkInSales extends PureComponent<Props, States> {
 										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 									) : null}
 								</th>
+								{loggedUser?.role === "ADMIN" && (
+								<th
+									style={{ width: "10%" }}
+									onClick={(e) => this.handleSort(e, "soldbygeolevel1", allWalkInSalesData, isAsc)}
+								>
+									REGION
+									{activeSortKeyIcon === "soldbygeolevel1" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+							)}
 								<th
 									style={{ width: loggedUser?.role === "ADMIN" ? "10%" : "10%" }}
 									onClick={(e) => this.handleSort(e, "expirydate", allWalkInSalesData, isAsc)}
