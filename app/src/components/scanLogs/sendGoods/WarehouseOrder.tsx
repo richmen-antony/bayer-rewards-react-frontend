@@ -57,7 +57,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 						<div className={`popup-title order`}>
 							<p>
 								<label>
-									#{data?.touserid} - {_.startCase(_.toLower(data?.tousername))}
+									#{data?.deliveryid} - {_.startCase(_.toLower(data?.tousername))}
 								</label>
 							</p>
 						</div>
