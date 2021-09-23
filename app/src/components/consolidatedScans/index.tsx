@@ -700,7 +700,7 @@ const ConsolidatedScans = (Props: any) => {
             </Filter>
           </div>
         </div>
-        <div className="row">
+        <div className="row" style={{ opacity: "0.9999" }}>
           <div className="col-sm-6">
             <OverallScans
               allConsolidatedScans={allConsolidatedScans}

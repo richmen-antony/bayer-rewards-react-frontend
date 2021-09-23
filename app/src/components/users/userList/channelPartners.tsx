@@ -69,7 +69,7 @@ type States = {
   dropdownOpenFilter: boolean;
   selectedFilters: any;
   dateErrMsg: string;
-  list: any;
+  list: Array<any>;
   userStatus: Array<any>;
   isFiltered: boolean;
   inActiveFilter: boolean;
@@ -194,10 +194,7 @@ class ChannelPartners extends Component<Props, States> {
         lastmodifieddateto: new Date(),
       },
       dateErrMsg: "",
-      list: [
-        { value: "Distributors", label: "Distributors" },
-        { value: "Retailers", label: "Retailers" },
-      ],
+      list: ["Retailer", "Distributor"],
       userStatus: ["ALL", "Active", "Inactive", "Pending", "Declined"],
       isFiltered: false,
       inActiveFilter: false,
@@ -205,7 +202,7 @@ class ChannelPartners extends Component<Props, States> {
       totalData: 0,
       isAsc: false,
       partnerType: {
-        type: "Retailers",
+        type: "Retailer",
       },
       geolevel1List: [],
       level1Options: [],
@@ -254,7 +251,7 @@ class ChannelPartners extends Component<Props, States> {
       rowsperpage: state.rowsPerPage,
       usertype: "EXTERNAL",
       partnertype:
-        this.state.partnerType.type === "Distributors"
+        this.state.partnerType.type === "Distributor"
           ? "DISTRIBUTOR"
           : this.state.partnerType.type === "ALL"
           ? "ALL"
@@ -633,11 +630,11 @@ class ChannelPartners extends Component<Props, States> {
 
     return res;
   }
-  handlePartnerChange = (name: any) => {
+  handlePartnerChange = (name: string) => {
     this.setState(
       {
         partnerType: {
-          type: name.value,
+          type: name,
         },
       },
       () => {
@@ -1304,8 +1301,8 @@ class ChannelPartners extends Component<Props, States> {
           handleSearch={this.handleSearch}
           searchText={this.state.searchText}
           partnerTypeList={this.state.list}
+          isPartner={true}
           selectedPartnerType={this.state.partnerType}
-          isPartnerType={true}
           handlePartnerChange={this.handlePartnerChange}
           toolTipText="Search applicable for User Name, Store Name and Owner Name"
           onClose={(node: any) => {

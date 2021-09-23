@@ -20,6 +20,7 @@ interface Props {
   toolTipText: string;
   internalUserTypeFilterHeading?: boolean;
   isPartnerType?: boolean;
+  isPartner?: boolean;
   condType?: string;
   condTypeList?: any[];
   buttonChange?: any;
@@ -72,6 +73,7 @@ const Filter: React.FC<Props> = (props: Props) => {
     downloadPopup,
     isDownloadHelpText,
     isPartnerType,
+    isPartner,
     fiscalYear,
     handleReactSelect,
     yearOptions,
@@ -173,7 +175,7 @@ const Filter: React.FC<Props> = (props: Props) => {
             <div className="yearlabel">
               <label className="font-weight-bold yeartext">Partner Type</label>
             </div>
-            <div style={{ width: "127px", zIndex: 2 }}>
+            <div style={{ width: "127px" }}>
               <ReactSelect
                 name="partnerType"
                 options={partnerTypeList}
@@ -189,13 +191,10 @@ const Filter: React.FC<Props> = (props: Props) => {
           </div>
         )}
 
-        {/* <div className="filter-right-side">
-          {isPartnerType && (
+        <div className="filter-right-side">
+          {isPartner && (
             <div className="filter-partnertype">
-              <label
-                className="font-weight-bold pt-2"
-                style={{ color: "#363636", fontSize: "12px" }}
-              >
+              <label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
                 {internalUserTypeFilterHeading ? "User Type" : "Partner Type"}
               </label>
               <div className="partnertype-list">
@@ -205,9 +204,7 @@ const Filter: React.FC<Props> = (props: Props) => {
                       <span className="mr-2" key={index}>
                         <Button
                           color={
-                            selectedPartnerType.type === item
-                              ? "btn activeColor rounded-pill"
-                              : "btn rounded-pill boxColor"
+                            selectedPartnerType.type === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
                           }
                           size="md"
                           onClick={(e: any) => handlePartnerChange(item)}
@@ -219,7 +216,8 @@ const Filter: React.FC<Props> = (props: Props) => {
                   })}
               </div>
             </div>
-          )} */}
+          )}
+        </div>
         {/* {condTypeList && condTypeList.length > 0 && (
 						<div className="filter-partnertype" style={{ marginLeft: "10px" }}>
 							<label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
