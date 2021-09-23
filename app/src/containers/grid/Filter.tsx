@@ -36,7 +36,7 @@ interface Props {
   scanTypeList?: any[];
   selectedScannedBy?: string;
   selectedScanType?: string;
-  packageType?: any;
+  viewType?: any;
   packageTypeOptions?: any;
   isUploadAvailable?: boolean;
   isInventoryDownloadPopup?: boolean;
@@ -82,7 +82,7 @@ const Filter: React.FC<Props> = (props: Props) => {
     scanTypeList,
     selectedScanType,
     selectedScannedBy,
-    packageType,
+    viewType,
     packageTypeOptions,
     isUploadAvailable = false,
     isInventoryDownloadPopup,
@@ -131,13 +131,13 @@ const Filter: React.FC<Props> = (props: Props) => {
               </div>
               <div style={{ width: "105px" }}>
                 <ReactSelect
-                  name="packageType"
+                  name="viewType"
                   options={packageTypeOptions}
                   handleChange={(selectedOptions: any, e: any) => {
                     handleReactSelect(selectedOptions, e);
                   }}
-                  value={packageType}
-                  defaultValue={packageType}
+                  value={viewType}
+                  defaultValue={viewType}
                   id="partner-test"
                   dataTestId="partner-test"
                 />

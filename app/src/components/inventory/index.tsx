@@ -21,7 +21,7 @@ import {
   getGeographicLevel1Options,
   getGeoLocationFields,
   setGeolevel1Options,
-  downloadScansCsvFile,
+  downloadInventoryCsvFile,
 } from "../../redux/actions/common/common";
 import {
   getOverallInventory,
@@ -43,34 +43,19 @@ const Inventory = (Props: any) => {
   let closeToggle: any;
   const dispatch = useDispatch();
   const geolevel1List = useSelector(({ common }: any) => common?.geoLevel1List);
-  const geographicFields = useSelector(
-    ({ common }: any) => common?.geographicFields
-  );
+  const geographicFields = useSelector(({ common }: any) => common?.geographicFields);
   const levelsName = useSelector(({ common }: any) => common?.levelsName);
-  const commonErrorMessage = useSelector(
-    ({ common }: any) => common?.errorMessage
-  );
-  const allConsolidatedInventory = useSelector(
-    ({ inventory }: any) => inventory?.allConsolidatedInventory
-  );
-  const BrandwiseInventories = useSelector(
-    ({ inventory }: any) => inventory?.BrandwiseInventory
-  );
-  const ProductwiseInventories = useSelector(
-    ({ inventory }: any) => inventory?.ProductwiseInventory
-  );
-  const isReduxLoader = useSelector(
-    ({ inventory }: any) => inventory?.isLoader
-  );
+  const commonErrorMessage = useSelector(({ common }: any) => common?.errorMessage);
+  const allConsolidatedInventory = useSelector(({ inventory }: any) => inventory?.allConsolidatedInventory);
+  const BrandwiseInventories = useSelector(({ inventory }: any) => inventory?.BrandwiseInventory);
+  const ProductwiseInventories = useSelector(({ inventory }: any) => inventory?.ProductwiseInventory);
+  const isReduxLoader = useSelector(({ inventory }: any) => inventory?.isLoader);
   // const errorMessage         = useSelector(({consolidatedScans}:any) => consolidatedScans?.errorMessage);
 
   const [searchText, setSearchText] = useState<string>("");
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [dateErrMsg, setDateErrMsg] = useState<string>("");
-  const [partnerTypeList, setpartnerTypeList] = useState([
-    "Retailers",
-    "Distributors",
-  ]);
+  const [partnerTypeList, setpartnerTypeList] = useState(["Retailers", "Distributors"]);
   const [partnerType, setPartnerType] = useState({ type: "Distributors" });
   const [selectedDistributorName, setselectedDistributorName] = useState("");
   const [selectedBrandName, setselectedBrandName] = useState("");
@@ -89,7 +74,8 @@ const Inventory = (Props: any) => {
   const [scannedBrandsSuccess, setScannedBrandsSuccess] = useState(Number);
   const [filterSuccess, setFilterSuccess] = useState(Number);
   const [fiscalYear, setFiscalYear] = useState(new Date().getFullYear());
-  const [packageType, setPackageType] = useState(package_type[0]);
+  const [viewType, setViewType] = useState(package_type[0]);
+  const [isDownloadWithFilter, setIsDownloadWithFilter] = useState<boolean>(false);
 
   const [selectedFilters, setSelectedFilters] = useState({
     productgroup: "ALL",
@@ -112,12 +98,8 @@ const Inventory = (Props: any) => {
     { label: "Custom", value: "" },
   ]);
 
-  const [selectedFromDateOfYear, setSelectedFromDateOfYear] = useState(
-    `01/01/${new Date().getFullYear()}`
-  );
-  const [selectedToDateOfYear, setSelectedToDateOfYear] = useState(
-    `12/31/${new Date().getFullYear()}`
-  );
+  const [selectedFromDateOfYear, setSelectedFromDateOfYear] = useState(`01/01/${new Date().getFullYear()}`);
+  const [selectedToDateOfYear, setSelectedToDateOfYear] = useState(`12/31/${new Date().getFullYear()}`);
 
   const [productCategories, setproductCategories] = useState([
     "ALL",
@@ -153,14 +135,15 @@ const Inventory = (Props: any) => {
     dispatch(getGeoLocationFields());
     let data = {
       countrycode: userData?.countrycode,
-      partnertype:
-        partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       isfiltered: isFiltered,
+      viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
     let filteredDatas = {};
-
-    filteredDatas = getFilteredDatas(filteredDatas);
-    data = { ...data, ...filteredDatas };
+    if (isFiltered) {
+      filteredDatas = getFilteredDatas(filteredDatas);
+      data = { ...data, ...filteredDatas };
+    }
 
     dispatch(getOverallInventory(data));
   }, []);
@@ -170,13 +153,9 @@ const Inventory = (Props: any) => {
   }, [allConsolidatedInventory]);
 
   useEffect(() => {
-    let id =
-      allConsolidatedInventory && allConsolidatedInventory[0]?.rtmppartnerid;
+    let id = allConsolidatedInventory && allConsolidatedInventory[0]?.rtmppartnerid;
     let name =
-      allConsolidatedInventory &&
-      allConsolidatedInventory[0]?.firstname +
-        " " +
-        allConsolidatedInventory[0]?.lastname;
+      allConsolidatedInventory && allConsolidatedInventory[0]?.firstname + " " + allConsolidatedInventory[0]?.lastname;
     setSoldbyid(id);
     if (name) {
       setselectedDistributorName(name);
@@ -186,11 +165,15 @@ const Inventory = (Props: any) => {
 
   useEffect(() => {
     if (soldbyid) {
+      let data = {
+        partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+        viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
+      };
       let filteredDatas = {};
       if (isFiltered) {
         filteredDatas = getFilteredDatas(filteredDatas);
       }
-      dispatch(getBrandwiseInventory(soldbyid, isFiltered, filteredDatas));
+      dispatch(getBrandwiseInventory(soldbyid, isFiltered, filteredDatas, data));
     } else {
       dispatch(setBrandwiseInventory([]));
       dispatch(setProductwiseInventory([]));
@@ -200,36 +183,31 @@ const Inventory = (Props: any) => {
 
   useEffect(() => {
     if (BrandwiseInventories?.length > 0) {
-      setselectedBrandName(
-        BrandwiseInventories && BrandwiseInventories[0]?.productbrand
-      );
+      setselectedBrandName(BrandwiseInventories && BrandwiseInventories[0]?.productbrand);
       setScannedBrandsSuccess(new Date().getTime());
     }
   }, [BrandwiseInventories]);
 
   useEffect(() => {
+    let data = {
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
+    };
     let filteredDatas = {};
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
-    dispatch(
-      getProductwiseInventory(
-        soldbyid,
-        isFiltered,
-        selectedBrandName,
-        filteredDatas
-      )
-    );
+    dispatch(getProductwiseInventory(soldbyid, isFiltered, selectedBrandName, filteredDatas, data));
   }, [scannedBrandsSuccess]);
 
   useEffect(() => {
     if (searchText.length >= 3 || searchText.length === 0) {
       let data = {
         countrycode: userData?.countrycode,
-        partnertype:
-          partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+        partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
         isfiltered: isFiltered,
         searchtext: searchText,
+        viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
       };
       let filteredDatas = {};
       if (isFiltered) {
@@ -238,14 +216,9 @@ const Inventory = (Props: any) => {
       }
       dispatch(getOverallInventory(data));
     }
-  }, [searchText, partnerType, filterAppliedTime, fiscalYear, packageType]);
+  }, [searchText, partnerType, filterAppliedTime, fiscalYear, viewType]);
 
-  const getSelectedBrands = (
-    soldbyidd: string,
-    idx?: any,
-    type?: string,
-    productbrand?: any
-  ) => {
+  const getSelectedBrands = (soldbyidd: string, idx?: any, type?: string, productbrand?: any) => {
     setSoldbyid(soldbyidd);
     if (type === "selected") {
       setselectedDistributor(idx);
@@ -260,24 +233,19 @@ const Inventory = (Props: any) => {
     setFilterSuccess(new Date().getTime());
   };
 
-  const getSelectedProducts = (
-    soldby: string,
-    productbrand: string,
-    idx: number
-  ) => {
+  const getSelectedProducts = (soldby: string, productbrand: string, idx: number) => {
+    let data = {
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
+    };
     let filteredDatas = {};
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
-    dispatch(
-      getProductwiseInventory(soldby, isFiltered, productbrand, filteredDatas)
-    );
+    dispatch(getProductwiseInventory(soldby, isFiltered, productbrand, filteredDatas, data));
     setselectedBrand(idx);
     BrandwiseInventories?.forEach((item: any, index: number) => {
-      if (
-        item.productbrand === productbrand &&
-        item.rtmppartnerid === soldbyid
-      ) {
+      if (item.productbrand === productbrand && item.rtmppartnerid === soldbyid) {
         setselectedBrandName(item.productbrand);
       }
     });
@@ -293,31 +261,17 @@ const Inventory = (Props: any) => {
       lastmodifieddatefrom,
       lastmodifieddateto,
     }: any = selectedFilters;
-    let startDate =
-      scannedPeriod === "Custom"
-        ? lastmodifieddatefrom
-        : scannedPeriod === ""
-        ? null
-        : scanneddatefrom;
-    let endDate =
-      scannedPeriod === "Custom"
-        ? lastmodifieddateto
-        : scannedPeriod === ""
-        ? null
-        : scanneddateto;
-    if (isFiltered) {
-      filteredDatas = {
-        scanneddatefrom: startDate
-          ? moment(startDate).format("YYYY-MM-DD")
-          : null,
-        scanneddateto: endDate ? moment(endDate).format("YYYY-MM-DD") : null,
-        productgroup: productgroup === "ALL" ? null : productgroup,
-        geolevel1: geolevel1 === "ALL" ? null : userData?.geolevel1,
-        geolevel2: geolevel2 === "ALL" ? null : geolevel2,
-        scannedPeriod: scannedPeriod,
-        pkglevel: "SKU",
-      };
-    }
+    let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
+    let endDate = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
+    filteredDatas = {
+      scanneddatefrom: startDate ? moment(startDate).format("YYYY-MM-DD") : null,
+      scanneddateto: endDate ? moment(endDate).format("YYYY-MM-DD") : null,
+      productgroup: productgroup === "ALL" ? null : productgroup,
+      geolevel1: geolevel1 === "ALL" ? null : userData?.geolevel1,
+      geolevel2: geolevel2 === "ALL" ? null : geolevel2,
+      scannedPeriod: scannedPeriod,
+    };
+
     return filteredDatas;
   };
 
@@ -356,9 +310,7 @@ const Inventory = (Props: any) => {
     let userrole = userData?.role;
     let level2Options: any = [];
     if (userrole === "RSM") {
-      let filteredLevel1: any = geolevel1List?.filter(
-        (list: any) => list.name === userData?.geolevel1
-      );
+      let filteredLevel1: any = geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
       filteredLevel1 &&
         filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
           let level2Info = {
@@ -383,8 +335,7 @@ const Inventory = (Props: any) => {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value:
-          list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "All",
+        value: list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "All",
         options:
           list === "geolevel0"
             ? countryList
@@ -402,9 +353,7 @@ const Inventory = (Props: any) => {
   const getOptionLists = (cron: any, type: any, value: any, index: any) => {
     let dynamicFieldVal: any = dynamicFields;
     if (type === "geolevel1") {
-      let filteredLevel1: any = geolevel1List?.filter(
-        (level1: any) => level1.name === value
-      );
+      let filteredLevel1: any = geolevel1List?.filter((level1: any) => level1.name === value);
       let level2Options: any = [];
       filteredLevel1[0]?.geolevel2.forEach((item: any) => {
         let level1Info = {
@@ -419,9 +368,7 @@ const Inventory = (Props: any) => {
         value: "ALL",
         code: "ALL",
       };
-      let geolevel3Obj = [
-        { label: "ALL", code: "ALL", name: "ALL", value: "ALL" },
-      ];
+      let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
       level2Options.unshift(geolevel1Obj);
       dynamicFieldVal[index + 1].options = level2Options;
       dynamicFieldVal[index + 2].options = geolevel3Obj;
@@ -449,25 +396,25 @@ const Inventory = (Props: any) => {
   const download = (type: string) => {
     let data = {
       countrycode: userData?.countrycode,
-      partnertype:
-        partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       downloadtype: type,
       searchtext: searchText || null,
       isfiltered: isFiltered,
+      viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
     let filteredDatas = {};
-    if (isFiltered) {
+    if (isDownloadWithFilter) {
       filteredDatas = getFilteredDatas(filteredDatas);
-      data = { ...data, ...filteredDatas };
     }
+    data = { ...data, ...filteredDatas };
     if (type === "overall") {
-      type = "Overall_Scans";
+      type = "Overall_Inventory";
     } else if (type === "brand") {
-      type = "BrandWise_Scans";
+      type = "BrandWise_Inventory";
     } else if (type === "product") {
-      type = "ProductWise_Scans";
+      type = "ProductWise_Inventory";
     }
-    dispatch(downloadScansCsvFile(data, type));
+    dispatch(downloadInventoryCsvFile(data, type));
   };
 
   const handlePartnerChange = (name: string) => {
@@ -478,12 +425,7 @@ const Inventory = (Props: any) => {
     setselectedBrand(0);
   };
 
-  const handleFilterChange = (
-    e: any,
-    name: string,
-    item: any,
-    itemList?: any
-  ) => {
+  const handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
     e.stopPropagation();
     let val: any = selectedFilters;
     let flag = false;
@@ -508,11 +450,7 @@ const Inventory = (Props: any) => {
     }
   };
 
-  const handleReactSelect = (
-    selectedOption: any,
-    e: any,
-    optionName?: string
-  ) => {
+  const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
     setDateErrMsg("");
     setIsFiltered(true);
     if (e.name === "fiscalYear") {
@@ -528,8 +466,8 @@ const Inventory = (Props: any) => {
         scanneddatefrom: fiscalStartDate,
         scanneddateto: fiscalEndDate,
       });
-    } else if (e.name === "packageType") {
-      setPackageType(selectedOption.value);
+    } else if (e.name === "viewType") {
+      setViewType(selectedOption.value);
     } else {
       setSelectedFilters({
         ...selectedFilters,
@@ -541,36 +479,27 @@ const Inventory = (Props: any) => {
 
   const fields = dynamicFields;
   const locationList = fields?.map((list: any, index: number) => {
-    let nameCapitalized =
-      levelsName[index]?.charAt(0).toUpperCase() + levelsName[index]?.slice(1);
+    let nameCapitalized = levelsName[index]?.charAt(0).toUpperCase() + levelsName[index]?.slice(1);
     return (
       <React.Fragment key={`geolevels` + index}>
-        {index !== 0 &&
-          list.name !== "geolevel3" &&
-          list.name !== "geolevel4" &&
-          list.name !== "geolevel5" && (
-            <div className="col" style={{ marginBottom: "5px" }}>
-              <ReactSelect
-                name={list.name}
-                label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
-                options={list.options}
-                handleChange={(selectedOptions: any, e: any) => {
-                  list.value = selectedOptions.value;
-                  getOptionLists(
-                    "manual",
-                    list.name,
-                    selectedOptions.value,
-                    index
-                  );
-                  handleReactSelect(selectedOptions, e, list.name);
-                }}
-                value={list.value}
-                isDisabled={list.name === "geolevel1"}
-                id="geolevel-test"
-                dataTestId="geolevel-test"
-              />
-            </div>
-          )}
+        {index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
+          <div className="col" style={{ marginBottom: "5px" }}>
+            <ReactSelect
+              name={list.name}
+              label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
+              options={list.options}
+              handleChange={(selectedOptions: any, e: any) => {
+                list.value = selectedOptions.value;
+                getOptionLists("manual", list.name, selectedOptions.value, index);
+                handleReactSelect(selectedOptions, e, list.name);
+              }}
+              value={list.value}
+              isDisabled={list.name === "geolevel1"}
+              id="geolevel-test"
+              dataTestId="geolevel-test"
+            />
+          </div>
+        )}
       </React.Fragment>
     );
   });
@@ -585,27 +514,25 @@ const Inventory = (Props: any) => {
   }
 
   const ref = React.createRef();
-  const DateInput = React.forwardRef(
-    ({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
-      <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
-        <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
-        <input
-          style={{
-            border: "none",
-            width: "120px",
-            height: "31px",
-            outline: "none",
-          }}
-          onChange={onChange}
-          placeholder={placeholder}
-          value={value}
-          id={id}
-          onClick={onClick}
-          ref={ref}
-        />
-      </div>
-    )
-  );
+  const DateInput = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
+    <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+      <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+      <input
+        style={{
+          border: "none",
+          width: "120px",
+          height: "31px",
+          outline: "none",
+        }}
+        onChange={onChange}
+        placeholder={placeholder}
+        value={value}
+        id={id}
+        onClick={onClick}
+        ref={ref}
+      />
+    </div>
+  ));
 
   const handleDateChange = (date: any, name: string) => {
     let val = selectedFilters;
@@ -637,6 +564,7 @@ const Inventory = (Props: any) => {
     setFilterAppliedTime(new Date().getTime());
     setselectedDistributor(0);
     setselectedBrand(0);
+    setIsDownloadWithFilter(true);
     closeToggle && closeToggle();
   };
 
@@ -652,13 +580,7 @@ const Inventory = (Props: any) => {
     setIsAsc(!isAsc);
   };
 
-  const handleSort = (
-    e: any,
-    columnname: string,
-    allConsolidatedInventory: any,
-    isAsc: boolean,
-    table: string
-  ) => {
+  const handleSort = (e: any, columnname: string, allConsolidatedInventory: any, isAsc: boolean, table: string) => {
     if (table === "overallScans") {
       setoveralltableIndex(e.currentTarget.cellIndex);
       setbrandtableIndex(1);
@@ -700,6 +622,7 @@ const Inventory = (Props: any) => {
     setFilterAppliedTime(new Date().getTime());
     setselectedDistributor(0);
     setselectedBrand(0);
+    setIsDownloadWithFilter(false);
     closeToggle && closeToggle();
   };
 
@@ -727,7 +650,7 @@ const Inventory = (Props: any) => {
               handleReactSelect={handleReactSelect}
               yearOptions={year}
               isCustomDropdown={true}
-              packageType={packageType}
+              viewType={viewType}
               packageTypeOptions={packType}
               isUploadAvailable={true}
               isInventoryDownloadPopup={true}
@@ -738,14 +661,10 @@ const Inventory = (Props: any) => {
                   <span className="mr-2 chipLabel" key={i}>
                     <Button
                       color={
-                        selectedFilters.productgroup === item
-                          ? "btn activeColor rounded-pill"
-                          : "btn rounded-pill boxColor"
+                        selectedFilters.productgroup === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
                       }
                       size="sm"
-                      onClick={(e) =>
-                        handleFilterChange(e, "productgroup", item)
-                      }
+                      onClick={(e) => handleFilterChange(e, "productgroup", item)}
                       style={{ marginBottom: "5px" }}
                     >
                       {item}
@@ -753,10 +672,7 @@ const Inventory = (Props: any) => {
                   </span>
                 ))}
               </div>
-              <div
-                className="form-group container"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="form-group container" onClick={(e) => e.stopPropagation()}>
                 <div className="row column-dropdown">{locationList}</div>
               </div>
               <label className="font-weight-bold pt-2">Scanned Period</label>
@@ -770,9 +686,7 @@ const Inventory = (Props: any) => {
                           : "btn rounded-pill boxColor"
                       }
                       size="sm"
-                      onClick={(e) =>
-                        handleFilterChange(e, "scannedPeriod", item.label, item)
-                      }
+                      onClick={(e) => handleFilterChange(e, "scannedPeriod", item.label, item)}
                       style={{ marginBottom: "5px" }}
                     >
                       {item.label}
@@ -782,17 +696,10 @@ const Inventory = (Props: any) => {
               </div>
               {selectedFilters.scannedPeriod === "Custom" && (
                 <React.Fragment>
-                  <label
-                    className="font-weight-bold pt-2"
-                    htmlFor="order-date"
-                    style={{ width: "55%" }}
-                  >
+                  <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
                     From
                   </label>
-                  <label
-                    className="font-weight-bold pt-2"
-                    htmlFor="order-todate"
-                  >
+                  <label className="font-weight-bold pt-2" htmlFor="order-todate">
                     To
                   </label>
                   <div className="d-flex">
@@ -803,9 +710,7 @@ const Inventory = (Props: any) => {
                         dateFormat="dd-MM-yyyy"
                         customInput={<DateInput ref={ref} />}
                         selected={selectedFilters.lastmodifieddatefrom}
-                        onChange={(date: any) =>
-                          handleDateChange(date, "lastmodifieddatefrom")
-                        }
+                        onChange={(date: any) => handleDateChange(date, "lastmodifieddatefrom")}
                         showMonthDropdown
                         // showYearDropdown
                         dropdownMode="select"
@@ -822,9 +727,7 @@ const Inventory = (Props: any) => {
                         dateFormat="dd-MM-yyyy"
                         customInput={<DateInput ref={ref} />}
                         selected={selectedFilters.lastmodifieddateto}
-                        onChange={(date: any) =>
-                          handleDateChange(date, "lastmodifieddateto")
-                        }
+                        onChange={(date: any) => handleDateChange(date, "lastmodifieddateto")}
                         showMonthDropdown
                         // showYearDropdown
                         dropdownMode="scroll"
@@ -854,8 +757,7 @@ const Inventory = (Props: any) => {
                 >
                   Apply
                   <span>
-                    <img src={ArrowIcon} className="arrow-i" alt="" />{" "}
-                    <img src={RtButton} className="layout" alt="" />
+                    <img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
                   </span>
                 </button>
               </div>
