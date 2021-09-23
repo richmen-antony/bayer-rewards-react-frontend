@@ -27,7 +27,7 @@ export const getOverallInventory = (data: {}) => {
         await dispatch(Success(scans));
       })
       .catch((error: any) => {
-        dispatch({ type: LOADING_REQUEST, status: false });
+        // dispatch({ type: LOADING_REQUEST, status: false });
         dispatch(Error(error.message));
       });
 
@@ -48,7 +48,7 @@ export const setOverallInventory = (allScans: any) => {
 
 export const getBrandwiseInventory = (soldbyid: string, isfiltered: boolean, filteredDatas: {}, datas: {}) => {
   return async (dispatch: Dispatch<AnyAction>) => {
-    //   dispatch({ type : LOADING_REQUEST, status : true } );
+    dispatch({ type: LOADING_REQUEST, status: true });
     const { getBrandwiseInventory } = apiURL.inventory;
     let data = {
       countrycode: userDetails.countrycode,
@@ -63,7 +63,7 @@ export const getBrandwiseInventory = (soldbyid: string, isfiltered: boolean, fil
         await dispatch(Success(response));
       })
       .catch((error: any) => {
-        dispatch({ type: LOADING_REQUEST, status: false });
+        // dispatch({ type: LOADING_REQUEST, status: false });
         dispatch(Error(error.message));
       });
 
@@ -88,7 +88,7 @@ export const getProductwiseInventory = (
   datas: {}
 ) => {
   return async (dispatch: Dispatch<AnyAction>) => {
-    dispatch({ type: LOADING_REQUEST, status: true });
+    // dispatch({ type: LOADING_REQUEST, status: true });
     const { getProductwiseInventory } = apiURL.inventory;
     let data = {
       countrycode: userDetails.countrycode,
