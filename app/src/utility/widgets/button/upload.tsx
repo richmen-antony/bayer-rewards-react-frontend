@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import * as XLSX from "xlsx";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -12,6 +13,18 @@ import Cancel from "../../../assets/images/cancel.svg";
 import "../../../assets/scss/upload.scss";
 import { Alert } from "../../../utility/widgets/toaster";
 import { CustomButton } from ".";
+import {
+  invokeGetAuthService,
+  invokePostAuthService,
+} from "../../base/service";
+import { getLocalStorageData } from "../../base/localStore";
+import { apiURL } from "../../base/utils/config";
+import _ from "lodash";
+import { DateNFOption } from "xlsx";
+
+interface Sheet2CSVOpts {
+  header?: any;
+}
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -57,14 +70,37 @@ const DateInput = React.forwardRef(
   )
 );
 
-const UploadButton = (Props: any) => {
+const UploadButton = (props: Sheet2CSVOpts) => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [startDate, setStartDate] = useState(new Date());
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [downloadedData, setDownloadedData] = useState([]);
+  const [columns, setColumns] = useState([]);
+  const [data, setData] = useState([]);
+  const [isDragAndDrop, setIsDragAndDrop] = useState<boolean>(false);
 
   const uploadPopup = () => {
     setShowPopup(true);
+    let obj: any = getLocalStorageData("userData");
+    let userData = JSON.parse(obj);
+    const { downloadTemplate } = apiURL;
+    let data = {
+      countrycode: userData?.countrycode,
+    };
+    invokeGetAuthService(downloadTemplate, data)
+      .then((response) => {
+        // let a: any = [];
+        // let vals: any = response.slice(0, 75);
+        // a.push(vals);
+        const text = '[ "countrycode","rtmpartnerid","rtmrolename","materialid","openinginventory"]';
+        const myArr = JSON.parse(text);
+
+        setDownloadedData(myArr);
+      })
+      .catch((error) => {
+        console.log("Error message", error.message);
+      });
   };
 
   const handleClosePopup = () => {
@@ -72,12 +108,14 @@ const UploadButton = (Props: any) => {
   };
 
   const cancelUpload = () => {
+    setIsDragAndDrop(false);
     setSelectedFile(null);
     setFileName("");
   };
 
   const overrideEventDefaults = (event: any) => {
     event.preventDefault();
+    setIsDragAndDrop(true);
     event.stopPropagation();
   };
 
@@ -90,18 +128,21 @@ const UploadButton = (Props: any) => {
       Alert("warning", "Select only one file");
     } else {
       handleValidations(files, theFileName);
+      handleFileUploads(event);
     }
   };
 
   const onChangeHandler = (event: any) => {
+    setIsDragAndDrop(false);
     let files = event.target.files;
     const theFileName = files.item(0).name;
     handleValidations(files, theFileName);
+    handleFileUploads(event);
   };
 
   const handleValidations = (files: any, theFileName: any) => {
     let size = 5 * 1024 * 1024;
-    const types = ["application/vnd.ms-excel", ".xls", ".xlsx"];
+    const types = ["application/vnd.ms-excel"];
     let err = "";
     for (var x = 0; x < files.length; x++) {
       if (types.every((type) => files[x].type !== type)) {
@@ -117,6 +158,63 @@ const UploadButton = (Props: any) => {
           setFileName(theFileName);
         }
       }
+    }
+  };
+
+  const handleFileUploads = (e: any) => {
+    const file = isDragAndDrop ? e.dataTransfer.files[0] : e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (evt: any) => {
+      /* Parse data */
+      const bstr = evt.target.result;
+      const wb = XLSX.read(bstr, { type: "binary" });
+      /* Get first worksheet */
+      const wsname = wb.SheetNames[0];
+      const ws = wb.Sheets[wsname];
+      /* Convert array of arrays */
+      const { header } = props;
+      const data = XLSX.utils.sheet_to_csv(ws, header);
+      processDatas(data);
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  const processDatas = (dataString: any) => {
+    const dataStringLines = dataString.split(/\r\n|\n/);
+    const headers = dataStringLines[0].split(
+      /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/
+    );
+
+    // prepare columns list from headers
+    const columns = headers.map((c: any) => ({
+      name: c,
+      selector: c,
+    }));
+
+    let uploadedColumnNameArray: any = [];
+    columns.forEach((c: any) => {
+      uploadedColumnNameArray.push(Object.values(c)[0]);
+    });
+
+    setColumns(uploadedColumnNameArray);
+  };
+
+  const finalUploadData = () => {
+    console.log("downloadedData",downloadedData, columns )
+    if (_.isEqual(downloadedData, columns)) {
+      const { uploadTemplate } = apiURL;
+      const data: any = new FormData();
+      selectedFile != null && data.append("file", selectedFile);
+      invokePostAuthService(uploadTemplate, data)
+        .then((response: any) => {
+          console.log(response);
+        })
+        .catch((error: any) => {
+          let message = error.message;
+          console.log("warning", message);
+        });
+    } else {
+      Alert("warning", "Data mismatched. Please upload different Data");
     }
   };
 
@@ -137,7 +235,7 @@ const UploadButton = (Props: any) => {
                     <p className="upload-heading">Upload Inventory Files</p>
                   </div>
                   <div className="file-size-and-length">
-                    <p>Files Supported XSLS, CSV</p>
+                    <p>Files Supported CSV</p>
                     <p>Max upload size: 5 MB</p>
                   </div>
                   <div
@@ -173,7 +271,7 @@ const UploadButton = (Props: any) => {
                                 name="file"
                                 id="file"
                                 className="input-file"
-                                //  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                accept=".csv"
                                 onChange={onChangeHandler}
                               />
                             </div>
@@ -229,7 +327,10 @@ const UploadButton = (Props: any) => {
                   padding: "7px",
                   border: "1px solid  #7eb343",
                 }}
-                //	handleClick={}
+                handleClick={(e: any) => {
+                  e.preventDefault();
+                  finalUploadData();
+                }}
               />
             </DialogActions>
           </SimpleDialog>
