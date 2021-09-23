@@ -774,7 +774,7 @@ const Inventory = (Props: any) => {
             </Filter>
           </div>
         </div>
-        <div className="row" style={{ opacity: "0.9" }}>
+        <div className="row" style={{ opacity: "0.99" }}>
           <div className="col-sm-6">
             <OverallInventory
               allConsolidatedInventory={allConsolidatedInventory}

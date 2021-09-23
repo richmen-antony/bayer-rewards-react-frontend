@@ -17,8 +17,20 @@ export interface DropdownProps {
     id?:string;
     dataTestId?:string
   }
+  
   const customStyles = {
-    indicatorSeparator:(provided:any, state:any)=>({
+  control: (provided:any, state:any) => ({
+    ...provided,
+    border: "1px solid #1f445a",
+    // This line disable the blue border
+    boxShadow: 'none',
+    outline: 'none',
+    '&:hover': {
+      outline: 'none'
+    }
+  }),
+
+  indicatorSeparator:(provided:any, state:any)=>({
       ...provided,
       display:"none"
     }),
@@ -27,7 +39,7 @@ export interface DropdownProps {
       ...provided,
       padding:0
     }),
-
+  
   }
   const DropdownIndicator = (
     props: any
@@ -39,7 +51,8 @@ export interface DropdownProps {
      
     );
   };
-export default function ReactSelect({
+
+  export default function ReactSelect({
     label,
     control,
     defaultValue,
