@@ -82,9 +82,9 @@ const Inventory = (Props: any) => {
     geolevel1: "ALL",
     geolevel2: "ALL",
     lastmodifieddatefrom: new Date(new Date().getFullYear(), 0, 1),
-    lastmodifieddateto: new Date(new Date().getFullYear(), 11, 31),
+    lastmodifieddateto: fiscalYear === new Date().getFullYear() ? new Date() : new Date(new Date().getFullYear(), 11, 31),
     scanneddatefrom: new Date(new Date().getFullYear(), 0, 1),
-    scanneddateto: new Date(new Date().getFullYear(), 11, 31),
+    scanneddateto: fiscalYear === new Date().getFullYear() ? new Date() : new Date(new Date().getFullYear(), 11, 31),
     scannedPeriod: "All Months",
   });
 
@@ -463,9 +463,12 @@ const Inventory = (Props: any) => {
     if (e.name === "fiscalYear") {
       setFiscalYear(selectedOption.value);
       setSelectedFromDateOfYear(`01/01/${selectedOption.value}`);
-      setSelectedToDateOfYear(`12/31/${selectedOption.value}`);
+      setSelectedToDateOfYear(
+        fiscalYear === new Date().getFullYear() ? moment(new Date()).format("DD/MM/YYYY") : `12/31/${selectedOption.value}`
+      );
       let fiscalStartDate = new Date(selectedOption.value, 0, 1);
-      let fiscalEndDate = new Date(selectedOption.value, 11, 31);
+      let fiscalEndDate =
+        selectedOption.value === new Date().getFullYear() ? new Date() : new Date(selectedOption.value, 11, 31);
       setSelectedFilters({
         ...selectedFilters,
         lastmodifieddatefrom: fiscalStartDate,
@@ -611,7 +614,7 @@ const Inventory = (Props: any) => {
   };
   const resetFilter = (e: any) => {
     let fiscalStartDate = new Date(fiscalYear, 0, 1);
-    let fiscalEndDate = new Date(fiscalYear, 11, 31);
+    let fiscalEndDate = fiscalYear === new Date().getFullYear() ? new Date() : new Date(fiscalYear, 11, 31);
     // let conditionIsFilter = searchText ? true : false;
     const options: any = { value: "ALL", label: "ALL" };
     getDynamicOptionFields("reset");
@@ -739,7 +742,7 @@ const Inventory = (Props: any) => {
                         // showYearDropdown
                         dropdownMode="scroll"
                         minDate={new Date(selectedFromDateOfYear)}
-                        maxDate={new Date(selectedToDateOfYear)}
+                        maxDate={fiscalYear === new Date().getFullYear() ? new Date() : new Date(selectedToDateOfYear)}
                         // showDateMonthPicker
                       />
                     </div>
