@@ -991,7 +991,7 @@ class SellFarmer extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															maxDate={new Date()}
 														/>
 													</div>
 													<div className="p-2">-</div>
@@ -1006,7 +1006,7 @@ class SellFarmer extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															maxDate={new Date()}
 														/>
 													</div>
 												</div>
