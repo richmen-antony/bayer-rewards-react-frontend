@@ -54,4 +54,5 @@ export const apiURL = {
   },
   getWarehouse: "scangoods/dispatch/history",
   getWarehouseDownload: "scangoods/dispatch/history/download",
+  getWarehouseOptionsList:"scangoods/dispatch/history/warehouse"
 };

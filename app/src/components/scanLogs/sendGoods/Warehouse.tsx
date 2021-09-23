@@ -156,14 +156,10 @@ class Warehouse extends Component<Props, States> {
 				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
 			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
 			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
-			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
+			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
 			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
-			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
-			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
-			filter.partnerType = null;
+			filter.warehouseid = filter.warehouseid === "ALL" ? null : filter.warehouseid;
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
@@ -238,7 +234,6 @@ class Warehouse extends Component<Props, States> {
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
 			scantype: this.state.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
-			soldbyrole: "DISTRIBUTOR",
 			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (this.state.isFiltered) {
@@ -253,14 +248,10 @@ class Warehouse extends Component<Props, States> {
 				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
 			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
 			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
-			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
+			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
 			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
-			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
-			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
-			filter.partnerType = null;
+			filter.warehouseid = filter.warehouseid === "ALL" ? null : filter.warehouseid;
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
@@ -374,15 +365,15 @@ class Warehouse extends Component<Props, States> {
 							</th>
 
 							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "tousername", allWarehouseData, isAsc)}>
-								RETAILER NAME/ID
+								{this.props.selectedScanType === "SG - W2R" ? "RETAILER NAME/ID" :"DISTRIBUTOR NAME/ID"}
 								{activeSortKeyIcon === "tousername" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
 							{this.props.selectedScanType === "SG - W2R" && (
-								<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "soldtostore", allWarehouseData, isAsc)}>
+								<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "touserstorename", allWarehouseData, isAsc)}>
 									STORE NAME
-									{activeSortKeyIcon === "soldtostore" ? (
+									{activeSortKeyIcon === "touserstorename" ? (
 										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 									) : null}
 								</th>
@@ -393,13 +384,13 @@ class Warehouse extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "totalqty", allWarehouseData, isAsc)}>
+							<th style={{ width: "10%" ,textAlign:"center"}} onClick={(e) => this.handleSort(e, "totalqty", allWarehouseData, isAsc)}>
 								TOTAL QTY
 								{activeSortKeyIcon === "totalqty" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "deliverystatus", allWarehouseData, isAsc)}>
+							<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "deliverystatus", allWarehouseData, isAsc)}>
 								GOODS STATUS
 								{activeSortKeyIcon === "deliverystatus" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
@@ -461,7 +452,7 @@ class Warehouse extends Component<Props, States> {
 											</div>
 					
 										</td>
-										{this.props.selectedScanType === "SG - W2R" && <td>{_.startCase(_.toLower(value.soldtostore))}</td>}
+										{this.props.selectedScanType === "SG - W2R" && <td>{_.startCase(_.toLower(value.touserstorename))}</td>}
 										<td
 											onClick={(event) => {
 												this.showPopup(event, "showPopup");
@@ -484,7 +475,7 @@ class Warehouse extends Component<Props, States> {
 												<label>{value.scannedbyid}</label>
 											</div>
 										</td>
-										<td>{value.totalqty}</td>
+										<td style={{textAlign:"center"}}>{value.totalqty}</td>
 										<td>
 											<span className="status active">
 												<i className="fas fa-clock"></i>
@@ -522,7 +513,7 @@ class Warehouse extends Component<Props, States> {
 											{retailerPopupData[condFilterScan === "distAndRetailer" ? "tousername" : "scannedbyname"]},
 											<label>
 												{_.startCase(
-													_.toLower(retailerPopupData[condFilterScan === "distAndRetailer" ? "touserrole" : "soldbyrole"])
+													_.toLower(retailerPopupData[condFilterScan === "distAndRetailer" ? "touserrole" : "scannedbyrole"])
 												)}
 											</label>
 										</p>
@@ -564,7 +555,7 @@ class Warehouse extends Component<Props, States> {
 											})}
 										<div className="content-list">
 											<label>Postal Code</label>
-											<p>{retailerPopupData[condFilterScan === "distAndRetailer" ? "soldtozipcode" : "soldbyzipcode"]}</p>
+											<p>{retailerPopupData[condFilterScan === "distAndRetailer" ? "touserzipcode" : "soldbyzipcode"] || "NA"}</p>
 										</div>
 									</div>
 								</div>

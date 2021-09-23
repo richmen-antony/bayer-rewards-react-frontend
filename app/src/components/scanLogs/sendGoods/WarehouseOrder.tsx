@@ -319,14 +319,11 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 											<td>
 												<p className="total">Total</p>
 											</td>
-											{/* <td className="text-center">
-												<span className="intendedquantity">{data.totalintendedquantity}</span>
-											</td> */}
 											<td className="text-center">
-												<span className="orderedquantity">{data.totalorderedquantity}</span>
+												<span className="orderedquantity">{data.totalqty}</span>
 											</td>
 											<td>
-												<span className="productprice">{"MK " + data.totalqty}</span>
+												<span className="productprice">{"MK " + data.totalcost}</span>
 											</td>
 											<td></td>
 										</tr>
