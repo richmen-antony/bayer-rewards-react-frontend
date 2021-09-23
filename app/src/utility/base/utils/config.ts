@@ -38,8 +38,8 @@ export const apiURL = {
   getPartnerList: "admin/partnerlist",
   featureToggle: "feature/getFeatures",
   updateFeatureToggle: "feature/EditFeatures",
-  downloadTemplate:"inventory/report/template",
-    uploadTemplate:"inventory/upload",
+  downloadTemplate: "inventory/report/template",
+  uploadTemplate: "inventory/upload",
   consolidatedScans: {
     getOverallScans: "scangoods/report/level1",
     getScannedBrands: "scangoods/report/level2",
@@ -50,9 +50,10 @@ export const apiURL = {
     getOverallInventory: "inventory/report/level1",
     getBrandwiseInventory: "inventory/report/level2",
     getProductwiseInventory: "inventory/report/level3",
-    downloadScans: "inventory/report/download",
+    downloadInventory: "inventory/report/download",
+    downloadTemplate: "inventory/report/template",
   },
   getWarehouse: "scangoods/dispatch/history",
   getWarehouseDownload: "scangoods/dispatch/history/download",
-  getWarehouseOptionsList:"scangoods/dispatch/history/warehouse"
+  getWarehouseOptionsList: "scangoods/dispatch/history/warehouse",
 };

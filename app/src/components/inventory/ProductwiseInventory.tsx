@@ -35,7 +35,7 @@ export const ProductwiseInventory = ({
               <tr>
                 <th
                   onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc, "ProductwiseInventory")}
-                  style={{ width: "25%", padding: "5px" }}
+                  style={{ width: "25%" }}
                   key="productname"
                 >
                   PRODUCT
@@ -108,9 +108,7 @@ export const ProductwiseInventory = ({
                       <td style={{ width: "25%", padding: "5px" }}>
                         {_.startCase(_.toLower(item.productname))}
                         <br />
-                        <label style={{ fontSize: "10px" }}>
-                          {item.productid}-{item.pkglevel}
-                        </label>
+                        <label style={{ fontSize: "11px !important" }}>{item.materialid}</label>
                       </td>
                       <td className="text-right" style={{ width: "15%", paddingRight: "0.5em" }}>
                         {item.openinginventory}

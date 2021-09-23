@@ -21,7 +21,7 @@ import {
   getGeographicLevel1Options,
   getGeoLocationFields,
   setGeolevel1Options,
-  downloadInventoryCsvFile,
+  downloadFile,
 } from "../../redux/actions/common/common";
 import {
   getOverallInventory,
@@ -413,8 +413,15 @@ const Inventory = (Props: any) => {
       type = "BrandWise_Inventory";
     } else if (type === "product") {
       type = "ProductWise_Inventory";
+    } else if (type === "template") {
+      type = "Download_Template";
     }
-    dispatch(downloadInventoryCsvFile(data, type));
+    if (type === "Download_Template") {
+      let templateData = { countrycode: userData?.countrycode };
+      dispatch(downloadFile(templateData, type, "template"));
+    } else {
+      dispatch(downloadFile(data, type, "inventory"));
+    }
   };
 
   const handlePartnerChange = (name: string) => {

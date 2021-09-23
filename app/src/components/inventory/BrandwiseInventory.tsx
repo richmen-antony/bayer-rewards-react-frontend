@@ -41,7 +41,7 @@ const BrandwiseInventory = ({
               <tr>
                 <th
                   onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc, "BrandwiseInventory")}
-                  style={{ width: "25%", padding: "5px" }}
+                  style={{ width: "25%" }}
                   key="productbrand"
                 >
                   BRAND

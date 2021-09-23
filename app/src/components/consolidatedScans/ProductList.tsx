@@ -34,7 +34,7 @@ export const ProductList = ({
               <tr>
                 <th
                   onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc, "scannedProducts")}
-                  style={{ width: "23%", padding: "5px" }}
+                  style={{ width: "23%" }}
                   key="productname"
                 >
                   PRODUCT
@@ -70,7 +70,7 @@ export const ProductList = ({
                     direction: "rtl",
                   }}
                 >
-                  S2F-WALK-IN-SALES
+                  S2F-WALK-IN
                 </th>
                 <th
                   style={{
@@ -80,7 +80,7 @@ export const ProductList = ({
                     direction: "rtl",
                   }}
                 >
-                  S2F-ADVISOR SALES
+                  S2F-ADVISOR
                 </th>
               </tr>
             </thead>
@@ -96,7 +96,7 @@ export const ProductList = ({
                       <td style={{ width: "23%", padding: "5px" }}>
                         {_.startCase(_.toLower(item.productname))}
                         <br />
-                        <label style={{ fontSize: "10px" }}>
+                        <label style={{ fontSize: "11px" }}>
                           {item.productid}-{item.pkglevel}
                         </label>
                       </td>

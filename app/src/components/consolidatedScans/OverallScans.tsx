@@ -104,9 +104,10 @@ export const OverallScans = ({
               <thead>
                 <tr>
                   <th
-                    style={{ width: "28%", padding: "5px" }}
+                    style={{ width: "28%" }}
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedScans, isAsc, "overallScans")}
                     key="firstname"
+                    className="consolidated"
                   >
                     PARTNER NAME/ID
                     {tableCellIndex === 0 && tableName === "overallScans" ? (
@@ -141,7 +142,7 @@ export const OverallScans = ({
                       direction: "rtl",
                     }}
                   >
-                    S2F-WALK-IN-SALES
+                    S2F-WALK-IN
                   </th>
                   <th
                     style={{
@@ -151,7 +152,7 @@ export const OverallScans = ({
                       direction: "rtl",
                     }}
                   >
-                    S2F-ADVISOR SALES
+                    S2F-ADVISOR
                   </th>
                 </tr>
               </thead>
@@ -183,7 +184,7 @@ export const OverallScans = ({
                             }}
                           />
                           <br />
-                          <label style={{ fontSize: "9px" }}>{item.soldbyid}</label>
+                          <label style={{ fontSize: "11px" }}>{item.soldbyid}</label>
                         </td>
                         <td style={{ width: "15%", padding: "5px" }} className="text-right">
                           {item.SEND_GOOD}

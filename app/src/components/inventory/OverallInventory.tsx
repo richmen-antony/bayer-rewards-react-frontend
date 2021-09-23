@@ -105,7 +105,7 @@ export const OverallInventory = ({
               <thead>
                 <tr>
                   <th
-                    style={{ width: "25%", padding: "5px" }}
+                    style={{ width: "25%" }}
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedInventory, isAsc, "overallScans")}
                     key="firstname"
                   >
@@ -183,7 +183,7 @@ export const OverallInventory = ({
                         key={idx}
                         onClick={() => getSelectedBrands(item.rtmppartnerid, idx, "selected", item.productbrand)}
                       >
-                        <td style={{ width: "25%", padding: "5px" }}>
+                        <td style={{ width: "26%", padding: "5px" }}>
                           {_.startCase(_.toLower(item.firstname)) + " " + _.startCase(_.toLower(item.lastname))}
                           <img
                             className="retailer-icon"
@@ -195,7 +195,7 @@ export const OverallInventory = ({
                             }}
                           />
                           <br />
-                          <label style={{ fontSize: "9px" }}>{item.rtmppartnerid}</label>
+                          <label style={{ fontSize: "11px !important" }}>{item.rtmppartnerid}</label>
                         </td>
                         <td style={{ width: "15%", padding: "5px" }} className="text-right">
                           {item.openinginventory}

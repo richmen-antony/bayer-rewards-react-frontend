@@ -40,7 +40,7 @@ const ProductBrandList = ({
               <tr>
                 <th
                   onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc, "scannedBrands")}
-                  style={{ width: "23%", padding: "5px" }}
+                  style={{ width: "23%" }}
                   key="productbrand"
                 >
                   BRAND
@@ -76,7 +76,7 @@ const ProductBrandList = ({
                     direction: "rtl",
                   }}
                 >
-                  S2F-WALK-IN-SALES
+                  S2F-WALK-IN
                 </th>
                 <th
                   style={{
@@ -86,7 +86,7 @@ const ProductBrandList = ({
                     direction: "rtl",
                   }}
                 >
-                  S2F-ADVISOR SALES
+                  S2F-ADVISOR
                 </th>
               </tr>
             </thead>

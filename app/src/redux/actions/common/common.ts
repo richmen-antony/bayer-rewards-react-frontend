@@ -67,29 +67,18 @@ export const setGeolevel1Options = (levels: any) => {
   };
 };
 
-export const downloadScansCsvFile = (data: {}, type: string) => {
+export const downloadFile = (data: {}, type: string, pageType: string) => {
   return (dispatch: any) => {
     dispatch({ type: LOADING_REQUEST, status: true });
-    const { downloadScans } = apiURL.consolidatedScans;
-    invokeGetAuthService(downloadScans, data)
-      .then((response) => {
-        downloadCsvFile(response, type);
-        dispatch({ type: LOADING_REQUEST, status: false });
-      })
-      .catch((error: any) => {
-        dispatch({ type: LOADING_REQUEST, status: false });
-        dispatch(Error(error.message));
-      });
-    function Error(errorMsg: any) {
-      return { type: GET_GEOLOCATION_FIELDS_ERROR, errorMsg };
+    let url: string = "";
+    if (pageType === "consolidatedScans") {
+      url = apiURL.consolidatedScans.downloadScans;
+    } else if (pageType === "inventory") {
+      url = apiURL.inventory.downloadInventory;
+    } else if (pageType === "template") {
+      url = apiURL.inventory.downloadTemplate;
     }
-  };
-};
-export const downloadInventoryCsvFile = (data: {}, type: string) => {
-  return (dispatch: any) => {
-    dispatch({ type: LOADING_REQUEST, status: true });
-    const { downloadScans } = apiURL.inventory;
-    invokeGetAuthService(downloadScans, data)
+    invokeGetAuthService(url, data)
       .then((response) => {
         downloadCsvFile(response, type);
         dispatch({ type: LOADING_REQUEST, status: false });

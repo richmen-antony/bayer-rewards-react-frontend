@@ -21,7 +21,7 @@ import {
   getGeographicLevel1Options,
   getGeoLocationFields,
   setGeolevel1Options,
-  downloadScansCsvFile,
+  downloadFile,
 } from "../../redux/actions/common/common";
 import {
   getOverallScans,
@@ -380,7 +380,7 @@ const ConsolidatedScans = (Props: any) => {
     } else if (type === "product") {
       type = "ProductWise_Scans";
     }
-    dispatch(downloadScansCsvFile(data, type));
+    dispatch(downloadFile(data, type, "consolidatedScans"));
   };
 
   const handlePartnerChange = (name: string) => {
