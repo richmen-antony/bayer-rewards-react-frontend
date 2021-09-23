@@ -93,7 +93,8 @@ const UploadButton = (props: Sheet2CSVOpts) => {
         // let a: any = [];
         // let vals: any = response.slice(0, 75);
         // a.push(vals);
-        const text = '[ "countrycode","rtmpartnerid","rtmrolename","materialid","openinginventory"]';
+        const text =
+          '["countrycode","rtmpartnerid","rtmrolename","materialid","openinginventory"]';
         const myArr = JSON.parse(text);
 
         setDownloadedData(myArr);
@@ -154,7 +155,7 @@ const UploadButton = (props: Sheet2CSVOpts) => {
             (err += files[x].type + "is too large, please pick a smaller file")
           );
         } else {
-          setSelectedFile(files);
+          //setSelectedFile(files);
           setFileName(theFileName);
         }
       }
@@ -177,6 +178,7 @@ const UploadButton = (props: Sheet2CSVOpts) => {
       processDatas(data);
     };
     reader.readAsBinaryString(file);
+    setSelectedFile(file);
   };
 
   const processDatas = (dataString: any) => {
@@ -200,21 +202,36 @@ const UploadButton = (props: Sheet2CSVOpts) => {
   };
 
   const finalUploadData = () => {
-    console.log("downloadedData",downloadedData, columns )
+    //console.log("downloadedData", downloadedData, columns);
     if (_.isEqual(downloadedData, columns)) {
       const { uploadTemplate } = apiURL;
-      const data: any = new FormData();
-      selectedFile != null && data.append("file", selectedFile);
-      invokePostAuthService(uploadTemplate, data)
+      const formData: any = new FormData();
+      let data = selectedFile != null && formData.append("file", selectedFile);
+
+      invokePostAuthService(uploadTemplate, formData)
         .then((response: any) => {
           console.log(response);
+          setShowPopup(false);
+          setTimeout(() => {
+            Alert(
+              "success",
+              response.body.duplicate.length +
+                " " +
+                "- Inventory data Duplicated" +
+                "\n" +
+                response.body.inserted.length +
+                " " +
+                " -  Inventory data Uploaded"
+            );
+          }, 400);
+          setSelectedFile(null);
         })
         .catch((error: any) => {
           let message = error.message;
           console.log("warning", message);
         });
     } else {
-      Alert("warning", "Data mismatched. Please upload different Data");
+      Alert("warning", "Templete format mismatched. Please upload valid format");
     }
   };
 
