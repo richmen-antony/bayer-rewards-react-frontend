@@ -1154,7 +1154,7 @@ class SendGoods extends Component<Props, States> {
 									? this.distributorRef?.state?.allDistributorData
 									: this.warehouseRef?.state?.allWarehouseData
 							}
-							totalLabel={"Sales"}
+							totalLabel={selectedScanType}
 							onRef={(node: any) => {
 								this.paginationRef = node;
 							}}

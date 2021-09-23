@@ -24,6 +24,7 @@ export interface DropdownProps {
     border: "1px solid #1f445a",
     // This line disable the blue border
     boxShadow: 'none',
+    height: "30px",
     outline: 'none',
     '&:hover': {
       outline: 'none'

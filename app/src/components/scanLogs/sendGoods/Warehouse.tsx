@@ -231,7 +231,7 @@ class Warehouse extends Component<Props, States> {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
-			scantype: this.state.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
+			scantype: this.props.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
 			geolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (this.state.isFiltered) {
@@ -259,7 +259,7 @@ class Warehouse extends Component<Props, States> {
 		invokeGetAuthService(getWarehouseDownload, data)
 			.then((response) => {
 				const data = response;
-				downloadCsvFile(data, `${this.state.selectedScanType}`);
+				downloadCsvFile(data, `${this.props.selectedScanType}`);
 			})
 			.catch((error) => {
 				ErrorMsg(error);
