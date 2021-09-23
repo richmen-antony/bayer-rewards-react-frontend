@@ -507,8 +507,16 @@ cus-btn-consolidatedscanlog-filter[disabled] {
     }
   }
   .consolidatedSales-container {
-    height: 65vh;
-    overflow: auto;
+    height: 73vh !important;
+  }
+  .consolidatedSales-table.overallscan {
+    height: 73vh !important;
+  }
+  .consolidatedSales-table.scannedbrands {
+    height: 30vh !important;
+  }
+  .consolidatedSales-table.scannedProducts {
+    height: 36vh !important;
   }
 }
 
@@ -520,15 +528,15 @@ cus-btn-consolidatedscanlog-filter[disabled] {
 
 @media only screen and (min-width: 2560px) and (max-width: 2880px) {
   .consolidatedSales-container {
-    height: 80vh;
+    height: 80vh !important;
   }
   .consolidatedSales-table {
-    height: 72vh !important;
+    height: 80vh !important;
   }
   .consolidatedSales-table.scannedbrands {
-    height: 35vh !important;
+    height: 38vh !important;
   }
   .consolidatedSales-table.scannedProducts {
-    height: 33vh !important;
+    height: 36vh !important;
   }
 }

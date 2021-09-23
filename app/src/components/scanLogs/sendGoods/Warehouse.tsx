@@ -8,7 +8,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import NoImage from "../../../assets/images/Group_4736.svg";
-import OrderTable from "../Order";
+import WarehouseOrderTable from "./WarehouseOrder";
 import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import _ from "lodash";
@@ -103,7 +103,7 @@ class Warehouse extends Component<Props, States> {
 			retailerOptions: [],
 			loggedUserInfo: {},
 			inActiveFilter: false,
-			activeSortKeyIcon: "did",
+			activeSortKeyIcon: "deliveryid",
 		};
 		this.timeOut = 0;
 	}
@@ -156,14 +156,10 @@ class Warehouse extends Component<Props, States> {
 				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
 			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
 			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
-			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
+			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
 			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
-			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
-			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
-			filter.partnerType = null;
+			filter.warehouseid = filter.warehouseid === "ALL" ? null : filter.warehouseid;
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
@@ -238,7 +234,6 @@ class Warehouse extends Component<Props, States> {
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
 			scantype: this.state.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
-			soldbyrole: "DISTRIBUTOR",
 			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (this.state.isFiltered) {
@@ -253,14 +248,10 @@ class Warehouse extends Component<Props, States> {
 				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
 			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
 			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
-			filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
-			filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
-			filter.scanstatus = filter.scanstatus === "ALL" ? null : filter.scanstatus;
+			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
 			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
 			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
-			filter.batchno = filter.batchno === "ALL" ? null : filter.batchno;
-			filter.soldtoid = filter.soldtoid === "ALL" ? null : filter.soldtoid;
-			filter.partnerType = null;
+			filter.warehouseid = filter.warehouseid === "ALL" ? null : filter.warehouseid;
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
@@ -279,7 +270,7 @@ class Warehouse extends Component<Props, States> {
 	};
 
 	filterScans = (filterValue: any) => {
-		let name = this.state.condFilterScan === "customer" ? "soldtoid" : "soldbyid";
+		let name = this.state.condFilterScan === "distAndRetailer" ? "soldtoid" : "soldbyid";
 		const { retailerOptions, distributorOptions, selectedCustomerOptions } = this.state;
 		let options = selectedCustomerOptions ? { ...selectedCustomerOptions } : { label: "ALL", value: "ALL" };
 		let filters = { ...this.state.selectedFilters };
@@ -322,26 +313,18 @@ class Warehouse extends Component<Props, States> {
 		invokeGetAuthService(getTemplateData, data)
 			.then((response: any) => {
 				let locationData = response.body[0].locationhierarchy;
-				let levels: any = [];
-				locationData.forEach((item: any) => {
-					levelsName.push(item.name.toLowerCase());
-					let locationhierlevel = item.level;
-					let geolevels = "geolevel" + locationhierlevel;
-					levels.push(geolevels);
-				});
 				let levelsData: any = [];
 				locationData?.length > 0 &&
 					locationData.forEach((item: any, index: number) => {
 						if (index > 0) {
 							let locationhierlevel = item.level;
-							let geolevels = "geolevel" + locationhierlevel;
+							let geolevels = "geo" + locationhierlevel;
 							let obj = { name: item.name, geolevels };
 							levelsData.push(obj);
 						}
 					});
 				this.setState({
 					isLoader: false,
-					geographicFields: levels,
 					locationData: levelsData,
 				});
 			})
@@ -368,9 +351,9 @@ class Warehouse extends Component<Props, States> {
 				<table className="table">
 					<thead>
 						<tr>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "did", allWarehouseData, isAsc)}>
+							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "deliveryid", allWarehouseData, isAsc)}>
 								DELIVERY #
-								{activeSortKeyIcon === "did" ? (
+								{activeSortKeyIcon === "deliveryid" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
@@ -382,15 +365,15 @@ class Warehouse extends Component<Props, States> {
 							</th>
 
 							<th style={{ width: "16%" }} onClick={(e) => this.handleSort(e, "tousername", allWarehouseData, isAsc)}>
-								RETAILER NAME/ID
+								{this.props.selectedScanType === "SG - W2R" ? "RETAILER NAME/ID" :"DISTRIBUTOR NAME/ID"}
 								{activeSortKeyIcon === "tousername" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
 							{this.props.selectedScanType === "SG - W2R" && (
-								<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "soldtostore", allWarehouseData, isAsc)}>
+								<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "touserstorename", allWarehouseData, isAsc)}>
 									STORE NAME
-									{activeSortKeyIcon === "soldtostore" ? (
+									{activeSortKeyIcon === "touserstorename" ? (
 										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 									) : null}
 								</th>
@@ -401,13 +384,13 @@ class Warehouse extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "totalqty", allWarehouseData, isAsc)}>
+							<th style={{ width: "10%" ,textAlign:"center"}} onClick={(e) => this.handleSort(e, "totalqty", allWarehouseData, isAsc)}>
 								TOTAL QTY
 								{activeSortKeyIcon === "totalqty" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "deliverystatus", allWarehouseData, isAsc)}>
+							<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "deliverystatus", allWarehouseData, isAsc)}>
 								GOODS STATUS
 								{activeSortKeyIcon === "deliverystatus" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
@@ -437,7 +420,7 @@ class Warehouse extends Component<Props, States> {
 										style={{ cursor: "pointer" }}
 										key={i}
 									>
-										<td>{value.did}</td>
+										<td>{value.deliveryid}</td>
 										<td>
 											<div className="farmer-id">
 												<p>{value.warehousename}</p>
@@ -450,7 +433,7 @@ class Warehouse extends Component<Props, States> {
 
 										<td onClick={(event) => {
 												this.showPopup(event, "showPopup");
-												this.handleUpdateRetailer(value, "customer");
+												this.handleUpdateRetailer(value, "distAndRetailer");
 											}}
 											style={{ cursor: "pointer" }}>
 										<div className="retailer-id">
@@ -469,7 +452,7 @@ class Warehouse extends Component<Props, States> {
 											</div>
 					
 										</td>
-										{this.props.selectedScanType === "SG - W2R" && <td>{_.startCase(_.toLower(value.soldtostore))}</td>}
+										{this.props.selectedScanType === "SG - W2R" && <td>{_.startCase(_.toLower(value.touserstorename))}</td>}
 										<td
 											onClick={(event) => {
 												this.showPopup(event, "showPopup");
@@ -492,7 +475,7 @@ class Warehouse extends Component<Props, States> {
 												<label>{value.scannedbyid}</label>
 											</div>
 										</td>
-										<td>{value.totalqty}</td>
+										<td style={{textAlign:"center"}}>{value.totalqty}</td>
 										<td>
 											<span className="status active">
 												<i className="fas fa-clock"></i>
@@ -527,10 +510,10 @@ class Warehouse extends Component<Props, States> {
 								<div className="popup-content">
 									<div className={`popup-title`}>
 										<p>
-											{retailerPopupData[condFilterScan === "customer" ? "soldtoname" : "soldbyname"]},
+											{retailerPopupData[condFilterScan === "distAndRetailer" ? "tousername" : "scannedbyname"]},
 											<label>
 												{_.startCase(
-													_.toLower(retailerPopupData[condFilterScan === "customer" ? "soldtorole" : "soldbyrole"])
+													_.toLower(retailerPopupData[condFilterScan === "distAndRetailer" ? "touserrole" : "scannedbyrole"])
 												)}
 											</label>
 										</p>
@@ -538,15 +521,15 @@ class Warehouse extends Component<Props, States> {
 									<div className="popup-content-row">
 										<div className="content-list">
 											<label>Username</label>
-											<p>{retailerPopupData[condFilterScan === "customer" ? "soldtoid" : "soldbyid"]}</p>
+											<p>{retailerPopupData[condFilterScan === "distAndRetailer" ? "touserid" : "scannedbyid"]}</p>
 										</div>
 										<div className="content-list">
 											<label>Store Name</label>
-											<p>{retailerPopupData[condFilterScan === "customer" ? "soldtostore" : "soldbystore"]}</p>
+											<p>{retailerPopupData[condFilterScan === "distAndRetailer" ? "touserstorename" : "soldbystore"] || "NA"}</p>
 										</div>
 										<div className="content-list">
 											<label>Phone Number</label>
-											<p>{retailerPopupData[condFilterScan === "customer" ? "soldtophonenumber" : "soldbyphonenumber"]}</p>
+											<p>{retailerPopupData[condFilterScan === "distAndRetailer" ? "touserphone" : "scannedbyphone"]}</p>
 										</div>
 										{this.state.locationData?.length > 0 &&
 											this.state.locationData.map((location: any, locationIndex: number) => {
@@ -554,15 +537,16 @@ class Warehouse extends Component<Props, States> {
 													location.name === "ADD" || location.name === "EPA"
 														? location.name
 														: _.startCase(_.toLower(location.name));
+														console.log("level",location.geolevels)
 												return (
 													<div className="content-list" key={locationIndex}>
 														<label>{nameCapitalized}</label>
 														<p>
 															{
 																retailerPopupData[
-																	condFilterScan === "customer"
-																		? "soldto" + location.geolevels
-																		: "soldby" + location.geolevels
+																	condFilterScan === "distAndRetailer"
+																		? "fromuser" + location.geolevels
+																		: "scannedby" + location.geolevels
 																]
 															}
 														</p>
@@ -571,7 +555,7 @@ class Warehouse extends Component<Props, States> {
 											})}
 										<div className="content-list">
 											<label>Postal Code</label>
-											<p>{retailerPopupData[condFilterScan === "customer" ? "soldtozipcode" : "soldbyzipcode"]}</p>
+											<p>{retailerPopupData[condFilterScan === "distAndRetailer" ? "touserzipcode" : "soldbyzipcode"] || "NA"}</p>
 										</div>
 									</div>
 								</div>
@@ -588,7 +572,7 @@ class Warehouse extends Component<Props, States> {
 									border: "1px solid  #7eb343",
 								}}
 								handleClick={() =>
-									this.filterScans(retailerPopupData[condFilterScan === "customer" ? "soldtoid" : "soldbyid"])
+									this.filterScans(retailerPopupData[condFilterScan === "distAndRetailer" ? "soldtoid" : "soldbyid"])
 								}
 							/>
 						</DialogActions>
@@ -598,7 +582,7 @@ class Warehouse extends Component<Props, States> {
 				)}
 
 				{showProductPopup ? (
-					<OrderTable open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
+					<WarehouseOrderTable open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
 				) : (
 					""
 				)}

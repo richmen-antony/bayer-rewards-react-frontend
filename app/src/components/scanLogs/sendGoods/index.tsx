@@ -121,15 +121,14 @@ class SendGoods extends Component<Props, States> {
 				soldtoid: "ALL",
 			},
 			selectedWarehouseFilters: {
-				scanstatus: "ALL",
+				dispatchstatus: "ALL",
 				ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
 				ordereddateto: new Date(),
-				retailer: "ALL",
-				partnerType: "Retailers",
 				scannedPeriod: "",
 				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 				scandateto: moment(new Date()).format("YYYY-MM-DD"),
-				soldtoid: "ALL",
+				warehouseid: "ALL",
+				customerid:"ALL"
 			},
 			dateErrMsg: "",
 			searchText: "",
@@ -193,7 +192,7 @@ class SendGoods extends Component<Props, States> {
 			warehouseScanTypeList:[
 			{ value: "SG - W2D", label: "SG - W2D" },
 			{ value: "SG - W2R", label: "SG - W2R" },],
-			goodStatus:[ {value:"ALL",label:"ALL"},{value:"Dispatch Sent",label:"Dispatch Sent"},{value:"Dispatch Received",label:"Dispatch Received"},]
+			goodStatus:[ {value:"ALL",label:"ALL"},{value:"GOODS_DISPATCHED",label:"Dispatch Sent"},{value:"GOODS_RECEIVED",label:"Dispatch Received"},]
 
 		};
 		this.timeOut = 0;
@@ -211,6 +210,7 @@ class SendGoods extends Component<Props, States> {
 				this.getHierarchyDatas();
 				this.getBatchList();
 				this.getPartnerList();
+				this.getWarehouseOptionList();
 			}
 		);
 	}
@@ -302,17 +302,14 @@ class SendGoods extends Component<Props, States> {
 					soldtoid: "ALL",
 			  }
 			: {
-					productgroup: "ALL",
-					scanstatus: "ALL",
+					dispatchstatus: "ALL",
 					ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
 					ordereddateto: new Date(),
 					scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
 					scandateto: moment(new Date()).format("YYYY-MM-DD"),
-					retailer: "ALL",
-					partnerType: "Retailers",
 					scannedPeriod: "",
-					batchno: "ALL",
-					soldtoid: "ALL",
+					warehouseid: "ALL",
+					customerid:"ALL"
 			  };
           const {stateFilterName}= this.activeFilter();
 		let conditionIsFilter = this.state.searchText ? true : false;
@@ -669,11 +666,11 @@ class SendGoods extends Component<Props, States> {
 		const { getPartnerList } = apiURL;
 		let countrycode = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			soldtorole: this.state.selectedScanType === "SG - D2R" ? "RETAILER" : "DISTRIBUTOR",
+			soldtorole: this.state.selectedScanType === "SG - D2R" || this.state.selectedScanType === "SG - W2R" ? "RETAILER" : "DISTRIBUTOR",
 			isfiltered: true,
 			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1
 		};
-		let condName = this.state.selectedScanType === "SG - D2R" ? "retailerOptions" : "distributorOptions";
+		let condName = this.state.selectedScanType === "SG - D2R"|| this.state.selectedScanType === "SG - W2R" ? "retailerOptions" : "distributorOptions";
 		invokeGetAuthService(getPartnerList, countrycode)
 			.then((response: any) => {
 				let data = Object.keys(response.data).length !== 0 ? response.data : [];
@@ -726,6 +723,36 @@ class SendGoods extends Component<Props, States> {
 		let stateFilterName = selectedScannedBy === "Distributor" ? "selectedDistributorFilters" : "selectedWarehouseFilters";
 		return { filter, stateFilterName };
 	};
+     /**
+	  * This method handle get warehouse name and id list in dropdown category
+	  */
+	getWarehouseOptionList=()=>{
+		const { getWarehouseOptionsList } = apiURL;
+
+		let countrycode = {
+			countrycode: this.state.loggedUserInfo?.countrycode,
+			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+		};
+		invokeGetAuthService(getWarehouseOptionsList, countrycode)
+			.then((response: any) => {
+				let data = Object.keys(response.body).length !== 0 ? response.body : [];
+				let options = [{ value: "ALL", label: "ALL" }];
+				const temp =
+					data?.length > 0
+						? data.map((val: any) => {
+								return { value: val.warehouseid, label: val.warehousename };
+						  })
+						: [];
+				const list = [...options, ...temp];
+				this.setState({ isLoader: false, warehouseOptions: list });
+			})
+			.catch((error: any) => {
+				this.setState({ isLoader: false });
+				let message = error.message;
+				Alert("warning", message);
+			});
+
+	}
 	render() {
 		const {
 			isLoader,
@@ -741,7 +768,9 @@ class SendGoods extends Component<Props, States> {
 			isFiltered,
 			selectedDistributorFilters,
 			selectedWarehouseFilters,
+			warehouseOptions
 		} = this.state;
+		console.log({warehouseOptions})
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
@@ -901,7 +930,7 @@ class SendGoods extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															 maxDate={new Date()}
 														/>
 													</div>
 													<div className="p-2">-</div>
@@ -916,7 +945,7 @@ class SendGoods extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															 maxDate={new Date()}
 														/>
 													</div>
 												</div>
@@ -949,11 +978,11 @@ class SendGoods extends Component<Props, States> {
 									<Fragment>
 										<div className="form-group" onClick={(e) => e.stopPropagation()}>
 											<ReactSelect
-												name="soldtoid"
-												value={filter.soldtoid}
+												name="warehouseid"
+												value={filter.warehouseid}
 												label={`Warehouse Name`}
 												handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
-												options={this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions}
+												options={warehouseOptions}
 												defaultValue="ALL"
 												id="retailer-test"
 												dataTestId="retailer-test"
@@ -961,11 +990,11 @@ class SendGoods extends Component<Props, States> {
 										</div>
 										<div className="form-group" onClick={(e) => e.stopPropagation()}>
 											<ReactSelect
-												name="soldtoid"
-												value={filter.soldtoid}
-												label={`Retailer Name`}
+												name="customerid"
+												value={filter.customerid}
+												label={this.state.selectedScanType === "SG - W2R" ?`Retailer Name` :"Distributor Name"}
 												handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
-												options={this.state.selectedScanType === "SG - D2R" ? retailerOptions : distributorOptions}
+												options={this.state.selectedScanType === "SG - W2R" ? retailerOptions : distributorOptions}
 												defaultValue="ALL"
 												id="retailer-test"
 												dataTestId="retailer-test"
@@ -974,14 +1003,14 @@ class SendGoods extends Component<Props, States> {
 										<div className="form-group container" onClick={(e) => e.stopPropagation()}>
 											<div className="row column-dropdown">{locationList}</div>
 										</div>
-										<label className="font-weight-bold pt-2"> Scan Status</label>
+										<label className="font-weight-bold pt-2"> Delivery Status</label>
 										<div className="pt-1">
 											{this.state.goodStatus.map((item: any, statusIndex: number) => (
 												<span className="mr-2" key={statusIndex}>
 													<Button
-														color={filter.scanstatus === item.value ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"}
+														color={filter.dispatchstatus === item.value ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"}
 														size="sm"
-														onClick={(e) => this.handleFilterChange(e, "scanstatus", item.value)}
+														onClick={(e) => this.handleFilterChange(e, "dispatchstatus", item.value)}
 													>
 														{item.label}
 													</Button>
@@ -1027,7 +1056,7 @@ class SendGoods extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															 maxDate={new Date()}
 														/>
 													</div>
 													<div className="p-2">-</div>
@@ -1042,7 +1071,7 @@ class SendGoods extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															 maxDate={new Date()}
 														/>
 													</div>
 												</div>
