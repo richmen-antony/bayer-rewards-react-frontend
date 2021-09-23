@@ -48,6 +48,7 @@ export type OverallScanProps = {
   partnerType?: any;
   setSearchText: Function;
   setIsFiltered: Function;
+  viewType: string;
 };
 
 export const OverallInventory = ({
@@ -63,6 +64,7 @@ export const OverallInventory = ({
   partnerType,
   setSearchText,
   setIsFiltered,
+  viewType,
 }: OverallScanProps) => {
   let totalOpeningInventory: number = 0;
   let totalSellIn: number = 0;
@@ -95,7 +97,9 @@ export const OverallInventory = ({
   return (
     <AUX>
       <div className="">
-        <label className="font-weight-bold scanlabel">overall consolidated inventory</label>
+        <label className="font-weight-bold scanlabel">
+          overall consolidated inventory - {viewType === "Shipper" ? "Quantity" : viewType}
+        </label>
         <>
           <div
             className="consolidatedSales-table overallscan"

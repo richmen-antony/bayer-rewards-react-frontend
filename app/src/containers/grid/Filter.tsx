@@ -173,7 +173,7 @@ const Filter: React.FC<Props> = (props: Props) => {
             <div className="yearlabel">
               <label className="font-weight-bold yeartext">Partner Type</label>
             </div>
-            <div style={{ width: "115px" }}>
+            <div style={{ width: "127px", zIndex: 2 }}>
               <ReactSelect
                 name="partnerType"
                 options={partnerTypeList}

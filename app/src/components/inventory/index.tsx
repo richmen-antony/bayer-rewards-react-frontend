@@ -774,7 +774,7 @@ const Inventory = (Props: any) => {
             </Filter>
           </div>
         </div>
-        <div className="row" style={{ opacity: "0.9" }}>
+        <div className="row" style={{ opacity: "0.9999" }}>
           <div className="col-sm-6">
             <OverallInventory
               allConsolidatedInventory={allConsolidatedInventory}
@@ -789,6 +789,7 @@ const Inventory = (Props: any) => {
               partnerType={partnerType}
               setSearchText={setSearchText}
               setIsFiltered={setIsFiltered}
+              viewType={viewType}
             />
           </div>
           <div className="col-sm-6">
