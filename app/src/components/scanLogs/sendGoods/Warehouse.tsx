@@ -141,8 +141,7 @@ class Warehouse extends Component<Props, States> {
 			isfiltered: isFiltered,
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			scantype: selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
-			// soldbyrole: "DISTRIBUTOR",
-			//soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+			geolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -157,14 +156,13 @@ class Warehouse extends Component<Props, States> {
 			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
 			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ;
-			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
+			filter.geolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ;
+			filter.geolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.warehouseid = filter.warehouseid === "ALL" ? null : filter.warehouseid;
+			filter.customerid = filter.customerid === "ALL" ? null : filter.customerid;
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
-			filter.geolevel1 = null;
-			filter.geolevel2 = null;
 			data = { ...data, ...filter };
 		}
 
@@ -233,8 +231,8 @@ class Warehouse extends Component<Props, States> {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
-			scantype: this.state.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
-			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+			scantype: this.props.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
+			geolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (this.state.isFiltered) {
 			let filter = { ...this.state.selectedFilters };
@@ -249,20 +247,19 @@ class Warehouse extends Component<Props, States> {
 			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
 			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
-			filter.soldbygeolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.soldbygeolevel1;
-			filter.soldbygeolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
+			filter.geolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.geolevel1;
+			filter.geolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
 			filter.warehouseid = filter.warehouseid === "ALL" ? null : filter.warehouseid;
+			filter.customerid = filter.customerid === "ALL" ? null : filter.customerid;
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
-			filter.geolevel1 = null;
-			filter.geolevel2 = null;
 			data = { ...data, ...filter };
 		}
 		invokeGetAuthService(getWarehouseDownload, data)
 			.then((response) => {
 				const data = response;
-				downloadCsvFile(data, `${this.state.selectedScanType}`);
+				downloadCsvFile(data, `${this.props.selectedScanType}`);
 			})
 			.catch((error) => {
 				ErrorMsg(error);
@@ -270,39 +267,20 @@ class Warehouse extends Component<Props, States> {
 	};
 
 	filterScans = (filterValue: any) => {
-		let name = this.state.condFilterScan === "distAndRetailer" ? "soldtoid" : "soldbyid";
-		const { retailerOptions, distributorOptions, selectedCustomerOptions } = this.state;
-		let options = selectedCustomerOptions ? { ...selectedCustomerOptions } : { label: "ALL", value: "ALL" };
-		let filters = { ...this.state.selectedFilters };
-		let searchText = this.state.searchText;
-		if (name === "soldtoid") {
+		let name = this.state.condFilterScan === "distAndRetailer" ? "customerid" : "scannedbyid";
+		const {selectedFilters } = this.props;
+		let searchText="";
+		let filters = { ...selectedFilters };
+
+		if (name === "customerid") {
 			filters[name] = filterValue;
-			// filters["soldbyid"] = null;
-			if (this.state.selectedScanType === "SG - D2R") {
-				const data = retailerOptions?.length > 0 && retailerOptions.filter((el: any) => el.value === filterValue);
-				if (data?.length > 0) options = { ...data[0] };
-			} else {
-				const data = distributorOptions?.length > 0 && distributorOptions.filter((el: any) => el.value === filterValue);
-				if (data?.length > 0) options = { ...data[0] };
-			}
 		}
-		if (name === "soldbyid") {
+		if (name === "scannedbyid") {
 			searchText = filterValue;
 		}
-
-		this.setState(
-			{
-				isFiltered: true,
-				inActiveFilter: false,
-				selectedFilters: { ...filters },
-				searchText,
-				selectedCustomerOptions: options,
-			},
-			() => {
-				this.getWarehouse();
-				this.handleClosePopup();
-			}
-		);
+		this.props.updateSearch(searchText, filters);
+		this.handleClosePopup();
+		
 	};
 	getGeographicFields() {
 		this.setState({ isLoader: true });
@@ -396,9 +374,19 @@ class Warehouse extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-
+							{loggedUserInfo?.role === "ADMIN" && (
+								<th
+									style={{ width: "10%" }}
+									onClick={(e) => this.handleSort(e, "scannedbygeo1", allWarehouseData, isAsc)}
+								>
+									REGION
+									{activeSortKeyIcon === "scannedbygeo1" ? (
+										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+									) : null}
+								</th>
+							)}
 							<th
-								style={{ width: loggedUserInfo?.role === "ADMIN" ? "10%" : "16%" }}
+							style={{ width: "10%" }}
 								onClick={(e) => this.handleSort(e, "expirydate", allWarehouseData, isAsc)}
 							>
 								UPDATED DATE
@@ -406,6 +394,7 @@ class Warehouse extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
+							<th style={{ width: loggedUserInfo?.role === "ADMIN" ? "10%" : "12%" }}></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -479,14 +468,15 @@ class Warehouse extends Component<Props, States> {
 										<td>
 											<span className="status active">
 												<i className="fas fa-clock"></i>
-												{value.deliverystatus}
+												{value.deliverystatus ==="GOODS_DISPATCHED" ? "Dispatch Sent":"Dispatch Received"}
 											</span>
 										</td>
-										{loggedUserInfo?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
+										{loggedUserInfo?.role === "ADMIN" && <td>{value.scannedbygeo1}</td>}
 										<td>
 											{value.updateddate && moment(value.updateddate).format("DD/MM/YYYY")}
-											<img className="max-image" src={maxImg} alt="" />
+											
 										</td>
+										<td><img className="max-image" src={maxImg} alt="" /></td>
 									</tr>
 								);
 							})
@@ -537,7 +527,6 @@ class Warehouse extends Component<Props, States> {
 													location.name === "ADD" || location.name === "EPA"
 														? location.name
 														: _.startCase(_.toLower(location.name));
-														console.log("level",location.geolevels)
 												return (
 													<div className="content-list" key={locationIndex}>
 														<label>{nameCapitalized}</label>
@@ -572,7 +561,7 @@ class Warehouse extends Component<Props, States> {
 									border: "1px solid  #7eb343",
 								}}
 								handleClick={() =>
-									this.filterScans(retailerPopupData[condFilterScan === "distAndRetailer" ? "soldtoid" : "soldbyid"])
+									this.filterScans(retailerPopupData[condFilterScan === "distAndRetailer" ? "touserid" : "scannedbyid"])
 								}
 							/>
 						</DialogActions>

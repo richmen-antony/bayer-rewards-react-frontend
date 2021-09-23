@@ -108,7 +108,7 @@ const Filter: React.FC<Props> = (props: Props) => {
         {isCustomDropdown && (
           <>
             <div className="customDropdown">
-              <div className="yearlabel">
+              <div style={{ width: "110px" }} className="yearlabel">
                 <label className="font-weight-bold yeartext">Fiscal Year</label>
               </div>
               <div style={{ width: "100%" }}>

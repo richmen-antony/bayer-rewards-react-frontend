@@ -176,14 +176,14 @@ class SendGoods extends Component<Props, States> {
 				{ label: "Custom", value: "" },
 			],
 			scanTypeList: [	
-			{ value: "SG - ST", label: "SG - ST" },
-			{ value: "SG - D2R", label: "SG - D2R" },],
-			selectedScanType: "SG - ST",
-			selectedScannedBy: "Distributor",
+				{ value: "SG - W2D", label: "SG - W2D" },
+				{ value: "SG - W2R", label: "SG - W2R" },],
+			selectedScanType: "SG - W2D",
+			selectedScannedBy: "Warehouse Ops",
 			activeSortKeyIcon: "labelid",
 			scannedByList: [
-				{ value: "Distributor", label: "Distributor" },
 				{ value: "Warehouse Ops", label: "Warehouse Ops" },
+				{ value: "Distributor", label: "Distributor" },
 			],
 			distributorScanTypeList: [
 				{ value: "SG - ST", label: "SG - ST" },
@@ -407,7 +407,12 @@ class SendGoods extends Component<Props, States> {
 			let oneTimeAPI= false
 			const filters =filter;
 			if (selectedOption.value !== this.state[e.name]) {
+				//If scantype update after set customer name dropdown value is all(Default vaue)
+				if(stateFilterName==="selectedDistributorFilters")
 				filters["soldtoid"] = "ALL";
+				//If scantype update after set Distributor or Retailer dropdown value is all(Default vaue)
+				if(stateFilterName==="selectedWarehouseFilters")
+				filters["customerid"] = "ALL";
 				oneTimeAPI= true
 			}
 			let scanTypeListValue:any[]=[...scanTypeList];
@@ -770,7 +775,6 @@ class SendGoods extends Component<Props, States> {
 			selectedWarehouseFilters,
 			warehouseOptions
 		} = this.state;
-		console.log({warehouseOptions})
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
 			let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
@@ -801,6 +805,10 @@ class SendGoods extends Component<Props, States> {
 			);
 		});
 		const { filter } = this.activeFilter();
+		const condWarehouseTooptip =this.state.selectedScanType === "SG - W2R" ? "Retailer Name/ID ,Store Name" : "Distribtor Name/ID";
+		const condDistributorTooptip =this.state.selectedScanType === "SG - W2R" ? "Store Name" : "";
+		const toolTipText=  selectedScannedBy==="Distributor" ?`Label, Customer Name, Product Name, Channel Type, ${condDistributorTooptip
+		} and ScannedBy.` : `Delivery ID,Warehouse Name/ID,${condWarehouseTooptip},ScannedBy.`
 		return (
 			<AUX>
 				{isLoader ? <Loader /> :
@@ -812,9 +820,7 @@ class SendGoods extends Component<Props, States> {
 								searchText={searchText}
 								download={this.download}
 								isDownload={true}
-								toolTipText={`Search applicable for Label, Customer Name, Product Name, Channel Type ${
-									this.state.selectedScanType === "SG - D2R" ? ", Store Name" : ""
-								} and ScannedBy.`}
+								toolTipText={`Search applicable for ${toolTipText}`}
 								onClose={(node: any) => {
 									this.closeToggle = node;
 								}}
@@ -1148,7 +1154,7 @@ class SendGoods extends Component<Props, States> {
 									? this.distributorRef?.state?.allDistributorData
 									: this.warehouseRef?.state?.allWarehouseData
 							}
-							totalLabel={"Sales"}
+							totalLabel={selectedScanType}
 							onRef={(node: any) => {
 								this.paginationRef = node;
 							}}

@@ -991,7 +991,7 @@ class SellFarmer extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															maxDate={new Date()}
 														/>
 													</div>
 													<div className="p-2">-</div>
@@ -1006,7 +1006,7 @@ class SellFarmer extends Component<Props, States> {
 															showMonthDropdown
 															showYearDropdown
 															dropdownMode="select"
-															// maxDate={new Date()}
+															maxDate={new Date()}
 														/>
 													</div>
 												</div>
@@ -1083,7 +1083,7 @@ class SellFarmer extends Component<Props, States> {
 											))}
 										</div>
 
-										<label className="pt-2">Status</label>
+										{/* <label className="pt-2">Status</label>
 										<div className="pt-1">
 											{this.state.advisorStatus.map((item: any, statusIndex: number) => (
 												<span className="mr-2" key={statusIndex}>
@@ -1100,7 +1100,7 @@ class SellFarmer extends Component<Props, States> {
 													</Button>
 												</span>
 											))}
-										</div>
+										</div> */}
 
 										<label className="pt-2" htmlFor="order-date">
 											Ordered Date
@@ -1239,7 +1239,7 @@ class SellFarmer extends Component<Props, States> {
 									? this.walkinSalesRef?.state?.allWalkInSalesData
 									: this.advisorSalesRef?.state?.allAdvisorSalesData
 							}
-							totalLabel={"Sales"}
+							totalLabel={selectedScanType === "WALKIN_SALES"? "Walk-In Sales" :"Advisor Sales"}
 							onRef={(node: any) => {
 								this.paginationRef = node;
 							}}
