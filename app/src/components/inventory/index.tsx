@@ -135,8 +135,9 @@ const Inventory = (Props: any) => {
     dispatch(getGeoLocationFields());
     let data = {
       countrycode: userData?.countrycode,
+      geolevel1: userData?.geolevel1,
       partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
-      isfiltered: isFiltered,
+      isfiltered: true,
       viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
     let filteredDatas = {};
@@ -204,8 +205,9 @@ const Inventory = (Props: any) => {
     if (searchText.length >= 3 || searchText.length === 0) {
       let data = {
         countrycode: userData?.countrycode,
+        geolevel1: userData?.geolevel1,
         partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
-        isfiltered: isFiltered,
+        isfiltered: true,
         searchtext: searchText,
         viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
       };

@@ -131,8 +131,9 @@ const ConsolidatedScans = (Props: any) => {
     // });
     let data = {
       countrycode: userData?.countrycode,
+      geolevel1: userData?.geolevel1,
       partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
-      isfiltered: isFiltered,
+      isfiltered: true,
     };
     dispatch(getOverallScans(data));
   }, []);
@@ -182,8 +183,9 @@ const ConsolidatedScans = (Props: any) => {
     if (searchText.length >= 3 || searchText.length === 0) {
       let data = {
         countrycode: userData?.countrycode,
+        geolevel1: userData?.geolevel1,
         partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
-        isfiltered: isFiltered,
+        isfiltered: true,
         searchtext: searchText,
       };
       let filteredDatas = {};
