@@ -93,17 +93,6 @@ class SellFarmer extends Component<Props, States> {
 			status: ["ALL", "VALID", "INVALID"],
 			advisorStatus: ["ALL", "FULFILLED"],
 			list: ["ALL", "Distributor", "Retailer"],
-			selectedFilters: {
-				productgroup: "ALL",
-				status: "ALL",
-				ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
-				ordereddateto: new Date(),
-				lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
-				lastmodifiedto: new Date(),
-				farmer: "ALL",
-				retailer: "ALL",
-				partnerType: "Retailers",
-			},
 			selectedAdvisorFilters: {
 				productgroup: "ALL",
 				status: "ALL",
@@ -515,22 +504,7 @@ class SellFarmer extends Component<Props, States> {
 		});
 	};
 
-	handleSelect = (event: any, name: string) => {
-		this.setState(
-			{
-				selectedFilters: {
-					...this.state.selectedFilters,
-					[name]: event.target.value,
-				},
-			},
-			() => {
-				if (name === "retailer") {
-					let condIf = "retailer";
-					this.getRetailerList(condIf);
-				}
-			}
-		);
-	};
+	
 
 	handlePartnerChange = (name: string) => {
 		this.setState({
@@ -586,14 +560,7 @@ class SellFarmer extends Component<Props, States> {
 			);
 		}
 	};
-	handleGeolevelDropdown = (value: string, label: any) => {
-		this.setState((prevState: any) => ({
-			selectedFilters: {
-				...prevState.selectedFilters,
-				[label.toLocaleLowerCase()]: value,
-			},
-		}));
-	};
+
 	getBatchList = () => {
 		const { getBatchList } = apiURL;
 		let countrycode = {
@@ -868,8 +835,8 @@ class SellFarmer extends Component<Props, States> {
 		});
 		const condToolTipText =
 			selectedScanType === "WALKIN_SALES"
-				? "Label,Farmer Name,Product Name,Store Name and ScannedBy"
-				: "Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID,Store Name";
+				? "Label, Farmer Name, Product Name, Store Name and Scanned By"
+				: "Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID, Store Name";
 		return (
 			<AUX>
 				{isLoader ? <Loader /> :

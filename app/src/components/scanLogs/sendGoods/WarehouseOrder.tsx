@@ -44,7 +44,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 
 	const handleExpand = (value: any) => {
 		handleAccordion(!accordionView);
-		setAccordionId(value.orderlineitemid);
+		setAccordionId(value.materialid);
 	};
 	const handleButton = (id: string) => {
 		setAccordion(!accordion);
@@ -167,14 +167,14 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																<td style={{ cursor: "pointer" }}>
 																	<i
 																		className={`fas ${
-																			value?.orderlineitemid === accordionId && accordionView ? "fa-sort-down" : "fa-sort-up"
+																			value?.materialid === accordionId && accordionView ? "fa-sort-down" : "fa-sort-up"
 																		}`}
 																	/>
 																</td>
 															)}
 														</tr>
 													) : null}
-													{accordionView && value?.orderlineitemid === accordionId && data.deliverystatus === "GOODS_DISPATCHED" && (
+													{accordionView && value?.materialid === accordionId && data.deliverystatus === "GOODS_DISPATCHED" && (
 														<tr>
 															<td colSpan={7} style={{ padding: 0, borderTop: 0 }}>
 																<div>

@@ -72,12 +72,12 @@ const DateInput = React.forwardRef(
 
 const UploadButton = (props: Sheet2CSVOpts) => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [dataValidated, setDataValidated] = useState<boolean>(false);
   const [startDate, setStartDate] = useState(new Date());
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const [downloadedData, setDownloadedData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [data, setData] = useState([]);
   const [isDragAndDrop, setIsDragAndDrop] = useState<boolean>(false);
 
   const uploadPopup = () => {
@@ -90,9 +90,6 @@ const UploadButton = (props: Sheet2CSVOpts) => {
     };
     invokeGetAuthService(downloadTemplate, data)
       .then((response) => {
-        // let a: any = [];
-        // let vals: any = response.slice(0, 75);
-        // a.push(vals);
         const text =
           '["countrycode","rtmpartnerid","rtmrolename","materialid","openinginventory"]';
         const myArr = JSON.parse(text);
@@ -106,12 +103,18 @@ const UploadButton = (props: Sheet2CSVOpts) => {
 
   const handleClosePopup = () => {
     setShowPopup(false);
+    setSelectedFile(null);
+    setDataValidated(false);
+    setFileName("");
+    setDownloadedData([]);
+    setColumns([]);
   };
 
   const cancelUpload = () => {
     setIsDragAndDrop(false);
     setSelectedFile(null);
     setFileName("");
+    setDataValidated(false);
   };
 
   const overrideEventDefaults = (event: any) => {
@@ -147,15 +150,18 @@ const UploadButton = (props: Sheet2CSVOpts) => {
     let err = "";
     for (var x = 0; x < files.length; x++) {
       if (types.every((type) => files[x].type !== type)) {
+        setDataValidated(false);
         Alert("warning", (err += files[x].type + " is not a supported format"));
       } else {
         if (files[x].size > size) {
+          setDataValidated(false);
           Alert(
             "warning",
             (err += files[x].type + "is too large, please pick a smaller file")
           );
         } else {
           //setSelectedFile(files);
+          setDataValidated(true);
           setFileName(theFileName);
         }
       }
@@ -202,7 +208,6 @@ const UploadButton = (props: Sheet2CSVOpts) => {
   };
 
   const finalUploadData = () => {
-    //console.log("downloadedData", downloadedData, columns);
     if (_.isEqual(downloadedData, columns)) {
       const { uploadTemplate } = apiURL;
       const formData: any = new FormData();
@@ -212,18 +217,18 @@ const UploadButton = (props: Sheet2CSVOpts) => {
         .then((response: any) => {
           console.log(response);
           setShowPopup(false);
+          let duplicate: any =
+            response.body.duplicate.length +
+            " " +
+            "- Inventory data Duplicated";
+          let success: any =
+            response.body.inserted.length + " " + " -  Inventory data Uploaded";
+
+          response.body.inserted.length != 0 && Alert("success", success);
+          response.body.duplicate.length != 0 && Alert("error", duplicate);
           setTimeout(() => {
-            Alert(
-              "success",
-              response.body.duplicate.length +
-                " " +
-                "- Inventory data Duplicated" +
-                "\n" +
-                response.body.inserted.length +
-                " " +
-                " -  Inventory data Uploaded"
-            );
-          }, 400);
+            window.location.reload();
+          }, 800);
           setSelectedFile(null);
         })
         .catch((error: any) => {
@@ -231,7 +236,10 @@ const UploadButton = (props: Sheet2CSVOpts) => {
           console.log("warning", message);
         });
     } else {
-      Alert("warning", "Templete format mismatched. Please upload valid format");
+      Alert(
+        "warning",
+        "Templete format mismatched. Please upload valid format"
+      );
     }
   };
 
@@ -272,7 +280,8 @@ const UploadButton = (props: Sheet2CSVOpts) => {
                       onDragOver={overrideEventDefaults}
                     >
                       <div className="browse-content">
-                        {selectedFile === null ? (
+                        {selectedFile === null ||
+                        (selectedFile != null && !dataValidated) ? (
                           <div className="browse">
                             <img
                               className="upload-cloud-image"
@@ -294,27 +303,30 @@ const UploadButton = (props: Sheet2CSVOpts) => {
                             </div>
                           </div>
                         ) : (
-                          <div
-                            className="browse"
-                            style={{
-                              height: "185px",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <div class="selected-file-name">
-                              <strong>
-                                <h3 className="selected-file">{fileName}</h3>
-                              </strong>
-                              &nbsp;&nbsp;
-                              <img
-                                className="cancel-uploaded-file"
-                                src={Cancel}
-                                alt="upload cloud icon"
-                                title="remove file"
-                                onClick={cancelUpload}
-                              />
+                          dataValidated &&
+                          selectedFile != null && (
+                            <div
+                              className="browse"
+                              style={{
+                                height: "185px",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <div class="selected-file-name">
+                                <strong>
+                                  <h3 className="selected-file">{fileName}</h3>
+                                </strong>
+                                &nbsp;&nbsp;
+                                <img
+                                  className="cancel-uploaded-file"
+                                  src={Cancel}
+                                  alt="upload cloud icon"
+                                  title="remove file"
+                                  onClick={cancelUpload}
+                                />
+                              </div>
                             </div>
-                          </div>
+                          )
                         )}
                       </div>
                     </div>

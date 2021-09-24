@@ -94,19 +94,6 @@ class SendGoods extends Component<Props, States> {
 			status: ["ALL", "VALID", "INVALID"],
 			// status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
 			list: ["ALL", "Distributor", "Retailer"],
-			selectedFilters: {
-				productgroup: "ALL",
-				scanstatus: "ALL",
-				ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
-				ordereddateto: new Date(),
-				retailer: "ALL",
-				partnerType: "Retailers",
-				scannedPeriod: "",
-				scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
-				scandateto: moment(new Date()).format("YYYY-MM-DD"),
-				batchno: "ALL",
-				soldtoid: "ALL",
-			},
 			selectedDistributorFilters: {
 				productgroup: "ALL",
 				scanstatus: "ALL",
@@ -350,22 +337,23 @@ class SendGoods extends Component<Props, States> {
 		selectedScannedBy === "Distributor" ? this.distributorRef?.download() : this.warehouseRef?.download();
 	};
 	handleDateChange = (date: any, name: string) => {
+		const { selectedScannedBy } = this.state;
 		const { filter, stateFilterName } = this.activeFilter();
 		let val = filter;
-
+        let condName=selectedScannedBy === "Distributor" ? "dateErrMsg":"wareHouseDateErrMsg";
 		// order date - check End date
 		if (name === "ordereddateto") {
 			if (date >= val.ordereddatefrom) {
 				this.setState({
-					dateErrMsg: "",
+					[condName]: "",
 				});
 			} else if (date <= val.ordereddatefrom) {
 				this.setState({
-					dateErrMsg: "Scanned End Date should be greater than  Scanned Start Date",
+					[condName]: "Scanned End Date should be greater than  Scanned Start Date",
 				});
 			} else {
 				this.setState({
-					dateErrMsg: "Scanned Start Date should be lesser than  Scanned End Date",
+					[condName]: "Scanned Start Date should be lesser than  Scanned End Date",
 				});
 			}
 		}
@@ -373,15 +361,15 @@ class SendGoods extends Component<Props, States> {
 		if (name === "ordereddatefrom") {
 			if (date <= val.ordereddateto) {
 				this.setState({
-					dateErrMsg: "",
+					[condName]: "",
 				});
 			} else if (date >= val.ordereddateto) {
 				this.setState({
-					dateErrMsg: "Scanned Start Date should be lesser than Scanned End Date",
+					[condName]: "Scanned Start Date should be lesser than Scanned End Date",
 				});
 			} else {
 				this.setState({
-					dateErrMsg: "Ordered Start Date should be greater than Ordered End Date",
+					[condName]: "Ordered Start Date should be greater than Ordered End Date",
 				});
 			}
 		}
@@ -390,14 +378,6 @@ class SendGoods extends Component<Props, States> {
 		});
 	};
 
-	handleSelect = (event: any, name: string) => {
-		this.setState({
-			selectedFilters: {
-				...this.state.selectedFilters,
-				[name]: event.target.value,
-			},
-		});
-	};
 	handleReactSelect = (selectedOption: any, e: any, inActiveFilter?: boolean) => {
 		const {scanTypeList,distributorScanTypeList,warehouseScanTypeList} =this.state;
 		if (inActiveFilter) {
@@ -632,14 +612,7 @@ class SendGoods extends Component<Props, States> {
 		}
 	};
 
-	handleGeolevelDropdown = (value: string, label: any) => {
-		this.setState((prevState: any) => ({
-			selectedFilters: {
-				...prevState.selectedFilters,
-				[label.toLocaleLowerCase()]: value,
-			},
-		}));
-	};
+
 
 	getBatchList = () => {
 		const { getBatchList } = apiURL;
@@ -773,7 +746,8 @@ class SendGoods extends Component<Props, States> {
 			isFiltered,
 			selectedDistributorFilters,
 			selectedWarehouseFilters,
-			warehouseOptions
+			warehouseOptions,
+			wareHouseDateErrMsg
 		} = this.state;
 		const fields = this.state.dynamicFields;
 		const locationList = fields?.map((list: any, index: number) => {
@@ -805,10 +779,10 @@ class SendGoods extends Component<Props, States> {
 			);
 		});
 		const { filter } = this.activeFilter();
-		const condWarehouseTooptip =this.state.selectedScanType === "SG - W2R" ? "Retailer Name/ID ,Store Name" : "Distribtor Name/ID";
+		const condWarehouseTooptip =this.state.selectedScanType === "SG - W2R" ? "Retailer Name/ID, Store Name" : "Distributor Name/ID";
 		const condDistributorTooptip =this.state.selectedScanType === "SG - W2R" ? "Store Name" : "";
-		const toolTipText=  selectedScannedBy==="Distributor" ?`Label, Customer Name, Product Name, Channel Type, ${condDistributorTooptip
-		} and ScannedBy.` : `Delivery ID,Warehouse Name/ID,${condWarehouseTooptip},ScannedBy.`
+		const toolTipText=  selectedScannedBy==="Distributor" ?`Label, Customer Name, Product Name, Channel Type ${condDistributorTooptip
+		} and Scanned By.` : `Delivery ID, Warehouse Name/ID, ${condWarehouseTooptip} and Scanned By.`
 		return (
 			<AUX>
 				{isLoader ? <Loader /> :
@@ -1081,7 +1055,7 @@ class SendGoods extends Component<Props, States> {
 														/>
 													</div>
 												</div>
-												{dateErrMsg && <span className="error">{dateErrMsg} </span>}
+												{wareHouseDateErrMsg && <span className="error">{wareHouseDateErrMsg} </span>}
 											</React.Fragment>
 										)}
 
@@ -1096,7 +1070,7 @@ class SendGoods extends Component<Props, States> {
 											<button
 												className="cus-btn-scanlog-filter"
 												onClick={this.applyFilter}
-												disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
+												disabled={ wareHouseDateErrMsg ? true : false}
 												data-testid="apply"
 											>
 												Apply
