@@ -23,8 +23,7 @@ export const getOverallScans = (data: {}) => {
 
     invokeGetAuthService(getOverallScans, data)
       .then(async (response: any) => {
-        let scans =
-          Object.keys(response.body).length !== 0 ? response.body : [];
+        let scans = Object.keys(response.body).length !== 0 ? response.body : [];
         await dispatch(Success(scans));
       })
       .catch((error: any) => {
@@ -47,11 +46,7 @@ export const setOverallList = (allScans: any) => {
   };
 };
 
-export const getScannedBrands = (
-  soldbyid: string,
-  isfiltered: boolean,
-  filteredDatas: {}
-) => {
+export const getScannedBrands = (soldbyid: string, isfiltered: boolean, filteredDatas: {}) => {
   return async (dispatch: Dispatch<AnyAction>) => {
     dispatch({ type: LOADING_REQUEST, status: true });
     const { getScannedBrands } = apiURL.consolidatedScans;
@@ -84,12 +79,7 @@ export const setselectedBrandList = (allBrands: any) => {
     dispatch({ type: SET_SELECTED_BRANDS, allBrands });
   };
 };
-export const getScannedProducts = (
-  soldbyid: string,
-  isfiltered: boolean,
-  productbrand: string,
-  filteredDatas: {}
-) => {
+export const getScannedProducts = (soldbyid: string, isfiltered: boolean, productbrand: string, filteredDatas: {}) => {
   return async (dispatch: Dispatch<AnyAction>) => {
     //dispatch({ type: LOADING_REQUEST, status: true });
     const { getScannedProducts } = apiURL.consolidatedScans;
