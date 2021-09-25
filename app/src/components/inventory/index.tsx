@@ -728,7 +728,8 @@ const Inventory = (Props: any) => {
                         dropdownMode="select"
                         // maxDate={new Date()}
                         minDate={new Date(selectedFromDateOfYear)}
-                        maxDate={new Date(selectedToDateOfYear)}
+                        // maxDate={new Date(selectedToDateOfYear)}
+                        maxDate={new Date()}
                       />
                     </div>
                     <div className="p-2">-</div>

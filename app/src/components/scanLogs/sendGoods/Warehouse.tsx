@@ -387,10 +387,10 @@ class Warehouse extends Component<Props, States> {
 							)}
 							<th
 							style={{ width: "10%" }}
-								onClick={(e) => this.handleSort(e, "expirydate", allWarehouseData, isAsc)}
+								onClick={(e) => this.handleSort(e, "dispatcheddate", allWarehouseData, isAsc)}
 							>
 								UPDATED DATE
-								{activeSortKeyIcon === "updateddate" ? (
+								{activeSortKeyIcon === "dispatcheddate" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>

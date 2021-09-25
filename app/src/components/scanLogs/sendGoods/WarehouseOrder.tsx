@@ -299,7 +299,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																			data?.invalidQrCodes.map((scan: any, scanIndex: number) => {
 																				return (
 																					<div className="inner-row" key={scanIndex}>
-																						<p className="qr-val">{scan.scannedlabel || "-"}</p>
+																						<p className="qr-val">{scan.labelid || "-"}</p>
 																						<p className="sub-val">{scan.reason}</p>
 																					</div>
 																				);

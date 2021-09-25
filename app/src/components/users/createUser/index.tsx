@@ -793,7 +793,9 @@ class CreateUser extends Component<any, any> {
       this.state.dynamicFields.forEach((list: any, index:number) => {
         if (type === list.name) {
           if (list.value === "") {
-            list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+            let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+            list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
+            // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
           }
@@ -803,7 +805,9 @@ class CreateUser extends Component<any, any> {
       this.state.withHolding.forEach((list: any, index: number) => {
         if (type === list.name) {
           if (list.value === "") {
-            list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+            let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+            list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
+            // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
           }
@@ -1525,7 +1529,7 @@ class CreateUser extends Component<any, any> {
           : "Please enter the First Name";
         errObj.lastnameErr = userInfo.lastname
           ? ""
-          : "Please enter the last Name";
+          : "Please enter the Last Name";
 
         if (
           userInfo.mobilenumber &&
@@ -1539,7 +1543,7 @@ class CreateUser extends Component<any, any> {
           errObj.mobilenumberErr =
             errObj.mobilenumberErr === "Phone Number Exists"
               ? errObj.mobilenumberErr
-              : "Please enter the mobile number";
+              : "Please enter the Mobile Number";
         }
 
         userData.ownerRows[idx].errObj = errObj;
@@ -1572,7 +1576,7 @@ class CreateUser extends Component<any, any> {
           : "Please enter the First Name";
         errObj.lastnameErr = userInfo.lastname
           ? ""
-          : "Please enter the last Name";
+          : "Please enter the Last Name";
 
         if (
           userInfo.mobilenumber &&
@@ -1586,7 +1590,7 @@ class CreateUser extends Component<any, any> {
           errObj.mobilenumberErr =
             errObj.mobilenumberErr === "Phone Number Exists"
               ? errObj.mobilenumberErr
-              : "Please enter the mobile number";
+              : "Please enter the Mobile Number";
         }
         userData.staffdetails[idx].errObj = errObj;
         if (
@@ -1607,7 +1611,9 @@ class CreateUser extends Component<any, any> {
     } else if (this.state.currentStep === 2) {
       this.state.dynamicFields.forEach((list: any, index: number) => {
         if (list.value === "") {
-          list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
+          // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           formValid = false;
         } else {
           list.error = "";
@@ -1645,7 +1651,9 @@ class CreateUser extends Component<any, any> {
       }
       this.state.withHolding.forEach((list: any, index: number) => {
         if (list.value === "") {
-          list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
+          // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           formValid = false;
         } else {
           list.error = "";
@@ -1662,8 +1670,8 @@ class CreateUser extends Component<any, any> {
       let asaData = this.state.asaDatas;
       const {asafirstnameErr, asalastnameErr} = this.state;
       let asamobilenumberErr = this.state.asamobilenumberErr;
-      let fullNameErr =  asaData.firstname === "" ? "Please Enter the First name" : "";
-      let lastNameErr =  asaData.lastname === "" ? "Please Enter the Last name" : "";
+      let fullNameErr =  asaData.firstname === "" ? "Please Enter the First Name" : "";
+      let lastNameErr =  asaData.lastname === "" ? "Please Enter the Last Name" : "";
       if (
         asaData.mobilenumber &&
         asamobilenumberErr !== "Phone Number Exists"
@@ -1676,7 +1684,7 @@ class CreateUser extends Component<any, any> {
         asamobilenumberErr =
         asamobilenumberErr === "Phone Number Exists"
             ? asamobilenumberErr
-            : "Please enter the mobile number";
+            : "Please enter the Mobile Number";
       }
       this.setState({asafirstnameErr: fullNameErr,asalastnameErr:lastNameErr, asamobilenumberErr:asamobilenumberErr})
 
@@ -1918,7 +1926,7 @@ class CreateUser extends Component<any, any> {
             owners[idx].errObj.mobilenumberErr = "";
           }
         } else {
-          owners[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+          owners[idx].errObj.mobilenumberErr = "Please enter the Mobile Number";
         }
         owners[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
@@ -1941,7 +1949,7 @@ class CreateUser extends Component<any, any> {
         } else if(e.target?.name ==='lastname'){
           owners[idx].errObj.lastnameErr = owners[idx].lastname
           ? ""
-          : "Please enter the last Name";
+          : "Please enter the Last Name";
         }
       }
     } else if (type === "staff") {
@@ -1957,7 +1965,7 @@ class CreateUser extends Component<any, any> {
             staffs[idx].errObj.mobilenumberErr = "";
           }
         } else {
-          staffs[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+          staffs[idx].errObj.mobilenumberErr = "Please enter the Mobile Number";
         }
         staffs[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
@@ -1980,7 +1988,7 @@ class CreateUser extends Component<any, any> {
         } else if(e.target?.name ==='lastname'){
           staffs[idx].errObj.lastnameErr = staffs[idx].lastname
           ? ""
-          : "Please enter the last Name";
+          : "Please enter the Last Name";
         }
       }
     } else {
@@ -2394,7 +2402,7 @@ class CreateUser extends Component<any, any> {
           asamobilenumberErr = "";
         }
       } else {
-        asamobilenumberErr = "Please enter the mobile number";
+        asamobilenumberErr = "Please enter the Mobile Number";
       }
       datas[key] = val;
 
@@ -2418,10 +2426,10 @@ class CreateUser extends Component<any, any> {
       } else {
         datas[name] = value;
         if(name === 'firstname'){
-          let firstNameErr =  datas.firstname === "" ? "Please Enter the First name" : "";
+          let firstNameErr =  datas.firstname === "" ? "Please Enter the First Name" : "";
           this.setState({asafirstnameErr: firstNameErr});
         } else if(name ==='lastname'){
-          let lastNameErr =  datas.lastname === "" ? "Please Enter the Last name" : "";
+          let lastNameErr =  datas.lastname === "" ? "Please Enter the Last Name" : "";
           this.setState({asalastnameErr: lastNameErr});
         } else if(name ==='mobilenumber'){
           let mobileErr =  datas.mobilenumber === "" ? "Please Enter the Email" : "";

@@ -40,7 +40,7 @@ const ProductBrandList = ({
               <tr>
                 <th
                   onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc, "scannedBrands")}
-                  style={{ width: "23%" }}
+                  style={{ width: "23%" , cursor: "pointer"}}
                   key="productbrand"
                 >
                   BRAND

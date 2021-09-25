@@ -78,7 +78,6 @@ const UploadButton = (props: Sheet2CSVOpts) => {
   const [fileName, setFileName] = useState("");
   const [downloadedData, setDownloadedData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [isDragAndDrop, setIsDragAndDrop] = useState<boolean>(false);
 
   const uploadPopup = () => {
     setShowPopup(true);
@@ -111,65 +110,55 @@ const UploadButton = (props: Sheet2CSVOpts) => {
   };
 
   const cancelUpload = () => {
-    setIsDragAndDrop(false);
     setSelectedFile(null);
     setFileName("");
     setDataValidated(false);
+    setColumns([]);
   };
 
   const overrideEventDefaults = (event: any) => {
     event.preventDefault();
-    setIsDragAndDrop(true);
     event.stopPropagation();
   };
 
   const handleDragAndDropFiles = (event: any) => {
     overrideEventDefaults(event);
     if (!event.dataTransfer) return;
-    let files = event.dataTransfer.files;
-    const theFileName = files.item(0).name;
+    let files = event.dataTransfer.files[0];
+    const theFileName = files.name;
     if (files.length > 1) {
       Alert("warning", "Select only one file");
     } else {
       handleValidations(files, theFileName);
-      handleFileUploads(event);
     }
   };
 
   const onChangeHandler = (event: any) => {
-    setIsDragAndDrop(false);
-    let files = event.target.files;
-    const theFileName = files.item(0).name;
+    let files = event.target.files[0];
+    let theFileName = files.name;
     handleValidations(files, theFileName);
-    handleFileUploads(event);
   };
 
   const handleValidations = (files: any, theFileName: any) => {
     let size = 5 * 1024 * 1024;
-    const types = ["application/vnd.ms-excel"];
-    let err = "";
-    for (var x = 0; x < files.length; x++) {
-      if (types.every((type) => files[x].type !== type)) {
+    let supportedDataFormat = /(.*?)\.(csv)$/;
+    if (!files.name.match(supportedDataFormat)) {
+      setDataValidated(false);
+      Alert("warning", "Format not supported");
+    } else {
+      if (files.size > size) {
         setDataValidated(false);
-        Alert("warning", (err += files[x].type + " is not a supported format"));
+        Alert("warning", "Please pick a file size less than 5MB");
       } else {
-        if (files[x].size > size) {
-          setDataValidated(false);
-          Alert(
-            "warning",
-            (err += files[x].type + "is too large, please pick a smaller file")
-          );
-        } else {
-          //setSelectedFile(files);
-          setDataValidated(true);
-          setFileName(theFileName);
-        }
+        //setSelectedFile(files);
+        setDataValidated(true);
+        setFileName(theFileName);
+        handleFileUploads(files);
       }
     }
   };
 
-  const handleFileUploads = (e: any) => {
-    const file = isDragAndDrop ? e.dataTransfer.files[0] : e.target.files[0];
+  const handleFileUploads = (file: any) => {
     const reader = new FileReader();
     reader.onload = (evt: any) => {
       /* Parse data */
@@ -208,38 +197,45 @@ const UploadButton = (props: Sheet2CSVOpts) => {
   };
 
   const finalUploadData = () => {
-    if (_.isEqual(downloadedData, columns)) {
-      const { uploadTemplate } = apiURL;
-      const formData: any = new FormData();
-      let data = selectedFile != null && formData.append("file", selectedFile);
-
-      invokePostAuthService(uploadTemplate, formData)
-        .then((response: any) => {
-          console.log(response);
-          setShowPopup(false);
-          let duplicate: any =
-            response.body.duplicate.length +
-            " " +
-            "- Inventory data Duplicated";
-          let success: any =
-            response.body.inserted.length + " " + " -  Inventory data Uploaded";
-
-          response.body.inserted.length != 0 && Alert("success", success);
-          response.body.duplicate.length != 0 && Alert("error", duplicate);
-          setTimeout(() => {
-            window.location.reload();
-          }, 800);
-          setSelectedFile(null);
-        })
-        .catch((error: any) => {
-          let message = error.message;
-          console.log("warning", message);
-        });
+    if (fileName === "") {
+      Alert("error", "Browse a file");
     } else {
-      Alert(
-        "warning",
-        "Templete format mismatched. Please upload valid format"
-      );
+      if (_.isEqual(downloadedData, columns)) {
+        const { uploadTemplate } = apiURL;
+        const formData: any = new FormData();
+        let data =
+          selectedFile != null && formData.append("file", selectedFile);
+
+        invokePostAuthService(uploadTemplate, formData)
+          .then((response: any) => {
+            console.log(response);
+            setShowPopup(false);
+            let duplicate: any =
+              response.body.duplicate.length +
+              " " +
+              "- Inventory data Duplicated";
+            let success: any =
+              response.body.inserted.length +
+              " " +
+              " -  Inventory data Uploaded";
+
+            response.body.inserted.length != 0 && Alert("success", success);
+            response.body.duplicate.length != 0 && Alert("error", duplicate);
+            setTimeout(() => {
+              window.location.reload();
+            }, 800);
+            setSelectedFile(null);
+          })
+          .catch((error: any) => {
+            let message = error.message;
+            console.log("warning", message);
+          });
+      } else {
+        Alert(
+          "warning",
+          "Templete format mismatched. Please upload valid format"
+        );
+      }
     }
   };
 

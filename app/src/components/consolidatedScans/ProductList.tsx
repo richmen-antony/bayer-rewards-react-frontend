@@ -47,7 +47,7 @@ export const ProductList = ({
                       "scannedProducts"
                     )
                   }
-                  style={{ width: "23%" }}
+                  style={{ width: "23%" , cursor: "pointer"}}
                   key="productname"
                 >
                   PRODUCT

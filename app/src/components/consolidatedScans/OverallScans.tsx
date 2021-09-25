@@ -104,7 +104,7 @@ export const OverallScans = ({
               <thead>
                 <tr>
                   <th
-                    style={{ width: "28%" }}
+                    style={{ width: "28%" , cursor: "pointer"}}
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedScans, isAsc, "overallScans")}
                     key="firstname"
                     className="consolidated"

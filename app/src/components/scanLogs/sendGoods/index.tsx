@@ -349,11 +349,11 @@ class SendGoods extends Component<Props, States> {
 				});
 			} else if (date <= val.ordereddatefrom) {
 				this.setState({
-					[condName]: "Scanned End Date should be greater than  Scanned Start Date",
+					[condName]: "Scanned End Date should be greater than Scanned Start Date",
 				});
 			} else {
 				this.setState({
-					[condName]: "Scanned Start Date should be lesser than  Scanned End Date",
+					[condName]: "Scanned Start Date should be lesser than Scanned End Date",
 				});
 			}
 		}
@@ -780,9 +780,9 @@ class SendGoods extends Component<Props, States> {
 		});
 		const { filter } = this.activeFilter();
 		const condWarehouseTooptip =this.state.selectedScanType === "SG - W2R" ? "Retailer Name/ID, Store Name" : "Distributor Name/ID";
-		const condDistributorTooptip =this.state.selectedScanType === "SG - W2R" ? "Store Name" : "";
+		const condDistributorTooptip =this.state.selectedScanType === "SG - D2R" ? ", Store Name" : "";
 		const toolTipText=  selectedScannedBy==="Distributor" ?`Label, Customer Name, Product Name, Channel Type ${condDistributorTooptip
-		} and Scanned By.` : `Delivery ID, Warehouse Name/ID, ${condWarehouseTooptip} and Scanned By.`
+		} and Scanned By` : `Delivery ID, Warehouse Name/ID, ${condWarehouseTooptip} and Scanned By`
 		return (
 			<AUX>
 				{isLoader ? <Loader /> :

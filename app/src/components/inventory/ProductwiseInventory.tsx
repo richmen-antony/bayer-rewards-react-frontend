@@ -35,7 +35,7 @@ export const ProductwiseInventory = ({
               <tr>
                 <th
                   onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc, "ProductwiseInventory")}
-                  style={{ width: "25%" }}
+                  style={{ width: "25%" , cursor: "pointer"}}
                   key="productname"
                 >
                   PRODUCT

@@ -109,7 +109,7 @@ export const OverallInventory = ({
               <thead>
                 <tr>
                   <th
-                    style={{ width: "25%" }}
+                    style={{ width: "25%" , cursor: "pointer"}}
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedInventory, isAsc, "overallScans")}
                     key="firstname"
                   >
