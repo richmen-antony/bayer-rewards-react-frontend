@@ -100,7 +100,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 							<li>
 								<div className="content">
 									<img src={data.deliverystatus === "GOODS_DISPATCHED" ? farmerImg : FarmerDenied} alt="" />
-									<p>Retailer ID & Name</p>
+									<p>{data.scantype === "SCAN_OUT_W2R" ? "Retailer ID & Name" : "Distributor ID & Name"} </p>
 									<span>
 										{data.touserid} - {data.tousername}
 									</span>
