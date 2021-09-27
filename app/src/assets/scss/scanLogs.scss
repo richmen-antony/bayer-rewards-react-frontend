@@ -49,11 +49,11 @@
     border-color: #f3f7fa !important;
     box-shadow: none !important;
   }
-  .dropdown-menu {
-    //width: 365px;
-    top: -15px !important;
-    left: 5px !important;
-  }
+  // .dropdown-menu {
+  //   //width: 365px;
+  //   top: -15px !important;
+  //   left: 5px !important;
+  // }
 
   .form-group .filterDropdown {
     margin-bottom: 0;
@@ -209,7 +209,7 @@
 .hiddenRow {
   padding: 0 !important;
 }
-.custom-table{
+.custom-table {
   .table-responsive {
     table {
       table-layout: fixed;
@@ -336,20 +336,20 @@
           font-size: 14px;
           // font-family: "Open Sans";
           font-family: "appRegular" !important;
-      
-            .status-label.active {
-              color: #1ccead;
-            }
-            .status-label.inactive {
-              color: #ff6397;
-            }
-            .status-label.pending{
-              color: #FF9D00;
-            }
-            .status-label.cancelled{
-              color: #FF0000;
-            }
-          
+
+          .status-label.active {
+            color: #1ccead;
+          }
+          .status-label.inactive {
+            color: #ff6397;
+          }
+          .status-label.pending {
+            color: #ff9d00;
+          }
+          .status-label.cancelled {
+            color: #ff0000;
+          }
+
           .status {
             display: flex;
             align-items: center;
@@ -367,13 +367,13 @@
             color: #ff6397;
             background-color: #ffecf2;
           }
-          .status.pending{
-            color: #FF9D00;
-            background-color: #FF9D0033;
+          .status.pending {
+            color: #ff9d00;
+            background-color: #ff9d0033;
           }
-          .status.cancelled{
-            color: #FF0000;
-            background-color: #FF000026;
+          .status.cancelled {
+            color: #ff0000;
+            background-color: #ff000026;
           }
           .max-image {
             margin-left: 60px;
@@ -732,8 +732,7 @@ cus-btn-scanlog-filter[disabled] {
   }
 }
 
-
-.column-dropdown{
+.column-dropdown {
   margin-right: -30px;
   margin-left: -30px;
 }
@@ -893,18 +892,17 @@ cus-btn-scanlog-filter[disabled] {
     height: 60vh;
   }
 }
-.tab-header{
+.tab-header {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: -55px;
-  p{
+  p {
     color: #000000;
     font-size: 15px;
     font-weight: 700;
     font-family: "appRegular" !important;
   }
- 
 }
 @media only screen and (min-width: 1400px) and (max-width: 1920px) {
   /* ADD YOUR CSS ADJUSTMENTS BELOW HERE */
