@@ -788,7 +788,7 @@ class SendGoods extends Component<Props, States> {
 				{isLoader ? <Loader /> :
 				<div>
 					<div>
-						<div className="scanlog-table">
+						<div className="scanlog-table filterWizard">
 							<Filter
 								handleSearch={this.handleSearch}
 								searchText={searchText}

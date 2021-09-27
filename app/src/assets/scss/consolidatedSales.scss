@@ -34,7 +34,7 @@
   }
 }
 
-.filterRow {
+.consolidatedFilterWizard {
   margin-right: 40px;
   .dropdown .btn-secondary {
     color: #fff;
@@ -49,11 +49,10 @@
     border-color: #f3f7fa !important;
     box-shadow: none !important;
   }
-  .dropdown-menu {
-    //width: 365px;
-    top: -30px !important;
-    left: 5px !important;
-  }
+  // .dropdown-menu {
+  //   top: -30px !important;
+  //   left: 5px !important;
+  // }
 
   .form-group .filterDropdown {
     margin-bottom: 0;

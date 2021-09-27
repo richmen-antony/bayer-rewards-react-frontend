@@ -560,7 +560,7 @@ const ConsolidatedScans = (Props: any) => {
     getDynamicOptionFields("reset");
     setSelectedFilters({
       productgroup: "ALL",
-      geolevel1: "ALL",
+      geolevel1: userData?.geolevel1,
       geolevel2: "ALL",
       lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
       lastmodifieddateto: new Date(),
@@ -580,7 +580,7 @@ const ConsolidatedScans = (Props: any) => {
       {(isLoader || isReduxLoader) && <Loader />}
       <div className="consolidatedSales-container">
         <div className="row">
-          <div className="filterSection col-sm-12">
+          <div className="filterSection col-sm-12 consolidatedFilterWizard">
             <label className="font-weight-bold">Consolidated Scans</label>
             <Filter
               handleSearch={handleSearch}

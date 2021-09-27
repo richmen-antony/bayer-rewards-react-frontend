@@ -83,8 +83,8 @@ const Inventory = (Props: any) => {
     geolevel2: "ALL",
     lastmodifieddatefrom: new Date(new Date().getFullYear(), 0, 1),
     lastmodifieddateto: fiscalYear === new Date().getFullYear() ? new Date() : new Date(new Date().getFullYear(), 11, 31),
-    scanneddatefrom: new Date(new Date().getFullYear(), 0, 1),
-    scanneddateto: fiscalYear === new Date().getFullYear() ? new Date() : new Date(new Date().getFullYear(), 11, 31),
+    fromdate: new Date(new Date().getFullYear(), 0, 1),
+    todate: fiscalYear === new Date().getFullYear() ? new Date() : new Date(new Date().getFullYear(), 11, 31),
     scannedPeriod: "All Months",
   });
 
@@ -254,8 +254,8 @@ const Inventory = (Props: any) => {
   };
   const getFilteredDatas = (filteredDatas: {}) => {
     let {
-      scanneddatefrom,
-      scanneddateto,
+      fromdate,
+      todate,
       productgroup,
       geolevel1,
       geolevel2,
@@ -263,11 +263,11 @@ const Inventory = (Props: any) => {
       lastmodifieddatefrom,
       lastmodifieddateto,
     }: any = selectedFilters;
-    let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : scanneddatefrom;
-    let endDate = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : scanneddateto;
+    let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : fromdate;
+    let endDate = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : todate;
     filteredDatas = {
-      scanneddatefrom: startDate ? moment(startDate).format("YYYY-MM-DD") : null,
-      scanneddateto: endDate ? moment(endDate).format("YYYY-MM-DD") : null,
+      fromdate: startDate ? moment(startDate).format("YYYY-MM-DD") : null,
+      todate: endDate ? moment(endDate).format("YYYY-MM-DD") : null,
       productgroup: productgroup === "ALL" ? null : productgroup,
       geolevel1: geolevel1 === "ALL" ? null : userData?.geolevel1,
       geolevel2: geolevel2 === "ALL" ? null : geolevel2,
@@ -442,8 +442,8 @@ const Inventory = (Props: any) => {
       val[name] = e.target.value;
       flag = true;
     } else if (name === "scannedPeriod" && item !== "Custom") {
-      val["scanneddatefrom"] = new Date(fiscalYear, 0, 1);
-      val["scanneddateto"] = new Date(fiscalYear, 11, 31);
+      val["fromdate"] = new Date(fiscalYear, 0, 1);
+      val["todate"] = new Date(fiscalYear, 11, 31);
       val[name] = item;
       flag = true;
     } else {
@@ -475,8 +475,8 @@ const Inventory = (Props: any) => {
         ...selectedFilters,
         lastmodifieddatefrom: fiscalStartDate,
         lastmodifieddateto: fiscalEndDate,
-        scanneddatefrom: fiscalStartDate,
-        scanneddateto: fiscalEndDate,
+        fromdate: fiscalStartDate,
+        todate: fiscalEndDate,
       });
     } else if (e.name === "viewType") {
       setViewType(selectedOption.value);
@@ -552,7 +552,7 @@ const Inventory = (Props: any) => {
     if (name === "lastmodifieddateto") {
       if (date >= val.lastmodifieddatefrom) {
         setDateErrMsg("");
-      } else if (date <= val.lastmodifieddatefrom) {
+      } else if (date < val.lastmodifieddatefrom) {
         setDateErrMsg("End Date should be greater than Start Date");
       } else {
         setDateErrMsg("Start Date should be lesser than  End Date");
@@ -622,12 +622,12 @@ const Inventory = (Props: any) => {
     getDynamicOptionFields("reset");
     setSelectedFilters({
       productgroup: "ALL",
-      geolevel1: "ALL",
+      geolevel1: userData?.geolevel1,
       geolevel2: "ALL",
       lastmodifieddatefrom: fiscalStartDate,
       lastmodifieddateto: fiscalEndDate,
-      scanneddatefrom: fiscalStartDate,
-      scanneddateto: fiscalEndDate,
+      fromdate: fiscalStartDate,
+      todate: fiscalEndDate,
       scannedPeriod: "All Months",
     });
     setDateErrMsg("");
@@ -643,7 +643,7 @@ const Inventory = (Props: any) => {
       {(isLoader || isReduxLoader) && <Loader />}
       <div className="consolidatedSales-container">
         <div className="row">
-          <div className="filterSection col-sm-12">
+          <div className="filterSection col-sm-12 consolidatedFilterWizard">
             <label className="font-weight-bold">Distributor Inventory</label>
             <Filter
               handleSearch={handleSearch}
