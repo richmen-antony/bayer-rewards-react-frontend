@@ -365,6 +365,7 @@ const ConsolidatedScans = (Props: any) => {
   const download = (type: string) => {
     let data = {
       countrycode: userData?.countrycode,
+      geolevel1: userData?.geolevel1,
       partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       downloadtype: type,
       searchtext: searchText || null,
