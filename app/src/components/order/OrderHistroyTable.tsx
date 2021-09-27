@@ -390,14 +390,13 @@ class OrderHistory extends Component<Props, States> {
 	};
 	handleDateChange = (date: any, name: string) => {
 		let val = this.state.selectedFilters;
-
 		// order date - check End date
 		if (name === "ordereddateto") {
-			if (date >= val.ordereddatefrom) {
+			if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
 				this.setState({
 					dateErrMsg: "",
 				});
-			} else if (date <= val.ordereddatefrom) {
+			} else if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
 				this.setState({
 					dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
 				});
@@ -409,11 +408,11 @@ class OrderHistory extends Component<Props, States> {
 		}
 		// order date - check Start date
 		if (name === "ordereddatefrom") {
-			if (date <= val.ordereddateto) {
+			if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddateto).format("YYYY-MM-DD")) {
 				this.setState({
 					dateErrMsg: "",
 				});
-			} else if (date >= val.ordereddateto) {
+			} else if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddateto).format("YYYY-MM-DD")) {
 				this.setState({
 					dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
 				});

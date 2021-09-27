@@ -549,10 +549,11 @@ const Inventory = (Props: any) => {
   const handleDateChange = (date: any, name: string) => {
     let val = selectedFilters;
     // to date
+
     if (name === "lastmodifieddateto") {
-      if (date >= val.lastmodifieddatefrom) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         setDateErrMsg("");
-      } else if (date < val.lastmodifieddatefrom) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         setDateErrMsg("End Date should be greater than Start Date");
       } else {
         setDateErrMsg("Start Date should be lesser than  End Date");
@@ -560,9 +561,9 @@ const Inventory = (Props: any) => {
     }
     // from date
     if (name === "lastmodifieddatefrom") {
-      if (date <= val.lastmodifieddateto) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         setDateErrMsg("");
-      } else if (date >= val.lastmodifieddateto) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         setDateErrMsg("Start Date should be lesser than End Date");
       } else {
         setDateErrMsg("Start Date should be greater than  End Date");

@@ -402,12 +402,13 @@ class SellFarmer extends Component<Props, States> {
     const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
     let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
     // Custom scanned date - check End date
+
     if (name === "scannedDateTo") {
-      if (date >= val.scannedDateFrom) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.scannedDateFrom).format("YYYY-MM-DD")) {
         this.setState({
           ScannedDateErrMsg: "",
         });
-      } else if (date <= val.scannedDateFrom) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.scannedDateFrom).format("YYYY-MM-DD")) {
         this.setState({
           ScannedDateErrMsg: "Scanned End Date should be greater than  Scanned Start Date",
         });
@@ -419,11 +420,11 @@ class SellFarmer extends Component<Props, States> {
     }
     // Custom scanned date - check Start date
     if (name === "scannedDateFrom") {
-      if (date <= val.scannedDateTo) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.scannedDateTo).format("YYYY-MM-DD")) {
         this.setState({
           ScannedDateErrMsg: "",
         });
-      } else if (date >= val.scannedDateTo) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.scannedDateTo).format("YYYY-MM-DD")) {
         this.setState({
           ScannedDateErrMsg: "Scanned Start Date should be lesser than Scanned End Date",
         });

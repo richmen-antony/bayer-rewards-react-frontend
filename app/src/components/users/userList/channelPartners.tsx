@@ -1174,12 +1174,13 @@ class ChannelPartners extends Component<Props, States> {
   handleDateChange = (date: any, name: string) => {
     let val = this.state.selectedFilters;
     // to date
+
     if (name === "lastmodifieddateto") {
-      if (date >= val.lastmodifieddatefrom) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "",
         });
-      } else if (date <= val.lastmodifieddatefrom) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "End Date should be greater than Start Date",
         });
@@ -1191,11 +1192,11 @@ class ChannelPartners extends Component<Props, States> {
     }
     // from date
     if (name === "lastmodifieddatefrom") {
-      if (date <= val.lastmodifieddateto) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "",
         });
-      } else if (date >= val.lastmodifieddateto) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "Start Date should be lesser than End Date",
         });

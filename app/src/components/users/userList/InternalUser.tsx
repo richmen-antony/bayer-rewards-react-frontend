@@ -27,10 +27,7 @@ import { sortBy } from "../../../utility/base/utils/tableSort";
 import { Alert } from "../../../utility/widgets/toaster";
 import Pagination from "../../../utility/widgets/pagination";
 import Loader from "../../../utility/widgets/loader";
-import {
-  invokeGetAuthService,
-  invokePostAuthService,
-} from "../../../utility/base/service";
+import { invokeGetAuthService, invokePostAuthService } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import _ from "lodash";
 import Filter from "../../../containers/grid/Filter";
@@ -39,7 +36,7 @@ import { NativeDropdown } from "../../../utility/widgets/dropdown/NativeSelect";
 //import PhoneInput from "react-phone-input-2";
 
 let paginationRef: any = {};
-let closeToggle :any;
+let closeToggle: any;
 const InternalUser = (Props: any) => {
   // const history = useHistory();
 
@@ -50,17 +47,14 @@ const InternalUser = (Props: any) => {
   const [dateErrMsg, setDateErrMsg] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
   const [updatedUserName, setUpdatedUserName] = useState<string>(" ");
-  const [chanagedStatusValue, setChanagedStatusValue] =
-    useState<boolean>(false);
+  const [chanagedStatusValue, setChanagedStatusValue] = useState<boolean>(false);
   const [totalRows, setTotalRows] = useState<number>(0);
   const [tableCellIndex, setTableCellIndex] = useState<number>(0);
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
-  const [isRegionValueChanged, setIsRegionValueChanged] =
-    useState<boolean>(false);
+  const [isRegionValueChanged, setIsRegionValueChanged] = useState<boolean>(false);
   const [isAsc, setIsAsc] = useState<boolean>(true);
-  const [internalUserStatusPopup, setInternalUserStatusPopup] =
-    useState<boolean>(false);
+  const [internalUserStatusPopup, setInternalUserStatusPopup] = useState<boolean>(false);
   const [userList, setUserList] = useState({
     username: "",
     phonenumber: "",
@@ -137,13 +131,7 @@ const InternalUser = (Props: any) => {
     if (!defaultPageNo) {
       setDefaultPage();
     }
-    let {
-      status,
-      isregionmapped,
-      lastmodifieddatefrom,
-      lastmodifieddateto,
-      geolevel1,
-    }: any = selectedFilters;
+    let { status, isregionmapped, lastmodifieddatefrom, lastmodifieddateto, geolevel1 }: any = selectedFilters;
 
     let data = {
       countrycode: userData?.countrycode,
@@ -168,10 +156,7 @@ const InternalUser = (Props: any) => {
 
     invokeGetAuthService(internalUserAPI, data)
       .then((response) => {
-        let data =
-          response?.body && Object.keys(response?.body).length !== 0
-            ? response.body.rows
-            : [];
+        let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
 
         setInternalUsers(data);
         const total = response?.totalrows || 0;
@@ -192,10 +177,7 @@ const InternalUser = (Props: any) => {
     };
     invokeGetAuthService(getHierarchyLevels, countrycode)
       .then((response: any) => {
-        let locationhierarchy =
-          Object.keys(response?.body).length !== 0
-            ? response?.body?.geolevel1
-            : [];
+        let locationhierarchy = Object.keys(response?.body).length !== 0 ? response?.body?.geolevel1 : [];
 
         setRetailerOptions([...retailerOptions, locationhierarchy]);
         const levels: any = [];
@@ -272,12 +254,7 @@ const InternalUser = (Props: any) => {
     setIsAsc(!isAsc);
   };
 
-  const handleSort = (
-    e: any,
-    columnname: string,
-    internalUsers: any,
-    isAsc: boolean
-  ) => {
+  const handleSort = (e: any, columnname: string, internalUsers: any, isAsc: boolean) => {
     setTableCellIndex(e.currentTarget.cellIndex);
     onSort(columnname, internalUsers, isAsc);
   };
@@ -297,8 +274,6 @@ const InternalUser = (Props: any) => {
       fetchInternalUserData();
     }
   }, [searchText]); // eslint-disable-line react-hooks/exhaustive-deps
-
- 
 
   const handleFilterChange = (e: any, name: string, item: any) => {
     e.stopPropagation();
@@ -372,9 +347,9 @@ const InternalUser = (Props: any) => {
     let val = selectedFilters;
     // to date
     if (name === "lastmodifieddateto") {
-      if (date >= val.lastmodifieddatefrom) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         setDateErrMsg("");
-      } else if (date <= val.lastmodifieddatefrom) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         setDateErrMsg("End Date should be greater than Start Date");
       } else {
         setDateErrMsg("Start Date should be lesser than  End Date");
@@ -382,9 +357,9 @@ const InternalUser = (Props: any) => {
     }
     // from date
     if (name === "lastmodifieddatefrom") {
-      if (date <= val.lastmodifieddateto) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         setDateErrMsg("");
-      } else if (date >= val.lastmodifieddateto) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         setDateErrMsg("Start Date should be lesser than End Date");
       } else {
         setDateErrMsg("Start Date should be greater than  End Date");
@@ -432,27 +407,25 @@ const InternalUser = (Props: any) => {
   }
 
   const ref = React.createRef();
-  const DateInput = React.forwardRef(
-    ({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
-      <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
-        <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
-        <input
-          style={{
-            border: "none",
-            width: "120px",
-            height: "31px",
-            outline: "none",
-          }}
-          onChange={onChange}
-          placeholder={placeholder}
-          value={value}
-          id={id}
-          onClick={onClick}
-          ref={ref}
-        />
-      </div>
-    )
-  );
+  const DateInput = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
+    <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+      <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+      <input
+        style={{
+          border: "none",
+          width: "120px",
+          height: "31px",
+          outline: "none",
+        }}
+        onChange={onChange}
+        placeholder={placeholder}
+        value={value}
+        id={id}
+        onClick={onClick}
+        ref={ref}
+      />
+    </div>
+  ));
 
   return (
     <div>
@@ -466,7 +439,7 @@ const InternalUser = (Props: any) => {
         toolTipText="Search applicable for User Name, Mobile, Full Name"
         internalUserTypeFilterHeading={true}
         onClose={(node: any) => {
-        closeToggle = node
+          closeToggle = node;
         }}
       >
         <div onClick={(e) => e.stopPropagation()}>
@@ -475,11 +448,7 @@ const InternalUser = (Props: any) => {
             {internalUserStatus.map((item, index) => (
               <span className="mr-2" key={`status` + index}>
                 <Button
-                  color={
-                    selectedFilters.status === item
-                      ? "btn activeColor rounded-pill"
-                      : "btn rounded-pill boxColor"
-                  }
+                  color={selectedFilters.status === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"}
                   size="sm"
                   onClick={(e) => handleFilterChange(e, "status", item)}
                 >
@@ -493,23 +462,13 @@ const InternalUser = (Props: any) => {
           <div className="pt-1">
             {internalUserMappingStatus.map((item, index) => {
               const seletedRegionMapped =
-                selectedFilters.isregionmapped === null
-                  ? "ALL"
-                  : selectedFilters.isregionmapped
-                  ? "Mapped"
-                  : "UnMapped";
+                selectedFilters.isregionmapped === null ? "ALL" : selectedFilters.isregionmapped ? "Mapped" : "UnMapped";
               return (
                 <span className="mr-2" key={`geolevel1` + index}>
                   <Button
-                    color={
-                      seletedRegionMapped === item
-                        ? "btn activeColor rounded-pill"
-                        : "btn rounded-pill boxColor"
-                    }
+                    color={seletedRegionMapped === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"}
                     size="sm"
-                    onClick={(e) =>
-                      handleFilterChange(e, "isregionmapped", item)
-                    }
+                    onClick={(e) => handleFilterChange(e, "isregionmapped", item)}
                   >
                     {item}
                   </Button>
@@ -544,9 +503,7 @@ const InternalUser = (Props: any) => {
               dateFormat="dd-MM-yyyy"
               customInput={<DateInput ref={ref} />}
               selected={selectedFilters.lastmodifieddatefrom}
-              onChange={(date: any) =>
-                handleDateChange(date, "lastmodifieddatefrom")
-              }
+              onChange={(date: any) => handleDateChange(date, "lastmodifieddatefrom")}
               showMonthDropdown
               showYearDropdown
               dropdownMode="select"
@@ -560,9 +517,7 @@ const InternalUser = (Props: any) => {
               dateFormat="dd-MM-yyyy"
               customInput={<DateInput ref={ref} />}
               selected={selectedFilters.lastmodifieddateto}
-              onChange={(date: any) =>
-                handleDateChange(date, "lastmodifieddateto")
-              }
+              onChange={(date: any) => handleDateChange(date, "lastmodifieddateto")}
               showMonthDropdown
               showYearDropdown
               dropdownMode="select"
@@ -573,27 +528,19 @@ const InternalUser = (Props: any) => {
         {dateErrMsg && <span className="error">{dateErrMsg} </span>}
 
         <div className="filterFooter pt-3">
-          <button
-            className="cus-btn-user-filter reset"
-            onClick={(e) => resetFilter(e)}
-          >
+          <button className="cus-btn-user-filter reset" onClick={(e) => resetFilter(e)}>
             Reset All
           </button>
           <button className="cus-btn-user-filter" onClick={applyFilter}>
             Apply
             <span>
-              <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
-              <img src={RtButton} alt="" className="layout" />
+              <img src={ArrowIcon} alt="" className="arrow-i" /> <img src={RtButton} alt="" className="layout" />
             </span>
           </button>
         </div>
       </Filter>
       {internalUserStatusPopup && (
-        <AdminPopup
-          open={internalUserStatusPopup}
-          onClose={handleClosePopup}
-          maxWidth={"600px"}
-        >
+        <AdminPopup open={internalUserStatusPopup} onClose={handleClosePopup} maxWidth={"600px"}>
           <DialogContent>
             <div className="popup-container">
               <div className="popup-content">
@@ -606,13 +553,10 @@ const InternalUser = (Props: any) => {
               </div>
               <div style={{ textAlign: "center" }}>
                 <label>
-                  {userList.userstatus === "ACTIVE" ||
-                  userList.userstatus === "INACTIVE" ? (
+                  {userList.userstatus === "ACTIVE" || userList.userstatus === "INACTIVE" ? (
                     <span>
                       Are you sure you want to change &nbsp;
-                      <strong>
-                        {_.startCase(_.toLower(userList?.username))}
-                      </strong>
+                      <strong>{_.startCase(_.toLower(userList?.username))}</strong>
                       &nbsp; account to
                       {userList.userstatus === "ACTIVE" ? (
                         <span> Inactive </span>
@@ -651,10 +595,7 @@ const InternalUser = (Props: any) => {
                     borderRadius: "50px",
                   }}
                 >
-                  {userList.userstatus === "ACTIVE" ||
-                  userList.userstatus === "INACTIVE"
-                    ? "Change"
-                    : ""}
+                  {userList.userstatus === "ACTIVE" || userList.userstatus === "INACTIVE" ? "Change" : ""}
                 </MuiButton>
               </DialogActions>
             </div>
@@ -814,11 +755,7 @@ const InternalUser = (Props: any) => {
                 USER NAME
                 {tableCellIndex !== undefined ? (
                   tableCellIndex === 0 ? (
-                    <i
-                      className={`fas ${
-                        isAsc ? "fa-sort-down" : "fa-sort-up"
-                      } ml-3`}
-                    ></i>
+                    <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                   ) : null
                 ) : (
                   <i className={"fas fa-sort-up ml-3"}></i>
@@ -826,65 +763,23 @@ const InternalUser = (Props: any) => {
               </th>
               <th
                 className="text-left"
-                onClick={(e) =>
-                  handleSort(e, "phonenumber", internalUsers, isAsc)
-                }
+                onClick={(e) => handleSort(e, "phonenumber", internalUsers, isAsc)}
                 key="phonenumber"
               >
                 MOBILE#{" "}
-                {tableCellIndex === 1 ? (
-                  <i
-                    className={`fas ${
-                      isAsc ? "fa-sort-down" : "fa-sort-up"
-                    } ml-3`}
-                  ></i>
-                ) : null}
+                {tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
               </th>
-              <th
-                className="text-left"
-                onClick={(e) =>
-                  handleSort(e, "firstname", internalUsers, isAsc)
-                }
-                key="firstname"
-              >
+              <th className="text-left" onClick={(e) => handleSort(e, "firstname", internalUsers, isAsc)} key="firstname">
                 FULL NAME
-                {tableCellIndex === 2 ? (
-                  <i
-                    className={`fas ${
-                      isAsc ? "fa-sort-down" : "fa-sort-up"
-                    } ml-3`}
-                  ></i>
-                ) : null}
+                {tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
               </th>
-              <th
-                className="text-left"
-                onClick={(e) => handleSort(e, "emailid", internalUsers, isAsc)}
-                key="emailid"
-              >
+              <th className="text-left" onClick={(e) => handleSort(e, "emailid", internalUsers, isAsc)} key="emailid">
                 MAIL ID{" "}
-                {tableCellIndex === 3 ? (
-                  <i
-                    className={`fas ${
-                      isAsc ? "fa-sort-down" : "fa-sort-up"
-                    } ml-3`}
-                  ></i>
-                ) : null}
+                {tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
               </th>
-              <th
-                className="text-left"
-                onClick={(e) =>
-                  handleSort(e, "geolevel1", internalUsers, isAsc)
-                }
-                key="geolevel1"
-              >
+              <th className="text-left" onClick={(e) => handleSort(e, "geolevel1", internalUsers, isAsc)} key="geolevel1">
                 REGION{" "}
-                {tableCellIndex === 4 ? (
-                  <i
-                    className={`fas ${
-                      isAsc ? "fa-sort-down" : "fa-sort-up"
-                    } ml-3`}
-                  ></i>
-                ) : null}
+                {tableCellIndex === 4 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
               </th>
               <th className="text-center" key="status">
                 STATUS
@@ -914,24 +809,14 @@ const InternalUser = (Props: any) => {
                           getCurrentUserData(list);
                         }}
                         className={`status internalUserStatus ${
-                          list.userstatus === "ACTIVE"
-                            ? "active"
-                            : list.userstatus === "INACTIVE"
-                            ? "inactive"
-                            : ""
+                          list.userstatus === "ACTIVE" ? "active" : list.userstatus === "INACTIVE" ? "inactive" : ""
                         }`}
                         style={{ fontStyle: "12px", height: "30px" }}
                       >
                         <img
                           style={{ marginRight: "6px" }}
                           alt="status"
-                          src={
-                            list.userstatus === "ACTIVE"
-                              ? Check
-                              : list.userstatus === "INACTIVE"
-                              ? Cancel
-                              : ""
-                          }
+                          src={list.userstatus === "ACTIVE" ? Check : list.userstatus === "INACTIVE" ? Cancel : ""}
                           width="17"
                         />
                         {_.startCase(_.toLower(list.userstatus))}
@@ -951,14 +836,9 @@ const InternalUser = (Props: any) => {
                       <img
                         className="edit"
                         style={{
-                          cursor:
-                            list.userstatus === "DECLINED"
-                              ? "default"
-                              : "pointer",
+                          cursor: list.userstatus === "DECLINED" ? "default" : "pointer",
                         }}
-                        src={
-                          list.userstatus === "DECLINED" ? EditDisabled : Edit
-                        }
+                        src={list.userstatus === "DECLINED" ? EditDisabled : Edit}
                         alt="edit user icon"
                         width="20"
                         onClick={(event) => {
