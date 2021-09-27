@@ -96,9 +96,9 @@ class SellFarmer extends Component<Props, States> {
       selectedAdvisorFilters: {
         productgroup: "ALL",
         status: "ALL",
-        ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+        ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
         ordereddateto: new Date(),
-        lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
+        lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 6),
         lastmodifiedto: new Date(),
         farmer: "ALL",
         retailer: "ALL",
@@ -108,7 +108,7 @@ class SellFarmer extends Component<Props, States> {
         productgroup: "ALL",
         scanstatus: "ALL",
         //custom calender date values
-        scannedDateFrom: new Date().setDate(new Date().getDate() - 30),
+        scannedDateFrom: new Date().setMonth(new Date().getMonth() - 6),
         scannedDateTo: new Date(),
         retailer: "ALL",
         partnerType: "Retailers",
@@ -339,7 +339,7 @@ class SellFarmer extends Component<Props, States> {
         ? {
             productgroup: "ALL",
             scanstatus: "ALL",
-            scannedDateFrom: new Date().setDate(new Date().getDate() - 30),
+            scannedDateFrom: new Date().setMonth(new Date().getMonth() - 6),
             scannedDateTo: new Date(),
             scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
             scandateto: moment(new Date()).format("YYYY-MM-DD"),
@@ -351,9 +351,9 @@ class SellFarmer extends Component<Props, States> {
         : {
             productgroup: "ALL",
             status: "ALL",
-            ordereddatefrom: new Date().setMonth(new Date().getMonth() - 3),
+            ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
             ordereddateto: new Date(),
-            lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 3),
+            lastmodifiedfrom: new Date().setMonth(new Date().getMonth() - 6),
             lastmodifiedto: new Date(),
             farmer: "ALL",
             retailer: "ALL",
