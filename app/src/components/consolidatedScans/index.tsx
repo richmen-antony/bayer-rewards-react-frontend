@@ -158,6 +158,8 @@ const ConsolidatedScans = (Props: any) => {
       if (isFiltered) {
         filteredDatas = getFilteredDatas(filteredDatas);
       }
+      let partnertype = partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR";
+      filteredDatas = { ...filteredDatas, partnertype: partnertype };
       dispatch(getScannedBrands(soldbyid, isFiltered, filteredDatas));
     } else {
       dispatch(setselectedBrandList([]));
@@ -176,6 +178,8 @@ const ConsolidatedScans = (Props: any) => {
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
+    let partnertype = partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR";
+    filteredDatas = { ...filteredDatas, partnertype: partnertype };
     dispatch(getScannedProducts(soldbyid, isFiltered, selectedBrandName, filteredDatas));
   }, [scannedBrandsSuccess]);
 
@@ -217,6 +221,8 @@ const ConsolidatedScans = (Props: any) => {
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
+    let partnertype = partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR";
+    filteredDatas = { ...filteredDatas, partnertype: partnertype };
     dispatch(getScannedProducts(soldby, isFiltered, productbrand, filteredDatas));
     setselectedBrand(idx);
     scannedBrands?.forEach((item: any, index: number) => {
