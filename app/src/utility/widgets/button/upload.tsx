@@ -21,6 +21,8 @@ import { getLocalStorageData } from "../../base/localStore";
 import { apiURL } from "../../base/utils/config";
 import _ from "lodash";
 import { DateNFOption } from "xlsx";
+import { Button } from "@material-ui/core";
+import AdminPopup from "../../../containers/components/dialog/AdminPopup";
 
 interface Sheet2CSVOpts {
   header?: any;
@@ -70,6 +72,9 @@ const DateInput = React.forwardRef(
   )
 );
 
+let obj: any = getLocalStorageData("userData");
+let userData = JSON.parse(obj);
+
 const UploadButton = (props: Sheet2CSVOpts) => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [dataValidated, setDataValidated] = useState<boolean>(false);
@@ -78,6 +83,10 @@ const UploadButton = (props: Sheet2CSVOpts) => {
   const [fileName, setFileName] = useState("");
   const [downloadedData, setDownloadedData] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [showUploadedMessageBox, setShowUploadedMessageBox] =
+    useState<boolean>(false);
+  const [totalDuplicateRecords, setTotalDuplicateRecords] = useState<number>(0);
+  const [totalRecordsInserted, setTotalRecordsInserted] = useState<number>(0);
 
   const uploadPopup = () => {
     setShowPopup(true);
@@ -203,27 +212,19 @@ const UploadButton = (props: Sheet2CSVOpts) => {
       if (_.isEqual(downloadedData, columns)) {
         const { uploadTemplate } = apiURL;
         const formData: any = new FormData();
-        let data =
-          selectedFile != null && formData.append("file", selectedFile);
-
-        invokePostAuthService(uploadTemplate, formData)
+        selectedFile != null && formData.append("file", selectedFile);
+        let data: any = {
+          geolevel1: userData?.geolevel1,
+          rolename: "DISTRIBUTOR",
+        };
+        invokePostAuthService(uploadTemplate, data, formData)
           .then((response: any) => {
             console.log(response);
             setShowPopup(false);
-            let duplicate: any =
-              response.body.duplicate.length +
-              " " +
-              "- Inventory data Duplicated";
-            let success: any =
-              response.body.inserted.length +
-              " " +
-              " -  Inventory data Uploaded";
+            setShowUploadedMessageBox(true);
+            setTotalDuplicateRecords(response.body.duplicate.length);
+            setTotalRecordsInserted(response.body.inserted.length);
 
-            response.body.inserted.length != 0 && Alert("success", success);
-            response.body.duplicate.length != 0 && Alert("error", duplicate);
-            setTimeout(() => {
-              window.location.reload();
-            }, 800);
             setSelectedFile(null);
           })
           .catch((error: any) => {
@@ -239,9 +240,61 @@ const UploadButton = (props: Sheet2CSVOpts) => {
     }
   };
 
+  const handleCloseMessagePopup = () => {
+    setShowUploadedMessageBox(false);
+    setTimeout(() => {
+      window.location.reload();
+    }, 800);
+  };
+
   return (
     <>
       <div>
+        {showUploadedMessageBox && (
+          <AdminPopup
+            open={true}
+            onClose={handleCloseMessagePopup}
+            maxWidth={"600px"}
+          >
+            <DialogContent>
+              <div className="popup-container">
+                <div className="popup-content">
+                  <div className={`popup-title`}></div>
+                </div>
+                <div
+                  style={{
+                    textAlign: "left",
+                    margin: "5px 144px",
+                    lineHeight: "3",
+                  }}
+                >
+                  <h3 style={{ textAlign: "center" }}>Upload History</h3>
+                  <label style={{ fontSize: "16px", marginTop: "11px" }}>
+                    Total number of data inserted&nbsp;&nbsp;-&nbsp;
+                    {totalRecordsInserted} <br />
+                    Total number of data already exists&nbsp;&nbsp;-&nbsp;
+                    {totalDuplicateRecords}
+                  </label>
+                </div>
+                <DialogActions>
+                  <Button
+                    autoFocus
+                    onClick={handleCloseMessagePopup}
+                    className="admin-popup-btn close-btn"
+                    style={{
+                      boxShadow: "0px 3px 6px #c7c7c729",
+                      border: "1px solid #89D329",
+                      borderRadius: "50px",
+                    }}
+                  >
+                    OK
+                  </Button>
+                </DialogActions>
+              </div>
+            </DialogContent>
+          </AdminPopup>
+        )}
+
         {showPopup && (
           <SimpleDialog
             open={showPopup}
