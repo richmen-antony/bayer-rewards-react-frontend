@@ -92,7 +92,6 @@ const Inventory = (Props: any) => {
     {
       label: "All Months",
       from: moment(selectedFilters.lastmodifieddatefrom).format("YYYY-MM-DD"),
-      // from: moment().startOf("year").format("YYYY-MM-DD"),
       to: moment(selectedFilters.lastmodifieddateto).format("YYYY-MM-DD"),
     },
     { label: "Custom", value: "" },
@@ -253,23 +252,15 @@ const Inventory = (Props: any) => {
     });
   };
   const getFilteredDatas = (filteredDatas: {}) => {
-    let {
-      fromdate,
-      todate,
-      productgroup,
-      geolevel1,
-      geolevel2,
-      scannedPeriod,
-      lastmodifieddatefrom,
-      lastmodifieddateto,
-    }: any = selectedFilters;
+    let { fromdate, todate, productgroup, geolevel2, scannedPeriod, lastmodifieddatefrom, lastmodifieddateto }: any =
+      selectedFilters;
     let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : fromdate;
     let endDate = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : todate;
     filteredDatas = {
       fromdate: startDate ? moment(startDate).format("YYYY-MM-DD") : null,
       todate: endDate ? moment(endDate).format("YYYY-MM-DD") : null,
       productgroup: productgroup === "ALL" ? null : productgroup,
-      geolevel1: geolevel1 === "ALL" ? null : userData?.geolevel1,
+      geolevel1: userData?.geolevel1,
       geolevel2: geolevel2 === "ALL" ? null : geolevel2,
       scannedPeriod: scannedPeriod,
     };
@@ -398,6 +389,7 @@ const Inventory = (Props: any) => {
   const download = (type: string) => {
     let data = {
       countrycode: userData?.countrycode,
+      geolevel1: userData?.geolevel1,
       partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       downloadtype: type,
       searchtext: searchText || null,
@@ -487,7 +479,6 @@ const Inventory = (Props: any) => {
       });
     }
   };
-  console.log("selectedFilters", selectedFilters);
 
   const fields = dynamicFields;
   const locationList = fields?.map((list: any, index: number) => {
@@ -598,12 +589,10 @@ const Inventory = (Props: any) => {
       setoveralltableIndex(e.currentTarget.cellIndex);
       setbrandtableIndex(1);
       setproducttableIndex(1);
-      // console.log('###', overalltableIndex)
     } else if (table === "BrandwiseInventory") {
       setbrandtableIndex(e.currentTarget.cellIndex);
       setoveralltableIndex(1);
       setproducttableIndex(1);
-      // console.log('###brands', brandtableIndex)
     } else if (table === "ProductwiseInventory") {
       setproducttableIndex(e.currentTarget.cellIndex);
       setoveralltableIndex(1);

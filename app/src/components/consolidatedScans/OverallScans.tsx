@@ -79,13 +79,9 @@ export const OverallScans = ({
   const showRetailerPopup = (e: any) => {
     e.stopPropagation();
     setshowPopup(true);
-    // this.setState<never>({
-    //   [key]: true,
-    // });
   };
 
   const filterScans = (id: any) => {
-    console.log("filterdid", id);
     setSearchText(id);
     setIsFiltered(true);
     handleClosePopup();
@@ -104,7 +100,7 @@ export const OverallScans = ({
               <thead>
                 <tr>
                   <th
-                    style={{ width: "28%" , cursor: "pointer"}}
+                    style={{ width: "28%", cursor: "pointer" }}
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedScans, isAsc, "overallScans")}
                     key="firstname"
                     className="consolidated"
@@ -289,7 +285,7 @@ export const OverallScans = ({
                     })}
                   <div className="content-list">
                     <label>Postal Code</label>
-                    {/* <p>{retailerPopupData.billingzipcode}</p> */}
+                    <p>{retailerPopupData.postalcode}</p>
                   </div>
                 </div>
               </div>

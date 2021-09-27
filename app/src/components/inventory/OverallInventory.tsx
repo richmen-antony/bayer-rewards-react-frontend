@@ -88,7 +88,6 @@ export const OverallInventory = ({
   };
 
   const filterScans = (id: any) => {
-    console.log("filterdid", id);
     setSearchText(id);
     setIsFiltered(true);
     handleClosePopup();
@@ -109,7 +108,7 @@ export const OverallInventory = ({
               <thead>
                 <tr>
                   <th
-                    style={{ width: "25%" , cursor: "pointer"}}
+                    style={{ width: "25%", cursor: "pointer" }}
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedInventory, isAsc, "overallScans")}
                     key="firstname"
                   >
@@ -297,7 +296,7 @@ export const OverallInventory = ({
                     })}
                   <div className="content-list">
                     <label>Postal Code</label>
-                    {/* <p>{retailerPopupData.billingzipcode}</p> */}
+                    <p>{retailerPopupData.postalcode}</p>
                   </div>
                 </div>
               </div>

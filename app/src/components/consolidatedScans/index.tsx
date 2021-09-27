@@ -230,7 +230,6 @@ const ConsolidatedScans = (Props: any) => {
       scanneddatefrom,
       scanneddateto,
       productgroup,
-      geolevel1,
       geolevel2,
       scannedPeriod,
       lastmodifieddatefrom,
@@ -243,7 +242,7 @@ const ConsolidatedScans = (Props: any) => {
         scanneddatefrom: startDate ? moment(startDate).format("YYYY-MM-DD") : null,
         scanneddateto: endDate ? moment(endDate).format("YYYY-MM-DD") : null,
         productgroup: productgroup === "ALL" ? null : productgroup,
-        geolevel1: geolevel1 === "ALL" ? null : userData?.geolevel1,
+        geolevel1: userData?.geolevel1,
         geolevel2: geolevel2 === "ALL" ? null : geolevel2,
         scannedPeriod: scannedPeriod,
       };
@@ -427,7 +426,6 @@ const ConsolidatedScans = (Props: any) => {
     } else {
       setSelectedFilters({ ...selectedFilters, [e.name]: selectedOption.value });
     }
-    let condOptionName = optionName?.includes("geolevel") ? "selected" + _.capitalize(optionName) + "Options" : optionName;
     setselectedDistributor(0);
     setselectedBrand(0);
   };
@@ -540,12 +538,10 @@ const ConsolidatedScans = (Props: any) => {
       setoveralltableIndex(e.currentTarget.cellIndex);
       setbrandtableIndex(1);
       setproducttableIndex(1);
-      // console.log('###', overalltableIndex)
     } else if (table === "scannedBrands") {
       setbrandtableIndex(e.currentTarget.cellIndex);
       setoveralltableIndex(1);
       setproducttableIndex(1);
-      // console.log('###brands', brandtableIndex)
     } else if (table === "scannedProducts") {
       setproducttableIndex(e.currentTarget.cellIndex);
       setoveralltableIndex(1);
