@@ -95,7 +95,7 @@ class SendGoods extends Component<Props, States> {
       selectedDistributorFilters: {
         productgroup: "ALL",
         scanstatus: "ALL",
-        ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
+        ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
         ordereddateto: new Date(),
         retailer: "ALL",
         partnerType: "Retailers",
@@ -107,7 +107,7 @@ class SendGoods extends Component<Props, States> {
       },
       selectedWarehouseFilters: {
         dispatchstatus: "ALL",
-        ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
+        ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
         ordereddateto: new Date(),
         scannedPeriod: "",
         scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
@@ -280,7 +280,7 @@ class SendGoods extends Component<Props, States> {
         ? {
             productgroup: "ALL",
             scanstatus: "ALL",
-            ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
+            ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
             ordereddateto: new Date(),
             scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
             scandateto: moment(new Date()).format("YYYY-MM-DD"),
@@ -292,7 +292,7 @@ class SendGoods extends Component<Props, States> {
           }
         : {
             dispatchstatus: "ALL",
-            ordereddatefrom: new Date().setDate(new Date().getDate() - 30),
+            ordereddatefrom: new Date().setMonth(new Date().getMonth() - 6),
             ordereddateto: new Date(),
             scandatefrom: moment().subtract(30, "days").format("YYYY-MM-DD"),
             scandateto: moment(new Date()).format("YYYY-MM-DD"),
