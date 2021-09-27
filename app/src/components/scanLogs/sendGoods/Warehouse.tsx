@@ -153,8 +153,8 @@ class Warehouse extends Component<Props, States> {
 					: filter.scandatefrom;
 			let endDate =
 				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
-			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
-			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
+			filter.scanneddatefrom  = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+			filter.scanneddateto  = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
 			filter.geolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 ;
 			filter.geolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
@@ -163,6 +163,8 @@ class Warehouse extends Component<Props, States> {
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
+			filter.scandatefrom = null;
+			filter.scandateto = null;
 			data = { ...data, ...filter };
 		}
 
@@ -226,16 +228,16 @@ class Warehouse extends Component<Props, States> {
 
 	download = () => {
 		const { getWarehouseDownload } = apiURL;
-
+		const { selectedFilters, isFiltered, selectedScanType, searchText } = this.props;
 		let data = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			isfiltered: this.state.isFiltered,
-			searchtext: this.state.searchText || null,
-			scantype: this.props.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
+			isfiltered: isFiltered,
+			searchtext: searchText || null,
+			scantype: selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
 			geolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
-		if (this.state.isFiltered) {
-			let filter = { ...this.state.selectedFilters };
+		if (isFiltered) {
+			let filter = { ...selectedFilters};
 			let startDate =
 				filter.scannedPeriod === "Custom"
 					? filter.ordereddatefrom
@@ -244,8 +246,8 @@ class Warehouse extends Component<Props, States> {
 					: filter.scandatefrom;
 			let endDate =
 				filter.scannedPeriod === "Custom" ? filter.ordereddateto : filter.scannedPeriod === "" ? null : filter.scandateto;
-			filter.scandatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
-			filter.scandateto = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
+			filter.scanneddatefrom = startDate ? moment(startDate).format("YYYY-MM-DD") : null;
+			filter.scanneddateto  = endDate ? moment(endDate).format("YYYY-MM-DD") : null;
 			filter.dispatchstatus = filter.dispatchstatus === "ALL" ? null : filter.dispatchstatus;
 			filter.geolevel1 = filter.geolevel1 === "ALL" ? null : filter.geolevel1 || data.geolevel1;
 			filter.geolevel2 = filter.geolevel2 === "ALL" ? null : filter.geolevel2;
@@ -254,6 +256,8 @@ class Warehouse extends Component<Props, States> {
 			filter.scannedPeriod = null;
 			filter.ordereddatefrom = null;
 			filter.ordereddateto = null;
+			filter.scandatefrom = null;
+			filter.scandateto = null;
 			data = { ...data, ...filter };
 		}
 		invokeGetAuthService(getWarehouseDownload, data)
@@ -368,7 +372,7 @@ class Warehouse extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: "10%" }} onClick={(e) => this.handleSort(e, "deliverystatus", allWarehouseData, isAsc)}>
+							<th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "deliverystatus", allWarehouseData, isAsc)}>
 								GOODS STATUS
 								{activeSortKeyIcon === "deliverystatus" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SimpleDialog from "../../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -41,7 +41,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 	const [accordionView, handleAccordion] = React.useState(false);
 	const [accordionId, setAccordionId] = React.useState("");
 	const [accordion, setAccordion] = useState(false);
-
+	const [invalidScanLabel,setInvalidScanLabel]=useState({});;
 	const handleExpand = (value: any) => {
 		handleAccordion(!accordionView);
 		setAccordionId(value.materialid);
@@ -49,6 +49,15 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 	const handleButton = (id: string) => {
 		setAccordion(!accordion);
 	};
+
+	const getInvalidScanLabel=()=>{
+	   const array=data?.invalidQrCodes;
+	   const result = array?.reduce( (acc:any, o:any) => (acc[o.reason] = (acc[o.reason] || 0)+1, acc), {} );
+	   setInvalidScanLabel(result)
+	}
+	useEffect(()=>{
+		getInvalidScanLabel();
+	},[])
 	return (
 		<SimpleDialog open={open} onClose={close} maxWidth={"800px"} header={popupHeader}>
 			<DialogContent>
@@ -87,7 +96,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 									<p>
 										{"Received date"}
 									</p>
-									<label>{data.receiveddate && moment(data.receiveddate).format("Do MMM, YYYY")}</label>
+									<label>{data.receiveddate  ? moment(data.receiveddate).format("Do MMM, YYYY"):"NA"}</label>
 								</div>
 								<div className="content">
 									<img src={retailerImg} alt="" />
@@ -119,9 +128,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 											<th>NAME</th>
 											<th>TYPE</th>
 											<th>DISPATCHED QTY</th>
-											<th>TOTAL COST</th>
 											<th></th>
-                      <th></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -162,7 +169,6 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																	: `CP - ${_.startCase(_.toLower(value.productgroup))} `}
 															</td>
 															<td className="text-center">{value.orderedquantity}</td>
-															<td>{"MK " + value.materialprice}</td>
 															{data.deliverystatus === "GOODS_DISPATCHED" && value?.qrCodes?.length > 0 && (
 																<td style={{ cursor: "pointer" }}>
 																	<i
@@ -182,13 +188,15 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																		<div className="title inner-row">
 																			<p>Label ID</p>
 																			<p className="sub-val">Batch #</p>
+																			<p className="sub-val">Expiry Date</p>
 																		</div>
 																		{value?.qrCodes?.length > 0 &&
 																			value.qrCodes.map((list: any, qrIndex: number) => {
 																				return (
 																					<div className="inner-row" key={qrIndex}>
-																						<p className="qr-val">{list.labelid}</p>
-																						<p className="sub-val"> {list.batchno}</p>
+																						<p className="qr-val">{list.labelid || "-"}</p>
+																						<p className="sub-val"> {list.batchno || "-"}</p>
+																						<p className="sub-val"> {list.expirydate&& moment(list.expirydate).format("DD/MM/YYYY") || "-"}</p>
 																					</div>
 																				);
 																			})}
@@ -218,64 +226,21 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																		data?.invalidQrCodes?.length > 0 ? data?.invalidQrCodes?.length : 0
 																	})`}
 																</span>
-																<img src={RtArrow} alt="" />
-																<span>
-																	{`${myConstClass.EXPIRED_LABEL} (${
-																		data?.invalidQrCodes?.filter(
-																			(i: any) => i.reason.toLowerCase() === myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
-																		).length > 0
-																			? data?.invalidQrCodes?.filter(
-																					(i: any) =>
-																						i.reason.toLowerCase() === myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
-																			  ).length
-																			: 0
-																	})`}
-																</span>
-																<div>
-																	<span>
-																		{`${myConstClass.NON_ADVISOR_LABEL} (${
-																			data?.invalidQrCodes?.filter(
-																				(i: any) =>
-																					i.reason.toLowerCase() === myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
-																			).length > 0
-																				? data?.invalidQrCodes?.filter(
-																						(i: any) =>
-																							i.reason.toLowerCase() === myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
-																				  ).length
-																				: 0
-																		})`}
-																	</span>
-																</div>
-																<div>
-																	<span>
-																		{`${myConstClass.NON_BAYER_LABEL} (${
-																			data?.invalidQrCodes?.filter(
-																				(i: any) =>
-																					i.reason.toLowerCase() === myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
-																			).length > 0
-																				? data?.invalidQrCodes?.filter(
-																						(i: any) =>
-																							i.reason.toLowerCase() === myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
-																				  ).length
-																				: 0
-																		})`}
-																	</span>
-																</div>
-																<div>
-																	<span>
-																		{`${myConstClass.DUPLICATE_LABEL} (${
-																			data?.invalidQrCodes?.filter(
-																				(i: any) =>
-																					i.reason.toLowerCase() === myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
-																			).length > 0
-																				? data?.invalidQrCodes?.filter(
-																						(i: any) =>
-																							i.reason.toLowerCase() === myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
-																				  ).length
-																				: 0
-																		})`}
-																	</span>
-																</div>
+															
+																{data?.invalidQrCodes?.length > 0&&<img src={RtArrow} alt="" />}
+																{ invalidScanLabel&&Object.entries(invalidScanLabel).map(([key,label]) => {
+																		return(
+																			<div>
+																			<span>{key}({label})</span>
+																		  </div>
+																		)		
+																})}
+																
+																
+																	{/* {getInvalidScanLabel(myConstClass.EXPIRED_LABEL_DESC) ?<div><span>{`${myConstClass.EXPIRED_LABEL}(${getInvalidScanLabel(myConstClass.EXPIRED_LABEL_DESC)})`} </span></div>:""}
+																	{getInvalidScanLabel(myConstClass.NON_ADVISOR_LABEL_DESC) ?<div><span>{`${myConstClass.NON_ADVISOR_LABEL}(${getInvalidScanLabel(myConstClass.NON_ADVISOR_LABEL_DESC)})`} </span></div>:""}
+																	{getInvalidScanLabel(myConstClass.NON_BAYER_LABEL_DESC) ?<div><span>{`${myConstClass.NON_BAYER_LABEL}(${getInvalidScanLabel(myConstClass.NON_BAYER_LABEL_DESC)})`} </span></div>:""}
+																	{getInvalidScanLabel(myConstClass.DUPLICATE_LABEL_DESC)?<div><span>{`${myConstClass.DUPLICATE_LABEL}(${getInvalidScanLabel(myConstClass.DUPLICATE_LABEL_DESC)})`}</span></div>:""} */}
 																<div className="expand-icon">
 																	{data?.invalidQrCodes?.length > 0 && (
 																		<i className={`fa ${accordion ? "fas fa-caret-down" : "fas fa-caret-up"} `}></i>
@@ -322,10 +287,6 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 											<td className="text-center">
 												<span className="orderedquantity">{data.totalqty}</span>
 											</td>
-											<td>
-												<span className="productprice">{"MK " + data.totalcost}</span>
-											</td>
-											<td></td>
 										</tr>
 									</tfoot>
 								</table>

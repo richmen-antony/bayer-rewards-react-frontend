@@ -242,17 +242,17 @@ class Distributor extends Component<Props, States> {
 
 	download = () => {
 		const { downloadAllScanLogs } = apiURL;
-
+		const { selectedFilters, isFiltered, selectedScanType, searchText } = this.props;
 		let data = {
 			countrycode: this.state.loggedUserInfo?.countrycode,
-			isfiltered: this.state.isFiltered,
-			searchtext: this.state.searchText || null,
-			scantype: this.props.selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
+			isfiltered: isFiltered,
+			searchtext: searchText || null,
+			scantype: selectedScanType=== "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
 			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
 		};
-		if (this.state.isFiltered) {
-			let filter = { ...this.state.selectedFilters };
+		if (isFiltered) {
+			let filter = { ...selectedFilters};
 			let startDate =
 				filter.scannedPeriod === "Custom"
 					? filter.ordereddatefrom

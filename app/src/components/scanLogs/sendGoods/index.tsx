@@ -371,7 +371,7 @@ class SendGoods extends Component<Props, States> {
         });
       } else {
         this.setState({
-          [condName]: "Ordered Start Date should be greater than Ordered End Date",
+          [condName]: "Scanned Start Date should be greater than Scanned End Date",
         });
       }
     }
