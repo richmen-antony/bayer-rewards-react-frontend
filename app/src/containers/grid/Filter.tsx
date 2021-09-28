@@ -3,7 +3,6 @@ import { SearchInput } from "../../utility/widgets/input/search-input";
 import { Button, Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import { CustomDownload } from "../../utility/widgets/button/download";
-import { CustomDropdown } from "../components/customDropdown";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import "../../assets/scss/filter.scss";
 import UploadButton from "../../utility/widgets/button/upload";
@@ -41,6 +40,7 @@ interface Props {
   packageTypeOptions?: any;
   isUploadAvailable?: boolean;
   isInventoryDownloadPopup?: boolean;
+  
 }
 
 /**
@@ -89,6 +89,8 @@ const Filter: React.FC<Props> = (props: Props) => {
     isUploadAvailable = false,
     isInventoryDownloadPopup,
   } = props;
+  // show up the dropdown using without toggle popup filter 
+  const notToggleDropdown= true;
 
   useEffect(() => {
     onClose && onClose(toggleFilter);
@@ -148,26 +150,31 @@ const Filter: React.FC<Props> = (props: Props) => {
           </>
         )}
         {isScannedBy && (
-          <CustomDropdown
+          <ReactSelect
             name="selectedScannedBy"
             value={selectedScannedBy}
             options={scannedByList}
-            handleReactSelect={handleReactSelect}
-            title="Scanned By"
+            handleChange={(selectedOptions: any, e: any) =>
+              handleReactSelect(selectedOptions, e ,notToggleDropdown)
+            }
+            label="Scanned By"
             width="150px"
-            inActiveFilter
+            inActiveFilter={notToggleDropdown}
           />
         )}
         {isScanType && (
-          <CustomDropdown
+          <ReactSelect
             name="selectedScanType"
             value={selectedScanType}
             options={scanTypeList}
-            handleReactSelect={handleReactSelect}
-            title="Scan Type"
+            label="Scan Type"
             width="150px"
-            inActiveFilter
-          />
+            inActiveFilter={notToggleDropdown}
+            handleChange={(selectedOptions: any, e: any) =>
+            handleReactSelect(selectedOptions, e ,notToggleDropdown)
+           }
+        />
+          
         )}
 
         {isPartnerType && (
