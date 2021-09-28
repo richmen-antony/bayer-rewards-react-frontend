@@ -835,7 +835,7 @@ class SellFarmer extends Component<Props, States> {
     const condToolTipText =
       selectedScanType === "WALKIN_SALES"
         ? "Label, Farmer Name, Product Name, Store Name and Scanned By"
-        : "Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID, Store Name";
+        : "Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID and Store Name";
     return (
       <AUX>
         {isLoader ? (
@@ -849,7 +849,7 @@ class SellFarmer extends Component<Props, States> {
                   searchText={searchText}
                   download={this.download}
                   isDownload={true}
-                  toolTipText={`Search applicable for ${condToolTipText}.`}
+                  toolTipText={`Search applicable for ${condToolTipText}`}
                   onClose={(node: any) => {
                     this.closeToggle = node;
                   }}

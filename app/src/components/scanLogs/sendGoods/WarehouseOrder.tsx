@@ -161,14 +161,14 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																}
 															</th>
 															<td>
-																{value.productname} <p>{value.materialid}</p>
+																{value.productname} <p className="font-13px">{value.materialid}</p>
 															</td>
 															<td>
 																{value.productgroup === "CORN SEED" || value.productgroup === "HYBRID"
 																	? `Seed - ${_.startCase(_.toLower(value.productgroup))}`
 																	: `CP - ${_.startCase(_.toLower(value.productgroup))} `}
 															</td>
-															<td className="text-center">{value.orderedquantity}</td>
+															<td className="text-center font-13px">{value.orderedquantity}</td>
 															{data.deliverystatus === "GOODS_DISPATCHED" && value?.qrCodes?.length > 0 && (
 																<td style={{ cursor: "pointer" }}>
 																	<i
@@ -193,7 +193,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																		{value?.qrCodes?.length > 0 &&
 																			value.qrCodes.map((list: any, qrIndex: number) => {
 																				return (
-																					<div className="inner-row" key={qrIndex}>
+																					<div className="inner-row font-13px" key={qrIndex}>
 																						<p className="qr-val">{list.labelid || "-"}</p>
 																						<p className="sub-val"> {list.batchno || "-"}</p>
 																						<p className="sub-val"> {list.expirydate&& moment(list.expirydate).format("DD/MM/YYYY") || "-"}</p>
@@ -264,7 +264,7 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																			data?.invalidQrCodes.map((scan: any, scanIndex: number) => {
 																				return (
 																					<div className="inner-row" key={scanIndex}>
-																						<p className="qr-val">{scan.labelid || "-"}</p>
+																						<p className="qr-val font-13px">{scan.labelid || "-"}</p>
 																						<p className="sub-val">{scan.reason}</p>
 																					</div>
 																				);

@@ -82,6 +82,45 @@ export function invokePostAuthService(path, reqObj, params) {
   });
 };
 
+
+//post with different headers
+export function invokePostFileAuthService(path, reqObj, config) {
+  return new Promise(function (resolve, reject) {
+    if (checkSessionTimeOut()) {
+      const apiEndPoint = configApp.env;
+      const config = {
+        method: 'POST',
+        headers: {
+          'Content-type': 'multipart/form-data',
+          'Accept': 'application/json',
+          "Access-Control-Allow-Origin": true,
+          "client-tz": Intl.DateTimeFormat().resolvedOptions().timeZone,
+          "client-tz-offset": new Date().getTimezoneOffset()
+        },
+        data: reqObj,
+      };
+      axios.create({
+        baseURL: apiEndPoint + path
+      })(config)
+        .then((response) => {
+          setLocalStorageData("sessionTime", moment().unix());
+          resolve(response.data)
+        })
+        .catch((err) => {
+          if (err.response) {
+            reject(err.response.data);
+          }
+        });
+
+    }
+    else {
+      handleSessionLogout();
+    }
+
+  });
+};
+
+
 //Get method without auth
 export function invokeGetService(path) {
   return new Promise(function (resolve, reject) {
@@ -177,7 +216,7 @@ export function invokePostService(path, reqObj, params) {
 };
 
 //Put method 
-export function invokePutService(path,reqObj) {
+export function invokePutService(path, reqObj) {
   return new Promise(function (resolve, reject) {
     if (checkSessionTimeOut()) {
       const apiEndPoint = configApp.env;

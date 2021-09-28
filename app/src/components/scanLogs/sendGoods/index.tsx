@@ -782,10 +782,11 @@ class SendGoods extends Component<Props, States> {
     const { filter } = this.activeFilter();
     const condWarehouseTooptip =
       this.state.selectedScanType === "SG - W2R" ? "Retailer Name/ID, Store Name" : "Distributor Name/ID";
-    const condDistributorTooptip = this.state.selectedScanType === "SG - D2R" ? ", Store Name" : "";
+    const condDistributorTooptip = this.state.selectedScanType === "SG - D2R" ? " Store Name" : "";
+    const condDistributorSplit = this.state.selectedScanType === "SG - D2R" ? "," : "";
     const toolTipText =
       selectedScannedBy === "Distributor"
-        ? `Label, Customer Name, Product Name, Channel Type ${condDistributorTooptip} and Scanned By`
+        ? `Label, Customer Name, Product Name, Channel Type${condDistributorSplit}${condDistributorTooptip} and Scanned By`
         : `Delivery ID, Warehouse Name/ID, ${condWarehouseTooptip} and Scanned By`;
     return (
       <AUX>

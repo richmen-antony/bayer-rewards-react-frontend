@@ -16,6 +16,7 @@ import { CustomButton } from ".";
 import {
   invokeGetAuthService,
   invokePostAuthService,
+  invokePostFileAuthService,
 } from "../../base/service";
 import { getLocalStorageData } from "../../base/localStore";
 import { apiURL } from "../../base/utils/config";
@@ -87,6 +88,7 @@ const UploadButton = (props: Sheet2CSVOpts) => {
     useState<boolean>(false);
   const [totalDuplicateRecords, setTotalDuplicateRecords] = useState<number>(0);
   const [totalRecordsInserted, setTotalRecordsInserted] = useState<number>(0);
+  const [totalInvalidRecords, setTotalInvalidRecords] = useState<number>(0);
 
   const uploadPopup = () => {
     setShowPopup(true);
@@ -211,20 +213,18 @@ const UploadButton = (props: Sheet2CSVOpts) => {
     } else {
       if (_.isEqual(downloadedData, columns)) {
         const { uploadTemplate } = apiURL;
-        const formData: any = new FormData();
+        let formData: any = new FormData();
         selectedFile != null && formData.append("file", selectedFile);
-        let data: any = {
-          geolevel1: userData?.geolevel1,
-          rolename: "DISTRIBUTOR",
-        };
-        invokePostAuthService(uploadTemplate, data, formData)
+        formData.append("geolevel1", userData?.geolevel1);
+        formData.append("rolename", "DISTRIBUTOR");
+        invokePostFileAuthService(uploadTemplate, formData)
           .then((response: any) => {
             console.log(response);
             setShowPopup(false);
             setShowUploadedMessageBox(true);
             setTotalDuplicateRecords(response.body.duplicate.length);
             setTotalRecordsInserted(response.body.inserted.length);
-
+            setTotalInvalidRecords(response.body.invalid.length);
             setSelectedFile(null);
           })
           .catch((error: any) => {
@@ -254,33 +254,46 @@ const UploadButton = (props: Sheet2CSVOpts) => {
           <AdminPopup
             open={true}
             onClose={handleCloseMessagePopup}
-            maxWidth={"600px"}
+            maxWidth={"450px"}
           >
             <DialogContent>
               <div className="popup-container">
                 <div className="popup-content">
-                  <div className={`popup-title`}></div>
+                  <div className={`popup-title`} style={{ fontSize: "18px" }}>
+                    Upload History
+                  </div>
                 </div>
                 <div
                   style={{
-                    textAlign: "left",
-                    margin: "5px 144px",
-                    lineHeight: "3",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    lineHeight: "1.5",
                   }}
                 >
-                  <h3 style={{ textAlign: "center" }}>Upload History</h3>
-                  <label style={{ fontSize: "16px", marginTop: "11px" }}>
-                    Total number of data inserted&nbsp;&nbsp;-&nbsp;
-                    {totalRecordsInserted} <br />
-                    Total number of data already exists&nbsp;&nbsp;-&nbsp;
-                    {totalDuplicateRecords}
+                  <label style={{ marginTop: "11px" }}>
+                    <ul style={{ fontSize: "14px" }}>
+                      <li>
+                        Total number of data inserted&nbsp;&nbsp;-&nbsp;
+                        {totalRecordsInserted} <br />
+                      </li>
+                      <li>
+                        Total number of data already exists&nbsp;&nbsp;-&nbsp;
+                        {totalDuplicateRecords}
+                      </li>
+                      <li>
+                        Total number of invalid data&nbsp;&nbsp;-&nbsp;
+                        {totalInvalidRecords}
+                      </li>
+                    </ul>
                   </label>
                 </div>
                 <DialogActions>
                   <Button
                     autoFocus
                     onClick={handleCloseMessagePopup}
-                    className="admin-popup-btn close-btn"
+                    className="admin-popup-btn filter-scan"
                     style={{
                       boxShadow: "0px 3px 6px #c7c7c729",
                       border: "1px solid #89D329",

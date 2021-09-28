@@ -538,7 +538,7 @@ class Warehouse extends Component<Props, States> {
 															{
 																retailerPopupData[
 																	condFilterScan === "distAndRetailer"
-																		? "fromuser" + location.geolevels
+																		? "touser" + location.geolevels
 																		: "scannedby" + location.geolevels
 																]
 															}

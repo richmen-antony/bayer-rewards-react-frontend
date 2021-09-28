@@ -168,7 +168,7 @@ export const OverallScans = ({
                         key={idx}
                         onClick={() => getSelectedBrands(item.soldbyid, idx, "selected", item.productbrand)}
                       >
-                        <td style={{ width: "28%", padding: "5px" }}>
+                        <td style={{ width: "28%", padding: "5px"}}>
                           {_.startCase(_.toLower(item.firstname)) + " " + _.startCase(_.toLower(item.lastname))}
                           <img
                             className="retailer-icon"
@@ -180,7 +180,7 @@ export const OverallScans = ({
                             }}
                           />
                           <br />
-                          <label style={{ fontSize: "11px" }}>{item.soldbyid}</label>
+                          <label style={{ fontSize: "0.79rem" }}>{item.soldbyid}</label>
                         </td>
                         <td style={{ width: "15%", padding: "5px" }} className="text-right">
                           {item.SEND_GOOD}

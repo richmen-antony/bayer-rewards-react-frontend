@@ -113,7 +113,7 @@ export const ProductList = ({
                       <td style={{ width: "23%", padding: "5px" }}>
                         {_.startCase(_.toLower(item.productname))}
                         <br />
-                        <label style={{ fontSize: "11px" }}>
+                        <label style={{ fontSize: "0.79rem" }}>
                           {item.productid}-{item.pkglevel}
                         </label>
                       </td>
