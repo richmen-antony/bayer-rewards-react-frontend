@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import SimpleDialog from "../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -44,6 +44,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
   const [accordionView, handleAccordion] = React.useState(false);
   const [accordionId, setAccordionId] = React.useState("");
   const [accordion, setAccordion] = useState(false);
+  const [invalidScanLabel,setInvalidScanLabel]=useState({});;
 
   const handleExpand = (value: any) => {
     handleAccordion(!accordionView);
@@ -52,6 +53,14 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
   const handleButton = (id: string) => {
     setAccordion(!accordion);
   };
+  const getInvalidScanLabel=()=>{
+    const array=data?.invalidscans;
+    const result = array?.reduce( (acc:any, o:any) => (acc[o.reason] = (acc[o.reason] || 0)+1, acc), {} );
+    setInvalidScanLabel(result)
+    }
+    useEffect(()=>{
+      getInvalidScanLabel();
+    },[])
   return (
     <SimpleDialog
       open={open}
@@ -189,17 +198,17 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                               }
                             </th>
                             <td>
-                              {value.productname} <p>{value.materialid}</p>
+                              {value.productname} <p className="font-13px">{value.materialid}</p>
                             </td>
                             <td>{ value.productgroup === "CORN SEED" ||
                                     value.productgroup === "HYBRID"? `Seed - ${_.startCase(_.toLower(value.productgroup))}` : `CP - ${ _.startCase(_.toLower(value.productgroup))} `}</td>
-                            <td className="text-center">
+                            <td className="text-center font-13px">
                               {value.intendedquantity}
                             </td>
-                            <td className="text-center">
+                            <td className="text-center font-13px">
                               {value.orderedquantity}
                             </td>
-                            <td>{"MK " + value.productprice}</td>
+                            <td className="font-13px">{"MK " + value.productprice}</td>
                             {data.orderstatus === "FULFILLED" &&
                               value?.ordered_qrcodes?.length > 0 && (
                                 <td style={{ cursor: "pointer" }}>
@@ -232,7 +241,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                         value.ordered_qrcodes.map(
                                           (list: any,i:number) => {
                                             return (
-                                              <div className="inner-row" key={i}>
+                                              <div className="inner-row font-13px" key={i}>
                                                 <p className="qr-val">
                                                   {list.labelid}
                                                 </p>
@@ -277,73 +286,15 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                       : 0
                                   })`}
                                 </span>
-                                <img src={RtArrow} alt=""/>
-                                <span>
-                                  {`${myConstClass.EXPIRED_LABEL} (${
-                                    data?.invalidscans?.filter(
-                                      (i: any) =>
-                                        i.reason.toLowerCase() ===
-                                        myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
-                                    ).length > 0
-                                      ? data?.invalidscans?.filter(
-                                          (i: any) =>
-                                            i.reason.toLowerCase() ===
-                                            myConstClass.EXPIRED_LABEL_DESC.toLowerCase()
-                                        ).length
-                                      : 0
-                                  })`}
-                                </span>
-                                <div>
-                                  <span>
-                                    {`${myConstClass.NON_ADVISOR_LABEL} (${
-                                      data?.invalidscans?.filter(
-                                        (i: any) =>
-                                          i.reason.toLowerCase() ===
-                                          myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
-                                      ).length > 0
-                                        ? data?.invalidscans?.filter(
-                                            (i: any) =>
-                                              i.reason.toLowerCase() ===
-                                              myConstClass.NON_ADVISOR_LABEL_DESC.toLowerCase()
-                                          ).length
-                                        : 0
-                                    })`}
-                                  </span>
-                                </div>
-                                <div>
-                                  <span>
-                                    {`${myConstClass.NON_BAYER_LABEL} (${
-                                      data?.invalidscans?.filter(
-                                        (i: any) =>
-                                          i.reason.toLowerCase() ===
-                                          myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
-                                      ).length > 0
-                                        ? data?.invalidscans?.filter(
-                                            (i: any) =>
-                                              i.reason.toLowerCase() ===
-                                              myConstClass.NON_BAYER_LABEL_DESC.toLowerCase()
-                                          ).length
-                                        : 0
-                                    })`}
-                                  </span>
-                                </div>
-                                <div>
-                                  <span>
-                                    {`${myConstClass.DUPLICATE_LABEL} (${
-                                      data?.invalidscans?.filter(
-                                        (i: any) =>
-                                          i.reason.toLowerCase() ===
-                                          myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
-                                      ).length > 0
-                                        ? data?.invalidscans?.filter(
-                                            (i: any) =>
-                                              i.reason.toLowerCase() ===
-                                              myConstClass.DUPLICATE_LABEL_DESC.toLowerCase()
-                                          ).length
-                                        : 0
-                                    })`}
-                                  </span>
-                                </div>
+                                
+                               {/* {data?.invalidscans?.length > 0 &&<img src={RtArrow} alt="" />}
+																{ invalidScanLabel&&Object.entries(invalidScanLabel).map(([key,label]) => {
+																		return(
+																			<div>
+																			<span>{key}({label})</span>
+																		  </div>
+																		)		
+																})} */}
                                 <div className="expand-icon">
                                   {data?.invalidscans?.length > 0 && (
                                     <i
@@ -373,7 +324,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                     data?.invalidscans.map((scan: any,scanIndex:number) => {
                                       return (
                                         <div className="inner-row" key={scanIndex}>
-                                          <p className="qr-val">
+                                          <p className="qr-val font-13px">
                                             {scan.scannedlabel || "-"}
                                           </p>
                                           <p className="sub-val">

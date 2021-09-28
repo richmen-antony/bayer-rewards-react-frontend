@@ -167,16 +167,16 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
 																}
 															</th>
 															<td>
-																{value.productname} <p>{value.materialid}</p>
+																{value.productname} <p className="font-13px">{value.materialid}</p>
 															</td>
 															<td>
 																{value.productgroup === "CORN SEED" || value.productgroup === "HYBRID"
 																	? `Seed - ${_.startCase(_.toLower(value.productgroup))}`
 																	: `CP - ${_.startCase(_.toLower(value.productgroup))} `}
 															</td>
-															<td className="text-center">{value.intendedquantity}</td>
-															<td className="text-center">{value.orderedquantity}</td>
-															<td>{"MK " + value.productprice}</td>
+															<td className="text-center font-13px">{value.intendedquantity}</td>
+															<td className="text-center font-13px">{value.orderedquantity}</td>
+															<td className="font-13px">{"MK " + value.productprice}</td>
 															{data.orderstatus === "FULFILLED" && value?.ordered_qrcodes?.length > 0 && (
 																<td style={{ cursor: "pointer" }}>
 																	<i
@@ -200,7 +200,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
 																		{value?.ordered_qrcodes?.length > 0 &&
 																			value.ordered_qrcodes.map((list: any, qrIndex: number) => {
 																				return (
-																					<div className="inner-row" key={qrIndex}>
+																					<div className="inner-row font-13px"  key={qrIndex}>
 																						<p className="qr-val">{list.labelid}</p>
 																						<p className="sub-val"> {list.batchno}</p>
 																					</div>
@@ -232,14 +232,14 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
 																		data?.invalidscans?.length > 0 ? data?.invalidscans?.length : 0
 																	})`}
 																</span>
-																{data?.invalidscans?.length > 0 &&<img src={RtArrow} alt="" />}
+																{/* {data?.invalidscans?.length > 0 &&<img src={RtArrow} alt="" />}
 																{ invalidScanLabel&&Object.entries(invalidScanLabel).map(([key,label]) => {
 																		return(
 																			<div>
 																			<span>{key}({label})</span>
 																		  </div>
 																		)		
-																})}
+																})} */}
 																{/* <span>
 																	{`${myConstClass.EXPIRED_LABEL} (${
 																		data?.invalidscans?.filter(
@@ -320,7 +320,7 @@ const OrderTable: React.FC<Props> = ({ open, close, data }) => {
 																			data?.invalidscans.map((scan: any, scanIndex: number) => {
 																				return (
 																					<div className="inner-row" key={scanIndex}>
-																						<p className="qr-val">{scan.scannedlabel || "-"}</p>
+																						<p className="qr-val font-13px">{scan.scannedlabel || "-"}</p>
 																						<p className="sub-val">{scan.reason}</p>
 																					</div>
 																				);

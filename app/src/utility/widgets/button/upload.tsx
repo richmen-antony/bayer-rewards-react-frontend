@@ -89,6 +89,8 @@ const UploadButton = (props: Sheet2CSVOpts) => {
   const [totalDuplicateRecords, setTotalDuplicateRecords] = useState<number>(0);
   const [totalRecordsInserted, setTotalRecordsInserted] = useState<number>(0);
   const [totalInvalidRecords, setTotalInvalidRecords] = useState<number>(0);
+  const [responseStatus, setResponseStatus] = useState(null);
+  const [responseMessage, setResponseMessage] = useState(null);
 
   const uploadPopup = () => {
     setShowPopup(true);
@@ -219,12 +221,14 @@ const UploadButton = (props: Sheet2CSVOpts) => {
         formData.append("rolename", "DISTRIBUTOR");
         invokePostFileAuthService(uploadTemplate, formData)
           .then((response: any) => {
-            console.log(response);
-            setShowPopup(false);
-            setShowUploadedMessageBox(true);
+            console.log(response, response.status, response.message_response);
+            setResponseStatus(response.status);
+            setResponseMessage(response.message_response);
             setTotalDuplicateRecords(response.body.duplicate.length);
             setTotalRecordsInserted(response.body.inserted.length);
             setTotalInvalidRecords(response.body.invalid.length);
+            setShowPopup(false);
+            setShowUploadedMessageBox(true);
             setSelectedFile(null);
           })
           .catch((error: any) => {
@@ -272,22 +276,26 @@ const UploadButton = (props: Sheet2CSVOpts) => {
                     lineHeight: "1.5",
                   }}
                 >
-                  <label style={{ marginTop: "11px" }}>
-                    <ul style={{ fontSize: "14px" }}>
-                      <li>
-                        Total number of data inserted&nbsp;&nbsp;-&nbsp;
-                        {totalRecordsInserted} <br />
-                      </li>
-                      <li>
-                        Total number of data already exists&nbsp;&nbsp;-&nbsp;
-                        {totalDuplicateRecords}
-                      </li>
-                      <li>
-                        Total number of invalid data&nbsp;&nbsp;-&nbsp;
-                        {totalInvalidRecords}
-                      </li>
-                    </ul>
-                  </label>
+                  {responseStatus === 404 ? (
+                    <label style={{ margin: "28px" }}>{responseMessage}</label>
+                  ) : (
+                    <label style={{ marginTop: "11px" }}>
+                      <ul style={{ fontSize: "14px" }}>
+                        <li>
+                          Total number of data inserted&nbsp;&nbsp;-&nbsp;
+                          {totalRecordsInserted} <br />
+                        </li>
+                        <li>
+                          Total number of data already exists&nbsp;&nbsp;-&nbsp;
+                          {totalDuplicateRecords}
+                        </li>
+                        <li>
+                          Total number of invalid/empty data&nbsp;&nbsp;-&nbsp;
+                          {totalInvalidRecords}
+                        </li>
+                      </ul>
+                    </label>
+                  )}
                 </div>
                 <DialogActions>
                   <Button

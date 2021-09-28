@@ -227,14 +227,14 @@ const WarehouseOrderTable: React.FC<Props> = ({ open, close, data }) => {
 																	})`}
 																</span>
 															
-																{data?.invalidQrCodes?.length > 0&&<img src={RtArrow} alt="" />}
+																{/* {data?.invalidQrCodes?.length > 0&&<img src={RtArrow} alt="" />}
 																{ invalidScanLabel&&Object.entries(invalidScanLabel).map(([key,label]) => {
 																		return(
 																			<div>
 																			<span>{key}({label})</span>
 																		  </div>
 																		)		
-																})}
+																})} */}
 																
 																
 																	{/* {getInvalidScanLabel(myConstClass.EXPIRED_LABEL_DESC) ?<div><span>{`${myConstClass.EXPIRED_LABEL}(${getInvalidScanLabel(myConstClass.EXPIRED_LABEL_DESC)})`} </span></div>:""}
