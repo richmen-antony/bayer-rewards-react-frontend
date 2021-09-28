@@ -40,7 +40,7 @@ const ProductBrandList = ({
               <tr>
                 <th
                   onClick={(e) => handleSort(e, "productbrand", selectedBrandList, isAsc, "scannedBrands")}
-                  style={{ width: "23%" , cursor: "pointer"}}
+                  style={{ width: "23%", cursor: "pointer" }}
                   key="productbrand"
                 >
                   BRAND
@@ -48,46 +48,10 @@ const ProductBrandList = ({
                     <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                   ) : null}
                 </th>
-                <th
-                  style={{
-                    width: "15%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  SEND GOODS
-                </th>
-                <th
-                  style={{
-                    width: "20%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  RECEIVE GOODS
-                </th>
-                <th
-                  style={{
-                    width: "20%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  S2F-WALK-IN
-                </th>
-                <th
-                  style={{
-                    width: "20%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  S2F-ADVISOR
-                </th>
+                <th className="invtHeader">SEND GOODS</th>
+                <th className="invtHeader">RECEIVE GOODS</th>
+                <th className="invtHeader">S2F-WALK-IN</th>
+                <th className="invtHeader">S2F-ADVISOR</th>
               </tr>
             </thead>
             <tbody>

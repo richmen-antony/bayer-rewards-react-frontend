@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import moment from "moment";
@@ -32,7 +32,6 @@ import {
   setOverallInventory,
 } from "../../redux/actions/inventory/inventory";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
-import _ from "lodash";
 import * as myConstClass from "../../utility/constant";
 
 let obj: any = getLocalStorageData("userData");
@@ -55,7 +54,6 @@ const Inventory = (Props: any) => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [dateErrMsg, setDateErrMsg] = useState<string>("");
-  const [partnerTypeList, setpartnerTypeList] = useState(["Retailers", "Distributors"]);
   const [partnerType, setPartnerType] = useState({ type: "Distributors" });
   const [selectedDistributorName, setselectedDistributorName] = useState("");
   const [selectedBrandName, setselectedBrandName] = useState("");
@@ -608,7 +606,6 @@ const Inventory = (Props: any) => {
     let fiscalStartDate = new Date(fiscalYear, 0, 1);
     let fiscalEndDate = fiscalYear === new Date().getFullYear() ? new Date() : new Date(fiscalYear, 11, 31);
     // let conditionIsFilter = searchText ? true : false;
-    const options: any = { value: "ALL", label: "ALL" };
     getDynamicOptionFields("reset");
     setSelectedFilters({
       productgroup: "ALL",
@@ -638,8 +635,6 @@ const Inventory = (Props: any) => {
             <Filter
               handleSearch={handleSearch}
               searchText={searchText}
-              // partnerTypeList={partnerTypeList}
-              // selectedPartnerType={partnerType}
               downloadPopup={true}
               isDownload={true}
               handlePartnerChange={handlePartnerChange}

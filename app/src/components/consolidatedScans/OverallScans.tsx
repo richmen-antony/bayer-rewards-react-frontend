@@ -110,46 +110,10 @@ export const OverallScans = ({
                       <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                     ) : null}
                   </th>
-                  <th
-                    style={{
-                      width: "15%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    SEND GOODS
-                  </th>
-                  <th
-                    style={{
-                      width: "17%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    RECEIVE GOODS
-                  </th>
-                  <th
-                    style={{
-                      width: "20%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    S2F-WALK-IN
-                  </th>
-                  <th
-                    style={{
-                      width: "20%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    S2F-ADVISOR
-                  </th>
+                  <th className="invtHeader">SEND GOODS</th>
+                  <th className="invtHeader">RECEIVE GOODS</th>
+                  <th className="invtHeader">S2F-WALK-IN</th>
+                  <th className="invtHeader">S2F-ADVISOR</th>
                 </tr>
               </thead>
               <tbody>
@@ -168,7 +132,7 @@ export const OverallScans = ({
                         key={idx}
                         onClick={() => getSelectedBrands(item.soldbyid, idx, "selected", item.productbrand)}
                       >
-                        <td style={{ width: "28%", padding: "5px"}}>
+                        <td style={{ width: "28%", padding: "5px" }}>
                           {_.startCase(_.toLower(item.firstname)) + " " + _.startCase(_.toLower(item.lastname))}
                           <img
                             className="retailer-icon"

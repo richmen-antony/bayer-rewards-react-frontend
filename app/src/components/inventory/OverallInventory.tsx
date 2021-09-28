@@ -117,56 +117,11 @@ export const OverallInventory = ({
                       <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                     ) : null}
                   </th>
-                  <th
-                    style={{
-                      width: "15%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    OPENING
-                  </th>
-                  <th
-                    style={{
-                      width: "15%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    SELL-IN
-                  </th>
-                  <th
-                    style={{
-                      width: "15%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    SELL-OUT
-                  </th>
-                  <th
-                    style={{
-                      width: "15%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    RETURNS
-                  </th>
-                  <th
-                    style={{
-                      width: "15%",
-                      padding: "5px",
-                      textAlign: "right",
-                      direction: "rtl",
-                    }}
-                  >
-                    CLOSING
-                  </th>
+                  <th className="invtHeader">OPENING</th>
+                  <th className="invtHeader">SELL-IN</th>
+                  <th className="invtHeader">SELL-OUT</th>
+                  <th className="invtHeader">RETURNS</th>
+                  <th className="invtHeader">CLOSING</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,7 +141,7 @@ export const OverallInventory = ({
                         key={idx}
                         onClick={() => getSelectedBrands(item.rtmppartnerid, idx, "selected", item.productbrand)}
                       >
-                        <td style={{ width: "26%", padding: "5px" }}>
+                        <td style={{ width: "27%", padding: "5px" }}>
                           {_.startCase(_.toLower(item.firstname)) + " " + _.startCase(_.toLower(item.lastname))}
                           <img
                             className="retailer-icon"
@@ -241,11 +196,11 @@ export const OverallInventory = ({
               <thead>
                 <tr>
                   <th style={{ width: "25%", padding: "5px" }}>Total&nbsp;({allConsolidatedInventory?.length})</th>
-                  <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalOpeningInventory}</th>
-                  <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSellIn}</th>
-                  <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSellOut}</th>
-                  <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalReturns}</th>
-                  <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalClosingInventory}</th>
+                  <th className="invtFooter">{totalOpeningInventory}</th>
+                  <th className="invtFooter">{totalSellIn}</th>
+                  <th className="invtFooter">{totalSellOut}</th>
+                  <th className="invtFooter">{totalReturns}</th>
+                  <th className="invtFooter">{totalClosingInventory}</th>
                 </tr>
               </thead>
             </table>

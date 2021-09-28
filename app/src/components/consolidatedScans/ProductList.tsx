@@ -27,78 +27,25 @@ export const ProductList = ({
   return (
     <AUX>
       <div className="">
-        <label className="font-weight-bold scanlabel">
-          product wise scans - {_.startCase(_.toLower(brandName))}
-        </label>
-        <div
-          className="consolidatedSales-table scannedProducts"
-          style={{ height: "26vh", overflowY: "auto" }}
-        >
+        <label className="font-weight-bold scanlabel">product wise scans - {_.startCase(_.toLower(brandName))}</label>
+        <div className="consolidatedSales-table scannedProducts" style={{ height: "26vh", overflowY: "auto" }}>
           <table className="table listTable">
             <thead>
               <tr>
                 <th
-                  onClick={(e) =>
-                    handleSort(
-                      e,
-                      "productname",
-                      selectedProductList,
-                      isAsc,
-                      "scannedProducts"
-                    )
-                  }
-                  style={{ width: "23%" , cursor: "pointer"}}
+                  onClick={(e) => handleSort(e, "productname", selectedProductList, isAsc, "scannedProducts")}
+                  style={{ width: "23%", cursor: "pointer" }}
                   key="productname"
                 >
                   PRODUCT
                   {tableCellIndex === 0 && tableName === "scannedProducts" ? (
-                    <i
-                      className={`fas ${
-                        isAsc ? "fa-sort-down" : "fa-sort-up"
-                      } ml-3`}
-                    ></i>
+                    <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                   ) : null}
                 </th>
-                <th
-                  style={{
-                    width: "15%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  SEND GOODS
-                </th>
-                <th
-                  style={{
-                    width: "20%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  RECEIVE GOODS
-                </th>
-                <th
-                  style={{
-                    width: "20%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  S2F-WALK-IN
-                </th>
-                <th
-                  style={{
-                    width: "22%",
-                    padding: "5px",
-                    textAlign: "right",
-                    direction: "rtl",
-                  }}
-                >
-                  S2F-ADVISOR
-                </th>
+                <th className="invtHeader">SEND GOODS</th>
+                <th className="invtHeader">RECEIVE GOODS</th>
+                <th className="invtHeader">S2F-WALK-IN</th>
+                <th className="invtHeader">S2F-ADVISOR</th>
               </tr>
             </thead>
             <tbody>
@@ -117,28 +64,16 @@ export const ProductList = ({
                           {item.productid}-{item.pkglevel}
                         </label>
                       </td>
-                      <td
-                        className="text-right"
-                        style={{ width: "15%", paddingRight: "0.5em" }}
-                      >
+                      <td className="text-right" style={{ width: "15%", paddingRight: "0.5em" }}>
                         {item.SEND_GOOD}
                       </td>
-                      <td
-                        className="text-right"
-                        style={{ width: "20%", paddingRight: "0.5em" }}
-                      >
+                      <td className="text-right" style={{ width: "20%", paddingRight: "0.5em" }}>
                         {item.RECEIVE_GOOD}
                       </td>
-                      <td
-                        className="text-right"
-                        style={{ width: "20%", paddingRight: "0.5em" }}
-                      >
+                      <td className="text-right" style={{ width: "20%", paddingRight: "0.5em" }}>
                         {item.S2F_WALKIN}
                       </td>
-                      <td
-                        className="text-right"
-                        style={{ width: "22%", paddingRight: "0.5em" }}
-                      >
+                      <td className="text-right" style={{ width: "22%", paddingRight: "0.5em" }}>
                         {item.S2F_ADVISOR}
                       </td>
                     </tr>
@@ -166,29 +101,11 @@ export const ProductList = ({
           >
             <thead>
               <tr>
-                <th style={{ width: "23%", padding: "5px" }}>
-                  Total&nbsp;({selectedProductList?.length})
-                </th>
-                <th
-                  style={{ width: "15%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalSendGoods}
-                </th>
-                <th
-                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalReceivedGoods}
-                </th>
-                <th
-                  style={{ width: "20%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalWalkInSales}
-                </th>
-                <th
-                  style={{ width: "22%", padding: "5px", textAlign: "right" }}
-                >
-                  {totalAdvisorSales}
-                </th>
+                <th style={{ width: "23%", padding: "5px" }}>Total&nbsp;({selectedProductList?.length})</th>
+                <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSendGoods}</th>
+                <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalReceivedGoods}</th>
+                <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalWalkInSales}</th>
+                <th style={{ width: "22%", padding: "5px", textAlign: "right" }}>{totalAdvisorSales}</th>
               </tr>
             </thead>
           </table>

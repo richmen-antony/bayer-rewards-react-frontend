@@ -186,19 +186,25 @@
     }
   }
 }
-.overallscan {
-  table {
-    thead {
-      tr {
-        th {
-          padding: 10px 5px;
-        }
-      }
-    }
-  }
-}
-.consolidatedSales-table.scannedProducts > table.table > thead > tr > th {
-  padding: 10px;
+// .overallscan {
+//   table {
+//     thead {
+//       tr {
+//         th {
+//           padding: 10px 5px;
+//         }
+//       }
+//     }
+//   }
+// }
+// .consolidatedSales-table.scannedProducts > table.table > thead > tr > th {
+//   padding: 10px;
+// }
+.invtHeader {
+  width: 15%;
+  text-align: right;
+  padding: 5px !important;
+  direction: rtl;
 }
 
 .scanlabel {
@@ -206,6 +212,11 @@
   color: black;
   text-transform: uppercase;
   margin-bottom: 3px;
+}
+.invtFooter {
+  width: 15% !important;
+  padding: 5px !important;
+  text-align: right !important;
 }
 
 .consolidatedSales-table {
