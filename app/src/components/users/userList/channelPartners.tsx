@@ -603,7 +603,7 @@ class ChannelPartners extends Component<Props, States> {
     //   staticColumn + (this.state.geographicFields.length - 1);
     if (this.state.partnerType.type === "Retailer") {
       res.push(
-        <th style={{ width: "8%", cursor: "default" }} key="staff">
+        <th style={{ width: "9%", cursor: "default" }} key="staff">
           {"STAFF COUNT"}
         </th>
       );

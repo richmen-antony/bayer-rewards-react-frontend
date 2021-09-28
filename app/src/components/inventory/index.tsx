@@ -226,7 +226,7 @@ const Inventory = (Props: any) => {
       setselectedBrand(0);
     }
     allConsolidatedInventory?.forEach((item: any, index: number) => {
-      if (item.soldbyid === soldbyidd) {
+      if (item.username === soldbyidd) {
         setselectedDistributorName(item.firstname + " " + item.lastname);
       }
     });
