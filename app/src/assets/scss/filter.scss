@@ -55,7 +55,8 @@
   flex-direction: row;
   align-items: center;
   margin-right: 10px;
-
+  font-size: 16px;
+  z-index: 2;
   .yeartext {
     padding-top: 0.5rem !important;
     padding-right: 0.5rem;
@@ -79,9 +80,30 @@
   display: flex;
   align-items: center;
 }
+.react-select {
+  label {
+    font-size: 14px;
+  }
+  img {
+    //height: 36px;
+    height: 34px;
+    margin-right: -1px;
+  }
+}
+
+
 
 @media only screen and (max-width: 1400px) {
   .select {
     font-size: 12px;
   }
+  .react-select {
+    label {
+      font-size: 11px;
+    }
+  }
+   .dropdown-year{
+    font-size: 14px;
+
+   }
 }
