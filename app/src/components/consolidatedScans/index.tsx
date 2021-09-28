@@ -374,7 +374,7 @@ const ConsolidatedScans = (Props: any) => {
       partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       downloadtype: type,
       searchtext: searchText || null,
-      isfiltered: isFiltered,
+      isfiltered: true,
     };
     let filteredDatas = {};
     if (isFiltered) {

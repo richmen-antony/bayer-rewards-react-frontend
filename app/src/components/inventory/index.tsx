@@ -402,11 +402,11 @@ const Inventory = (Props: any) => {
     }
     data = { ...data, ...filteredDatas };
     if (type === "overall") {
-      type = "Overall_Inventory";
+      type = "Overall_Invt";
     } else if (type === "brand") {
-      type = "BrandWise_Inventory";
+      type = "BrandWise_Invt";
     } else if (type === "product") {
-      type = "ProductWise_Inventory";
+      type = "ProductWise_Invt";
     } else if (type === "template") {
       type = "Download_Template";
     }
