@@ -1,0 +1,13 @@
+{
+    "landing": {
+        "signIn": "Spanish sign in"
+    },
+    "placeholder": {
+        "search": "SpanishSearch (min 3 letters)"
+    },
+    "FULFILLED": "Spanish full",
+    "PENDING": "Spanish PENDING",
+    "CANCELLED": "SpanishCANCEL",
+    "EXPIRED": "SpanishEXP"
+    
+}

@@ -5,19 +5,17 @@ import {
 } from "../utility/base/localStore";
 import Cookies from "js-cookie";
 import moment from "moment";
-
+import {RSM_ROLE,ADMIN_ROLE,DEVADMIN_ROLE} from "../utility/constant";
 
 
 class Authorization {
   authUser: any;
   authUserKey: string;
-  static ROLE_RSM_ADMIN = "RSM";
-  static ROLE_DEV_ADMIN = "DEVADMIN";
-  static ROLE_ADMIN = "ADMIN";
 
   constructor() {
     this.authUser = null;
     this.authUserKey = "userData";
+    
   }
   //function
   logOut(isReload?:boolean): void {
@@ -38,6 +36,7 @@ class Authorization {
     const data :any =getLocalStorageData(this.authUserKey);
     const ls= data;
     return  ls&&ls.role !=="" ? true : false;
+   
     // return true;
   }
   /**
@@ -92,7 +91,7 @@ class Authorization {
   * @return boolean
   */
   isAdmin() {
-    return this.isUserRole(Authorization.ROLE_ADMIN);
+    return this.isUserRole(ADMIN_ROLE);
   }
   /**
  * check logged user is RSM Admin
@@ -100,7 +99,7 @@ class Authorization {
  * @return boolean
  */
   isRSMAdmin() {
-    return this.isUserRole(Authorization.ROLE_RSM_ADMIN);
+    return this.isUserRole(RSM_ROLE);
   }
   /**
    * check logged user DEV Admin
@@ -108,7 +107,7 @@ class Authorization {
    * @return boolean
    */
   isDEVAdmin() {
-    return this.isUserRole(Authorization.ROLE_DEV_ADMIN);
+    return this.isUserRole(DEVADMIN_ROLE);
   }
 
 

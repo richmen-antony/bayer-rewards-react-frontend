@@ -19,6 +19,7 @@ import { getLocalStorageData } from "../../../utility/base/localStore";
 import { CustomButton } from "../../../utility/widgets/button";
 import { Alert } from "../../../utility/widgets/toaster";
 import maxImg from "../../../assets/images/maximize.svg";
+import {RSM_ROLE,ADMIN_ROLE} from "../../../utility/constant";
 
 
 
@@ -141,7 +142,7 @@ class Warehouse extends Component<Props, States> {
 			isfiltered: isFiltered,
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			scantype: selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
-			geolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+			geolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -234,7 +235,7 @@ class Warehouse extends Component<Props, States> {
 			isfiltered: isFiltered,
 			searchtext: searchText || null,
 			scantype: selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R",
-			geolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+			geolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters};
@@ -378,7 +379,7 @@ class Warehouse extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							{loggedUserInfo?.role === "ADMIN" && (
+							{loggedUserInfo?.role === ADMIN_ROLE && (
 								<th
 									style={{ width: "10%" }}
 									onClick={(e) => this.handleSort(e, "scannedbygeo1", allWarehouseData, isAsc)}
@@ -398,7 +399,7 @@ class Warehouse extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							<th style={{ width: loggedUserInfo?.role === "ADMIN" ? "10%" : "12%" }}></th>
+							<th style={{ width: loggedUserInfo?.role === ADMIN_ROLE ? "10%" : "12%" }}></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -475,7 +476,7 @@ class Warehouse extends Component<Props, States> {
 												{value.deliverystatus ==="GOODS_DISPATCHED" ? "Dispatch Sent":"Dispatch Received"}
 											</span>
 										</td>
-										{loggedUserInfo?.role === "ADMIN" && <td>{value.scannedbygeo1}</td>}
+										{loggedUserInfo?.role === ADMIN_ROLE && <td>{value.scannedbygeo1}</td>}
 										<td>
 											{value.updateddate && moment(value.updateddate).format("DD/MM/YYYY")}
 											

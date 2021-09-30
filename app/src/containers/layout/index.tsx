@@ -5,11 +5,15 @@ import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import Authorization from "../../utility/authorization";
 
-function Layout(props: any) {
+function Layout(props: any, currentLocale?: any, handleChange?: any) {
   return Authorization.isLoggedIn() ? (
     <AUX>
       <div id="wrapper">
-        <TopBar {...props} />
+        <TopBar
+          currentLocale={currentLocale}
+          handleChange={handleChange}
+          {...props}
+        />
         <SideBar {...props} />
         <div className="content-page">
           <div className="content">{props.children}</div>

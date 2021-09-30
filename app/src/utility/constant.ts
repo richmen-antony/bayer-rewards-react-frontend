@@ -36,6 +36,11 @@ export const NON_BAYER_LABEL_DESC = "Label not recognized";
 export const DUPLICATE_LABEL = "Duplicate Labels";
 export const DUPLICATE_LABEL_DESC = "This product is already scanned";
 export const package_type = ["Shipper"];
+export const RSM_ROLE="RSM";
+export const ADMIN_ROLE="ADMIN";
+export const DEVADMIN_ROLE="DEVADMIN"
+export const PUBLIC_ROLE="public";
+export const RSM_ADMIN_ROLE="RSM_ADMIN";
 
 // order histroy table header
 const FULFILLED = [
@@ -118,7 +123,7 @@ const OrderHistroyHeader: any = {
 const removeRegionList = () => {
   const currentUser = authorization.getAuthUser();
   // If current user is RSM admin and remove region column values
-  if (currentUser?.role === "RSM") {
+  if (currentUser?.role === RSM_ROLE) {
     WALKIN_SALES.splice(7, 1);
   }
 };

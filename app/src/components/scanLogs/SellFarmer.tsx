@@ -19,7 +19,7 @@ import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import AdvisorSales from "./AdvisorSales";
 import WalkInSales from "./WalkInSales";
 import { Alert } from "../../utility/widgets/toaster";
-import { salesTypeSellToFarmer, scannedBySellToFarmer } from "../../utility/constant";
+import { salesTypeSellToFarmer, scannedBySellToFarmer,RSM_ROLE,ADMIN_ROLE } from "../../utility/constant";
 
 type PartnerTypes = {
   type: String;
@@ -178,7 +178,7 @@ class SellFarmer extends Component<Props, States> {
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
     const condSalesType =
-      userData?.role === "RSM" ? this.state.scanTypeList : [{ value: "WALKIN_SALES", label: "Walk-In Sales" }];
+      userData?.role === RSM_ROLE ? this.state.scanTypeList : [{ value: "WALKIN_SALES", label: "Walk-In Sales" }];
     this.setState(
       {
         loggedUserInfo: userData,
@@ -564,7 +564,7 @@ class SellFarmer extends Component<Props, States> {
     const { getBatchList } = apiURL;
     let countrycode = {
       countrycode: this.state.loggedUserInfo?.countrycode,
-      soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+      soldbygeolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
     };
     invokeGetAuthService(getBatchList, countrycode)
       .then((response: any) => {
@@ -625,7 +625,7 @@ class SellFarmer extends Component<Props, States> {
 
     let userrole = userData?.role;
     let level2Options: any = [];
-    if (userrole === "RSM") {
+    if (userrole === RSM_ROLE) {
       let filteredLevel1: any = this.state.geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
       filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
         let level2Info = { label: item.name, value: item.name, code: item.code };
@@ -647,7 +647,7 @@ class SellFarmer extends Component<Props, States> {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value: list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "ALL",
+        value: list === "geolevel1" && userrole === RSM_ROLE ? usergeolevel1 : "ALL",
         options:
           list === "geolevel0"
             ? this.state.countryList
@@ -823,7 +823,7 @@ class SellFarmer extends Component<Props, States> {
                   this.handleReactSelect(selectedOptions, e);
                 }}
                 value={list.value}
-                isDisabled={userData?.role === "RSM" && list.name === "geolevel1"}
+                isDisabled={userData?.role === RSM_ROLE && list.name === "geolevel1"}
                 id="geolevel-test"
                 dataTestId="geolevel-test"
               />

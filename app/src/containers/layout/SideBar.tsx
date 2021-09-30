@@ -16,6 +16,7 @@ import country from "../../assets/images/country.svg";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import Authorization from "../../utility/authorization";
 import { AppContext } from "../context";
+import { FormattedMessage } from "react-intl";
 
 type Props = {
   history?: any;
@@ -55,9 +56,9 @@ class Sidebar extends Component<Props, States> {
     });
     //localStorage
     let availableFeature: any = userData?.features;
-    let truthyValues: any = availableFeature &&Object.keys(availableFeature).filter(
-      (e) => availableFeature[e]
-    );
+    let truthyValues: any =
+      availableFeature &&
+      Object.keys(availableFeature).filter((e) => availableFeature[e]);
     this.setState({
       availableSideContent: truthyValues,
     });
@@ -128,13 +129,17 @@ class Sidebar extends Component<Props, States> {
                       width="16"
                       data-testid="dashboard-icon"
                     />{" "}
-                    <span> Dashboard </span>
+                    <span>
+                      <FormattedMessage id="sideBar.dashboard" />{" "}
+                    </span>
                   </Link>
                 </li>
 
                 {this.state.userRole === "ADMIN" && (
                   <>
-                    <li className="menu-title">MANAGEMENT</li>
+                    <li className="menu-title">
+                      <FormattedMessage id="sideBar.management" />
+                    </li>
                     <li className="d-flex">
                       <span
                         className={
@@ -157,7 +162,9 @@ class Sidebar extends Component<Props, States> {
                           width="16"
                           data-testid="createuser-icon"
                         />{" "}
-                        <span> Create New User </span>
+                        <span>
+                          <FormattedMessage id="sideBar.createNewUser" />
+                        </span>
                       </Link>
                     </li>
 
@@ -179,7 +186,9 @@ class Sidebar extends Component<Props, States> {
                           width="16"
                           data-testid="listuser-icon"
                         />{" "}
-                        <span> User List </span>
+                        <span>
+                          <FormattedMessage id="sideBar.userList" />
+                        </span>
                       </Link>
                     </li>
 
@@ -201,7 +210,9 @@ class Sidebar extends Component<Props, States> {
                           width="16"
                           data-testid="order-icon"
                         />{" "}
-                        <span> Order History </span>
+                        <span>
+                          <FormattedMessage id="sideBar.orderHistory" />
+                        </span>
                       </Link>
                     </li>
 
@@ -218,16 +229,19 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("scanlogs")}
                       >
                         <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                        <span> Scan Logs </span>
+                        <span>
+                          <FormattedMessage id="sideBar.scanLogs" />
+                        </span>
                       </Link>
                     </li>
-
                   </>
                 )}
 
                 {this.state.userRole === "DEVADMIN" && (
                   <>
-                    <li className="menu-title">MANAGEMENT</li>
+                    <li className="menu-title">
+                      <FormattedMessage id="sideBar.management" />
+                    </li>
                     <li className="d-flex">
                       <span
                         className={
@@ -247,7 +261,9 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("devconfig")}
                       >
                         <img src={country} alt="User" width="16" />{" "}
-                        <span> Dev Config </span>
+                        <span>
+                          <FormattedMessage id="sideBar.devConfig" />
+                        </span>
                       </Link>
                     </li>
                   </>
@@ -255,7 +271,9 @@ class Sidebar extends Component<Props, States> {
 
                 {this.state.userRole === "RSM" && (
                   <>
-                    <li className="menu-title">LOGS</li>
+                    <li className="menu-title">
+                      <FormattedMessage id="sideBar.logs" />
+                    </li>
                     {/* {this.state.availableSideContent.includes("Scan logs") ? ( */}
                     <li className="d-flex">
                       <span
@@ -270,7 +288,9 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("scanlogs")}
                       >
                         <img src={scanLogsIcon} alt="Sacn" width="16" />{" "}
-                        <span> Scan Logs </span>
+                        <span>
+                          <FormattedMessage id="sideBar.scanLogs" />
+                        </span>
                       </Link>
                     </li>
                     {/* ) : null} */}
@@ -294,7 +314,9 @@ class Sidebar extends Component<Props, States> {
                           alt="Consolidated Scans"
                           width="16"
                         />{" "}
-                        <span> Consolidated Scans </span>
+                        <span>
+                          <FormattedMessage id="sideBar.consolidatedScans" />
+                        </span>
                       </Link>
                     </li>
 
@@ -311,7 +333,9 @@ class Sidebar extends Component<Props, States> {
                         onClick={() => this.setActiveTab("inventory")}
                       >
                         <img src={inventory} alt="Inventory" width="16" />{" "}
-                        <span> Inventory </span>
+                        <span>
+                          <FormattedMessage id="sideBar.inventory" />{" "}
+                        </span>
                       </Link>
                     </li>
                   </>
@@ -373,7 +397,9 @@ class Sidebar extends Component<Props, States> {
                     width="16"
                     data-testid="logout-icon"
                   />{" "}
-                  <span> Logout </span>
+                  <span>
+                    <FormattedMessage id="sideBar.logout" />
+                  </span>
                 </Link>
               </li>
             </ul>

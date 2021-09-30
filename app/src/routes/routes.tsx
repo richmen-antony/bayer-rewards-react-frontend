@@ -1,4 +1,5 @@
 import React from 'react';
+import {RSM_ROLE,ADMIN_ROLE,DEVADMIN_ROLE,PUBLIC_ROLE,RSM_ADMIN_ROLE} from "../utility/constant";
 // site title
 export const siteTitle = 'Bayer Rewards';
 export const siteMetaDescription = 'Bayer Rewards';
@@ -21,7 +22,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/auth/landing')),
-    role:"public"
+    role:PUBLIC_ROLE
   },
   {
     private: false,
@@ -32,7 +33,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/auth/landing')),
-    role:"public",
+    role:PUBLIC_ROLE,
   },
   {
     private: true,
@@ -43,7 +44,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/dashboard')),
-    role:"public"
+    role:PUBLIC_ROLE
   },
   {
     private: true,
@@ -54,7 +55,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/users/userList')),
-    role:"ADMIN"
+    role:ADMIN_ROLE
   },
   {
     private: true,
@@ -65,7 +66,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/users/createUser')),
-    role:"ADMIN"
+    role:ADMIN_ROLE
   },
   {
     private: true,
@@ -76,7 +77,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/scanLogs')),
-    role:"RSM_ADMIN"
+    role:RSM_ADMIN_ROLE
   },
   {
     private: true,
@@ -87,7 +88,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/devconfig')),
-    role:"DEVADMIN"
+    role:DEVADMIN_ROLE
   },
   {
     private: true,
@@ -98,7 +99,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/order')),
-    role:"ADMIN"
+    role:ADMIN_ROLE
   },
   {
     private: true,
@@ -109,7 +110,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/label')),
-    role:"RSM"
+    role:RSM_ROLE
   },
   {
     private: true,
@@ -120,7 +121,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/consolidatedScans')),
-    role:"RSM"
+    role:RSM_ROLE
   },
   {
     private: true,
@@ -131,7 +132,7 @@ export const ROUTE = [
       description: siteMetaDescription
     },
     component: React.lazy(() => import('../components/inventory')),
-    role:"RSM"
+    role:RSM_ROLE
   },
 
   // {

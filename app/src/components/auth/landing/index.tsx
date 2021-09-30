@@ -20,6 +20,9 @@ import {
   CarouselIndicators,
 } from "reactstrap";
 
+import { FormattedMessage } from "react-intl";
+import { InputLabel, Select, MenuItem } from "@material-ui/core";
+
 const items = [
   {
     id: 1,
@@ -30,6 +33,17 @@ const items = [
     id: 2,
     src: content2,
     content: "second",
+  },
+];
+
+const availableLanguages = [
+  {
+    key: "en",
+    value: "ENGLISH",
+  },
+  {
+    key: "es",
+    value: "SPANISH",
   },
 ];
 
@@ -101,7 +115,7 @@ class LandingPage extends Component<any, any> {
                 {/* <div className={ isLogin ? "activeLine" : ""} > </div> */}
                 {/* </h4> */}
                 <h4 className="title" onClick={this.toLogin}>
-                  Sign In
+                  <FormattedMessage id="landing.signIn" />
                   <div className={isLogin ? "activeLine" : ""}> </div>
                 </h4>
               </div>
@@ -162,20 +176,47 @@ class LandingPage extends Component<any, any> {
                     </div>
                     {this.state.isLoggedOut ? (
                       <div className="mt-5 logoutContent">
-                        <h4>Thank you</h4>
-                        <h4>You've successfully logged out</h4>
+                        <h4>
+                          <FormattedMessage id="landing.thankYou" />
+                        </h4>
+                        <h4>
+                          <FormattedMessage id="landing.loggedOut" />
+                        </h4>
                       </div>
                     ) : (
                       <>
                         <div className="pt-4 pl-1 pb-4">
-                          <h4>Welcome to Bayer Rewards</h4>
+                          <h4>
+                            <FormattedMessage id="landing.welcomeTitle" />
+                          </h4>
                           <p className="mt-3">
-                            Bayer Rewards Plus application helps in channel
-                            inventory tracking and Advisor sales conversion.
-                            Through this portal administrators will be able to
-                            perform all setup activites required on daily/season
-                            basis and RSMs will be able to track the scan logs.{" "}
+                            <FormattedMessage id="landing.welcomeMessage" />
                           </p>
+                        </div>
+                        <div
+                          class="select-language"
+                          style={{ paddingBottom: "10px" }}
+                        >
+                          {/* <InputLabel id="demo-simple-select-label">
+                            Select Language
+                          </InputLabel> */}
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={this.props.currentLocale}
+                            onChange={(e: any) => {
+                              this.props.handleChange(e);
+                            }}
+                            style={{ minWidth: "70%" }}
+                          >
+                            {availableLanguages.map(
+                              (availableLanguages: any) => (
+                                <MenuItem value={availableLanguages.key}>
+                                  {availableLanguages.value}
+                                </MenuItem>
+                              )
+                            )}
+                          </Select>
                         </div>
                         <div
                           className="form-group row getStartedBtnRow"
@@ -184,7 +225,9 @@ class LandingPage extends Component<any, any> {
                           <div className="col-sm-5 text-left">
                             {/* <button className="btn btn-secondary getStartedBtn form-control w-md waves-effect waves-light" type="button">Get started</button> */}
                             <CustomButton
-                              label="Get Started"
+                              label={
+                                <FormattedMessage id="button.getStartedButton" />
+                              }
                               style={{
                                 borderRadius: "30px",
                                 backgroundColor: "#10384F",
@@ -218,4 +261,4 @@ class LandingPage extends Component<any, any> {
   }
 }
 
-export default  LandingPage;
+export default LandingPage;

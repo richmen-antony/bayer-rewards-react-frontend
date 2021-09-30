@@ -18,6 +18,7 @@ import { Alert } from "../../../utility/widgets/toaster";
 import ReactSelect from "../../../utility/widgets/dropdown/ReactSelect";
 import Distributor from "./Distributor";
 import Warehouse from "./Warehouse";
+import { RSM_ROLE, ADMIN_ROLE } from "../../../utility/constant";
 
 type PartnerTypes = {
   type: String;
@@ -529,7 +530,7 @@ class SendGoods extends Component<Props, States> {
 
     let userrole = userData?.role;
     let level2Options: any = [];
-    if (userrole === "RSM") {
+    if (userrole === RSM_ROLE) {
       let filteredLevel1: any = this.state.geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
       filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
         let level2Info = { label: item.name, value: item.name, code: item.code };
@@ -551,7 +552,7 @@ class SendGoods extends Component<Props, States> {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value: list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "ALL",
+        value: list === "geolevel1" && userrole === RSM_ROLE ? usergeolevel1 : "ALL",
         options:
           list === "geolevel0"
             ? this.state.countryList
@@ -615,7 +616,7 @@ class SendGoods extends Component<Props, States> {
 
     let countrycode = {
       countrycode: this.state.loggedUserInfo?.countrycode,
-      soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+      soldbygeolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
     };
     invokeGetAuthService(getBatchList, countrycode)
       .then((response: any) => {
@@ -638,11 +639,11 @@ class SendGoods extends Component<Props, States> {
   };
   getPartnerList = () => {
     const { getPartnerList } = apiURL;
-    let scantypeInfo : string;
-    if (this.state.selectedScannedBy === "Distributor"){
-      scantypeInfo = this.state.selectedScanType=== "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R"
-    }else{
-      scantypeInfo = this.state.selectedScanType=== "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R"
+    let scantypeInfo: string;
+    if (this.state.selectedScannedBy === "Distributor") {
+      scantypeInfo = this.state.selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R";
+    } else {
+      scantypeInfo = this.state.selectedScanType === "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R";
     }
 
     let countrycode = {
@@ -652,8 +653,8 @@ class SendGoods extends Component<Props, States> {
           ? "RETAILER"
           : "DISTRIBUTOR",
       isfiltered: true,
+      soldbygeolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
       scantype: scantypeInfo,
-      soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
     };
     let condName =
       this.state.selectedScanType === "SG - D2R" || this.state.selectedScanType === "SG - W2R"
@@ -719,7 +720,7 @@ class SendGoods extends Component<Props, States> {
 
     let countrycode = {
       countrycode: this.state.loggedUserInfo?.countrycode,
-      soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+      soldbygeolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
     };
     invokeGetAuthService(getWarehouseOptionsList, countrycode)
       .then((response: any) => {
@@ -778,7 +779,7 @@ class SendGoods extends Component<Props, States> {
                   // this.handleGeolevelDropdown(selectedOptions.value, list.name);
                 }}
                 value={list.value}
-                isDisabled={userData?.role === "RSM" && list.name === "geolevel1"}
+                isDisabled={userData?.role === RSM_ROLE && list.name === "geolevel1"}
                 id="geolevel-test"
                 dataTestId="geolevel-test"
               />

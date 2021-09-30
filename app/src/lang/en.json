@@ -1,0 +1,68 @@
+{
+    "button": {
+        "getStartedButton": "Get Started",
+        "login": "Login",
+        "resetAll": "Reset All",
+        "next": "Next",
+        "back": "Back",
+        "create": "Create",
+        "cancel": "Cancel",
+        "update": "Update",
+        "change": "Change",
+        "delete": "DELETE",
+        "filterScans": "Filter scans"
+    },
+    "placeholder": {
+        "username": "Enter username",
+        "password": "Enter password",
+        "search": "Search (min 3 letters)",
+        "userType": "User Type"
+    },
+    "pagination": {
+        "sales": "Sales",
+        "logs": "Logs",
+        "users": "Users",
+        "total": "Total",
+        "rowsPerPage": "Rows Per Page",
+        "goToPage":"Go to Page"
+
+    },
+    "sideBar": {
+        "dashboard": "Dashboard",
+        "management": "MANAGEMENT",
+        "devConfig": "Dev Config",
+        "logs": "LOGS",
+        "scanLogs": "Scan Logs",
+        "createNewUser": "Create New User",
+        "consolidatedScans": "Consolidated Scans",
+        "inventory": "Inventory",
+        "userList": "User List",
+        "orderHistory": "Order History",
+        "logout": "Logout"
+    },
+    "landing": {
+        "signIn": "Sign In",
+        "welcomeTitle": "Welcome to Bayer Rewards",
+        "welcomeMessage": "Bayer Rewards Plus application helps in channel inventory tracking and Advisor sales conversion. Through this portal administrators will be able to perform all setup activites required on daily/season basis and RSMs will be able to track the scan logs.",
+        "thankYou": "Thank you",
+        "loggedOut": "You've successfully logged out"
+    },
+    "login": {
+        "userName": "Username",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "login": "Login"
+    },
+    "dashboard": {
+        "totalUsers": "Total Users",
+        "totalOrders": "Total Orders",
+        "createNewUser": "Create New User",
+        "order": "Order",
+        "devAdmin": "Dev Admin",
+        "scanLogs": "Scan Logs"
+    },
+    "FULFILLED": "FULFILLED",
+    "PENDING": "PENDING",
+    "CANCELLED": "CANCELLED",
+    "EXPIRED": "EXPIRED"
+}

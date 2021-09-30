@@ -17,6 +17,7 @@ import { invokeGetAuthService } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { CustomButton } from "../../../utility/widgets/button";
 import { Alert } from "../../../utility/widgets/toaster";
+import {ADMIN_ROLE} from "../../../utility/constant";
 
 
 const popupHeader = {
@@ -140,7 +141,7 @@ class Distributor extends Component<Props, States> {
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			scantype: selectedScanType === "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
-			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -249,7 +250,7 @@ class Distributor extends Component<Props, States> {
 			searchtext: searchText || null,
 			scantype: selectedScanType=== "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R",
 			soldbyrole: "DISTRIBUTOR",
-			soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
+			soldbygeolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters};
@@ -458,7 +459,7 @@ class Distributor extends Component<Props, States> {
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
-							{loggedUserInfo?.role === "ADMIN" && (
+							{loggedUserInfo?.role === ADMIN_ROLE && (
 								<th
 									style={{ width: "10%" }}
 									onClick={(e) => this.handleSort(e, "soldbygeolevel1", allDistributorData, isAsc)}
@@ -470,7 +471,7 @@ class Distributor extends Component<Props, States> {
 								</th>
 							)}
 							<th
-								style={{ width: loggedUserInfo?.role === "ADMIN" ? "10%" : "16%" }}
+								style={{ width: loggedUserInfo?.role === ADMIN_ROLE ? "10%" : "16%" }}
 								onClick={(e) => this.handleSort(e, "expirydate", allDistributorData, isAsc)}
 							>
 								EXPIRY DATE
@@ -549,7 +550,7 @@ class Distributor extends Component<Props, States> {
 												<label>{value.soldbyid}</label>
 											</div>
 										</td>
-										{loggedUserInfo?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
+										{loggedUserInfo?.role === ADMIN_ROLE && <td>{value.soldbygeolevel1}</td>}
 										<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 									</tr>
 								);

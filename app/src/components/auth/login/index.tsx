@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import { CustomButton } from "../../../utility/widgets/button";
 import "../../../assets/scss/login.scss";
 import Authorization from "../../../utility/authorization";
+import { FormattedMessage } from "react-intl";
 
 type Props = {
   location?: any;
@@ -142,7 +143,9 @@ class Login extends Component<Props, States> {
           </div>
           <form className="form-horizontal">
             <div className="form-group">
-              <label  htmlFor="usernameInput">Username</label>
+              <label htmlFor="usernameInput">
+                <FormattedMessage id="login.userName" />
+              </label>
               <input
                 type="text"
                 className={
@@ -162,7 +165,9 @@ class Login extends Component<Props, States> {
                                             {usernameError && <span className="error">{ usernameError } </span>} */}
             </div>
             <div className="form-group">
-              <label htmlFor="passwordInput">Password</label>
+              <label htmlFor="passwordInput">
+                <FormattedMessage id="login.password" />
+              </label>
               <div className="withIcon">
                 <input
                   type={isPwdView ? "text" : "password"}
@@ -192,7 +197,7 @@ class Login extends Component<Props, States> {
             <div className="form-group row m-t-20">
               <div className="col-sm-6">
                 <label className="login-container">
-                  Remember me
+                  <FormattedMessage id="login.rememberMe" />
                   <input
                     type="checkbox"
                     defaultChecked={isRemember}
@@ -224,7 +229,7 @@ class Login extends Component<Props, States> {
                   Login
                 </button> */}
                 <CustomButton
-                  label="Login"
+                  label={<FormattedMessage id="button.login" />}
                   style={{
                     borderRadius: "30px",
                     backgroundColor: "#10384F",

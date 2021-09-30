@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Switch } from "react-router-dom";
@@ -16,55 +16,65 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/scss/index.scss";
-
 // To enable isRemember Need to logged out
 import { getLocalStorageData } from "./utility/base/localStore";
 import Authorization from "./utility/authorization";
 import AppProvider from "./containers/context";
+import { IntlProvider } from "react-intl";
+import flatten from "flat";
+import messages_en from "./lang/en.json";
+import messages_es from "./lang/es.json";
+
+const messages: any = {
+  en: messages_en,
+  es: messages_es,
+};
 
 /**
  * Create the routes dynamically
  *
  * @return route component
  */
-const setRoutes = () => {
-	const routes = ROUTE;
-	return routes.map((route, index) =>
-		route.private ? (
-			<PrivateRoute
-				key={index}
-				path={route.path}
-				meta={route.meta}
-				exact={route.exact}
-				component={route.component}
-				role={route.role}
-			/>
-		) : (
-			<PublicRoute
-				key={index}
-				path={route.path}
-				meta={route.meta}
-				exact={route.exact}
-				component={route.component}
-			/>
-		)
-	);
+const setRoutes = (currentLocale: any, handleChange: any) => {
+  const routes = ROUTE;
+  return routes.map((route, index) =>
+    route.private ? (
+      <PrivateRoute
+        key={index}
+        path={route.path}
+        meta={route.meta}
+        exact={route.exact}
+        component={route.component}
+        role={route.role}
+      />
+    ) : (
+      <PublicRoute
+        key={index}
+        path={route.path}
+        meta={route.meta}
+        exact={route.exact}
+        component={route.component}
+        currentLocale={currentLocale}
+        handleChange={handleChange}
+      />
+    )
+  );
 };
 
 // Define Type html tag section declaration
 declare global {
-	namespace JSX {
-		interface IntrinsicElements {
-			h8: React.DetailedHTMLProps<
-				React.HTMLAttributes<HTMLElement>,
-				HTMLElement
-			>;
-			h7: React.DetailedHTMLProps<
-				React.HTMLAttributes<HTMLElement>,
-				HTMLElement
-			>;
-		}
-	}
+  namespace JSX {
+    interface IntrinsicElements {
+      h8: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+      h7: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+    }
+  }
 }
 
 // const getLData = localStorage.getItem("userData");
@@ -83,38 +93,59 @@ declare global {
 /**
  * To handle remember me options
  */
-function isRemember(){
+function isRemember() {
   let data: any = getLocalStorageData("userData");
   let userinfo = JSON.parse(data);
   if (!sessionStorage.userLoggedIn) {
     if (userinfo?.isRemember === false) Authorization.logOut();
   }
-
 }
 isRemember();
 
-const app = (
-	// <React.StrictMode>
-	<Provider store={store}>
-		<BrowserRouter getUserConfirmation={(e:any,cb:any) => {
-          /* Empty callback to block the default browser prompt */
-        }}>
-			<AppProvider>
-			<Layout>
-				<Suspense fallback={<Loader />}>
-					<ToastContainer />
-					<Switch>{setRoutes()}</Switch>
-				</Suspense>
-			</Layout>
-			</AppProvider>
-		</BrowserRouter>
-	</Provider>
-	// </React.StrictMode>
-);
+const App = () => {
+  const [currentLocale, setCurrentLocale] = useState(getInitialLocal());
+  const handleChange = (e: any) => {
+    setCurrentLocale(e.target.value);
+    // storing locale in the localstorage
+    localStorage.setItem("UserSelectedLanguage", e.target.value);
+  };
 
-ReactDOM.render(app, document.getElementById("root"));
+  //localstorage
+  function getInitialLocal() {
+    // getting stored items
+    const savedLocale = localStorage.getItem("UserSelectedLanguage");
+    return savedLocale || "en";
+  }
 
+  return (
+    // <React.StrictMode>
+    <IntlProvider
+      locale={currentLocale}
+      messages={flatten(messages[currentLocale])}
+    >
+      <Provider store={store}>
+        <BrowserRouter
+          getUserConfirmation={(e: any, cb: any) => {
+            /* Empty callback to block the default browser prompt */
+          }}
+        >
+          <AppProvider>
+            <Layout currentLocale={currentLocale} handleChange={handleChange}>
+              <Suspense fallback={<Loader />}>
+                <ToastContainer />
+                <Switch>{setRoutes(currentLocale, handleChange)}</Switch>
+              </Suspense>
+            </Layout>
+          </AppProvider>
+        </BrowserRouter>
+      </Provider>
+    </IntlProvider>
+    // </React.StrictMode>
+  );
+};
+export default App;
 
+ReactDOM.render(<App />, document.getElementById("root"));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

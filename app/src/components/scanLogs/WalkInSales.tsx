@@ -16,6 +16,7 @@ import { apiURL } from "../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../utility/base/service";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
+import {RSM_ROLE,ADMIN_ROLE} from "../../utility/constant";
 
 const popupHeader = {
 	title: "Maria Joseph",
@@ -114,7 +115,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			countrycode: this.props.loggedUser?.countrycode,
 			scantype: "S2F_WALKIN",
 			soldbyrole: "RETAILER",
-			soldbygeolevel1: this.props.loggedUser?.role === "ADMIN" ? null : this.props.loggedUser?.geolevel1,
+			soldbygeolevel1: this.props.loggedUser?.role === ADMIN_ROLE ? null : this.props.loggedUser?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -210,7 +211,7 @@ class WalkInSales extends PureComponent<Props, States> {
 			searchtext: searchText || null,
 			scantype: "S2F_WALKIN",
 			soldbyrole: "RETAILER",
-			soldbygeolevel1: this.props.loggedUser?.role === "ADMIN" ? null : this.props.loggedUser?.geolevel1,
+			soldbygeolevel1: this.props.loggedUser?.role === ADMIN_ROLE ? null : this.props.loggedUser?.geolevel1,
 		};
 		if (isFiltered) {
 			let filter = { ...selectedFilters };
@@ -336,7 +337,7 @@ class WalkInSales extends PureComponent<Props, States> {
 										<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 									) : null}
 								</th>
-								{loggedUser?.role === "ADMIN" && (
+								{loggedUser?.role === ADMIN_ROLE && (
 								<th
 									style={{ width: "10%" }}
 									onClick={(e) => this.handleSort(e, "soldbygeolevel1", allWalkInSalesData, isAsc)}
@@ -348,7 +349,7 @@ class WalkInSales extends PureComponent<Props, States> {
 								</th>
 							)}
 								<th
-									style={{ width: loggedUser?.role === "ADMIN" ? "10%" : "10%" }}
+									style={{ width: loggedUser?.role === ADMIN_ROLE ? "10%" : "10%" }}
 									onClick={(e) => this.handleSort(e, "expirydate", allWalkInSalesData, isAsc)}
 								>
 									EXPIRY DATE
@@ -413,7 +414,7 @@ class WalkInSales extends PureComponent<Props, States> {
 												</div>
 											</td>
 											<td>{_.startCase(_.toLower(value.soldbystore))}</td>
-											{loggedUser?.role === "ADMIN" && <td>{value.soldbygeolevel1}</td>}
+											{loggedUser?.role === ADMIN_ROLE && <td>{value.soldbygeolevel1}</td>}
 											<td>{value.expirydate && moment(value.expirydate).format("DD/MM/YYYY")}</td>
 										</tr>
 									);

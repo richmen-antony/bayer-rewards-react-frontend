@@ -8,26 +8,38 @@ import {
 import logo from "../../assets/icons/bayer_logo.svg";
 import menuIcon from "../../assets/icons/menu_icon.svg";
 import "../../assets/scss/layout.scss";
-import {
-  getLocalStorageData,
-} from "../../utility/base/localStore";
+import { getLocalStorageData } from "../../utility/base/localStore";
 import DropdownArrow from "../../assets/images/down-arrow.svg";
 import BayerRewardsImg from "../../assets/icons/logo.svg";
 import IndiaFLag from "../../assets/icons/india_flag.svg";
 import MalawiFlag from "../../assets/icons/malawi_flag.svg";
 import Authorization from "../../utility/authorization";
 import { AppContext } from "../context";
+import { InputLabel, Select, MenuItem } from "@material-ui/core";
 
 type Props = {
   history?: any;
+  currentLocale?: any;
+  handleChange?: any;
 };
 type States = {
   dropdownOpenprofile: boolean;
   dropdownOpenNotification: boolean;
   userData: any;
 };
+const availableLanguages = [
+  {
+    key: "en",
+    value: "ENGLISH",
+  },
+  {
+    key: "es",
+    value: "SPANISH",
+  },
+];
+
 class TopBar extends Component<Props, States> {
-  static contextType = AppContext
+  static contextType = AppContext;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -55,23 +67,20 @@ class TopBar extends Component<Props, States> {
     }));
   };
   /**
-   * To logout page and check the unsaved change value for Prompt 
-   * @param value 
+   * To logout page and check the unsaved change value for Prompt
+   * @param value
    */
   handleChange = (value: any) => {
     //accessed context api values are given
-    const {promptMode} =this.context;
+    const { promptMode } = this.context;
     this.props.history.push("/landing");
-    if(!promptMode){
+    if (!promptMode) {
       Authorization.logOut();
-     
     }
-   
   };
 
   render() {
-    const { dropdownOpenprofile, userData } =
-      this.state;
+    const { dropdownOpenprofile, userData } = this.state;
     return (
       <div className="topbar">
         <div className="topbar-left">
@@ -112,20 +121,37 @@ class TopBar extends Component<Props, States> {
                                 </DropdownMenu>
                             </Dropdown> */}
             </li>
-
+            <div class="select-language">
+              {/* <InputLabel id="demo-simple-select-label">
+                Select Language
+              </InputLabel> */}
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={this.props.currentLocale}
+                onChange={(e: any) => {
+                  this.props.handleChange(e);
+                }}
+                style={{ minWidth: "70%" }}
+              >
+                {availableLanguages.map((availableLanguages: any) => (
+                  <MenuItem value={availableLanguages.key}>
+                    {availableLanguages.value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
             <div className="profileSettings">
               <div className="flag-img">
-              <img
-                        src={
-                          userData.countrycode === "MW" ? MalawiFlag : IndiaFLag
-                        }
-                        alt="user"
-                        className="rounded-circle nav-pro-img"
-                        width={50}
-                        height={50}
-                      />
+                <img
+                  src={userData.countrycode === "MW" ? MalawiFlag : IndiaFLag}
+                  alt="user"
+                  className="rounded-circle nav-pro-img"
+                  width={50}
+                  height={50}
+                />
               </div>
-                  
+
               <Dropdown
                 isOpen={dropdownOpenprofile}
                 toggle={this.toggleprofile}
@@ -138,9 +164,9 @@ class TopBar extends Component<Props, States> {
                     <div className="profileImg">
                       <div className="content">
                         <h4 className="title">{userData.username}</h4>
-                        
+
                         <p className="sub-title">{userData.role}</p>
-                      
+
                         <p className="sub-title">{userData.geolevel1}</p>
                       </div>
                       <img

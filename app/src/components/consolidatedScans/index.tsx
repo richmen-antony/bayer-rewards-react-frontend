@@ -33,6 +33,7 @@ import {
 } from "../../redux/actions/consolidatedScans/consolidatedScans";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import _ from "lodash";
+import {RSM_ROLE} from "../../utility/constant";
 
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
@@ -290,7 +291,7 @@ const ConsolidatedScans = (Props: any) => {
 
     let userrole = userData?.role;
     let level2Options: any = [];
-    if (userrole === "RSM") {
+    if (userrole === RSM_ROLE) {
       let filteredLevel1: any = geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
       filteredLevel1 &&
         filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
@@ -312,7 +313,7 @@ const ConsolidatedScans = (Props: any) => {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value: list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "ALL",
+        value: list === "geolevel1" && userrole === RSM_ROLE ? usergeolevel1 : "ALL",
         options:
           list === "geolevel0"
             ? countryList
