@@ -582,6 +582,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setSelectedFile(null);
     setDataValidated(false);
     setFileName("");
+    setResponseStatus(null);
     setDownloadedData([]);
     setColumns([]);
   };
@@ -689,13 +690,16 @@ const Inventory = (Props: Sheet2CSVOpts) => {
             setTotalDuplicateRecords(response.body.duplicate.length);
             setTotalRecordsInserted(response.body.inserted.length);
             setTotalInvalidRecords(response.body.invalid.length);
-            setShowPopup(false);
+            setShowPopup(false);                
             setShowUploadedMessageBox(true);
             setSelectedFile(null);
           })
           .catch((error: any) => {
-            let message = error.message;
+            let message = error.message; 
             console.log("warning", message);
+            setShowPopup(false);
+            setShowUploadedMessageBox(true);
+            setSelectedFile(null);
           });
       } else {
         Alert("warning", "Templete format mismatched. Please upload valid format");
@@ -980,7 +984,13 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                         }}
                       >
                         {responseStatus === 404 ? (
-                          <label style={{ margin: "28px" }}>{responseMessage}</label>
+                          <label style={{ margin: "28px" }}>
+                            {responseMessage}
+                          </label>
+                        ) : responseStatus === 500 ? (
+                          <label style={{ margin: "28px" }}>
+                            <p>Data error. Please check uploaded excel</p>
+                          </label>
                         ) : (
                           <label style={{ marginTop: "11px" }}>
                             <ul style={{ fontSize: "14px" }}>

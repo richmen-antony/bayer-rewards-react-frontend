@@ -363,7 +363,7 @@ class OrderHistory extends Component<Props, States> {
 		let filter = { ...this.state.selectedFilters };
 
 		let data = {
-			region: this.state.loggedUserInfo?.geolevel1,
+			// region: this.state.loggedUserInfo?.geolevel1,
 			countrycode: this.state.loggedUserInfo?.countrycode,
 			isfiltered: this.state.isFiltered,
 			searchtext: this.state.searchText || null,
