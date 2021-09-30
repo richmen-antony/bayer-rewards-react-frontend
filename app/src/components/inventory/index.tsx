@@ -35,11 +35,7 @@ import {
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import * as myConstClass from "../../utility/constant";
 import { apiURL } from "../../utility/base/utils/config";
-import {
-  invokeGetAuthService,
-  invokePostAuthService,
-  invokePostFileAuthService,
-} from "../../utility/base/service";
+import { invokeGetAuthService, invokePostAuthService, invokePostFileAuthService } from "../../utility/base/service";
 import * as XLSX from "xlsx";
 import { Theme, withStyles } from "@material-ui/core/styles";
 import MuiDialogContent from "@material-ui/core/DialogContent";
@@ -79,10 +75,7 @@ interface IProps {
 }
 const ref = React.createRef();
 const DateInput = React.forwardRef(
-  (
-    { onChange, placeholder, value, id, onClick, className, disabled }: IProps,
-    ref: any
-  ) => (
+  ({ onChange, placeholder, value, id, onClick, className, disabled }: IProps, ref: any) => (
     <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
       <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
       <input
@@ -113,34 +106,19 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   let closeToggle: any;
   const dispatch = useDispatch();
   const geolevel1List = useSelector(({ common }: any) => common?.geoLevel1List);
-  const geographicFields = useSelector(
-    ({ common }: any) => common?.geographicFields
-  );
+  const geographicFields = useSelector(({ common }: any) => common?.geographicFields);
   const levelsName = useSelector(({ common }: any) => common?.levelsName);
-  const commonErrorMessage = useSelector(
-    ({ common }: any) => common?.errorMessage
-  );
-  const allConsolidatedInventory = useSelector(
-    ({ inventory }: any) => inventory?.allConsolidatedInventory
-  );
-  const BrandwiseInventories = useSelector(
-    ({ inventory }: any) => inventory?.BrandwiseInventory
-  );
-  const ProductwiseInventories = useSelector(
-    ({ inventory }: any) => inventory?.ProductwiseInventory
-  );
-  const isReduxLoader = useSelector(
-    ({ inventory }: any) => inventory?.isLoader
-  );
+  const commonErrorMessage = useSelector(({ common }: any) => common?.errorMessage);
+  const allConsolidatedInventory = useSelector(({ inventory }: any) => inventory?.allConsolidatedInventory);
+  const BrandwiseInventories = useSelector(({ inventory }: any) => inventory?.BrandwiseInventory);
+  const ProductwiseInventories = useSelector(({ inventory }: any) => inventory?.ProductwiseInventory);
+  const isReduxLoader = useSelector(({ inventory }: any) => inventory?.isLoader);
   // const errorMessage         = useSelector(({consolidatedScans}:any) => consolidatedScans?.errorMessage);
 
   const [searchText, setSearchText] = useState<string>("");
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [dateErrMsg, setDateErrMsg] = useState<string>("");
-  const [partnerTypeList, setpartnerTypeList] = useState([
-    "Retailers",
-    "Distributors",
-  ]);
+  const [partnerTypeList, setpartnerTypeList] = useState(["Retailers", "Distributors"]);
   const [partnerType, setPartnerType] = useState({ type: "Distributors" });
   const [selectedDistributorName, setselectedDistributorName] = useState("");
   const [selectedBrandName, setselectedBrandName] = useState("");
@@ -161,23 +139,15 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   const [filterSuccess, setFilterSuccess] = useState(Number);
   const [fiscalYear, setFiscalYear] = useState(new Date().getFullYear());
   const [viewType, setViewType] = useState(package_type[0]);
-  const [isDownloadWithFilter, setIsDownloadWithFilter] =
-    useState<boolean>(false);
 
   const [selectedFilters, setSelectedFilters] = useState({
     productgroup: "ALL",
     geolevel1: "ALL",
     geolevel2: "ALL",
     lastmodifieddatefrom: new Date(new Date().getFullYear(), 0, 1),
-    lastmodifieddateto:
-      fiscalYear === new Date().getFullYear()
-        ? new Date()
-        : new Date(new Date().getFullYear(), 11, 31),
+    lastmodifieddateto: fiscalYear === new Date().getFullYear() ? new Date() : new Date(new Date().getFullYear(), 11, 31),
     fromdate: new Date(new Date().getFullYear(), 0, 1),
-    todate:
-      fiscalYear === new Date().getFullYear()
-        ? new Date()
-        : new Date(new Date().getFullYear(), 11, 31),
+    todate: fiscalYear === new Date().getFullYear() ? new Date() : new Date(new Date().getFullYear(), 11, 31),
     scannedPeriod: "All Months",
   });
 
@@ -190,12 +160,8 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     { label: "Custom", value: "" },
   ]);
 
-  const [selectedFromDateOfYear, setSelectedFromDateOfYear] = useState(
-    `01/01/${new Date().getFullYear()}`
-  );
-  const [selectedToDateOfYear, setSelectedToDateOfYear] = useState(
-    `12/31/${new Date().getFullYear()}`
-  );
+  const [selectedFromDateOfYear, setSelectedFromDateOfYear] = useState(`01/01/${new Date().getFullYear()}`);
+  const [selectedToDateOfYear, setSelectedToDateOfYear] = useState(`12/31/${new Date().getFullYear()}`);
 
   const [productCategories, setproductCategories] = useState([
     "ALL",
@@ -213,8 +179,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   const [fileName, setFileName] = useState("");
   const [downloadedData, setDownloadedData] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [showUploadedMessageBox, setShowUploadedMessageBox] =
-    useState<boolean>(false);
+  const [showUploadedMessageBox, setShowUploadedMessageBox] = useState<boolean>(false);
   const [totalDuplicateRecords, setTotalDuplicateRecords] = useState<number>(0);
   const [totalRecordsInserted, setTotalRecordsInserted] = useState<number>(0);
   const [totalInvalidRecords, setTotalInvalidRecords] = useState<number>(0);
@@ -247,8 +212,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     let data = {
       countrycode: userData?.countrycode,
       geolevel1: userData?.geolevel1,
-      partnertype:
-        partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       isfiltered: true,
       viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
@@ -266,13 +230,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   }, [allConsolidatedInventory]);
 
   useEffect(() => {
-    let id =
-      allConsolidatedInventory && allConsolidatedInventory[0]?.rtmppartnerid;
+    let id = allConsolidatedInventory && allConsolidatedInventory[0]?.rtmppartnerid;
     let name =
-      allConsolidatedInventory &&
-      allConsolidatedInventory[0]?.firstname +
-        " " +
-        allConsolidatedInventory[0]?.lastname;
+      allConsolidatedInventory && allConsolidatedInventory[0]?.firstname + " " + allConsolidatedInventory[0]?.lastname;
     setSoldbyid(id);
     if (name) {
       setselectedDistributorName(name);
@@ -283,17 +243,14 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   useEffect(() => {
     if (soldbyid) {
       let data = {
-        partnertype:
-          partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+        partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
         viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
       };
       let filteredDatas = {};
       if (isFiltered) {
         filteredDatas = getFilteredDatas(filteredDatas);
       }
-      dispatch(
-        getBrandwiseInventory(soldbyid, isFiltered, filteredDatas, data)
-      );
+      dispatch(getBrandwiseInventory(soldbyid, isFiltered, filteredDatas, data));
     } else {
       dispatch(setBrandwiseInventory([]));
       dispatch(setProductwiseInventory([]));
@@ -303,32 +260,21 @@ const Inventory = (Props: Sheet2CSVOpts) => {
 
   useEffect(() => {
     if (BrandwiseInventories?.length > 0) {
-      setselectedBrandName(
-        BrandwiseInventories && BrandwiseInventories[0]?.productbrand
-      );
+      setselectedBrandName(BrandwiseInventories && BrandwiseInventories[0]?.productbrand);
       setScannedBrandsSuccess(new Date().getTime());
     }
   }, [BrandwiseInventories]);
 
   useEffect(() => {
     let data = {
-      partnertype:
-        partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
     let filteredDatas = {};
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
-    dispatch(
-      getProductwiseInventory(
-        soldbyid,
-        isFiltered,
-        selectedBrandName,
-        filteredDatas,
-        data
-      )
-    );
+    dispatch(getProductwiseInventory(soldbyid, isFiltered, selectedBrandName, filteredDatas, data));
   }, [scannedBrandsSuccess]);
 
   useEffect(() => {
@@ -336,8 +282,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       let data = {
         countrycode: userData?.countrycode,
         geolevel1: userData?.geolevel1,
-        partnertype:
-          partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+        partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
         isfiltered: true,
         searchtext: searchText,
         viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
@@ -349,21 +294,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       }
       dispatch(getOverallInventory(data));
     }
-  }, [
-    searchText,
-    partnerType,
-    filterAppliedTime,
-    fiscalYear,
-    viewType,
-    uploadAppliedTime,
-  ]);
+  }, [searchText, partnerType, filterAppliedTime, fiscalYear, viewType, uploadAppliedTime]);
 
-  const getSelectedBrands = (
-    soldbyidd: string,
-    idx?: any,
-    type?: string,
-    productbrand?: any
-  ) => {
+  const getSelectedBrands = (soldbyidd: string, idx?: any, type?: string, productbrand?: any) => {
     setSoldbyid(soldbyidd);
     if (type === "selected") {
       setselectedDistributor(idx);
@@ -378,61 +311,28 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setFilterSuccess(new Date().getTime());
   };
 
-  const getSelectedProducts = (
-    soldby: string,
-    productbrand: string,
-    idx: number
-  ) => {
+  const getSelectedProducts = (soldby: string, productbrand: string, idx: number) => {
     let data = {
-      partnertype:
-        partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
     let filteredDatas = {};
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
-    dispatch(
-      getProductwiseInventory(
-        soldby,
-        isFiltered,
-        productbrand,
-        filteredDatas,
-        data
-      )
-    );
+    dispatch(getProductwiseInventory(soldby, isFiltered, productbrand, filteredDatas, data));
     setselectedBrand(idx);
     BrandwiseInventories?.forEach((item: any, index: number) => {
-      if (
-        item.productbrand === productbrand &&
-        item.rtmppartnerid === soldbyid
-      ) {
+      if (item.productbrand === productbrand && item.rtmppartnerid === soldbyid) {
         setselectedBrandName(item.productbrand);
       }
     });
   };
   const getFilteredDatas = (filteredDatas: {}) => {
-    let {
-      fromdate,
-      todate,
-      productgroup,
-      geolevel2,
-      scannedPeriod,
-      lastmodifieddatefrom,
-      lastmodifieddateto,
-    }: any = selectedFilters;
-    let startDate =
-      scannedPeriod === "Custom"
-        ? lastmodifieddatefrom
-        : scannedPeriod === ""
-        ? null
-        : fromdate;
-    let endDate =
-      scannedPeriod === "Custom"
-        ? lastmodifieddateto
-        : scannedPeriod === ""
-        ? null
-        : todate;
+    let { fromdate, todate, productgroup, geolevel2, scannedPeriod, lastmodifieddatefrom, lastmodifieddateto }: any =
+      selectedFilters;
+    let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : fromdate;
+    let endDate = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : todate;
     filteredDatas = {
       fromdate: startDate ? moment(startDate).format("YYYY-MM-DD") : null,
       todate: endDate ? moment(endDate).format("YYYY-MM-DD") : null,
@@ -480,9 +380,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     let userrole = userData?.role;
     let level2Options: any = [];
     if (userrole === "RSM") {
-      let filteredLevel1: any = geolevel1List?.filter(
-        (list: any) => list.name === userData?.geolevel1
-      );
+      let filteredLevel1: any = geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
       filteredLevel1 &&
         filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
           let level2Info = {
@@ -507,8 +405,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       setFormArray.push({
         name: list,
         placeHolder: true,
-        value:
-          list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "All",
+        value: list === "geolevel1" && userrole === "RSM" ? usergeolevel1 : "All",
         options:
           list === "geolevel0"
             ? countryList
@@ -526,9 +423,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   const getOptionLists = (cron: any, type: any, value: any, index: any) => {
     let dynamicFieldVal: any = dynamicFields;
     if (type === "geolevel1") {
-      let filteredLevel1: any = geolevel1List?.filter(
-        (level1: any) => level1.name === value
-      );
+      let filteredLevel1: any = geolevel1List?.filter((level1: any) => level1.name === value);
       let level2Options: any = [];
       filteredLevel1[0]?.geolevel2.forEach((item: any) => {
         let level1Info = {
@@ -543,9 +438,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
         value: "ALL",
         code: "ALL",
       };
-      let geolevel3Obj = [
-        { label: "ALL", code: "ALL", name: "ALL", value: "ALL" },
-      ];
+      let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
       level2Options.unshift(geolevel1Obj);
       dynamicFieldVal[index + 1].options = level2Options;
       dynamicFieldVal[index + 2].options = geolevel3Obj;
@@ -574,15 +467,14 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     let data = {
       countrycode: userData?.countrycode,
       geolevel1: userData?.geolevel1,
-      partnertype:
-        partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
+      partnertype: partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR",
       downloadtype: type,
       searchtext: searchText || null,
       isfiltered: isFiltered,
       viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
     let filteredDatas = {};
-    if (isDownloadWithFilter) {
+    if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
     data = { ...data, ...filteredDatas };
@@ -611,12 +503,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setselectedBrand(0);
   };
 
-  const handleFilterChange = (
-    e: any,
-    name: string,
-    item: any,
-    itemList?: any
-  ) => {
+  const handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
     e.stopPropagation();
     let val: any = selectedFilters;
     let flag = false;
@@ -641,26 +528,18 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     }
   };
 
-  const handleReactSelect = (
-    selectedOption: any,
-    e: any,
-    optionName?: string
-  ) => {
+  const handleReactSelect = (selectedOption: any, e: any, optionName?: string) => {
     setDateErrMsg("");
     setIsFiltered(true);
     if (e.name === "fiscalYear") {
       setFiscalYear(selectedOption.value);
       setSelectedFromDateOfYear(`01/01/${selectedOption.value}`);
       setSelectedToDateOfYear(
-        fiscalYear === new Date().getFullYear()
-          ? moment(new Date()).format("DD/MM/YYYY")
-          : `12/31/${selectedOption.value}`
+        fiscalYear === new Date().getFullYear() ? moment(new Date()).format("DD/MM/YYYY") : `12/31/${selectedOption.value}`
       );
       let fiscalStartDate = new Date(selectedOption.value, 0, 1);
       let fiscalEndDate =
-        selectedOption.value === new Date().getFullYear()
-          ? new Date()
-          : new Date(selectedOption.value, 11, 31);
+        selectedOption.value === new Date().getFullYear() ? new Date() : new Date(selectedOption.value, 11, 31);
       setSelectedFilters({
         ...selectedFilters,
         lastmodifieddatefrom: fiscalStartDate,
@@ -688,8 +567,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     };
     invokeGetAuthService(downloadTemplate, data)
       .then((response) => {
-        const text =
-          '["countrycode","rtmpartnerid","rtmrolename","materialid","openinginventory"]';
+        const text = '["countrycode","rtmpartnerid","rtmrolename","materialid","openinginventory"]';
         const myArr = JSON.parse(text);
 
         setDownloadedData(myArr);
@@ -777,9 +655,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
 
   const processDatas = (dataString: any) => {
     const dataStringLines = dataString.split(/\r\n|\n/);
-    const headers = dataStringLines[0].split(
-      /,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/
-    );
+    const headers = dataStringLines[0].split(/,(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/);
 
     // prepare columns list from headers
     const columns = headers.map((c: any) => ({
@@ -822,10 +698,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
             console.log("warning", message);
           });
       } else {
-        Alert(
-          "warning",
-          "Templete format mismatched. Please upload valid format"
-        );
+        Alert("warning", "Templete format mismatched. Please upload valid format");
       }
     }
   };
@@ -837,36 +710,27 @@ const Inventory = (Props: Sheet2CSVOpts) => {
 
   const fields = dynamicFields;
   const locationList = fields?.map((list: any, index: number) => {
-    let nameCapitalized =
-      levelsName[index]?.charAt(0).toUpperCase() + levelsName[index]?.slice(1);
+    let nameCapitalized = levelsName[index]?.charAt(0).toUpperCase() + levelsName[index]?.slice(1);
     return (
       <React.Fragment key={`geolevels` + index}>
-        {index !== 0 &&
-          list.name !== "geolevel3" &&
-          list.name !== "geolevel4" &&
-          list.name !== "geolevel5" && (
-            <div className="col" style={{ marginBottom: "5px" }}>
-              <ReactSelect
-                name={list.name}
-                label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
-                options={list.options}
-                handleChange={(selectedOptions: any, e: any) => {
-                  list.value = selectedOptions.value;
-                  getOptionLists(
-                    "manual",
-                    list.name,
-                    selectedOptions.value,
-                    index
-                  );
-                  handleReactSelect(selectedOptions, e, list.name);
-                }}
-                value={list.value}
-                isDisabled={list.name === "geolevel1"}
-                id="geolevel-test"
-                dataTestId="geolevel-test"
-              />
-            </div>
-          )}
+        {index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
+          <div className="col" style={{ marginBottom: "5px" }}>
+            <ReactSelect
+              name={list.name}
+              label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
+              options={list.options}
+              handleChange={(selectedOptions: any, e: any) => {
+                list.value = selectedOptions.value;
+                getOptionLists("manual", list.name, selectedOptions.value, index);
+                handleReactSelect(selectedOptions, e, list.name);
+              }}
+              value={list.value}
+              isDisabled={list.name === "geolevel1"}
+              id="geolevel-test"
+              dataTestId="geolevel-test"
+            />
+          </div>
+        )}
       </React.Fragment>
     );
   });
@@ -876,15 +740,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     // to date
 
     if (name === "lastmodifieddateto") {
-      if (
-        moment(date).format("YYYY-MM-DD") >=
-        moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")
-      ) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         setDateErrMsg("");
-      } else if (
-        moment(date).format("YYYY-MM-DD") <=
-        moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")
-      ) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         setDateErrMsg("End Date should be greater than Start Date");
       } else {
         setDateErrMsg("Start Date should be lesser than  End Date");
@@ -892,15 +750,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     }
     // from date
     if (name === "lastmodifieddatefrom") {
-      if (
-        moment(date).format("YYYY-MM-DD") <=
-        moment(val.lastmodifieddateto).format("YYYY-MM-DD")
-      ) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         setDateErrMsg("");
-      } else if (
-        moment(date).format("YYYY-MM-DD") >=
-        moment(val.lastmodifieddateto).format("YYYY-MM-DD")
-      ) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         setDateErrMsg("Start Date should be lesser than End Date");
       } else {
         setDateErrMsg("Start Date should be greater than  End Date");
@@ -914,7 +766,6 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setFilterAppliedTime(new Date().getTime());
     setselectedDistributor(0);
     setselectedBrand(0);
-    setIsDownloadWithFilter(true);
     closeToggle && closeToggle();
   };
 
@@ -930,13 +781,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setIsAsc(!isAsc);
   };
 
-  const handleSort = (
-    e: any,
-    columnname: string,
-    allConsolidatedInventory: any,
-    isAsc: boolean,
-    table: string
-  ) => {
+  const handleSort = (e: any, columnname: string, allConsolidatedInventory: any, isAsc: boolean, table: string) => {
     if (table === "overallScans") {
       setoveralltableIndex(e.currentTarget.cellIndex);
       setbrandtableIndex(1);
@@ -958,10 +803,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   };
   const resetFilter = (e: any) => {
     let fiscalStartDate = new Date(fiscalYear, 0, 1);
-    let fiscalEndDate =
-      fiscalYear === new Date().getFullYear()
-        ? new Date()
-        : new Date(fiscalYear, 11, 31);
+    let fiscalEndDate = fiscalYear === new Date().getFullYear() ? new Date() : new Date(fiscalYear, 11, 31);
     // let conditionIsFilter = searchText ? true : false;
     getDynamicOptionFields("reset");
     setSelectedFilters({
@@ -978,7 +820,6 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setFilterAppliedTime(new Date().getTime());
     setselectedDistributor(0);
     setselectedBrand(0);
-    setIsDownloadWithFilter(false);
     closeToggle && closeToggle();
   };
 
@@ -1016,14 +857,10 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                   <span className="mr-2 chipLabel" key={i}>
                     <Button
                       color={
-                        selectedFilters.productgroup === item
-                          ? "btn activeColor rounded-pill"
-                          : "btn rounded-pill boxColor"
+                        selectedFilters.productgroup === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
                       }
                       size="sm"
-                      onClick={(e) =>
-                        handleFilterChange(e, "productgroup", item)
-                      }
+                      onClick={(e) => handleFilterChange(e, "productgroup", item)}
                       style={{ marginBottom: "5px" }}
                     >
                       {item}
@@ -1031,10 +868,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                   </span>
                 ))}
               </div>
-              <div
-                className="form-group container"
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className="form-group container" onClick={(e) => e.stopPropagation()}>
                 <div className="row column-dropdown">{locationList}</div>
               </div>
               <label className="font-weight-bold pt-2">Scanned Period</label>
@@ -1048,9 +882,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                           : "btn rounded-pill boxColor"
                       }
                       size="sm"
-                      onClick={(e) =>
-                        handleFilterChange(e, "scannedPeriod", item.label, item)
-                      }
+                      onClick={(e) => handleFilterChange(e, "scannedPeriod", item.label, item)}
                       style={{ marginBottom: "5px" }}
                     >
                       {item.label}
@@ -1060,17 +892,10 @@ const Inventory = (Props: Sheet2CSVOpts) => {
               </div>
               {selectedFilters.scannedPeriod === "Custom" && (
                 <React.Fragment>
-                  <label
-                    className="font-weight-bold pt-2"
-                    htmlFor="order-date"
-                    style={{ width: "55%" }}
-                  >
+                  <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
                     From
                   </label>
-                  <label
-                    className="font-weight-bold pt-2"
-                    htmlFor="order-todate"
-                  >
+                  <label className="font-weight-bold pt-2" htmlFor="order-todate">
                     To
                   </label>
                   <div className="d-flex">
@@ -1081,9 +906,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                         dateFormat="dd-MM-yyyy"
                         customInput={<DateInput ref={ref} />}
                         selected={selectedFilters.lastmodifieddatefrom}
-                        onChange={(date: any) =>
-                          handleDateChange(date, "lastmodifieddatefrom")
-                        }
+                        onChange={(date: any) => handleDateChange(date, "lastmodifieddatefrom")}
                         showMonthDropdown
                         // showYearDropdown
                         dropdownMode="select"
@@ -1101,18 +924,12 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                         dateFormat="dd-MM-yyyy"
                         customInput={<DateInput ref={ref} />}
                         selected={selectedFilters.lastmodifieddateto}
-                        onChange={(date: any) =>
-                          handleDateChange(date, "lastmodifieddateto")
-                        }
+                        onChange={(date: any) => handleDateChange(date, "lastmodifieddateto")}
                         showMonthDropdown
                         // showYearDropdown
                         dropdownMode="scroll"
                         minDate={new Date(selectedFromDateOfYear)}
-                        maxDate={
-                          fiscalYear === new Date().getFullYear()
-                            ? new Date()
-                            : new Date(selectedToDateOfYear)
-                        }
+                        maxDate={fiscalYear === new Date().getFullYear() ? new Date() : new Date(selectedToDateOfYear)}
                         // showDateMonthPicker
                       />
                     </div>
@@ -1145,18 +962,11 @@ const Inventory = (Props: Sheet2CSVOpts) => {
             </Filter>
             <div>
               {showUploadedMessageBox && (
-                <AdminPopup
-                  open={true}
-                  onClose={handleCloseMessagePopup}
-                  maxWidth={"450px"}
-                >
+                <AdminPopup open={true} onClose={handleCloseMessagePopup} maxWidth={"450px"}>
                   <DialogContent>
                     <div className="popup-container">
                       <div className="popup-content">
-                        <div
-                          className={`popup-title`}
-                          style={{ fontSize: "18px" }}
-                        >
+                        <div className={`popup-title`} style={{ fontSize: "18px" }}>
                           Upload History
                         </div>
                       </div>
@@ -1170,9 +980,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                         }}
                       >
                         {responseStatus === 404 ? (
-                          <label style={{ margin: "28px" }}>
-                            {responseMessage}
-                          </label>
+                          <label style={{ margin: "28px" }}>{responseMessage}</label>
                         ) : (
                           <label style={{ marginTop: "11px" }}>
                             <ul style={{ fontSize: "14px" }}>
@@ -1181,13 +989,11 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                                 {totalRecordsInserted} <br />
                               </li>
                               <li>
-                                Total number of data already
-                                exists&nbsp;&nbsp;-&nbsp;
+                                Total number of data already exists&nbsp;&nbsp;-&nbsp;
                                 {totalDuplicateRecords}
                               </li>
                               <li>
-                                Total number of invalid/empty
-                                data&nbsp;&nbsp;-&nbsp;
+                                Total number of invalid/empty data&nbsp;&nbsp;-&nbsp;
                                 {totalInvalidRecords}
                               </li>
                             </ul>
@@ -1221,15 +1027,10 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                   maxWidth={"685px"}
                 >
                   <DialogContent>
-                    <div
-                      className="popup-container"
-                      style={{ height: "355px" }}
-                    >
+                    <div className="popup-container" style={{ height: "355px" }}>
                       <div className="popup-content">
                         <div>
-                          <p className="upload-heading">
-                            Upload Inventory Files
-                          </p>
+                          <p className="upload-heading">Upload Inventory Files</p>
                         </div>
                         <div className="file-size-and-length">
                           <p>Files Supported CSV</p>
@@ -1252,14 +1053,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                             onDragOver={overrideEventDefaults}
                           >
                             <div className="browse-content">
-                              {selectedFile === null ||
-                              (selectedFile != null && !dataValidated) ? (
+                              {selectedFile === null || (selectedFile != null && !dataValidated) ? (
                                 <div className="browse">
-                                  <img
-                                    className="upload-cloud-image"
-                                    src={uploadIcon}
-                                    alt="upload cloud icon"
-                                  />
+                                  <img className="upload-cloud-image" src={uploadIcon} alt="upload cloud icon" />
                                   <div>Drag and drop your file here</div>
                                   <span>or</span>
                                   <div className="selectFile">
@@ -1286,9 +1082,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                                   >
                                     <div className="selected-file-name">
                                       <strong>
-                                        <h3 className="selected-file">
-                                          {fileName}
-                                        </h3>
+                                        <h3 className="selected-file">{fileName}</h3>
                                       </strong>
                                       &nbsp;&nbsp;
                                       <img
@@ -1313,13 +1107,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                             selected={startDate}
                             value={startDate}
                             dateFormat="yyyy"
-                            customInput={
-                              <DateInput
-                                ref={ref}
-                                className="update-date-input-field"
-                                disabled={true}
-                              />
-                            }
+                            customInput={<DateInput ref={ref} className="update-date-input-field" disabled={true} />}
                           />
                         </div>
                       </div>
