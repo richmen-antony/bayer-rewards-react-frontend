@@ -415,8 +415,8 @@ class SendGoods extends Component<Props, States> {
           // when change scantype value after call the API
           if (e.name === "selectedScanType" && oneTimeAPI) {
             this.callChildAPI();
-            this.getPartnerList();
           }
+          this.getPartnerList();
         }
       );
     } else {
