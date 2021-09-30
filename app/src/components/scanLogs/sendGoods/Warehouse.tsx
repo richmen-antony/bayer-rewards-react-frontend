@@ -391,10 +391,10 @@ class Warehouse extends Component<Props, States> {
 							)}
 							<th
 							style={{ width: "10%" }}
-								onClick={(e) => this.handleSort(e, "dispatcheddate", allWarehouseData, isAsc)}
+								onClick={(e) => this.handleSort(e, "updateddate", allWarehouseData, isAsc)}
 							>
 								UPDATED DATE
-								{activeSortKeyIcon === "dispatcheddate" ? (
+								{activeSortKeyIcon === "updateddate" ? (
 									<i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
 								) : null}
 							</th>
@@ -477,7 +477,7 @@ class Warehouse extends Component<Props, States> {
 										</td>
 										{loggedUserInfo?.role === "ADMIN" && <td>{value.scannedbygeo1}</td>}
 										<td>
-											{value.updateddate ||value.createddate && moment(value.updateddate || value.createddate).format("DD/MM/YYYY")}
+											{value.updateddate && moment(value.updateddate).format("DD/MM/YYYY")}
 											
 										</td>
 										<td><img className="max-image" src={maxImg} alt="" /></td>

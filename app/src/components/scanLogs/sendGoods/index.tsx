@@ -638,6 +638,13 @@ class SendGoods extends Component<Props, States> {
   };
   getPartnerList = () => {
     const { getPartnerList } = apiURL;
+    let scantypeInfo : string;
+    if (this.state.selectedScannedBy === "Distributor"){
+      scantypeInfo = this.state.selectedScanType=== "SG - ST" ? "SCAN_OUT_ST_D2D" : "SCAN_OUT_D2R"
+    }else{
+      scantypeInfo = this.state.selectedScanType=== "SG - W2D" ? "SCAN_OUT_W2D" : "SCAN_OUT_W2R"
+    }
+
     let countrycode = {
       countrycode: this.state.loggedUserInfo?.countrycode,
       soldtorole:
@@ -645,6 +652,7 @@ class SendGoods extends Component<Props, States> {
           ? "RETAILER"
           : "DISTRIBUTOR",
       isfiltered: true,
+      scantype: scantypeInfo,
       soldbygeolevel1: this.state.loggedUserInfo?.role === "ADMIN" ? null : this.state.loggedUserInfo?.geolevel1,
     };
     let condName =
