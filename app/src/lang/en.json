@@ -12,7 +12,11 @@
     "delete": "DELETE",
     "filterScans": "Filter scans",
     "apply": "Apply",
-    "download": "Download"
+    "download": "Download",
+    "decline": "Decline",
+    "approve": "Approve",
+    "ok": "OK",
+    "validateandapprove": "Validate & Approve"
   },
   "placeholder": {
     "username": "Enter username",
@@ -148,5 +152,63 @@
       "farNamePhHeader": "FARMER NAME/PHONE NO",
       "statusHeader": "STATUS"
     }
+  },
+  "createUser": {
+    "personalInformation": "Personal Information",
+    "addressInformation": "Address Information",
+    "withHoldingTax": "With-Holding tax",
+    "hasStoreStaff": "Has store staff?(Max 4)",
+    "type": "Type",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "mobilenumber": "Mobile Number",
+    "email": "Email(Optional)",
+    "active": "Active?",
+    "owner": "Owner",
+    "store": "Store",
+    "staffs": "Staffs",
+    "storeAlert": "Are you sure you want to delete store's staff?",
+    "geolevelError": "Please select the",
+    "sameAsPersonalInfo": "Same as Personal Info",
+    "placeholder": {
+      "storeName": "Store Name",
+      "ownerName": "Owner Name",
+      "street": "Street",
+      "postalCode": "Postal Code",
+      "taxId": "Tax Id"
+    },
+    "error": {
+      "enterFirstName": "Please enter the First Name",
+      "enterLastName": "Please enter the Last Name",
+      "enterMobile": "Please enter the Mobile Number",
+      "enterEmail": "Please Enter the Email",
+      "enterValidEmail": "Please enter a valid email",
+      "numberExist": "Phone Number Exists",
+      "enterStoreName": "Please enter Store Name",
+      "enterOwnerName": "Please enter owner name",
+      "entertype": "Please enter Type",
+      "enterLocation": "Please enter Location",
+      "enterPartnerName": "Please enter Partner name"
+    },
+    "unsavedPrompt": "There are unsaved changes. Are you sure want to leave this page ?",
+    "unsavedConfirmation": "Confirmation"
+  },
+  "channelPartner": {
+    "channelPartner": "Channel Partners",
+    "username": "USER NAME",
+    "mobile": "MOBILE#",
+    "storename": "STORE NAME",
+    "ownerName": "OWNER NAME",
+    "staffCount": "STAFF COUNT",
+    "status": "STATUS",
+    "updatedBy": "UPDATED BY",
+    "changeLogs": "Change Logs",
+    "searchTooltip": "Search applicable for User Name, Store Name and Owner Name",
+    "areYouWantToChange": "Are you sure you want to change",
+    "accountTo": "account to",
+    "active": "Active",
+    "inActive": "Inactive",
+    "WouldYouLikeToValidate1": "Would you like to validate & approve",
+    "WouldYouLikeToValidate12": "account to use Bayer Rewards mobile application?"
   }
 }

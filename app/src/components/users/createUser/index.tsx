@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { FormattedMessage } from "react-intl";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -11,11 +12,7 @@ import "../../../assets/scss/createUser.scss";
 import { Alert } from "../../../utility/widgets/toaster";
 import CustomSwitch from "../../../containers/components/switch";
 import { apiURL } from "../../../utility/base/utils/config";
-import {
-  invokeGetAuthService,
-  invokePostService,
-  invokePostAuthService,
-} from "../../../utility/base/service";
+import { invokeGetAuthService, invokePostService, invokePostAuthService } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
 import { patterns } from "../../../utility/base/utils/patterns";
@@ -36,11 +33,6 @@ import AreaSalesManager from "./AreaSalesManager";
 import { connect } from "react-redux";
 import { getGeographicLevel1Options } from "../../../redux/actions";
 
-// type Props = {
-// 	location?: any;
-// 	history?: any;
-// };
-
 const role = [
   { value: "RETAILER", text: "Retailer" },
   { value: "salesagent", text: "Area Sales Agent" },
@@ -55,10 +47,7 @@ let geoLocationInfo = {
 };
 let levelFour: any = [];
 let levelsName: any = [];
-let phoneLength =
-  process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int"
-    ? 10
-    : 9;
+let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 10 : 9;
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -81,7 +70,7 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 class CreateUser extends Component<any, any> {
-  static contextType = AppContext
+  static contextType = AppContext;
   loggedUserInfo: any;
   getStoreData: any;
   isFilledAllFields: boolean;
@@ -156,9 +145,9 @@ class CreateUser extends Component<any, any> {
       selectedValue: "",
       currentStep: 1,
       stepsArray: [
-        "Personal Information",
-        "Address information",
-        "With-Holding tax",
+        <FormattedMessage id="createUser.personalInformation" />,
+        <FormattedMessage id="createUser.addressInformation" />,
+        <FormattedMessage id="createUser.withHoldingTax" />,
       ],
       phone: "",
       accInfo: false,
@@ -174,38 +163,38 @@ class CreateUser extends Component<any, any> {
       level5Options: [],
       mobileLimit: true,
       cloneduserData: {},
-      clonedasaInfo : {},
-      clonedasapartnersInfo : {},
+      clonedasaInfo: {},
+      clonedasapartnersInfo: {},
       deleteStaffPopup: false,
-      shouldBlockNavigation:true,
-      asaDatas : {
-        active : true,
-        firstname : "",
-        lastname : "",
-        email : "",
-        mobilenumber : ""
+      shouldBlockNavigation: true,
+      asaDatas: {
+        active: true,
+        firstname: "",
+        lastname: "",
+        email: "",
+        mobilenumber: "",
       },
-      asafirstnameErr : "",
-      asalastnameErr : "",
-      asamobilenumberErr : "",
-      userroleType : "external",
-      partnerDatas : [
+      asafirstnameErr: "",
+      asalastnameErr: "",
+      asamobilenumberErr: "",
+      userroleType: "external",
+      partnerDatas: [
         {
-            partnertype : "",
-            geolevel1: "",
-            channelpartnerfullname : "",
-            channelpartnerid: "",
-            staffid:"",
-            errObj : {
-                typeErr: "",
-                locationErr: "",
-                nameErr: "",
-            }
-        }
-    ],
-    locationwiseChannelPartners : [],
-    channelPartnersOptions:[],
-    allThirdPartyUsers:[]
+          partnertype: "",
+          geolevel1: "",
+          channelpartnerfullname: "",
+          channelpartnerid: "",
+          staffid: "",
+          errObj: {
+            typeErr: "",
+            locationErr: "",
+            nameErr: "",
+          },
+        },
+      ],
+      locationwiseChannelPartners: [],
+      channelPartnersOptions: [],
+      allThirdPartyUsers: [],
     };
     this.loggedUserInfo = loggedUserInfo;
     this.isFilledAllFields = false;
@@ -221,9 +210,9 @@ class CreateUser extends Component<any, any> {
     this.getGeographicFields();
   }
 
-  componentDidUpdate(prevProps:any) {
-    if(prevProps.errorMessage !== this.props.errorMessage) {
-      Alert("warning", this.props.errorMessage)
+  componentDidUpdate(prevProps: any) {
+    if (prevProps.errorMessage !== this.props.errorMessage) {
+      Alert("warning", this.props.errorMessage);
     }
   }
 
@@ -246,8 +235,7 @@ class CreateUser extends Component<any, any> {
       .then((response) => {
         this.setState({
           isLoader: false,
-          allChannelPartners:
-            Object.keys(response.body).length !== 0 ? response.body.rows : [],
+          allChannelPartners: Object.keys(response.body).length !== 0 ? response.body.rows : [],
         });
       })
       .catch((error) => {
@@ -256,38 +244,38 @@ class CreateUser extends Component<any, any> {
   };
 
   // getThirdPartyList = (defaultPageNo?: number) => {
-	// 	this.setState({	allThirdPartyUsers: [] });
-	// 	const { thirdPartyList } = apiURL;
-	// 	this.setState({ isLoader: true,});
-	// 	let data = {
-	// 		countrycode: this.getStoreData.countryCode,
-	// 		page: 1,
-	// 		isfiltered: false,
-	// 		rowsperpage: 1000,
-	// 		partnertype:"ASA",
-	// 		searchtext: null,
-	// 	};
-	// 	invokeGetAuthService(thirdPartyList, data)
-	// 		.then((response) => {
-	// 			this.setState({
-	// 				isLoader: false,
-	// 				allThirdPartyUsers: Object.keys(response.body).length !== 0 ? response.body.rows : [],
-	// 			});
-	// 		})
-	// 		.catch((error) => {
-	// 			this.setState({ isLoader: false });
-	// 			let message = error.message
-	// 			Alert("warning", message);
-	// 		});
-	//   };
+  // 	this.setState({	allThirdPartyUsers: [] });
+  // 	const { thirdPartyList } = apiURL;
+  // 	this.setState({ isLoader: true,});
+  // 	let data = {
+  // 		countrycode: this.getStoreData.countryCode,
+  // 		page: 1,
+  // 		isfiltered: false,
+  // 		rowsperpage: 1000,
+  // 		partnertype:"ASA",
+  // 		searchtext: null,
+  // 	};
+  // 	invokeGetAuthService(thirdPartyList, data)
+  // 		.then((response) => {
+  // 			this.setState({
+  // 				isLoader: false,
+  // 				allThirdPartyUsers: Object.keys(response.body).length !== 0 ? response.body.rows : [],
+  // 			});
+  // 		})
+  // 		.catch((error) => {
+  // 			this.setState({ isLoader: false });
+  // 			let message = error.message
+  // 			Alert("warning", message);
+  // 		});
+  //   };
 
   getCountryList() {
-     //service call
+    //service call
     let res = [
       { value: "India", text: "India" },
       { value: "Malawi", text: "Malawi" },
-      { value: "South Africa", text:"South Africa"},
-      { value: "Egypt", text:"Egypt"}
+      { value: "South Africa", text: "South Africa" },
+      { value: "Egypt", text: "Egypt" },
     ];
     this.setState({ countryList: res });
   }
@@ -305,7 +293,7 @@ class CreateUser extends Component<any, any> {
         locationData.forEach((item: any) => {
           levelsName.push(item.name.toLowerCase());
           let locationhierlevel = item.level;
-          let geolevels = 'geolevel'+locationhierlevel;
+          let geolevels = "geolevel" + locationhierlevel;
           levels.push(geolevels);
         });
         this.setState(
@@ -326,146 +314,138 @@ class CreateUser extends Component<any, any> {
   }
 
   editUser = () => {
-      if (this.props.location?.page) {
-        let data: any = getLocalStorageData("userData");
-        let userDetails = JSON.parse(data);
-        this.setState({ username: userDetails.username }, () => {});
-        let userFields = this.props.location.state?.userFields;
-        if(this.props.location?.page === "edit" || this.props.location?.page === "validate"){
-          let ownerInfo = {
-            errObj: {
-              emailErr: "",
-              firstnameErr: "",
-              lastnameErr: "",
-              mobilenumberErr: "",
-            },
-            firstname: userFields.ownerfirstname,
-            active:
-              userFields.userstatus === "ACTIVE" ||
-              userFields.userstatus === "PENDING"
-                ? true
-                : false,
-            lastname: userFields.ownerlastname,
-            mobilenumber: userFields.ownerphonenumber,
-            email: userFields.owneremail,
-          };
+    if (this.props.location?.page) {
+      let data: any = getLocalStorageData("userData");
+      let userDetails = JSON.parse(data);
+      this.setState({ username: userDetails.username }, () => {});
+      let userFields = this.props.location.state?.userFields;
+      if (this.props.location?.page === "edit" || this.props.location?.page === "validate") {
+        let ownerInfo = {
+          errObj: {
+            emailErr: "",
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: "",
+          },
+          firstname: userFields.ownerfirstname,
+          active: userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING" ? true : false,
+          lastname: userFields.ownerlastname,
+          mobilenumber: userFields.ownerphonenumber,
+          email: userFields.owneremail,
+        };
 
-          userFields.staffdetails.forEach((items: any) => {
-            items.active =
-              userFields.userstatus === "PENDING"
-                ? true
-                : items.active;
+        userFields.staffdetails.forEach((items: any) => {
+          items.active = userFields.userstatus === "PENDING" ? true : items.active;
+        });
+        let userDataList = this.state.userData;
+        userDataList.ownerRows[0] = ownerInfo;
+        let userinfo = {
+          ownerRows: userDataList.ownerRows,
+          countrycode: userFields.countrycode,
+          locale: userFields.locale,
+          rolename: userFields.rolename,
+          username: userFields.username,
+          deliverystreet: userFields.deliverystreet,
+          shippingcity: userFields.deliverygeolevel4,
+          shippingstate: userFields.deliverygeolevel2,
+          deliveryzipcode: userFields.deliveryzipcode,
+          taxid: userFields.taxid,
+          whtaccountname: userFields.whtaccountname,
+          whtownername: userFields.whtownername,
+          billingstreet: userFields.billingstreet,
+          billinggeolevel4: userFields.billinggeolevel4,
+          billinggeolevel2: userFields.billinggeolevel2,
+          billingzipcode: userFields.billingzipcode,
+          iscreatedfrommobile: userFields.iscreatedfrommobile,
+          staffdetails: userFields.staffdetails,
+        };
+        if (userinfo) {
+          userinfo.staffdetails.forEach((staffInfo: any) => {
+            let errObjd = {
+              errObj: {
+                emailErr: "",
+                firstnameErr: "",
+                lastnameErr: "",
+                mobilenumberErr: "",
+                isPhoneEdit: staffInfo.mobilenumber ? false : true,
+              },
+            };
+            Object.assign(staffInfo, errObjd);
           });
-          let userDataList = this.state.userData;
-          userDataList.ownerRows[0] = ownerInfo;
-          let userinfo = {
-            ownerRows: userDataList.ownerRows,
-            countrycode: userFields.countrycode,
-            locale: userFields.locale,
-            rolename: userFields.rolename,
-            username: userFields.username,
-            deliverystreet: userFields.deliverystreet,
-            shippingcity: userFields.deliverygeolevel4,
-            shippingstate: userFields.deliverygeolevel2,
-            deliveryzipcode: userFields.deliveryzipcode,
-            taxid: userFields.taxid,
-            whtaccountname: userFields.whtaccountname,
-            whtownername: userFields.whtownername,
-            billingstreet: userFields.billingstreet,
-            billinggeolevel4: userFields.billinggeolevel4,
-            billinggeolevel2: userFields.billinggeolevel2,
-            billingzipcode: userFields.billingzipcode,
-            iscreatedfrommobile: userFields.iscreatedfrommobile,
-            staffdetails: userFields.staffdetails,
-          };
-          if (userinfo) {
-            userinfo.staffdetails.forEach((staffInfo: any) => {
-              let errObjd = {
-                errObj: {
-                  emailErr: "",
-                  firstnameErr: "",
-                  lastnameErr: "",
-                  mobilenumberErr: "",
-                  isPhoneEdit: staffInfo.mobilenumber ? false : true,
-                },
-              };
-              Object.assign(staffInfo, errObjd);
-            });
-          }
-          this.setState({
-            userData: userinfo,
-            isEditPage: true,
-            isStaff: userFields.storewithmultiuser,
-            isRendered: true,
-          });
-          let cloneduserData = JSON.parse(JSON.stringify(userinfo));
-          this.setState({ cloneduserData: cloneduserData });
+        }
+        this.setState({
+          userData: userinfo,
+          isEditPage: true,
+          isStaff: userFields.storewithmultiuser,
+          isRendered: true,
+        });
+        let cloneduserData = JSON.parse(JSON.stringify(userinfo));
+        this.setState({ cloneduserData: cloneduserData });
 
-          //Dynamic Geo location dropdowns For Validate and edit User
-          setTimeout(() => {
-            this.getDynamicOptionFields(userFields);
-          }, 0);
-        } else if(this.props.location?.page === "asaedit"){
-          let asauserinfo = {
-            firstname: userFields.firstname,
-            active:
-              userFields.userstatus === "ACTIVE" ||
-              userFields.userstatus === "PENDING"
-                ? true
-                : false,
-              lastname: userFields.lastname,
-              mobilenumber: userFields.phonenumber,
-              email: userFields.emailid,
-          };
-        let asachannelPartnersInfo:any = [];
-        let partnerObj ={};
-        userFields.usermapping?.forEach((items: any, index:number) => {
+        //Dynamic Geo location dropdowns For Validate and edit User
+        setTimeout(() => {
+          this.getDynamicOptionFields(userFields);
+        }, 0);
+      } else if (this.props.location?.page === "asaedit") {
+        let asauserinfo = {
+          firstname: userFields.firstname,
+          active: userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING" ? true : false,
+          lastname: userFields.lastname,
+          mobilenumber: userFields.phonenumber,
+          email: userFields.emailid,
+        };
+        let asachannelPartnersInfo: any = [];
+        let partnerObj = {};
+        userFields.usermapping?.forEach((items: any, index: number) => {
           partnerObj = {
-              partnertype : items.partnertype,
-              geolevel1: items.geolevel1,
-              channelpartnerfullname : items.channelpartnerfullname,
-              channelpartnerid: items.channelpartnerid,
-              staffid: items.staffid,
-              errObj : {
-                  typeErr: "",
-                  locationErr: "",
-                  nameErr: "",
-              }
+            partnertype: items.partnertype,
+            geolevel1: items.geolevel1,
+            channelpartnerfullname: items.channelpartnerfullname,
+            channelpartnerid: items.channelpartnerid,
+            staffid: items.staffid,
+            errObj: {
+              typeErr: "",
+              locationErr: "",
+              nameErr: "",
+            },
           };
           asachannelPartnersInfo.push(partnerObj);
         });
         let steps = this.state.stepsArray;
-        steps.splice(2,1,'User Mappings');
+        steps.splice(2, 1, "User Mappings");
 
         let clonedasaInfo = JSON.parse(JSON.stringify(asauserinfo));
         let clonedasapartnersInfo = JSON.parse(JSON.stringify(asachannelPartnersInfo));
 
-      this.setState((prevState:any)=>({
-        asaDatas: asauserinfo,
-        partnerDatas : asachannelPartnersInfo,
-        clonedasaInfo: clonedasaInfo,
-        clonedasapartnersInfo: clonedasapartnersInfo,
-        userroleType : "internal",
-        stepsArray : steps,
-        isEditPage: true,
-        isRendered: true,
-        userData : {
-          ...prevState.userData,
-          rolename: role[1].value,
-        }
-      }),()=>{
-        userFields.usermapping?.forEach((items: any, index:number) => {
-          this.setOptionsForChannelPartners(index)
-        });
-      });
-      //Dynamic Geo location dropdowns for edit asa User
+        this.setState(
+          (prevState: any) => ({
+            asaDatas: asauserinfo,
+            partnerDatas: asachannelPartnersInfo,
+            clonedasaInfo: clonedasaInfo,
+            clonedasapartnersInfo: clonedasapartnersInfo,
+            userroleType: "internal",
+            stepsArray: steps,
+            isEditPage: true,
+            isRendered: true,
+            userData: {
+              ...prevState.userData,
+              rolename: role[1].value,
+            },
+          }),
+          () => {
+            userFields.usermapping?.forEach((items: any, index: number) => {
+              this.setOptionsForChannelPartners(index);
+            });
+          }
+        );
+        //Dynamic Geo location dropdowns for edit asa User
         this.getDynamicOptionFields(userFields);
       }
     } else {
       //Dynamic Geo location dropdowns For Create asa User
-        this.getDynamicOptionFields("");
+      this.getDynamicOptionFields("");
     }
-  }
+  };
 
   getDynamicOptionFields = async (data: any) => {
     let level1 = this.props.geoLevel1List;
@@ -477,14 +457,14 @@ class CreateUser extends Component<any, any> {
     let geolevel1List = this.props.geoLevel1List;
     if (data) {
       let isSameGeoAddress = false;
-      if(this.state.userroleType === "external") {
+      if (this.state.userroleType === "external") {
         isSameGeoAddress =
-        data.billinggeolevel1 === data.deliverygeolevel1 &&
-        data.billinggeolevel2 === data.deliverygeolevel2 &&
-        data.billinggeolevel3 === data.deliverygeolevel3 &&
-        data.billinggeolevel4 === data.deliverygeolevel4 &&
-        data.billinggeolevel5 === data.deliverygeolevel5 &&
-        data.whtownername === data.ownerfirstname + " " + data.ownerlastname;
+          data.billinggeolevel1 === data.deliverygeolevel1 &&
+          data.billinggeolevel2 === data.deliverygeolevel2 &&
+          data.billinggeolevel3 === data.deliverygeolevel3 &&
+          data.billinggeolevel4 === data.deliverygeolevel4 &&
+          data.billinggeolevel5 === data.deliverygeolevel5 &&
+          data.whtownername === data.ownerfirstname + " " + data.ownerlastname;
         this.setState({ accInfo: isSameGeoAddress ? true : false });
       }
       let setFormArray: any = [];
@@ -511,36 +491,30 @@ class CreateUser extends Component<any, any> {
         level1Options.forEach((level1Info: any) => {
           if (level1Info.name === data.deliverygeolevel1) {
             geoLocationInfo.geolevel1 = level1Info.code;
-           }
+          }
         });
         this.setState({ level1Options: level1Options });
       }
       if ("deliverygeolevel2" in data) {
-        let filteredLevel2 = geolevel1List?.filter(
-          (level1: any) => level1.name === data.deliverygeolevel1
-        );
+        let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.deliverygeolevel1);
         geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
         filteredLevel2[0]?.geolevel2.forEach((item: any) => {
           let level2Info = { text: item.name, value: item.name, code: item.code };
           level2Options.push(level2Info);
         });
-        let selectedLevel2 = level2Options.filter(
-          (level3: any) => level3.text === data.deliverygeolevel2
-        );
+        let selectedLevel2 = level2Options.filter((level3: any) => level3.text === data.deliverygeolevel2);
         geoLocationInfo.geolevel2 = selectedLevel2[0]?.code;
         geolevel2 = data.deliverygeolevel2;
         this.setState({ level2Options: level2Options });
       }
       if ("deliverygeolevel3" in data) {
         geolevel3 = data.deliverygeolevel3;
-        let filteredLevel2 = geolevel1List?.filter(
-          (level1: any) => level1.name === data.deliverygeolevel1
-        );
+        let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.deliverygeolevel1);
         let level2List = filteredLevel2[0]?.geolevel2.filter(
           (level2Info: any) => level2Info.name === data.deliverygeolevel2
         );
         level2List &&
-        level2List[0]?.geolevel3?.forEach((item: any) => {
+          level2List[0]?.geolevel3?.forEach((item: any) => {
             let level2Info = {
               text: item.name,
               value: item.name,
@@ -548,14 +522,12 @@ class CreateUser extends Component<any, any> {
             };
             level3Options.push(level2Info);
           });
-        let selectedLevel3 = level3Options.filter(
-          (level3Info: any) => level3Info.text === geolevel3
-        );
+        let selectedLevel3 = level3Options.filter((level3Info: any) => level3Info.text === geolevel3);
         geoLocationInfo.geolevel3 = selectedLevel3[0]?.code;
         this.setState({ level3Options: level3Options });
       }
       if ("deliverygeolevel4" in data) {
-        if(this.state.geographicFields[4]){
+        if (this.state.geographicFields[4]) {
           level4Options = await this.getLevelFourDetails();
           geolevel4 = data.deliverygeolevel4;
           level4Options?.forEach((level4: any) => {
@@ -569,7 +541,7 @@ class CreateUser extends Component<any, any> {
         }
       }
       if ("deliverygeolevel5" in data) {
-        if(this.state.geographicFields[5]){
+        if (this.state.geographicFields[5]) {
           geolevel5 = data.deliverygeolevel5;
           level5Options = await this.getLevelFiveDetails();
           if (level5Options?.length) {
@@ -624,145 +596,137 @@ class CreateUser extends Component<any, any> {
       this.setState({ dynamicFields: setFormArray });
 
       //Incase of delivery and billing address is different
-      if(this.state.userroleType === "external") { 
-      if (!isSameGeoAddress) {
-        setFormArray = [];
-        level2Options = [];
-        level3Options = [];
-        level4Options = [];
-        level5Options = [];
-        geoLocationInfo = {
-          geolevel1: "",
-          geolevel2: "",
-          geolevel3: "",
-          geolevel4: "",
-          geolevel5: "",
-        };
-        if ("billinggeolevel1" in data) {
-          level1Options = level1Datas;
-          geolevel1 = data.billinggeolevel1;
-          level1Options.forEach((level1Info: any) => {
-            if (level1Info.name === data.billinggeolevel1) {
-              geoLocationInfo.geolevel1 = level1Info.code;
-            }
-          });
-          this.setState({ level1Options: level1Options });
-        }
-        if ("billinggeolevel2" in data) {
-          let filteredLevel2 = geolevel1List?.filter(
-            (level1: any) => level1.name === data.billinggeolevel1
-          );
-          geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
-          filteredLevel2[0]?.geolevel2.forEach((item: any) => {
-            let level2Info = {
-              text: item.name,
-              value: item.name,
-              code: item.code,
-            };
-            level2Options.push(level2Info);
-          });
-          let selectedLevel2 = level2Options.filter(
-            (level3: any) => level3.text === data.billinggeolevel2
-          );
-          geoLocationInfo.geolevel2 = selectedLevel2[0]?.code;
-          geolevel2 = data.billinggeolevel2;
-          this.setState({ level2Options: level2Options });
-        }
-        if ("billinggeolevel3" in data) {
-          geolevel3 = data.billinggeolevel3;
-          let filteredLevel2 = geolevel1List?.filter(
-            (level1: any) => level1.name === data.billinggeolevel1
-          );
-          let level2List = filteredLevel2[0]?.geolevel2.filter(
-            (level2Info: any) => level2Info.name === data.billinggeolevel2
-          );
-          level2List &&
-          level2List[0]?.geolevel3?.forEach((item: any) => {
+      if (this.state.userroleType === "external") {
+        if (!isSameGeoAddress) {
+          setFormArray = [];
+          level2Options = [];
+          level3Options = [];
+          level4Options = [];
+          level5Options = [];
+          geoLocationInfo = {
+            geolevel1: "",
+            geolevel2: "",
+            geolevel3: "",
+            geolevel4: "",
+            geolevel5: "",
+          };
+          if ("billinggeolevel1" in data) {
+            level1Options = level1Datas;
+            geolevel1 = data.billinggeolevel1;
+            level1Options.forEach((level1Info: any) => {
+              if (level1Info.name === data.billinggeolevel1) {
+                geoLocationInfo.geolevel1 = level1Info.code;
+              }
+            });
+            this.setState({ level1Options: level1Options });
+          }
+          if ("billinggeolevel2" in data) {
+            let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.billinggeolevel1);
+            geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
+            filteredLevel2[0]?.geolevel2.forEach((item: any) => {
               let level2Info = {
                 text: item.name,
                 value: item.name,
                 code: item.code,
               };
-              level3Options.push(level2Info);
+              level2Options.push(level2Info);
             });
-          let selectedLevel3 = level3Options.filter(
-            (level3Info: any) => level3Info.text === geolevel3
-          );
-          geoLocationInfo.geolevel3 = selectedLevel3[0]?.code;
-          this.setState({ level3Options: level3Options });
-        }
-        if ("billinggeolevel4" in data) {
-          if(this.state.geographicFields[4]){
-            level4Options = await this.getLevelFourDetails();
-            geolevel4 = data.billinggeolevel4;
-            level4Options?.forEach((level4: any) => {
-              if (level4.name === geolevel4) {
-                geoLocationInfo.geolevel4 = level4.code;
-              }
-              level4.text = level4.name;
-              level4.value = level4.name;
-            });
-            this.setState({ level4Options: level4Options });
+            let selectedLevel2 = level2Options.filter((level3: any) => level3.text === data.billinggeolevel2);
+            geoLocationInfo.geolevel2 = selectedLevel2[0]?.code;
+            geolevel2 = data.billinggeolevel2;
+            this.setState({ level2Options: level2Options });
           }
-        }
-        if ("billinggeolevel5" in data) {
-          if(this.state.geographicFields[5]){
-            geolevel5 = data.billinggeolevel5;
-            level5Options = await this.getLevelFiveDetails();
-            if (level5Options?.length) {
-              level5Options?.forEach((level5: any) => {
-                if (level5.name === geolevel5) {
-                  geoLocationInfo.geolevel5 = level5.code;
-                }
-                level5.text = level5.name;
-                level5.value = level5.name;
+          if ("billinggeolevel3" in data) {
+            geolevel3 = data.billinggeolevel3;
+            let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.billinggeolevel1);
+            let level2List = filteredLevel2[0]?.geolevel2.filter(
+              (level2Info: any) => level2Info.name === data.billinggeolevel2
+            );
+            level2List &&
+              level2List[0]?.geolevel3?.forEach((item: any) => {
+                let level2Info = {
+                  text: item.name,
+                  value: item.name,
+                  code: item.code,
+                };
+                level3Options.push(level2Info);
               });
-            }
-            this.setState({ level5Options: level5Options });
+            let selectedLevel3 = level3Options.filter((level3Info: any) => level3Info.text === geolevel3);
+            geoLocationInfo.geolevel3 = selectedLevel3[0]?.code;
+            this.setState({ level3Options: level3Options });
           }
-          this.state.geographicFields.forEach((list: any, i: number) => {
-            setFormArray.push({
-              name: list,
-              placeHolder: true,
-              value:
-                list === "geolevel0"
-                  ? this.getStoreData.country
-                  : list === "geolevel1"
-                  ? geolevel1
-                  : list === "geolevel2"
-                  ? geolevel2
-                  : list === "geolevel3"
-                  ? geolevel3
-                  : list === "geolevel4"
-                  ? geolevel4
-                  : list === "geolevel5"
-                  ? geolevel5
-                  : "",
-              options:
-                list === "geolevel0"
-                  ? this.state.countryList
-                  : list === "geolevel0"
-                  ? this.getStoreData.country
-                  : list === "geolevel1"
-                  ? level1Options
-                  : list === "geolevel2"
-                  ? level2Options
-                  : list === "geolevel3"
-                  ? level3Options
-                  : list === "geolevel4"
-                  ? level4Options
-                  : list === "geolevel5"
-                  ? level5Options
-                  : "",
-              error: "",
+          if ("billinggeolevel4" in data) {
+            if (this.state.geographicFields[4]) {
+              level4Options = await this.getLevelFourDetails();
+              geolevel4 = data.billinggeolevel4;
+              level4Options?.forEach((level4: any) => {
+                if (level4.name === geolevel4) {
+                  geoLocationInfo.geolevel4 = level4.code;
+                }
+                level4.text = level4.name;
+                level4.value = level4.name;
+              });
+              this.setState({ level4Options: level4Options });
+            }
+          }
+          if ("billinggeolevel5" in data) {
+            if (this.state.geographicFields[5]) {
+              geolevel5 = data.billinggeolevel5;
+              level5Options = await this.getLevelFiveDetails();
+              if (level5Options?.length) {
+                level5Options?.forEach((level5: any) => {
+                  if (level5.name === geolevel5) {
+                    geoLocationInfo.geolevel5 = level5.code;
+                  }
+                  level5.text = level5.name;
+                  level5.value = level5.name;
+                });
+              }
+              this.setState({ level5Options: level5Options });
+            }
+            this.state.geographicFields.forEach((list: any, i: number) => {
+              setFormArray.push({
+                name: list,
+                placeHolder: true,
+                value:
+                  list === "geolevel0"
+                    ? this.getStoreData.country
+                    : list === "geolevel1"
+                    ? geolevel1
+                    : list === "geolevel2"
+                    ? geolevel2
+                    : list === "geolevel3"
+                    ? geolevel3
+                    : list === "geolevel4"
+                    ? geolevel4
+                    : list === "geolevel5"
+                    ? geolevel5
+                    : "",
+                options:
+                  list === "geolevel0"
+                    ? this.state.countryList
+                    : list === "geolevel0"
+                    ? this.getStoreData.country
+                    : list === "geolevel1"
+                    ? level1Options
+                    : list === "geolevel2"
+                    ? level2Options
+                    : list === "geolevel3"
+                    ? level3Options
+                    : list === "geolevel4"
+                    ? level4Options
+                    : list === "geolevel5"
+                    ? level5Options
+                    : "",
+                error: "",
+              });
             });
-          });
-          this.setState({
-            withHolding: setFormArray,
-          });
+            this.setState({
+              withHolding: setFormArray,
+            });
+          }
         }
       }
-    }
     } else {
       let setFormArray: any = [];
       this.state.geographicFields.forEach((list: any, i: number) => {
@@ -770,12 +734,7 @@ class CreateUser extends Component<any, any> {
           name: list,
           placeHolder: true,
           value: list === "geolevel0" ? this.getStoreData.country : "",
-          options:
-            list === "geolevel0"
-              ? this.state.countryList
-              : list === "geolevel1"
-              ? level1Datas
-              : "",
+          options: list === "geolevel0" ? this.state.countryList : list === "geolevel1" ? level1Datas : "",
           error: "",
         });
       });
@@ -790,11 +749,13 @@ class CreateUser extends Component<any, any> {
         level1.text = level1.name;
         level1.value = level1.name;
       });
-      this.state.dynamicFields.forEach((list: any, index:number) => {
+      this.state.dynamicFields.forEach((list: any, index: number) => {
         if (type === list.name) {
           if (list.value === "") {
             let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-            list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
+            list.error = `Please select the ${
+              nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+            }`;
             // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
@@ -806,7 +767,9 @@ class CreateUser extends Component<any, any> {
         if (type === list.name) {
           if (list.value === "") {
             let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-            list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
+            list.error = `Please select the ${
+              nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+            }`;
             // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
@@ -818,22 +781,20 @@ class CreateUser extends Component<any, any> {
       this.setState({ level1Options: geolevel1List });
       let dynamicFieldVal = JSON.parse(JSON.stringify(this.state.dynamicFields));
       let withHoldingVal = JSON.parse(JSON.stringify(this.state.withHolding));
-      dynamicFieldVal.forEach((list:any, fieldIndex:number)=>{
-        if(fieldIndex > index) {
+      dynamicFieldVal.forEach((list: any, fieldIndex: number) => {
+        if (fieldIndex > index) {
           list.value = "";
           list.options = "";
         }
       });
-      withHoldingVal.forEach((list:any, fieldIndex:number)=>{
-        if(fieldIndex > index) {
+      withHoldingVal.forEach((list: any, fieldIndex: number) => {
+        if (fieldIndex > index) {
           list.value = "";
           list.options = "";
         }
       });
       if (type === "geolevel1") {
-        let filteredLevel1 = geolevel1List?.filter(
-          (level1: any) => level1.name === value
-        );
+        let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
         let level2Options: any = [];
 
         filteredLevel1[0]?.geolevel2.forEach((item: any) => {
@@ -848,31 +809,25 @@ class CreateUser extends Component<any, any> {
           dynamicFieldVal[index + 1].options = level2Options;
           dynamicFieldVal[index].value = value;
           dynamicFieldVal[index + 1].value = "";
-          this.setState({  dynamicFields: dynamicFieldVal });
+          this.setState({ dynamicFields: dynamicFieldVal });
         } else if (this.state.currentStep === 3) {
           withHoldingVal[index + 1].options = level2Options;
           withHoldingVal[index].value = value;
           withHoldingVal[index + 1].value = "";
-          this.setState({   
+          this.setState({
             withHolding: withHoldingVal,
-            withHoldingSelected: true
+            withHoldingSelected: true,
           });
         }
       } else if (type === "geolevel2") {
         let filteredLevel2: any = [];
         if (currentStep === 2) {
-          filteredLevel2 = geolevel1List?.filter(
-            (level1: any) => level1.name === dynamicFieldVal[1].value
-          );
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === dynamicFieldVal[1].value);
         }
         if (currentStep === 3) {
-          filteredLevel2 = geolevel1List?.filter(
-            (level1: any) => level1.name === withHoldingVal[1].value
-          );
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === withHoldingVal[1].value);
         }
-        let level2List = filteredLevel2[0]?.geolevel2.filter(
-          (level2Info: any) => level2Info.name === value
-        );
+        let level2List = filteredLevel2[0]?.geolevel2.filter((level2Info: any) => level2Info.name === value);
         let geolevel3: any = [];
         level2List[0]?.geolevel3?.forEach((item: any) => {
           let level3Info = {
@@ -896,28 +851,24 @@ class CreateUser extends Component<any, any> {
       } else if (type === "geolevel3") {
         let filteredLevel2: any = [];
         if (currentStep === 2) {
-          filteredLevel2 = geolevel1List?.filter(
-            (level1: any) => level1.name === dynamicFieldVal[1].value
-          );
-          filteredLevel2[0]?.geolevel2.filter(
-            (level2Info: any) => level2Info.name === dynamicFieldVal[2].value
-          );
-         dynamicFieldVal[1]?.options.forEach((option:any) => {
-          if(dynamicFieldVal[1].value === option.text){
-            return geoLocationInfo.geolevel1 = option.code
-          }
-         })
-         dynamicFieldVal[2]?.options.forEach((option:any) => {
-          if(dynamicFieldVal[2].value === option.text){
-            return geoLocationInfo.geolevel2 = option.code
-          }
-         })
-         dynamicFieldVal[3]?.options.forEach((option:any) => {
-          if(dynamicFieldVal[3].value === option.text){
-            return geoLocationInfo.geolevel3 = option.code
-          }
-         })
-          if(this.state.geographicFields[4]){
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === dynamicFieldVal[1].value);
+          filteredLevel2[0]?.geolevel2.filter((level2Info: any) => level2Info.name === dynamicFieldVal[2].value);
+          dynamicFieldVal[1]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[1].value === option.text) {
+              return (geoLocationInfo.geolevel1 = option.code);
+            }
+          });
+          dynamicFieldVal[2]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[2].value === option.text) {
+              return (geoLocationInfo.geolevel2 = option.code);
+            }
+          });
+          dynamicFieldVal[3]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[3].value === option.text) {
+              return (geoLocationInfo.geolevel3 = option.code);
+            }
+          });
+          if (this.state.geographicFields[4]) {
             levelFour = await this.getLevelFourDetails();
             if (levelFour.length) {
               levelFour.forEach((item: any) => {
@@ -932,28 +883,24 @@ class CreateUser extends Component<any, any> {
           this.setState({ dynamicFields: dynamicFieldVal });
         }
         if (currentStep === 3) {
-          filteredLevel2 = geolevel1List?.filter(
-            (level1: any) => level1.name === withHoldingVal[1].value
-          );
-          filteredLevel2[0]?.geolevel2.filter(
-            (level2Info: any) => level2Info.name === withHoldingVal[2].value
-          );
-          withHoldingVal[1]?.options.forEach((option:any) => {
-            if(withHoldingVal[1].value === option.text){
-              geoLocationInfo.geolevel1 = option.code
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === withHoldingVal[1].value);
+          filteredLevel2[0]?.geolevel2.filter((level2Info: any) => level2Info.name === withHoldingVal[2].value);
+          withHoldingVal[1]?.options.forEach((option: any) => {
+            if (withHoldingVal[1].value === option.text) {
+              geoLocationInfo.geolevel1 = option.code;
             }
-           })
-           withHoldingVal[2]?.options.forEach((option:any) => {
-            if(withHoldingVal[2].value === option.text){
-              geoLocationInfo.geolevel2 = option.code
+          });
+          withHoldingVal[2]?.options.forEach((option: any) => {
+            if (withHoldingVal[2].value === option.text) {
+              geoLocationInfo.geolevel2 = option.code;
             }
-           })
-           withHoldingVal[3]?.options.forEach((option:any) => {
-            if(withHoldingVal[3].value === option.text){
-              geoLocationInfo.geolevel3 = option.code
+          });
+          withHoldingVal[3]?.options.forEach((option: any) => {
+            if (withHoldingVal[3].value === option.text) {
+              geoLocationInfo.geolevel3 = option.code;
             }
-           })
-          if(this.state.geographicFields[4]){
+          });
+          if (this.state.geographicFields[4]) {
             levelFour = await this.getLevelFourDetails();
             levelFour.forEach((item: any) => {
               item.text = item.name;
@@ -969,62 +916,62 @@ class CreateUser extends Component<any, any> {
         }
       } else if (type === "geolevel4") {
         let levelFive: any = [];
-        if(this.state.currentStep === 2){
-          dynamicFieldVal[1]?.options.forEach((option:any) => {
-            if(dynamicFieldVal[1].value === option.text){
-              geoLocationInfo.geolevel1 = option.code
-            }
-           })
-           dynamicFieldVal[2]?.options.forEach((option:any) => {
-            if(dynamicFieldVal[2].value === option.text){
-              geoLocationInfo.geolevel2 = option.code
-            }
-           })
-           dynamicFieldVal[3]?.options.forEach((option:any) => {
-            if(dynamicFieldVal[3].value === option.text){
-              geoLocationInfo.geolevel3 = option.code
-            }
-           })
-          dynamicFieldVal[4]?.options.forEach((option:any) => {
-            if(dynamicFieldVal[4].value === option.text){
-              geoLocationInfo.geolevel4 = option.code
+        if (this.state.currentStep === 2) {
+          dynamicFieldVal[1]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[1].value === option.text) {
+              geoLocationInfo.geolevel1 = option.code;
             }
           });
-          if(this.state.geographicFields[5]){
+          dynamicFieldVal[2]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[2].value === option.text) {
+              geoLocationInfo.geolevel2 = option.code;
+            }
+          });
+          dynamicFieldVal[3]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[3].value === option.text) {
+              geoLocationInfo.geolevel3 = option.code;
+            }
+          });
+          dynamicFieldVal[4]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[4].value === option.text) {
+              geoLocationInfo.geolevel4 = option.code;
+            }
+          });
+          if (this.state.geographicFields[5]) {
             levelFive = await this.getLevelFiveDetails();
             if (levelFive.length) {
               levelFive.forEach((level5Info: any) => {
                 level5Info.text = level5Info.name;
                 level5Info.value = level5Info.name;
               });
-            dynamicFieldVal[index + 1].options = levelFive;
-            dynamicFieldVal[index + 1].value = "";
+              dynamicFieldVal[index + 1].options = levelFive;
+              dynamicFieldVal[index + 1].value = "";
             }
           }
           dynamicFieldVal[index].value = value;
           this.setState({ dynamicFields: dynamicFieldVal });
-        } else if(this.state.currentStep === 3){
-          withHoldingVal[1]?.options.forEach((option:any) => {
-            if(withHoldingVal[1].value === option.text){
-              geoLocationInfo.geolevel1 = option.code
-            }
-           })
-           withHoldingVal[2]?.options.forEach((option:any) => {
-            if(withHoldingVal[2].value === option.text){
-              geoLocationInfo.geolevel2 = option.code
-            }
-           })
-           withHoldingVal[3]?.options.forEach((option:any) => {
-            if(withHoldingVal[3].value === option.text){
-              geoLocationInfo.geolevel3 = option.code
-            }
-           })
-          withHoldingVal[4]?.options.forEach((option:any) => {
-            if(withHoldingVal[4].value === option.text){
-              geoLocationInfo.geolevel4 = option.code
+        } else if (this.state.currentStep === 3) {
+          withHoldingVal[1]?.options.forEach((option: any) => {
+            if (withHoldingVal[1].value === option.text) {
+              geoLocationInfo.geolevel1 = option.code;
             }
           });
-          if(this.state.geographicFields[5]){
+          withHoldingVal[2]?.options.forEach((option: any) => {
+            if (withHoldingVal[2].value === option.text) {
+              geoLocationInfo.geolevel2 = option.code;
+            }
+          });
+          withHoldingVal[3]?.options.forEach((option: any) => {
+            if (withHoldingVal[3].value === option.text) {
+              geoLocationInfo.geolevel3 = option.code;
+            }
+          });
+          withHoldingVal[4]?.options.forEach((option: any) => {
+            if (withHoldingVal[4].value === option.text) {
+              geoLocationInfo.geolevel4 = option.code;
+            }
+          });
+          if (this.state.geographicFields[5]) {
             levelFive = await this.getLevelFiveDetails();
             if (levelFive.length) {
               levelFive.forEach((level5Info: any) => {
@@ -1047,11 +994,11 @@ class CreateUser extends Component<any, any> {
           this.setState({ withHolding: withHoldingVal });
         }
       }
-      let withHoldingdet = (withHoldingVal[2]?.value !== '') ? withHoldingVal : dynamicFieldVal;
+      let withHoldingdet = withHoldingVal[2]?.value !== "" ? withHoldingVal : dynamicFieldVal;
       withHoldingdet = JSON.parse(JSON.stringify(withHoldingdet));
       this.setState({ newWithHolding: withHoldingdet });
     }
-    if(this.state.userroleType === "external"){
+    if (this.state.userroleType === "external") {
       this.checkUnsavedData();
     } else {
       this.checkUnsavedDataForASA();
@@ -1061,12 +1008,12 @@ class CreateUser extends Component<any, any> {
   getLevelFourDetails = () => {
     this.setState({ isLoader: true });
     const { getLevelFour } = apiURL;
-    let data ={
-        geolevel0: this.getStoreData.countryCode,
-        geolevel1: geoLocationInfo.geolevel1,
-        geolevel2: geoLocationInfo.geolevel2,
-        geolevel3: geoLocationInfo.geolevel3
-    }
+    let data = {
+      geolevel0: this.getStoreData.countryCode,
+      geolevel1: geoLocationInfo.geolevel1,
+      geolevel2: geoLocationInfo.geolevel2,
+      geolevel3: geoLocationInfo.geolevel3,
+    };
     let levelFour: any = [];
     return new Promise((resolve, reject) => {
       invokeGetAuthService(getLevelFour, data)
@@ -1088,13 +1035,13 @@ class CreateUser extends Component<any, any> {
   getLevelFiveDetails = () => {
     this.setState({ isLoader: true });
     const { getLevelFive } = apiURL;
-    let data ={
+    let data = {
       geolevel0: this.getStoreData.countryCode,
       geolevel1: geoLocationInfo.geolevel1,
       geolevel2: geoLocationInfo.geolevel2,
       geolevel3: geoLocationInfo.geolevel3,
-      geolevel4: geoLocationInfo.geolevel4
-    }
+      geolevel4: geoLocationInfo.geolevel4,
+    };
     let levelFive: any = [];
     return new Promise((resolve, reject) => {
       invokeGetAuthService(getLevelFive, data)
@@ -1116,9 +1063,9 @@ class CreateUser extends Component<any, any> {
   handleClick(clickType: any, e: any) {
     let formValid = true;
     if (clickType === "personalNext") {
-      if(this.state.userroleType === "external"){
+      if (this.state.userroleType === "external") {
         formValid = this.externalUsersValidation();
-      }else{
+      } else {
         formValid = this.internalUsersValidation();
       }
     } else if (clickType === "geographicNext") {
@@ -1140,12 +1087,7 @@ class CreateUser extends Component<any, any> {
               name: list,
               placeHolder: true,
               value: list === "geolevel0" ? this.getStoreData.country : "",
-              options:
-                list === "geolevel0"
-                  ? this.state.countryList
-                  : list === "geolevel1"
-                  ? level1Options
-                  : "",
+              options: list === "geolevel0" ? this.state.countryList : list === "geolevel1" ? level1Options : "",
               error: "",
             });
           });
@@ -1158,9 +1100,9 @@ class CreateUser extends Component<any, any> {
         }
       }
     } else if (clickType === "createUser") {
-      if(this.state.userroleType === "external"){
+      if (this.state.userroleType === "external") {
         formValid = this.externalUsersValidation();
-      }else{
+      } else {
         formValid = this.internalUsersValidation();
       }
       if (formValid) {
@@ -1174,7 +1116,6 @@ class CreateUser extends Component<any, any> {
       newStep = newStep + 1;
     } else {
       newStep = newStep - 1;
-      
     }
 
     if (newStep > 0 && newStep <= this.state.stepsArray.length) {
@@ -1187,15 +1128,11 @@ class CreateUser extends Component<any, any> {
 
     if (clickType === "createUser") {
       if (formValid) {
-        // this.setState({
-        //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
-        // });
-        if(this.state.userroleType === "external"){
+        if (this.state.userroleType === "external") {
           this.submitretailerUserDatas();
-        } else if (this.state.userroleType === "internal"){
+        } else if (this.state.userroleType === "internal") {
           this.submitasaUserDatas();
         }
-
       }
     }
   }
@@ -1217,8 +1154,8 @@ class CreateUser extends Component<any, any> {
     if (this.state.isStaff) {
       newUserList.staffdetails.forEach((item: any, index: number) => {
         delete item.errObj;
-        item.firstname = (item.firstname).trim();
-        item.lastname = (item.lastname).trim();
+        item.firstname = item.firstname.trim();
+        item.lastname = item.lastname.trim();
       });
       this.setState((prevState: any) => ({
         userData: {
@@ -1245,23 +1182,16 @@ class CreateUser extends Component<any, any> {
     if (this.state.isEditPage) {
       data = {
         countrycode: this.getStoreData.countryCode,
-        // ownerfirstname: userData.ownerRows[0].firstname,
-        // ownerlastname: userData.ownerRows[0].lastname,
-        ownerfirstname: (userData.ownerRows[0].firstname).trim(),
-        ownerlastname: (userData.ownerRows[0].lastname).trim(),
+        ownerfirstname: userData.ownerRows[0].firstname.trim(),
+        ownerlastname: userData.ownerRows[0].lastname.trim(),
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
         owneremail: userData.ownerRows[0].email,
         locale: "English (Malawi)",
-        usertype:
-          userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+        usertype: userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
         rolename: userData.rolename,
         username: userData.username,
         accounttype: userData.rolename,
-        userstatus: userData.isDeclineUser
-          ? "DECLINED"
-          : userData.ownerRows[0].active
-          ? "ACTIVE"
-          : "INACTIVE",
+        userstatus: userData.isDeclineUser ? "DECLINED" : userData.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: userData.iscreatedfrommobile,
         whtaccountname: userData?.whtaccountname.trim(),
@@ -1273,10 +1203,8 @@ class CreateUser extends Component<any, any> {
         //   : userData.whtownername,
 
         whtownername: this.state.accInfo
-        ? (userData.ownerRows[0].firstname).trim() +
-          " " +
-          (userData.ownerRows[0].lastname).trim()
-        : (userData.whtownername).trim(),
+          ? userData.ownerRows[0].firstname.trim() + " " + userData.ownerRows[0].lastname.trim()
+          : userData.whtownername.trim(),
         deliverygeolevel0: this.getStoreData.countryCode,
         deliverygeolevel1: geoFields.geolevel1,
         deliverygeolevel2: geoFields.geolevel2,
@@ -1291,40 +1219,29 @@ class CreateUser extends Component<any, any> {
         billinggeolevel3: shippingFields.geolevel3,
         billinggeolevel4: shippingFields.geolevel4,
         billinggeolevel5: shippingFields.geolevel5,
-        billingstreet: this.state.accInfo
-          ? userData.deliverystreet
-          : userData.billingstreet,
-        billingzipcode: this.state.accInfo
-          ? userData.deliveryzipcode
-          : userData.billingzipcode,
+        billingstreet: this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
+        billingzipcode: this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
         staffdetails: [...this.state.userData.staffdetails],
       };
     } else {
       data = {
         countrycode: this.getStoreData.countryCode,
-        ownerfirstname: (userData.ownerRows[0].firstname).trim(),
-        ownerlastname: (userData.ownerRows[0].lastname).trim(),
+        ownerfirstname: userData.ownerRows[0].firstname.trim(),
+        ownerlastname: userData.ownerRows[0].lastname.trim(),
         ownerphonenumber: userData.ownerRows[0].mobilenumber,
         owneremail: userData.ownerRows[0].email,
         locale: "English (Malawi)",
-        usertype:
-          userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+        usertype: userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
         rolename: userData.rolename,
         accounttype: userData.rolename,
-        userstatus: userData.isDeclineUser
-          ? "DECLINED"
-          : userData.ownerRows[0].active
-          ? "ACTIVE"
-          : "INACTIVE",
+        userstatus: userData.isDeclineUser ? "DECLINED" : userData.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
         storewithmultiuser: this.state.isStaff ? true : false,
         iscreatedfrommobile: false,
-        whtaccountname: (userData.whtaccountname).trim(),
+        whtaccountname: userData.whtaccountname.trim(),
         taxid: userData.taxid,
         whtownername: this.state.accInfo
-          ? (userData.ownerRows[0].firstname).trim() +
-            " " +
-            (userData.ownerRows[0].lastname).trim()
-          : (userData.whtownername).trim(),
+          ? userData.ownerRows[0].firstname.trim() + " " + userData.ownerRows[0].lastname.trim()
+          : userData.whtownername.trim(),
         deliverygeolevel0: this.getStoreData.countryCode,
         deliverygeolevel1: geoFields.geolevel1,
         deliverygeolevel2: geoFields.geolevel2,
@@ -1339,12 +1256,8 @@ class CreateUser extends Component<any, any> {
         billinggeolevel3: shippingFields.geolevel3,
         billinggeolevel4: shippingFields.geolevel4,
         billinggeolevel5: shippingFields.geolevel5,
-        billingstreet: this.state.accInfo
-          ? userData.deliverystreet
-          : userData.billingstreet,
-        billingzipcode: this.state.accInfo
-          ? userData.deliveryzipcode
-          : userData.billingzipcode,
+        billingstreet: this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
+        billingzipcode: this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
         staffdetails: [...this.state.userData.staffdetails],
         ismarketingperference: true,
         isprivacydataconsent: true,
@@ -1358,9 +1271,7 @@ class CreateUser extends Component<any, any> {
         }
       : "";
     const url = this.state.isEditPage ? updateUser : retailerCreation;
-    const service = this.state.isEditPage
-      ? invokePostAuthService
-      : invokePostService;
+    const service = this.state.isEditPage ? invokePostAuthService : invokePostService;
 
     service(url, data, userDetails)
       .then((response: any) => {
@@ -1379,9 +1290,8 @@ class CreateUser extends Component<any, any> {
         } else {
           msg = "User Created Successfully";
         }
-        // toastSuccess(msg);
         Alert("success", msg);
-        const {setPromptMode} =this.context;
+        const { setPromptMode } = this.context;
         setPromptMode(false);
         this.props.history.push("/userList");
       })
@@ -1391,13 +1301,9 @@ class CreateUser extends Component<any, any> {
         if (message === "Retailer with the same Mobilenumber exists") {
           message = "User with same Mobilenumber already exists";
         }
-        this.setState(
-          { isRendered: true, currentStep: 1, shouldBlockNavigation: true },
-          () => {
-            // toastInfo(message);
-            Alert("warning", message);
-          }
-        );
+        this.setState({ isRendered: true, currentStep: 1, shouldBlockNavigation: true }, () => {
+          Alert("warning", message);
+        });
       });
   };
 
@@ -1405,7 +1311,7 @@ class CreateUser extends Component<any, any> {
     this.setState({
       isLoader: true,
     });
-    const { asaCreation, editasauser} = apiURL;
+    const { asaCreation, editasauser } = apiURL;
     const asaPersonalData = this.state.asaDatas;
     let geoFields: any = {};
     this.state.dynamicFields.forEach((list: any, i: number) => {
@@ -1415,22 +1321,22 @@ class CreateUser extends Component<any, any> {
     let partners = this.state.partnerDatas;
     let data = {};
     if (!this.state.isEditPage) {
-      let userMappings:any = [];
-      partners.forEach((item:any, index:number)=>{
-        let mappings:any = {};
-        mappings['channelpartnerid'] = item.channelpartnerid;
-        mappings['isactive'] = true
+      let userMappings: any = [];
+      partners.forEach((item: any, index: number) => {
+        let mappings: any = {};
+        mappings["channelpartnerid"] = item.channelpartnerid;
+        mappings["isactive"] = true;
         userMappings.push(mappings);
       });
-     data = {
-        countrycode : this.getStoreData.countryCode,
-        firstname : asaPersonalData.firstname,
+      data = {
+        countrycode: this.getStoreData.countryCode,
+        firstname: asaPersonalData.firstname,
         lastname: asaPersonalData.lastname,
-        phonenumber:asaPersonalData.mobilenumber,
-        emailid:asaPersonalData.email,
-        locale:"English (Malawi)",
-        usertype:"EXTERNAL",
-        rolename:"ASA",
+        phonenumber: asaPersonalData.mobilenumber,
+        emailid: asaPersonalData.email,
+        locale: "English (Malawi)",
+        usertype: "EXTERNAL",
+        rolename: "ASA",
         userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
         deliverygeolevel0: this.getStoreData.countryCode,
         deliverygeolevel1: geoFields.geolevel1,
@@ -1440,23 +1346,23 @@ class CreateUser extends Component<any, any> {
         deliverygeolevel5: geoFields.geolevel5,
         street: userData.deliverystreet,
         zipcode: userData.deliveryzipcode,
-        iscreatedfrommobile:false,
-        usermapping : userMappings
-      }
+        iscreatedfrommobile: false,
+        usermapping: userMappings,
+      };
     } else {
-     let userMappings =  this.state.partnerDatas;
-     userMappings.forEach((item: any, index: number) => {
-        item['isactive'] = true
+      let userMappings = this.state.partnerDatas;
+      userMappings.forEach((item: any, index: number) => {
+        item["isactive"] = true;
         delete item.errObj;
       });
 
-      data =  {
-        countrycode : this.getStoreData.countryCode,
-        username : this.props.location.state?.userFields.username,
-        firstname : asaPersonalData.firstname,
+      data = {
+        countrycode: this.getStoreData.countryCode,
+        username: this.props.location.state?.userFields.username,
+        firstname: asaPersonalData.firstname,
         lastname: asaPersonalData.lastname,
-        phonenumber:asaPersonalData.mobilenumber,
-        emailid:asaPersonalData.email,
+        phonenumber: asaPersonalData.mobilenumber,
+        emailid: asaPersonalData.email,
         userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
         deliverygeolevel0: this.getStoreData.countryCode,
         deliverygeolevel1: geoFields.geolevel1,
@@ -1466,52 +1372,46 @@ class CreateUser extends Component<any, any> {
         deliverygeolevel5: geoFields.geolevel5,
         street: userData.deliverystreet,
         zipcode: userData.deliveryzipcode,
-        usermapping : userMappings
-      }
+        usermapping: userMappings,
+      };
     }
-  const url = this.state.isEditPage ? editasauser : asaCreation;
-  const userDetails = this.state.isEditPage
-  ? {
-      lastupdatedby: this.state.username.toUpperCase(),
-      lastupdateddate: new Date().toJSON(),
-    }
-  : "";
-    invokePostAuthService(url, data, userDetails)
-    .then((response: any) => {
-      this.setState({
-        isLoader: false,
-      });
-      let msg = "";
-      if (this.props.location?.page === "asaedit") {
-        msg = "User Updated Successfully";
-      } else {
-        msg = "User Created Successfully";
-      }
-      // toastSuccess(msg);
-      Alert("success", msg);
-      const {setPromptMode} =this.context;
-      setPromptMode(false);
-      this.props.history.push({
-        pathname: "/userList",
-        page: "asaUser"
-      });
-    })
-    .catch((error: any) => {
-      this.setState({ isLoader: false });
-      let message = error.message;
-      if (message === "Retailer with the same Mobilenumber exists") {
-        message = "User with same Mobilenumber already exists";
-      }
-      this.setState(
-        { isRendered: true, currentStep: 1, shouldBlockNavigation: true },
-        () => {
-          // toastInfo(message);
-          Alert("warning", message);
+    const url = this.state.isEditPage ? editasauser : asaCreation;
+    const userDetails = this.state.isEditPage
+      ? {
+          lastupdatedby: this.state.username.toUpperCase(),
+          lastupdateddate: new Date().toJSON(),
         }
-      );
-    });
-    
-  }
+      : "";
+    invokePostAuthService(url, data, userDetails)
+      .then((response: any) => {
+        this.setState({
+          isLoader: false,
+        });
+        let msg = "";
+        if (this.props.location?.page === "asaedit") {
+          msg = "User Updated Successfully";
+        } else {
+          msg = "User Created Successfully";
+        }
+        Alert("success", msg);
+        const { setPromptMode } = this.context;
+        setPromptMode(false);
+        this.props.history.push({
+          pathname: "/userList",
+          page: "asaUser",
+        });
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        if (message === "Retailer with the same Mobilenumber exists") {
+          message = "User with same Mobilenumber already exists";
+        }
+        this.setState({ isRendered: true, currentStep: 1, shouldBlockNavigation: true }, () => {
+          Alert("warning", message);
+        });
+      });
+  };
 
   externalUsersValidation() {
     let formValid = true;
@@ -1524,26 +1424,18 @@ class CreateUser extends Component<any, any> {
           emailErr: userInfo.errObj.emailErr,
           mobilenumberErr: userInfo.errObj.mobilenumberErr,
         };
-        errObj.firstNameErr = userInfo.firstname
-          ? ""
-          : "Please enter the First Name";
-        errObj.lastnameErr = userInfo.lastname
-          ? ""
-          : "Please enter the Last Name";
+        errObj.firstNameErr = userInfo.firstname ? "" : <FormattedMessage id="createUser.error.enterFirstName" />;
+        errObj.lastnameErr = userInfo.lastname ? "" : <FormattedMessage id="createUser.error.enterLastName" />;
 
-        if (
-          userInfo.mobilenumber &&
-          errObj.mobilenumberErr !== "Phone Number Exists"
-        ) {
-          errObj.mobilenumberErr =
-            userInfo.mobilenumber.length === phoneLength
-              ? ""
-              : `Please enter ${phoneLength} Digit`;
+        if (userInfo.mobilenumber && errObj.mobilenumberErr !== <FormattedMessage id="createUser.error.numberExist" />) {
+          errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
         } else {
           errObj.mobilenumberErr =
-            errObj.mobilenumberErr === "Phone Number Exists"
-              ? errObj.mobilenumberErr
-              : "Please enter the Mobile Number";
+            errObj.mobilenumberErr === <FormattedMessage id="createUser.error.numberExist" /> ? (
+              errObj.mobilenumberErr
+            ) : (
+              <FormattedMessage id="createUser.error.enterMobile" />
+            );
         }
 
         userData.ownerRows[idx].errObj = errObj;
@@ -1571,26 +1463,18 @@ class CreateUser extends Component<any, any> {
           mobilenumberErr: userInfo.errObj.mobilenumberErr,
           isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
         };
-        errObj.firstNameErr = userInfo.firstname
-          ? ""
-          : "Please enter the First Name";
-        errObj.lastnameErr = userInfo.lastname
-          ? ""
-          : "Please enter the Last Name";
+        errObj.firstNameErr = userInfo.firstname ? "" : <FormattedMessage id="createUser.error.enterFirstName" />;
+        errObj.lastnameErr = userInfo.lastname ? "" : <FormattedMessage id="createUser.error.enterLastName" />;
 
-        if (
-          userInfo.mobilenumber &&
-          errObj.mobilenumberErr !== "Phone Number Exists"
-        ) {
-          errObj.mobilenumberErr =
-            userInfo.mobilenumber.length === phoneLength
-              ? ""
-              : `Please enter ${phoneLength} Digit`;
+        if (userInfo.mobilenumber && errObj.mobilenumberErr !== <FormattedMessage id="createUser.error.numberExist" />) {
+          errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
         } else {
           errObj.mobilenumberErr =
-            errObj.mobilenumberErr === "Phone Number Exists"
-              ? errObj.mobilenumberErr
-              : "Please enter the Mobile Number";
+            errObj.mobilenumberErr === <FormattedMessage id="createUser.error.numberExist" /> ? (
+              errObj.mobilenumberErr
+            ) : (
+              <FormattedMessage id="createUser.error.enterMobile" />
+            );
         }
         userData.staffdetails[idx].errObj = errObj;
         if (
@@ -1612,8 +1496,9 @@ class CreateUser extends Component<any, any> {
       this.state.dynamicFields.forEach((list: any, index: number) => {
         if (list.value === "") {
           let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-          list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
-          // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          list.error = `Please select the ${
+            nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+          }`;
           formValid = false;
         } else {
           list.error = "";
@@ -1623,9 +1508,7 @@ class CreateUser extends Component<any, any> {
       this.setState({ userData: userData });
     } else {
       let accInfo = this.state.accInfo;
-      let whtaccountname = userData.whtaccountname
-        ? ""
-        : "Please enter Store Name";
+      let whtaccountname = userData.whtaccountname ? "" : <FormattedMessage id="createUser.error.enterStoreName" />;
 
       if (whtaccountname !== "") {
         formValid = false;
@@ -1635,9 +1518,7 @@ class CreateUser extends Component<any, any> {
       });
 
       if (!accInfo) {
-        let whtownername = userData.whtownername
-          ? ""
-          : "Please enter owner name";
+        let whtownername = userData.whtownername ? "" : <FormattedMessage id="createUser.error.enterOwnerName" />;
         if (whtaccountname !== "" || whtownername !== "") {
           formValid = false;
         }
@@ -1652,8 +1533,9 @@ class CreateUser extends Component<any, any> {
       this.state.withHolding.forEach((list: any, index: number) => {
         if (list.value === "") {
           let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-          list.error =`Please select the ${nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}`
-          // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          list.error = `Please select the ${
+            nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+          }`;
           formValid = false;
         } else {
           list.error = "";
@@ -1668,27 +1550,23 @@ class CreateUser extends Component<any, any> {
     let formValid = true;
     if (this.state.currentStep === 1) {
       let asaData = this.state.asaDatas;
-      const {asafirstnameErr, asalastnameErr} = this.state;
+      const { asafirstnameErr, asalastnameErr } = this.state;
       let asamobilenumberErr = this.state.asamobilenumberErr;
-      let fullNameErr =  asaData.firstname === "" ? "Please Enter the First Name" : "";
-      let lastNameErr =  asaData.lastname === "" ? "Please Enter the Last Name" : "";
-      if (
-        asaData.mobilenumber &&
-        asamobilenumberErr !== "Phone Number Exists"
-      ) {
-        asamobilenumberErr =
-        asaData.mobilenumber.length === phoneLength
-            ? ""
-            : `Please enter ${phoneLength} Digit`;
+      let fullNameErr = asaData.firstname === "" ? <FormattedMessage id="createUser.error.enterFirstName" /> : "";
+      let lastNameErr = asaData.lastname === "" ? <FormattedMessage id="createUser.error.enterLastName" /> : "";
+      if (asaData.mobilenumber && asamobilenumberErr !== <FormattedMessage id="createUser.error.numberExist" />) {
+        asamobilenumberErr = asaData.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
       } else {
         asamobilenumberErr =
-        asamobilenumberErr === "Phone Number Exists"
-            ? asamobilenumberErr
-            : "Please enter the Mobile Number";
+          asamobilenumberErr === <FormattedMessage id="createUser.error.numberExist" /> ? (
+            asamobilenumberErr
+          ) : (
+            <FormattedMessage id="createUser.error.enterMobile" />
+          );
       }
-      this.setState({asafirstnameErr: fullNameErr,asalastnameErr:lastNameErr, asamobilenumberErr:asamobilenumberErr})
+      this.setState({ asafirstnameErr: fullNameErr, asalastnameErr: lastNameErr, asamobilenumberErr: asamobilenumberErr });
 
-      if ( asafirstnameErr !== "" || asalastnameErr !=="" || asamobilenumberErr !== "" ) {
+      if (asafirstnameErr !== "" || asalastnameErr !== "" || asamobilenumberErr !== "") {
         formValid = false;
       }
     } else if (this.state.currentStep === 3) {
@@ -1697,32 +1575,22 @@ class CreateUser extends Component<any, any> {
         let errorObj: any = {
           typeErr: "",
           locationErr: "",
-          nameErr: ""
+          nameErr: "",
         };
 
-        errorObj.typeErr = userInfo.partnertype
-          ? ""
-          : "Please enter Type";
-          errorObj.locationErr = userInfo.geolevel1
-          ? ""
-          : "Please enter Location";
-          errorObj.nameErr = userInfo.channelpartnerid
-          ? ""
-          : "Please enter Partner name";
+        errorObj.typeErr = userInfo.partnertype ? "" : <FormattedMessage id="createUser.error.enterType" />;
+        errorObj.locationErr = userInfo.geolevel1 ? "" : <FormattedMessage id="createUser.error.enterLocation" />;
+        errorObj.nameErr = userInfo.channelpartnerid ? "" : <FormattedMessage id="createUser.error.enterPartnerName" />;
 
         userInfo.errObj = errorObj;
-        if (
-          errorObj.typeErr !== "" ||
-          errorObj.locationErr !== "" ||
-          errorObj.nameErr !== ""
-        ) {
+        if (errorObj.typeErr !== "" || errorObj.locationErr !== "" || errorObj.nameErr !== "") {
           formValid = false;
         }
-        this.setState({ partnerDatas: datas});
+        this.setState({ partnerDatas: datas });
       });
-  }
+    }
     return formValid;
-  }
+  };
 
   validateEmail = (value: any, idx: number, type: string) => {
     let ownerRows = [...this.state.userData.ownerRows];
@@ -1734,7 +1602,7 @@ class CreateUser extends Component<any, any> {
       } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
-        staffdetails[idx].errObj.emailErr = "Please enter a valid email";
+        staffdetails[idx].errObj.emailErr = <FormattedMessage id="createUser.error.enterValidEmail" />;
       }
     }
     if (type === "owner") {
@@ -1743,7 +1611,7 @@ class CreateUser extends Component<any, any> {
       } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
-        ownerRows[idx].errObj.emailErr = "Please enter a valid email";
+        ownerRows[idx].errObj.emailErr = <FormattedMessage id="createUser.error.enterValidEmail" />;
       }
     }
     this.setState((prevState: any) => ({
@@ -1751,7 +1619,7 @@ class CreateUser extends Component<any, any> {
         ...prevState.userData,
         ownerRows: ownerRows,
         staffdetails: staffdetails,
-      }
+      },
     }));
   };
 
@@ -1759,18 +1627,18 @@ class CreateUser extends Component<any, any> {
     let currentStep = this.state.currentStep;
     let userData = this.state.userData;
     if (currentStep === 1) {
-      if(this.state.userroleType === 'external'){
+      if (this.state.userroleType === "external") {
         userData.ownerRows.forEach((item: any, index: number) => {
           item.firstname = "";
           item.lastname = "";
           if (this.state.isEditPage === false) item.mobilenumber = "";
           item.email = "";
           item.errObj = {
-              firstnameErr: "",
-              lastnameErr: "",
-              mobilenumberErr: "",
-              emailErr: "",
-          }
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: "",
+            emailErr: "",
+          };
         });
         userData.staffdetails.forEach((item: any, index: number) => {
           item.firstname = "";
@@ -1782,7 +1650,7 @@ class CreateUser extends Component<any, any> {
             lastnameErr: "",
             mobilenumberErr: "",
             emailErr: "",
-          }
+          };
         });
         this.setState((prevState: any) => ({
           userData: {
@@ -1791,34 +1659,36 @@ class CreateUser extends Component<any, any> {
             staffdetails: userData.staffdetails,
           },
         }));
-      }else  if(this.state.userroleType === 'internal'){
-        this.setState({ asaDatas: {
-          firstname : '',
-          lastname : '',
-          mobilenumber :'',
-          email : '',
-          active: true
-        },
-         asafirstnameErr : '',
-         asalastnameErr:'',
-         asamobilenumberErr:'',
-         asaemailErr:'' 
-        },()=>{
-          this.checkUnsavedDataForASA();
-        })
+      } else if (this.state.userroleType === "internal") {
+        this.setState(
+          {
+            asaDatas: {
+              firstname: "",
+              lastname: "",
+              mobilenumber: "",
+              email: "",
+              active: true,
+            },
+            asafirstnameErr: "",
+            asalastnameErr: "",
+            asamobilenumberErr: "",
+            asaemailErr: "",
+          },
+          () => {
+            this.checkUnsavedDataForASA();
+          }
+        );
       }
-     
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
       data.forEach((list: any) => {
         if (list.name !== "geolevel0") {
-          list.value = ""
+          list.value = "";
           if (list.name !== "geolevel1") {
-            list.options = ""
+            list.options = "";
           }
-          list.error = ""
+          list.error = "";
         }
-       
       });
       this.setState((prevState: any) => ({
         userData: {
@@ -1829,19 +1699,19 @@ class CreateUser extends Component<any, any> {
         dynamicFields: data,
       }));
     } else {
-      if(this.state.userroleType === 'external'){
-        if(!this.state.accInfo){
+      if (this.state.userroleType === "external") {
+        if (!this.state.accInfo) {
           let data: any = this.state.withHolding;
           data?.forEach((list: any) => {
             if (list.name !== "geolevel0") {
               list.value = "";
-              list.error = ""
+              list.error = "";
               if (list.name !== "geolevel1") {
-                list.options = ""
+                list.options = "";
               }
             }
           });
-          this.setState({  withHolding: data})
+          this.setState({ withHolding: data });
         }
         this.setState((prevState: any) => ({
           userData: {
@@ -1855,27 +1725,32 @@ class CreateUser extends Component<any, any> {
           accountnameErr: "",
           ownernameErr: "",
         }));
-      } else if(this.state.userroleType === 'internal') {
+      } else if (this.state.userroleType === "internal") {
         let datas = this.state.partnerDatas;
-        datas.forEach((item:any, idx:number)=>{
-          item.partnertype = '';
-          item.geolevel1 = '';
-          item.channelpartnerfullname = '';
-          item.channelpartnerid = '';
+        datas.forEach((item: any, idx: number) => {
+          item.partnertype = "";
+          item.geolevel1 = "";
+          item.channelpartnerfullname = "";
+          item.channelpartnerid = "";
           item.errObj = {
             typeErr: "",
             locationErr: "",
             nameErr: "",
-          }
-        })
-        this.setState({ partnerDatas:datas, asafirstnameErr : '',asalastnameErr:'',asamobilenumberErr:'',asaemailErr:'' });
+          };
+        });
+        this.setState({
+          partnerDatas: datas,
+          asafirstnameErr: "",
+          asalastnameErr: "",
+          asamobilenumberErr: "",
+          asaemailErr: "",
+        });
       }
-     
     }
-    if(this.state.userroleType === "external"){
+    if (this.state.userroleType === "external") {
       this.checkUnsavedData();
     } else {
-      if( currentStep !== 1) {
+      if (currentStep !== 1) {
         this.checkUnsavedDataForASA();
       }
     }
@@ -1884,7 +1759,7 @@ class CreateUser extends Component<any, any> {
   declineUser = () => {
     let userData = this.state.userData;
     userData["isDeclineUser"] = true;
-    this.setState({ userData: userData,shouldBlockNavigation: false });
+    this.setState({ userData: userData, shouldBlockNavigation: false });
     this.submitretailerUserDatas();
   };
 
@@ -1892,41 +1767,35 @@ class CreateUser extends Component<any, any> {
     let owners = this.state.userData.ownerRows;
     let staffs = this.state.userData.staffdetails;
 
-    const isOwnerPhoneEists = owners.filter(
-      (items: any) => items.mobilenumber === val
-    );
-    const isStaffPhoneEists = staffs.filter(
-      (items: any) => items.mobilenumber === val
-    );
+    const isOwnerPhoneEists = owners.filter((items: any) => items.mobilenumber === val);
+    const isStaffPhoneEists = staffs.filter((items: any) => items.mobilenumber === val);
 
     let allowners = this.state.allChannelPartners;
     let allstaffs = _(allowners).flatMap("staffdetails").value();
     let allthirdParty = this.state.allThirdPartyUsers;
 
-    const isRetailerOwnerPhoneEistsInDB = allowners.filter(
-      (items: any) => items.ownerphonenumber === val
-    );
-    const isRetailerStaffPhoneEistsInDB = allstaffs.filter(
-      (items: any) => items.mobilenumber === val
-    );
-    const isThirdPartyPhoneEistsInDB = allthirdParty.filter(
-      (items: any) => items.phonenumber === val
-    );
+    const isRetailerOwnerPhoneEistsInDB = allowners.filter((items: any) => items.ownerphonenumber === val);
+    const isRetailerStaffPhoneEistsInDB = allstaffs.filter((items: any) => items.mobilenumber === val);
+    const isThirdPartyPhoneEistsInDB = allthirdParty.filter((items: any) => items.phonenumber === val);
 
     if (type === "owner") {
       if (key === "phone") {
         if (val) {
           if (val.length !== phoneLength) {
-            owners[
-              idx
-            ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isRetailerOwnerPhoneEistsInDB.length || isRetailerStaffPhoneEistsInDB.length || isThirdPartyPhoneEistsInDB.length ) {
-            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+            owners[idx].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (
+            isStaffPhoneEists.length ||
+            isOwnerPhoneEists.length ||
+            isRetailerOwnerPhoneEistsInDB.length ||
+            isRetailerStaffPhoneEistsInDB.length ||
+            isThirdPartyPhoneEistsInDB.length
+          ) {
+            owners[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.numberExist" />;
           } else {
             owners[idx].errObj.mobilenumberErr = "";
           }
         } else {
-          owners[idx].errObj.mobilenumberErr = "Please enter the Mobile Number";
+          owners[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.enterMobile" />;
         }
         owners[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
@@ -1941,31 +1810,39 @@ class CreateUser extends Component<any, any> {
           ownerRows: owners,
         },
       }));
-      if(e.target?.name){
-        if(e.target?.name ==='firstname'){
-          owners[idx].errObj.firstNameErr = owners[idx].firstname
-          ? ""
-          : "Please enter the First Name";
-        } else if(e.target?.name ==='lastname'){
-          owners[idx].errObj.lastnameErr = owners[idx].lastname
-          ? ""
-          : "Please enter the Last Name";
+      if (e.target?.name) {
+        if (e.target?.name === "firstname") {
+          owners[idx].errObj.firstNameErr = owners[idx].firstname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterFirstName" />
+          );
+        } else if (e.target?.name === "lastname") {
+          owners[idx].errObj.lastnameErr = owners[idx].lastname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterLastName" />
+          );
         }
       }
     } else if (type === "staff") {
       if (key === "phone") {
         if (val) {
           if (val.length !== phoneLength) {
-            staffs[
-              idx
-            ].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
-          } else if (isStaffPhoneEists.length || isOwnerPhoneEists.length || isRetailerOwnerPhoneEistsInDB.length || isRetailerStaffPhoneEistsInDB.length || isThirdPartyPhoneEistsInDB.length) {
-            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+            staffs[idx].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (
+            isStaffPhoneEists.length ||
+            isOwnerPhoneEists.length ||
+            isRetailerOwnerPhoneEistsInDB.length ||
+            isRetailerStaffPhoneEistsInDB.length ||
+            isThirdPartyPhoneEistsInDB.length
+          ) {
+            staffs[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.numberExist" />;
           } else {
             staffs[idx].errObj.mobilenumberErr = "";
           }
         } else {
-          staffs[idx].errObj.mobilenumberErr = "Please enter the Mobile Number";
+          staffs[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.enterMobile" />;
         }
         staffs[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
@@ -1980,15 +1857,19 @@ class CreateUser extends Component<any, any> {
           staffdetails: staffs,
         },
       }));
-      if(e.target?.name){
-        if(e.target?.name ==='firstname'){
-          staffs[idx].errObj.firstNameErr = staffs[idx].firstname
-          ? ""
-          : "Please enter the First Name";
-        } else if(e.target?.name ==='lastname'){
-          staffs[idx].errObj.lastnameErr = staffs[idx].lastname
-          ? ""
-          : "Please enter the Last Name";
+      if (e.target?.name) {
+        if (e.target?.name === "firstname") {
+          staffs[idx].errObj.firstNameErr = staffs[idx].firstname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterFirstName" />
+          );
+        } else if (e.target?.name === "lastname") {
+          staffs[idx].errObj.lastnameErr = staffs[idx].lastname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterLastName" />
+          );
         }
       }
     } else {
@@ -2021,39 +1902,34 @@ class CreateUser extends Component<any, any> {
         let datas = JSON.parse(JSON.stringify(this.state.userData));
         let { name, value } = e.target;
         datas[name] = value;
-        if(e.target?.name){ 
-           if(e.target?.name ==='whtaccountname'){
-            let whtaccountname = datas.whtaccountname
-            ? ""
-            : "Please enter Store Name";
-            this.setState({accountnameErr: whtaccountname});
-          } else if( e.target?.name ==='whtownername') {
-            let whtownername = datas.whtownername
-            ? ""
-            : "Please enter owner name";
-            this.setState({ ownernameErr: whtownername});
+        if (e.target?.name) {
+          if (e.target?.name === "whtaccountname") {
+            let whtaccountname = datas.whtaccountname ? "" : <FormattedMessage id="createUser.error.enterStoreName" />;
+            this.setState({ accountnameErr: whtaccountname });
+          } else if (e.target?.name === "whtownername") {
+            let whtownername = datas.whtownername ? "" : <FormattedMessage id="createUser.error.enterOwnerName" />;
+            this.setState({ ownernameErr: whtownername });
           }
-          this.setState({userData: datas });
-          if (e.target.name === 'rolename') {
+          this.setState({ userData: datas });
+          if (e.target.name === "rolename") {
             let steps = this.state.stepsArray;
-            if(e.target.value !== 'salesagent' ) {
-              steps.splice(2,1,'With-Holding Tax');
-              this.setState({ userroleType : "external"})
+            if (e.target.value !== "salesagent") {
+              steps.splice(2, 1, "With-Holding Tax");
+              this.setState({ userroleType: "external" });
             } else {
-              steps.splice(2,1,'User Mappings');
-              this.setState({ userroleType : "internal"})
+              steps.splice(2, 1, "User Mappings");
+              this.setState({ userroleType: "internal" });
             }
-            this.setState({ stepsArray : steps });
+            this.setState({ stepsArray: steps });
           }
         }
       }
     }
-    if(this.state.userroleType === "external"){
+    if (this.state.userroleType === "external") {
       this.checkUnsavedData();
     } else {
       this.checkUnsavedDataForASA();
     }
-
   };
 
   handleAddRow = (type: string) => {
@@ -2140,11 +2016,7 @@ class CreateUser extends Component<any, any> {
         }
       });
       userValues.staffdetails?.forEach((item: any) => {
-        if (
-          item.firstname !== "" ||
-          item.lastname !== "" ||
-          item.mobilenumber !== ""
-        ) {
+        if (item.firstname !== "" || item.lastname !== "" || item.mobilenumber !== "") {
           isStaffFieldsFilled = true;
         }
       });
@@ -2173,59 +2045,38 @@ class CreateUser extends Component<any, any> {
       if (userFields) {
         this.state.dynamicFields?.forEach((item: any) => {
           if (item.name !== "geolevel0") {
-            if (
-              item.name === "geolevel1" &&
-              (item.value !== userFields.deliverygeolevel1)
-            ) {
+            if (item.name === "geolevel1" && item.value !== userFields.deliverygeolevel1) {
               isDeliveryFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel2" &&
-              (item.value !== userFields.deliverygeolevel2)
-            ) {
+            if (item.name === "geolevel2" && item.value !== userFields.deliverygeolevel2) {
               isDeliveryFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel3" &&
-              (item.value !== userFields.deliverygeolevel3)
-            ) {
+            if (item.name === "geolevel3" && item.value !== userFields.deliverygeolevel3) {
               isDeliveryFieldsFilled = true;
             }
-            if (item.name === "geolevel4" && (item.value !== userFields.deliverygeolevel4)) {
+            if (item.name === "geolevel4" && item.value !== userFields.deliverygeolevel4) {
               isDeliveryFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel5" &&
-              (item.value !== userFields.deliverygeolevel5)
-            ) {
+            if (item.name === "geolevel5" && item.value !== userFields.deliverygeolevel5) {
               isDeliveryFieldsFilled = true;
             }
           }
         });
         this.state.withHolding?.forEach((item: any) => {
           if (item.name !== "geolevel0") {
-            if (
-              item.name === "geolevel1" &&
-              (item.value !== userFields.billinggeolevel1)
-            ) {
+            if (item.name === "geolevel1" && item.value !== userFields.billinggeolevel1) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "geolevel2" && (item.value !== userFields.billinggeolevel2)) {
+            if (item.name === "geolevel2" && item.value !== userFields.billinggeolevel2) {
               isWHTFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel3" &&
-              item.value !== userFields.billinggeolevel3
-            ) {
+            if (item.name === "geolevel3" && item.value !== userFields.billinggeolevel3) {
               isWHTFieldsFilled = true;
             }
-            if (item.name === "geolevel4" && (item.value !== userFields.billinggeolevel4)) {
+            if (item.name === "geolevel4" && item.value !== userFields.billinggeolevel4) {
               isWHTFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel5" &&
-              (item.value !== userFields.billinggeolevel5)
-            ) {
+            if (item.name === "geolevel5" && item.value !== userFields.billinggeolevel5) {
               isWHTFieldsFilled = true;
             }
           }
@@ -2233,13 +2084,15 @@ class CreateUser extends Component<any, any> {
       }
 
       if (
-        (userValues.ownerRows[0].firstname !==
-          editDatas.ownerRows[0].firstname) || (userValues.ownerRows[0].firstname === "") ||
-        (userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname) || (userValues.ownerRows[0].lastname === "") ||
-        (userValues.ownerRows[0].mobilenumber !==
-          editDatas.ownerRows[0].mobilenumber) ||
-        (userValues.whtaccountname !== editDatas.whtaccountname) || (userValues.whtaccountname=== "") ||
-        (userValues.whtownername !== editDatas.whtownername) || (userValues.whtownername === "") ||
+        userValues.ownerRows[0].firstname !== editDatas.ownerRows[0].firstname ||
+        userValues.ownerRows[0].firstname === "" ||
+        userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname ||
+        userValues.ownerRows[0].lastname === "" ||
+        userValues.ownerRows[0].mobilenumber !== editDatas.ownerRows[0].mobilenumber ||
+        userValues.whtaccountname !== editDatas.whtaccountname ||
+        userValues.whtaccountname === "" ||
+        userValues.whtownername !== editDatas.whtownername ||
+        userValues.whtownername === "" ||
         isStaffFieldsFilled ||
         isDeliveryFieldsFilled ||
         isWHTFieldsFilled
@@ -2249,9 +2102,9 @@ class CreateUser extends Component<any, any> {
         this.isFilledAllFields = false;
       }
     }
-    const {setPromptMode} =this.context;
-     setPromptMode(this.isFilledAllFields);
-   
+    const { setPromptMode } = this.context;
+    setPromptMode(this.isFilledAllFields);
+
     return this.isFilledAllFields;
   };
 
@@ -2268,11 +2121,7 @@ class CreateUser extends Component<any, any> {
         }
       });
       partnerValues?.forEach((item: any) => {
-        if (
-          item.partnertype !== "" ||
-          item.geolevel1 !== "" ||
-          item.channelpartnerfullname !== ""
-        ) {
+        if (item.partnertype !== "" || item.geolevel1 !== "" || item.channelpartnerfullname !== "") {
           isChannelPartnersFieldsFilled = true;
         }
       });
@@ -2282,7 +2131,7 @@ class CreateUser extends Component<any, any> {
         userValues.lastname !== "" ||
         userValues.mobilenumber !== "" ||
         isDeliveryFieldsFilled ||
-        isChannelPartnersFieldsFilled 
+        isChannelPartnersFieldsFilled
       ) {
         this.isFilledAllFields = true;
       }
@@ -2306,31 +2155,19 @@ class CreateUser extends Component<any, any> {
       if (userFields) {
         this.state.dynamicFields?.forEach((item: any) => {
           if (item.name !== "geolevel0") {
-            if (
-              item.name === "geolevel1" &&
-              (item.value !== userFields.deliverygeolevel1)
-            ) {
+            if (item.name === "geolevel1" && item.value !== userFields.deliverygeolevel1) {
               isDeliveryFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel2" &&
-              (item.value !== userFields.deliverygeolevel2)
-            ) {
+            if (item.name === "geolevel2" && item.value !== userFields.deliverygeolevel2) {
               isDeliveryFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel3" &&
-              (item.value !== userFields.deliverygeolevel3)
-            ) {
+            if (item.name === "geolevel3" && item.value !== userFields.deliverygeolevel3) {
               isDeliveryFieldsFilled = true;
             }
-            if (item.name === "geolevel4" && (item.value !== userFields.deliverygeolevel4)) {
+            if (item.name === "geolevel4" && item.value !== userFields.deliverygeolevel4) {
               isDeliveryFieldsFilled = true;
             }
-            if (
-              item.name === "geolevel5" &&
-              (item.value !== userFields.deliverygeolevel5)
-            ) {
+            if (item.name === "geolevel5" && item.value !== userFields.deliverygeolevel5) {
               isDeliveryFieldsFilled = true;
             }
           }
@@ -2338,10 +2175,11 @@ class CreateUser extends Component<any, any> {
       }
 
       if (
-        (userValues.firstname !==
-          editclonedasaInfo.firstname) || (userValues.firstname === "") ||
-        (userValues.lastname !== editclonedasaInfo.lastname) || (userValues.lastname === "") ||
-        isasaDataFieldsFilled || 
+        userValues.firstname !== editclonedasaInfo.firstname ||
+        userValues.firstname === "" ||
+        userValues.lastname !== editclonedasaInfo.lastname ||
+        userValues.lastname === "" ||
+        isasaDataFieldsFilled ||
         isasaPartnerFieldsFilled ||
         isDeliveryFieldsFilled
       ) {
@@ -2350,11 +2188,11 @@ class CreateUser extends Component<any, any> {
         this.isFilledAllFields = false;
       }
     }
-    const {setPromptMode} =this.context;
+    const { setPromptMode } = this.context;
     setPromptMode(this.isFilledAllFields);
-   
+
     return this.isFilledAllFields;
-  }
+  };
 
   handleClosePopup = () => {
     this.setState({ deleteStaffPopup: false });
@@ -2373,154 +2211,157 @@ class CreateUser extends Component<any, any> {
     }));
   };
 
-  asahandleChange = (e:any,val?: any, key?:string) => {
+  asahandleChange = (e: any, val?: any, key?: string) => {
     let datas = this.state.asaDatas;
     let userdata = this.state.userData;
     let asamobilenumberErr = this.state.asamobilenumberErr;
-    
+
     let allowners = this.state.allChannelPartners;
     let allstaffs = _(allowners).flatMap("staffdetails").value();
     let allthirdParty = this.state.allThirdPartyUsers;
 
-    const isRetailerOwnerPhoneEistsInDB = allowners.filter(
-      (items: any) => items.ownerphonenumber === val
-    );
-    const isRetailerStaffPhoneEistsInDB = allstaffs.filter(
-      (items: any) => items.mobilenumber === val
-    );
-    const isThirdPartyPhoneEistsInDB = allthirdParty.filter(
-      (items: any) => items.phonenumber === val
-    );
+    const isRetailerOwnerPhoneEistsInDB = allowners.filter((items: any) => items.ownerphonenumber === val);
+    const isRetailerStaffPhoneEistsInDB = allstaffs.filter((items: any) => items.mobilenumber === val);
+    const isThirdPartyPhoneEistsInDB = allthirdParty.filter((items: any) => items.phonenumber === val);
 
-    if(key === "mobilenumber") {
+    if (key === "mobilenumber") {
       if (val) {
         if (val.length !== phoneLength) {
           asamobilenumberErr = `Please enter ${phoneLength} Digit`;
-        } else if (isThirdPartyPhoneEistsInDB.length || isRetailerOwnerPhoneEistsInDB.length || isRetailerStaffPhoneEistsInDB.length) {
-          asamobilenumberErr = "Phone Number Exists";
+        } else if (
+          isThirdPartyPhoneEistsInDB.length ||
+          isRetailerOwnerPhoneEistsInDB.length ||
+          isRetailerStaffPhoneEistsInDB.length
+        ) {
+          asamobilenumberErr = <FormattedMessage id="createUser.error.numberExist" />;
         } else {
           asamobilenumberErr = "";
         }
       } else {
-        asamobilenumberErr = "Please enter the Mobile Number";
+        asamobilenumberErr = <FormattedMessage id="createUser.error.enterMobile" />;
       }
       datas[key] = val;
 
-      this.setState({ asamobilenumberErr : asamobilenumberErr});
+      this.setState({ asamobilenumberErr: asamobilenumberErr });
     } else {
       let { name, value, checked } = e.target;
-      if( name === "active"){
+      if (name === "active") {
         datas[name] = checked;
-      } else if (name === 'rolename') {
+      } else if (name === "rolename") {
         userdata[name] = value;
         let steps = this.state.stepsArray;
-        if(value !== 'salesagent' ) {
-          steps.splice(2,1,'With-Holding Tax');
-          this.setState({ userroleType : "external"})
+        if (value !== "salesagent") {
+          steps.splice(2, 1, "With-Holding Tax");
+          this.setState({ userroleType: "external" });
         } else {
-          steps.splice(2,1,'User Mappings');
-          this.setState({ userroleType : "internal"})
+          steps.splice(2, 1, "User Mappings");
+          this.setState({ userroleType: "internal" });
         }
-        this.setState({ stepsArray : steps });
-        this.setState({ userData : userdata });
+        this.setState({ stepsArray: steps });
+        this.setState({ userData: userdata });
       } else {
         datas[name] = value;
-        if(name === 'firstname'){
-          let firstNameErr =  datas.firstname === "" ? "Please Enter the First Name" : "";
-          this.setState({asafirstnameErr: firstNameErr});
-        } else if(name ==='lastname'){
-          let lastNameErr =  datas.lastname === "" ? "Please Enter the Last Name" : "";
-          this.setState({asalastnameErr: lastNameErr});
-        } else if(name ==='mobilenumber'){
-          let mobileErr =  datas.mobilenumber === "" ? "Please Enter the Email" : "";
-          this.setState({asamobilenumberErr: mobileErr});
+        if (name === "firstname") {
+          let firstNameErr = datas.firstname === "" ? <FormattedMessage id="createUser.error.enterFirstName" /> : "";
+          this.setState({ asafirstnameErr: firstNameErr });
+        } else if (name === "lastname") {
+          let lastNameErr = datas.lastname === "" ? <FormattedMessage id="createUser.error.enterLastName" /> : "";
+          this.setState({ asalastnameErr: lastNameErr });
+        } else if (name === "mobilenumber") {
+          let mobileErr = datas.mobilenumber === "" ? <FormattedMessage id="createUser.error.enterEmail" /> : "";
+          this.setState({ asamobilenumberErr: mobileErr });
         }
       }
     }
-    this.setState({ asaDatas : datas });
-    if(this.state.userroleType === "external"){
+    this.setState({ asaDatas: datas });
+    if (this.state.userroleType === "external") {
       this.checkUnsavedData();
     } else {
       this.checkUnsavedDataForASA();
     }
   };
-  
-partnerhandleChange = (e:any, idx: number, ) => {
-    const { name, value} = e.target;
+
+  partnerhandleChange = (e: any, idx: number) => {
+    const { name, value } = e.target;
     const datas = this.state.partnerDatas;
     datas[idx][name] = value;
-    if(value) {
-      if( name === "partnertype"){
-        datas[idx].errObj.typeErr = ""
-      } else if( name === "geolevel1"){
-        datas[idx].errObj.locationErr = ""
-      } if( name === "channelpartnerfullname"){
-        datas[idx].errObj.nameErr = ""
+    if (value) {
+      if (name === "partnertype") {
+        datas[idx].errObj.typeErr = "";
+      } else if (name === "geolevel1") {
+        datas[idx].errObj.locationErr = "";
+      }
+      if (name === "channelpartnerfullname") {
+        datas[idx].errObj.nameErr = "";
       }
     }
-    this.setState({ partnerDatas : datas });
+    this.setState({ partnerDatas: datas });
     this.setOptionsForChannelPartners(idx);
     this.checkUnsavedDataForASA();
-}
-
-setOptionsForChannelPartners = (idx:number) => {
-  const datas = this.state.partnerDatas;
-  const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
-  let locationInfo = [];
-  locationInfo = locationwiseChannelPartners?.filter((locationInfo:any) =>locationInfo.geolevel1 === datas[idx].geolevel1 );
-  if(locationInfo.length){
-    let retailerList:any = [];
-    retailerList = locationInfo[0]?.partnertypes?.filter((retailerInfo:any) => retailerInfo.partnertypes === datas[idx].partnertype )
-    let partners:any = [];
-    const channelPartnersOptions = this.state.channelPartnersOptions;
-
-    retailerList[0]?.partnerdetails?.forEach((item:any, index:number)=>{
-      let partnersObj:any = {};
-        partnersObj['text'] = item.channelpartnerfullname;
-        partnersObj['value'] = item.channelpartnerid;
-        partnersObj['partnerid'] = item.channelpartnerid;
-        partners.push(partnersObj);
-    });
-    
-    if(channelPartnersOptions.length) {
-       channelPartnersOptions[idx]=partners;
-    } else {
-      channelPartnersOptions.push(partners)
-    } 
-    this.setState({ channelPartnersOptions: channelPartnersOptions });
-  }
-} 
-
-getAllPartnersList = () => {
-  this.setState({
-        isLoader: true,
-        locationwiseChannelPartners:[],
-  });
-  const { channelPartners } = apiURL;
-  let data = {
-    countrycode: this.getStoreData.countryCode,
   };
-  return new Promise((resolve, reject) => {
-    invokeGetAuthService(channelPartners, data)
-    .then((response) => {
-      let res =  Object.keys(response.body).length !== 0 ? response.body.rows : [];
-      this.setState({
-        isLoader: false,
-        locationwiseChannelPartners:res
-      });
-    })
-    .catch((error) => {
-      this.setState({ isLoader: false });
-    });
-  });
-}
 
-asahandleAddRow = () => {
+  setOptionsForChannelPartners = (idx: number) => {
+    const datas = this.state.partnerDatas;
+    const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
+    let locationInfo = [];
+    locationInfo = locationwiseChannelPartners?.filter(
+      (locationInfo: any) => locationInfo.geolevel1 === datas[idx].geolevel1
+    );
+    if (locationInfo.length) {
+      let retailerList: any = [];
+      retailerList = locationInfo[0]?.partnertypes?.filter(
+        (retailerInfo: any) => retailerInfo.partnertypes === datas[idx].partnertype
+      );
+      let partners: any = [];
+      const channelPartnersOptions = this.state.channelPartnersOptions;
+
+      retailerList[0]?.partnerdetails?.forEach((item: any, index: number) => {
+        let partnersObj: any = {};
+        partnersObj["text"] = item.channelpartnerfullname;
+        partnersObj["value"] = item.channelpartnerid;
+        partnersObj["partnerid"] = item.channelpartnerid;
+        partners.push(partnersObj);
+      });
+
+      if (channelPartnersOptions.length) {
+        channelPartnersOptions[idx] = partners;
+      } else {
+        channelPartnersOptions.push(partners);
+      }
+      this.setState({ channelPartnersOptions: channelPartnersOptions });
+    }
+  };
+
+  getAllPartnersList = () => {
+    this.setState({
+      isLoader: true,
+      locationwiseChannelPartners: [],
+    });
+    const { channelPartners } = apiURL;
+    let data = {
+      countrycode: this.getStoreData.countryCode,
+    };
+    return new Promise((resolve, reject) => {
+      invokeGetAuthService(channelPartners, data)
+        .then((response) => {
+          let res = Object.keys(response.body).length !== 0 ? response.body.rows : [];
+          this.setState({
+            isLoader: false,
+            locationwiseChannelPartners: res,
+          });
+        })
+        .catch((error) => {
+          this.setState({ isLoader: false });
+        });
+    });
+  };
+
+  asahandleAddRow = () => {
     const item = {
       partnertype: "",
       geolevel1: "",
       channelpartnerfullname: "",
-      channelpartnerid:"",
+      channelpartnerid: "",
       errObj: {
         typeErr: "",
         locationErr: "",
@@ -2530,15 +2371,15 @@ asahandleAddRow = () => {
     let partnerDatas = this.state.partnerDatas;
     partnerDatas.push(item);
     this.setState({ partnerDatas: partnerDatas });
-};
+  };
 
-asahandleRemoveSpecificRow = (idx: any) => () => {
+  asahandleRemoveSpecificRow = (idx: any) => () => {
     let partnerDatas = this.state.partnerDatas;
     let partnertypeOptions = this.state.channelPartnersOptions;
     partnerDatas.splice(idx, 1);
-    partnertypeOptions.splice(idx,1);
+    partnertypeOptions.splice(idx, 1);
     this.setState({ partnerDatas: partnerDatas, channelPartnersOptions: partnertypeOptions });
-};
+  };
 
   render() {
     let countryCodeLower = _.toLower(this.loggedUserInfo?.countrycode);
@@ -2556,24 +2397,17 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
       billingzipcodeErr,
       accInfo,
       asaDatas,
-      userroleType
+      userroleType,
     } = this.state;
     let currentPage = this.props.location?.page;
-    const fields =
-      currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
-      
+    const fields = currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
+
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-      nameCapitalized = nameCapitalized === 'Add' ? "ADD" : nameCapitalized === 'Epa' ? 'EPA' : nameCapitalized;
+      nameCapitalized = nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized;
       return (
-        <React.Fragment key={`geolevels`+index}>
-          <div
-            className={
-              list.error && currentStep === 3
-                ? "col-sm-4 country3"
-                : "col-sm-4 country"
-            }
-          >
+        <React.Fragment key={`geolevels` + index}>
+          <div className={list.error && currentStep === 3 ? "col-sm-4 country3" : "col-sm-4 country"}>
             <Dropdown
               name={list.name}
               label={nameCapitalized}
@@ -2585,19 +2419,13 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
               }}
               value={list.value}
               isPlaceholder
-              isDisabled={
-                (this.state.currentStep === 3 && this.state.accInfo) ||
-                list.name === "geolevel0"
-                  ? true
-                  : false
-              }
+              isDisabled={(this.state.currentStep === 3 && this.state.accInfo) || list.name === "geolevel0" ? true : false}
             />
             {list.error && <span className="error">{list.error}</span>}
           </div>
         </React.Fragment>
       );
     });
-  
 
     let nextButton;
     if (currentStep === 1) {
@@ -2608,41 +2436,32 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
           className="cus-btn-user buttonStyle"
           onClick={(e) => this.handleClick("personalNext", e)}
         >
-          Next
+          <FormattedMessage id="button.next" />
           <span>
-            <img src={ArrowIcon} alt={NoImage} data-testid= "ArrowIcon" className="arrow-i" />{" "}
-            <img src={RtButton} alt={NoImage} data-testid= "RtButton"  className="layout" />
+            <img src={ArrowIcon} alt={NoImage} data-testid="ArrowIcon" className="arrow-i" />{" "}
+            <img src={RtButton} alt={NoImage} data-testid="RtButton" className="layout" />
           </span>
         </button>
       );
     } else if (currentStep === 2) {
       nextButton = (
-        <button
-          className="cus-btn-user buttonStyle"
-          onClick={(e) => this.handleClick("geographicNext", e)}
-        >
-          Next
+        <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("geographicNext", e)}>
+          <FormattedMessage id="button.next" />
           <span>
-            <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
-            <img src={RtButton} alt="" className="layout" />
+            <img src={ArrowIcon} alt="" className="arrow-i" /> <img src={RtButton} alt="" className="layout" />
           </span>
         </button>
       );
     } else {
       nextButton = (
-        <button
-          className="cus-btn-user buttonStyle"
-          onClick={(e) => this.handleClick("createUser", e)}
-        >
-          {(currentPage === "edit" || currentPage === "asaedit")
-            ? "Update"
-            : currentPage === "validate"
-            ? "Approve"
-            : "Create"}
-          {/* <span>
-            <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
-            <img src={RtButton} alt="" className="layout" />
-          </span> */}
+        <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("createUser", e)}>
+          {currentPage === "edit" || currentPage === "asaedit" ? (
+            <FormattedMessage id="button.update" />
+          ) : currentPage === "validate" ? (
+            <FormattedMessage id="button.approve" />
+          ) : (
+            <FormattedMessage id="button.create" />
+          )}
         </button>
       );
     }
@@ -2650,22 +2469,18 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
     return (
       <AUX>
         {(this.state.isLoader || this.props.isLoader) && <Loader />}
-        { this.isFilledAllFields &&
-        <RouterPrompt
-        when={this.state.shouldBlockNavigation}
-        title="Leave this page"
-        cancelText="Cancel"
-        okText="Confirm"
-        onOK={() => true}
-        onCancel={() => false}
-      />
-        }
+        {this.isFilledAllFields && (
+          <RouterPrompt
+            when={this.state.shouldBlockNavigation}
+            title="Leave this page"
+            cancelText="Cancel"
+            okText="Confirm"
+            onOK={() => true}
+            onCancel={() => false}
+          />
+        )}
         {this.state.deleteStaffPopup ? (
-          <AdminPopup
-            open={this.state.deleteStaffPopup}
-            onClose={this.handleClosePopup}
-            maxWidth={"600px"}
-          >
+          <AdminPopup open={this.state.deleteStaffPopup} onClose={this.handleClosePopup} maxWidth={"600px"}>
             <DialogContent>
               <div className="popup-container">
                 <div className="popup-content">
@@ -2673,7 +2488,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                 </div>
                 <div style={{ textAlign: "center" }}>
                   <label style={{ fontSize: "16px", marginTop: "11px" }}>
-                    Are you sure you want to delete store's staff?
+                    <FormattedMessage id="createUser.storeAlert" />
                   </label>
                 </div>
                 <DialogActions>
@@ -2681,17 +2496,17 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                     autoFocus
                     onClick={this.handleClosePopup}
                     className="admin-popup-btn close-btn"
-                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
                   >
-                    Cancel
+                    <FormattedMessage id="button.cancel" />
                   </Button>
                   <Button
                     onClick={this.deleteStaff}
                     className="admin-popup-btn delete"
                     autoFocus
-                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329",borderRadius: "50px"}}
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
                   >
-                    DELETE
+                    <FormattedMessage id="button.delete" />
                   </Button>
                 </DialogActions>
               </div>
@@ -2702,28 +2517,15 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
         )}
         <div className="card card-main">
           <div className="stepper-container-horizontal">
-            <Stepper
-              direction="horizontal"
-              currentStepNumber={currentStep - 1}
-              steps={stepsArray}
-              stepColor="#7DBB41"
-            />
+            <Stepper direction="horizontal" currentStepNumber={currentStep - 1} steps={stepsArray} stepColor="#7DBB41" />
           </div>
-          <div
-            className="col-md-10"
-            style={{ marginTop: currentStep === 3 ? "-30px" : "0px" }}
-          >
+          <div className="col-md-10" style={{ marginTop: currentStep === 3 ? "-30px" : "0px" }}>
             <label
               className="font-weight-bold"
               style={{
                 fontSize: "17px",
                 color: "#10384F",
-                marginTop:
-                  currentStep === 1
-                    ? "0px"
-                    : currentStep === 2
-                    ? "28px"
-                    : "-3px",
+                marginTop: currentStep === 1 ? "0px" : currentStep === 2 ? "28px" : "-3px",
               }}
             >
               {stepsArray[currentStep - 1]}
@@ -2731,97 +2533,101 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
             <div className="container">
               {currentStep === 1 && (
                 <>
-                {userroleType === "internal" ? 
-                  <AreaSalesManager 
-                    handleChange={this.handleChange} 
-                    userData={userData} asaDatas={asaDatas}  
-                    asahandleChange = {this.asahandleChange} 
-                    role={role} 
-                    countryCodeLower={countryCodeLower}
-                    currentStep={currentStep}
-                    asafirstnameErr={this.state.asafirstnameErr}
-                    asalastnameErr={this.state.asalastnameErr}
-                    asamobilenumberErr={this.state.asamobilenumberErr}
-                    isEditPage={isEditPage}
-                  /> : 
-                  <div className="personal">
-                    <>
-                      <div 
-                        className="row"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          marginTop: "8px",
-                        }}
-                      >
-                        <div className="col-sm-3 form-group">
-                          <Dropdown
-                            name="rolename"
-                            label="User Type"
-                            options={role}
-                            handleChange={(e: any) =>
-                              this.handleChange("", e, "", "othersteps", "")
-                            }
-                            value={userData.rolename}
-                            isPlaceholder
-                            isDisabled
-                          />
+                  {userroleType === "internal" ? (
+                    <AreaSalesManager
+                      handleChange={this.handleChange}
+                      userData={userData}
+                      asaDatas={asaDatas}
+                      asahandleChange={this.asahandleChange}
+                      role={role}
+                      countryCodeLower={countryCodeLower}
+                      currentStep={currentStep}
+                      asafirstnameErr={this.state.asafirstnameErr}
+                      asalastnameErr={this.state.asalastnameErr}
+                      asamobilenumberErr={this.state.asamobilenumberErr}
+                      isEditPage={isEditPage}
+                    />
+                  ) : (
+                    <div className="personal">
+                      <>
+                        <div
+                          className="row"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginTop: "8px",
+                          }}
+                        >
+                          <div className="col-sm-3 form-group">
+                            <Dropdown
+                              name="rolename"
+                              label="User Type"
+                              options={role}
+                              handleChange={(e: any) => this.handleChange("", e, "", "othersteps", "")}
+                              value={userData.rolename}
+                              isPlaceholder
+                              isDisabled
+                            />
+                          </div>
+                          <div className="col-sm-3" style={{ marginLeft: "20px" }}>
+                            <label className="font-weight-bold">
+                              <FormattedMessage id="createUser.hasStoreStaff" />
+                              <input
+                                data-testid="storestaff"
+                                type="checkbox"
+                                style={{ marginLeft: "10px" }}
+                                onChange={(e: any) => {
+                                  this.enableStoreStaff(e);
+                                }}
+                                checked={isStaff}
+                                disabled={
+                                  isEditPage && this.props.location.state?.userFields.storewithmultiuser ? true : false
+                                }
+                              />
+                              <span className="checkmark"></span>
+                            </label>
+                          </div>
                         </div>
                         <div
-                          className="col-sm-3"
-                          style={{ marginLeft: "20px" }}
+                          className="personal-information-table"
+                          style={{
+                            width: "124%",
+                            maxHeight: "280px",
+                            overflowY: "auto",
+                            overflowX: "auto",
+                          }}
                         >
-                          <label className="font-weight-bold">
-                            Has store staff?(Max 4)
-                            <input
-                              data-testid="storestaff"
-                              type="checkbox"
-                              style={{ marginLeft: "10px" }}
-                              onChange={(e: any) => {
-                                this.enableStoreStaff(e);
-                              }}
-                              checked={isStaff}
-                              disabled={
-                                isEditPage &&
-                                this.props.location.state?.userFields
-                                  .storewithmultiuser
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span className="checkmark"></span>
-                          </label>
-                        </div>
-                      </div>
-                      <div className="personal-information-table"
-                        style={{
-                          width: "124%",
-                          maxHeight: "280px",
-                          overflowY: "auto",
-                          overflowX: "auto",
-                        }}
-                        
-                      >
-                        <div style={{ marginRight: "10px" }}>
-                          {/* <Table borderless> */}
-                          <table className="table table-borderless" data-testid="table">
-                            <thead>
-                              <tr>
-                                <th>Type</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Mobile Number</th>
-                                <th>Email(Optional)</th>
-                                <th>Active?</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {userData.ownerRows?.map(
-                                (item: any, idx: number) => (
-                                  <tr key={`ownerRow`+idx}>
+                          <div style={{ marginRight: "10px" }}>
+                            {/* <Table borderless> */}
+                            <table className="table table-borderless" data-testid="table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <FormattedMessage id="createUser.type" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.firstname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.lastname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.mobilenumber" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.email" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.active" />
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {userData.ownerRows?.map((item: any, idx: number) => (
+                                  <tr key={`ownerRow` + idx}>
                                     {idx === 0 ? (
                                       <td className="font-weight-bold">
-                                        Owner
+                                        <FormattedMessage id="createUser.owner" />
                                       </td>
                                     ) : (
                                       <td></td>
@@ -2835,23 +2641,11 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                         name="firstname"
                                         placeHolder="Eg: Keanu"
                                         value={item.firstname}
-                                        onChange={(e: any) =>
-                                          this.handleChange(
-                                            idx,
-                                            e,
-                                            "",
-                                            "owner",
-                                            ""
-                                          )
-                                        }
-                                        onKeyPress={(e: any) =>
-                                          allowAlphabetsNumbers(e)
-                                        }
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                       />
                                       {item.errObj?.firstNameErr && (
-                                        <span className="error">
-                                          {item.errObj.firstNameErr}{" "}
-                                        </span>
+                                        <span className="error">{item.errObj.firstNameErr} </span>
                                       )}
                                     </td>
                                     <td>
@@ -2863,24 +2657,10 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                         name="lastname"
                                         placeHolder="Eg: Reeves"
                                         value={item.lastname}
-                                        onChange={(e: any) =>
-                                          this.handleChange(
-                                            idx,
-                                            e,
-                                            "",
-                                            "owner",
-                                            ""
-                                          )
-                                        }
-                                        onKeyPress={(e: any) =>
-                                          allowAlphabetsNumbers(e)
-                                        }
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                       />
-                                      {item.errObj?.lastnameErr && (
-                                        <span className="error">
-                                          {item.errObj.lastnameErr}{" "}
-                                        </span>
-                                      )}
+                                      {item.errObj?.lastnameErr && <span className="error">{item.errObj.lastnameErr} </span>}
                                     </td>
                                     <td>
                                       <div style={{ display: "flex" }}>
@@ -2891,67 +2671,36 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                               name: "mobilenumber",
                                               required: true,
                                               maxLength:
-                                                process.env.REACT_APP_STAGE ===
-                                                  "dev" ||
-                                                process.env.REACT_APP_STAGE ===
-                                                  "int"
+                                                process.env.REACT_APP_STAGE === "dev" ||
+                                                process.env.REACT_APP_STAGE === "int"
                                                   ? 12
                                                   : 11,
                                             }}
                                             country={countryCodeLower}
                                             value={item.mobilenumber}
                                             disabled={isEditPage ? true : false}
-                                            onChange={(value, e) =>
-                                              this.handleChange(idx,e,"phone","owner",value)
-                                            }
+                                            onChange={(value, e) => this.handleChange(idx, e, "phone", "owner", value)}
                                             onlyCountries={[countryCodeLower]}
                                             autoFormat
                                             disableDropdown
                                             disableCountryCode
-                                            // error={!this.state.mobileLimit && 'no'}
-                                            // isValid={this.state.mobileLimit}
-                                            // error={item.mobilenumber && isPossiblePhoneNumber(item.mobilenumber) ? 'true' : 'false'}
-                                            // isValid={(value, country) => {
-                                            //   if (value.length > 9) {
-                                            //     e.preventDefault();
-                                            //     return false;
-                                            //   } else {
-                                            //     return true;
-                                            //   }
-                                            // }}
                                           />
                                           {item.errObj?.mobilenumberErr && (
-                                            <span className="error">
-                                              {item.errObj.mobilenumberErr}
-                                            </span>
+                                            <span className="error">{item.errObj.mobilenumberErr}</span>
                                           )}
                                         </div>
                                       </div>
                                     </td>
                                     <td>
                                       <Input
-                                        data-testid = "email-input"
+                                        data-testid="email-input"
                                         type="email"
                                         className="form-control"
                                         name="email"
                                         placeHolder="Eg: abc@mail.com"
                                         value={item.email}
-                                        onChange={(e: any) =>
-                                          this.handleChange(
-                                            idx,
-                                            e,
-                                            "",
-                                            "owner",
-                                            ""
-                                          )
-                                        }
-                                        onKeyUp={(e: any) =>
-                                          this.validateEmail(
-                                            e.target.value,
-                                            idx,
-                                            "owner"
-                                          )
-                                        }
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyUp={(e: any) => this.validateEmail(e.target.value, idx, "owner")}
                                       />
                                       {item.errObj?.emailErr && (
                                         <span className="error" data-testid="error-msg">
@@ -2967,54 +2716,14 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                       <div>
                                         <CustomSwitch
                                           checked={item.active}
-                                          onChange={(e: any) =>
-                                            this.handleChange(
-                                              idx,
-                                              e,
-                                              "",
-                                              "owner",
-                                              ""
-                                            )
-                                          }
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
                                           name="active"
                                         />
                                       </div>
                                       <div style={{ visibility: "hidden" }}>
-                                        {/* {idx ===
-                                          userData.ownerRows.length - 1 &&
-                                        userData.ownerRows.length < 5 ? (
-                                          <img
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                            }}
-                                            src={AddBtn}
-                                            onClick={() =>
-                                              this.handleAddRow("owner")
-                                            }
-                                          />
-                                        ) : (
-                                          <img
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                            }}
-                                            src={RemoveBtn}
-                                            onClick={this.handleRemoveSpecificRow(
-                                              idx,
-                                              "owner"
-                                            )}
-                                          />
-                                        )} */}
-                                        {idx ===
-                                          userData.ownerRows.length - 1 &&
-                                        userData.ownerRows.length < 4 ? (
+                                        {idx === userData.ownerRows.length - 1 && userData.ownerRows.length < 4 ? (
                                           (() => {
-                                            if (
-                                              idx === 0 &&
-                                              idx ===
-                                                userData.ownerRows.length - 1
-                                            ) {
+                                            if (idx === 0 && idx === userData.ownerRows.length - 1) {
                                               return (
                                                 <div>
                                                   <img
@@ -3024,17 +2733,11 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                     }}
                                                     src={AddBtn}
                                                     alt=""
-                                                    onClick={() =>
-                                                      this.handleAddRow("owner")
-                                                    }
+                                                    onClick={() => this.handleAddRow("owner")}
                                                   />
                                                 </div>
                                               );
-                                            } else if (
-                                              idx > 0 &&
-                                              idx ===
-                                                userData.ownerRows.length - 1
-                                            ) {
+                                            } else if (idx > 0 && idx === userData.ownerRows.length - 1) {
                                               return (
                                                 <div>
                                                   <img
@@ -3042,19 +2745,13 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                       width: "50px",
                                                       height: "50px",
                                                       visibility:
-                                                        isEditPage &&
-                                                        this.props.location
-                                                          .state.userFields
-                                                          .storewithmultiuser
+                                                        isEditPage && this.props.location.state.userFields.storewithmultiuser
                                                           ? "hidden"
                                                           : "visible",
                                                     }}
                                                     src={RemoveBtn}
                                                     alt=""
-                                                    onClick={this.handleRemoveSpecificRow(
-                                                      idx,
-                                                      "owner"
-                                                    )}
+                                                    onClick={this.handleRemoveSpecificRow(idx, "owner")}
                                                   />
                                                   <img
                                                     style={{
@@ -3063,9 +2760,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                     }}
                                                     src={AddBtn}
                                                     alt=""
-                                                    onClick={() =>
-                                                      this.handleAddRow("owner")
-                                                    }
+                                                    onClick={() => this.handleAddRow("owner")}
                                                   />
                                                 </div>
                                               );
@@ -3077,52 +2772,55 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                               width: "50px",
                                               height: "50px",
                                               visibility:
-                                                isEditPage &&
-                                                this.props.location.state
-                                                  ?.userFields
-                                                  .storewithmultiuser
+                                                isEditPage && this.props.location.state?.userFields.storewithmultiuser
                                                   ? "hidden"
                                                   : "visible",
                                             }}
                                             src={RemoveBtn}
                                             alt=""
-                                            onClick={this.handleRemoveSpecificRow(
-                                              idx,
-                                              "owner"
-                                            )}
+                                            onClick={this.handleRemoveSpecificRow(idx, "owner")}
                                           />
                                         )}
                                       </div>
                                     </td>
                                   </tr>
-                                )
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div style={{ marginTop: "-10px" }}>
-                          {isStaff ? <hr /> : <></>}
-                        </div>
-                        <div style={{ marginRight: "13px" }}>
-                          <table className="table table-borderless">
-                            <thead style={{ display: "none" }}>
-                              <tr>
-                                <th>Type</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Mobile Number</th>
-                                <th>Email(Optional)</th>
-                                <th>Active?</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {isStaff &&
-                                userData.staffdetails?.map(
-                                  (item: any, idx: number) => (
-                                    <tr key={`staffRow`+idx}>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <div style={{ marginTop: "-10px" }}>{isStaff ? <hr /> : <></>}</div>
+                          <div style={{ marginRight: "13px" }}>
+                            <table className="table table-borderless">
+                              <thead style={{ display: "none" }}>
+                                <tr>
+                                  <th>
+                                    <FormattedMessage id="createUser.type" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.firstname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.lastname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.mobilenumber" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.email" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.active" />
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {isStaff &&
+                                  userData.staffdetails?.map((item: any, idx: number) => (
+                                    <tr key={`staffRow` + idx}>
                                       {idx === 0 ? (
                                         <td className="font-weight-bold">
-                                          Store <br/> Staffs
+                                          <FormattedMessage id="createUser.store" /> <br />{" "}
+                                          <FormattedMessage id="createUser.staffs" />
                                         </td>
                                       ) : (
                                         <td></td>
@@ -3134,23 +2832,11 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                           name="firstname"
                                           placeHolder="Eg: Keanu"
                                           value={item.firstname}
-                                          onChange={(e: any) =>
-                                            this.handleChange(
-                                              idx,
-                                              e,
-                                              "",
-                                              "staff",
-                                              ""
-                                            )
-                                          }
-                                          onKeyPress={(e: any) =>
-                                            allowAlphabetsNumbers(e)
-                                          }
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.firstNameErr && (
-                                          <span className="error">
-                                            {item.errObj.firstNameErr}{" "}
-                                          </span>
+                                          <span className="error">{item.errObj.firstNameErr} </span>
                                         )}
                                       </td>
                                       <td>
@@ -3160,23 +2846,11 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                           name="lastname"
                                           placeHolder="Eg: Reeves"
                                           value={item.lastname}
-                                          onChange={(e: any) =>
-                                            this.handleChange(
-                                              idx,
-                                              e,
-                                              "",
-                                              "staff",
-                                              ""
-                                            )
-                                          }
-                                          onKeyPress={(e: any) =>
-                                            allowAlphabetsNumbers(e)
-                                          }
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                                         />
                                         {item.errObj?.lastnameErr && (
-                                          <span className="error">
-                                            {item.errObj.lastnameErr}{" "}
-                                          </span>
+                                          <span className="error">{item.errObj.lastnameErr} </span>
                                         )}
                                       </td>
                                       <td>
@@ -3188,40 +2862,22 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                 name: "mobilenumber",
                                                 required: true,
                                                 maxLength:
-                                                  process.env
-                                                    .REACT_APP_STAGE ===
-                                                    "dev" ||
-                                                  process.env
-                                                    .REACT_APP_STAGE === "int"
+                                                  process.env.REACT_APP_STAGE === "dev" ||
+                                                  process.env.REACT_APP_STAGE === "int"
                                                     ? 12
                                                     : 11,
                                               }}
                                               country={countryCodeLower}
                                               value={item.mobilenumber}
-                                              disabled={
-                                                isEditPage &&
-                                                !item.errObj?.isPhoneEdit
-                                                  ? true
-                                                  : false
-                                              }
-                                              onChange={(value, e) =>
-                                                this.handleChange(
-                                                  idx,
-                                                  e,
-                                                  "phone",
-                                                  "staff",
-                                                  value
-                                                )
-                                              }
+                                              disabled={isEditPage && !item.errObj?.isPhoneEdit ? true : false}
+                                              onChange={(value, e) => this.handleChange(idx, e, "phone", "staff", value)}
                                               onlyCountries={[countryCodeLower]}
                                               autoFormat
                                               disableDropdown
                                               disableCountryCode
                                             />
                                             {item.errObj?.mobilenumberErr && (
-                                              <span className="error">
-                                                {item.errObj.mobilenumberErr}{" "}
-                                              </span>
+                                              <span className="error">{item.errObj.mobilenumberErr} </span>
                                             )}
                                           </div>
                                         </div>
@@ -3233,28 +2889,10 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                           name="email"
                                           placeHolder="Eg.abc@mail.com"
                                           value={item.email}
-                                          onChange={(e: any) =>
-                                            this.handleChange(
-                                              idx,
-                                              e,
-                                              "",
-                                              "staff",
-                                              ""
-                                            )
-                                          }
-                                          onKeyUp={(e: any) =>
-                                            this.validateEmail(
-                                              e.target.value,
-                                              idx,
-                                              "staff"
-                                            )
-                                          }
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
+                                          onKeyUp={(e: any) => this.validateEmail(e.target.value, idx, "staff")}
                                         />
-                                        {item.errObj?.emailErr && (
-                                          <span className="error">
-                                            {item.errObj.emailErr}{" "}
-                                          </span>
-                                        )}
+                                        {item.errObj?.emailErr && <span className="error">{item.errObj.emailErr} </span>}
                                       </td>
                                       <td
                                         style={{
@@ -3262,63 +2900,16 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                         }}
                                       >
                                         <div>
-                                          
                                           <CustomSwitch
-                                            checked={
-                                              userData.ownerRows[0].active
-                                                ? item.active
-                                                : false
-                                            }
-                                            onChange={(e: any) =>
-                                              this.handleChange(
-                                                idx,
-                                                e,
-                                                "",
-                                                "staff",
-                                                ""
-                                              )
-                                            }
+                                            checked={userData.ownerRows[0].active ? item.active : false}
+                                            onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
                                             name="active"
                                           />
                                         </div>
                                         <div>
-                                          {/* {idx ===
-                                            userData.staffdetails.length - 1 &&
-                                          userData.staffdetails.length < 4 ? (
-                                            <img
-                                              style={{
-                                                width: "50px",
-                                                height: "50px",
-                                              }}
-                                              src={AddBtn}
-                                              onClick={() =>
-                                                this.handleAddRow("staff")
-                                              }
-                                            />
-                                          ) : (
-                                            <img
-                                              style={{
-                                                width: "50px",
-                                                height: "50px",
-                                              }}
-                                              src={RemoveBtn}
-                                              onClick={this.handleRemoveSpecificRow(
-                                                idx,
-                                                "staff"
-                                              )}
-                                            />
-                                          )} */}
-
-                                          {idx ===
-                                            userData.staffdetails.length - 1 &&
-                                          userData.staffdetails.length < 4 ? (
+                                          {idx === userData.staffdetails.length - 1 && userData.staffdetails.length < 4 ? (
                                             (() => {
-                                              if (
-                                                idx === 0 &&
-                                                idx ===
-                                                  userData.staffdetails.length -
-                                                    1
-                                              ) {
+                                              if (idx === 0 && idx === userData.staffdetails.length - 1) {
                                                 return (
                                                   <div>
                                                     <img
@@ -3328,20 +2919,11 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                       }}
                                                       src={AddBtn}
                                                       alt=""
-                                                      onClick={() =>
-                                                        this.handleAddRow(
-                                                          "staff"
-                                                        )
-                                                      }
+                                                      onClick={() => this.handleAddRow("staff")}
                                                     />
                                                   </div>
                                                 );
-                                              } else if (
-                                                idx > 0 &&
-                                                idx ===
-                                                  userData.staffdetails.length -
-                                                    1
-                                              ) {
+                                              } else if (idx > 0 && idx === userData.staffdetails.length - 1) {
                                                 return (
                                                   <div>
                                                     <img
@@ -3350,18 +2932,13 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                         height: "50px",
                                                         visibility:
                                                           isEditPage &&
-                                                          this.props.location
-                                                            .state?.userFields
-                                                            .storewithmultiuser
+                                                          this.props.location.state?.userFields.storewithmultiuser
                                                             ? "hidden"
                                                             : "visible",
                                                       }}
                                                       src={RemoveBtn}
                                                       alt=""
-                                                      onClick={this.handleRemoveSpecificRow(
-                                                        idx,
-                                                        "staff"
-                                                      )}
+                                                      onClick={this.handleRemoveSpecificRow(idx, "staff")}
                                                     />
 
                                                     <img
@@ -3371,11 +2948,7 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                       }}
                                                       src={AddBtn}
                                                       alt=""
-                                                      onClick={() =>
-                                                        this.handleAddRow(
-                                                          "staff"
-                                                        )
-                                                      }
+                                                      onClick={() => this.handleAddRow("staff")}
                                                     />
                                                   </div>
                                                 );
@@ -3387,32 +2960,26 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                                                 width: "50px",
                                                 height: "50px",
                                                 visibility:
-                                                  isEditPage &&
-                                                  this.props.location.state
-                                                    ?.userFields
-                                                    .storewithmultiuser
+                                                  isEditPage && this.props.location.state?.userFields.storewithmultiuser
                                                     ? "hidden"
                                                     : "visible",
                                               }}
                                               src={RemoveBtn}
                                               alt=""
-                                              onClick={this.handleRemoveSpecificRow(
-                                                idx,
-                                                "staff"
-                                              )}
+                                              onClick={this.handleRemoveSpecificRow(idx, "staff")}
                                             />
                                           )}
                                         </div>
                                       </td>
                                     </tr>
-                                  )
-                                )}
-                            </tbody>
-                          </table>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  </div>}
+                      </>
+                    </div>
+                  )}
                 </>
               )}
               <div className="geographicLocation" style={{ width: "80%" }}>
@@ -3428,32 +2995,24 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
                           name="deliverystreet"
                           placeHolder="Street"
                           value={userData.deliverystreet}
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
+                          onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                           width="96%"
                         />
-                        {deliverystreetErr && (
-                          <span className="error">{deliverystreetErr} </span>
-                        )}
+                        {deliverystreetErr && <span className="error">{deliverystreetErr} </span>}
                       </div>
 
                       <div className="col-md-4">
                         <Input
-                          data-testid = "delivery-postal"
+                          data-testid="delivery-postal"
                           type="text"
                           className="form-control"
                           name="deliveryzipcode"
                           placeHolder="Postal Code"
                           value={userData.deliveryzipcode}
-                          onChange={(e: any) =>
-                            this.handleChange("", e, "", "otherSteps", "")
-                          }
+                          onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                           onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                         />
-                        {deliveryzipcodeErr && (
-                          <span className="error">{deliveryzipcodeErr} </span>
-                        )}
+                        {deliveryzipcodeErr && <span className="error">{deliveryzipcodeErr} </span>}
                       </div>
                     </div>
                   </>
@@ -3461,158 +3020,134 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
               </div>
               {currentStep === 3 && (
                 <>
-              {userroleType === "internal" ? 
-                <AreaSalesManager 
-                  handleChange={this.handleChange} 
-                  userData={userData} asaDatas={asaDatas}  
-                  asahandleChange = {this.asahandleChange} 
-                  role={role} 
-                  countryCodeLower={countryCodeLower}
-                  currentStep={currentStep}
-                  geolevel1List ={this.props.geoLevel1List}
-                  handleAddRow ={this.asahandleAddRow}
-                  handleRemoveSpecificRow={this.asahandleRemoveSpecificRow}
-                  partnerhandleChange={this.partnerhandleChange}
-                  partnerDatas={this.state.partnerDatas}
-                  channelPartnersOptions={this.state.channelPartnersOptions}
-                /> : 
-                <div style={{ marginTop: "-28px" }}>
-                  <div className="row fieldsAlign">
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="taxid"
-                        placeHolder="Tax Id"
-                        value={userData.taxid}
-                        onChange={(e: any) =>
-                          this.handleChange("", e, "", "otherSteps", "")
-                        }
-                      />
-                    </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="whtaccountname"
-                        placeHolder="Store Name"
-                        value={userData.whtaccountname}
-                        onChange={(e: any) =>
-                          this.handleChange("", e, "", "otherSteps", "")
-                        }
-                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                      />
-                      {accountnameErr && (
-                        <span className="error">{accountnameErr} </span>
-                      )}
-                    </div>
-                  </div>
+                  {userroleType === "internal" ? (
+                    <AreaSalesManager
+                      handleChange={this.handleChange}
+                      userData={userData}
+                      asaDatas={asaDatas}
+                      asahandleChange={this.asahandleChange}
+                      role={role}
+                      countryCodeLower={countryCodeLower}
+                      currentStep={currentStep}
+                      geolevel1List={this.props.geoLevel1List}
+                      handleAddRow={this.asahandleAddRow}
+                      handleRemoveSpecificRow={this.asahandleRemoveSpecificRow}
+                      partnerhandleChange={this.partnerhandleChange}
+                      partnerDatas={this.state.partnerDatas}
+                      channelPartnersOptions={this.state.channelPartnersOptions}
+                    />
+                  ) : (
+                    <div style={{ marginTop: "-28px" }}>
+                      <div className="row fieldsAlign">
+                        <div className="col-sm-3">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="taxid"
+                            placeHolder="Tax Id"
+                            value={userData.taxid}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                          />
+                        </div>
+                        <div className="col-sm-3">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="whtaccountname"
+                            placeHolder="Store Name"
+                            value={userData.whtaccountname}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                          />
+                          {accountnameErr && <span className="error">{accountnameErr} </span>}
+                        </div>
+                      </div>
 
-                  <div
-                    className="row"
-                    style={{
-                      marginTop:
-                        (ownernameErr === "" || ownernameErr === 'undefined' || accountnameErr === "" ||  accountnameErr === 'undefined')
-                          ? "32px"
-                          : "12px",
-                    }}
-                  >
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="whtownername"
-                        placeHolder="Owner Name"
-                        value={
-                          this.state.accInfo
-                            ? userData.ownerRows[0].firstname +
-                              " " +
-                              userData.ownerRows[0].lastname
-                            : userData.whtownername
-                        }
-                        onChange={(e: any) =>
-                          this.handleChange("", e, "", "otherSteps", "")
-                        }
-                        read-only={this.state.accInfo ? "true" : "false"}
-                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                      />
-                      <div>
-                        {ownernameErr && (
-                          <span className="error">{ownernameErr} </span>
-                        )}
+                      <div
+                        className="row"
+                        style={{
+                          marginTop:
+                            ownernameErr === "" ||
+                            ownernameErr === "undefined" ||
+                            accountnameErr === "" ||
+                            accountnameErr === "undefined"
+                              ? "32px"
+                              : "12px",
+                        }}
+                      >
+                        <div className="col-sm-3">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="whtownername"
+                            placeHolder="Owner Name"
+                            value={
+                              this.state.accInfo
+                                ? userData.ownerRows[0].firstname + " " + userData.ownerRows[0].lastname
+                                : userData.whtownername
+                            }
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            read-only={this.state.accInfo ? "true" : "false"}
+                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                          />
+                          <div>{ownernameErr && <span className="error">{ownernameErr} </span>}</div>
+                        </div>
+                        <div className="col-sm-6">
+                          <label className="font-weight-bold">
+                            <FormattedMessage id="createUser.sameAsPersonalInfo" />
+                          </label>
+                          <CustomSwitch
+                            checked={this.state.accInfo}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            name="accInfo"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        className="row"
+                        style={{
+                          width: "80%",
+                          marginTop:
+                            ownernameErr === "" ||
+                            ownernameErr === "undefined" ||
+                            accountnameErr === "" ||
+                            accountnameErr === "undefined"
+                              ? "32px"
+                              : "12px",
+                        }}
+                      >
+                        {locationList}
+                      </div>
+                      <div className="row" style={{ width: "81%" }}>
+                        <div className="col-md-8">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="billingstreet"
+                            placeHolder="Street"
+                            value={this.state.accInfo ? userData.deliverystreet : userData.billingstreet}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            read-only={this.state.accInfo ? "true" : "false"}
+                            width="96%"
+                          />
+                          {!accInfo && billingstreetErr && <span className="error">{billingstreetErr} </span>}
+                        </div>
+                        <div className="col-sm-4">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="billingzipcode"
+                            placeHolder="Postal Code"
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                            read-only={this.state.accInfo ? "true" : "false"}
+                            value={this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode}
+                          />
+                          {!accInfo && billingzipcodeErr && <span className="error">{billingzipcodeErr} </span>}
+                        </div>
                       </div>
                     </div>
-                    <div className="col-sm-6">
-                      <label className="font-weight-bold">
-                        Same as Personal Info
-                      </label>
-                      <CustomSwitch
-                        checked={this.state.accInfo}
-                        onChange={(e: any) =>
-                          this.handleChange("", e, "", "otherSteps", "")
-                        }
-                        name="accInfo"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    className="row"
-                    style={{
-                      width: "80%",
-                      marginTop:
-                      (ownernameErr === "" || ownernameErr === 'undefined' || accountnameErr === "" ||  accountnameErr === 'undefined')
-                          ? "32px"
-                          : "12px",
-                    }}
-                  >
-                    {locationList}
-                  </div>
-                  <div className="row" style={{ width: "81%" }}>
-                    <div className="col-md-8">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="billingstreet"
-                        placeHolder="Street"
-                        value={
-                          this.state.accInfo
-                            ? userData.deliverystreet
-                            : userData.billingstreet
-                        }
-                        onChange={(e: any) =>
-                          this.handleChange("", e, "", "otherSteps", "")
-                        }
-                        read-only={this.state.accInfo ? "true" : "false"}
-                        width="96%"
-                      />
-                      {!accInfo && billingstreetErr && (
-                        <span className="error">{billingstreetErr} </span>
-                      )}
-                    </div>
-                    <div className="col-sm-4">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="billingzipcode"
-                        placeHolder="Postal Code"
-                        onChange={(e: any) =>
-                          this.handleChange("", e, "", "otherSteps", "")
-                        }
-                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
-                        read-only={this.state.accInfo ? "true" : "false"}
-                        value={
-                          this.state.accInfo
-                            ? userData.deliveryzipcode
-                            : userData.billingzipcode
-                        }
-                      />
-                      {!accInfo && billingzipcodeErr && (
-                        <span className="error">{billingzipcodeErr} </span>
-                      )}
-                    </div>
-                  </div>
-                  </div>
-                  }
+                  )}
                 </>
               )}
             </div>
@@ -3626,45 +3161,32 @@ asahandleRemoveSpecificRow = (idx: any) => () => {
               marginLeft:
                 currentStep === 1
                   ? "350px"
-                  : currentStep === 3 &&
-                    this.props.location?.page === "validate"
+                  : currentStep === 3 && this.props.location?.page === "validate"
                   ? "200px"
                   : "275px",
             }}
           >
             <div className="">
               {currentStep !== 1 && (
-                <button
-                  className="cus-btn-user reset buttonStyle"
-                  onClick={(e) => this.handleClick("back", e)}
-                >
+                <button className="cus-btn-user reset buttonStyle" onClick={(e) => this.handleClick("back", e)}>
                   <span>
                     <img src={ArrowIcon} alt="" className="arrow-i" />
                   </span>
-                  Back
+                  <FormattedMessage id="button.back" />
                 </button>
               )}
               {isEditPage && currentStep === 1 && (
-                <button
-                  className="cus-btn-user reset buttonStyle"
-                  onClick={() => this.props.history.push("/userList")}
-                >
-                  Cancel
+                <button className="cus-btn-user reset buttonStyle" onClick={() => this.props.history.push("/userList")}>
+                  <FormattedMessage id="button.cancel" />
                 </button>
               )}
-              <button
-                className="cus-btn-user reset buttonStyle"
-                onClick={() => this.reset()}
-              >
-                Reset All
+              <button className="cus-btn-user reset buttonStyle" onClick={() => this.reset()}>
+                <FormattedMessage id="button.resetAll" />
               </button>
               {nextButton}
               {this.props.location?.page === "validate" && currentStep === 3 && (
-                <button
-                  className="btn buttonStyle dec-btn-user"
-                  onClick={() => this.declineUser()}
-                >
-                  Decline
+                <button className="btn buttonStyle dec-btn-user" onClick={() => this.declineUser()}>
+                  <FormattedMessage id="button.decline" />
                 </button>
               )}
             </div>
@@ -3679,7 +3201,7 @@ const mapStateToProps = ({ common: { isLoader, geoLevel1List, errorMessage } }: 
   return {
     isLoader,
     geoLevel1List,
-    errorMessage
+    errorMessage,
   };
 };
 

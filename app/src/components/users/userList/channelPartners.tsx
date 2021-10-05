@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router-dom";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -512,7 +513,7 @@ class ChannelPartners extends Component<Props, States> {
     let res = [];
     res.push(
       <th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "username", allChannelPartners, isAsc)} key="username">
-        {"USER NAME"}
+        {<FormattedMessage id="channelPartner.username" />}
         {this.tableCellIndex !== undefined ? (
           this.tableCellIndex === 0 ? (
             <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
@@ -528,7 +529,7 @@ class ChannelPartners extends Component<Props, States> {
         onClick={(e) => this.handleSort(e, "ownerphonenumber", allChannelPartners, isAsc)}
         key="ownerphonenumber"
       >
-        {"MOBILE#"}
+        {<FormattedMessage id="channelPartner.mobile" />}
         {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
       </th>
     );
@@ -539,7 +540,7 @@ class ChannelPartners extends Component<Props, States> {
           onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
           key="whtaccountname"
         >
-          {"STORE NAME"}
+          {<FormattedMessage id="channelPartner.storeName" />}
           {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
         </th>
       );
@@ -550,7 +551,7 @@ class ChannelPartners extends Component<Props, States> {
           onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
           key="whtaccountname"
         >
-          {"STORE NAME"}
+          {<FormattedMessage id="channelPartner.storeName" />}
           {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
         </th>
       );
@@ -562,7 +563,7 @@ class ChannelPartners extends Component<Props, States> {
           onClick={(e) => this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)}
           key="ownerfirstname"
         >
-          {"OWNER NAME"}
+          {<FormattedMessage id="channelPartner.ownerName" />}
           {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
         </th>
       );
@@ -573,7 +574,7 @@ class ChannelPartners extends Component<Props, States> {
           onClick={(e) => this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)}
           key="ownerfirstname"
         >
-          {"OWNER NAME"}
+          {<FormattedMessage id="channelPartner.ownerName" />}
           {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
         </th>
       );
@@ -604,25 +605,25 @@ class ChannelPartners extends Component<Props, States> {
     if (this.state.partnerType.type === "Retailer") {
       res.push(
         <th style={{ width: "9%", cursor: "default" }} key="staff">
-          {"STAFF COUNT"}
+          {<FormattedMessage id="channelPartner.staffCount" />}
         </th>
       );
     }
     res.push(
       <th style={{ width: "8%", cursor: "default" }} key="status">
-        {"STATUS"}
+        {<FormattedMessage id="channelPartner.status" />}
       </th>
     );
     if (this.state.partnerType.type === "Retailer") {
       res.push(
         <th style={{ width: "8%", cursor: "default", textAlign: "center" }} key="updatedBy">
-          {"UPDATED BY"}
+          {<FormattedMessage id="channelPartner.updatedBy" />}
         </th>
       );
     } else {
       res.push(
         <th style={{ width: "7%", cursor: "default", textAlign: "center" }} key="updatedBy">
-          {"UPDATED BY"}
+          {<FormattedMessage id="channelPartner.uipdatedBy" />}
         </th>
       );
     }
@@ -915,12 +916,12 @@ class ChannelPartners extends Component<Props, States> {
             isOwnerPhoneEistsInDB.length ||
             isStaffPhoneEistsInDB.length
           ) {
-            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+            owners[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.numberExist" />;
           } else {
             owners[idx].errObj.mobilenumberErr = "";
           }
         } else {
-          owners[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+          owners[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.enterMobile" />;
         }
       } else if (e.target.name === "active") {
         owners[idx][e.target.name] = e.target.checked;
@@ -936,9 +937,17 @@ class ChannelPartners extends Component<Props, States> {
       }));
       if (e.target?.name) {
         if (e.target?.name === "firstname") {
-          owners[idx].errObj.firstNameErr = owners[idx].firstname ? "" : "Please enter the First Name";
+          owners[idx].errObj.firstNameErr = owners[idx].firstname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterFirstName" />
+          );
         } else if (e.target?.name === "lastname") {
-          owners[idx].errObj.lastNameErr = owners[idx].lastname ? "" : "Please enter the last Name";
+          owners[idx].errObj.lastNameErr = owners[idx].lastname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterLastName" />
+          );
         }
       }
     } else if (type === "staff") {
@@ -953,12 +962,12 @@ class ChannelPartners extends Component<Props, States> {
             isOwnerPhoneEistsInDB.length ||
             isStaffPhoneEistsInDB.length
           ) {
-            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+            staffs[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.numberExist" />;
           } else {
             staffs[idx].errObj.mobilenumberErr = "";
           }
         } else {
-          staffs[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+          staffs[idx].errObj.mobilenumberErr = <FormattedMessage id="createUser.error.enterMobile" />;
         }
         staffs[idx]["mobilenumber"] = val;
       } else if (e.target.name === "active") {
@@ -975,9 +984,17 @@ class ChannelPartners extends Component<Props, States> {
       }));
       if (e.target?.name) {
         if (e.target?.name === "firstname") {
-          staffs[idx].errObj.firstNameErr = staffs[idx].firstname ? "" : "Please enter the First Name";
+          staffs[idx].errObj.firstNameErr = staffs[idx].firstname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterFirstName" />
+          );
         } else if (e.target?.name === "lastname") {
-          staffs[idx].errObj.lastNameErr = staffs[idx].lastname ? "" : "Please enter the last Name";
+          staffs[idx].errObj.lastNameErr = staffs[idx].lastname ? (
+            ""
+          ) : (
+            <FormattedMessage id="createUser.error.enterLastName" />
+          );
         }
       }
     } else {
@@ -1063,7 +1080,7 @@ class ChannelPartners extends Component<Props, States> {
       } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
-        staffdetails[idx].errObj.emailErr = "Please enter a valid email";
+        staffdetails[idx].errObj.emailErr = <FormattedMessage id="createUser.error.enterValidEmail" />;
       }
     }
     if (type === "owner") {
@@ -1072,7 +1089,7 @@ class ChannelPartners extends Component<Props, States> {
       } else if (value === "") {
         ownerRows[idx].errObj.emailErr = "";
       } else {
-        ownerRows[idx].errObj.emailErr = "Please enter a valid email";
+        ownerRows[idx].errObj.emailErr = <FormattedMessage id="createUser.error.enterValidEmail" />;
       }
     }
     this.setState((prevState: any) => ({
@@ -1095,14 +1112,18 @@ class ChannelPartners extends Component<Props, States> {
         mobilenumberErr: userInfo.errObj.mobilenumberErr,
       };
 
-      errObj.firstNameErr = userInfo.firstname ? "" : "Please enter the First Name";
-      errObj.lastNameErr = userInfo.lastname ? "" : "Please enter the last Name";
+      errObj.firstNameErr = userInfo.firstname ? "" : <FormattedMessage id="createUser.error.enterFirstName" />;
+      errObj.lastNameErr = userInfo.lastname ? "" : <FormattedMessage id="createUser.error.enterLastName" />;
 
-      if (userInfo.mobilenumber && errObj.mobilenumberErr !== "Phone Number Exists") {
+      if (userInfo.mobilenumber && errObj.mobilenumberErr !== <FormattedMessage id="createUser.error.numberExist" />) {
         errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
       } else {
         errObj.mobilenumberErr =
-          errObj.mobilenumberErr === "Phone Number Exists" ? errObj.mobilenumberErr : "Please enter the mobile number";
+          errObj.mobilenumberErr === <FormattedMessage id="createUser.error.numberExist" /> ? (
+            errObj.mobilenumberErr
+          ) : (
+            <FormattedMessage id="createUser.error.enterMobile" />
+          );
       }
 
       userData.ownerRows[idx].errObj = errObj;
@@ -1130,14 +1151,18 @@ class ChannelPartners extends Component<Props, States> {
         mobilenumberErr: userInfo.errObj.mobilenumberErr,
         isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
       };
-      errObj.firstNameErr = userInfo.firstname ? "" : "Please enter the First Name";
-      errObj.lastNameErr = userInfo.lastname ? "" : "Please enter the last Name";
+      errObj.firstNameErr = userInfo.firstname ? "" : <FormattedMessage id="createUser.error.enterFirstName" />;
+      errObj.lastNameErr = userInfo.lastname ? "" : <FormattedMessage id="createUser.error.enterLastName" />;
 
-      if (userInfo.mobilenumber && errObj.mobilenumberErr !== "Phone Number Exists") {
+      if (userInfo.mobilenumber && errObj.mobilenumberErr !== <FormattedMessage id="createUser.error.numberExist" />) {
         errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
       } else {
         errObj.mobilenumberErr =
-          errObj.mobilenumberErr === "Phone Number Exists" ? errObj.mobilenumberErr : "Please enter the mobile number";
+          errObj.mobilenumberErr === <FormattedMessage id="createUser.error.numberExist" /> ? (
+            errObj.mobilenumberErr
+          ) : (
+            <FormattedMessage id="createUser.error.enterMobile" />
+          );
       }
 
       userData.staffdetails[idx].errObj = errObj;
@@ -1383,7 +1408,7 @@ class ChannelPartners extends Component<Props, States> {
                 </div>
                 <div style={{ textAlign: "center" }}>
                   <label style={{ fontSize: "16px", marginTop: "11px" }}>
-                    Are you sure you want to delete store's staff?
+                    <FormattedMessage id="createUser.storeAlert" />
                   </label>
                 </div>
                 <DialogActions>
@@ -1393,7 +1418,7 @@ class ChannelPartners extends Component<Props, States> {
                     className="admin-popup-btn close-btn"
                     style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
                   >
-                    Cancel
+                    <FormattedMessage id="button.cancel" />
                   </MuiButton>
                   <MuiButton
                     onClick={this.deleteStaff}
@@ -1401,7 +1426,7 @@ class ChannelPartners extends Component<Props, States> {
                     autoFocus
                     style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
                   >
-                    DELETE
+                    <FormattedMessage id="button.delete" />
                   </MuiButton>
                 </DialogActions>
               </div>
@@ -1428,16 +1453,22 @@ class ChannelPartners extends Component<Props, States> {
                     userList.userstatus === "INACTIVE" ||
                     userList.userstatus === "DECLINED" ? (
                       <span>
-                        Are you sure you want to change &nbsp;
+                        <FormattedMessage id="channelPartner.areYouWantToChange" /> &nbsp;
                         <strong>
                           {_.startCase(_.toLower(userList?.whtownername))} -{" "}
                           {_.startCase(_.toLower(userList?.whtaccountname))}
                         </strong>
-                        &nbsp; account to
+                        &nbsp; <FormattedMessage id="channelPartner.accountTo" /> &nbsp;
                         {userList.userstatus === "ACTIVE" ? (
-                          <span> Inactive </span>
+                          <span>
+                            {" "}
+                            <FormattedMessage id="channelPartner.inactive" />{" "}
+                          </span>
                         ) : userList.userstatus === "INACTIVE" || userList.userstatus === "DECLINED" ? (
-                          <span> active</span>
+                          <span>
+                            {" "}
+                            <FormattedMessage id="channelPartner.active" />
+                          </span>
                         ) : (
                           ""
                         )}
@@ -1445,12 +1476,14 @@ class ChannelPartners extends Component<Props, States> {
                       </span>
                     ) : userList.userstatus === "PENDING" ? (
                       <span>
-                        Would you like to validate & approve&nbsp;
+                        <FormattedMessage id="channelPartner.WouldYouLikeToValidate1" />
+                        &nbsp;
                         <strong>
                           {_.startCase(_.toLower(userList?.whtownername))} -{" "}
                           {_.startCase(_.toLower(userList?.whtaccountname))}
                         </strong>
-                        &nbsp;account to use Bayer Rewards mobile application?
+                        &nbsp;
+                        <FormattedMessage id="channelPartner.WouldYouLikeToValidate2" />
                       </span>
                     ) : (
                       ""
@@ -1464,7 +1497,7 @@ class ChannelPartners extends Component<Props, States> {
                     className="admin-popup-btn close-btn"
                     style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
                   >
-                    Cancel
+                    <FormattedMessage id="button.cancel" />
                   </MuiButton>
                   <MuiButton
                     onClick={this.changeStatus}
@@ -1474,11 +1507,13 @@ class ChannelPartners extends Component<Props, States> {
                   >
                     {userList.userstatus === "ACTIVE" ||
                     userList.userstatus === "INACTIVE" ||
-                    userList.userstatus === "DECLINED"
-                      ? "Change"
-                      : userList.userstatus === "PENDING"
-                      ? "Validate & Approve"
-                      : ""}
+                    userList.userstatus === "DECLINED" ? (
+                      <FormattedMessage id="button.change" />
+                    ) : userList.userstatus === "PENDING" ? (
+                      <FormattedMessage id="button.validateandapprove" />
+                    ) : (
+                      ""
+                    )}
                   </MuiButton>
                 </DialogActions>
               </div>
@@ -1512,7 +1547,7 @@ class ChannelPartners extends Component<Props, States> {
                         >
                           <div className="col-sm-3" style={{ marginLeft: "46px" }}>
                             <label className="font-weight-bold">
-                              Has store staff?(Max 4)
+                              <FormattedMessage id="createUser.hasStoreStaff" />
                               <input
                                 type="checkbox"
                                 style={{ marginLeft: "10px" }}
@@ -1538,18 +1573,36 @@ class ChannelPartners extends Component<Props, States> {
                             <table className="table table-borderless">
                               <thead>
                                 <tr>
-                                  <th>Type</th>
-                                  <th>First Name</th>
-                                  <th>Last Name</th>
-                                  <th>Mobile Number</th>
-                                  <th>Email(Optional)</th>
-                                  <th>Active?</th>
+                                  <th>
+                                    <FormattedMessage id="createUser.type" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.firstname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.lastname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.mobilenumber" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.email" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.active" />
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
                                 {userData.ownerRows?.map((item: any, idx: number) => (
                                   <tr key={`ownerRows` + idx}>
-                                    {idx === 0 ? <td className="font-weight-bold">Owner</td> : <td>{null}</td>}
+                                    {idx === 0 ? (
+                                      <td className="font-weight-bold">
+                                        <FormattedMessage id="createUser.owner" />
+                                      </td>
+                                    ) : (
+                                      <td>{null}</td>
+                                    )}
                                     <td>
                                       <Input
                                         type="text"
@@ -1696,12 +1749,24 @@ class ChannelPartners extends Component<Props, States> {
                             <table className="table table-borderless">
                               <thead style={{ display: "none" }}>
                                 <tr>
-                                  <th>Type</th>
-                                  <th>First Name</th>
-                                  <th>Last Name</th>
-                                  <th>Mobile Number</th>
-                                  <th>Email(Optional)</th>
-                                  <th>Active?</th>
+                                  <th>
+                                    <FormattedMessage id="createUser.type" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.firstname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.lastname" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.mobilenumber" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.email" />
+                                  </th>
+                                  <th>
+                                    <FormattedMessage id="createUser.active" />
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -1710,8 +1775,8 @@ class ChannelPartners extends Component<Props, States> {
                                     <tr key={`staffRows` + staffidx}>
                                       {staffidx === 0 ? (
                                         <td className="font-weight-bold">
-                                          Store <br />
-                                          Staffs
+                                          <FormattedMessage id="createUser.store" /> <br />{" "}
+                                          <FormattedMessage id="createUser.staffs" />
                                         </td>
                                       ) : (
                                         <td>{null}</td>
@@ -1902,7 +1967,7 @@ class ChannelPartners extends Component<Props, States> {
                     className="cus-btn-user reset buttonStyle"
                     style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
                   >
-                    Cancel
+                    <FormattedMessage id="button.cancel" />
                   </button>
                   <button
                     onClick={(e: any) => {
@@ -1911,7 +1976,7 @@ class ChannelPartners extends Component<Props, States> {
                     className="cus-btn-user buttonStyle"
                     style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
                   >
-                    Update
+                    <FormattedMessage id="button.update" />
                     <span className="staffcount">
                       <img src={ArrowIcon} alt="" className="arrow-i" /> <img src={RtButton} alt="" className="layout" />
                     </span>

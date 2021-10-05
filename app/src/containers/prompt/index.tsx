@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router";
+import { FormattedMessage } from "react-intl";
 import AdminPopup from "../../containers/components/dialog/AdminPopup";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -42,7 +43,7 @@ interface Props {
  * @returns
  */
 const RouterPrompt: React.FC<Props> = (props: Props) => {
-  const { when, onOK, onCancel} = props;
+  const { when, onOK, onCancel } = props;
   const history = useHistory();
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
@@ -110,28 +111,22 @@ const RouterPrompt: React.FC<Props> = (props: Props) => {
         <div className="popup-container">
           <div className="popup-content">
             <div className={`popup-title`}>
-              <p>Confirmation</p>
+              <p>
+                <FormattedMessage id="createUser.unsavedConfirmation" />
+              </p>
             </div>
           </div>
           <div style={{ textAlign: "center" }}>
             <label>
-              There are unsaved changes. Are you sure want to leave this page ?
+              <FormattedMessage id="createUser.unsavedPrompt" />
             </label>
           </div>
           <DialogActions>
-            <Button
-              autoFocus
-              onClick={handleCancel}
-              className="admin-popup-btn close-btn"
-            >
-              Cancel
+            <Button autoFocus onClick={handleCancel} className="admin-popup-btn close-btn">
+              <FormattedMessage id="button.cancel" />
             </Button>
-            <Button
-              onClick={handleOK}
-              className="admin-popup-btn filter-scan"
-              autoFocus
-            >
-              Ok
+            <Button onClick={handleOK} className="admin-popup-btn filter-scan" autoFocus>
+              <FormattedMessage id="button.ok" />
             </Button>
           </DialogActions>
         </div>

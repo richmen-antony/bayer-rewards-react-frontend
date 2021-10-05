@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { FormattedMessage } from "react-intl";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
@@ -211,7 +212,6 @@ function TabPanel(props: TabPanelProps) {
 // 	</div>
 // ));
 
-
 class UserList extends Component<Props, States> {
   timeOut: any;
   loggedUserInfo: any;
@@ -295,8 +295,7 @@ class UserList extends Component<Props, States> {
     let stateValue: any = "";
     let downloadURL: string = "";
     let downloadName: string = "";
-    const { downloadUserList, downloadThirdPartyList, downloadInternalList } =
-      apiURL;
+    const { downloadUserList, downloadThirdPartyList, downloadInternalList } = apiURL;
     if (!this.state.value) {
       stateValue = this.channelPartnerRef?.state;
       downloadURL = downloadUserList;
@@ -313,23 +312,12 @@ class UserList extends Component<Props, States> {
 
     let data = {
       countrycode: this.getStoreData.countryCode,
-      usertype: !this.state.value
-        ? "EXTERNAL"
-        : this.state.value === 2
-        ? stateValue.internalUserType
-        : null,
+      usertype: !this.state.value ? "EXTERNAL" : this.state.value === 2 ? stateValue.internalUserType : null,
       partnertype: this.state.value === 2 ? null : stateValue.partnerType.type,
       isfiltered: stateValue.isFiltered,
     };
-    let {
-      isregionmapped,
-      status,
-      lastmodifieddatefrom,
-      lastmodifieddateto,
-      geolevel1,
-      geolevel2,
-      geolevel3,
-    }: any = stateValue.selectedFilters;
+    let { isregionmapped, status, lastmodifieddatefrom, lastmodifieddateto, geolevel1, geolevel2, geolevel3 }: any =
+      stateValue.selectedFilters;
     if (stateValue.isFiltered) {
       let filter = {
         isfiltered: true,
@@ -431,11 +419,7 @@ class UserList extends Component<Props, States> {
                 <div className={classes?.root}>
                   <div className={classes?.demo1}>
                     <div className="tabs">
-                      <AntTabs
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                        aria-label="ant example"
-                      >
+                      <AntTabs value={this.state.value} onChange={this.handleChange} aria-label="ant example">
                         <AntTab label="Channel Partners" value={0} />
                         {/* <AntTab label="Third Party Users" value={1} />
                         <AntTab label="Internal Users" value={2} /> */}
@@ -449,28 +433,14 @@ class UserList extends Component<Props, States> {
               {!changeLogOpen && (
                 <>
                   <div>
-                    <button
-                      className="form-control changeLogs"
-                      onClick={() => this.handleChangeLog()}
-                    >
-                      <img src={Logs} alt={NoImage} data-testid="changelog" />{" "}
-                      <span>Change Logs</span>
+                    <button className="form-control changeLogs" onClick={() => this.handleChangeLog()}>
+                      <img src={Logs} alt={NoImage} data-testid="changelog" /> <span>Change Logs</span>
                     </button>
                   </div>
 
                   <div>
-                    <button
-                      className="btn btn-primary"
-                      onClick={this.download}
-                      style={{ backgroundColor: "#1F445A" }}
-                    >
-                      <img
-                        src={Download}
-                        width="17"
-                        alt={NoImage}
-                        data-testid="download"
-                      />{" "}
-                      <span>Download</span>
+                    <button className="btn btn-primary" onClick={this.download} style={{ backgroundColor: "#1F445A" }}>
+                      <img src={Download} width="17" alt={NoImage} data-testid="download" /> <span>Download</span>
                     </button>
                   </div>
                   {/* <i
