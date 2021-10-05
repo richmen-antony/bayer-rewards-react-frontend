@@ -1,68 +1,152 @@
 {
-    "button": {
-        "getStartedButton": "Get Started",
-        "login": "Login",
-        "resetAll": "Reset All",
-        "next": "Next",
-        "back": "Back",
-        "create": "Create",
-        "cancel": "Cancel",
-        "update": "Update",
-        "change": "Change",
-        "delete": "DELETE",
-        "filterScans": "Filter scans"
+  "button": {
+    "getStartedButton": "Get Started",
+    "login": "Login",
+    "resetAll": "Reset All",
+    "next": "Next",
+    "back": "Back",
+    "create": "Create",
+    "cancel": "Cancel",
+    "update": "Update",
+    "change": "Change",
+    "delete": "DELETE",
+    "filterScans": "Filter scans",
+    "apply": "Apply",
+    "download": "Download"
+  },
+  "placeholder": {
+    "username": "Enter username",
+    "password": "Enter password",
+    "search": "Search (min 3 letters)",
+    "userType": "User Type"
+  },
+  "pagination": {
+    "sales": "Sales",
+    "logs": "Logs",
+    "users": "Users",
+    "total": "Total",
+    "rowsPerPage": "Rows Per Page",
+    "goToPage": "Go to Page"
+  },
+  "sideBar": {
+    "dashboard": "Dashboard",
+    "management": "MANAGEMENT",
+    "devConfig": "Dev Config",
+    "logs": "LOGS",
+    "scanLogs": "Scan Logs",
+    "createNewUser": "Create New User",
+    "consolidatedScans": "Consolidated Scans",
+    "inventory": "Inventory",
+    "userList": "User List",
+    "orderHistory": "Order History",
+    "logout": "Logout"
+  },
+  "landing": {
+    "signIn": "Sign In",
+    "welcomeTitle": "Welcome to Bayer Rewards",
+    "welcomeMessage": "Bayer Rewards Plus application helps in channel inventory tracking and Advisor sales conversion. Through this portal administrators will be able to perform all setup activites required on daily/season basis and RSMs will be able to track the scan logs.",
+    "thankYou": "Thank you",
+    "loggedOut": "You've successfully logged out"
+  },
+  "login": {
+    "userName": "Username",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "login": "Login"
+  },
+  "dashboard": {
+    "totalUsers": "Total Users",
+    "totalOrders": "Total Orders",
+    "createNewUser": "Create New User",
+    "order": "Order",
+    "devAdmin": "Dev Admin",
+    "scanLogs": "Scan Logs"
+  },
+  "FULFILLED": "FULFILLED",
+  "PENDING": "PENDING",
+  "CANCELLED": "CANCELLED",
+  "EXPIRED": "EXPIRED",
+  "status": "STATUS",
+  "orderDate": "Ordered Date",
+  "lastUpdateDate": "Last Updated Date",
+  "sixMonthsInterval": "6 months interval",
+  "noRecords": "No records found",
+  "order": {
+    "history": "Order History",
+    "advisororderid": "ORDER ID",
+    "username": "RETAILER NAME/ID",
+    "totalintendedquantity": "INTENDED QTY",
+    "totalorderedquantity": "ORDERED QTY",
+    "totalcost": "TOTAL COST",
+    "advisorname": "ADVISOR NAME/ID",
+    "farmername": "FARMER NAME/ID",
+    "orderstatus": "STATUS",
+    "lastupdateddate": "UPDATED DATE",
+    "geolevel1": "REGION",
+    "ordereddate": "ORDERED DATE"
+  },
+  "scanLog": {
+    "title": "Scan Logs",
+    "sendGoodsTitle": "Send Goods",
+    "sellToFarmerTitle": "Sell To Farmer",
+    "scannedBy": "Scanned By",
+    "scanType": "Scan Type",
+    "storeNameHeader": "STORE NAME",
+    "regionHeader": "REGION",
+    "retailerNameIdHeader": "RETAILER NAME/ID",
+    "updatedDtHeader": "UPDATED DATE",
+    "labelBatchIdHeader": "LABEL/BATCH ID",
+    "productNameHeader": "PRODUCT NAME",
+    "scannedOnHeader": "SCANNED ON",
+    "scanByHeader": "SCANNED BY",
+    "expDateHeader": "EXPIRY DATE",
+    "distNameIdHeader": "DISTRIBUTOR NAME/ID",
+    "productPopup": {
+      "orderDate": "Ordered date",
+      "fullfilledDate": "Fulfilled date",
+      "advisorIdName": "Advisor ID & Name",
+      "fullfilledIdName": "Fulfilled by ID & Name",
+      "farmerIdName": "Farmer ID & Name",
+      "name": "NAME",
+      "type": "TYPE",
+      "intendedQty": "INTENDED QTY",
+      "orderQty": "ORDERED QTY",
+      "totalCost": "TOTAL COST",
+      "labelId": "Label ID",
+      "reason": "Reason",
+      "batch": "Batch",
+      "invalidScans": "Invalid Scans",
+      "total": "Total",
+      "dispatchDt": "Dispatched date",
+      "receivedDt": "Received date",
+      "warhouseNameId": "Warehouse ID & Name",
+      "scanIdName": "Scanned by ID & Name",
+      "distNameId": "Distributor ID & Name",
+      "dispatchedQty": "DISPATCHED QTY",
+      "expDate": "Expiry Date"
     },
-    "placeholder": {
-        "username": "Enter username",
-        "password": "Enter password",
-        "search": "Search (min 3 letters)",
-        "userType": "User Type"
+    "filterScanPopup": {
+      "userName": "Username",
+      "storeName": "Store Name",
+      "phoneNo": "Phone Number",
+      "postalCode": "Postal Code"
     },
-    "pagination": {
-        "sales": "Sales",
-        "logs": "Logs",
-        "users": "Users",
-        "total": "Total",
-        "rowsPerPage": "Rows Per Page",
-        "goToPage":"Go to Page"
-
+    "sg": {
+      "deliveryHeader": "DELIVERY",
+      "cusNameIdHeader": "CUSTOMER NAME/ID",
+      "channelTypeHeader": "CHANNEL TYPE",
+      "warehouseNameIdHeader": "WAREHOUSE NAME/ID",
+      "scannedByHeader": "SCANNED BY",
+      "totalQtyHeader": "TOTAL QTY",
+      "gdStatusHeader": "GOODS STATUS"
     },
-    "sideBar": {
-        "dashboard": "Dashboard",
-        "management": "MANAGEMENT",
-        "devConfig": "Dev Config",
-        "logs": "LOGS",
-        "scanLogs": "Scan Logs",
-        "createNewUser": "Create New User",
-        "consolidatedScans": "Consolidated Scans",
-        "inventory": "Inventory",
-        "userList": "User List",
-        "orderHistory": "Order History",
-        "logout": "Logout"
-    },
-    "landing": {
-        "signIn": "Sign In",
-        "welcomeTitle": "Welcome to Bayer Rewards",
-        "welcomeMessage": "Bayer Rewards Plus application helps in channel inventory tracking and Advisor sales conversion. Through this portal administrators will be able to perform all setup activites required on daily/season basis and RSMs will be able to track the scan logs.",
-        "thankYou": "Thank you",
-        "loggedOut": "You've successfully logged out"
-    },
-    "login": {
-        "userName": "Username",
-        "password": "Password",
-        "rememberMe": "Remember me",
-        "login": "Login"
-    },
-    "dashboard": {
-        "totalUsers": "Total Users",
-        "totalOrders": "Total Orders",
-        "createNewUser": "Create New User",
-        "order": "Order",
-        "devAdmin": "Dev Admin",
-        "scanLogs": "Scan Logs"
-    },
-    "FULFILLED": "FULFILLED",
-    "PENDING": "PENDING",
-    "CANCELLED": "CANCELLED",
-    "EXPIRED": "EXPIRED"
+    "st": {
+      "farmerNameIdHeader": "FARMER NAME/ID",
+      "orderIdHeader": "ORDER ID",
+      "totalCostHeader": "TOTAL COST",
+      "advNameIdHeader": "ADVISOR NAME/ID",
+      "farNamePhHeader": "FARMER NAME/PHONE NO",
+      "statusHeader": "STATUS"
+    }
+  }
 }

@@ -1,26 +1,26 @@
-import React, { Suspense, useState } from "react";
+import React, {Suspense, useState} from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Switch } from "react-router-dom";
-import { Provider } from "react-redux";
+import {BrowserRouter, Switch} from "react-router-dom";
+import {Provider} from "react-redux";
 // import store from './store/store';
-import { store } from "./redux/store/index";
+import {store} from "./redux/store/index";
 import PrivateRoute from "./routes/privateRoute";
 import PublicRoute from "./routes/publicRoute";
-import { ROUTE } from "./routes/routes";
+import {ROUTE} from "./routes/routes";
 import Layout from "./containers/layout";
 import Loader from "./utility/widgets/loader";
-import { ToastContainer } from "react-toastify";
+import {ToastContainer} from "react-toastify";
 // import { clearLocalStorageData } from "./utility/base/localStore";
 // import Cookies from "js-cookie";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/scss/index.scss";
 // To enable isRemember Need to logged out
-import { getLocalStorageData } from "./utility/base/localStore";
+import {getLocalStorageData} from "./utility/base/localStore";
 import Authorization from "./utility/authorization";
 import AppProvider from "./containers/context";
-import { IntlProvider } from "react-intl";
+import {IntlProvider} from "react-intl";
 import flatten from "flat";
 import messages_en from "./lang/en.json";
 import messages_es from "./lang/es.json";
@@ -60,22 +60,6 @@ const setRoutes = (currentLocale: any, handleChange: any) => {
     )
   );
 };
-
-// Define Type html tag section declaration
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      h8: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
-      h7: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      >;
-    }
-  }
-}
 
 // const getLData = localStorage.getItem("userData");
 // const getCData = Cookies.get("userData");
@@ -119,10 +103,7 @@ const App = () => {
 
   return (
     // <React.StrictMode>
-    <IntlProvider
-      locale={currentLocale}
-      messages={flatten(messages[currentLocale])}
-    >
+    <IntlProvider locale={currentLocale} messages={flatten(messages[currentLocale])}>
       <Provider store={store}>
         <BrowserRouter
           getUserConfirmation={(e: any, cb: any) => {

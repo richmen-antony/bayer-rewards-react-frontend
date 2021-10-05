@@ -155,9 +155,7 @@ const Filter: React.FC<Props> = (props: Props) => {
             name="selectedScannedBy"
             value={selectedScannedBy}
             options={scannedByList}
-            handleChange={(selectedOptions: any, e: any) =>
-              handleReactSelect(selectedOptions, e, notToggleDropdown)
-            }
+            handleChange={(selectedOptions: any, e: any) => handleReactSelect(selectedOptions, e, notToggleDropdown)}
             label="Scanned By"
             width="150px"
             inActiveFilter={notToggleDropdown}
@@ -171,9 +169,7 @@ const Filter: React.FC<Props> = (props: Props) => {
             label="Scan Type"
             width="150px"
             inActiveFilter={notToggleDropdown}
-            handleChange={(selectedOptions: any, e: any) =>
-              handleReactSelect(selectedOptions, e, notToggleDropdown)
-            }
+            handleChange={(selectedOptions: any, e: any) => handleReactSelect(selectedOptions, e, notToggleDropdown)}
           />
         )}
 
@@ -201,10 +197,7 @@ const Filter: React.FC<Props> = (props: Props) => {
         <div className="filter-right-side">
           {isPartner && (
             <div className="filter-partnertype">
-              <label
-                className="font-weight-bold pt-2"
-                style={{ color: "#363636", fontSize: "12px" }}
-              >
+              <label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
                 {internalUserTypeFilterHeading ? "User Type" : "Partner Type"}
               </label>
               <div className="partnertype-list">
@@ -214,9 +207,7 @@ const Filter: React.FC<Props> = (props: Props) => {
                       <span className="mr-2" key={index}>
                         <Button
                           color={
-                            selectedPartnerType.type === item
-                              ? "btn activeColor rounded-pill"
-                              : "btn rounded-pill boxColor"
+                            selectedPartnerType.type === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"
                           }
                           size="md"
                           onClick={(e: any) => handlePartnerChange(item)}
@@ -257,18 +248,10 @@ const Filter: React.FC<Props> = (props: Props) => {
 					)} */}
         <div className="filterRow">
           <Dropdown isOpen={dropdownOpenFilter} toggle={toggleFilter}>
-            <DropdownToggle>
-              {!dropdownOpenFilter && (
-                <img src={filterIcon} width="17" alt="filter" />
-              )}
-            </DropdownToggle>
+            <DropdownToggle>{!dropdownOpenFilter && <img src={filterIcon} width="17" alt="filter" />}</DropdownToggle>
             <DropdownMenu right>
               <div className="p-3" style={{ minWidth: "23rem" }}>
-                <i
-                  className="fa fa-filter boxed float-right"
-                  aria-hidden="true"
-                  onClick={toggleFilter}
-                ></i>
+                <i className="fa fa-filter boxed float-right" aria-hidden="true" onClick={toggleFilter}></i>
                 {children}
               </div>
             </DropdownMenu>

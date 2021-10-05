@@ -139,7 +139,6 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   const [filterSuccess, setFilterSuccess] = useState(Number);
   const [fiscalYear, setFiscalYear] = useState(new Date().getFullYear());
   const [viewType, setViewType] = useState(package_type[0]);
-  const [isDownloadWithFilter, setIsDownloadWithFilter] = useState<boolean>(false);
 
   const [selectedFilters, setSelectedFilters] = useState({
     productgroup: "ALL",

@@ -18,7 +18,8 @@ import { Alert } from "../../../utility/widgets/toaster";
 import ReactSelect from "../../../utility/widgets/dropdown/ReactSelect";
 import Distributor from "./Distributor";
 import Warehouse from "./Warehouse";
-import { RSM_ROLE, ADMIN_ROLE } from "../../../utility/constant";
+import { RSM_ROLE, ADMIN_ROLE, SCANNED_DATE, PRODUCT_GROUP } from "../../../utility/constant";
+import { FormattedMessage } from "react-intl";
 
 type PartnerTypes = {
   type: String;
@@ -89,7 +90,7 @@ class SendGoods extends Component<Props, States> {
       actions: ["All", "Distributor", "Retailer"],
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-      productCategories: ["ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
+      productCategories: PRODUCT_GROUP,
       status: ["ALL", "VALID", "INVALID"],
       // status: ["ALL", "FULFILLED", "EXPIRED", "DUPLICATE"],
       list: ["ALL", "Distributor", "Retailer"],
@@ -137,30 +138,7 @@ class SendGoods extends Component<Props, States> {
       partnerType: {
         type: "Distributors",
       },
-      scannedPeriodsList: [
-        { label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD") },
-        {
-          label: "This week (Sun - Sat)",
-          from: moment().startOf("week").format("YYYY-MM-DD"),
-          to: moment().endOf("week").format("YYYY-MM-DD"),
-        },
-        {
-          label: "Last 30 days",
-          from: moment().subtract(30, "days").format("YYYY-MM-DD"),
-          to: moment(new Date()).format("YYYY-MM-DD"),
-        },
-        {
-          label: "This year (Jan - Dec)",
-          from: moment().startOf("year").format("YYYY-MM-DD"),
-          to: moment().endOf("year").format("YYYY-MM-DD"),
-        },
-        {
-          label: "Prev. year (Jan - Dec)",
-          from: moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"),
-          to: moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"),
-        },
-        { label: "Custom", value: "" },
-      ],
+      scannedPeriodsList: SCANNED_DATE,
       scanTypeList: [
         { value: "SG - W2D", label: "SG - W2D" },
         { value: "SG - W2R", label: "SG - W2R" },

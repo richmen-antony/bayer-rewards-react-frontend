@@ -1,13 +1,26 @@
 {
-    "landing": {
-        "signIn": "Spanish sign in"
-    },
-    "placeholder": {
-        "search": "SpanishSearch (min 3 letters)"
-    },
-    "FULFILLED": "Spanish full",
-    "PENDING": "Spanish PENDING",
-    "CANCELLED": "SpanishCANCEL",
-    "EXPIRED": "SpanishEXP"
-    
+  "landing": {
+    "signIn": "Spanish sign in"
+  },
+  "placeholder": {
+    "search": "SpanishSearch (min 3 letters)"
+  },
+  "FULFILLED": "Spanish full",
+  "PENDING": "Spanish PENDING",
+  "CANCELLED": "SpanishCANCEL",
+  "EXPIRED": "SpanishEXP",
+  "order": {
+    "history": "Order History",
+    "advisororderid": "ORDER ID",
+    "username": "RETAILER NAME/ID",
+    "totalintendedquantity": "INTENDED QTY",
+    "totalorderedquantity": "ORDERED QTY",
+    "totalcost": "TOTAL COST",
+    "advisorname": "ADVISOR NAME/ID",
+    "farmername": "FARMER NAME/ID",
+    "orderstatus": "STATUS",
+    "lastupdateddate": "UPDATED DATE",
+    "geolevel1": "REGION",
+    "ordereddate": "ORDERED DATE"
+  }
 }

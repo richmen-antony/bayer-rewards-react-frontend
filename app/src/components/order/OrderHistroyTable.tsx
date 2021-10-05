@@ -30,7 +30,7 @@ import RtButton from "../../assets/icons/right_btn.svg";
 import { SearchInput } from "../../utility/widgets/input/search-input";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import { CustomButton } from "../../utility/widgets/button";
-import { OrderHistroyHeader } from "../../utility/constant";
+import { OrderHistroyHeader, PRODUCT_GROUP } from "../../utility/constant";
 import Cancel from "../../assets/images/cancel.svg";
 import PendingImg from "../../assets/images/not_activated.svg";
 import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
@@ -125,7 +125,7 @@ class OrderHistory extends Component<Props, States> {
       actions: ["All", "Distributor", "Retailer"],
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-      productCategories: ["ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
+      productCategories: PRODUCT_GROUP,
       status: ["FULFILLED", "PENDING", "CANCELLED", "EXPIRED"],
       list: ["ALL", "Distributor", "Retailer"],
       selectedFilters: {
@@ -538,7 +538,7 @@ class OrderHistory extends Component<Props, States> {
                   <div className="filter-right-side">
                     <div className="filter-status">
                       <label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
-                        STATUS
+                        <FormattedMessage id="status" />
                       </label>
                       <div className="status-list">
                         {this.state.status.map((item: any, index: number) => {
@@ -586,7 +586,10 @@ class OrderHistory extends Component<Props, States> {
                               </div>
                             )}
                             <label className="font-weight-bold pt-2" htmlFor="order-date">
-                              Ordered Date <span>(6 months interval)</span>
+                              <FormattedMessage id="orderDate" />{" "}
+                              <span>
+                                (<FormattedMessage id="sixMonthsInterval" />)
+                              </span>
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
@@ -620,7 +623,10 @@ class OrderHistory extends Component<Props, States> {
                             </div>
                             {dateErrMsg && <span className="error">{dateErrMsg} </span>}
                             <label className="font-weight-bold pt-2" htmlFor="update-date">
-                              Last Updated Date <span>(6 months interval)</span>
+                              <FormattedMessage id="lastUpdateDate" />
+                              <span>
+                                (<FormattedMessage id="sixMonthsInterval" />)
+                              </span>
                             </label>
                             <div className="d-flex">
                               <div className="user-filter-date-picker">
@@ -661,7 +667,7 @@ class OrderHistory extends Component<Props, States> {
                                 onClick={this.resetFilter}
                                 data-testid="reset-all"
                               >
-                                Reset All
+                                <FormattedMessage id="button.resetAll" />
                               </button>
                               <button
                                 className="cus-btn-scanlog-filter"
@@ -669,7 +675,7 @@ class OrderHistory extends Component<Props, States> {
                                 disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
                                 data-testid="apply"
                               >
-                                Apply
+                                <FormattedMessage id="button.apply" />
                                 <span>
                                   <img src={ArrowIcon} className="arrow-i" alt="" />{" "}
                                   <img src={RtButton} className="layout" alt="" />
@@ -690,7 +696,10 @@ class OrderHistory extends Component<Props, States> {
                         }}
                       >
                         <img src={Download} width="17" alt={NoImage} />
-                        <span style={{ padding: "15px" }}>Download</span>
+                        <span style={{ padding: "15px" }}>
+                          {" "}
+                          <FormattedMessage id="button.download" />
+                        </span>
                       </button>
                     </div>
                     {/* <i
@@ -718,7 +727,8 @@ class OrderHistory extends Component<Props, States> {
                               onClick={(e) => this.handleSort(e, value.key, allScanLogs, isAsc)}
                               key={index}
                             >
-                              {value.label}
+                              {/* {value.label} */}
+                              {value.key && <FormattedMessage id={`order.${[value.key]}`} />}
                               {value.label && this.tableCellIndex !== undefined ? (
                                 this.tableCellIndex === index ? (
                                   <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
@@ -1039,7 +1049,7 @@ class OrderHistory extends Component<Props, States> {
                     ) : (
                       <tr style={{ height: "250px" }}>
                         <td colSpan={10} className="no-records">
-                          No records found
+                          <FormattedMessage id="noRecords" />
                         </td>
                       </tr>
                     )}
@@ -1075,15 +1085,21 @@ class OrderHistory extends Component<Props, States> {
                   </div>
                   <div className="popup-content-row">
                     <div className="content-list">
-                      <label>Username</label>
+                      <label>
+                        <FormattedMessage id="scanLog.filterScanPopup.userName" />
+                      </label>
                       <p>{retailerPopupData.userid}</p>
                     </div>
                     <div className="content-list">
-                      <label>Store Name</label>
+                      <label>
+                        <FormattedMessage id="scanLog.filterScanPopup.storeName" />
+                      </label>
                       <p>{retailerPopupData.accountname}</p>
                     </div>
                     <div className="content-list">
-                      <label>Phone Number</label>
+                      <label>
+                        <FormattedMessage id="scanLog.filterScanPopup.phoneNo" />
+                      </label>
                       <p>{retailerPopupData.phonenumber}</p>
                     </div>
                     {this.state.locationData?.length > 0 &&
@@ -1100,7 +1116,9 @@ class OrderHistory extends Component<Props, States> {
                         );
                       })}
                     <div className="content-list">
-                      <label>Postal Code</label>
+                      <label>
+                        <FormattedMessage id="scanLog.filterScanPopup.postalCode" />
+                      </label>
                       <p>{retailerPopupData.billingzipcode}</p>
                     </div>
                   </div>
@@ -1109,7 +1127,7 @@ class OrderHistory extends Component<Props, States> {
             </DialogContent>
             <DialogActions>
               <CustomButton
-                label="Filter scans"
+                label={<FormattedMessage id="button.filterScans" />}
                 style={{
                   borderRadius: "30px",
                   backgroundColor: "#7eb343",

@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import SimpleDialog from "../../containers/components/dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -15,6 +15,7 @@ import FarmerDenied from "../../assets/icons/farmer_denied.svg";
 import CpproductImg from "../../assets/icons/cp_products.svg";
 import NoImg from "../../assets/images/no-image-circle.jpg";
 import * as myConstClass from "../../utility/constant";
+import { FormattedMessage } from "react-intl";
 
 const popupHeader = {
   title: "Order ID",
@@ -27,8 +28,6 @@ const DialogContent = withStyles((theme: Theme) => ({
     overflow: "hidden",
   },
 }))(MuiDialogContent);
-
-
 
 interface Props {
   open: boolean;
@@ -44,7 +43,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
   const [accordionView, handleAccordion] = React.useState(false);
   const [accordionId, setAccordionId] = React.useState("");
   const [accordion, setAccordion] = useState(false);
-  const [invalidScanLabel,setInvalidScanLabel]=useState({});;
+  const [invalidScanLabel, setInvalidScanLabel] = useState({});
 
   const handleExpand = (value: any) => {
     handleAccordion(!accordionView);
@@ -53,93 +52,90 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
   const handleButton = (id: string) => {
     setAccordion(!accordion);
   };
-  const getInvalidScanLabel=()=>{
-    const array=data?.invalidscans;
-    const result = array?.reduce( (acc:any, o:any) => (acc[o.reason] = (acc[o.reason] || 0)+1, acc), {} );
-    setInvalidScanLabel(result)
-    }
-    useEffect(()=>{
-      getInvalidScanLabel();
-    },[])
+  const getInvalidScanLabel = () => {
+    const array = data?.invalidscans;
+    const result = array?.reduce((acc: any, o: any) => ((acc[o.reason] = (acc[o.reason] || 0) + 1), acc), {});
+    setInvalidScanLabel(result);
+  };
+  useEffect(() => {
+    getInvalidScanLabel();
+  }, []);
   return (
-    <SimpleDialog
-      open={open}
-      onClose={close}
-      maxWidth={"800px"}
-      header={popupHeader}
-    >
+    <SimpleDialog open={open} onClose={close} maxWidth={"800px"} header={popupHeader}>
       <DialogContent>
         <div className="popup-container ordered-table order-product-popup">
           <div className="popup-content">
             <div className={`popup-title order`}>
               <p>
                 <label>
-                  #{data?.advisororderid} 
-                  { data?.orderstatus === "FULFILLED"&& " - " + _.startCase(_.toLower(data?.accountname))}
+                  #{data?.advisororderid}
+                  {data?.orderstatus === "FULFILLED" && " - " + _.startCase(_.toLower(data?.accountname))}
                 </label>
               </p>
             </div>
           </div>
           <div className="wrapper-progressBar">
             <ul className="progressBar">
-              <li className={`active ${data?.orderstatus === "EXPIRED" || data?.orderstatus === "CANCELLED"? "join" : data?.orderstatus === "PENDING"? "dotline-pending":""}`}>
-                <div className={`line-cnt ${data?.orderstatus === "PENDING" ? "pending-center" :""}`}>
-                  <p>Ordered date</p>
-                  <label>
-                    {data?.ordereddate &&
-                      moment(data?.ordereddate).format("Do MMM, YYYY")}
-                  </label>
+              <li
+                className={`active ${
+                  data?.orderstatus === "EXPIRED" || data?.orderstatus === "CANCELLED"
+                    ? "join"
+                    : data?.orderstatus === "PENDING"
+                    ? "dotline-pending"
+                    : ""
+                }`}
+              >
+                <div className={`line-cnt ${data?.orderstatus === "PENDING" ? "pending-center" : ""}`}>
+                  <p>
+                    {" "}
+                    <FormattedMessage id="scanLog.productPopup.orderDate" />
+                  </p>
+                  <label>{data?.ordereddate && moment(data?.ordereddate).format("Do MMM, YYYY")}</label>
                 </div>
                 <div className="content">
                   <img src={advisorImg} alt="" />
 
-                  <p>Advisor ID & Name</p>
+                  <p>
+                    <FormattedMessage id="scanLog.productPopup.advisorIdName" />
+                  </p>
                   <span>
                     {data?.advisorid} - {data?.advisorname}
                   </span>
                 </div>
               </li>
-              { data?.orderstatus !== "PENDING"&&
-              <li
-                className={`${
-                  data?.orderstatus === "FULFILLED"
-                    ? "active"
-                    : data?.orderstatus === "EXPIRED" || data?.orderstatus === "CANCELLED" 
-                    ? "inactive"
-                    : ""
-                } `}
-              >
-                <div className="line-cnt-expiry-date">
-                  <p>
-                    { _.startCase(_.toLower(data?.orderstatus))+" date"}
-                  </p>
-                  <label>
-                    {data?.lastupdateddate &&
-                      moment(data?.lastupdateddate).format("Do MMM, YYYY")}
-                  </label>
-                </div>
-                {data?.orderstatus === "FULFILLED" &&
-                <div className="content">
-                  <img src={retailerImg} alt="" />
-                  <p>Fulfilled by ID & Name</p>
-                  <span>
-                    {data?.staffid} - {data?.staffname}
-                  </span>
-                </div>
-                }
-              </li>
-             }
+              {data?.orderstatus !== "PENDING" && (
+                <li
+                  className={`${
+                    data?.orderstatus === "FULFILLED"
+                      ? "active"
+                      : data?.orderstatus === "EXPIRED" || data?.orderstatus === "CANCELLED"
+                      ? "inactive"
+                      : ""
+                  } `}
+                >
+                  <div className="line-cnt-expiry-date">
+                    <p>{_.startCase(_.toLower(data?.orderstatus)) + " date"}</p>
+                    <label>{data?.lastupdateddate && moment(data?.lastupdateddate).format("Do MMM, YYYY")}</label>
+                  </div>
+                  {data?.orderstatus === "FULFILLED" && (
+                    <div className="content">
+                      <img src={retailerImg} alt="" />
+                      <p>
+                        <FormattedMessage id="scanLog.productPopup.fullfilledIdName" />
+                      </p>
+                      <span>
+                        {data?.staffid} - {data?.staffname}
+                      </span>
+                    </div>
+                  )}
+                </li>
+              )}
               <li>
                 <div className="content">
-                  <img
-                    src={
-                      data?.orderstatus === "FULFILLED"
-                        ? farmerImg
-                        : FarmerDenied
-                    }
-                    alt=""
-                  />
-                  <p>Farmer ID & Name</p>
+                  <img src={data?.orderstatus === "FULFILLED" ? farmerImg : FarmerDenied} alt="" />
+                  <p>
+                    <FormattedMessage id="scanLog.productPopup.farmerIdName" />
+                  </p>
                   <span>
                     {data?.farmerid} - {data?.farmername}
                   </span>
@@ -151,113 +147,104 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
           {data?.products_ordered?.length > 0 ? (
             <>
               <div className="sub-order">
-                <table className="table"> 
+                <table className="table">
                   <thead>
                     <tr>
                       <th></th>
-                      <th>NAME</th>
-                      <th>TYPE</th>
-                      <th>INTENDED QTY</th>
-                      <th>ORDERED QTY</th>
-                      <th>TOTAL COST</th>
+                      <th>
+                        {" "}
+                        <FormattedMessage id="scanLog.productPopup.name" />
+                      </th>
+                      <th>
+                        <FormattedMessage id="scanLog.productPopup.type" />
+                      </th>
+                      <th>
+                        <FormattedMessage id="scanLog.productPopup.intendedQty" />
+                      </th>
+                      <th>
+                        <FormattedMessage id="scanLog.productPopup.orderQty" />
+                      </th>
+                      <th>
+                        <FormattedMessage id="scanLog.productPopup.totalCost" />
+                      </th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.products_ordered.map((value: any, index: number) => {
-                      return (                  
+                      return (
                         <React.Fragment key={index}>
-                          {value.intendedquantity || value.orderedquantity ?
-                          <tr
-                            onClick={() =>
-                              value?.ordered_qrcodes?.length > 0 &&
-                              handleExpand(value)
-                            }
-                            style={{
-                              cursor: `${
-                                value?.ordered_qrcodes?.length > 0 && "pointer"
-                              }`,
-                            }}
-                          >
-                            <th scope="row">
-                              {
-                                <img
-                                  src={
-                                    value.productgroup === "CORN SEED" ||
-                                    value.productgroup === "HYBRID"
-                                      ? CornImg
-                                      : value.productgroup === "FUNGICIDES" ||
-                                        value.productgroup === "HERBICIDES" ||
-                                        value.productgroup === "INSECTICIDES"
-                                      ? CpproductImg
-                                      : NoImg
-                                  }
-                                  width={40}
-                                  alt=""
-                                />
-                              }
-                            </th>
-                            <td>
-                              {value.productname} <p className="font-13px">{value.materialid}</p>
-                            </td>
-                            <td>{ value.productgroup === "CORN SEED" ||
-                                    value.productgroup === "HYBRID"? `Seed - ${_.startCase(_.toLower(value.productgroup))}` : `CP - ${ _.startCase(_.toLower(value.productgroup))} `}</td>
-                            <td className="text-center font-13px">
-                              {value.intendedquantity}
-                            </td>
-                            <td className="text-center font-13px">
-                              {value.orderedquantity}
-                            </td>
-                            <td className="font-13px">{"MK " + value.productprice}</td>
-                            {data.orderstatus === "FULFILLED" &&
-                              value?.ordered_qrcodes?.length > 0 && (
+                          {value.intendedquantity || value.orderedquantity ? (
+                            <tr
+                              onClick={() => value?.ordered_qrcodes?.length > 0 && handleExpand(value)}
+                              style={{
+                                cursor: `${value?.ordered_qrcodes?.length > 0 && "pointer"}`,
+                              }}
+                            >
+                              <th scope="row">
+                                {
+                                  <img
+                                    src={
+                                      value.productgroup === "CORN SEED" || value.productgroup === "HYBRID"
+                                        ? CornImg
+                                        : value.productgroup === "FUNGICIDES" ||
+                                          value.productgroup === "HERBICIDES" ||
+                                          value.productgroup === "INSECTICIDES"
+                                        ? CpproductImg
+                                        : NoImg
+                                    }
+                                    width={40}
+                                    alt=""
+                                  />
+                                }
+                              </th>
+                              <td>
+                                {value.productname} <p className="font-13px">{value.materialid}</p>
+                              </td>
+                              <td>
+                                {value.productgroup === "CORN SEED" || value.productgroup === "HYBRID"
+                                  ? `Seed - ${_.startCase(_.toLower(value.productgroup))}`
+                                  : `CP - ${_.startCase(_.toLower(value.productgroup))} `}
+                              </td>
+                              <td className="text-center font-13px">{value.intendedquantity}</td>
+                              <td className="text-center font-13px">{value.orderedquantity}</td>
+                              <td className="font-13px">{"MK " + value.productprice}</td>
+                              {data.orderstatus === "FULFILLED" && value?.ordered_qrcodes?.length > 0 && (
                                 <td style={{ cursor: "pointer" }}>
                                   <i
                                     className={`fas ${
-                                      value?.orderlineitemid === accordionId &&
-                                      accordionView
-                                        ? "fa-sort-down"
-                                        : "fa-sort-up"
+                                      value?.orderlineitemid === accordionId && accordionView ? "fa-sort-down" : "fa-sort-up"
                                     }`}
                                   />
                                 </td>
                               )}
-                          </tr> : null}
-                          {accordionView &&
-                            value?.orderlineitemid === accordionId &&
-                            data?.orderstatus === "FULFILLED" && (
-                              <tr>
-                                <td
-                                  colSpan={7}
-                                  style={{ padding: 0, borderTop: 0 }}
-                                >
-                                  <div>
-                                    <div className="inner-expand">
-                                      <div className="title inner-row">
-                                        <p>Label ID</p>
-                                        <p className="sub-val">Batch #</p>
-                                      </div>
-                                      {value?.ordered_qrcodes?.length > 0 &&
-                                        value.ordered_qrcodes.map(
-                                          (list: any,i:number) => {
-                                            return (
-                                              <div className="inner-row font-13px" key={i}>
-                                                <p className="qr-val">
-                                                  {list.labelid}
-                                                </p>
-                                                <p className="sub-val">
-                                                  {list.batchno}
-                                                </p>
-                                              </div>
-                                            );
-                                          }
-                                        )}
+                            </tr>
+                          ) : null}
+                          {accordionView && value?.orderlineitemid === accordionId && data?.orderstatus === "FULFILLED" && (
+                            <tr>
+                              <td colSpan={7} style={{ padding: 0, borderTop: 0 }}>
+                                <div>
+                                  <div className="inner-expand">
+                                    <div className="title inner-row">
+                                      <p>
+                                        <FormattedMessage id="scanLog.productPopup.labelId" />
+                                      </p>
+                                      <p className="sub-val">Batch #</p>
                                     </div>
+                                    {value?.ordered_qrcodes?.length > 0 &&
+                                      value.ordered_qrcodes.map((list: any, i: number) => {
+                                        return (
+                                          <div className="inner-row font-13px" key={i}>
+                                            <p className="qr-val">{list.labelid}</p>
+                                            <p className="sub-val">{list.batchno}</p>
+                                          </div>
+                                        );
+                                      })}
                                   </div>
-                                </td>
-                              </tr>
-                            )}
-                          
+                                </div>
+                              </td>
+                            </tr>
+                          )}
                         </React.Fragment>
                       );
                     })}
@@ -269,25 +256,17 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                               <div
                                 className="card-header"
                                 id="headingOne"
-                                onClick={() =>
-                                  data?.invalidscans?.length > 0 &&
-                                  handleButton("e")
-                                }
+                                onClick={() => data?.invalidscans?.length > 0 && handleButton("e")}
                                 style={{
-                                  cursor: `${
-                                    data?.invalidscans?.length > 0 && "pointer"
-                                  }`,
+                                  cursor: `${data?.invalidscans?.length > 0 && "pointer"}`,
                                 }}
                               >
                                 <span>
-                                  {`${myConstClass.INVALID_SCANS} (${
-                                    data?.invalidscans?.length > 0
-                                      ? data?.invalidscans?.length
-                                      : 0
-                                  })`}
+                                  {<FormattedMessage id="scanLog.productPopup.invalidScans" />} (
+                                  {data?.invalidscans?.length > 0 ? data?.invalidscans?.length : 0})
                                 </span>
-                                
-                               {/* {data?.invalidscans?.length > 0 &&<img src={RtArrow} alt="" />}
+
+                                {/* {data?.invalidscans?.length > 0 &&<img src={RtArrow} alt="" />}
 																{ invalidScanLabel&&Object.entries(invalidScanLabel).map(([key,label]) => {
 																		return(
 																			<div>
@@ -297,13 +276,7 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
 																})} */}
                                 <div className="expand-icon">
                                   {data?.invalidscans?.length > 0 && (
-                                    <i
-                                      className={`fa ${
-                                        accordion
-                                          ? "fas fa-caret-down"
-                                          : "fas fa-caret-up"
-                                      } `}
-                                    ></i>
+                                    <i className={`fa ${accordion ? "fas fa-caret-down" : "fas fa-caret-up"} `}></i>
                                   )}
                                 </div>
                               </div>
@@ -316,25 +289,24 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                               >
                                 <div className="inner-expand">
                                   <div className="title inner-row">
-                                    <p>Label ID</p>
-                                    <p className="sub-val">Reason</p>
+                                    <p>
+                                      <FormattedMessage id="scanLog.productPopup.labelId" />
+                                    </p>
+                                    <p className="sub-val">
+                                      <FormattedMessage id="scanLog.productPopup.reason" />
+                                    </p>
                                   </div>
                                   <div className="invalid-list">
-                                  {data?.invalidscans?.length > 0 &&
-                                    data?.invalidscans.map((scan: any,scanIndex:number) => {
-                                      return (
-                                        <div className="inner-row" key={scanIndex}>
-                                          <p className="qr-val font-13px">
-                                            {scan.scannedlabel || "-"}
-                                          </p>
-                                          <p className="sub-val">
-                                            {scan.reason}
-                                          </p>
-                                        </div>
-                                       
-                                      );
-                                    })}
-                                     </div>
+                                    {data?.invalidscans?.length > 0 &&
+                                      data?.invalidscans.map((scan: any, scanIndex: number) => {
+                                        return (
+                                          <div className="inner-row" key={scanIndex}>
+                                            <p className="qr-val font-13px">{scan.scannedlabel || "-"}</p>
+                                            <p className="sub-val">{scan.reason}</p>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -347,22 +319,18 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                     <tr>
                       <td colSpan={2}></td>
                       <td>
-                        <p className="total">Total</p>
+                        <p className="total">
+                          <FormattedMessage id="scanLog.productPopup.total" />
+                        </p>
                       </td>
                       <td className="text-center">
-                        <span className="intendedquantity">
-                          {data.totalintendedquantity}
-                        </span>
+                        <span className="intendedquantity">{data.totalintendedquantity}</span>
                       </td>
                       <td className="text-center">
-                        <span className="orderedquantity">
-                          {data.totalorderedquantity}
-                        </span>
+                        <span className="orderedquantity">{data.totalorderedquantity}</span>
                       </td>
                       <td>
-                        <span className="productprice">
-                          {"MK " + data.totalcost}
-                        </span>
+                        <span className="productprice">{"MK " + data.totalcost}</span>
                       </td>
                       <td></td>
                     </tr>
@@ -391,7 +359,9 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
           ) : (
             <div className="col-12 card mt-4">
               <div className="card-body ">
-                <div className="text-red py-4 text-center">No Data Found</div>
+                <div className="text-red py-4 text-center">
+                  <FormattedMessage id="noRecords" />
+                </div>
               </div>
             </div>
           )}
