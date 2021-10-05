@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addTnTFlowInputList } from "../../../redux/actions";
+import { FormattedMessage } from "react-intl";
 
 interface ITnTProps {
   inputList: any;
@@ -18,18 +19,15 @@ export const TnTFlow = (props: ITnTProps) => {
 
   /**
    * To handle input change fields
-   * @param e 
-   * @param index 
+   * @param e
+   * @param index
    */
-  const handleInputChange =(e: any, index: any) => {
+  const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
       // check for duplicate values from previous list array
-      const isDuplicate = list.find(
-        (duplicate: any) =>
-          duplicate[name].toLowerCase() === value.toLowerCase()
-      );
+      const isDuplicate = list.find((duplicate: any) => duplicate[name].toLowerCase() === value.toLowerCase());
       if (isDuplicate) {
         //  getValidation();
         //append the value for duplicate(show up error )
@@ -42,10 +40,9 @@ export const TnTFlow = (props: ITnTProps) => {
     setInputList(list);
   };
 
-  
   /**
    * handle click event of the Remove button
-   * @param index 
+   * @param index
    */
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
@@ -54,24 +51,23 @@ export const TnTFlow = (props: ITnTProps) => {
     setInputList(list);
   };
 
-
   /**
    * handle click event of the Add button
-   * @param index 
+   * @param index
    */
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
-    if (data.code && data.position &&!data.codeIsDuplicate && !data.positionIsDuplicate) {
+    if (data.code && data.position && !data.codeIsDuplicate && !data.positionIsDuplicate) {
       setInputList([...inputList, { level: inputList.length, code: "", position: "" }]);
     }
   };
 
   /**
    * To set the hiearchy level order list
-   * @param list 
-   * @param index 
-   * @returns 
+   * @param list
+   * @param index
+   * @returns
    */
   const setCorrectHierLvl = (list: any, index: number) => {
     const newList = list.map((listItem: any, idx: number) => {
@@ -98,9 +94,15 @@ export const TnTFlow = (props: ITnTProps) => {
             <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
-                  <th className="tableStyle text-center">Level</th>
-                  <th className="tableHeaderStyle">Code</th>
-                  <th className="tableHeaderStyle">Position</th>
+                  <th className="tableStyle text-center">
+                    <FormattedMessage id="devAdmin.level" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.code" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.position" />
+                  </th>
                   <th className="tablebtnStyle" />
                 </tr>
               </thead>
@@ -118,14 +120,11 @@ export const TnTFlow = (props: ITnTProps) => {
                           onChange={(e) => handleInputChange(e, idx)}
                           onBlur={getValidation}
                         />
-                        {isValidNext && item?.code_error ?  
-                         <span className="error">
-                         {"Please enter the code"}
-                       </span> :item?.codeIsDuplicate && (
-                          <span className="error">
-                            {item.code + " already exists"}
-                          </span>
-                        )  }
+                        {isValidNext && item?.code_error ? (
+                          <span className="error">{"Please enter the code"}</span>
+                        ) : (
+                          item?.codeIsDuplicate && <span className="error">{item.code + " already exists"}</span>
+                        )}
                         {/* {item?.code_error && isValidNext && (
                           <span className="error">
                             {"Please enter the code"}{" "}
@@ -147,17 +146,11 @@ export const TnTFlow = (props: ITnTProps) => {
                           onChange={(e) => handleInputChange(e, idx)}
                           onBlur={getValidation}
                         />
-                        {isValidNext && item?.position_error ? 
-                        <span className="error">
-                        {"Please enter the position"}
-                      </span> :item?.positionIsDuplicate &&(
-                          <span className="error">
-                            {item.position + " already exists"}
-                          </span>
-                        )
-
-
-                        }
+                        {isValidNext && item?.position_error ? (
+                          <span className="error">{"Please enter the position"}</span>
+                        ) : (
+                          item?.positionIsDuplicate && <span className="error">{item.position + " already exists"}</span>
+                        )}
                         {/* {item?.position_error && isValidNext && (
                           <span className="error">
                             {"Please enter the position"}
@@ -198,10 +191,7 @@ export const TnTFlow = (props: ITnTProps) => {
                                   />
                                 </div>
                               );
-                            } else if (
-                              idx > 0 &&
-                              idx === inputList.length - 1
-                            ) {
+                            } else if (idx > 0 && idx === inputList.length - 1) {
                               return (
                                 <div>
                                   <td style={{ border: "none" }}>

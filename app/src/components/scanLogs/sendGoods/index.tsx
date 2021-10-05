@@ -19,7 +19,7 @@ import ReactSelect from "../../../utility/widgets/dropdown/ReactSelect";
 import Distributor from "./Distributor";
 import Warehouse from "./Warehouse";
 import { RSM_ROLE, ADMIN_ROLE, SCANNED_DATE, PRODUCT_GROUP } from "../../../utility/constant";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 
 type PartnerTypes = {
   type: String;
@@ -55,7 +55,7 @@ const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: I
   </div>
 ));
 
-type Props = {};
+type Props = {} & WrappedComponentProps;
 
 type States = {
   showPopup: boolean;
@@ -742,13 +742,15 @@ class SendGoods extends Component<Props, States> {
       let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       let data: any = getLocalStorageData("userData");
       let userData = JSON.parse(data);
+      const { messages }: any = this.props?.intl;
+
       return (
         <React.Fragment key={`geolevels` + index}>
           {index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
             <div className="col" style={{ marginBottom: "5px" }}>
               <ReactSelect
                 name={list.name}
-                label={`Scanned by - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
+                label={`${messages["scanLog.filter.scanBy"]} - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
                 options={list.options}
                 handleChange={(selectedOptions: any, e: any) => {
                   list.value = selectedOptions.value;
@@ -816,7 +818,9 @@ class SendGoods extends Component<Props, States> {
                           dataTestId="retailer-test"
                         />
                       </div>
-                      <label className="font-weight-bold pt-2">Product Group</label>
+                      <label className="font-weight-bold pt-2">
+                        <FormattedMessage id="scanLog.filter.prodGp" />
+                      </label>
                       <div className="form-group pt-1">
                         {this.state.productCategories.map((item: any, i: number) => (
                           <span className="mr-2 chipLabel" key={i}>
@@ -843,7 +847,7 @@ class SendGoods extends Component<Props, States> {
                               name="batchno"
                               value={filter.batchno}
                               // value={selectedBatchOptions}
-                              label={"Batch #"}
+                              label={<FormattedMessage id="scanLog.filter.batch" />}
                               handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
                               options={batchOptions}
                               defaultValue="ALL"
@@ -853,7 +857,9 @@ class SendGoods extends Component<Props, States> {
                           </div>
                         </div>
                       </div>
-                      <label className="font-weight-bold pt-2"> Scan Status</label>
+                      <label className="font-weight-bold pt-2">
+                        <FormattedMessage id="scanLog.filter.scanStatus" />
+                      </label>
                       <div className="pt-1">
                         {this.state.status.map((item: any, statusIndex: number) => (
                           <span className="mr-2" key={statusIndex}>
@@ -869,7 +875,9 @@ class SendGoods extends Component<Props, States> {
                           </span>
                         ))}
                       </div>
-                      <label className="font-weight-bold pt-2">Scanned Period</label>
+                      <label className="font-weight-bold pt-2">
+                        <FormattedMessage id="scanLog.filter.scanPer" />
+                      </label>
                       <div className="pt-1">
                         {this.state.scannedPeriodsList.map((item: any, i: number) => (
                           <span className="mr-2 chipLabel" key={i}>
@@ -891,10 +899,10 @@ class SendGoods extends Component<Props, States> {
                       {filter.scannedPeriod === "Custom" && (
                         <React.Fragment>
                           <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
-                            From
+                            <FormattedMessage id="common.from" />
                           </label>
                           <label className="font-weight-bold pt-2" htmlFor="order-todate">
-                            To
+                            <FormattedMessage id="common.to" />
                           </label>
                           <div className="d-flex">
                             <div className="user-filter-date-picker">
@@ -937,7 +945,7 @@ class SendGoods extends Component<Props, States> {
                           onClick={(e) => this.resetFilter(e)}
                           data-testid="reset-all"
                         >
-                          Reset All
+                          <FormattedMessage id="button.resetAll" />
                         </button>
                         <button
                           className="cus-btn-scanlog-filter"
@@ -945,7 +953,7 @@ class SendGoods extends Component<Props, States> {
                           disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
                           data-testid="apply"
                         >
-                          Apply
+                          <FormattedMessage id="button.apply" />
                           <span>
                             <img src={ArrowIcon} className="arrow-i" alt="" />{" "}
                             <img src={RtButton} className="layout" alt="" />
@@ -959,7 +967,7 @@ class SendGoods extends Component<Props, States> {
                         <ReactSelect
                           name="warehouseid"
                           value={filter.warehouseid}
-                          label={`Warehouse Name`}
+                          label={<FormattedMessage id="scanLog.filter.warhName" />}
                           handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
                           options={warehouseOptions}
                           defaultValue="ALL"
@@ -971,7 +979,13 @@ class SendGoods extends Component<Props, States> {
                         <ReactSelect
                           name="customerid"
                           value={filter.customerid}
-                          label={this.state.selectedScanType === "SG - W2R" ? `Retailer Name` : "Distributor Name"}
+                          label={
+                            this.state.selectedScanType === "SG - W2R" ? (
+                              <FormattedMessage id="scanLog.filter.retailerName" />
+                            ) : (
+                              <FormattedMessage id="scanLog.filter.distName" />
+                            )
+                          }
                           handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
                           options={this.state.selectedScanType === "SG - W2R" ? retailerOptions : distributorOptions}
                           defaultValue="ALL"
@@ -982,7 +996,9 @@ class SendGoods extends Component<Props, States> {
                       <div className="form-group container" onClick={(e) => e.stopPropagation()}>
                         <div className="row column-dropdown">{locationList}</div>
                       </div>
-                      <label className="font-weight-bold pt-2"> Delivery Status</label>
+                      <label className="font-weight-bold pt-2">
+                        <FormattedMessage id="scanLog.filter.delStatus" />
+                      </label>
                       <div className="pt-1">
                         {this.state.goodStatus.map((item: any, statusIndex: number) => (
                           <span className="mr-2" key={statusIndex}>
@@ -1000,7 +1016,9 @@ class SendGoods extends Component<Props, States> {
                           </span>
                         ))}
                       </div>
-                      <label className="font-weight-bold pt-2">Scanned Period</label>
+                      <label className="font-weight-bold pt-2">
+                        <FormattedMessage id="scanLog.filter.scanPer" />
+                      </label>
                       <div className="pt-1">
                         {this.state.scannedPeriodsList.map((item: any, i: number) => (
                           <span className="mr-2 chipLabel" key={i}>
@@ -1022,10 +1040,10 @@ class SendGoods extends Component<Props, States> {
                       {filter.scannedPeriod === "Custom" && (
                         <React.Fragment>
                           <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
-                            From
+                            <FormattedMessage id="common.from" />
                           </label>
                           <label className="font-weight-bold pt-2" htmlFor="order-todate">
-                            To
+                            <FormattedMessage id="common.to" />
                           </label>
                           <div className="d-flex">
                             <div className="user-filter-date-picker">
@@ -1068,7 +1086,7 @@ class SendGoods extends Component<Props, States> {
                           onClick={(e) => this.resetFilter(e)}
                           data-testid="reset-all"
                         >
-                          Reset All
+                          <FormattedMessage id="button.resetAll" />
                         </button>
                         <button
                           className="cus-btn-scanlog-filter"
@@ -1076,7 +1094,7 @@ class SendGoods extends Component<Props, States> {
                           disabled={wareHouseDateErrMsg ? true : false}
                           data-testid="apply"
                         >
-                          Apply
+                          <FormattedMessage id="button.apply" />
                           <span>
                             <img src={ArrowIcon} className="arrow-i" alt="" />{" "}
                             <img src={RtButton} className="layout" alt="" />
@@ -1148,4 +1166,4 @@ class SendGoods extends Component<Props, States> {
   }
 }
 
-export default SendGoods;
+export default injectIntl(SendGoods);

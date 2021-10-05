@@ -6,6 +6,7 @@ import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addPackagingDefinitionInputList } from "../../../redux/actions";
 import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
 import { handledropdownoption } from "../../../utility/helper";
+import { FormattedMessage } from "react-intl";
 
 interface IPackagingDefinitionProps {
   inputList: any;
@@ -15,142 +16,116 @@ interface IPackagingDefinitionProps {
 }
 
 export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
-  const {
-     inputList,
-    setInputList,
-    isValidNext,
-    getValidation
-  } = props;
+  const { inputList, setInputList, isValidNext, getValidation } = props;
   const [activeButton, SetActiveButton] = React.useState("SEED");
 
-  
   /**
    * handle input change
-   * @param e 
-   * @param index 
-   * @param data 
+   * @param e
+   * @param index
+   * @param data
    */
-  const handleInputChange =(e: any, index: any, data: any) => {
+  const handleInputChange = (e: any, index: any, data: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
-    let isDuplicate:boolean=false
+    let isDuplicate: boolean = false;
     const arr = list.map((val: any) => {
       //check for duplicate values
-      if(val.productcategory === data.productcategory){
-        if(val[name].toLowerCase() === value.toLowerCase()){
-          isDuplicate=true
+      if (val.productcategory === data.productcategory) {
+        if (val[name].toLowerCase() === value.toLowerCase()) {
+          isDuplicate = true;
         }
       }
       // assign the values for current change list values
-      if (
-        val.productcategory === data.productcategory &&
-        val.packaginghierarchylevel === data.packaginghierarchylevel
-      ) {
-        return (val = { ...val, [name]: value ,isDuplicate});
+      if (val.productcategory === data.productcategory && val.packaginghierarchylevel === data.packaginghierarchylevel) {
+        return (val = { ...val, [name]: value, isDuplicate });
       } else {
         return val;
       }
     });
-    // add list 
+    // add list
     setInputList(arr);
     // To get recent list value updated and then call validation method
     // const canSetInputList:any =  await Promise.resolve(setInputList(arr));
     // if(canSetInputList)
     //  getValidation();
-    
   };
 
-  
   /**
    * handle click event of the Remove button
-   * @param index 
-   * @param data 
+   * @param index
+   * @param data
    */
   const handleRemoveClick = (index: any, data: any) => {
     let list = [...inputList];
-       list.map((val: any, i: number) => {
-      if (
-        val.productcategory === data.productcategory &&
-        val.packaginghierarchylevel === data.packaginghierarchylevel
-      ) {
+    list.map((val: any, i: number) => {
+      if (val.productcategory === data.productcategory && val.packaginghierarchylevel === data.packaginghierarchylevel) {
         list.splice(i, 1);
       }
       return list;
     });
 
-    list = setCorrectHierLvlSeed(list, index,data);
+    list = setCorrectHierLvlSeed(list, index, data);
     setInputList(list);
   };
- /**
-  * To set the hiearachy level for array list
-  * @param list 
-  * @param index 
-  * @param data 
-  * @returns 
-  */
-  const setCorrectHierLvlSeed = (list: any, index: number,data:any) => {
-    let i=0;
+  /**
+   * To set the hiearachy level for array list
+   * @param list
+   * @param index
+   * @param data
+   * @returns
+   */
+  const setCorrectHierLvlSeed = (list: any, index: number, data: any) => {
+    let i = 0;
     const newList = list.map((listItem: any, idx: number) => {
-      if (
-        listItem.productcategory === data.productcategory
-      ) {
-      let count = i++;
+      if (listItem.productcategory === data.productcategory) {
+        let count = i++;
         return {
           ...listItem,
-        packaginghierarchylevel: !count ? 0 : count,
-          parentpackage:
-            listItem.parentpackage >= index
-              ? listItem.parentpackage - 1
-              : listItem.parentpackage,
+          packaginghierarchylevel: !count ? 0 : count,
+          parentpackage: listItem.parentpackage >= index ? listItem.parentpackage - 1 : listItem.parentpackage,
           // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
         };
+      } else {
+        return listItem;
       }
-      else{ 
-        return listItem
-      }
-      
     });
     return newList;
   };
 
-  
   /**
    * handle click event of the Add button
-   * @param index 
+   * @param index
    */
   const handleAddClick = (index: any) => {
     // validate the fields
     getValidation();
-    const inputListSeedOrCP = inputList
-    .filter((pc: any) => pc.productcategory === activeButton)
+    const inputListSeedOrCP = inputList.filter((pc: any) => pc.productcategory === activeButton);
     const data = inputListSeedOrCP[index];
-     if(data.packaginghierarchyname && !data.isDuplicate)
-    setInputList([
-      ...inputList,
-      {
-        productcategory: activeButton, 
-        packaginghierarchylevel: inputListSeedOrCP.length,
-        packaginghierarchyname: "",
-        parentpackage: inputListSeedOrCP.length-1,
-      },
-    ]);
+    if (data.packaginghierarchyname && !data.isDuplicate)
+      setInputList([
+        ...inputList,
+        {
+          productcategory: activeButton,
+          packaginghierarchylevel: inputListSeedOrCP.length,
+          packaginghierarchyname: "",
+          parentpackage: inputListSeedOrCP.length - 1,
+        },
+      ]);
   };
 
   /**
-   * To handle the dropdown values 
-   * @param event 
-   * @param index 
-   * @param data 
+   * To handle the dropdown values
+   * @param event
+   * @param index
+   * @param data
    */
   const handleDropdownChange = (event: any, index: any, data: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
     activeButton === data.productcategory &&
       list.map((val: any, i: number) => {
-        if (
-          val.productcategory === data.productcategory &&
-          val.packaginghierarchylevel === data.packaginghierarchylevel
-        ) {
+        if (val.productcategory === data.productcategory && val.packaginghierarchylevel === data.packaginghierarchylevel) {
           list[i].parentpackage = value;
           setInputList(list);
         }
@@ -172,47 +147,46 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
 
   const parentpackageOptions = handledropdownoption(inputListData, "packaginghierarchyname");
 
-
   return (
     <div className="col-md-12">
       <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-8  column tableScrollStyle">
-            <div
-              className="btn-group product-categeory"
-              role="group"
-              aria-label="Basic outlined"
-            >
-              <span style={{paddingRight:"85px"}}>
-                <label>Product Category</label>
+            <div className="btn-group product-categeory" role="group" aria-label="Basic outlined">
+              <span style={{ paddingRight: "85px" }}>
+                <label>
+                  <FormattedMessage id="devAdmin.productCategory" />
+                </label>
               </span>
               <button
                 type="button"
-                className={`btn btn-outline-primary ${
-                  activeButton === "SEED" ? "active" : ""
-                }`}
+                className={`btn btn-outline-primary ${activeButton === "SEED" ? "active" : ""}`}
                 onClick={() => handleButton("SEED")}
               >
-                SEED
+                <FormattedMessage id="devAdmin.seed" />
               </button>
 
               <button
                 type="button"
-                className={`btn btn-outline-primary ${
-                  activeButton === "CP" ? "active" : ""
-                }`}
+                className={`btn btn-outline-primary ${activeButton === "CP" ? "active" : ""}`}
                 onClick={() => handleButton("CP")}
               >
-                CP
+                <FormattedMessage id="devAdmin.cp" />
               </button>
             </div>
 
             <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
-                  <th className="tableStyle text-center">Level</th>
-                  <th className="tableHeaderStyle">Name</th>
-                  <th className="tableHeaderStyle">Parent Name</th>
+                  <th className="tableStyle text-center">
+                    <FormattedMessage id="devAdmin.level" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.name" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.parentName" />
+                  </th>
                   <th className="tablebtnStyle" />
                 </tr>
               </thead>
@@ -233,15 +207,14 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                               onChange={(e) => handleInputChange(e, idx, item)}
                               onBlur={getValidation}
                             />
-                             {isValidNext && item?.error ?  
-                         <span className="error">
-                         {"Please enter the name"}
-                       </span> :item?.isDuplicate && (
-                          <span className="error">
-                            {item.packaginghierarchyname + " already exists"}
-                          </span>
-                        )  }
-                          {/* {item?.error && isValidNext && (
+                            {isValidNext && item?.error ? (
+                              <span className="error">{"Please enter the name"}</span>
+                            ) : (
+                              item?.isDuplicate && (
+                                <span className="error">{item.packaginghierarchyname + " already exists"}</span>
+                              )
+                            )}
+                            {/* {item?.error && isValidNext && (
                           <span className="error">
                             {"Please enter the name"}
                           </span>
@@ -290,29 +263,23 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                                 )}
                             </select> */}
                             <ConfigSelect
-                          defaultValue="NA"
-                          name="parentpackage"
-                          options={parentpackageOptions}
-                          handleChange={(event: any) =>
-                            handleDropdownChange(event, idx, item)
-                          }
-                          value={
-                            Number(item.parentpackage) ===-1 || item.parentpackage==="" ? "NA"
-                            :item.parentpackage
-                          }
-                          isPlaceholder
-                          parentIndex={idx}
-                          locationHierarchySelected={true}
-                        />
+                              defaultValue="NA"
+                              name="parentpackage"
+                              options={parentpackageOptions}
+                              handleChange={(event: any) => handleDropdownChange(event, idx, item)}
+                              value={
+                                Number(item.parentpackage) === -1 || item.parentpackage === "" ? "NA" : item.parentpackage
+                              }
+                              isPlaceholder
+                              parentIndex={idx}
+                              locationHierarchySelected={true}
+                            />
                           </td>
 
                           <td className="tablebtnStyle">
                             {idx === inputListData.length - 1 ? (
                               (() => {
-                                if (
-                                  idx === 0 &&
-                                  idx === inputListData.length - 1
-                                ) {
+                                if (idx === 0 && idx === inputListData.length - 1) {
                                   return (
                                     <div>
                                       <img
@@ -326,10 +293,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                                       />
                                     </div>
                                   );
-                                } else if (
-                                  idx > 0 &&
-                                  idx === inputListData.length - 1
-                                ) {
+                                } else if (idx > 0 && idx === inputListData.length - 1) {
                                   return (
                                     <div>
                                       <td style={{ border: "none" }}>
@@ -340,9 +304,7 @@ export const PackagingDefinition = (props: IPackagingDefinitionProps) => {
                                             height: "50px",
                                           }}
                                           src={RemoveBtn}
-                                          onClick={() =>
-                                            handleRemoveClick(idx, item)
-                                          }
+                                          onClick={() => handleRemoveClick(idx, item)}
                                         />
                                       </td>
 
@@ -392,7 +354,4 @@ const mapDispatchToProps = {
   setInputList: addPackagingDefinitionInputList,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PackagingDefinition);
+export default connect(mapStateToProps, mapDispatchToProps)(PackagingDefinition);

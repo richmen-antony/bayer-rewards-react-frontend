@@ -1,24 +1,24 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import AUX from "../../hoc/Aux_";
 import "../../assets/scss/scanLogs.scss";
 import Loader from "../../utility/widgets/loader";
 import Pagination from "../../utility/widgets/pagination";
 import moment from "moment";
 import CalenderIcon from "../../assets/icons/calendar.svg";
-import {Button} from "reactstrap";
-import {ErrorMsg} from "../../utility/helper";
-import {apiURL} from "../../utility/base/utils/config";
-import {invokeGetAuthService} from "../../utility/base/service";
+import { Button } from "reactstrap";
+import { ErrorMsg } from "../../utility/helper";
+import { apiURL } from "../../utility/base/utils/config";
+import { invokeGetAuthService } from "../../utility/base/service";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
-import {getLocalStorageData} from "../../utility/base/localStore";
+import { getLocalStorageData } from "../../utility/base/localStore";
 import Filter from "../../containers/grid/Filter";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import AdvisorSales from "./AdvisorSales";
 import WalkInSales from "./WalkInSales";
-import {Alert} from "../../utility/widgets/toaster";
+import { Alert } from "../../utility/widgets/toaster";
 import {
   salesTypeSellToFarmer,
   scannedBySellToFarmer,
@@ -27,7 +27,7 @@ import {
   SCANNED_DATE,
   PRODUCT_GROUP,
 } from "../../utility/constant";
-
+import { FormattedMessage } from "react-intl";
 type PartnerTypes = {
   type: String;
 };
@@ -41,9 +41,9 @@ interface IProps {
 }
 
 const ref = React.createRef();
-const Input = React.forwardRef(({onChange, placeholder, value, id, onClick}: IProps, ref: any) => (
-  <div style={{border: "1px solid grey", borderRadius: "4px"}}>
-    <img src={CalenderIcon} style={{padding: "2px 5px"}} alt="Calendar" />
+const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
+  <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+    <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
     <input
       style={{
         border: "none",
@@ -162,7 +162,7 @@ class SellFarmer extends Component<Props, States> {
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
     const condSalesType =
-      userData?.role === RSM_ROLE ? this.state.scanTypeList : [{value: "WALKIN_SALES", label: "Walk-In Sales"}];
+      userData?.role === RSM_ROLE ? this.state.scanTypeList : [{ value: "WALKIN_SALES", label: "Walk-In Sales" }];
     this.setState(
       {
         loggedUserInfo: userData,
@@ -183,10 +183,10 @@ class SellFarmer extends Component<Props, States> {
    */
   getCountryList() {
     let res = [
-      {value: "India", label: "India"},
-      {value: "Malawi", label: "Malawi"},
+      { value: "India", label: "India" },
+      { value: "Malawi", label: "Malawi" },
     ];
-    this.setState({countryList: res});
+    this.setState({ countryList: res });
   }
 
   /**
@@ -194,8 +194,8 @@ class SellFarmer extends Component<Props, States> {
    * @param condIf
    */
   getRetailerList = (condIf?: any) => {
-    const {rsmRetailerList} = apiURL;
-    const {selectedAdvisorFilters} = this.state;
+    const { rsmRetailerList } = apiURL;
+    const { selectedAdvisorFilters } = this.state;
     let queryParams = {
       region: this.state.loggedUserInfo?.geolevel1,
       countrycode: this.state.loggedUserInfo?.countrycode,
@@ -206,19 +206,19 @@ class SellFarmer extends Component<Props, States> {
     invokeGetAuthService(rsmRetailerList, queryParams)
       .then((response) => {
         if (response.data) {
-          const {farmers, retailers} = response.data;
-          let options = [{value: "ALL", label: "ALL"}];
+          const { farmers, retailers } = response.data;
+          let options = [{ value: "ALL", label: "ALL" }];
           const farmerOptionsList =
             farmers?.length > 0
               ? farmers.map((val: any) => {
-                  return {value: val.farmerid, label: val.farmername};
+                  return { value: val.farmerid, label: val.farmername };
                 })
               : [];
           const farmerOptions = [...options, ...farmerOptionsList];
           const retailerOptionsList =
             retailers?.length > 0
               ? retailers.map((val: any) => {
-                  return {value: val.userid, label: val.username};
+                  return { value: val.userid, label: val.username };
                 })
               : [];
           const retailerOptions = [...options, ...retailerOptionsList];
@@ -228,12 +228,12 @@ class SellFarmer extends Component<Props, States> {
             isLoader: false,
             farmerOptions,
             retailerOptions: retailerList,
-            selectedAdvisorFilters: {...this.state.selectedAdvisorFilters, farmer: "ALL"},
+            selectedAdvisorFilters: { ...this.state.selectedAdvisorFilters, farmer: "ALL" },
           });
         }
       })
       .catch((error) => {
-        this.setState({isLoader: false});
+        this.setState({ isLoader: false });
         // handle the error message and display toaster message
         ErrorMsg(error);
       });
@@ -243,7 +243,7 @@ class SellFarmer extends Component<Props, States> {
    * To get location hierachy data order list
    */
   getLocationHierachyOrder = () => {
-    const {getTemplateData} = apiURL;
+    const { getTemplateData } = apiURL;
     let data = {
       countryCode: this.state.loggedUserInfo?.countrycode,
     };
@@ -255,7 +255,7 @@ class SellFarmer extends Component<Props, States> {
           if (index > 0) {
             let locationhierlevel = item.level;
             let geolevels = "geolevel" + locationhierlevel;
-            let obj = {name: item.name, geolevels};
+            let obj = { name: item.name, geolevels };
             levels.push(obj);
           }
         });
@@ -270,7 +270,7 @@ class SellFarmer extends Component<Props, States> {
    */
   handleSearch = (e: any) => {
     let searchText = e.target.value;
-    this.setState({searchText: searchText, isFiltered: true});
+    this.setState({ searchText: searchText, isFiltered: true });
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
@@ -289,8 +289,8 @@ class SellFarmer extends Component<Props, States> {
    */
   handleFilterChange = (e: any, name: string, item: any, itemList?: any) => {
     e.stopPropagation();
-    const {selectedScanType, selectedAdvisorFilters, selectedWalkInFilters} = this.state;
-    let val = selectedScanType === "WALKIN_SALES" ? {...selectedWalkInFilters} : {...selectedAdvisorFilters};
+    const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+    let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
     let flag = false;
     if (name === "type") {
       val[name] = e.target.value;
@@ -307,7 +307,7 @@ class SellFarmer extends Component<Props, States> {
     }
     if (flag) {
       const name = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
-      this.setState({[name]: val});
+      this.setState({ [name]: val });
     }
   };
   /**
@@ -316,7 +316,7 @@ class SellFarmer extends Component<Props, States> {
    */
   resetFilter = (e?: any) => {
     let conditionIsFilter = this.state.searchText ? true : false;
-    const {selectedScanType} = this.state;
+    const { selectedScanType } = this.state;
     const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
     let val =
       selectedScanType === "WALKIN_SALES"
@@ -346,7 +346,7 @@ class SellFarmer extends Component<Props, States> {
     this.getDynamicOptionFields("reset");
     this.setState(
       {
-        [condName]: {...val},
+        [condName]: { ...val },
         isFiltered: conditionIsFilter,
         dateErrMsg: "",
         lastUpdatedDateErr: "",
@@ -364,7 +364,7 @@ class SellFarmer extends Component<Props, States> {
    * To hanlde applicable to filter values and call the get list API
    */
   applyFilter = () => {
-    this.setState({isFiltered: true}, () => {
+    this.setState({ isFiltered: true }, () => {
       this.callChildAPI();
       //To close the filter toggle
       this.closeToggle();
@@ -374,7 +374,7 @@ class SellFarmer extends Component<Props, States> {
    * To accesssed the download features
    */
   download = () => {
-    const {selectedScanType} = this.state;
+    const { selectedScanType } = this.state;
     selectedScanType === "WALKIN_SALES" ? this.walkinSalesRef?.download() : this.advisorSalesRef?.download();
   };
   /**
@@ -383,8 +383,8 @@ class SellFarmer extends Component<Props, States> {
    * @param name
    */
   handleDateChange = (date: any, name: string) => {
-    const {selectedScanType, selectedAdvisorFilters, selectedWalkInFilters} = this.state;
-    let val = selectedScanType === "WALKIN_SALES" ? {...selectedWalkInFilters} : {...selectedAdvisorFilters};
+    const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
+    let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
     // Custom scanned date - check End date
 
     if (name === "scannedDateTo") {
@@ -485,7 +485,7 @@ class SellFarmer extends Component<Props, States> {
     }
     const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
     this.setState({
-      [condName]: {...this.state[condName], [name]: date},
+      [condName]: { ...this.state[condName], [name]: date },
     });
   };
 
@@ -508,9 +508,9 @@ class SellFarmer extends Component<Props, States> {
     );
   };
   handleReactSelect = (selectedOption: any, e: any, inActiveFilter?: boolean) => {
-    const {selectedScanType, selectedAdvisorFilters, selectedWalkInFilters} = this.state;
+    const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
     const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
-    let val = selectedScanType === "WALKIN_SALES" ? {...selectedWalkInFilters} : {...selectedAdvisorFilters};
+    let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
     if (inActiveFilter) {
       // handle selectedScanType and selectedScannedBy value
       let oneTimeAPI = false;
@@ -545,7 +545,7 @@ class SellFarmer extends Component<Props, States> {
   };
 
   getBatchList = () => {
-    const {getBatchList} = apiURL;
+    const { getBatchList } = apiURL;
     let countrycode = {
       countrycode: this.state.loggedUserInfo?.countrycode,
       soldbygeolevel1: this.state.loggedUserInfo?.role === ADMIN_ROLE ? null : this.state.loggedUserInfo?.geolevel1,
@@ -553,18 +553,18 @@ class SellFarmer extends Component<Props, States> {
     invokeGetAuthService(getBatchList, countrycode)
       .then((response: any) => {
         let data = Object.keys(response.data).length !== 0 ? response.data : [];
-        let options = [{value: "ALL", label: "ALL"}];
+        let options = [{ value: "ALL", label: "ALL" }];
         const temp =
           data?.length > 0
             ? data.map((val: any) => {
-                return {value: val.batchno, label: val.batchno};
+                return { value: val.batchno, label: val.batchno };
               })
             : [];
         const list = [...options, ...temp];
-        this.setState({isLoader: false, batchOptions: list});
+        this.setState({ isLoader: false, batchOptions: list });
       })
       .catch((error: any) => {
-        this.setState({isLoader: false});
+        this.setState({ isLoader: false });
         let message = error.message;
         Alert("warning", message);
       });
@@ -572,20 +572,20 @@ class SellFarmer extends Component<Props, States> {
 
   getHierarchyDatas() {
     //To get all level datas
-    this.setState({isLoader: true});
-    const {getHierarchyLevels} = apiURL;
+    this.setState({ isLoader: true });
+    const { getHierarchyLevels } = apiURL;
     let countrycode = {
       countryCode: this.state.loggedUserInfo?.countrycode,
     };
     invokeGetAuthService(getHierarchyLevels, countrycode)
       .then((response: any) => {
         let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
-        this.setState({isLoader: false, geolevel1List: geolevel1}, () => {
+        this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
           this.getGeographicFields();
         });
       })
       .catch((error: any) => {
-        this.setState({isLoader: false});
+        this.setState({ isLoader: false });
         let message = error.message;
         Alert("warning", message);
       });
@@ -593,13 +593,13 @@ class SellFarmer extends Component<Props, States> {
   getDynamicOptionFields = (reset?: string) => {
     let level1List = this.state.geolevel1List;
     if (!reset) {
-      let allItem = {code: "ALL", name: "ALL", geolevel2: []};
+      let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
       level1List.unshift(allItem);
     }
-    this.setState({geolevel1List: level1List});
+    this.setState({ geolevel1List: level1List });
     let level1Options: any = [];
     this.state.geolevel1List?.forEach((item: any) => {
-      let level1Info = {label: item.name, code: item.code, value: item.name};
+      let level1Info = { label: item.name, code: item.code, value: item.name };
       level1Options.push(level1Info);
     });
 
@@ -612,7 +612,7 @@ class SellFarmer extends Component<Props, States> {
     if (userrole === RSM_ROLE) {
       let filteredLevel1: any = this.state.geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
       filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-        let level2Info = {label: item.name, value: item.name, code: item.code};
+        let level2Info = { label: item.name, value: item.name, code: item.code };
         level2Options.push(level2Info);
       });
       let geolevel2Obj = {
@@ -622,7 +622,7 @@ class SellFarmer extends Component<Props, States> {
       };
       level2Options.unshift(geolevel2Obj);
     } else {
-      let level1Info = {label: "ALL", value: "ALL"};
+      let level1Info = { label: "ALL", value: "ALL" };
       level2Options.push(level1Info);
     }
     let usergeolevel1 = userData?.geolevel1;
@@ -639,22 +639,22 @@ class SellFarmer extends Component<Props, States> {
             ? level1Options
             : list === "geolevel2"
             ? level2Options
-            : [{label: "ALL", name: "ALL"}],
+            : [{ label: "ALL", name: "ALL" }],
         error: "",
       });
     });
-    this.setState({dynamicFields: setFormArray});
+    this.setState({ dynamicFields: setFormArray });
   };
   getOptionLists = (cron: any, type: any, value: any, index: any) => {
-    let newvalue = {label: value, name: value};
+    let newvalue = { label: value, name: value };
     let geolevel1List = this.state.geolevel1List;
-    this.setState({level1Options: geolevel1List});
+    this.setState({ level1Options: geolevel1List });
     let dynamicFieldVal = this.state.dynamicFields;
     if (type === "geolevel1") {
       let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
       let level2Options: any = [];
       filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-        let level1Info = {label: item.name, value: item.name, code: item.code};
+        let level1Info = { label: item.name, value: item.name, code: item.code };
         level2Options.push(level1Info);
       });
       let geolevel1Obj = {
@@ -662,10 +662,10 @@ class SellFarmer extends Component<Props, States> {
         value: "ALL",
         code: "ALL",
       };
-      let geolevel3Obj = [{label: "ALL", code: "ALL", name: "ALL", value: "ALL"}];
+      let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
       level2Options.unshift(geolevel1Obj);
       dynamicFieldVal[index + 1].options = level2Options;
-      this.setState({dynamicFields: dynamicFieldVal});
+      this.setState({ dynamicFields: dynamicFieldVal });
       dynamicFieldVal[index + 2].options = geolevel3Obj;
       dynamicFieldVal[index].value = value;
       dynamicFieldVal[index + 1].value = "ALL";
@@ -689,8 +689,8 @@ class SellFarmer extends Component<Props, States> {
     }
   };
   getGeographicFields() {
-    this.setState({isLoader: true});
-    const {getTemplateData} = apiURL;
+    this.setState({ isLoader: true });
+    const { getTemplateData } = apiURL;
     let data = {
       countryCode: this.state.loggedUserInfo?.countrycode,
     };
@@ -710,7 +710,7 @@ class SellFarmer extends Component<Props, States> {
             if (index > 0) {
               let locationhierlevel = item.level;
               let geolevels = "geolevel" + locationhierlevel;
-              let obj = {name: item.name, geolevels};
+              let obj = { name: item.name, geolevels };
               levelsData.push(obj);
             }
           });
@@ -726,7 +726,7 @@ class SellFarmer extends Component<Props, States> {
         );
       })
       .catch((error: any) => {
-        this.setState({isLoader: false});
+        this.setState({ isLoader: false });
         let message = error.message;
         Alert("warning", message);
       });
@@ -739,9 +739,9 @@ class SellFarmer extends Component<Props, States> {
   };
 
   hanldeUpdateFilterScan = (value: any, name: string) => {
-    const {selectedScanType, selectedAdvisorFilters, selectedWalkInFilters} = this.state;
+    const { selectedScanType, selectedAdvisorFilters, selectedWalkInFilters } = this.state;
     const condName = selectedScanType === "WALKIN_SALES" ? "selectedWalkInFilters" : "selectedAdvisorFilters";
-    let val = selectedScanType === "WALKIN_SALES" ? {...selectedWalkInFilters} : {...selectedAdvisorFilters};
+    let val = selectedScanType === "WALKIN_SALES" ? { ...selectedWalkInFilters } : { ...selectedAdvisorFilters };
     this.setState(
       {
         [condName]: {
@@ -756,7 +756,7 @@ class SellFarmer extends Component<Props, States> {
     );
   };
   callChildAPI = () => {
-    const {selectedScanType} = this.state;
+    const { selectedScanType } = this.state;
     selectedScanType === "WALKIN_SALES" ? this.walkinSalesRef?.getWalkInSales() : this.advisorSalesRef?.getAdvisorSales();
   };
   handleUpdateSearch = (value: string) => {
@@ -796,7 +796,7 @@ class SellFarmer extends Component<Props, States> {
       return (
         <React.Fragment key={`geolevels` + index}>
           {index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
-            <div className="col" style={{marginBottom: "5px"}}>
+            <div className="col" style={{ marginBottom: "5px" }}>
               <ReactSelect
                 name={list.name}
                 label={`Scanned by - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
@@ -848,7 +848,9 @@ class SellFarmer extends Component<Props, States> {
                 >
                   {selectedScanType === "WALKIN_SALES" ? (
                     <React.Fragment>
-                      <label className="font-weight-bold pt-2">Product Group</label>
+                      <label className="font-weight-bold pt-2">
+                        <FormattedMessage id="scanLog.filter.prodGp" />
+                      </label>
                       <div className="form-group pt-1">
                         {this.state.productCategories.map((item: any, i: number) => (
                           <span className="mr-2 chipLabel" key={i}>
@@ -860,7 +862,7 @@ class SellFarmer extends Component<Props, States> {
                               }
                               size="sm"
                               onClick={(e) => this.handleFilterChange(e, "productgroup", item)}
-                              style={{marginBottom: "5px"}}
+                              style={{ marginBottom: "5px" }}
                             >
                               {item}
                             </Button>
@@ -876,7 +878,7 @@ class SellFarmer extends Component<Props, States> {
                             <ReactSelect
                               name="batchno"
                               value={selectedWalkInFilters.batchno}
-                              label={"Batch #"}
+                              label={<FormattedMessage id="scanLog.filter.batch" />}
                               handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
                               options={batchOptions}
                               defaultValue="ALL"
@@ -886,7 +888,9 @@ class SellFarmer extends Component<Props, States> {
                           </div>
                         </div>
                       </div>
-                      <label className="font-weight-bold pt-2"> Scan Status</label>
+                      <label className="font-weight-bold pt-2">
+                        <FormattedMessage id="scanLog.filter.scanStatus" />
+                      </label>
                       <div className="pt-1">
                         {this.state.status.map((item: any, statusIndex: number) => (
                           <span className="mr-2" key={statusIndex}>
@@ -904,7 +908,10 @@ class SellFarmer extends Component<Props, States> {
                           </span>
                         ))}
                       </div>
-                      <label className="font-weight-bold pt-2">Scanned Period</label>
+                      <label className="font-weight-bold pt-2">
+                        {" "}
+                        <FormattedMessage id="scanLog.filter.scanPer" />
+                      </label>
                       <div className="pt-1">
                         {this.state.scannedPeriodsList.map((item: any, i: number) => (
                           <span className="mr-2 chipLabel" key={i}>
@@ -916,7 +923,7 @@ class SellFarmer extends Component<Props, States> {
                               }
                               size="sm"
                               onClick={(e) => this.handleFilterChange(e, "scannedPeriod", item.label, item)}
-                              style={{marginBottom: "5px"}}
+                              style={{ marginBottom: "5px" }}
                             >
                               {item.label}
                             </Button>
@@ -925,11 +932,11 @@ class SellFarmer extends Component<Props, States> {
                       </div>
                       {selectedWalkInFilters.scannedPeriod === "Custom" && (
                         <React.Fragment>
-                          <label className="font-weight-bold pt-2" htmlFor="order-date" style={{width: "55%"}}>
-                            From
+                          <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+                            <FormattedMessage id="common.from" />
                           </label>
                           <label className="font-weight-bold pt-2" htmlFor="order-todate">
-                            To
+                            <FormattedMessage id="common.to" />
                           </label>
                           <div className="d-flex">
                             <div className="user-filter-date-picker">
@@ -972,7 +979,7 @@ class SellFarmer extends Component<Props, States> {
                           onClick={(e) => this.resetFilter(e)}
                           data-testid="reset-all"
                         >
-                          Reset All
+                          <FormattedMessage id="button.resetAll" />
                         </button>
                         <button
                           className="cus-btn-scanlog-filter"
@@ -980,7 +987,7 @@ class SellFarmer extends Component<Props, States> {
                           disabled={ScannedDateErrMsg ? true : false}
                           data-testid="apply"
                         >
-                          Apply
+                          <FormattedMessage id="button.apply" />
                           <span>
                             <img src={ArrowIcon} className="arrow-i" alt="" />{" "}
                             <img src={RtButton} className="layout" alt="" />
@@ -994,7 +1001,7 @@ class SellFarmer extends Component<Props, States> {
                         <ReactSelect
                           name="retailer"
                           value={selectedAdvisorFilters.retailer}
-                          label={"Retailer"}
+                          label={<FormattedMessage id="scanLog.filter.retailerName" />}
                           handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
                           options={retailerOptions}
                           defaultValue="ALL"
@@ -1007,7 +1014,7 @@ class SellFarmer extends Component<Props, States> {
                         <ReactSelect
                           name="farmer"
                           value={selectedAdvisorFilters.farmer}
-                          label={"Farmer"}
+                          label={<FormattedMessage id="scanLog.filter.farmName" />}
                           handleChange={(selectedOptions: any, e: any) => this.handleReactSelect(selectedOptions, e)}
                           options={farmerOptions}
                           defaultValue="ALL"
@@ -1016,7 +1023,9 @@ class SellFarmer extends Component<Props, States> {
                         />
                       </div>
 
-                      <label className="pt-2">Product Group</label>
+                      <label className="pt-2">
+                        <FormattedMessage id="scanLog.filter.prodGp" />
+                      </label>
                       <div className="pt-1">
                         {this.state.productCategories.map((item: any, i: number) => (
                           <span className="mr-2 chipLabel" key={i}>
@@ -1028,7 +1037,7 @@ class SellFarmer extends Component<Props, States> {
                               }
                               size="sm"
                               onClick={(e) => this.handleFilterChange(e, "productgroup", item)}
-                              style={{marginBottom: "5px"}}
+                              style={{ marginBottom: "5px" }}
                             >
                               {item}
                             </Button>
@@ -1056,7 +1065,7 @@ class SellFarmer extends Component<Props, States> {
 										</div> */}
 
                       <label className="pt-2" htmlFor="order-date">
-                        Ordered Date
+                        <FormattedMessage id="scanLog.filter.orderDt" />
                       </label>
                       <div className="d-flex">
                         <div className="user-filter-date-picker">
@@ -1090,7 +1099,7 @@ class SellFarmer extends Component<Props, States> {
                       </div>
                       {dateErrMsg && <span className="error">{dateErrMsg} </span>}
                       <label className="pt-2" htmlFor="update-date">
-                        Last Updated Date
+                        <FormattedMessage id="scanLog.filter.lastUpDt" />
                       </label>
                       <div className="d-flex">
                         <div className="user-filter-date-picker">
@@ -1131,7 +1140,7 @@ class SellFarmer extends Component<Props, States> {
                           onClick={(e) => this.resetFilter(e)}
                           data-testid="reset-all"
                         >
-                          Reset All
+                          <FormattedMessage id="button.resetAll" />
                         </button>
                         <button
                           className="cus-btn-scanlog-filter"
@@ -1139,7 +1148,7 @@ class SellFarmer extends Component<Props, States> {
                           disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
                           data-testid="apply"
                         >
-                          Apply
+                          <FormattedMessage id="button.apply" />
                           <span>
                             <img src={ArrowIcon} className="arrow-i" alt="" />{" "}
                             <img src={RtButton} className="layout" alt="" />
