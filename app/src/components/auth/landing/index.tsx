@@ -6,19 +6,12 @@ import content2 from "../../../assets/icons/image_2.svg";
 import rewardsLogo from "../../../assets/icons/logo.svg";
 import bayerLogo from "../../../assets/icons/bayer_logo.svg";
 import "../../../assets/scss/landing.scss";
-import {
-  getLocalStorageData,
-  clearLocalStorageData,
-} from "../../../utility/base/localStore";
+import { getLocalStorageData, clearLocalStorageData } from "../../../utility/base/localStore";
+import { invokeAkanaService } from "../../../utility/base/service";
 import { Login } from "../login";
 import { CustomButton } from "../../../utility/widgets/button";
 
-import {
-  Carousel,
-  CarouselItem,
-  CarouselControl,
-  CarouselIndicators,
-} from "reactstrap";
+import { Carousel, CarouselItem, CarouselControl, CarouselIndicators } from "reactstrap";
 
 const items = [
   {
@@ -44,6 +37,7 @@ class LandingPage extends Component<any, any> {
     };
   }
   componentDidMount() {
+    this.getAkanaService();
     if (getLocalStorageData("isLoggedOut")) {
       setTimeout(() => {
         this.setState({ isLoggedOut: false });
@@ -51,13 +45,22 @@ class LandingPage extends Component<any, any> {
       }, 1800);
     }
   }
+  getAkanaService = () => {
+    this.setState({ isLoader: true });
+    invokeAkanaService()
+      .then((response: any) => {
+        this.setState({
+          isLoader: false,
+        });
+      })
+      .catch((error: any) => {
+        console.log(error, "error");
+      });
+  };
 
   next = () => {
     if (this.state.animating) return;
-    const nextIndex =
-      this.state.activeIndex === items.length - 1
-        ? 0
-        : this.state.activeIndex + 1;
+    const nextIndex = this.state.activeIndex === items.length - 1 ? 0 : this.state.activeIndex + 1;
     this.setState({
       activeIndex: nextIndex,
     });
@@ -65,10 +68,7 @@ class LandingPage extends Component<any, any> {
 
   previous = () => {
     if (this.state.animating) return;
-    const nextIndex =
-      this.state.activeIndex === 0
-        ? items.length - 1
-        : this.state.activeIndex - 1;
+    const nextIndex = this.state.activeIndex === 0 ? items.length - 1 : this.state.activeIndex - 1;
     this.setState({
       activeIndex: nextIndex,
     });
@@ -120,11 +120,7 @@ class LandingPage extends Component<any, any> {
                   ride="carousel"
                   direction="left"
                 >
-                  <CarouselIndicators
-                    items={items}
-                    activeIndex={activeIndex}
-                    onClickHandler={this.goToIndex}
-                  />
+                  <CarouselIndicators items={items} activeIndex={activeIndex} onClickHandler={this.goToIndex} />
                   {items.map((item: any) => {
                     return (
                       <CarouselItem
@@ -134,24 +130,12 @@ class LandingPage extends Component<any, any> {
                         onExiting={() => this.setState({ animating: true })}
                         onExited={() => this.setState({ animating: false })}
                       >
-                        <img
-                          className="content1Img"
-                          src={item.src}
-                          alt={item.content}
-                        />
+                        <img className="content1Img" src={item.src} alt={item.content} />
                       </CarouselItem>
                     );
                   })}
-                  <CarouselControl
-                    direction="prev"
-                    directionText="Previous"
-                    onClickHandler={this.previous}
-                  />
-                  <CarouselControl
-                    direction="next"
-                    directionText="Next"
-                    onClickHandler={this.next}
-                  />
+                  <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
+                  <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
                 </Carousel>
               </div>
               <div className="col-12 col-md-6 col-lg-4 formRow">
@@ -170,17 +154,12 @@ class LandingPage extends Component<any, any> {
                         <div className="pt-4 pl-1 pb-4">
                           <h4>Welcome to Bayer Rewards</h4>
                           <p className="mt-3">
-                            Bayer Rewards Plus application helps in channel
-                            inventory tracking and Advisor sales conversion.
-                            Through this portal administrators will be able to
-                            perform all setup activites required on daily/season
-                            basis and RSMs will be able to track the scan logs.{" "}
+                            Bayer Rewards Plus application helps in channel inventory tracking and Advisor sales conversion.
+                            Through this portal administrators will be able to perform all setup activites required on
+                            daily/season basis and RSMs will be able to track the scan logs.{" "}
                           </p>
                         </div>
-                        <div
-                          className="form-group row getStartedBtnRow"
-                          onClick={this.toLogin}
-                        >
+                        <div className="form-group row getStartedBtnRow" onClick={this.toLogin}>
                           <div className="col-sm-5 text-left">
                             {/* <button className="btn btn-secondary getStartedBtn form-control w-md waves-effect waves-light" type="button">Get started</button> */}
                             <CustomButton
@@ -218,4 +197,4 @@ class LandingPage extends Component<any, any> {
   }
 }
 
-export default  LandingPage;
+export default LandingPage;

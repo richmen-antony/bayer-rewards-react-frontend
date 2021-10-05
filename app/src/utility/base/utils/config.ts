@@ -1,6 +1,7 @@
 export const configApp = {
   // env: 'https://bayer-reward-plus.herokuapp.com/api/'
   env: process.env.REACT_APP_BRP_API_HOST,
+  akanaurl: "oauth/token",
 };
 export const apiURL = {
   login: "user/login",
