@@ -8,6 +8,7 @@
     "create": "Create",
     "cancel": "Cancel",
     "update": "Update",
+    "approve": "Approve",
     "change": "Change",
     "delete": "DELETE",
     "filterScans": "Filter scans",
@@ -23,6 +24,9 @@
     "password": "Enter password",
     "search": "Search (min 3 letters)",
     "userType": "User Type"
+  },
+  "tooltip": {
+    "consolidated": "Search applicable for Partner Name/ID"
   },
   "pagination": {
     "sales": "Sales",
@@ -44,6 +48,25 @@
     "userList": "User List",
     "orderHistory": "Order History",
     "logout": "Logout"
+  },
+  "filter": {
+    "fiscalYear": "Fiscal Year",
+    "type": "Type",
+    "partnerType": "Partner Type",
+    "userType": "User Type",
+    "upload": "Upload",
+    "scannedBy": "Scanned By",
+    "scanType": "Scan Type"
+  },
+  "download": {
+    "download": "Download",
+    "overallScans": "Overall Scans",
+    "brandWiseScans": "Brand Wise Scans",
+    "productWiseScans": "Product Wise Scans",
+    "overallInventory": "Overall Inventory",
+    "brandWiseInventory": "Brand Wise Inventory",
+    "productWiseInventory": "Product Wise Inventory",
+    "downloadTemplate": "Download Template"
   },
   "landing": {
     "signIn": "Sign In",
@@ -151,7 +174,67 @@
       "advNameIdHeader": "ADVISOR NAME/ID",
       "farNamePhHeader": "FARMER NAME/PHONE NO",
       "statusHeader": "STATUS"
+    },
+    "filter": {
+      "warhName": "Warehouse Name",
+      "distName": "Distributor Name",
+      "scanBy": "Scanned by",
+      "delStatus": "Delivery Status",
+      "scanPer": "Scanned Period",
+      "retailerName": "Retailer Name",
+      "prodGp": "Product Group",
+      "batch": "Batch #",
+      "scanStatus": "Scan Status",
+      "farmName": "Farmer Name",
+      "orderDt": "Ordered Date",
+      "lastUpDt": "Last Updated Date",
+      "cusName": "Customer Name",
+      "distributor": "Distributor",
+      "retailer": "Retailer",
+      "region": "Region"
     }
+  },
+  "devAdmin": {
+    "country": "Country",
+    "countryCode": "Country Code",
+    "currencyCode": "Currency Code",
+    "currency": "Currency",
+    "locationLevel": "Location Level",
+    "locationHierarchy": "Location Hierarchy Name",
+    "parentLocation": "Parent Location",
+    "roleLevel": "Role Level",
+    "roleCode": "Role Code",
+    "role": "Role",
+    "roleType": "Role Type",
+    "parentRole": "Parent Role",
+    "level": "Level",
+    "code": "Code",
+    "position": "Position",
+    "productCategory": "Product Category",
+    "seed": "SEED",
+    "cp": "CP",
+    "name": "Name",
+    "parentName": "Parent Name",
+    "scannedBy": "Scanned By",
+    "scannedType": "Scanned Type",
+    "packagingLevel": "Packaging Level",
+    "pointsAllocated": "Points Allocated",
+    "smsAuthentication": "SMS Authentication",
+    "digitalScan": "Digital Scan",
+    "smartLabel": "Smart Label"
+  },
+  "common": {
+    "from": "From",
+    "to": "To"
+  },
+  "validMsg": {
+    "lessThan": "should be lesser than",
+    "gtThan": "should be greater than",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "scanned": "Scanned",
+    "order": "Ordered",
+    "lastUp": "Last Updated"
   },
   "createUser": {
     "personalInformation": "Personal Information",

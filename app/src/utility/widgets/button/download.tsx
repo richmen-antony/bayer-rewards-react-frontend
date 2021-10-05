@@ -1,8 +1,9 @@
-import React, { Fragment, useState } from "react";
+import React, {Fragment, useState} from "react";
 import Download from "../../../assets/icons/download.svg";
 import NoImage from "../../../assets/images/Group_4736.svg";
-import { Dropdown, DropdownToggle, DropdownMenu } from "reactstrap";
+import {Dropdown, DropdownToggle, DropdownMenu} from "reactstrap";
 import "../../../assets/scss/download.scss";
+import {FormattedMessage} from "react-intl";
 
 interface downloadProps {
   download: any;
@@ -12,7 +13,7 @@ interface downloadProps {
 }
 
 function CustomDownload(props: downloadProps) {
-  const { download, downloadPopup, isHelpText, isInventoryDownloadPopup } = props;
+  const {download, downloadPopup, isHelpText, isInventoryDownloadPopup} = props;
   const [dropdownOpenDownload, settoggleDownload] = useState<boolean>(false);
 
   const toggleDownload = () => {
@@ -31,7 +32,9 @@ function CustomDownload(props: downloadProps) {
             }}
           >
             <img src={Download} width="17" alt={NoImage} />
-            <span style={{ padding: "15px" }}>Download</span>
+            <span style={{padding: "15px"}}>
+              <FormattedMessage id="download.download" />
+            </span>
           </button>
         </div>
       ) : (
@@ -48,8 +51,8 @@ function CustomDownload(props: downloadProps) {
                   }}
                 >
                   <img src={Download} width="17" alt={NoImage} />
-                  <span style={{ padding: "15px" }}>
-                    Download
+                  <span style={{padding: "15px"}}>
+                    <FormattedMessage id="download.download" />
                     <i className={`fas ${dropdownOpenDownload ? "fa-sort-up" : "fa-sort-down"} ml-3`}></i>
                   </span>
                 </button>
@@ -61,40 +64,54 @@ function CustomDownload(props: downloadProps) {
                   <div>
                     <div className="contents" onClick={() => download("overall")}>
                       <i class="fa fa-download" aria-hidden="true"></i>
-                      <span className="dropdownContent">Overall Scans</span>
+                      <span className="dropdownContent">
+                        <FormattedMessage id="download.overallScans" />
+                      </span>
                     </div>
                     <hr />
                     <div className="contents" onClick={() => download("brand")}>
                       <i class="fa fa-download" aria-hidden="true"></i>
-                      <span className="dropdownContent">Brand Wise Scans</span>
+                      <span className="dropdownContent">
+                        <FormattedMessage id="download.brandWiseScans" />
+                      </span>
                     </div>
                     <hr />
                     <div className="contents" onClick={() => download("product")}>
                       <i class="fa fa-download" aria-hidden="true"></i>
-                      <span className="dropdownContent">Product Wise Scans</span>
+                      <span className="dropdownContent">
+                        <FormattedMessage id="download.productWiseScans" />
+                      </span>
                     </div>
                   </div>
                 ) : (
                   <div>
                     <div className="contents" onClick={() => download("overall")}>
                       <i class="fa fa-download" aria-hidden="true"></i>
-                      <span className="dropdownContent">Overall Inventory</span>
+                      <span className="dropdownContent">
+                        <FormattedMessage id="download.overallInventory" />
+                      </span>
                     </div>
                     <hr />
                     <div className="contents" onClick={() => download("brand")}>
                       <i class="fa fa-download" aria-hidden="true"></i>
-                      <span className="dropdownContent">Brand Wise Inventory</span>
+                      <span className="dropdownContent">
+                        <FormattedMessage id="download.brandWiseInventory" />
+                      </span>
                     </div>
                     <hr />
                     <div className="contents" onClick={() => download("product")}>
                       <i class="fa fa-download" aria-hidden="true"></i>
-                      <span className="dropdownContent">Product Wise Inventory</span>
+                      <span className="dropdownContent">
+                        <FormattedMessage id="download.productWiseInventory" />
+                      </span>
                     </div>
 
                     <hr />
                     <div className="contents" onClick={() => download("template")}>
                       <i class="fa fa-download" aria-hidden="true"></i>
-                      <span className="dropdownContent">Download Template</span>
+                      <span className="dropdownContent">
+                        <FormattedMessage id="download.downloadTemplate" />
+                      </span>
                     </div>
                   </div>
                 )}
@@ -118,4 +135,4 @@ function CustomDownload(props: downloadProps) {
     </Fragment>
   );
 }
-export { CustomDownload };
+export {CustomDownload};

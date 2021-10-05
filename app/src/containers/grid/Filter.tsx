@@ -6,6 +6,8 @@ import { CustomDownload } from "../../utility/widgets/button/download";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import "../../assets/scss/filter.scss";
 import Upload from "../../assets/icons/upload.svg";
+import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
+
 interface Props {
   uploadPopup?: any;
   handleSearch: (e: any) => any;
@@ -48,7 +50,21 @@ interface Props {
  * @param props
  * @returns
  */
-const Filter: React.FC<Props> = (props: Props) => {
+
+type IProps = {
+  label?: any;
+} & WrappedComponentProps;
+
+const messages = defineMessages({
+  tooltip: {
+    id: "tooltip.searchMessage",
+  },
+  placeholder: {
+    id: "placeholder.search",
+  },
+});
+
+const Filter = (props: Props & IProps) => {
   const [dropdownOpenFilter, setToggleFilter] = useState<boolean>(false);
 
   const toggleFilter = () => {
@@ -89,6 +105,7 @@ const Filter: React.FC<Props> = (props: Props) => {
     packageTypeOptions,
     isUploadAvailable = false,
     isInventoryDownloadPopup,
+    intl,
   } = props;
   // show up the dropdown using without toggle popup filter
   const notToggleDropdown = true;
@@ -96,13 +113,14 @@ const Filter: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     onClose && onClose(toggleFilter);
   }, [dropdownOpenFilter, onClose]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className="grid-filter">
       <div className="filter-left-side">
         <SearchInput
           name="searchText"
           data-testid="search-input"
-          placeHolder="Search (min 3 letters)"
+          placeHolder={intl.formatMessage(messages.placeholder)}
           type="text"
           onChange={handleSearch}
           value={searchText}
@@ -114,7 +132,9 @@ const Filter: React.FC<Props> = (props: Props) => {
           <>
             <div className="customDropdown">
               <div style={{ width: "110px" }} className="yearlabel">
-                <label className="font-weight-bold yeartext">Fiscal Year</label>
+                <label className="font-weight-bold yeartext">
+                  <FormattedMessage id="filter.fiscalYear" />
+                </label>
               </div>
               <div style={{ width: "100%" }}>
                 <ReactSelect
@@ -132,7 +152,9 @@ const Filter: React.FC<Props> = (props: Props) => {
             </div>
             <div className="customDropdown">
               <div className="yearlabel">
-                <label className="font-weight-bold yeartext">Type</label>
+                <label className="font-weight-bold yeartext">
+                  <FormattedMessage id="filter.type" />
+                </label>
               </div>
               <div style={{ width: "105px" }}>
                 <ReactSelect
@@ -156,7 +178,7 @@ const Filter: React.FC<Props> = (props: Props) => {
             value={selectedScannedBy}
             options={scannedByList}
             handleChange={(selectedOptions: any, e: any) => handleReactSelect(selectedOptions, e, notToggleDropdown)}
-            label="Scanned By"
+            label={<FormattedMessage id="filter.scannedBy" />}
             width="150px"
             inActiveFilter={notToggleDropdown}
           />
@@ -166,7 +188,7 @@ const Filter: React.FC<Props> = (props: Props) => {
             name="selectedScanType"
             value={selectedScanType}
             options={scanTypeList}
-            label="Scan Type"
+            label={<FormattedMessage id="filter.scanType" />}
             width="150px"
             inActiveFilter={notToggleDropdown}
             handleChange={(selectedOptions: any, e: any) => handleReactSelect(selectedOptions, e, notToggleDropdown)}
@@ -176,7 +198,9 @@ const Filter: React.FC<Props> = (props: Props) => {
         {isPartnerType && (
           <div className="customDropdown">
             <div className="yearlabel">
-              <label className="font-weight-bold yeartext">Partner Type</label>
+              <label className="font-weight-bold yeartext">
+                <FormattedMessage id="filter.partnerType" />
+              </label>
             </div>
             <div style={{ width: "127px" }}>
               <ReactSelect
@@ -198,7 +222,11 @@ const Filter: React.FC<Props> = (props: Props) => {
           {isPartner && (
             <div className="filter-partnertype">
               <label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
-                {internalUserTypeFilterHeading ? "User Type" : "Partner Type"}
+                {internalUserTypeFilterHeading ? (
+                  <FormattedMessage id="filter.userType" />
+                ) : (
+                  <FormattedMessage id="filter.partnerType" />
+                )}
               </label>
               <div className="partnertype-list">
                 {partnerTypeList &&
@@ -260,7 +288,9 @@ const Filter: React.FC<Props> = (props: Props) => {
         {isUploadAvailable && (
           <button className="btn btn-success" onClick={uploadPopup}>
             <img src={Upload} width="17" alt="upload file" />
-            <span style={{ padding: "15px" }}>Upload</span>
+            <span style={{ padding: "15px" }}>
+              <FormattedMessage id="filter.upload" />
+            </span>
           </button>
         )}
         {isDownload && (
@@ -276,4 +306,4 @@ const Filter: React.FC<Props> = (props: Props) => {
   );
 };
 
-export default Filter;
+export default injectIntl(Filter);

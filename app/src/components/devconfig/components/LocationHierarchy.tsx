@@ -6,6 +6,7 @@ import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addLocationInputList } from "../../../redux/actions";
 import { handledropdownoption } from "../../../utility/helper";
 import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
+import { FormattedMessage } from "react-intl";
 
 interface ILocationProps {
   location: any;
@@ -19,14 +20,11 @@ const LocationHierarchy = (props: ILocationProps) => {
   const { inputList, setInputList, getValidation, isValidNext } = props;
 
   // handle input change
-  const handleInputChange =(e: any, index: any) => {
+  const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
-      const isDuplicate = list.find(
-        (duplicate: any) =>
-          duplicate[name].toLowerCase() === value.toLowerCase()
-      );
+      const isDuplicate = list.find((duplicate: any) => duplicate[name].toLowerCase() === value.toLowerCase());
       if (isDuplicate) {
         getValidation();
         list[index]["isDuplicate"] = true;
@@ -36,11 +34,9 @@ const LocationHierarchy = (props: ILocationProps) => {
     }
 
     list[index][name] = value;
-    setInputList(list)
-
+    setInputList(list);
   };
-  
- 
+
   // handle click event of the Remove button
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
@@ -59,7 +55,7 @@ const LocationHierarchy = (props: ILocationProps) => {
         {
           level: inputList.length,
           name: "",
-          parentlevel: inputList.length -1,
+          parentlevel: inputList.length - 1,
         },
       ]);
     }
@@ -77,21 +73,14 @@ const LocationHierarchy = (props: ILocationProps) => {
       return {
         ...listItem,
         level: idx,
-        parentlevel:
-          listItem.parentlevel >= index
-            ? listItem.parentlevel - 1
-            : listItem.parentlevel,
+        parentlevel: listItem.parentlevel >= index ? listItem.parentlevel - 1 : listItem.parentlevel,
         // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
       };
     });
     return newList;
   };
 
-  const LocationDetailsOption = handledropdownoption(
-    inputList,
-    "name"
-  );
-
+  const LocationDetailsOption = handledropdownoption(inputList, "name");
 
   return (
     <div className="col-md-12">
@@ -101,9 +90,15 @@ const LocationHierarchy = (props: ILocationProps) => {
             <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
-                  <th className="text-center tableStyle">Location Level</th>
-                  <th className="tableHeaderStyle">Location Hierarchy Name</th>
-                  <th className="tableHeaderStyle">Parent Location</th>
+                  <th className="text-center tableStyle">
+                    <FormattedMessage id="devAdmin.locationLevel" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.locationHierarchy" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.parentLocation" />
+                  </th>
                   <th className="tablebtnStyle" />
                 </tr>
               </thead>
@@ -114,9 +109,7 @@ const LocationHierarchy = (props: ILocationProps) => {
                       <td className="tableStyle">{idx}</td>
                       <td className="tableHeaderStyle">
                         <input
-                          className={`form-control dpstyle label ${
-                            item?.error && isValidNext ? "invalid" : ""
-                          }`}
+                          className={`form-control dpstyle label ${item?.error && isValidNext ? "invalid" : ""}`}
                           type="text"
                           name="name"
                           value={item.name}
@@ -124,16 +117,8 @@ const LocationHierarchy = (props: ILocationProps) => {
                           data-id={idx}
                           onBlur={getValidation}
                         />
-                        {item?.error && isValidNext && (
-                          <span className="error">
-                            {"Please enter Location Hierarchy"}
-                          </span>
-                        )}
-                        {item?.isDuplicate && isValidNext && (
-                          <span className="error">
-                            {item.name + " already exists"}
-                          </span>
-                        )}
+                        {item?.error && isValidNext && <span className="error">{"Please enter Location Hierarchy"}</span>}
+                        {item?.isDuplicate && isValidNext && <span className="error">{item.name + " already exists"}</span>}
                       </td>
 
                       <td className="tableHeaderStyle">
@@ -165,14 +150,8 @@ const LocationHierarchy = (props: ILocationProps) => {
                           defaultValue="NA"
                           name="parentlocation"
                           options={LocationDetailsOption}
-                          handleChange={(event: any) =>
-                            handleDropdownChange(event, idx)
-                          }
-                          value={
-                            item.parentlevel === -1
-                              ? "NA"
-                              : item.parentlevel
-                          }
+                          handleChange={(event: any) => handleDropdownChange(event, idx)}
+                          value={item.parentlevel === -1 ? "NA" : item.parentlevel}
                           isPlaceholder
                           parentIndex={idx}
                           locationHierarchySelected={true}
@@ -197,10 +176,7 @@ const LocationHierarchy = (props: ILocationProps) => {
                                   />
                                 </div>
                               );
-                            } else if (
-                              idx > 0 &&
-                              idx === inputList.length - 1
-                            ) {
+                            } else if (idx > 0 && idx === inputList.length - 1) {
                               return (
                                 <div>
                                   <td style={{ border: "none" }}>

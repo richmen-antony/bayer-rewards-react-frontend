@@ -5,59 +5,53 @@ import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import _ from "lodash";
 import { addScanpointsAndAllocationInputList } from "../../../redux/actions";
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  withStyles,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme, withStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import ListItemText from "@material-ui/core/ListItemText";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
-import InputBase from '@material-ui/core/InputBase';
+import InputBase from "@material-ui/core/InputBase";
 import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
 import { handledropdownoption } from "../../../utility/helper";
-
+import { FormattedMessage } from "react-intl";
 
 const BootstrapInput = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      'label + &': {
+      "label + &": {
         marginTop: theme.spacing(3),
       },
     },
     input: {
       borderRadius: 4,
-      position: 'relative',
+      position: "relative",
       backgroundColor: theme.palette.background.paper,
-      border: '1px solid #ced4da',
+      border: "1px solid #ced4da",
       fontSize: 14,
-      padding: '10px 26px 10px 12px',
-      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      padding: "10px 26px 10px 12px",
+      transition: theme.transitions.create(["border-color", "box-shadow"]),
       // Use the system font instead of the default Roboto font.
       fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
+        "-apple-system",
+        "BlinkMacSystemFont",
         '"Segoe UI"',
-        'Roboto',
+        "Roboto",
         '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
+        "Arial",
+        "sans-serif",
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
         '"Segoe UI Symbol"',
-      ].join(','),
-      '&:focus': {
+      ].join(","),
+      "&:focus": {
         borderRadius: 4,
-        borderColor: '#80bdff',
-        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+        borderColor: "#80bdff",
+        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
       },
     },
-  }),
+  })
 )(InputBase);
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,12 +77,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-
-
-
-
-
-
 interface IScanPointsAndAllocationProps {
   inputList: any;
   setInputList: (data: any) => void;
@@ -109,28 +97,21 @@ const pointallocatedOptions = [
   { value: "false", text: "NO" },
 ];
 
-export const ScanPointsAndAllocation = (
-  props: IScanPointsAndAllocationProps
-) => {
-  const {
-     inputList,
-    setInputList,
-    getValidation,
-    isValidNext,
-  } = props;
+export const ScanPointsAndAllocation = (props: IScanPointsAndAllocationProps) => {
+  const { inputList, setInputList, getValidation, isValidNext } = props;
   const classes = useStyles();
   // const theme = useTheme();
   // const [packageLevelName, setPackageDropdown] = React.useState<string[]>([]);
-  const [packageLevelList,setPackageLevelList]=React.useState<string[]>([]);
+  const [packageLevelList, setPackageLevelList] = React.useState<string[]>([]);
 
-
-  const paackaginglevelList =props.packagingdefinition?.inputList?.length>0&&_.uniqBy(
-    props.packagingdefinition.inputList,
-    "packaginghierarchyname"
-  );
-  const packageLevelOption=paackaginglevelList?.length>0&&paackaginglevelList.map((value:any)=>{ return (value.packaginghierarchyname&& value.packaginghierarchyname)});
-  
-   
+  const paackaginglevelList =
+    props.packagingdefinition?.inputList?.length > 0 &&
+    _.uniqBy(props.packagingdefinition.inputList, "packaginghierarchyname");
+  const packageLevelOption =
+    paackaginglevelList?.length > 0 &&
+    paackaginglevelList.map((value: any) => {
+      return value.packaginghierarchyname && value.packaginghierarchyname;
+    });
 
   // handle input change
   // const handleInputChange = (e: any, index: any) => {
@@ -149,13 +130,12 @@ export const ScanPointsAndAllocation = (
 
   // handle click event of the Add button
   const handleAddClick = (index: any) => {
-  
     // get current list of array
     const data = inputList[index];
-      // to call validate fn from parent component 
-      getValidation();
+    // to call validate fn from parent component
+    getValidation();
     // check and validate fields is not empty string
-    if(!Object.values(data).some(el=>el===""||el===0 )){
+    if (!Object.values(data).some((el) => el === "" || el === 0)) {
       setInputList([
         ...inputList,
         //   {
@@ -174,84 +154,75 @@ export const ScanPointsAndAllocation = (
         },
       ]);
     }
-    
   };
 
-  const handleDropdownPostionChange = async(event: any, index: any) => {
+  const handleDropdownPostionChange = async (event: any, index: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
     list[index].position = value;
     setInputList(list);
     // To get recent list value updated and then call validation method
-    const canSetInputList:any =  await Promise.resolve(setInputList(list));
-    if(canSetInputList)
-     getValidation();
+    const canSetInputList: any = await Promise.resolve(setInputList(list));
+    if (canSetInputList) getValidation();
   };
 
-  const handleScannedbyChange = async(event: any, index: any) => {
+  const handleScannedbyChange = async (event: any, index: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
     list[index].scannedby = value;
     setInputList(list);
     // To get recent list value updated and then call validation method
-    const canSetInputList:any =  await Promise.resolve(setInputList(list));
-    if(canSetInputList)
-     getValidation();
+    const canSetInputList: any = await Promise.resolve(setInputList(list));
+    if (canSetInputList) getValidation();
   };
 
-  const handleScannedtypeChange = async(event: any, index: any) => {
-    const {value } = event.target;
+  const handleScannedtypeChange = async (event: any, index: any) => {
+    const { value } = event.target;
     const list: any = [...inputList];
     list[index].scantype = value;
     setInputList(list);
     // To get recent list value updated and then call validation method
-    const canSetInputList:any =  await Promise.resolve(setInputList(list));
-    if(canSetInputList)
-     getValidation();
+    const canSetInputList: any = await Promise.resolve(setInputList(list));
+    if (canSetInputList) getValidation();
   };
 
-  const handlePackaginglevelChange = async(event: any, index: any) => {
+  const handlePackaginglevelChange = async (event: any, index: any) => {
     const list: any = [...inputList];
-     // remove empty string from array
-     const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
+    // remove empty string from array
+    const result = event.target.value && event.target.value.filter((e: any) => e);
     list[index].packaginglevel = result.join(",");
     setInputList(list);
     // To get recent list value updated and then call validation method
-    const canSetInputList:any =  await Promise.resolve(setInputList(list));
-    if(canSetInputList)
-     getValidation();
+    const canSetInputList: any = await Promise.resolve(setInputList(list));
+    if (canSetInputList) getValidation();
   };
 
   const handlePointsallocatedChange = (event: any, index: any) => {
-    const {  value } = event.target;
+    const { value } = event.target;
     const list: any = [...inputList];
     list[index].pointallocated = value;
     setInputList(list);
   };
- 
-  const handleChange = (event: React.ChangeEvent<{ value: any }>,i:number) => {
-   // remove empty string from array
+
+  const handleChange = (event: React.ChangeEvent<{ value: any }>, i: number) => {
+    // remove empty string from array
     // const result =  event.target.value&&event.target.value.filter((e:any) =>  e);
     // setPackageDropdown(result as string[]);
-    handlePackaginglevelChange(event,i)
+    handlePackaginglevelChange(event, i);
   };
 
- 
   useEffect(() => {
-    if(packageLevelOption){
-      setPackageLevelList(packageLevelOption)
+    if (packageLevelOption) {
+      setPackageLevelList(packageLevelOption);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
   // const packaginglevelOptions = handledropdownoption(
   //   paackaginglevelList,
   //   "packaginghierarchyname"
   // );
 
-  const positionOptions = handledropdownoption(
-    props.tntflow.inputList,
-    "position"
-  );
+  const positionOptions = handledropdownoption(props.tntflow.inputList, "position");
   return (
     <div className="col-md-12">
       <div className="container">
@@ -260,11 +231,21 @@ export const ScanPointsAndAllocation = (
             <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
-                  <th className="tableHeaderStyle">Position</th>
-                  <th className="tableHeaderStyle">Scanned By</th>
-                  <th className="tableHeaderStyle">Scanned Type</th>
-                  <th className="tableHeaderStyle">Packaging Level</th>
-                  <th className="tableHeaderStyle">Points Allocated</th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.position" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.scannedBy" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.scannedType" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.packagingLevel" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.pointsAllocated" />
+                  </th>
                   <th className="tablebtnStyle" />
                 </tr>
               </thead>
@@ -292,18 +273,12 @@ export const ScanPointsAndAllocation = (
                       <ConfigSelect
                         name="position"
                         options={positionOptions}
-                        handleChange={(event: any) =>
-                          handleDropdownPostionChange(event, idx)
-                        }
+                        handleChange={(event: any) => handleDropdownPostionChange(event, idx)}
                         value={item.position}
                         isPlaceholder
                         commonSelectType={true}
                       />
-                      {item?.position_error && isValidNext && (
-                          <span className="error">
-                            {"Please select the position"}
-                          </span>
-                        )}
+                      {item?.position_error && isValidNext && <span className="error">{"Please select the position"}</span>}
                     </td>
                     <td className="tableHeaderStyle">
                       {/* <select
@@ -324,19 +299,15 @@ export const ScanPointsAndAllocation = (
                       <ConfigSelect
                         name="scannedby"
                         options={positionOptions}
-                        handleChange={(event: any) =>
-                          handleScannedbyChange(event, idx)
-                        }
+                        handleChange={(event: any) => handleScannedbyChange(event, idx)}
                         value={item.scannedby}
                         isPlaceholder
                         commonSelectType={true}
                       />
-                      
+
                       {item?.scannedby_error && isValidNext && (
-                          <span className="error">
-                            {"Please select the scanned by"}
-                          </span>
-                        )}
+                        <span className="error">{"Please select the scanned by"}</span>
+                      )}
                     </td>
 
                     <td className="tableHeaderStyle">
@@ -366,18 +337,12 @@ export const ScanPointsAndAllocation = (
                       <ConfigSelect
                         name="scantype"
                         options={scanTypeOptions}
-                        handleChange={(event: any) =>
-                          handleScannedtypeChange(event, idx)
-                        }
+                        handleChange={(event: any) => handleScannedtypeChange(event, idx)}
                         value={item.scantype}
                         isPlaceholder
                         commonSelectType={true}
                       />
-                      {item?.scantype_error && isValidNext && (
-                          <span className="error">
-                            {"Please select the scan type"}
-                          </span>
-                        )}
+                      {item?.scantype_error && isValidNext && <span className="error">{"Please select the scan type"}</span>}
                     </td>
                     <td className="tableHeaderStyle">
                       {/* <select
@@ -418,12 +383,9 @@ export const ScanPointsAndAllocation = (
                           id="demo-mutiple-checkbox"
                           multiple
                           value={item.packaginglevel.split(",")}
-                          onChange={(e:any)=>handleChange(e,idx)}
+                          onChange={(e: any) => handleChange(e, idx)}
                           input={<BootstrapInput />}
-                          renderValue={(selected) =>
-                            
-                            (selected as string[]).join(", ")
-                          }
+                          renderValue={(selected) => (selected as string[]).join(", ")}
                           // MenuProps={MenuProps}
 
                           MenuProps={{
@@ -438,32 +400,27 @@ export const ScanPointsAndAllocation = (
                             getContentAnchorEl: null,
                             classes: { paper: classes.menuPaper },
                           }}
-                          
                         >
                           {packageLevelList.length > 0 &&
-                          packageLevelList.map((packaginghierarchyname:any) => {
-                            // let trimString= item.packaginglevel.replace(/ +/g, "");;
-                            return (
-                              <MenuItem key={packaginghierarchyname} value={packaginghierarchyname}>
-                              <Checkbox
-                               style ={{
-                                color: "#7EB343",
-                              }}
-                                checked={item.packaginglevel.trim().split(",").indexOf(packaginghierarchyname) > -1}
-                              />
-                              <ListItemText primary={packaginghierarchyname} />
-                            </MenuItem>
-                            )
-                          }
-                            
-                          )}
+                            packageLevelList.map((packaginghierarchyname: any) => {
+                              // let trimString= item.packaginglevel.replace(/ +/g, "");;
+                              return (
+                                <MenuItem key={packaginghierarchyname} value={packaginghierarchyname}>
+                                  <Checkbox
+                                    style={{
+                                      color: "#7EB343",
+                                    }}
+                                    checked={item.packaginglevel.trim().split(",").indexOf(packaginghierarchyname) > -1}
+                                  />
+                                  <ListItemText primary={packaginghierarchyname} />
+                                </MenuItem>
+                              );
+                            })}
                         </Select>
                       </FormControl>
                       {item?.packaginglevel_error && isValidNext && (
-                          <span className="error">
-                            {"Please select the package level"}
-                          </span>
-                        )}
+                        <span className="error">{"Please select the package level"}</span>
+                      )}
                     </td>
 
                     <td className="tableHeaderStyle">
@@ -487,18 +444,14 @@ export const ScanPointsAndAllocation = (
                       <ConfigSelect
                         name="scantype"
                         options={pointallocatedOptions}
-                        handleChange={(event: any) =>
-                          handlePointsallocatedChange(event, idx)
-                        }
+                        handleChange={(event: any) => handlePointsallocatedChange(event, idx)}
                         value={item.pointallocated}
                         isPlaceholder
                         commonSelectType={true}
                       />
-                       {item?.pointallocated_error && isValidNext && (
-                          <span className="error">
-                            {"Please select the points allocated"}
-                          </span>
-                        )}
+                      {item?.pointallocated_error && isValidNext && (
+                        <span className="error">{"Please select the points allocated"}</span>
+                      )}
                     </td>
                     <td className="tablebtnStyle">
                       {idx === inputList.length - 1 ? (
@@ -507,7 +460,7 @@ export const ScanPointsAndAllocation = (
                             return (
                               <div>
                                 <img
-                                  alt=""  
+                                  alt=""
                                   style={{ width: "50px", height: "50px" }}
                                   src={AddBtn}
                                   onClick={() => handleAddClick(idx)}
@@ -558,9 +511,7 @@ export const ScanPointsAndAllocation = (
   );
 };
 
-const mapStateToProps = ({
-  devconfig: { scanpointsandallocation, tntflow, packagingdefinition },
-}: any) => {
+const mapStateToProps = ({ devconfig: { scanpointsandallocation, tntflow, packagingdefinition } }: any) => {
   return {
     scanpointsandallocation,
     tntflow,
@@ -572,7 +523,4 @@ const mapDispatchToProps = {
   setInputList: addScanpointsAndAllocationInputList,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ScanPointsAndAllocation);
+export default connect(mapStateToProps, mapDispatchToProps)(ScanPointsAndAllocation);

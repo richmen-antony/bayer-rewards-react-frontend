@@ -6,6 +6,7 @@ import RemoveBtn from "../../../assets/icons/Remove_row.svg";
 import { addRoleInputList } from "../../../redux/actions";
 import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
 import { handledropdownoption } from "../../../utility/helper";
+import { FormattedMessage } from "react-intl";
 
 interface IRoleProps {
   role: any;
@@ -20,21 +21,18 @@ const roleTypeOptions = [
 ];
 
 export const RoleHierarchy = (props: IRoleProps) => {
-  const { inputList, setInputList, isValidNext, getValidation } = props;  
+  const { inputList, setInputList, isValidNext, getValidation } = props;
   /**
    * handle input change
-   * @param e 
-   * @param index 
+   * @param e
+   * @param index
    */
-  const handleInputChange =(e: any, index: any) => {
+  const handleInputChange = (e: any, index: any) => {
     const { name, value } = e.target;
     const list: any = [...inputList];
     if (value) {
-       // check for duplicate values from previous list array
-      const isDuplicate = list.find(
-        (duplicate: any) =>
-          duplicate[name]?.toLowerCase() === value?.toLowerCase()
-      );
+      // check for duplicate values from previous list array
+      const isDuplicate = list.find((duplicate: any) => duplicate[name]?.toLowerCase() === value?.toLowerCase());
       if (isDuplicate) {
         list[index][name + "IsDuplicate"] = true;
       } else {
@@ -43,14 +41,11 @@ export const RoleHierarchy = (props: IRoleProps) => {
     }
     list[index][name] = value;
     setInputList(list);
-   
   };
 
-
-  
   /**
    *  handle click event of the Remove button
-   * @param index 
+   * @param index
    */
   const handleRemoveClick = (index: any) => {
     let list = [...inputList];
@@ -59,20 +54,14 @@ export const RoleHierarchy = (props: IRoleProps) => {
     setInputList(list);
   };
 
-  
   /**
    * handle click event of the Add button
-   * @param index 
+   * @param index
    */
   const handleAddClick = (index: any) => {
     const data = inputList[index];
     getValidation();
-    if (
-      data.name &&
-      data.code &&
-      !data.rolehierarchynameIsDuplicate &&
-      !data.rolecodeIsDuplicate
-    ) {
+    if (data.name && data.code && !data.rolehierarchynameIsDuplicate && !data.rolecodeIsDuplicate) {
       setInputList([
         ...inputList,
         {
@@ -80,15 +69,15 @@ export const RoleHierarchy = (props: IRoleProps) => {
           code: "",
           name: "",
           type: "INTERNAL",
-          parentrole: inputList[inputList.length-1].rolecode,
+          parentrole: inputList[inputList.length - 1].rolecode,
         },
       ]);
     }
   };
   /**
    * To handle drop down values
-   * @param event 
-   * @param index 
+   * @param event
+   * @param index
    */
   const handleDropdownChange = (event: any, index: any) => {
     const { value } = event.target;
@@ -96,23 +85,23 @@ export const RoleHierarchy = (props: IRoleProps) => {
     list[index].parentrole = value;
     setInputList(list);
   };
-/**
- * To handle drop down values for roles
- * @param event 
- * @param index 
- */
+  /**
+   * To handle drop down values for roles
+   * @param event
+   * @param index
+   */
   const handleDropdownRoleChange = (event: any, index: any) => {
     const { value } = event.target;
     const list: any = [...inputList];
     list[index].type = value;
     setInputList(list);
   };
-/**
- * To set the hiearchy order wise level
- * @param list 
- * @param index 
- * @returns 
- */
+  /**
+   * To set the hiearchy order wise level
+   * @param list
+   * @param index
+   * @returns
+   */
   const setCorrectHierLvl = (list: any, index: number) => {
     const newList = list.map((listItem: any, idx: number) => {
       return {
@@ -140,11 +129,21 @@ export const RoleHierarchy = (props: IRoleProps) => {
             <table className="devconfig table label" id="tab_logic">
               <thead className="tableStyle">
                 <tr>
-                  <th className="text-center tableStyle">Role Level</th>
-                  <th className="tableHeaderStyle">Role Code</th>
-                  <th className="tableHeaderStyle">Role</th>
-                  <th className="tableHeaderStyle">Role Type</th>
-                  <th className="tableHeaderStyle">Parent Role</th>
+                  <th className="text-center tableStyle">
+                    <FormattedMessage id="devAdmin.roleLevel" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.roleCode" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.role" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.roleType" />
+                  </th>
+                  <th className="tableHeaderStyle">
+                    <FormattedMessage id="devAdmin.parentRole" />
+                  </th>
                   <th className="tablebtnStyle" />
                 </tr>
               </thead>
@@ -162,15 +161,11 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           onChange={(e) => handleInputChange(e, idx)}
                           onBlur={getValidation}
                         />
-                        {isValidNext && item?.rolecode_error ? 
-                        <span className="error">
-                        {"Please enter the Role Code"}
-                      </span> :item?.rolecodeIsDuplicate &&(
-                          <span className="error">
-                            {item.code + " already exists"}
-                          </span>
+                        {isValidNext && item?.rolecode_error ? (
+                          <span className="error">{"Please enter the Role Code"}</span>
+                        ) : (
+                          item?.rolecodeIsDuplicate && <span className="error">{item.code + " already exists"}</span>
                         )}
-                        
                       </td>
                       <td className="tableHeaderStyle">
                         <input
@@ -181,15 +176,13 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           onChange={(e) => handleInputChange(e, idx)}
                           onBlur={getValidation}
                         />
-                        {isValidNext && item?.rolehierarchyname_error ? 
-                        <span className="error">
-                        {"Please enter the Role Hierarchy"}
-                      </span> :item?.rolehierarchynameIsDuplicate &&(
-                          <span className="error">
-                            {item.name + " already exists"}
-                          </span>
+                        {isValidNext && item?.rolehierarchyname_error ? (
+                          <span className="error">{"Please enter the Role Hierarchy"}</span>
+                        ) : (
+                          item?.rolehierarchynameIsDuplicate && (
+                            <span className="error">{item.name + " already exists"}</span>
+                          )
                         )}
-                        
                       </td>
                       <td className="tableHeaderStyle">
                         {/* <select
@@ -212,9 +205,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                         <ConfigSelect
                           name="roletype"
                           options={roleTypeOptions}
-                          handleChange={(event: any) =>
-                            handleDropdownRoleChange(event, idx)
-                          }
+                          handleChange={(event: any) => handleDropdownRoleChange(event, idx)}
                           value={item.type || "INTERNAL"}
                           isPlaceholder
                           commonSelectType={true}
@@ -247,14 +238,8 @@ export const RoleHierarchy = (props: IRoleProps) => {
                           defaultValue="NONE"
                           name="parentrole"
                           options={roleOptions}
-                          handleChange={(event: any) =>
-                            handleDropdownChange(event, idx)
-                          }
-                          value={
-                            item.parentrole === "NONE"
-                              ? "NONE"
-                              : item.parentrole
-                          }
+                          handleChange={(event: any) => handleDropdownChange(event, idx)}
+                          value={item.parentrole === "NONE" ? "NONE" : item.parentrole}
                           isPlaceholder
                           parentIndex={idx}
                         />
@@ -274,10 +259,7 @@ export const RoleHierarchy = (props: IRoleProps) => {
                                   />
                                 </div>
                               );
-                            } else if (
-                              idx > 0 &&
-                              idx === inputList.length - 1
-                            ) {
+                            } else if (idx > 0 && idx === inputList.length - 1) {
                               return (
                                 <div>
                                   <td style={{ border: "none" }}>

@@ -8,6 +8,7 @@ import {
   setAnticounterfeitDigitalScan,
   setAnticounterfeitSmartLabel,
 } from "../../../redux/actions/devconfig/add";
+import { FormattedMessage } from "react-intl";
 
 interface IAnticounterfeitProps {
   setAnticounterfeitSmartLabel: (data: any) => void;
@@ -51,7 +52,9 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
               <tbody>
                 <tr>
                   <td className="tableStyle label">
-                    <label>SMS Authentication</label>
+                    <label>
+                      <FormattedMessage id="devAdmin.smsAuthentication" />
+                    </label>
                   </td>
                   <td className="tableStyle label">
                     <CustomSwitch
@@ -65,7 +68,9 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
                 </tr>
                 <tr>
                   <td className="tableStyle label">
-                    <label>Digital Scan</label>
+                    <label>
+                      <FormattedMessage id="devAdmin.digitalScan" />
+                    </label>
                   </td>
                   <td className="tableStyle label">
                     <CustomSwitch
@@ -79,7 +84,9 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
                 </tr>
                 <tr>
                   <td className="tableStyle label">
-                    <label>Smart Label</label>
+                    <label>
+                      <FormattedMessage id="devAdmin.smartLabel" />
+                    </label>
                   </td>
                   <td className="tableStyle label">
                     <CustomSwitch
@@ -100,7 +107,4 @@ const AnticounterfeitComp = (props: IAnticounterfeitProps) => {
   );
 };
 
-export const Anticounterfeit = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AnticounterfeitComp);
+export const Anticounterfeit = connect(mapStateToProps, mapDispatchToProps)(AnticounterfeitComp);
