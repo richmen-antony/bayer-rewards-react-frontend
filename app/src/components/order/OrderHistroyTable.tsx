@@ -20,11 +20,7 @@ import NativeDropdown from "../../utility/widgets/dropdown/NativeSelect";
 import filterIcon from "../../assets/icons/filter_icon.svg";
 import Download from "../../assets/icons/download.svg";
 import _ from "lodash";
-import {
-  downloadCsvFile,
-  ErrorMsg,
-  handledropdownoption,
-} from "../../utility/helper";
+import { downloadCsvFile, ErrorMsg, handledropdownoption } from "../../utility/helper";
 import { apiURL } from "../../utility/base/utils/config";
 import { invokeGetAuthService } from "../../utility/base/service";
 import DatePicker from "react-datepicker";
@@ -37,12 +33,7 @@ import { CustomButton } from "../../utility/widgets/button";
 import { OrderHistroyHeader } from "../../utility/constant";
 import Cancel from "../../assets/images/cancel.svg";
 import PendingImg from "../../assets/images/not_activated.svg";
-import {
-  defineMessages,
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps,
-} from "react-intl";
+import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 
 interface IProps {
   onChange?: any;
@@ -53,27 +44,25 @@ interface IProps {
   // any other props that come into the component
 }
 const ref = React.createRef();
-const Input = React.forwardRef(
-  ({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
-    <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
-      <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
-      <input
-        style={{
-          border: "none",
-          width: "120px",
-          height: "31px",
-          outline: "none",
-        }}
-        onChange={onChange}
-        placeholder={placeholder}
-        value={value}
-        id={id}
-        onClick={onClick}
-        ref={ref}
-      />
-    </div>
-  )
-);
+const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
+  <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+    <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+    <input
+      style={{
+        border: "none",
+        width: "120px",
+        height: "31px",
+        outline: "none",
+      }}
+      onChange={onChange}
+      placeholder={placeholder}
+      value={value}
+      id={id}
+      onClick={onClick}
+      ref={ref}
+    />
+  </div>
+));
 
 const popupHeader = {
   title: "Maria Joseph",
@@ -136,14 +125,7 @@ class OrderHistory extends Component<Props, States> {
       actions: ["All", "Distributor", "Retailer"],
       dropDownValue: "Select action",
       scanType: ["All", "Send Goods", "Receive Goods", "Sell to Farmers"],
-      productCategories: [
-        "ALL",
-        "HYBRID",
-        "CORN SEED",
-        "HERBICIDES",
-        "FUNGICIDES",
-        "INSECTICIDES",
-      ],
+      productCategories: ["ALL", "HYBRID", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"],
       status: ["FULFILLED", "PENDING", "CANCELLED", "EXPIRED"],
       list: ["ALL", "Distributor", "Retailer"],
       selectedFilters: {
@@ -212,44 +194,24 @@ class OrderHistory extends Component<Props, States> {
     };
     if (isFiltered) {
       let filter = { ...selectedFilters };
-      filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
-        "YYYY-MM-DD"
-      );
+      filter.ordereddatefrom = moment(filter.ordereddatefrom).format("YYYY-MM-DD");
       filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
-      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format(
-        "YYYY-MM-DD"
-      );
-      filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
-        "YYYY-MM-DD"
-      );
+      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
+      filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
       // filter.retailer = filterScan ? filterScan : filter.retailer;
       filter.geolevel1 =
-        selectedFilters.status === "FULFILLED"
-          ? filter.geolevel1 === "ALL"
-            ? null
-            : filter.geolevel1
-          : null;
+        selectedFilters.status === "FULFILLED" ? (filter.geolevel1 === "ALL" ? null : filter.geolevel1) : null;
       data = { ...data, ...filter };
     }
     // regionOption list update one time only using with geolevel1 === "ALL"
     let oneTimeUpdate = selectedFilters.geolevel1 === "ALL" ? true : false;
     invokeGetAuthService(adminOrderList, data)
       .then((response) => {
-        let data =
-          response?.body && Object.keys(response?.body).length !== 0
-            ? response.body.rows
-            : [];
+        let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
         // unique by geolevel1 region list
         const regionList =
-          data?.length > 0 &&
-          oneTimeUpdate &&
-          selectedFilters.status === "FULFILLED"
-            ? _.uniqBy(data, "geolevel1")
-            : [];
-        const regionOptionsList =
-          regionList?.length > 0
-            ? handledropdownoption(regionList, "geolevel1")
-            : [];
+          data?.length > 0 && oneTimeUpdate && selectedFilters.status === "FULFILLED" ? _.uniqBy(data, "geolevel1") : [];
+        const regionOptionsList = regionList?.length > 0 ? handledropdownoption(regionList, "geolevel1") : [];
         const regionValues = oneTimeUpdate ? regionOptionsList : regionOptions;
         this.setState({
           isLoader: false,
@@ -417,29 +379,18 @@ class OrderHistory extends Component<Props, States> {
     let filter = { ...this.state.selectedFilters };
 
     let data = {
-      region: this.state.loggedUserInfo?.geolevel1,
+      // region: this.state.loggedUserInfo?.geolevel1,
       countrycode: this.state.loggedUserInfo?.countrycode,
       isfiltered: this.state.isFiltered,
       searchtext: this.state.searchText || null,
       status: filter.status,
     };
     if (this.state.isFiltered) {
-      filter.ordereddatefrom = moment(filter.ordereddatefrom).format(
-        "YYYY-MM-DD"
-      );
+      filter.ordereddatefrom = moment(filter.ordereddatefrom).format("YYYY-MM-DD");
       filter.ordereddateto = moment(filter.ordereddateto).format("YYYY-MM-DD");
-      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format(
-        "YYYY-MM-DD"
-      );
-      filter.lastmodifiedto = moment(filter.lastmodifiedto).format(
-        "YYYY-MM-DD"
-      );
-      filter.geolevel1 =
-        filter.status === "FULFILLED"
-          ? filter.geolevel1 === "ALL"
-            ? null
-            : filter.geolevel1
-          : null;
+      filter.lastmodifiedfrom = moment(filter.lastmodifiedfrom).format("YYYY-MM-DD");
+      filter.lastmodifiedto = moment(filter.lastmodifiedto).format("YYYY-MM-DD");
+      filter.geolevel1 = filter.status === "FULFILLED" ? (filter.geolevel1 === "ALL" ? null : filter.geolevel1) : null;
       // filter.productgroup = filter.productgroup === "ALL" ? null : filter.productgroup;
       // filter.farmer = filter.farmer === "ALL" ? null : filter.farmer;
       // filter.retailer = filter.retailer === "ALL" ? null : filter.retailer;
@@ -457,49 +408,33 @@ class OrderHistory extends Component<Props, States> {
     let val = this.state.selectedFilters;
     // order date - check End date
     if (name === "ordereddateto") {
-      if (
-        moment(date).format("YYYY-MM-DD") >=
-        moment(val.ordereddatefrom).format("YYYY-MM-DD")
-      ) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "",
         });
-      } else if (
-        moment(date).format("YYYY-MM-DD") <=
-        moment(val.ordereddatefrom).format("YYYY-MM-DD")
-      ) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
         this.setState({
-          dateErrMsg:
-            "Ordered End Date should be greater than  Ordered Start Date",
+          dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
         });
       } else {
         this.setState({
-          dateErrMsg:
-            "Ordered Start Date should be lesser than  Ordered End Date",
+          dateErrMsg: "Ordered Start Date should be lesser than  Ordered End Date",
         });
       }
     }
     // order date - check Start date
     if (name === "ordereddatefrom") {
-      if (
-        moment(date).format("YYYY-MM-DD") <=
-        moment(val.ordereddateto).format("YYYY-MM-DD")
-      ) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddateto).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "",
         });
-      } else if (
-        moment(date).format("YYYY-MM-DD") >=
-        moment(val.ordereddateto).format("YYYY-MM-DD")
-      ) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddateto).format("YYYY-MM-DD")) {
         this.setState({
-          dateErrMsg:
-            "Ordered Start Date should be lesser than Ordered End Date",
+          dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
         });
       } else {
         this.setState({
-          dateErrMsg:
-            "Ordered Start Date should be greater than Ordered End Date",
+          dateErrMsg: "Ordered Start Date should be greater than Ordered End Date",
         });
       }
     }
@@ -511,13 +446,11 @@ class OrderHistory extends Component<Props, States> {
         });
       } else if (date <= val.lastmodifiedfrom) {
         this.setState({
-          lastUpdatedDateErr:
-            "Last Updated End Date should be greater than  Last Updated Start Date",
+          lastUpdatedDateErr: "Last Updated End Date should be greater than  Last Updated Start Date",
         });
       } else {
         this.setState({
-          lastUpdatedDateErr:
-            "Last Updated Start Date should be lesser than  Last Updated End Date",
+          lastUpdatedDateErr: "Last Updated Start Date should be lesser than  Last Updated End Date",
         });
       }
     }
@@ -530,13 +463,11 @@ class OrderHistory extends Component<Props, States> {
         });
       } else if (date >= val.lastmodifiedto) {
         this.setState({
-          lastUpdatedDateErr:
-            "Last Updated Start Date should be lesser than Last Updated End Date",
+          lastUpdatedDateErr: "Last Updated Start Date should be lesser than Last Updated End Date",
         });
       } else {
         this.setState({
-          lastUpdatedDateErr:
-            "Last Updated Start Date should be greater than Last Updated End Date",
+          lastUpdatedDateErr: "Last Updated Start Date should be greater than Last Updated End Date",
         });
       }
     }
@@ -556,13 +487,10 @@ class OrderHistory extends Component<Props, States> {
   };
 
   filterScans = (filterValue: any) => {
-    this.setState(
-      { isFiltered: true, searchText: filterValue, inActiveFilter: false },
-      () => {
-        this.getAdminOrderList();
-        this.handleClosePopup();
-      }
-    );
+    this.setState({ isFiltered: true, searchText: filterValue, inActiveFilter: false }, () => {
+      this.getAdminOrderList();
+      this.handleClosePopup();
+    });
   };
 
   render() {
@@ -604,17 +532,12 @@ class OrderHistory extends Component<Props, States> {
                     onChange={this.handleSearch}
                     value={searchText}
                     tolltip={`Search applicable for Order ID, ${
-                      selectedFilters.status === "FULFILLED"
-                        ? "Retailer Name/ID,Store Name,"
-                        : ""
+                      selectedFilters.status === "FULFILLED" ? "Retailer Name/ID,Store Name," : ""
                     } Farmer Name/Mobile, Advisor Name/ID.`}
                   />
                   <div className="filter-right-side">
                     <div className="filter-status">
-                      <label
-                        className="font-weight-bold pt-2"
-                        style={{ color: "#363636", fontSize: "12px" }}
-                      >
+                      <label className="font-weight-bold pt-2" style={{ color: "#363636", fontSize: "12px" }}>
                         STATUS
                       </label>
                       <div className="status-list">
@@ -629,9 +552,7 @@ class OrderHistory extends Component<Props, States> {
                                       : "btn rounded-pill boxColor"
                                   }
                                   size="md"
-                                  onClick={(e: any) =>
-                                    this.handleFilterChange(e, "status", item)
-                                  }
+                                  onClick={(e: any) => this.handleFilterChange(e, "status", item)}
                                 >
                                   <FormattedMessage id={`${item}`} />
                                 </Button>
@@ -642,35 +563,21 @@ class OrderHistory extends Component<Props, States> {
                       </div>
                     </div>
                     <div className="filterRow">
-                      <Dropdown
-                        isOpen={dropdownOpenFilter}
-                        toggle={this.toggleFilter}
-                      >
+                      <Dropdown isOpen={dropdownOpenFilter} toggle={this.toggleFilter}>
                         <DropdownToggle>
-                          {!dropdownOpenFilter && (
-                            <img src={filterIcon} width="17" alt="filter" />
-                          )}
+                          {!dropdownOpenFilter && <img src={filterIcon} width="17" alt="filter" />}
                         </DropdownToggle>
                         <DropdownMenu right>
                           <div className="p-3">
-                            <i
-                              className="fa fa-filter boxed float-right"
-                              aria-hidden="true"
-                              onClick={this.toggleFilter}
-                            ></i>
+                            <i className="fa fa-filter boxed float-right" aria-hidden="true" onClick={this.toggleFilter}></i>
 
                             {selectedFilters.status === "FULFILLED" && (
-                              <div
-                                className="form-group"
-                                onClick={(e) => e.stopPropagation()}
-                              >
+                              <div className="form-group" onClick={(e) => e.stopPropagation()}>
                                 <NativeDropdown
                                   name="geolevel1"
                                   value={selectedFilters.geolevel1}
                                   label={"Region"}
-                                  handleChange={(e: any) =>
-                                    this.handleSelect(e, "geolevel1")
-                                  }
+                                  handleChange={(e: any) => this.handleSelect(e, "geolevel1")}
                                   options={regionOptions}
                                   defaultValue="ALL"
                                   id="region-test"
@@ -678,10 +585,7 @@ class OrderHistory extends Component<Props, States> {
                                 />
                               </div>
                             )}
-                            <label
-                              className="font-weight-bold pt-2"
-                              htmlFor="order-date"
-                            >
+                            <label className="font-weight-bold pt-2" htmlFor="order-date">
                               Ordered Date <span>(6 months interval)</span>
                             </label>
                             <div className="d-flex">
@@ -691,12 +595,7 @@ class OrderHistory extends Component<Props, States> {
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input ref={ref} />}
                                   selected={selectedFilters.ordereddatefrom}
-                                  onChange={(date: any) =>
-                                    this.handleDateChange(
-                                      date,
-                                      "ordereddatefrom"
-                                    )
-                                  }
+                                  onChange={(date: any) => this.handleDateChange(date, "ordereddatefrom")}
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
@@ -711,9 +610,7 @@ class OrderHistory extends Component<Props, States> {
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input ref={ref} />}
                                   selected={selectedFilters.ordereddateto}
-                                  onChange={(date: any) =>
-                                    this.handleDateChange(date, "ordereddateto")
-                                  }
+                                  onChange={(date: any) => this.handleDateChange(date, "ordereddateto")}
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
@@ -721,13 +618,8 @@ class OrderHistory extends Component<Props, States> {
                                 />
                               </div>
                             </div>
-                            {dateErrMsg && (
-                              <span className="error">{dateErrMsg} </span>
-                            )}
-                            <label
-                              className="font-weight-bold pt-2"
-                              htmlFor="update-date"
-                            >
+                            {dateErrMsg && <span className="error">{dateErrMsg} </span>}
+                            <label className="font-weight-bold pt-2" htmlFor="update-date">
                               Last Updated Date <span>(6 months interval)</span>
                             </label>
                             <div className="d-flex">
@@ -737,12 +629,7 @@ class OrderHistory extends Component<Props, States> {
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input ref={ref} />}
                                   selected={selectedFilters.lastmodifiedfrom}
-                                  onChange={(date: any) =>
-                                    this.handleDateChange(
-                                      date,
-                                      "lastmodifiedfrom"
-                                    )
-                                  }
+                                  onChange={(date: any) => this.handleDateChange(date, "lastmodifiedfrom")}
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
@@ -758,12 +645,7 @@ class OrderHistory extends Component<Props, States> {
                                   dateFormat="dd-MM-yyyy"
                                   customInput={<Input ref={ref} />}
                                   selected={selectedFilters.lastmodifiedto}
-                                  onChange={(date: any) =>
-                                    this.handleDateChange(
-                                      date,
-                                      "lastmodifiedto"
-                                    )
-                                  }
+                                  onChange={(date: any) => this.handleDateChange(date, "lastmodifiedto")}
                                   showMonthDropdown
                                   showYearDropdown
                                   dropdownMode="select"
@@ -771,11 +653,7 @@ class OrderHistory extends Component<Props, States> {
                                 />
                               </div>
                             </div>
-                            {lastUpdatedDateErr && (
-                              <span className="error">
-                                {lastUpdatedDateErr}{" "}
-                              </span>
-                            )}
+                            {lastUpdatedDateErr && <span className="error">{lastUpdatedDateErr} </span>}
 
                             <div className="filterFooter pt-3">
                               <button
@@ -788,25 +666,13 @@ class OrderHistory extends Component<Props, States> {
                               <button
                                 className="cus-btn-scanlog-filter"
                                 onClick={this.applyFilter}
-                                disabled={
-                                  lastUpdatedDateErr || dateErrMsg
-                                    ? true
-                                    : false
-                                }
+                                disabled={lastUpdatedDateErr || dateErrMsg ? true : false}
                                 data-testid="apply"
                               >
                                 Apply
                                 <span>
-                                  <img
-                                    src={ArrowIcon}
-                                    className="arrow-i"
-                                    alt=""
-                                  />{" "}
-                                  <img
-                                    src={RtButton}
-                                    className="layout"
-                                    alt=""
-                                  />
+                                  <img src={ArrowIcon} className="arrow-i" alt="" />{" "}
+                                  <img src={RtButton} className="layout" alt="" />
                                 </span>
                               </button>
                             </div>
@@ -844,42 +710,25 @@ class OrderHistory extends Component<Props, States> {
                 <table className="table">
                   <thead>
                     <tr>
-                      {OrderHistroyHeader[`${selectedFilters.status}`].length >
-                        0 &&
-                        OrderHistroyHeader[`${selectedFilters.status}`].map(
-                          (value: any, index: number) => {
-                            return (
-                              <th
-                                style={value.style}
-                                onClick={(e) =>
-                                  this.handleSort(
-                                    e,
-                                    value.key,
-                                    allScanLogs,
-                                    isAsc
-                                  )
-                                }
-                                key={index}
-                              >
-                                {value.label}
-                                {value.label &&
-                                this.tableCellIndex !== undefined ? (
-                                  this.tableCellIndex === index ? (
-                                    <i
-                                      className={`fas ${
-                                        isAsc ? "fa-sort-down" : "fa-sort-up"
-                                      } ml-2`}
-                                    ></i>
-                                  ) : null
-                                ) : (
-                                  value.label && (
-                                    <i className={"fas fa-sort-up ml-2"}></i>
-                                  )
-                                )}
-                              </th>
-                            );
-                          }
-                        )}
+                      {OrderHistroyHeader[`${selectedFilters.status}`].length > 0 &&
+                        OrderHistroyHeader[`${selectedFilters.status}`].map((value: any, index: number) => {
+                          return (
+                            <th
+                              style={value.style}
+                              onClick={(e) => this.handleSort(e, value.key, allScanLogs, isAsc)}
+                              key={index}
+                            >
+                              {value.label}
+                              {value.label && this.tableCellIndex !== undefined ? (
+                                this.tableCellIndex === index ? (
+                                  <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-2`}></i>
+                                ) : null
+                              ) : (
+                                value.label && <i className={"fas fa-sort-up ml-2"}></i>
+                              )}
+                            </th>
+                          );
+                        })}
                       {/* <th
                         style={{ width: "10%" }}
                         onClick={(e) =>
@@ -1049,9 +898,7 @@ class OrderHistory extends Component<Props, States> {
                             style={{ cursor: "pointer" }}
                             key={i}
                           >
-                            {OrderHistroyHeader[
-                              `${selectedFilters.status}`
-                            ].map((list: any, index: number) => {
+                            {OrderHistroyHeader[`${selectedFilters.status}`].map((list: any, index: number) => {
                               const statusColor =
                                 value.orderstatus === "FULFILLED"
                                   ? "active"
@@ -1078,9 +925,7 @@ class OrderHistory extends Component<Props, States> {
                                     }
                                   }}
                                   style={{
-                                    textAlign: list?.style?.textAlign
-                                      ? "center"
-                                      : "inherit",
+                                    textAlign: list?.style?.textAlign ? "center" : "inherit",
                                   }}
                                   key={index}
                                 >
@@ -1098,69 +943,34 @@ class OrderHistory extends Component<Props, States> {
                                             whiteSpace: "nowrap",
                                           }}
                                         >
-                                          {_.startCase(
-                                            _.toLower(value.username)
-                                          )}
-                                          <img
-                                            className="retailer-icon"
-                                            src={ExpandWindowImg}
-                                            alt=""
-                                          />
+                                          {_.startCase(_.toLower(value.username))}
+                                          <img className="retailer-icon" src={ExpandWindowImg} alt="" />
                                         </span>
                                       </p>
                                       <label>{value.userid}</label>
                                     </div>
-                                  ) : list.key === "farmername" ||
-                                    list.key === "advisorname" ? (
+                                  ) : list.key === "farmername" || list.key === "advisorname" ? (
                                     <div className="farmer-id">
-                                      <p>
-                                        {_.startCase(
-                                          _.toLower(value[list.key])
-                                        )}
-                                      </p>
-                                      <label>
-                                        {list.key === "farmername"
-                                          ? value.farmerphonenumber
-                                          : value.advisorid}
-                                      </label>
+                                      <p>{_.startCase(_.toLower(value[list.key]))}</p>
+                                      <label>{list.key === "farmername" ? value.farmerphonenumber : value.advisorid}</label>
                                     </div>
                                   ) : list.key === "orderstatus" ? (
                                     <span className={`status ${statusColor}`}>
                                       {value.orderstatus !== "EXPIRED" ? (
-                                        <img
-                                          src={statusImg}
-                                          style={{ marginRight: "8px" }}
-                                          width="17"
-                                          alt=""
-                                        />
+                                        <img src={statusImg} style={{ marginRight: "8px" }} width="17" alt="" />
                                       ) : (
                                         <i className="fas fa-clock"></i>
                                       )}
-                                      {_.startCase(
-                                        _.toLower(value.orderstatus)
-                                      )}
+                                      {_.startCase(_.toLower(value.orderstatus))}
                                     </span>
                                   ) : list?.type === "date" ? (
-                                    <>
-                                      {value[list.key] &&
-                                        moment(value[list.key]).format(
-                                          "DD/MM/YYYY"
-                                        )}
-                                    </>
+                                    <>{value[list.key] && moment(value[list.key]).format("DD/MM/YYYY")}</>
                                   ) : !list.label && !list.key ? (
-                                    <img
-                                      className="max-image"
-                                      src={maxImg}
-                                      alt=""
-                                    />
+                                    <img className="max-image" src={maxImg} alt="" />
                                   ) : list.key === "totalcost" ? (
                                     "MK " + value.totalcost
                                   ) : (
-                                    (value[list.key] &&
-                                      _.startCase(
-                                        _.toLower(value[list.key])
-                                      )) ||
-                                    ""
+                                    (value[list.key] && _.startCase(_.toLower(value[list.key]))) || ""
                                   )}
                                 </td>
                               );
@@ -1251,12 +1061,7 @@ class OrderHistory extends Component<Props, States> {
           </div>
         </div>
         {this.state.showPopup ? (
-          <SimpleDialog
-            open={this.state.showPopup}
-            onClose={this.handleClosePopup}
-            header={popupHeader}
-            maxWidth={"800px"}
-          >
+          <SimpleDialog open={this.state.showPopup} onClose={this.handleClosePopup} header={popupHeader} maxWidth={"800px"}>
             <DialogContent>
               <div className="popup-container popup-retailer">
                 <div className="img">
@@ -1265,8 +1070,7 @@ class OrderHistory extends Component<Props, States> {
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {retailerPopupData.username},{" "}
-                      <label>{popupHeader?.sub}</label>{" "}
+                      {retailerPopupData.username}, <label>{popupHeader?.sub}</label>{" "}
                     </p>
                   </div>
                   <div className="popup-content-row">
@@ -1283,20 +1087,18 @@ class OrderHistory extends Component<Props, States> {
                       <p>{retailerPopupData.phonenumber}</p>
                     </div>
                     {this.state.locationData?.length > 0 &&
-                      this.state.locationData.map(
-                        (location: any, index: number) => {
-                          let nameCapitalized =
-                            location.name === "ADD" || location.name === "EPA"
-                              ? location.name
-                              : _.startCase(_.toLower(location.name));
-                          return (
-                            <div className="content-list" key={index}>
-                              <label>{nameCapitalized}</label>
-                              <p>{retailerPopupData[location.geolevels]}</p>
-                            </div>
-                          );
-                        }
-                      )}
+                      this.state.locationData.map((location: any, index: number) => {
+                        let nameCapitalized =
+                          location.name === "ADD" || location.name === "EPA"
+                            ? location.name
+                            : _.startCase(_.toLower(location.name));
+                        return (
+                          <div className="content-list" key={index}>
+                            <label>{nameCapitalized}</label>
+                            <p>{retailerPopupData[location.geolevels]}</p>
+                          </div>
+                        );
+                      })}
                     <div className="content-list">
                       <label>Postal Code</label>
                       <p>{retailerPopupData.billingzipcode}</p>
@@ -1324,11 +1126,7 @@ class OrderHistory extends Component<Props, States> {
         )}
 
         {showProductPopup ? (
-          <OrderProductPopup
-            open={showProductPopup}
-            close={this.handleCloseProductPopup}
-            data={this.state.orderData}
-          />
+          <OrderProductPopup open={showProductPopup} close={this.handleCloseProductPopup} data={this.state.orderData} />
         ) : (
           ""
         )}

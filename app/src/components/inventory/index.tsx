@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,11 +10,11 @@ import Filter from "../../containers/grid/Filter";
 import OverallInventory from "./OverallInventory";
 import BrandwiseInventory from "./BrandwiseInventory";
 import ProductwiseInventory from "./ProductwiseInventory";
-import {Button} from "reactstrap";
-import {sortBy} from "../../utility/base/utils/tableSort";
-import {Alert} from "../../utility/widgets/toaster";
+import { Button } from "reactstrap";
+import { sortBy } from "../../utility/base/utils/tableSort";
+import { Alert } from "../../utility/widgets/toaster";
 import Loader from "../../utility/widgets/loader";
-import {getLocalStorageData} from "../../utility/base/localStore";
+import { getLocalStorageData } from "../../utility/base/localStore";
 import CalenderIcon from "../../assets/icons/calendar.svg";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
@@ -34,10 +34,10 @@ import {
 } from "../../redux/actions/inventory/inventory";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import * as myConstClass from "../../utility/constant";
-import {apiURL} from "../../utility/base/utils/config";
-import {invokeGetAuthService, invokePostAuthService, invokePostFileAuthService} from "../../utility/base/service";
+import { apiURL } from "../../utility/base/utils/config";
+import { invokeGetAuthService, invokePostAuthService, invokePostFileAuthService } from "../../utility/base/service";
 import * as XLSX from "xlsx";
-import {Theme, withStyles} from "@material-ui/core/styles";
+import { Theme, withStyles } from "@material-ui/core/styles";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import uploadIcon from "../../assets/icons/upload_cloud.png";
@@ -45,7 +45,7 @@ import SimpleDialog from "../../containers/components/dialog";
 import Cancel from "../../assets/images/cancel.svg";
 import "../../assets/scss/upload.scss";
 import AdminPopup from "../../containers/components/dialog/AdminPopup";
-import {CustomButton} from "../../utility/widgets/button";
+import { CustomButton } from "../../utility/widgets/button";
 
 interface Sheet2CSVOpts {
   header?: any;
@@ -74,27 +74,29 @@ interface IProps {
   disabled?: boolean;
 }
 const ref = React.createRef();
-const DateInput = React.forwardRef(({onChange, placeholder, value, id, onClick, className, disabled}: IProps, ref: any) => (
-  <div style={{border: "1px solid grey", borderRadius: "4px"}}>
-    <img src={CalenderIcon} style={{padding: "2px 5px"}} alt="Calendar" />
-    <input
-      style={{
-        border: "none",
-        width: "120px",
-        height: "31px",
-        outline: "none",
-      }}
-      onChange={onChange}
-      placeholder={placeholder}
-      value={value}
-      id={id}
-      onClick={onClick}
-      ref={ref}
-      className={className}
-      disabled={disabled}
-    />
-  </div>
-));
+const DateInput = React.forwardRef(
+  ({ onChange, placeholder, value, id, onClick, className, disabled }: IProps, ref: any) => (
+    <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+      <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+      <input
+        style={{
+          border: "none",
+          width: "120px",
+          height: "31px",
+          outline: "none",
+        }}
+        onChange={onChange}
+        placeholder={placeholder}
+        value={value}
+        id={id}
+        onClick={onClick}
+        ref={ref}
+        className={className}
+        disabled={disabled}
+      />
+    </div>
+  )
+);
 
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
@@ -103,21 +105,21 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   let package_type = myConstClass.package_type;
   let closeToggle: any;
   const dispatch = useDispatch();
-  const geolevel1List = useSelector(({common}: any) => common?.geoLevel1List);
-  const geographicFields = useSelector(({common}: any) => common?.geographicFields);
-  const levelsName = useSelector(({common}: any) => common?.levelsName);
-  const commonErrorMessage = useSelector(({common}: any) => common?.errorMessage);
-  const allConsolidatedInventory = useSelector(({inventory}: any) => inventory?.allConsolidatedInventory);
-  const BrandwiseInventories = useSelector(({inventory}: any) => inventory?.BrandwiseInventory);
-  const ProductwiseInventories = useSelector(({inventory}: any) => inventory?.ProductwiseInventory);
-  const isReduxLoader = useSelector(({inventory}: any) => inventory?.isLoader);
+  const geolevel1List = useSelector(({ common }: any) => common?.geoLevel1List);
+  const geographicFields = useSelector(({ common }: any) => common?.geographicFields);
+  const levelsName = useSelector(({ common }: any) => common?.levelsName);
+  const commonErrorMessage = useSelector(({ common }: any) => common?.errorMessage);
+  const allConsolidatedInventory = useSelector(({ inventory }: any) => inventory?.allConsolidatedInventory);
+  const BrandwiseInventories = useSelector(({ inventory }: any) => inventory?.BrandwiseInventory);
+  const ProductwiseInventories = useSelector(({ inventory }: any) => inventory?.ProductwiseInventory);
+  const isReduxLoader = useSelector(({ inventory }: any) => inventory?.isLoader);
   // const errorMessage         = useSelector(({consolidatedScans}:any) => consolidatedScans?.errorMessage);
 
   const [searchText, setSearchText] = useState<string>("");
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [dateErrMsg, setDateErrMsg] = useState<string>("");
   const [partnerTypeList, setpartnerTypeList] = useState(["Retailers", "Distributors"]);
-  const [partnerType, setPartnerType] = useState({type: "Distributors"});
+  const [partnerType, setPartnerType] = useState({ type: "Distributors" });
   const [selectedDistributorName, setselectedDistributorName] = useState("");
   const [selectedBrandName, setselectedBrandName] = useState("");
   const [selectedDistributor, setselectedDistributor] = useState(0);
@@ -156,7 +158,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       from: moment(selectedFilters.lastmodifieddatefrom).format("YYYY-MM-DD"),
       to: moment(selectedFilters.lastmodifieddateto).format("YYYY-MM-DD"),
     },
-    {label: "Custom", value: ""},
+    { label: "Custom", value: "" },
   ]);
 
   const [selectedFromDateOfYear, setSelectedFromDateOfYear] = useState(`01/01/${new Date().getFullYear()}`);
@@ -188,14 +190,14 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   let i = 2018;
   let year = [];
   for (i === 2018; i <= new Date().getFullYear(); i++) {
-    let yearObj = {label: i, value: i};
+    let yearObj = { label: i, value: i };
     year.push(yearObj);
   }
   year.reverse();
 
   let packType: any = [];
   package_type.forEach((type: string) => {
-    let packageObj = {label: type, value: type};
+    let packageObj = { label: type, value: type };
     packType.push(packageObj);
   });
 
@@ -218,7 +220,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     let filteredDatas = {};
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
-      data = {...data, ...filteredDatas};
+      data = { ...data, ...filteredDatas };
     }
 
     dispatch(getOverallInventory(data));
@@ -289,7 +291,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       let filteredDatas = {};
       if (isFiltered) {
         filteredDatas = getFilteredDatas(filteredDatas);
-        data = {...data, ...filteredDatas};
+        data = { ...data, ...filteredDatas };
       }
       dispatch(getOverallInventory(data));
     }
@@ -328,7 +330,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     });
   };
   const getFilteredDatas = (filteredDatas: {}) => {
-    let {fromdate, todate, productgroup, geolevel2, scannedPeriod, lastmodifieddatefrom, lastmodifieddateto}: any =
+    let { fromdate, todate, productgroup, geolevel2, scannedPeriod, lastmodifieddatefrom, lastmodifieddateto }: any =
       selectedFilters;
     let startDate = scannedPeriod === "Custom" ? lastmodifieddatefrom : scannedPeriod === "" ? null : fromdate;
     let endDate = scannedPeriod === "Custom" ? lastmodifieddateto : scannedPeriod === "" ? null : todate;
@@ -346,8 +348,8 @@ const Inventory = (Props: Sheet2CSVOpts) => {
 
   const getCountryList = () => {
     let res = [
-      {value: "India", text: "India"},
-      {value: "Malawi", text: "Malawi"},
+      { value: "India", text: "India" },
+      { value: "Malawi", text: "Malawi" },
     ];
     setcountryList(res);
   };
@@ -363,13 +365,13 @@ const Inventory = (Props: Sheet2CSVOpts) => {
   const getDynamicOptionFields = (reset?: string) => {
     let level1List: any = geolevel1List;
     if (!reset) {
-      let allItem = {code: "ALL", name: "ALL", geolevel2: []};
+      let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
       level1List?.unshift(allItem);
     }
     dispatch(setGeolevel1Options(level1List));
     let level1Options: any = [];
     geolevel1List?.forEach((item: any) => {
-      let level1Info = {label: item.name, code: item.code, value: item.name};
+      let level1Info = { label: item.name, code: item.code, value: item.name };
       level1Options.push(level1Info);
     });
     let setFormArray: any = [];
@@ -396,7 +398,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       };
       level2Options.unshift(geolevel2Obj);
     } else {
-      let level1Info = {label: "ALL", value: "ALL"};
+      let level1Info = { label: "ALL", value: "ALL" };
       level2Options.push(level1Info);
     }
     let usergeolevel1 = userData?.geolevel1;
@@ -412,7 +414,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
             ? level1Options
             : list === "geolevel2"
             ? level2Options
-            : [{label: "ALL", value: "ALL"}],
+            : [{ label: "ALL", value: "ALL" }],
         error: "",
       });
     });
@@ -437,7 +439,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
         value: "ALL",
         code: "ALL",
       };
-      let geolevel3Obj = [{label: "ALL", code: "ALL", name: "ALL", value: "ALL"}];
+      let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
       level2Options.unshift(geolevel1Obj);
       dynamicFieldVal[index + 1].options = level2Options;
       dynamicFieldVal[index + 2].options = geolevel3Obj;
@@ -445,7 +447,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       dynamicFieldVal[index + 1].value = "ALL";
       dynamicFieldVal[index + 2].value = "ALL";
       setdynamicFields(dynamicFieldVal);
-      setSelectedFilters({...selectedFilters, geolevel2: "ALL"});
+      setSelectedFilters({ ...selectedFilters, geolevel2: "ALL" });
     } else if (type === "geolevel2") {
       dynamicFieldVal[index].value = value;
       setdynamicFields(dynamicFieldVal);
@@ -473,10 +475,10 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       viewtype: viewType === "Cost(Mk)" ? "COST" : viewType.toUpperCase(),
     };
     let filteredDatas = {};
-    if (isDownloadWithFilter) {
+    if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
-    data = {...data, ...filteredDatas};
+    data = { ...data, ...filteredDatas };
     if (type === "overall") {
       type = "Overall_Invt";
     } else if (type === "brand") {
@@ -487,7 +489,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       type = "Download_Template";
     }
     if (type === "Download_Template") {
-      let templateData = {countrycode: userData?.countrycode};
+      let templateData = { countrycode: userData?.countrycode };
       dispatch(downloadFile(templateData, type, "template"));
     } else {
       dispatch(downloadFile(data, type, "inventory"));
@@ -560,7 +562,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setShowPopup(true);
     let obj: any = getLocalStorageData("userData");
     let userData = JSON.parse(obj);
-    const {downloadTemplate} = apiURL;
+    const { downloadTemplate } = apiURL;
     let data = {
       countrycode: userData?.countrycode,
     };
@@ -581,6 +583,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setSelectedFile(null);
     setDataValidated(false);
     setFileName("");
+    setResponseStatus(null);
     setDownloadedData([]);
     setColumns([]);
   };
@@ -639,12 +642,12 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     reader.onload = (evt: any) => {
       /* Parse data */
       const bstr = evt.target.result;
-      const wb = XLSX.read(bstr, {type: "binary"});
+      const wb = XLSX.read(bstr, { type: "binary" });
       /* Get first worksheet */
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       /* Convert array of arrays */
-      const {header} = Props;
+      const { header } = Props;
       const data = XLSX.utils.sheet_to_csv(ws, header);
       processDatas(data);
     };
@@ -675,7 +678,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       Alert("error", "Browse a file");
     } else {
       if (_.isEqual(downloadedData, columns)) {
-        const {uploadTemplate} = apiURL;
+        const { uploadTemplate } = apiURL;
         let formData: any = new FormData();
         selectedFile != null && formData.append("file", selectedFile);
         formData.append("geolevel1", userData?.geolevel1);
@@ -695,6 +698,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
           .catch((error: any) => {
             let message = error.message;
             console.log("warning", message);
+            setShowPopup(false);
+            setShowUploadedMessageBox(true);
+            setSelectedFile(null);
           });
       } else {
         Alert("warning", "Templete format mismatched. Please upload valid format");
@@ -713,7 +719,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     return (
       <React.Fragment key={`geolevels` + index}>
         {index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
-          <div className="col" style={{marginBottom: "5px"}}>
+          <div className="col" style={{ marginBottom: "5px" }}>
             <ReactSelect
               name={list.name}
               label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
@@ -757,7 +763,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
         setDateErrMsg("Start Date should be greater than  End Date");
       }
     }
-    setSelectedFilters({...selectedFilters, [name]: date});
+    setSelectedFilters({ ...selectedFilters, [name]: date });
   };
 
   const applyFilter = () => {
@@ -765,7 +771,6 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setFilterAppliedTime(new Date().getTime());
     setselectedDistributor(0);
     setselectedBrand(0);
-    setIsDownloadWithFilter(true);
     closeToggle && closeToggle();
   };
 
@@ -820,7 +825,6 @@ const Inventory = (Props: Sheet2CSVOpts) => {
     setFilterAppliedTime(new Date().getTime());
     setselectedDistributor(0);
     setselectedBrand(0);
-    setIsDownloadWithFilter(false);
     closeToggle && closeToggle();
   };
 
@@ -862,7 +866,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                       }
                       size="sm"
                       onClick={(e) => handleFilterChange(e, "productgroup", item)}
-                      style={{marginBottom: "5px"}}
+                      style={{ marginBottom: "5px" }}
                     >
                       {item}
                     </Button>
@@ -884,7 +888,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                       }
                       size="sm"
                       onClick={(e) => handleFilterChange(e, "scannedPeriod", item.label, item)}
-                      style={{marginBottom: "5px"}}
+                      style={{ marginBottom: "5px" }}
                     >
                       {item.label}
                     </Button>
@@ -893,7 +897,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
               </div>
               {selectedFilters.scannedPeriod === "Custom" && (
                 <React.Fragment>
-                  <label className="font-weight-bold pt-2" htmlFor="order-date" style={{width: "55%"}}>
+                  <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
                     From
                   </label>
                   <label className="font-weight-bold pt-2" htmlFor="order-todate">
@@ -967,7 +971,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                   <DialogContent>
                     <div className="popup-container">
                       <div className="popup-content">
-                        <div className={`popup-title`} style={{fontSize: "18px"}}>
+                        <div className={`popup-title`} style={{ fontSize: "18px" }}>
                           Upload History
                         </div>
                       </div>
@@ -981,10 +985,14 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                         }}
                       >
                         {responseStatus === 404 ? (
-                          <label style={{margin: "28px"}}>{responseMessage}</label>
+                          <label style={{ margin: "28px" }}>{responseMessage}</label>
+                        ) : responseStatus === 500 ? (
+                          <label style={{ margin: "28px" }}>
+                            <p>Data error. Please check uploaded excel</p>
+                          </label>
                         ) : (
-                          <label style={{marginTop: "11px"}}>
-                            <ul style={{fontSize: "14px"}}>
+                          <label style={{ marginTop: "11px" }}>
+                            <ul style={{ fontSize: "14px" }}>
                               <li>
                                 Total number of data inserted&nbsp;&nbsp;-&nbsp;
                                 {totalRecordsInserted} <br />
@@ -1028,7 +1036,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                   maxWidth={"685px"}
                 >
                   <DialogContent>
-                    <div className="popup-container" style={{height: "355px"}}>
+                    <div className="popup-container" style={{ height: "355px" }}>
                       <div className="popup-content">
                         <div>
                           <p className="upload-heading">Upload Inventory Files</p>
@@ -1136,7 +1144,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
             </div>
           </div>
         </div>
-        <div className="row" style={{opacity: "0.9999"}}>
+        <div className="row" style={{ opacity: "0.9999" }}>
           <div className="col-sm-6">
             <OverallInventory
               allConsolidatedInventory={allConsolidatedInventory}
