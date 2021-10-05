@@ -1,91 +1,91 @@
-import React, { Component, useDebugValue } from "react";
-import { Tooltip } from "reactstrap";
-// import Button from '@material-ui/core/Button';
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
+import MuiButton from "@material-ui/core/Button";
 import AUX from "../../../hoc/Aux_";
-import Loaders from "../../../utility/widgets/loader";
-import { sortBy } from "../../../utility/base/utils/tableSort";
-import { Pagination } from "../../../utility/widgets/pagination";
-import AdminPopup from "../../../container/components/dialog/AdminPopup";
-// import '../../../assets/scss/users.scss';
-import moment from "moment";
+import Pagination from "../../../utility/widgets/pagination";
+import AdminPopup from "../../../containers/components/dialog/AdminPopup";
 import Edit from "../../../assets/images/edit.svg";
 import EditDisabled from "../../../assets/icons/edit_disabled.svg";
 import NotActivated from "../../../assets/images/not_activated.svg";
 import Check from "../../../assets/images/check.svg";
 import Cancel from "../../../assets/images/cancel.svg";
-import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
 import AddBtn from "../../../assets/icons/add_btn.svg";
-import PhoneIcon from "../../../assets/icons/black-mockup.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
+import RtButton from "../../../assets/icons/right_btn.svg";
 import NoImage from "../../../assets/images/no_image.svg";
 import blackmockup from "../../../assets/icons/black-mockup.svg";
+import ArrowIcon from "../../../assets/icons/dark bg.svg";
+import ExpandWindowImg from "../../../assets/images/expand-window.svg";
 import "../../../assets/scss/users.scss";
+import "../../../assets/scss/createUser.scss";
 import { apiURL } from "../../../utility/base/utils/config";
-import {
-  invokeGetService,
-  invokePostAuthService,
-} from "../../../utility/base/service";
-import { toastSuccess } from "../../../utility/widgets/toaster";
+import { patterns } from "../../../utility/base/utils/patterns";
+import { invokeGetAuthService, invokePostAuthService } from "../../../utility/base/service";
+import { Alert } from "../../../utility/widgets/toaster";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-import { withRouter,RouteComponentProps  } from "react-router-dom";
+import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
 import { Input } from "../../../utility/widgets/input";
-import CustomDropdown from '../../../utility/widgets/dropdown';
-import CustomSwitch from "../../../container/components/switch";
-import { List } from "@material-ui/core";
-import { AnyCnameRecord } from "node:dns";
-import Table from 'react-bootstrap/Table'
+import CustomSwitch from "../../../containers/components/switch";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import Loader from "../../../utility/widgets/loader";
+import _ from "lodash";
+import Filter from "../../../containers/grid/Filter";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Button } from "reactstrap";
+import CalenderIcon from "../../../assets/icons/calendar.svg";
+import moment from "moment";
+import { sortBy } from "../../../utility/base/utils/tableSort";
+import NativeDropdown from "../../../utility/widgets/dropdown/NativeSelect";
 
+type PartnerTypes = {
+  type: String;
+};
 type Props = {
   location?: any;
   history?: any;
-  // classes?: any;
-  onSort: Function;
-  allChannelPartners: any;
-  isAsc: Boolean;
-  state: any;
-  previous: any;
-  next: any;
-  pageNumberClick: any;
-  handlePaginationChange: any;
-  callAPI: any;
-  match?: any;
-  staticContext?: any;
-  
+  onRef: any;
 };
 type States = {
-  isActivateUser: boolean;
-  isdeActivateUser: boolean;
-  dialogOpen: boolean;
   isLoader: boolean;
   deActivatePopup: boolean;
-  editPopup: boolean;
-  userData: any;
+  staffPopup: boolean;
+  deleteStaffPopup: boolean;
+  userList: any;
   status: String;
   geographicFields: Array<any>;
   dynamicFields: Array<any>;
   countryList: Array<any>;
-  hierarchyList: Array<any>;
   isRendered: boolean;
   userName: String;
-  toDateErr: String;
   activateUser: any;
-  accountNameErr: String;
-  phoneErr: String;
-  emailErr: String;
-  postalCodeErr: String;
-  isValidateSuccess: Boolean;
+  userData: any;
+  isStaff: boolean;
+  searchText: string;
+  dropdownOpenFilter: boolean;
+  selectedFilters: any;
+  dateErrMsg: string;
+  list: Array<any>;
+  userStatus: Array<any>;
+  isFiltered: boolean;
+  inActiveFilter: boolean;
+  allChannelPartners: Array<any>;
+  totalData: number;
+  isAsc: boolean;
+  partnerType: PartnerTypes;
+  geolevel1List: Array<any>;
+  level1Options: Array<any>;
+  level2Options: Array<any>;
+  level3Options: Array<any>;
 };
 
+let levelsName: any = [];
 
-const getStoreData = {
-  country: "MAL",
-  Language: "EN-US",
-};
-
-
+let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 10 : 9;
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -98,250 +98,555 @@ const DialogActions = withStyles((theme: Theme) => ({
     margin: 0,
     padding: theme.spacing(1),
     justifyContent: "center",
-    marginTop:"30px"
+    marginTop: "30px",
   },
   button: {
     boxShadow: "0px 3px 6px #c7c7c729",
     border: "1px solid #89D329",
     borderRadius: "50px",
-    
   },
 }))(MuiDialogActions);
+interface IProps {
+  onChange?: any;
+  placeholder?: any;
+  value?: any;
+  id?: any;
+  onClick?: any;
+  // any other props that come into the component
+}
+const ref = React.createRef();
+const DateInput = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
+  <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+    <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
+    <input
+      style={{
+        border: "none",
+        width: "120px",
+        height: "31px",
+        outline: "none",
+      }}
+      onChange={onChange}
+      placeholder={placeholder}
+      value={value}
+      id={id}
+      onClick={onClick}
+      ref={ref}
+    />
+  </div>
+));
 
 class ChannelPartners extends Component<Props, States> {
-  tableCellIndex : any;
+  tableCellIndex: any;
+  loggedUserInfo: any;
+  getStoreData: any;
+  timeOut: any;
+  paginationRef: any;
+  closeToggle: any;
   constructor(props: any) {
     super(props);
+    const dataObj: any = getLocalStorageData("userData");
+    const loggedUserInfo = JSON.parse(dataObj);
+    this.getStoreData = {
+      country: loggedUserInfo?.geolevel0,
+      countryCode: loggedUserInfo?.countrycode,
+      Language: "EN-US",
+    };
     this.state = {
-      dialogOpen: false,
-      isActivateUser: false,
-      isdeActivateUser: false,
       isLoader: false,
       deActivatePopup: false,
-      editPopup: false,
+      staffPopup: false,
+      deleteStaffPopup: false,
       status: "",
       geographicFields: [],
       dynamicFields: [],
       countryList: [],
-      hierarchyList: [],
       isRendered: false,
-      userName: '',
-      toDateErr: '',
+      userName: "",
       activateUser: true,
-      accountNameErr: '',
-      phoneErr: '',
-      emailErr: '',
-      postalCodeErr: '',
-      isValidateSuccess: true,
-      userData: {},
+      userList: {},
+      userData: {
+        staffdetails: [],
+        ownerRows: [
+          {
+            firstname: "",
+            lastname: "",
+            mobilenumber: "",
+            email: "",
+            active: true,
+            errObj: {
+              firstnameErr: "",
+              lastnameErr: "",
+              mobilenumberErr: "",
+              emailErr: "",
+            },
+          },
+        ],
+      },
+      isStaff: false,
+      searchText: "",
+      dropdownOpenFilter: false,
+      selectedFilters: {
+        geolevel1: "ALL",
+        geolevel2: "ALL",
+        geolevel3: "ALL",
+        status: "ALL",
+        lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+        lastmodifieddateto: new Date(),
+      },
+      dateErrMsg: "",
+      list: ["Retailer", "Distributor"],
+      userStatus: ["ALL", "Active", "Inactive", "Pending", "Declined"],
+      isFiltered: false,
+      inActiveFilter: false,
+      allChannelPartners: [],
+      totalData: 0,
+      isAsc: false,
+      partnerType: {
+        type: "Retailer",
+      },
+      geolevel1List: [],
+      level1Options: [],
+      level2Options: [],
+      level3Options: [],
     };
     this.generateHeader = this.generateHeader.bind(this);
+    this.timeOut = 0;
   }
-  componentDidMount(){
+  componentDidMount() {
+    this.getChannelPartnersList();
     //API to get country and language settings
     this.getCountryList();
-    this.getGeographicFields();
-    this.getNextHierarchy('MALAWI', this.state.geographicFields[1]);
+    this.getHierarchyDatas();
+    // this.getGeographicFields();
     let data: any = getLocalStorageData("userData");
     let userData = JSON.parse(data);
-    this.setState({ userName: userData.username});
+    if (userData?.username) this.setState({ userName: userData.username });
+    // assign a refrence
+    this.props.onRef && this.props.onRef(this);
   }
+  getChannelPartnersList = (defaultPageNo?: number) => {
+    this.setState({
+      allChannelPartners: [],
+      dropdownOpenFilter: false,
+      dateErrMsg: "",
+    });
+    const { channelPartnersList } = apiURL;
+    const { state, setDefaultPage } = this.paginationRef;
+    const pageNo = !defaultPageNo ? 1 : state.pageNo;
+
+    // set default pagination number 1 and  call the method
+    if (!defaultPageNo) {
+      setDefaultPage();
+    }
+
+    this.setState({ isLoader: true });
+    let { status, lastmodifieddatefrom, lastmodifieddateto, geolevel1, geolevel2, geolevel3 }: any =
+      this.state.selectedFilters;
+
+    let data = {
+      countrycode: this.getStoreData.countryCode,
+      page: pageNo,
+      searchtext: this.state.searchText,
+      isfiltered: this.state.isFiltered,
+      rowsperpage: state.rowsPerPage,
+      usertype: "EXTERNAL",
+      partnertype:
+        this.state.partnerType.type === "Distributor"
+          ? "DISTRIBUTOR"
+          : this.state.partnerType.type === "ALL"
+          ? "ALL"
+          : "RETAILER",
+    };
+    if (this.state.isFiltered) {
+      let filter = {
+        status: status,
+        lastmodifieddatefrom: moment(lastmodifieddatefrom).format("YYYY-MM-DD"),
+        lastmodifieddateto: moment(lastmodifieddateto).format("YYYY-MM-DD"),
+        geolevel1: geolevel1,
+        geolevel2: geolevel2,
+        geolevel3: geolevel3,
+      };
+      data = { ...data, ...filter };
+    }
+    invokeGetAuthService(channelPartnersList, data)
+      .then((response) => {
+        this.setState({
+          isLoader: false,
+          allChannelPartners: Object.keys(response.body).length !== 0 ? response.body.rows : [],
+        });
+        const total = response.totalrows;
+        this.setState({ totalData: Number(total) });
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+        // let message = error.message
+        // Alert("warning", message);
+      });
+  };
+
+  toggleFilter = (e: any) => {
+    this.setState((prevState) => ({
+      dropdownOpenFilter: !prevState.dropdownOpenFilter,
+    }));
+  };
+  handleFilterChange = (e: any, name: string, item: any) => {
+    e.stopPropagation();
+    let val = this.state.selectedFilters;
+    let flag = false;
+    if (name === "type") {
+      val[name] = e.target.value;
+      flag = true;
+    } else if (name === "lastmodifieddatefrom") {
+      if (e.target.value <= val.lastmodifieddateto) {
+        val[name] = e.target.value;
+        flag = true;
+      } else {
+        this.setState({
+          dateErrMsg: "Start date should be lesser than End Date",
+        });
+      }
+    } else if (name === "endDate") {
+      if (e.target.value > new Date().toISOString().substr(0, 10)) {
+        this.setState({
+          dateErrMsg: "End Date should not be greater than todays date",
+        });
+      } else if (e.target.value <= val.lastmodifieddatefrom) {
+        this.setState({
+          dateErrMsg: "End Date should be greater than Start Date",
+        });
+      } else {
+        val[name] = e.target.value;
+        flag = true;
+      }
+    } else {
+      val[name] = item;
+      flag = true;
+    }
+    if (flag) {
+      this.setState({ selectedFilters: val }, () => {});
+    }
+  };
 
   getCountryList() {
-    //service call
-    let res = [{ value: 'IND', text: 'INDIA' }, { value: 'MAL', text: 'Malawi' }];
+    let res = [
+      { value: "India", text: "India" },
+      { value: "Malawi", text: "Malawi" },
+    ];
     this.setState({ countryList: res });
   }
-  getNextHierarchy(country: any, nextLevel: any) {
-    //API to get state options for initial set since mal is default option in country
-    const data = {
-        type: country,
-        id: nextLevel
-    }
-  
-    let nextHierarchyResponse = [{ text: 'Central', value: 'Central' },{ text: 'Central', value: 'Central' }, { text: 'Northern', value: 'Northern' }, { text: 'Western', value: 'Western' }, { text: 'Eastern', value: 'Eastern' }];
-    this.setState({ hierarchyList: nextHierarchyResponse });
-  }
+
   getGeographicFields() {
-    let res = ['country', 'region', 'district', 'epa', 'village'];
-    setTimeout(() => {
-        this.setState({ geographicFields: res });
-    }, 0)
+    this.setState({ isLoader: true });
+    const { getTemplateData } = apiURL;
+    let data = {
+      countryCode: this.getStoreData.countryCode,
+    };
+    invokeGetAuthService(getTemplateData, data)
+      .then((response: any) => {
+        let locationData = response.body[0].locationhierarchy;
+        let levels: any = [];
+        locationData.forEach((item: any) => {
+          levelsName.push(item.name.toLowerCase());
+          let locationhierlevel = item.level;
+          let geolevels = "geolevel" + locationhierlevel;
+          levels.push(geolevels);
+        });
+        this.setState(
+          {
+            isLoader: false,
+            geographicFields: levels,
+          },
+          () => {
+            this.getDynamicOptionFields();
+          }
+        );
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        Alert("warning", message);
+      });
   }
-  getDynamicOptionFields(data: any) {
-    if(data){
-      let setFormArray: any = [];
-      this.state.geographicFields.map((list: any, i: number) => {
-        let result = [];
-        let region = "";
-        let district = "";
-        let epa = "";
-        let village = "";
-        if('region' in data){
-          result = this.getOptionLists('auto',list, data.region , i);
-          region = data.region;
-        }
-        if('district' in data){
-          result = this.getOptionLists('auto',list, data.district , i);
-          district = data.district;
-        } 
-        if('epa' in data){
-          result = this.getOptionLists('auto',list, data.epa , i)
-          epa = data.epa;
-        }
-        if('village' in data){
-          result = this.getOptionLists('auto',list, data.village , i);
-          village = data.village;
-        }
-          setFormArray.push({
-            name: list,
-            placeHolder: true,
-            value: list === "country" ? getStoreData.country : list === 'region' ? region : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
-            options:
-              list === "country"
-                ? this.state.countryList
-                : result,
-            error: "",
-          });
+  getHierarchyDatas() {
+    //To get all level datas
+    this.setState({ isLoader: true });
+    const { getHierarchyLevels } = apiURL;
+    let countrycode = {
+      countryCode: this.getStoreData.countryCode,
+    };
+    invokeGetAuthService(getHierarchyLevels, countrycode)
+      .then((response: any) => {
+        let geolevel1 = Object.keys(response.body).length !== 0 ? response.body.geolevel1 : [];
+        this.setState({ isLoader: false, geolevel1List: geolevel1 }, () => {
+          this.getGeographicFields();
+        });
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        Alert("warning", message);
       });
-      this.setState({ dynamicFields: setFormArray });
-    } else {
-      let setFormArray: any = [];
-      this.state.geographicFields.map((list: any, i: number) => {
-          setFormArray.push({
-            name: list,
-            placeHolder: true,
-            value: list === "country" ? getStoreData.country : '',
-            options:
-              list === "country"
-                ? this.state.countryList
-                : list === 'region' ? this.state.hierarchyList : '',
-            error: "",
-          });
-      });
-      this.setState({ dynamicFields: setFormArray });
+  }
+  getDynamicOptionFields = (reset?: string) => {
+    let level1List = this.state.geolevel1List;
+    if (!reset) {
+      let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
+      level1List.unshift(allItem);
     }
-  }
-  
-  handleSort(e:any,columnname: string, allChannelPartners : any, isAsc : Boolean){
+    this.setState({ geolevel1List: level1List });
+    let level1Options: any = [];
+    this.state.geolevel1List?.forEach((item: any) => {
+      let level1Info = { text: item.name, code: item.code, value: item.name };
+      level1Options.push(level1Info);
+    });
+    let setFormArray: any = [];
+    this.state.geographicFields?.forEach((list: any, i: number) => {
+      setFormArray.push({
+        name: list,
+        placeHolder: true,
+        value: list === "geolevel0" ? this.getStoreData.country : "",
+        options:
+          list === "geolevel0"
+            ? this.state.countryList
+            : list === "geolevel1"
+            ? level1Options
+            : [{ text: "ALL", name: "ALL" }],
+        error: "",
+      });
+    });
+    this.setState({ dynamicFields: setFormArray });
+  };
+
+  getOptionLists = (cron: any, type: any, value: any, index: any) => {
+    let geolevel1List = this.state.geolevel1List;
+    this.setState({ level1Options: geolevel1List });
+    let dynamicFieldVal = this.state.dynamicFields;
+    if (type === "geolevel1") {
+      let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
+      let level2Options: any = [];
+      filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
+        let level1Info = { text: item.name, value: item.name, code: item.code };
+        level2Options.push(level1Info);
+      });
+      let geolevel1Obj = {
+        text: "ALL",
+        value: "ALL",
+        code: "ALL",
+      };
+      let geolevel3Obj = [{ text: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
+      level2Options.unshift(geolevel1Obj);
+      dynamicFieldVal[index + 1].options = level2Options;
+      this.setState({ dynamicFields: dynamicFieldVal });
+      dynamicFieldVal[index + 2].options = geolevel3Obj;
+      dynamicFieldVal[index].value = value;
+      dynamicFieldVal[index + 1].value = "ALL";
+      dynamicFieldVal[index + 2].value = "ALL";
+      this.setState((prevState: any) => ({
+        dynamicFields: dynamicFieldVal,
+        selectedFilters: {
+          ...prevState.selectedFilters,
+          geolevel2: "ALL",
+          geolevel3: "ALL",
+        },
+      }));
+    } else if (type === "geolevel2") {
+      let filteredLevel2: any = [];
+      filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === dynamicFieldVal[1].value);
+      let geolevel3: any = [];
+      let level2List = filteredLevel2[0]?.geolevel2.filter((level2Info: any) => level2Info.name === value);
+      level2List[0]?.geolevel3?.forEach((item: any) => {
+        let geolevel3Info = {
+          text: item.name,
+          value: item.name,
+          code: item.code,
+        };
+        geolevel3.push(geolevel3Info);
+      });
+      let geolevel3Obj = {
+        text: "ALL",
+        code: "ALL",
+        name: "ALL",
+        value: "ALL",
+      };
+      geolevel3.unshift(geolevel3Obj);
+      dynamicFieldVal[index + 1].options = geolevel3;
+      dynamicFieldVal[index].value = value;
+      dynamicFieldVal[index + 1].value = "ALL";
+      this.setState((prevState: any) => ({
+        dynamicFields: dynamicFieldVal,
+        selectedFilters: {
+          ...prevState.selectedFilters,
+          geolevel3: "ALL",
+        },
+      }));
+    } else if (type === "geolevel3") {
+      dynamicFieldVal[index].value = value;
+      this.setState({ dynamicFields: dynamicFieldVal });
+    }
+  };
+
+  handleSort(e: any, columnname: string, allChannelPartners: any, isAsc: boolean) {
     this.tableCellIndex = e.currentTarget.cellIndex;
-    this.props.onSort(columnname, allChannelPartners, isAsc)
+    this.onSort(columnname, allChannelPartners, isAsc);
   }
 
   createUserClick = () => {
     const { history } = this.props;
-    if(history) history.push('./createUser');
-    // this.props.history.push('./createUser');
-  }
-  
-  generateHeader(allChannelPartners : any, isAsc : Boolean) {
-    let staticColumn : number = 3
-    let res = [];
-    res.push(<th onClick={e => this.handleSort(e, "username", allChannelPartners, isAsc)}>{'Username'}
-    {
-      this.tableCellIndex !== undefined ? (this.tableCellIndex === 0 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null) : <i className={"fas fa-sort-up ml-3"}></i>
+    if (history) history.push("./createUser");
+  };
+  handleSearch = (e: any) => {
+    let searchText = e.target.value;
+    this.setState({ searchText: searchText });
+    if (this.timeOut) {
+      clearTimeout(this.timeOut);
     }
-    </th>)
-    res.push(<th onClick={e => this.handleSort(e, "mobilenumber", allChannelPartners, isAsc)}>{'Mobile #'}
-    {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-    </th>)
-    res.push(<th onClick={e => this.handleSort(e, "accountname", allChannelPartners, isAsc)}>{'Account Name'}
-    {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-    </th>)
-    res.push(<th onClick={e => this.handleSort(e, "ownername", allChannelPartners, isAsc)}>{'Owner Name'}
-    {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-    </th>)
+    if (searchText.length >= 3 || searchText.length === 0) {
+      this.setState({ isFiltered: true, inActiveFilter: false });
+      this.timeOut = setTimeout(() => {
+        this.getChannelPartnersList();
+      }, 1000);
+    }
+  };
+  generateHeader(allChannelPartners: any, isAsc: boolean) {
+    let staticColumn: number = 3;
+    let res = [];
+    res.push(
+      <th style={{ width: "12%" }} onClick={(e) => this.handleSort(e, "username", allChannelPartners, isAsc)} key="username">
+        {"USER NAME"}
+        {this.tableCellIndex !== undefined ? (
+          this.tableCellIndex === 0 ? (
+            <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
+          ) : null
+        ) : (
+          <i className={"fas fa-sort-up ml-3"}></i>
+        )}
+      </th>
+    );
+    res.push(
+      <th
+        style={{ width: "10%" }}
+        onClick={(e) => this.handleSort(e, "ownerphonenumber", allChannelPartners, isAsc)}
+        key="ownerphonenumber"
+      >
+        {"MOBILE#"}
+        {this.tableCellIndex === 1 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+      </th>
+    );
+    if (this.state.partnerType.type === "Retailer") {
+      res.push(
+        <th
+          style={{ width: "14%" }}
+          onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
+          key="whtaccountname"
+        >
+          {"STORE NAME"}
+          {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+        </th>
+      );
+    } else {
+      res.push(
+        <th
+          style={{ width: "16%" }}
+          onClick={(e) => this.handleSort(e, "whtaccountname", allChannelPartners, isAsc)}
+          key="whtaccountname"
+        >
+          {"STORE NAME"}
+          {this.tableCellIndex === 2 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+        </th>
+      );
+    }
+    if (this.state.partnerType.type === "Retailer") {
+      res.push(
+        <th
+          style={{ width: "12%" }}
+          onClick={(e) => this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)}
+          key="ownerfirstname"
+        >
+          {"OWNER NAME"}
+          {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+        </th>
+      );
+    } else {
+      res.push(
+        <th
+          style={{ width: "16%" }}
+          onClick={(e) => this.handleSort(e, "ownerfirstname", allChannelPartners, isAsc)}
+          key="ownerfirstname"
+        >
+          {"OWNER NAME"}
+          {this.tableCellIndex === 3 ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
+        </th>
+      );
+    }
 
     for (var i = 1; i < this.state.geographicFields.length; i++) {
-      let columnname : string = ""
-      columnname = this.state.geographicFields[i];
-      columnname = columnname.charAt(0).toUpperCase() + columnname.slice(1)
-      res.push(<th onClick={e => this.handleSort(e,columnname.toLowerCase() , allChannelPartners, isAsc)}>{columnname}
-      {this.tableCellIndex === i + staticColumn ? <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i> : null}
-      </th>)
+      if (i <= staticColumn) {
+        let columnname: string = "";
+        let geolevelsname: string = "";
+        columnname = levelsName[i].toUpperCase();
+        geolevelsname = this.state.geographicFields[i].toLowerCase();
+        res.push(
+          <th
+            key={`geolevels` + i}
+            style={{ width: "10%" }}
+            onClick={(e) => this.handleSort(e, "delivery" + geolevelsname, allChannelPartners, isAsc)}
+          >
+            {columnname}
+            {this.tableCellIndex === i + staticColumn ? (
+              <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
+            ) : null}
+          </th>
+        );
+      }
     }
-
-    let nextIndex: number = staticColumn + (this.state.geographicFields.length -1);
-    res.push(<th>{'Status'}</th>)
-
-    res.push(<th>{'Last Updated By'}</th>)
-
-    res.push(<th></th>)
+    // let nextIndex: number =
+    //   staticColumn + (this.state.geographicFields.length - 1);
+    if (this.state.partnerType.type === "Retailer") {
+      res.push(
+        <th style={{ width: "9%", cursor: "default" }} key="staff">
+          {"STAFF COUNT"}
+        </th>
+      );
+    }
+    res.push(
+      <th style={{ width: "8%", cursor: "default" }} key="status">
+        {"STATUS"}
+      </th>
+    );
+    if (this.state.partnerType.type === "Retailer") {
+      res.push(
+        <th style={{ width: "8%", cursor: "default", textAlign: "center" }} key="updatedBy">
+          {"UPDATED BY"}
+        </th>
+      );
+    } else {
+      res.push(
+        <th style={{ width: "7%", cursor: "default", textAlign: "center" }} key="updatedBy">
+          {"UPDATED BY"}
+        </th>
+      );
+    }
+    res.push(<th style={{ width: "7%", cursor: "default" }} key="default"></th>);
 
     return res;
   }
-
-    getOptionLists = (cron: any, type: any, value: any, index: any) => {
-      if(cron === 'auto'){
-        let options: any = [];
-        if(type === 'region'){
-            options = [
-              { text: "Central", value: "Central" },
-              { text: "Northern", value: "Northern" },
-              { text: "Western", value: "Western" },
-              { text: "Eastern", value: "Eastern" },
-            ];
-          } else if(type === 'district'){
-              options = [
-                { text: "Balaka", value: "Balaka" },
-                { text: "Blantyre", value: "Blantyre" }, 
-              ];
-          } else if(type === 'epa'){
-              options = [
-                { text: "EPA1", value: "EPA1" },
-                { text: "EPA2", value: "EPA2" },
-              ];
-          } else if(type === 'village'){
-              options = [
-                { text: "Village1", value: "Village1" },
-                { text: "Village2", value: "Village2" },
-              ];
-          }
-        return options;
-      } else {
-        let dynamicFieldVal = this.state.dynamicFields;
-        let userData = this.state.userData
-        if(type === 'region') {
-          let district = [
-            { text: "Balaka", value: "Balaka" },
-            { text: "Blantyre", value: "Blantyre" }, 
-          ];
-          dynamicFieldVal[index+1].options = district;
-          dynamicFieldVal[index].value = value;
-          userData['region'] = value;
-          this.setState({ userData : userData });
-          this.setState({dynamicFields: dynamicFieldVal});
-       } else if(type === 'district') {
-          let epa = [
-            { text: "EPA1", value: "EPA1" },
-            { text: "EPA2", value: "EPA2" }, 
-          ];
-          dynamicFieldVal[index+1].options = epa;
-          dynamicFieldVal[index].value = value;
-          userData['district'] = value;
-          this.setState({ userData : userData });
-          this.setState({dynamicFields: dynamicFieldVal});
-        } else if(type === 'epa') {
-          let village = [
-            { text: "Village1", value: "Village1" },
-            { text: "Village2", value: "Village2" },
-          ];
-          dynamicFieldVal[index+1].options = village;
-          dynamicFieldVal[index].value = value;
-          userData['epa'] = value;
-          this.setState({ userData : userData });
-          this.setState({dynamicFields: dynamicFieldVal});
-        } else if(type === 'village') {
-          dynamicFieldVal[index].value = value;
-          userData['village'] = value;
-          this.setState({ userData : userData });
-          this.setState({dynamicFields: dynamicFieldVal});
-        }
+  handlePartnerChange = (name: string) => {
+    this.setState(
+      {
+        partnerType: {
+          type: name,
+        },
+      },
+      () => {
+        this.getChannelPartnersList();
       }
-    };
-
+    );
+  };
   handleClosePopup = () => {
-    this.setState({ deActivatePopup: false, editPopup: false });
+    this.setState({ deActivatePopup: false, staffPopup: false });
+  };
+  handleCloseStaffPopup = () => {
+    this.setState({ deleteStaffPopup: false });
   };
 
   showPopup = (e: any, key: keyof States) => {
@@ -351,617 +656,1427 @@ class ChannelPartners extends Component<Props, States> {
     });
   };
 
-  editPopup = (e: any, list: any) => {
-    e.stopPropagation();
-    this.setState({editPopup : true},()=> {
-      this.getCurrentUserData(list);
-    });
+  editStaff = (data: any) => {
+    let passData: any = JSON.parse(JSON.stringify(data));
+    let activeStatus = passData.userstatus === "INACTIVE" || passData.userstatus === "DECLINED" ? false : true;
+    this.setState(
+      {
+        userList: passData,
+        status: data.userstatus,
+        activateUser: activeStatus,
+        staffPopup: true,
+      },
+      () => {
+        const userFields = this.state.userList;
+        let ownerInfo = {
+          errObj: {
+            emailErr: "",
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: "",
+          },
+          firstname: userFields.ownerfirstname,
+          active: userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING" ? true : false,
+          lastname: userFields.ownerlastname,
+          mobilenumber: userFields.ownerphonenumber,
+          email: userFields.owneremail,
+        };
 
-    setTimeout(() => {
-      this.getDynamicOptionFields(this.state.userData);
-    }, 0);
-  }
-
-  handlePersonalChange = (e: any) => {
-    let val = this.state.userData;
-    if(val){
-      if (e.target.name === "activateUser") {
-          this.setState({ activateUser : !this.state.activateUser},()=>{
-            val['status'] = this.state.activateUser ? 'Active' : 'Inactive'
+        let userDataList = this.state.userData;
+        userDataList.ownerRows[0] = ownerInfo;
+        let userinfo = {
+          ownerRows: userDataList.ownerRows,
+          countrycode: userFields.countrycode,
+          locale: userFields.locale,
+          rolename: userFields.rolename,
+          username: userFields.username,
+          shippingstreet: userFields.shippingstreet,
+          shippingcity: userFields.shippingcity,
+          shippingstate: userFields.shippingstate,
+          shippingzipcode: userFields.shippingzipcode,
+          taxid: userFields.taxid,
+          whtaccountname: userFields.whtaccountname,
+          whtownername: userFields.whtownername,
+          billingstreet: userFields.billingstreet,
+          billinggeolevel4: userFields.billinggeolevel4,
+          billinggeolevel2: userFields.billinggeolevel2,
+          billingzipcode: userFields.billingzipcode,
+          staffdetails: userFields.staffdetails,
+          iscreatedfrommobile: userFields.iscreatedfrommobile,
+        };
+        if (userinfo) {
+          userinfo.staffdetails.forEach((staffInfo: any) => {
+            let errObjd = {
+              errObj: {
+                emailErr: "",
+                firstnameErr: "",
+                lastnameErr: "",
+                mobilenumberErr: "",
+                isPhoneEdit: staffInfo.mobilenumber ? false : true,
+              },
+            };
+            staffInfo = Object.assign(staffInfo, errObjd);
           });
-      } else {
-        val[e.target.name] = e.target.value;
-      }
-      this.setState({ userData: val,  isRendered: true });
-      let dateValid = this.dateValidation(e);
-      let formValid = this.checkValidation()
-      if (dateValid && formValid) {
-        this.setState({ isValidateSuccess : true});
-      } else {
-        this.setState({ isValidateSuccess : false});
-      }
-    }
-  };
-
-  dateValidation = (e: any) => {
-    this.setState({ isValidateSuccess : false});
-    let dateValid = true;
-    let usersState = this.state.userData;
-    if (e.target.name === "expirydate") {
-      if (e.target.value < new Date().toISOString().substr(0, 10)) {
-        this.setState({
-          toDateErr: "To Date should be greater than todays date",
-        });
-        dateValid = false;
-      } else {
-        this.setState({ toDateErr: "" });
-      }
-    }
-    return dateValid;
-  };
-
-  checkValidation = () => {
-    this.setState({ isValidateSuccess : false});
-    let formValid = true;
-    let userData = this.state.userData;
-
-    if (userData.accountname === "" || userData.accountname === null) {
-      this.setState({ accountNameErr: "Please enter the Owner name" });
-      formValid = false;
-    } else {
-      this.setState({ accountNameErr: "" });
-    }
-    if (userData.mobilenumber === "" || userData.mobilenumber === null) {
-      this.setState({ phoneErr: "Please enter the phone" });
-      formValid = false;
-    } else {
-      this.setState({ phoneErr: "" });
-    }
-    if (userData.email === "" || userData.email === null) {
-      alert('hi');
-      this.setState({ emailErr: "Please enter the Email" });
-      formValid = false;
-    } else {
-      this.setState({ emailErr: "" });
-    }
-    if (userData.postalcode === "" || userData.postalcode === null) {
-      this.setState({ postalCodeErr: "Please enter Postal Code" });
-      formValid = false;
-    } else {
-      this.setState({ postalCodeErr: "" });
-    }
-    this.state.dynamicFields .map((list: any) => {
-        if (list.value === "") {
-          list.error = "Please enter the " + list.name;
-          formValid = false;
-        } else {
-          list.error = "";
         }
-        this.setState({ isRendered: true });
-    });
-    return formValid;
+        this.setState({
+          userData: userinfo,
+          isStaff: userFields.storewithmultiuser,
+          isRendered: true,
+        });
+      }
+    );
   };
 
+  submitUpdateUser = (e: any) => {
+    e.target.disabled = true;
 
-  submitUpdateUser = () => {
     const { updateUser } = apiURL;
-    const { username,status }: any = this.state.userData;
+    let geoFields: any = {};
+    this.state.dynamicFields.forEach((list: any, i: number) => {
+      geoFields[list.name] = list.value;
+    });
+    let newUserList = JSON.parse(JSON.stringify(this.state.userData));
+    let formValid = this.checkValidation();
+    if (formValid) {
+      this.setState({ isLoader: true });
+      if (this.state.isStaff) {
+        newUserList.staffdetails.forEach((item: any, index: number) => {
+          delete item.errObj;
+          item.firstname = item.firstname.trim();
+          item.lastname = item.lastname.trim();
+          // item.active = item.active ? 'ACTIVE' : 'INACTIVE'
+        });
+      } else {
+        newUserList.staffdetails = [];
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            staffdetails: newUserList.staffdetails,
+          },
+        }));
+      }
+      this.setState({ isLoader: true });
+      let userData = this.state.userList;
 
-    const userDetails = {
-      isedit : true,
-      lastupdatedby : this.state.userName,
-      lastupdateddate : new Date().toISOString().substr(0, 10)
-    }
+      let data = {
+        countrycode: this.getStoreData.countryCode,
+        ownerfirstname: newUserList.ownerRows[0].firstname.trim(),
+        ownerlastname: newUserList.ownerRows[0].lastname.trim(),
+        ownerphonenumber: newUserList.ownerRows[0].mobilenumber,
+        owneremail: newUserList.ownerRows[0].email,
+        locale: "English (Malawi)",
+        usertype: userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+        rolename: userData.rolename,
+        username: userData.username,
+        accounttype: userData.rolename,
+        userstatus: newUserList.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
+        storewithmultiuser: this.state.isStaff ? true : false,
+        iscreatedfrommobile: userData.iscreatedfrommobile,
+        whtaccountname: userData.whtaccountname.trim(),
+        taxid: userData.taxid,
+        whtownername: userData.whtownername.trim(),
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: userData.deliverygeolevel1,
+        deliverygeolevel2: userData.deliverygeolevel2,
+        deliverygeolevel3: userData.deliverygeolevel3,
+        deliverygeolevel4: userData.deliverygeolevel4,
+        deliverygeolevel5: userData.deliverygeolevel5,
+        deliverystreet: userData.deliverystreet,
+        deliveryzipcode: userData.deliveryzipcode,
+        billinggeolevel0: this.getStoreData.countryCode,
+        billinggeolevel1: userData.billinggeolevel1,
+        billinggeolevel2: userData.billinggeolevel2,
+        billinggeolevel3: userData.billinggeolevel3,
+        billinggeolevel4: userData.billinggeolevel4,
+        billinggeolevel5: userData.billinggeolevel5,
+        billingstreet: userData.billingstreet,
+        billingzipcode: userData.billingzipcode,
+        staffdetails: newUserList.staffdetails,
+      };
+      const userDetails = {
+        isedit: true,
+        lastupdatedby: this.state.userName.toUpperCase(),
+        lastupdateddate: new Date().toJSON(),
+      };
 
-    let data = {...this.state.userData}
-    if (this.state.isValidateSuccess) {
-        invokePostAuthService(updateUser, data, userDetails)
+      invokePostAuthService(updateUser, data, userDetails)
         .then((response: any) => {
           this.setState({
             isLoader: false,
           });
-          toastSuccess("User Updated Successfully");
+          // toastSuccess("User Updated Successfully");
+          Alert("success", "User Updated Successfully");
           this.handleClosePopup();
-          this.props.callAPI();
+          this.getChannelPartnersList();
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
-          console.log(error, "error");
+          let message = error.message;
+          if (message === "Retailer with the same Mobilenumber exists") {
+            message = "User with same Mobilenumber exists";
+          }
+          this.setState({ isRendered: true, staffPopup: false }, () => {
+            // toastInfo(message);
+            Alert("info", message);
+          });
         });
     }
-  }
+  };
 
   changeStatus = () => {
     const { deactivateChannelPartner, activateChannelPartner } = apiURL;
-    const { username,status }: any = this.state.userData;
-     this.setState({ isLoader: true });
-    if(status==="Not Activated"){
+    const { username, userstatus }: any = this.state.userList;
+    this.setState({ isLoader: true });
+    if (userstatus === "PENDING") {
       // redirect add user page
       this.props.history.push({
-      pathname: '/createUser',
-      state: { userFields: this.state.userData }}); 
-
-    }else {
+        pathname: "/createUser",
+        page: "validate",
+        state: { userFields: this.state.userList },
+      });
+    } else {
       let condUrl;
-      if (
-       status === "Active" ||
-       status === "Inactive"
-      ) {
+      if (userstatus === "INACTIVE" || userstatus === "DECLINED") {
         condUrl = activateChannelPartner;
-      } else {
+      } else if (userstatus === "ACTIVE") {
         condUrl = deactivateChannelPartner;
       }
-     
+
       let obj: any = {};
-      obj.lastupdatedby = this.state.userName;
-      obj.lastupdateddate = "2021-04-30";
+      obj.lastupdatedby = this.state.userName.toUpperCase();
+      obj.lastupdateddate = new Date().toJSON();
       obj.username = username;
-     
+
       invokePostAuthService(condUrl, obj)
         .then((response: any) => {
           this.setState({
             isLoader: false,
           });
-          toastSuccess("User Status Changed Successfully");
+          // toastSuccess("User Status Changed Successfully");
+          Alert("success", "User Status Changed Successfully");
           this.handleClosePopup();
-         
-          this.props.callAPI();
+          this.getChannelPartnersList();
         })
         .catch((error: any) => {
           this.setState({ isLoader: false });
-          console.log(error, "error");
+          let message = error.message;
+          Alert("warning", message);
         });
     }
   };
-  getCurrentUserData = (data: any) => {
-    let passData = { ...data };
-    passData['expirydate'] =  moment(passData.expirydate).format("YYYY-MM-DD");
-    let activeStatus = (passData.status === 'Inactive' || passData.status === 'Declined') ? false : true;
-    this.setState({ userData: passData, status: data.status, activateUser: activeStatus });
+  editUser = (list: any) => {
+    this.getCurrentUserData(list, true);
   };
 
-  replaceAll(str: any, mapObj: any) {
-    var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
-    return str.replace(re, function (matched: any) {
-      return mapObj[matched.toLowerCase()];
-    });
-  }
+  getCurrentUserData = (data: any, edit?: boolean) => {
+    let passData: any = { ...data };
+    let activeStatus = passData.userstatus === "INACTIVE" || passData.userstatus === "DECLINED" ? false : true;
+    this.setState(
+      {
+        userList: passData,
+        status: data.userstatus,
+        activateUser: activeStatus,
+      },
+      () => {
+        if (edit) {
+          this.props.history.push({
+            pathname: "/createUser",
+            page: "edit",
+            state: { userFields: this.state.userList },
+          });
+        }
+      }
+    );
+  };
 
-  validateEmail = (e: any) => {
-    let emailField = e.target.value;
-    this.setState({ emailErr: "" });
-    let valid = true;
-    if ( emailField === "" || emailField === null ) {
-      this.setState({ emailErr: "Please enter the Email" });
-      valid = false;
-    } else {
-      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-        this.setState({ emailErr: "" });
-        valid = true;
+  handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
+    const { allChannelPartners } = this.state;
+    let owners = this.state.userData.ownerRows;
+    let staffs = this.state.userData.staffdetails;
+
+    const isOwnerPhoneEists = owners.filter((items: any) => items.mobilenumber === val);
+    const isStaffPhoneEists = staffs.filter((items: any) => items.mobilenumber === val);
+
+    let allowners = allChannelPartners;
+    let allstaffs = _(allowners).flatMap("staffdetails").value();
+
+    const isOwnerPhoneEistsInDB = allowners.filter((items: any) => items.ownerphonenumber === val);
+    const isStaffPhoneEistsInDB = allstaffs.filter((items: any) => items.mobilenumber === val);
+
+    if (type === "owner") {
+      let owners = this.state.userData.ownerRows;
+      if (key === "phone") {
+        if (val) {
+          if (val.length !== phoneLength) {
+            owners[idx].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (
+            isStaffPhoneEists.length ||
+            isOwnerPhoneEists.length ||
+            isOwnerPhoneEistsInDB.length ||
+            isStaffPhoneEistsInDB.length
+          ) {
+            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
+            owners[idx].errObj.mobilenumberErr = "";
+          }
+        } else {
+          owners[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+        }
+      } else if (e.target.name === "active") {
+        owners[idx][e.target.name] = e.target.checked;
       } else {
-        this.setState({ emailErr: "Please enter the Valid Email" });
-        valid = false;
+        let { name, value } = e.target;
+        owners[idx][name] = value;
       }
-    }
-    return valid;
-  }
-
-  isNumberKey = (evt: any) => {
-    this.setState({ phoneErr: "" });
-    let isValid = true;
-    if ( !evt.target.value ) {
-      this.setState({ phoneErr: "Please enter Mobile number" });
-      isValid = false;
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          ownerRows: owners,
+        },
+      }));
+      if (e.target?.name) {
+        if (e.target?.name === "firstname") {
+          owners[idx].errObj.firstNameErr = owners[idx].firstname ? "" : "Please enter the First Name";
+        } else if (e.target?.name === "lastname") {
+          owners[idx].errObj.lastNameErr = owners[idx].lastname ? "" : "Please enter the last Name";
+        }
+      }
+    } else if (type === "staff") {
+      let staffs = this.state.userData.staffdetails;
+      if (key === "phone") {
+        if (val) {
+          if (val.length !== phoneLength) {
+            staffs[idx].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (
+            isStaffPhoneEists.length ||
+            isOwnerPhoneEists.length ||
+            isOwnerPhoneEistsInDB.length ||
+            isStaffPhoneEistsInDB.length
+          ) {
+            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
+            staffs[idx].errObj.mobilenumberErr = "";
+          }
+        } else {
+          staffs[idx].errObj.mobilenumberErr = "Please enter the mobile number";
+        }
+        staffs[idx]["mobilenumber"] = val;
+      } else if (e.target.name === "active") {
+        staffs[idx][e.target.name] = e.target.checked;
+      } else {
+        let { name, value } = e.target;
+        staffs[idx][name] = value;
+      }
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          staffdetails: staffs,
+        },
+      }));
+      if (e.target?.name) {
+        if (e.target?.name === "firstname") {
+          staffs[idx].errObj.firstNameErr = staffs[idx].firstname ? "" : "Please enter the First Name";
+        } else if (e.target?.name === "lastname") {
+          staffs[idx].errObj.lastNameErr = staffs[idx].lastname ? "" : "Please enter the last Name";
+        }
+      }
     } else {
-      let pattern = new RegExp(/^[0-9\b]+$/);
-      if ( !pattern.test(evt.target.value) ){
-        this.setState({ phoneErr: "Please enter Number Format" });
-        isValid = false;
-      } else{
-          this.setState({ phoneErr: "" });
-          isValid = true;
+      let datas = this.state.userData;
+      let { name, value } = e.target;
+      datas[name] = value;
+      this.setState({ userData: datas });
+    }
+  };
+  handleAddRow = (type: string) => {
+    const item = {
+      firstname: "",
+      lastname: "",
+      mobilenumber: "",
+      email: "",
+      active: true,
+      errObj: {
+        firstnameErr: "",
+        lastnameErr: "",
+        mobilenumberErr: "",
+        emailErr: "",
+        isPhoneEdit: true,
+      },
+    };
+    let usersObj = this.state.userData;
+    if (type === "owner") {
+      usersObj.ownerRows.push(item);
+      this.setState({ userData: usersObj });
+    } else {
+      usersObj.staffdetails.push(item);
+      this.setState({ userData: usersObj });
+    }
+  };
+
+  handleRemoveSpecificRow = (idx: any, type: string) => () => {
+    let userObj = this.state.userData;
+    if (type === "owner") {
+      userObj.ownerRows.splice(idx, 1);
+      this.setState({ userData: userObj });
+    } else {
+      userObj.staffdetails.splice(idx, 1);
+      this.setState({ userData: userObj });
+    }
+  };
+  enableStoreStaff = (e: any) => {
+    let isStaff = e.target.checked;
+    let userData = this.state.userData;
+    if (isStaff) {
+      userData.staffdetails.push({
+        firstname: "",
+        lastname: "",
+        mobilenumber: "",
+        email: "",
+        active: true,
+        isowner: false,
+        errObj: {
+          firstnameErr: "",
+          lastnameErr: "",
+          mobilenumberErr: "",
+          emailErr: "",
+          isPhoneEdit: true,
+        },
+      });
+      this.setState((prevState: any) => ({
+        isStaff: isStaff,
+        userData: {
+          ...prevState.userData,
+          staffdetails: userData.staffdetails,
+        },
+      }));
+    } else {
+      this.setState({ deleteStaffPopup: true });
+    }
+  };
+
+  validateEmail = (value: any, idx: number, type: string) => {
+    let ownerRows = [...this.state.userData.ownerRows];
+    let staffdetails = [...this.state.userData.staffdetails];
+
+    if (type === "staff") {
+      if (patterns.emailFormat.test(value)) {
+        staffdetails[idx].errObj.emailErr = "";
+      } else if (value === "") {
+        ownerRows[idx].errObj.emailErr = "";
+      } else {
+        staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
-    return isValid;
-  }
+    if (type === "owner") {
+      if (patterns.emailFormat.test(value)) {
+        ownerRows[idx].errObj.emailErr = "";
+      } else if (value === "") {
+        ownerRows[idx].errObj.emailErr = "";
+      } else {
+        ownerRows[idx].errObj.emailErr = "Please enter a valid email";
+      }
+    }
+    this.setState((prevState: any) => ({
+      userData: {
+        ...prevState.userData,
+        ownerRows: ownerRows,
+        staffdetails: staffdetails,
+      },
+      isRendered: true,
+    }));
+  };
+  checkValidation = () => {
+    let formValid = true;
+    let userData = this.state.userData;
+    userData.ownerRows.forEach((userInfo: any, idx: number) => {
+      let errObj: any = {
+        firstNameErr: "",
+        lastNameErr: "",
+        emailErr: userInfo.errObj.emailErr,
+        mobilenumberErr: userInfo.errObj.mobilenumberErr,
+      };
+
+      errObj.firstNameErr = userInfo.firstname ? "" : "Please enter the First Name";
+      errObj.lastNameErr = userInfo.lastname ? "" : "Please enter the last Name";
+
+      if (userInfo.mobilenumber && errObj.mobilenumberErr !== "Phone Number Exists") {
+        errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
+      } else {
+        errObj.mobilenumberErr =
+          errObj.mobilenumberErr === "Phone Number Exists" ? errObj.mobilenumberErr : "Please enter the mobile number";
+      }
+
+      userData.ownerRows[idx].errObj = errObj;
+      if (
+        errObj.firstNameErr !== "" ||
+        errObj.lastNameErr !== "" ||
+        errObj.mobilenumberErr !== "" ||
+        errObj.emailErr !== ""
+      ) {
+        formValid = false;
+      }
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          ownerRows: userData.ownerRows,
+        },
+      }));
+    });
+
+    userData.staffdetails?.forEach((userInfo: any, idx: number) => {
+      let errObj: any = {
+        firstNameErr: "",
+        lastNameErr: "",
+        emailErr: userInfo.errObj.emailErr,
+        mobilenumberErr: userInfo.errObj.mobilenumberErr,
+        isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
+      };
+      errObj.firstNameErr = userInfo.firstname ? "" : "Please enter the First Name";
+      errObj.lastNameErr = userInfo.lastname ? "" : "Please enter the last Name";
+
+      if (userInfo.mobilenumber && errObj.mobilenumberErr !== "Phone Number Exists") {
+        errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
+      } else {
+        errObj.mobilenumberErr =
+          errObj.mobilenumberErr === "Phone Number Exists" ? errObj.mobilenumberErr : "Please enter the mobile number";
+      }
+
+      userData.staffdetails[idx].errObj = errObj;
+      if (
+        errObj.firstNameErr !== "" ||
+        errObj.lastNameErr !== "" ||
+        errObj.mobilenumberErr !== "" ||
+        errObj.emailErr !== ""
+      ) {
+        formValid = false;
+      }
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          staffdetails: userData.staffdetails,
+        },
+      }));
+    });
+    return formValid;
+  };
+
+  deleteStaff = () => {
+    let userData = this.state.userData;
+    userData.staffdetails = [];
+    this.setState((prevState: any) => ({
+      isStaff: false,
+      userData: {
+        ...prevState.userData,
+        staffdetails: userData.staffdetails,
+      },
+      deleteStaffPopup: false,
+    }));
+  };
+  handleDateChange = (date: any, name: string) => {
+    let val = this.state.selectedFilters;
+    // to date
+
+    if (name === "lastmodifieddateto") {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
+        this.setState({
+          dateErrMsg: "",
+        });
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
+        this.setState({
+          dateErrMsg: "End Date should be greater than Start Date",
+        });
+      } else {
+        this.setState({
+          dateErrMsg: "Start Date should be lesser than  End Date",
+        });
+      }
+    }
+    // from date
+    if (name === "lastmodifieddatefrom") {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
+        this.setState({
+          dateErrMsg: "",
+        });
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
+        this.setState({
+          dateErrMsg: "Start Date should be lesser than End Date",
+        });
+      } else {
+        this.setState({
+          dateErrMsg: "Start Date should be greater than  End Date",
+        });
+      }
+    }
+
+    this.setState({
+      selectedFilters: { ...this.state.selectedFilters, [name]: date },
+    });
+  };
+
+  handleUpdateDropdown = (value: string, label: any) => {
+    this.setState((prevState: any) => ({
+      selectedFilters: {
+        ...prevState.selectedFilters,
+        [label.toLocaleLowerCase()]: value,
+      },
+    }));
+  };
+
+  onSort = (name: string, data: any, isAsc: boolean) => {
+    let response = sortBy(name, data);
+    this.setState({ allChannelPartners: response, isAsc: !isAsc });
+  };
+  applyFilter = () => {
+    if (this.state.dateErrMsg === "") {
+      this.setState({ isFiltered: true, inActiveFilter: false }, () => {
+        this.getChannelPartnersList();
+        this.closeToggle();
+      });
+    }
+  };
+
+  resetFilter = (e: any) => {
+    e.stopPropagation();
+    this.getDynamicOptionFields("reset");
+    this.setState(
+      {
+        selectedFilters: {
+          geolevel1: "ALL",
+          geolevel2: "ALL",
+          geolevel3: "ALL",
+          status: "ALL",
+          lastmodifieddatefrom: new Date().setMonth(new Date().getMonth() - 6),
+          lastmodifieddateto: new Date(),
+        },
+        dateErrMsg: "",
+      },
+      () => {
+        this.getChannelPartnersList();
+        this.closeToggle();
+      }
+    );
+  };
 
   render() {
-    const { allChannelPartners, isAsc, onSort } = this.props;
-    const {
-      isLoader,
-      pageNo,
-      totalData,
-      rowsPerPage,
-      gotoPage,
-      showProductPopup,
-     
-    } = this.props.state;
-    const { userData, 
-      toDateErr,
-      accountNameErr,
-      ownerNameErr,
-      postalCodeErr,
-      phoneErr,
-      emailErr }: any = this.state;
+    const { totalData, isAsc, isLoader, selectedFilters, userList, userData, isStaff, dateErrMsg, allChannelPartners } =
+      this.state;
 
-    const locationList = this.state.dynamicFields ?.map((list: any, index: number) => {
-      let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
+    let data: any = getLocalStorageData("userData");
+    let loggedUserInfo = JSON.parse(data);
+    let countryCodeLower = loggedUserInfo?.countrycode && _.toLower(loggedUserInfo.countrycode);
+
+    const fields = this.state.dynamicFields;
+    const locationList = fields?.map((list: any, index: number) => {
+      let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+      nameCapitalized = nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized;
       return (
-          <>
-           {index !== 0 && 
-           <div style={{marginTop: '-15px'}}>
-              <label className="font-weight-bold pt-4" style={{marginLeft : (index == 2 || index == 4) ? '30px' : '15px'}}>{nameCapitalized}</label>
-              <div className='col-sm-6' style={{marginLeft : (index == 2 || index == 4) ? '15px' : '0px'}}>
-                <CustomDropdown
+        <React.Fragment key={`geolevels` + index}>
+          <div className="country" style={{ marginBottom: "5px" }}>
+            {index !== 0 && (
+              <div>
+                {list.name !== "geolevel4" && list.name !== "geolevel5" && (
+                  <NativeDropdown
                     name={list.name}
                     label={nameCapitalized}
                     options={list.options}
                     handleChange={(e: any) => {
+                      e.stopPropagation();
                       list.value = e.target.value;
-                      this.setState({ isRendered: true });
-                      this.getOptionLists('manual',list.name, e.target.value, index);
+                      this.getOptionLists("manual", list.name, e.target.value, index);
+                      this.handleUpdateDropdown(e.target.value, list.name);
                     }}
                     value={list.value}
-                    isPlaceholder
+                    id="geolevel-test"
+                    dataTestId="geolevel-test"
                   />
-                  {list.error && <span className="error">{list.error}</span>}
+                )}
               </div>
-              </div>
-              }
-          </>
-      )
-  });
-
+            )}
+          </div>
+        </React.Fragment>
+      );
+    });
     return (
-      <>
+      <AUX>
+        {isLoader && <Loader />}
+        <Filter
+          handleSearch={this.handleSearch}
+          searchText={this.state.searchText}
+          partnerTypeList={this.state.list}
+          isPartner={true}
+          selectedPartnerType={this.state.partnerType}
+          handlePartnerChange={this.handlePartnerChange}
+          toolTipText="Search applicable for User Name, Store Name and Owner Name"
+          onClose={(node: any) => {
+            this.closeToggle = node;
+          }}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <label className="font-weight-bold">Status</label>
+            <div className="pt-1">
+              {this.state.userStatus.map((item, index) => (
+                <span className="mr-2" key={`status` + index}>
+                  <Button
+                    color={selectedFilters.status === item ? "btn activeColor rounded-pill" : "btn rounded-pill boxColor"}
+                    size="sm"
+                    onClick={(e) => this.handleFilterChange(e, "status", item)}
+                  >
+                    {item}
+                  </Button>
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="form-group">{locationList}</div>
+          <label className="font-weight-bold pt-2" htmlFor="update-date">
+            Last Modified Date
+          </label>
+          <div className="d-flex">
+            <div className="user-filter-date-picker">
+              <DatePicker
+                id="update-date"
+                value={selectedFilters.lastmodifieddatefrom}
+                dateFormat="dd-MM-yyyy"
+                customInput={<DateInput ref={ref} />}
+                selected={selectedFilters.lastmodifieddatefrom}
+                onChange={(date: any) => this.handleDateChange(date, "lastmodifieddatefrom")}
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                maxDate={new Date()}
+              />
+            </div>
+            <div className="p-2">-</div>
+            <div className="user-filter-date-picker">
+              <DatePicker
+                value={selectedFilters.lastmodifieddateto}
+                dateFormat="dd-MM-yyyy"
+                customInput={<DateInput ref={ref} />}
+                selected={selectedFilters.lastmodifieddateto}
+                onChange={(date: any) => this.handleDateChange(date, "lastmodifieddateto")}
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                maxDate={new Date()}
+              />
+            </div>
+          </div>
+          {dateErrMsg && <span className="error">{dateErrMsg} </span>}
+
+          <div className="filterFooter pt-3">
+            <button className="cus-btn-user-filter reset" onClick={(e) => this.resetFilter(e)}>
+              Reset All
+            </button>
+            <button className="cus-btn-user-filter" onClick={this.applyFilter} disabled={dateErrMsg ? true : false}>
+              Apply
+              <span>
+                <img src={ArrowIcon} alt="" className="arrow-i" /> <img src={RtButton} alt="" className="layout" />
+              </span>
+            </button>
+          </div>
+        </Filter>
+        {this.state.deleteStaffPopup ? (
+          <AdminPopup open={this.state.deleteStaffPopup} onClose={this.handleCloseStaffPopup} maxWidth={"600px"}>
+            <DialogContent>
+              <div className="popup-container">
+                <div className="popup-content">
+                  <div className={`popup-title`}></div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <label style={{ fontSize: "16px", marginTop: "11px" }}>
+                    Are you sure you want to delete store's staff?
+                  </label>
+                </div>
+                <DialogActions>
+                  <MuiButton
+                    autoFocus
+                    onClick={this.handleCloseStaffPopup}
+                    className="admin-popup-btn close-btn"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    Cancel
+                  </MuiButton>
+                  <MuiButton
+                    onClick={this.deleteStaff}
+                    className="admin-popup-btn delete"
+                    autoFocus
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    DELETE
+                  </MuiButton>
+                </DialogActions>
+              </div>
+            </DialogContent>
+          </AdminPopup>
+        ) : (
+          ""
+        )}
         {this.state.deActivatePopup ? (
-          <AdminPopup
-            open={this.state.deActivatePopup}
-            onClose={this.handleClosePopup}
-           maxWidth={"600px"}>
+          <AdminPopup open={this.state.deActivatePopup} onClose={this.handleClosePopup} maxWidth={"600px"}>
             <DialogContent>
               <div className="popup-container">
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userData?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {_.startCase(_.toLower(userList?.whtaccountname)) || ""},{" "}
+                      <label>{_.startCase(_.toLower(userList?.rolename))}</label>{" "}
                     </p>
                   </div>
                 </div>
-                <div style={{ textAlign: "left" }}>
+                <div style={{ textAlign: "center" }}>
                   <label>
-                    {userData.status === "Active" ||
-                    userData.status === "Inactive" || userData.status === "Declined"  ? (
+                    {userList.userstatus === "ACTIVE" ||
+                    userList.userstatus === "INACTIVE" ||
+                    userList.userstatus === "DECLINED" ? (
                       <span>
                         Are you sure you want to change &nbsp;
                         <strong>
-                          {userData.ownername} - {userData.accountname}
+                          {_.startCase(_.toLower(userList?.whtownername))} -{" "}
+                          {_.startCase(_.toLower(userList?.whtaccountname))}
                         </strong>
                         &nbsp; account to
-                        {userData.status === "Active" ? (
+                        {userList.userstatus === "ACTIVE" ? (
                           <span> Inactive </span>
-                        ) : userData.status === "Inactive" || userData.status === "Declined" ? (
+                        ) : userList.userstatus === "INACTIVE" || userList.userstatus === "DECLINED" ? (
                           <span> active</span>
-                        ) : ''}
+                        ) : (
+                          ""
+                        )}
                         ?
                       </span>
-                    ) : (
-                      userData.status === "Not Activated" ? 
+                    ) : userList.userstatus === "PENDING" ? (
                       <span>
                         Would you like to validate & approve&nbsp;
                         <strong>
-                          {userData.ownername} - {userData.accountname}
+                          {_.startCase(_.toLower(userList?.whtownername))} -{" "}
+                          {_.startCase(_.toLower(userList?.whtaccountname))}
                         </strong>
                         &nbsp;account to use Bayer Rewards mobile application?
-                        
                       </span>
-                      :""
-
+                    ) : (
+                      ""
                     )}
                   </label>
                 </div>
                 <DialogActions>
-              <Button
-                autoFocus
-                onClick={this.handleClosePopup}
-                className="admin-popup-btn close-btn"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={this.changeStatus}
-                className="admin-popup-btn filter-scan"
-                autoFocus
-              >
-                {userData.status ==="Active" || userData.status==="Inactive" || userData.status==="Declined" ?  "Change" : userData.status === "Not Activated" ?"Validate & Approve" :"" }
-               
-              </Button>
-            </DialogActions>
+                  <MuiButton
+                    autoFocus
+                    onClick={this.handleClosePopup}
+                    className="admin-popup-btn close-btn"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    Cancel
+                  </MuiButton>
+                  <MuiButton
+                    onClick={this.changeStatus}
+                    className="admin-popup-btn filter-scan"
+                    autoFocus
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    {userList.userstatus === "ACTIVE" ||
+                    userList.userstatus === "INACTIVE" ||
+                    userList.userstatus === "DECLINED"
+                      ? "Change"
+                      : userList.userstatus === "PENDING"
+                      ? "Validate & Approve"
+                      : ""}
+                  </MuiButton>
+                </DialogActions>
               </div>
-             
             </DialogContent>
-            
           </AdminPopup>
         ) : (
           ""
         )}
-        {this.state.editPopup ? (
-          <AdminPopup
-            open={this.state.editPopup}
-            onClose={this.handleClosePopup}
-           maxWidth={"600px"}>
+        {this.state.staffPopup ? (
+          <AdminPopup open={this.state.staffPopup} onClose={this.handleClosePopup} maxWidth={"1300px"}>
             <DialogContent>
+              {isLoader && <Loader />}
               <div className="popup-container">
                 <div className="popup-content">
                   <div className={`popup-title`}>
                     <p>
-                      {userData?.username || ""}, <label>{"Retailer"}</label>{" "}
+                      {_.startCase(_.toLower(userList?.whtaccountname)) || ""},{" "}
+                      <label>{_.startCase(_.toLower(userList?.rolename))}</label>{" "}
                     </p>
                   </div>
-                </div>
-                <div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                        <div className='col-sm-6'>
-                          <label className="font-weight-bold pt-4">Account Name</label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            name="accountname"
-                            placeHolder="Account Name"
-                            value={userData.accountname}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                          {accountNameErr && (
-                            <span className="error">{accountNameErr} </span>
-                          )}
-                    
-                        </div>
-                      <div className='col-sm-6 editFilterText'>
-                      <label className="font-weight-bold pt-4">Owner Name</label>
-                      <Input
-                            type="text"
-                            className="form-control"
-                            name="ownername"
-                            placeHolder="Owner Name"
-                            value={userData.ownername}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                          {ownerNameErr && (
-                            <span className="error">{ownerNameErr} </span>
-                          )}
-                      </div>
-                    </div>
-                    <div className="row" style={{marginLeft: '15px'}}>
-                        {locationList}
-                    </div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                      <div className='col-sm-6'>
-                        <label className="font-weight-bold pt-4">Postal Code</label>
-                        <Input
-                            type="text"
-                            className="form-control"
-                            name="postalcode"
-                            placeHolder="Postal Code"
-                            value={userData.postalcode}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                          {postalCodeErr && (
-                            <span className="error">{postalCodeErr} </span>
-                          )}
-                        </div>
-                        <div className='col-sm-6 editFilterText'>
-                        <label className="font-weight-bold pt-4">Phone Number</label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            name="mobilenumber"
-                            placeHolder="Mobile Number"
-                            value={userData.mobilenumber}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                            onKeyUp={(e: any)=>this.isNumberKey(e)}
-                          />
-                          {phoneErr && <span className="error">{phoneErr} </span>}
-                        </div>
-                    </div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                      <div className='col-sm-6'>
-                        <label className="font-weight-bold pt-4">EMail</label>
-                        <Input
-                          type="text"
-                          className="form-control"
-                          name="email"
-                          placeHolder="Email"
-                          value={userData.email}
-                          onChange={(e: any) => this.handlePersonalChange(e)}
-                          onKeyUp={(e: any)=>this.validateEmail(e)}
-                        />
-                        {emailErr && <span className="error">{emailErr} </span>}
-                        </div>
-                        <div className='col-sm-6 editFilterText'>
-                          <label className="font-weight-bold pt-4">Expiry Date</label>
-                          <input
-                            type="date"
-                            name="expirydate"
-                            className="form-control"
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                            value={userData.expirydate}
-                          />
-                          {toDateErr && <span className="error">{toDateErr} </span>}
-                        </div>
-                        
-                    </div>
-                    <div className='col-sm-12' style={{display: 'flex'}}>
-                      <div className='col-sm-6'>
-                        
-                        <label className="font-weight-bold pt-4">Address</label>
-                          <textarea
-                            name="address"
-                            rows={2}
-                            cols={28}
-                            placeholder="Address"
-                            value={userData.address}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                          />
-                        </div>
-                        <div className='col-sm-6 editFilterText' style={{display:"flex",flexDirection:"column"}}>
-                        <label className="font-weight-bold pt-4">isActive?</label>
-                        <CustomSwitch
-                          checked={this.state.activateUser}
-                          onChange={(e: any) => this.handlePersonalChange(e)}
-                          name="activateUser"
-                        />
-                        {/* <div className="col-sm-6">
-                            <label className="font-weight-bold pt-4">isActive?
-                                <input type="checkbox" defaultChecked={this.state.activateUser} onClick={(e: any) => {this.setState({activateUser: e.target.checked})}} />
-                                <span className="checkmark"></span>
+                  <>
+                    <div className="personal">
+                      <>
+                        <div
+                          className="row"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginTop: "8px",
+                          }}
+                        >
+                          <div className="col-sm-3" style={{ marginLeft: "46px" }}>
+                            <label className="font-weight-bold">
+                              Has store staff?(Max 4)
+                              <input
+                                type="checkbox"
+                                style={{ marginLeft: "10px" }}
+                                checked={isStaff}
+                                onChange={(e: any) => {
+                                  this.enableStoreStaff(e);
+                                }}
+                                disabled={this.state.userList?.storewithmultiuser ? true : false}
+                              />
+                              <span className="checkmark"></span>
                             </label>
-                        </div> */}
-
+                          </div>
                         </div>
+                        <div
+                          style={{
+                            maxHeight: "280px",
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                          }}
+                        >
+                          <div style={{ marginLeft: "35px" }}>
+                            {/* <Table borderless> */}
+                            <table className="table table-borderless">
+                              <thead>
+                                <tr>
+                                  <th>Type</th>
+                                  <th>First Name</th>
+                                  <th>Last Name</th>
+                                  <th>Mobile Number</th>
+                                  <th>Email(Optional)</th>
+                                  <th>Active?</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {userData.ownerRows?.map((item: any, idx: number) => (
+                                  <tr key={`ownerRows` + idx}>
+                                    {idx === 0 ? <td className="font-weight-bold">Owner</td> : <td>{null}</td>}
+                                    <td>
+                                      <Input
+                                        type="text"
+                                        className="form-control"
+                                        name="firstname"
+                                        placeHolder="Eg: Keanu"
+                                        value={item.firstname}
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                      />
+                                      {item.errObj?.firstNameErr && (
+                                        <span className="error">{item.errObj.firstNameErr} </span>
+                                      )}
+                                    </td>
+                                    <td>
+                                      <Input
+                                        type="text"
+                                        className="form-control"
+                                        name="lastname"
+                                        placeHolder="Eg: Reeves"
+                                        value={item.lastname}
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                      />
+                                      {item.errObj?.lastNameErr && <span className="error">{item.errObj.lastNameErr} </span>}
+                                    </td>
+                                    <td>
+                                      <div style={{ display: "flex" }}>
+                                        <div className="flagInput">
+                                          <PhoneInput
+                                            placeholder="Mobile Number"
+                                            inputProps={{
+                                              name: "mobilenumber",
+                                              required: true,
+                                              maxLength:
+                                                process.env.REACT_APP_STAGE === "dev" ||
+                                                process.env.REACT_APP_STAGE === "int"
+                                                  ? 12
+                                                  : 11,
+                                            }}
+                                            country={countryCodeLower}
+                                            value={item.mobilenumber}
+                                            disabled={true}
+                                            onChange={(value, e) => this.handleChange(idx, e, "phone", "owner", value)}
+                                            onlyCountries={[countryCodeLower]}
+                                            autoFormat
+                                            disableDropdown
+                                            disableCountryCode
+                                          />
+                                          {item.errObj?.mobilenumberErr && (
+                                            <span className="error">{item.errObj.mobilenumberErr} </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <Input
+                                        type="text"
+                                        className="form-control"
+                                        name="email"
+                                        placeHolder="Eg: abc@mail.com"
+                                        value={item.email}
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyUp={(e: any) => this.validateEmail(e.target.value, idx, "owner")}
+                                      />
+                                      {item.errObj?.emailErr && <span className="error">{item.errObj.emailErr} </span>}
+                                    </td>
+                                    <td
+                                      style={{
+                                        display: "flex",
+                                      }}
+                                    >
+                                      <div>
+                                        <CustomSwitch
+                                          checked={item.active}
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                          name="active"
+                                        />
+                                      </div>
+                                      <div style={{ visibility: "hidden" }}>
+                                        {idx === userData.ownerRows.length - 1 && userData.ownerRows.length < 4 ? (
+                                          (() => {
+                                            if (idx === 0 && idx === userData.ownerRows.length - 1) {
+                                              return (
+                                                <div>
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                    src={AddBtn}
+                                                    alt=""
+                                                    onClick={() => this.handleAddRow("owner")}
+                                                  />
+                                                </div>
+                                              );
+                                            } else if (idx > 0 && idx === userData.ownerRows.length - 1) {
+                                              return (
+                                                <div>
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                      display: !this.state.userList?.storewithmultiuser ? "block" : "none",
+                                                    }}
+                                                    src={RemoveBtn}
+                                                    alt=""
+                                                    onClick={this.handleRemoveSpecificRow(idx, "owner")}
+                                                  />
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                    src={AddBtn}
+                                                    alt=""
+                                                    onClick={() => this.handleAddRow("owner")}
+                                                  />
+                                                </div>
+                                              );
+                                            }
+                                          })()
+                                        ) : (
+                                          <img
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                              display: !this.state.userList?.storewithmultiuser ? "block" : "none",
+                                            }}
+                                            src={RemoveBtn}
+                                            alt=""
+                                            onClick={this.handleRemoveSpecificRow(idx, "owner")}
+                                          />
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <div style={{ marginTop: "-10px" }}>{isStaff ? <hr /> : <></>}</div>
+                          <div style={{ marginRight: "0px", marginLeft: "35px" }}>
+                            <table className="table table-borderless">
+                              <thead style={{ display: "none" }}>
+                                <tr>
+                                  <th>Type</th>
+                                  <th>First Name</th>
+                                  <th>Last Name</th>
+                                  <th>Mobile Number</th>
+                                  <th>Email(Optional)</th>
+                                  <th>Active?</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {isStaff &&
+                                  userData.staffdetails?.map((item: any, staffidx: number) => (
+                                    <tr key={`staffRows` + staffidx}>
+                                      {staffidx === 0 ? (
+                                        <td className="font-weight-bold">
+                                          Store <br />
+                                          Staffs
+                                        </td>
+                                      ) : (
+                                        <td>{null}</td>
+                                      )}
+                                      <td>
+                                        <Input
+                                          type="text"
+                                          className="form-control"
+                                          name="firstname"
+                                          placeHolder="Eg: Keanu"
+                                          value={item.firstname}
+                                          onChange={(e: any) => this.handleChange(staffidx, e, "", "staff", "")}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                        />
+                                        {item.errObj.firstNameErr && (
+                                          <span className="error">{item.errObj.firstNameErr} </span>
+                                        )}
+                                      </td>
+                                      <td>
+                                        <Input
+                                          type="text"
+                                          className="form-control"
+                                          name="lastname"
+                                          placeHolder="Eg: Reeves"
+                                          value={item.lastname}
+                                          onChange={(e: any) => this.handleChange(staffidx, e, "", "staff", "")}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                        />
+                                        {item.errObj.lastNameErr && (
+                                          <span className="error">{item.errObj.lastNameErr} </span>
+                                        )}
+                                      </td>
+                                      <td>
+                                        <div style={{ display: "flex" }}>
+                                          <div className="flagInput">
+                                            <PhoneInput
+                                              placeholder="Mobile Number"
+                                              inputProps={{
+                                                name: "mobilenumber",
+                                                required: true,
+                                                maxLength:
+                                                  process.env.REACT_APP_STAGE === "dev" ||
+                                                  process.env.REACT_APP_STAGE === "int"
+                                                    ? 12
+                                                    : 11,
+                                              }}
+                                              country={countryCodeLower}
+                                              value={item.mobilenumber}
+                                              disabled={!item.errObj.isPhoneEdit ? true : false}
+                                              onChange={(value, e) =>
+                                                this.handleChange(staffidx, e, "phone", "staff", value)
+                                              }
+                                              onlyCountries={[countryCodeLower]}
+                                              autoFormat
+                                              disableDropdown
+                                              disableCountryCode
+                                            />
+                                            {item.errObj.mobilenumberErr && (
+                                              <span className="error">{item.errObj.mobilenumberErr} </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <Input
+                                          type="text"
+                                          className="form-control"
+                                          name="email"
+                                          placeHolder="Eg.abc@mail.com"
+                                          value={item.email}
+                                          onChange={(e: any) => this.handleChange(staffidx, e, "", "staff", "")}
+                                          onKeyUp={(e: any) => this.validateEmail(e.target.value, staffidx, "staff")}
+                                        />
+                                        {item.errObj.emailErr && <span className="error">{item.errObj.emailErr} </span>}
+                                      </td>
+                                      <td
+                                        style={{
+                                          display: "flex",
+                                        }}
+                                      >
+                                        <div>
+                                          <CustomSwitch
+                                            checked={userData.ownerRows[0].active ? item.active : false}
+                                            onChange={(e: any) => this.handleChange(staffidx, e, "", "staff", "")}
+                                            name="active"
+                                          />
+                                        </div>
+                                        <div>
+                                          {/* {idx ===
+                                              userData.staffdetails.length -
+                                                1 &&
+                                            userData.staffdetails.length < 4 ? (
+                                              <img
+                                                style={{
+                                                  width: "50px",
+                                                  height: "50px",
+                                                }}
+                                                src={AddBtn}
+                                                onClick={() =>
+                                                  this.handleAddRow("staff")
+                                                }
+                                              />
+                                            ) : (
+                                              <img
+                                                style={{
+                                                  width: "50px",
+                                                  height: "50px",
+                                                }}
+                                                src={RemoveBtn}
+                                                onClick={this.handleRemoveSpecificRow(
+                                                  idx,
+                                                  "staff"
+                                                )}
+                                              />
+                                            )} */}
+
+                                          {staffidx === userData.staffdetails.length - 1 &&
+                                          userData.staffdetails.length < 4 ? (
+                                            (() => {
+                                              if (staffidx === 0 && staffidx === userData.staffdetails.length - 1) {
+                                                return (
+                                                  <div>
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      alt=""
+                                                      onClick={() => this.handleAddRow("staff")}
+                                                    />
+                                                  </div>
+                                                );
+                                              } else if (staffidx > 0 && staffidx === userData.staffdetails.length - 1) {
+                                                return (
+                                                  <div>
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        display: !this.state.userList?.storewithmultiuser ? "block" : "none",
+                                                      }}
+                                                      src={RemoveBtn}
+                                                      alt=""
+                                                      onClick={this.handleRemoveSpecificRow(staffidx, "staff")}
+                                                    />
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      alt=""
+                                                      onClick={() => this.handleAddRow("staff")}
+                                                    />
+                                                  </div>
+                                                );
+                                              }
+                                            })()
+                                          ) : (
+                                            <img
+                                              style={{
+                                                width: "50px",
+                                                height: "50px",
+                                                display: !this.state.userList?.storewithmultiuser ? "block" : "none",
+                                              }}
+                                              src={RemoveBtn}
+                                              alt=""
+                                              onClick={this.handleRemoveSpecificRow(staffidx, "staff")}
+                                            />
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </>
                     </div>
+                  </>
                 </div>
-              <DialogActions>
-              <Button
-                onClick={this.handleClosePopup}
-                className="admin-popup-btn close-btn"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={this.submitUpdateUser}
-                className="admin-popup-btn filter-scan"
-              >
-                Update
-              </Button>
-            </DialogActions>
-            </div>
+                <div></div>
+                <DialogActions>
+                  <button
+                    onClick={this.handleClosePopup}
+                    className="cus-btn-user reset buttonStyle"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={(e: any) => {
+                      this.submitUpdateUser(e);
+                    }}
+                    className="cus-btn-user buttonStyle"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    Update
+                    <span className="staffcount">
+                      <img src={ArrowIcon} alt="" className="arrow-i" /> <img src={RtButton} alt="" className="layout" />
+                    </span>
+                  </button>
+                </DialogActions>
+              </div>
             </DialogContent>
           </AdminPopup>
         ) : (
           ""
         )}
-        {/* {allChannelPartners.length > 0 ? ( */}
-          <div className="table-responsive userlist-table">
-            {/* <table className="table" id="tableData"> */}
-            <Table responsive>
-              <thead>
-                <tr>
-                  {this.generateHeader(allChannelPartners, isAsc)}
-                </tr>
-              </thead>
-              <tbody>
-              {allChannelPartners.length > 0 ? 
-                allChannelPartners.map((list: any, i: number) => (
-                  <AUX key={i}>
-                    <tr 
-                      style={
-                        list.status === "Active" ? { borderLeft: "8px solid #89D329" } : list.status === "Inactive" ? { borderLeft: "8px solid #FF6397" } : list.status === "Not Activated" ? { borderLeft: "8px solid #FFB43C" } : { borderLeft: "8px solid #FF0000" }
-                      }
-                     >
-                      <td>{list.username}</td>
-                      <td>{list.mobilenumber} </td>
-                      <td style={{textAlign: 'left'}}>{list.accountname} </td>
-                      <td style={{textAlign: 'left'}}>{list.ownername} </td>
-                      <td>{list.region} </td>
-                      <td>{list.district} </td>
-                      <td>{list.epa} </td>
-                      <td>{list.village} </td>
-                      <td>
-                        <span
-                          onClick={(event: any) => {
-                            this.showPopup(event, "deActivatePopup");
-                            this.getCurrentUserData(list);
-                          }}
-                          className={`status ${
-                            list.status === "Active"
-                              ? "active"
-                              : list.status === "Inactive"
-                              ? "inactive"
-                              : list.status === "Not Activated"
-                              ? "notActivated"
-                              : list.status === "Declined"
-                              ? "declined"
-                              : ""
-                          }`}
-                        >
-                          <img
-                            style={{ marginRight: "8px" }}
-                            src={
-                              list.status === "Active"
-                                ? Check
-                                : list.status === "Inactive"
-                                ? Cancel
-                                : list.status === "Not Activated"
-                                ? NotActivated
-                                : list.status === "Declined"
-                                ? NotActivated
-                                : ""
-                            }
-                            width="17"
-                          />
-                          {list.status}
-                        </span>
-                      </td>
-                      {/* <td style={{width : '10px'}}>
-                      <img
-                          style={{ marginRight: "8px" }}
-                          src={Edit}
-                          width="20"
-                        />
-                      </td> */}
-                      <td>
-                        {list.lastupdatedby}
-                      </td>
-                      {/* <td style={{width : '100px'}}>{moment(list.expirydate).format("DD-MM-YYYY")} </td> */}
-                      <td>
-                          <td>
-                          <img
-                          className="edit"
-                          src={list.status == 'Declined' ? EditDisabled : Edit}
-                          width="20"
-                          onClick={(event) => {
-                            list.status == 'Declined' 
-                            ? event.preventDefault() 
-                            : this.editPopup(event, list);
-                          }}
-                        />
-                          </td>
-                          <td>
-                          <img src={blackmockup} width="20" height="25" />
-                          </td>
-                      </td>
-                    </tr>
-                  </AUX> 
-                ))
-                : <>
-                <div className="col-12 card mt-4">
-                  <div className="card-body ">
-                    <div className="text-red py-4 text-center">No Data Found</div>
-                  </div>
-                </div></>
-                }
-              </tbody>
-            </Table>
-            <div className="add-plus-icon"  onClick={() => this.createUserClick()}>
-              <img src={AddBtn} alt={NoImage} />
-            </div>
 
-            <div>
-              <Pagination
-                totalData={totalData}
-                rowsPerPage={rowsPerPage}
-                previous={this.props.previous}
-                next={this.props.next}
-                pageNumberClick={this.props.pageNumberClick}
-                pageNo={pageNo}
-                handlePaginationChange={this.props.handlePaginationChange}
-                data = {allChannelPartners}
-              />
-            </div>
-            
+        <div className="user-table">
+          <table>
+            <thead>
+              <tr>{this.generateHeader(allChannelPartners, isAsc)}</tr>
+            </thead>
+            <tbody>
+              {allChannelPartners?.length > 0 ? (
+                allChannelPartners?.map((list: any, i: number) => {
+                  return (
+                    <AUX key={`channelpartners` + i}>
+                      <tr
+                      // style={
+                      // 	list.userstatus === "ACTIVE"
+                      // 		? { borderLeft: "8px solid #89D329" }
+                      // 		: list.userstatus === "INACTIVE"
+                      // 		? { borderLeft: "8px solid #FF0000" }
+                      // 		: list.userstatus === "PENDING"
+                      // 		? { borderLeft: "8px solid #FFB43C" }
+                      // 		: { borderLeft: "8px solid #FF0000" }
+                      // }
+                      >
+                        <td style={{}}>{list.username}</td>
+                        <td style={{}}>{list.ownerphonenumber} </td>
+                        <td style={{ textAlign: "left" }}>{_.startCase(_.toLower(list.whtaccountname))} </td>
+                        <td style={{ textAlign: "left" }}>
+                          {_.startCase(_.toLower(list.ownerfirstname)) + " " + _.startCase(_.toLower(list.ownerlastname))}{" "}
+                        </td>
+                        <td style={{ textAlign: "left" }}>{list.deliverygeolevel1} </td>
+                        <td style={{ textAlign: "left" }}>{list.deliverygeolevel2}</td>
+                        <td style={{ textAlign: "left" }}>{list.deliverygeolevel3} </td>
+                        {this.state.partnerType.type === "Retailer" && (
+                          <td style={{ textAlign: "center" }}>
+                            <div className="retailer-id">
+                              <p>
+                                {list.staffdetails?.length}
+                                <img
+                                  data-testid="expand-window"
+                                  className="retailer-icon"
+                                  style={{
+                                    cursor:
+                                      list.userstatus === "DECLINED" || list.userstatus === "PENDING"
+                                        ? "default"
+                                        : "pointer",
+                                  }}
+                                  alt="expand-window"
+                                  onClick={(event) => {
+                                    list.userstatus === "DECLINED" || list.userstatus === "PENDING"
+                                      ? event.preventDefault()
+                                      : this.editStaff(list);
+                                  }}
+                                  src={ExpandWindowImg}
+                                ></img>
+                              </p>
+                            </div>
+                          </td>
+                        )}
+                        <td>
+                          <span
+                            onClick={(event: any) => {
+                              this.state.partnerType.type === "Retailer"
+                                ? this.showPopup(event, "deActivatePopup")
+                                : // this.getCurrentUserData(list)
+                                  event.preventDefault();
+                              this.getCurrentUserData(list);
+                            }}
+                            className={`status ${
+                              list.userstatus === "ACTIVE"
+                                ? "active"
+                                : list.userstatus === "INACTIVE"
+                                ? "inactive"
+                                : list.userstatus === "PENDING"
+                                ? "pending"
+                                : list.userstatus === "DECLINED"
+                                ? "declined"
+                                : ""
+                            }`}
+                            style={{
+                              fontStyle: "12px",
+                              height: "30px",
+                              cursor: this.state.partnerType.type === "Retailer" ? "pointer" : "default",
+                            }}
+                          >
+                            <img
+                              style={{ marginRight: "6px" }}
+                              alt=""
+                              src={
+                                list.userstatus === "ACTIVE"
+                                  ? Check
+                                  : list.userstatus === "INACTIVE"
+                                  ? Cancel
+                                  : list.userstatus === "PENDING"
+                                  ? NotActivated
+                                  : list.userstatus === "DECLINED"
+                                  ? NotActivated
+                                  : ""
+                              }
+                              width="17"
+                            />
+                            {_.startCase(_.toLower(list.userstatus))}
+                          </span>
+                        </td>
+                        <td style={{ textAlign: "center" }}>{list.lastupdatedby}</td>
+                        <td>
+                          {this.state.partnerType.type === "Retailer" && (
+                            <img
+                              data-testid="edit-icon"
+                              aria-label="edit-icon"
+                              className="edit"
+                              style={{
+                                cursor:
+                                  list.userstatus === "DECLINED" || list.userstatus === "PENDING" ? "default" : "pointer",
+                              }}
+                              src={list.userstatus === "DECLINED" || list.userstatus === "PENDING" ? EditDisabled : Edit}
+                              alt="edit-icon"
+                              width="20"
+                              onClick={(event) => {
+                                list.userstatus === "DECLINED" || list.userstatus === "PENDING"
+                                  ? event.preventDefault()
+                                  : this.editUser(list);
+                              }}
+                            />
+                          )}
+                          {list.iscreatedfrommobile && <img src={blackmockup} alt="" width="20" height="25" />}
+                        </td>
+                      </tr>
+                    </AUX>
+                  );
+                })
+              ) : (
+                <tr style={{ height: "250px" }}>
+                  <td colSpan={10} className="no-records">
+                    No records found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <div className="add-plus-icon" onClick={() => this.createUserClick()}>
+            <img data-testid="floating-add" src={AddBtn} alt={NoImage} />
           </div>
-        
-      </>
+        </div>
+        <div>
+          <Pagination
+            totalData={totalData}
+            data={allChannelPartners}
+            totalLabel={"Users"}
+            getRecords={this.getChannelPartnersList}
+            onRef={(node: any) => {
+              this.paginationRef = node;
+            }}
+          />
+        </div>
+      </AUX>
     );
   }
 }

@@ -1,0 +1,109 @@
+.grid-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  .filter-left-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-right-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-partnertype {
+    display: flex;
+    align-items: center;
+    .partnertype-list {
+      margin-left: 12px;
+      button {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .filterRow {
+    margin-right: 20px;
+  }
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+  .customDropdown {
+    display: flex;
+    align-items: flex-end;
+    margin-right: 25px;
+    margin-top: -14px;
+  }
+  .yearlabel {
+    padding-right: 0.5rem;
+    color: rgb(54, 54, 54);
+    font-size: 12px;
+    font-weight: 700 !important;
+  }
+
+  .filterRow .dropdown-menu {
+    box-shadow: 3px 3px 3px #504f4f29;
+  }
+}
+.dropdown-year {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 10px;
+  font-size: 16px;
+  z-index: 2;
+  .yeartext {
+    padding-top: 0.5rem !important;
+    padding-right: 0.5rem;
+    color: rgb(54, 54, 54);
+    font-size: 12px;
+    font-weight: 700 !important;
+  }
+  .select {
+    width: 100px;
+    height: 46px;
+    //margin-top: -37px;
+    margin-top: -26px;
+    font-size: 14px;
+    z-index: 2;
+  }
+}
+.css-yk16xz-control {
+  min-height: 34px !important;
+}
+.customDropdown {
+  display: flex;
+  align-items: center;
+}
+.react-select {
+  label {
+    font-size: 14px;
+  }
+  img {
+    //height: 36px;
+    height: 34px;
+    margin-right: -1px;
+  }
+}
+
+
+
+@media only screen and (max-width: 1400px) {
+  .select {
+    font-size: 12px;
+  }
+  .react-select {
+    label {
+      font-size: 11px;
+    }
+  }
+   .dropdown-year{
+    font-size: 14px;
+
+   }
+}

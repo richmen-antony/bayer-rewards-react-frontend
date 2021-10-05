@@ -1,0 +1,145 @@
+@import "./variables.scss";
+.label-container{
+    .title{
+        color: #000000;
+        font-family: "appRegular" !important;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+    }
+    .search-center{
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        text-align: center;
+        transform: translate(-50%, -50%);
+        
+        .search-title{
+            color: #000000;
+            font-family: "appRegular" !important;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: 1.2px;
+        }
+        
+    }
+    .bottom{
+        margin-top: auto;
+        .footer-img{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            img{
+                width: 23%;
+            }
+        }
+    }
+    
+
+    .label-table {
+        table {
+          table-layout: fixed;
+          border-collapse: collapse;
+          border-spacing: 0;
+          width: 30%;
+          background: #ffffff;
+          border-radius: 10px !important;
+          border-style: hidden;
+          thead {
+            tr {
+              th {
+                color: #ffffff;
+                border: 0;
+                padding:10px;
+                vertical-align: middle;
+                font-size: 16px;
+                font-weight: 500;
+                // font-family: "Open Sans", sans-serif;
+                font-family: "appRegular" !important;
+                position: sticky;
+                top: 0;
+                background-color: #1f445a;
+                z-index: 1;
+                cursor: pointer;
+              }
+            }
+          }
+          tbody {
+            tr {
+                padding: auto;
+                .title{
+                    color: #4E4E4E;
+                    opacity: 1;
+                    padding-right: 7rem;
+                   
+                }
+                .value{
+                    color: #242424;
+                    font-weight: 600;
+                }
+              td {
+                font-size: 14px;
+                font-family: "appRegular" !important;
+                padding: 0.5rem;
+              }
+            }
+          }
+        }
+      }
+
+}
+
+
+
+
+@media only screen and (max-width: 1400px){
+    .label-container{
+        .card-main {
+            height: 75vh;
+        }
+        .label-table {
+            table {
+              thead {
+                tr {
+                  th {
+                    padding:10px;
+                    font-size: 14px;
+                    font-weight: 600;
+                  }
+                }
+              }
+              tbody {
+                tr {
+                  td {
+                    font-size: 12px;
+                }
+              }
+            }
+          }
+    }
+    
+}
+
+@media only screen and (min-width: 1400px) and (max-width: 1920px) {
+    .label-table {
+        table {
+          thead {
+            tr {
+              th {
+                padding:10px;
+                font-size: 16px;
+                font-weight: 600;
+              }
+            }
+          }
+          tbody {
+            tr {
+              td {
+                font-size: 13px;            
+            }
+          }
+        }
+      }
+    }
+}
+}

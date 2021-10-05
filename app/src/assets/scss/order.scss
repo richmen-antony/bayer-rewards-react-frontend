@@ -1,21 +1,125 @@
-.inner-table {
-  width: 100%;
-  td {
+.inner-expand {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+  .inner-row {
+    padding: 0 10px;
+    border-right: 1px solid #dee2e6;
+    text-align: center;
+    margin: 8px 0;
     &.title {
       text-align: left;
       border-right: 0;
       p {
         color: #646464;
+        margin: 0;
       }
     }
     &:last-child{
     border-right: 0;
     }
-    border-right: 1px solid #dee2e6;
-    text-align: center;
+   
     border-top: 0;
     .sub-val {
       margin: 0;
     }
+    .qr-val{
+      margin: 0;
+    }
+  }
+  .invalid-list{
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    .inner-row{
+      width: 25%;
+      display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    }
   }
 }
+.sum-total{
+  // display: flex;
+  // align-items: center;
+  // justify-content: flex-end;
+  // margin-right: 80px;
+  color: #000000;
+  font-weight: 600;
+  font-size: 13px;
+  td{
+    position: sticky;
+    bottom: 0;
+    background-color: #ffffff;
+    z-index: 1;
+    border-top:0;
+  }
+  
+  
+  .total{
+    margin: 0;
+    // width: 100px;
+    text-align: right;
+  }
+  .intendedquantity{
+    // width: 132px;
+  }
+  .orderedquantity{
+    // width: 120px;
+  }
+  .productprice{
+    // width: 50px;
+  }
+}
+
+.sub-order{
+  height: 250px;
+  overflow: auto;
+  .table td, .table th {
+    vertical-align: middle;
+    padding: 0.5rem 1rem;
+ }
+ table{
+   margin-bottom: 0;
+   td{
+     font-size: 14px;
+   }
+ }
+ 
+
+}
+.product-sold-popup{
+  margin: 20px 10px;
+}
+.font-13px{
+  font-size: 13px;
+}
+@media only screen and (max-width: 1366px) {
+  .sum-total{
+    font-size: 12px;
+    .total{
+      margin: 0;
+      width: 100px;
+    }
+    .intendedqty{
+      width: 118px;
+    }
+    .orderedqty{
+      width: 113px;
+    }
+    .price{
+      width: 49px;
+    }
+  }
+
+  .sub-order{
+    table{
+      td{
+        font-size: 12px;
+      }
+    }
+  }
+}
+

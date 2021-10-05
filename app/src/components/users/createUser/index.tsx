@@ -1,55 +1,145 @@
 import React, { Component } from "react";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import { Theme, withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import Dropdown from "../../../utility/widgets/dropdown";
-import Stepper from "../../../container/components/stepper/Stepper";
+import Stepper from "../../../containers/components/stepper/Stepper";
 import { Input } from "../../../utility/widgets/input";
 import "../../../assets/scss/users.scss";
 import "../../../assets/scss/createUser.scss";
-import { toastSuccess } from "../../../utility/widgets/toaster";
-import { setLocalStorageData } from "../../../utility/base/localStore";
-import filterIcon from "../../assets/icons/filter_icon.svg";
-import CustomSwitch from "../../../container/components/switch";
-import CountryJson from "../../../utility/lib/country.json";
+import { Alert } from "../../../utility/widgets/toaster";
+import CustomSwitch from "../../../containers/components/switch";
 import { apiURL } from "../../../utility/base/utils/config";
-import {
-  invokeGetAuthService,
-  invokeGetService,
-  invokePostService,
-  invokePostAuthService
-} from "../../../utility/base/service";
-import moment from "moment";
+import { invokeGetAuthService, invokePostService, invokePostAuthService } from "../../../utility/base/service";
 import { getLocalStorageData } from "../../../utility/base/localStore";
-import { isConstructorDeclaration } from "typescript";
-import { FormatColorResetRounded, LiveTvRounded } from "@material-ui/icons";
-import Table from 'react-bootstrap/Table';
-import AddIcon from "../../../assets/images/Add_floatting_btn.svg";
+import { allowAlphabetsNumbers } from "../../../utility/base/utils/";
+import { patterns } from "../../../utility/base/utils/patterns";
 import AddBtn from "../../../assets/icons/add_btn.svg";
 import RemoveBtn from "../../../assets/icons/Remove_row.svg";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
-import { keys } from "@material-ui/core/styles/createBreakpoints";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import ArrowIcon from "../../../assets/icons/dark bg.svg";
+import RtButton from "../../../assets/icons/right_btn.svg";
+import NoImage from "../../../assets/images/no_image.svg";
+import Loader from "../../../utility/widgets/loader";
+import AUX from "../../../hoc/Aux_";
+import AdminPopup from "../../../containers/components/dialog/AdminPopup";
+import _ from "lodash";
+import RouterPrompt from "../../../containers/prompt";
+import { AppContext } from "../../../containers/context";
+import AreaSalesManager from "./AreaSalesManager";
+import { connect } from "react-redux";
+import { getGeographicLevel1Options } from "../../../redux/actions";
 
-const options = [
-  // { value: "salesagent", text: "Area Sales Agent" },
-  { value: "Retailer", text: "Retailer" },
-  { value: "Distributor", text: "Distributor" },
+// type Props = {
+// 	location?: any;
+// 	history?: any;
+// };
+
+const role = [
+  { value: "RETAILER", text: "Retailer" },
+  { value: "salesagent", text: "Area Sales Agent" },
 ];
 
-const getStoreData = {
-  country: "MAL",
-  Language: "EN-US",
+let geoLocationInfo = {
+  geolevel1: "",
+  geolevel2: "",
+  geolevel3: "",
+  geolevel4: "",
+  geolevel5: "",
 };
+let levelFour: any = [];
+let levelsName: any = [];
+let phoneLength = process.env.REACT_APP_STAGE === "dev" || process.env.REACT_APP_STAGE === "int" ? 10 : 9;
+
+const DialogContent = withStyles((theme: Theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme: Theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+    justifyContent: "center",
+    marginTop: "30px",
+  },
+  button: {
+    boxShadow: "0px 3px 6px #c7c7c729",
+    border: "1px solid #89D329",
+    borderRadius: "50px",
+  },
+}))(MuiDialogActions);
 
 class CreateUser extends Component<any, any> {
+  static contextType = AppContext;
+  loggedUserInfo: any;
+  getStoreData: any;
+  isFilledAllFields: boolean;
   constructor(props: any) {
     super(props);
-    let oneYearFromNow = new Date();
-    let oneYear = oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+    const dataObj: any = getLocalStorageData("userData");
+    const loggedUserInfo = JSON.parse(dataObj);
+    this.getStoreData = {
+      country: loggedUserInfo?.geolevel0,
+      countryCode: loggedUserInfo?.countrycode,
+      Language: "EN-US",
+    };
+
     this.state = {
-      staffRows: [{}],
-      ownerRows: [{}],
+      userData: {
+        allChannelPartners: [],
+        countrycode: this.getStoreData.countryCode,
+        locale: "English (Malawi)",
+        rolename: role[0].value,
+        username: "",
+        deliverystreet: "",
+        shippingcity: "",
+        shippingstate: "",
+        deliveryzipcode: "",
+        taxid: "",
+        whtaccountname: "",
+        whtownername: "",
+        billingstreet: "",
+        billinggeolevel4: "",
+        billinggeolevel2: "",
+        billingzipcode: "",
+        iscreatedfrommobile: false,
+        staffdetails: [],
+        ownerRows: [
+          {
+            firstname: "",
+            lastname: "",
+            mobilenumber: "",
+            email: "",
+            active: true,
+            errObj: {
+              firstnameErr: "",
+              lastnameErr: "",
+              mobilenumberErr: "",
+              emailErr: "",
+            },
+          },
+        ],
+      },
+      areaSalesManagerStatus: "true",
+      deliverystreetErr: "",
+      shippingcityErr: "",
+      shippingstateErr: "",
+      deliveryzipcodeErr: "",
+      accountnameErr: "",
+      ownernameErr: "",
+      billingstreetErr: "",
+      billingcityErr: "",
+      billingstateErr: "",
+      billingzipcodeErr: "",
       geographicFields: [],
       dynamicFields: [],
       withHolding: [],
+      newWithHolding: [],
+      withHoldingSelected: false,
       countryList: [],
       hierarchyList: [],
       isRendered: false,
@@ -58,312 +148,975 @@ class CreateUser extends Component<any, any> {
       success: false,
       selectedValue: "",
       currentStep: 1,
-      fromDateErr: "",
-      toDateErr: "",
-      roleErr: "",
-      userNameErr: "",
-      accNameErr: "",
-      ownerNameErr: "",
-      phoneErr: "",
-      emailErr: "",
-      postalCodeErr: "",
-      postalCodeTaxErr: "",
-      taxIdErr: "",
-      countryErr: "",
-      stateErr: "",
-      districtErr: "",
-      subDistrictErr: "",
-      firstNameErr: "",
-      lastNameErr: "",
-      villageErr: "",
-      stepsArray: [
-        "Personal Information",
-        "Shipping Details",
-        "Geo-Hierarchy information",
-        "With-Holding tax",
-      ],
-      userData: {
-        fromdate: new Date().toISOString().substr(0, 10),
-        expirydate: moment(oneYear).format("YYYY-MM-DD"),
-        activateUser: true,
-        isDeclineUser: '',
-        role: options[0].value,
-        username: "",
+      stepsArray: ["Personal Information", "Address information", "With-Holding tax"],
+      phone: "",
+      accInfo: false,
+      isEditPage: false,
+      name: "",
+      isStaff: false,
+      isLoader: false,
+      geolevel1List: [],
+      level1Options: [],
+      level2Options: [],
+      level3Options: [],
+      level4Options: [],
+      level5Options: [],
+      mobileLimit: true,
+      cloneduserData: {},
+      clonedasaInfo: {},
+      clonedasapartnersInfo: {},
+      deleteStaffPopup: false,
+      shouldBlockNavigation: true,
+      asaDatas: {
+        active: true,
         firstname: "",
         lastname: "",
-        accountname: "",
-        ownername: "",
-        mobilenumber: "",
         email: "",
-        address: "",
-        postalcode: "",
-        taxid: "",
-        whtownername: "",
-        whtaccountname: "",
-        whtaddress: '',
-        whtpostalcode: "",
+        mobilenumber: "",
       },
-      phone: '',
-      accInfo: true,
-      regionList: [],
-      isValidatePage: false,
-      userName: '',
-      isStaff: false
+      asafirstnameErr: "",
+      asalastnameErr: "",
+      asamobilenumberErr: "",
+      userroleType: "external",
+      partnerDatas: [
+        {
+          partnertype: "",
+          geolevel1: "",
+          channelpartnerfullname: "",
+          channelpartnerid: "",
+          staffid: "",
+          errObj: {
+            typeErr: "",
+            locationErr: "",
+            nameErr: "",
+          },
+        },
+      ],
+      locationwiseChannelPartners: [],
+      channelPartnersOptions: [],
+      allThirdPartyUsers: [],
     };
+    this.loggedUserInfo = loggedUserInfo;
+    this.isFilledAllFields = false;
   }
 
   componentDidMount() {
-    // let data: any = getLocalStorageData("userData");
-
-    // let userDetails = JSON.parse(data);
-    // this.setState({ userName: userDetails.username},()=>{
-    //   console.log("userData", this.state.userData);
-    // });
-
-    this.setState({ isRendered: true });
+    this.props.getGeographicLevel1Options();
     ///API to get country and language settings
     this.getCountryList();
+    this.getChannelPartnersList();
+    // this.getThirdPartyList();
+    this.getAllPartnersList();
     this.getGeographicFields();
-    this.getNextHierarchy(getStoreData.country, this.state.geographicFields[1]);
-
-    if (this.props.location?.state) {
-      let data: any = getLocalStorageData("userData");
-      let userDetails = JSON.parse(data);
-      const { userFields } = this.props.location.state;
-      userFields['activateUser'] = true;
-      // userFields['fromdate'] = moment(userFields.effectivefrom).format("YYYY-MM-DD");
-      // userFields['expirydate'] = moment(userFields.expirydate).format("YYYY-MM-DD");
-      let from = '2021-10-10';
-      let to = '2021-12-05';
-      userFields['fromdate'] = moment(from).format("YYYY-MM-DD");
-      userFields['expirydate']= moment(to).format("YYYY-MM-DD");
-      this.setState({ userName: userDetails.username},()=>{
-        userFields['lastupdatedby'] = this.state.userName;
-      });
-      userFields['isedit'] = false;
-      userFields['lastupdateddate'] = new Date().toISOString().substr(0, 10);
-
-      this.setState({ userData: userFields, isValidatePage : true }, () => {
-        console.log("userData", this.state.userData);
-      });
-
-        //Validate User
-        setTimeout(() => {
-          this.getDynamicOptionFields(userFields);
-        }, 0);
-      } else {
-        setTimeout(() => {
-          this.getDynamicOptionFields('');
-        }, 0);
-      }
   }
 
-  getRegion() {
-    // let newData = [];
-    // newData.push(CountryJson);
-    let regions: any = [];
-    let regionObj: any = {};
-    // let new = newData[region];
-    CountryJson.region.map((list: any, i: number) => {
-      regionObj["value"] = list.id;
-      regionObj["text"] = list.name;
-      regions.push({ ...regionObj });
+  componentDidUpdate(prevProps: any) {
+    if (prevProps.errorMessage !== this.props.errorMessage) {
+      Alert("warning", this.props.errorMessage);
+    }
+  }
+
+  getChannelPartnersList = () => {
+    this.setState({
+      allChannelPartners: [],
     });
-    this.setState({ regionList: regions });
-  }
+    const { channelPartnersList } = apiURL;
+    this.setState({ isLoader: true });
+    let data = {
+      countrycode: this.getStoreData.countryCode,
+      page: 1,
+      searchtext: "",
+      isfiltered: false,
+      rowsperpage: 1000,
+      usertype: "EXTERNAL",
+      partnertype: "RETAILER",
+    };
+    invokeGetAuthService(channelPartnersList, data)
+      .then((response) => {
+        this.setState({
+          isLoader: false,
+          allChannelPartners: Object.keys(response.body).length !== 0 ? response.body.rows : [],
+        });
+      })
+      .catch((error) => {
+        this.setState({ isLoader: false });
+      });
+  };
+
+  // getThirdPartyList = (defaultPageNo?: number) => {
+  // 	this.setState({	allThirdPartyUsers: [] });
+  // 	const { thirdPartyList } = apiURL;
+  // 	this.setState({ isLoader: true,});
+  // 	let data = {
+  // 		countrycode: this.getStoreData.countryCode,
+  // 		page: 1,
+  // 		isfiltered: false,
+  // 		rowsperpage: 1000,
+  // 		partnertype:"ASA",
+  // 		searchtext: null,
+  // 	};
+  // 	invokeGetAuthService(thirdPartyList, data)
+  // 		.then((response) => {
+  // 			this.setState({
+  // 				isLoader: false,
+  // 				allThirdPartyUsers: Object.keys(response.body).length !== 0 ? response.body.rows : [],
+  // 			});
+  // 		})
+  // 		.catch((error) => {
+  // 			this.setState({ isLoader: false });
+  // 			let message = error.message
+  // 			Alert("warning", message);
+  // 		});
+  //   };
 
   getCountryList() {
     //service call
     let res = [
-      { value: "IND", text: "INDIA" },
-      { value: "MAL", text: "Malawi" },
+      { value: "India", text: "India" },
+      { value: "Malawi", text: "Malawi" },
+      { value: "South Africa", text: "South Africa" },
+      { value: "Egypt", text: "Egypt" },
     ];
     this.setState({ countryList: res });
   }
-  getNextHierarchy(country: any, nextLevel: any) {
-    //API to get region options for initial set since mal is default option in country
-    const data = {
-      type: country,
-      id: nextLevel,
-    };
 
-    // let stateResponse = [{}];
-    let nextHierarchyResponse = [
-      { text: "Central", value: "Central" },
-      { text: "Northern", value: "Northern" },
-      { text: "Western", value: "Western" },
-      { text: "Eastern", value: "Eastern" },
-    ];
-    this.setState({ hierarchyList: nextHierarchyResponse });
-  }
   getGeographicFields() {
-    //service call to get dynamic fields
-    // servicesVersion().then((res: any) => {
-    //     let res = ['country', 'state', 'district', 'village'];
-    // }).catch((err: any) => {
-    // })
-
-    let res = ["country", "region", "add", "district", "epa", "village"];
-    setTimeout(() => {
-      this.setState({ geographicFields: res });
-    }, 0);
-  }
-  getDynamicOptionFields(data: any) {
-  if(data){
-    let setFormArray: any = [];
-    this.state.geographicFields.map((list: any, i: number) => {
-      let result = [];
-      let region = "";
-      let add = "";
-      let district = "";
-      let epa = "";
-      let village = "";
-      if('region' in data){
-        result = this.getOptionLists('auto',list, data.region , i);
-        region = data.region;
-      }
-      if('add' in data){
-        result = this.getOptionLists('auto',list, data.region , i);
-        add = data.region;
-      }
-      if('district' in data){
-        result = this.getOptionLists('auto',list, data.district , i);
-        district = data.district;
-      } 
-      if('epa' in data){
-        result = this.getOptionLists('auto',list, data.epa , i)
-        epa = data.epa;
-      }
-      if('village' in data){
-        result = this.getOptionLists('auto',list, data.village , i);
-        village = data.village;
-      }
-        setFormArray.push({
-          name: list,
-          placeHolder: true,
-          value: list === "country" ? getStoreData.country : list === 'region' ? region : list === 'add' ? add : list === "district" ? district : list === "epa" ? epa : list === "village" ? village : '' ,
-          options:
-            list === "country"
-              ? this.state.countryList
-              : result,
-          error: "",
+    this.setState({ isLoader: true });
+    const { getTemplateData } = apiURL;
+    let data = {
+      countryCode: this.getStoreData.countryCode,
+    };
+    invokeGetAuthService(getTemplateData, data)
+      .then((response: any) => {
+        let locationData = response.body[0].locationhierarchy;
+        let levels: any = [];
+        locationData.forEach((item: any) => {
+          levelsName.push(item.name.toLowerCase());
+          let locationhierlevel = item.level;
+          let geolevels = "geolevel" + locationhierlevel;
+          levels.push(geolevels);
         });
-    });
-    this.setState({ dynamicFields: setFormArray });
-  } else {
-    let setFormArray: any = [];
-    this.state.geographicFields.map((list: any, i: number) => {
-        setFormArray.push({
-          name: list,
-          placeHolder: true,
-          value: list === "country" ? getStoreData.country : '',
-          options:
-            list === "country"
-              ? this.state.countryList
-              : list === 'region' ? this.state.hierarchyList : '',
-          error: "",
-        });
-    });
-    this.setState({ dynamicFields: setFormArray });
+        this.setState(
+          {
+            isLoader: false,
+            geographicFields: levels,
+          },
+          () => {
+            this.editUser();
+          }
+        );
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        Alert("warning", message);
+      });
   }
-}
 
-  getOptionLists = (cron: any, type: any, e: any, index: any) => {
-    if(cron === 'auto'){
-      let options: any = [];
-      if(type === 'region'){
-          options = [
-            { text: "Central", value: "Central" },
-            { text: "Northern", value: "Northern" },
-            { text: "Western", value: "Western" },
-            { text: "Eastern", value: "Eastern" },
-          ];
-        } else if(type === 'add'){
-          options = [
-            { text: "Add1", value: "Add1"},
-            { text: "Add2", value: "Add2"},
-          ];
-        }else if(type === 'district'){
-            options = [
-              { text: "Balaka", value: "Balaka" },
-              { text: "Blantyre", value: "Blantyre" }, 
-            ];
-        } else if(type === 'epa'){
-            options = [
-              { text: "EPA1", value: "EPA1" },
-              { text: "EPA2", value: "EPA2" },
-            ];
-        } else if(type === 'village'){
-            options = [
-              { text: "Village1", value: "Village1" },
-              { text: "Village2", value: "Village2" },
-            ];
+  editUser = () => {
+    if (this.props.location?.page) {
+      let data: any = getLocalStorageData("userData");
+      let userDetails = JSON.parse(data);
+      this.setState({ username: userDetails.username }, () => {});
+      let userFields = this.props.location.state?.userFields;
+      if (this.props.location?.page === "edit" || this.props.location?.page === "validate") {
+        let ownerInfo = {
+          errObj: {
+            emailErr: "",
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: "",
+          },
+          firstname: userFields.ownerfirstname,
+          active: userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING" ? true : false,
+          lastname: userFields.ownerlastname,
+          mobilenumber: userFields.ownerphonenumber,
+          email: userFields.owneremail,
+        };
+
+        userFields.staffdetails.forEach((items: any) => {
+          items.active = userFields.userstatus === "PENDING" ? true : items.active;
+        });
+        let userDataList = this.state.userData;
+        userDataList.ownerRows[0] = ownerInfo;
+        let userinfo = {
+          ownerRows: userDataList.ownerRows,
+          countrycode: userFields.countrycode,
+          locale: userFields.locale,
+          rolename: userFields.rolename,
+          username: userFields.username,
+          deliverystreet: userFields.deliverystreet,
+          shippingcity: userFields.deliverygeolevel4,
+          shippingstate: userFields.deliverygeolevel2,
+          deliveryzipcode: userFields.deliveryzipcode,
+          taxid: userFields.taxid,
+          whtaccountname: userFields.whtaccountname,
+          whtownername: userFields.whtownername,
+          billingstreet: userFields.billingstreet,
+          billinggeolevel4: userFields.billinggeolevel4,
+          billinggeolevel2: userFields.billinggeolevel2,
+          billingzipcode: userFields.billingzipcode,
+          iscreatedfrommobile: userFields.iscreatedfrommobile,
+          staffdetails: userFields.staffdetails,
+        };
+        if (userinfo) {
+          userinfo.staffdetails.forEach((staffInfo: any) => {
+            let errObjd = {
+              errObj: {
+                emailErr: "",
+                firstnameErr: "",
+                lastnameErr: "",
+                mobilenumberErr: "",
+                isPhoneEdit: staffInfo.mobilenumber ? false : true,
+              },
+            };
+            Object.assign(staffInfo, errObjd);
+          });
         }
-      return options;
-    } else {
-      let dynamicFieldVal = this.state.dynamicFields;
-      let withHoldingVal = this.state.withHolding; 
-      if(type === 'region') {
-        let district = [
-          { text: "Balaka", value: "Balaka" },
-          { text: "Blantyre", value: "Blantyre" }, 
-        ];
-          dynamicFieldVal[index+1].options = district;
-          dynamicFieldVal[index].value = e;
-          this.setState({dynamicFields: dynamicFieldVal});
-    } else if (type === 'add'){
-      let epa = [
-        { text: "Add1", value: "Add1" },
-        { text: "Add2", value: "Add2" }, 
-      ];
-        dynamicFieldVal[index+1].options = epa;
-        dynamicFieldVal[index].value = e;
-        this.setState({dynamicFields: dynamicFieldVal});
-     }else if(type === 'district') {
-        let epa = [
-          { text: "EPA1", value: "EPA1" },
-          { text: "EPA2", value: "EPA2" }, 
-        ];
-          dynamicFieldVal[index+1].options = epa;
-          dynamicFieldVal[index].value = e;
-          this.setState({dynamicFields: dynamicFieldVal});
-      } else if(type === 'epa') {
-        let village = [
-          { text: "Village1", value: "Village1" },
-          { text: "Village2", value: "Village2" },
-        ];
-          dynamicFieldVal[index+1].options = village;
-          dynamicFieldVal[index].value = e;
-          this.setState({dynamicFields: dynamicFieldVal});
-      } else if(type === 'village') {
-          dynamicFieldVal[index].value = e;
-          this.setState({dynamicFields: dynamicFieldVal});
+        this.setState({
+          userData: userinfo,
+          isEditPage: true,
+          isStaff: userFields.storewithmultiuser,
+          isRendered: true,
+        });
+        let cloneduserData = JSON.parse(JSON.stringify(userinfo));
+        this.setState({ cloneduserData: cloneduserData });
+
+        //Dynamic Geo location dropdowns For Validate and edit User
+        setTimeout(() => {
+          this.getDynamicOptionFields(userFields);
+        }, 0);
+      } else if (this.props.location?.page === "asaedit") {
+        let asauserinfo = {
+          firstname: userFields.firstname,
+          active: userFields.userstatus === "ACTIVE" || userFields.userstatus === "PENDING" ? true : false,
+          lastname: userFields.lastname,
+          mobilenumber: userFields.phonenumber,
+          email: userFields.emailid,
+        };
+        let asachannelPartnersInfo: any = [];
+        let partnerObj = {};
+        userFields.usermapping?.forEach((items: any, index: number) => {
+          partnerObj = {
+            partnertype: items.partnertype,
+            geolevel1: items.geolevel1,
+            channelpartnerfullname: items.channelpartnerfullname,
+            channelpartnerid: items.channelpartnerid,
+            staffid: items.staffid,
+            errObj: {
+              typeErr: "",
+              locationErr: "",
+              nameErr: "",
+            },
+          };
+          asachannelPartnersInfo.push(partnerObj);
+        });
+        let steps = this.state.stepsArray;
+        steps.splice(2, 1, "User Mappings");
+
+        let clonedasaInfo = JSON.parse(JSON.stringify(asauserinfo));
+        let clonedasapartnersInfo = JSON.parse(JSON.stringify(asachannelPartnersInfo));
+
+        this.setState(
+          (prevState: any) => ({
+            asaDatas: asauserinfo,
+            partnerDatas: asachannelPartnersInfo,
+            clonedasaInfo: clonedasaInfo,
+            clonedasapartnersInfo: clonedasapartnersInfo,
+            userroleType: "internal",
+            stepsArray: steps,
+            isEditPage: true,
+            isRendered: true,
+            userData: {
+              ...prevState.userData,
+              rolename: role[1].value,
+            },
+          }),
+          () => {
+            userFields.usermapping?.forEach((items: any, index: number) => {
+              this.setOptionsForChannelPartners(index);
+            });
+          }
+        );
+        //Dynamic Geo location dropdowns for edit asa User
+        this.getDynamicOptionFields(userFields);
       }
+    } else {
+      //Dynamic Geo location dropdowns For Create asa User
+      this.getDynamicOptionFields("");
     }
+  };
+
+  getDynamicOptionFields = async (data: any) => {
+    let level1 = this.props.geoLevel1List;
+    let level1Datas: any = [];
+    level1?.forEach((item: any) => {
+      let level1Info = { text: item.name, code: item.code, value: item.name };
+      level1Datas.push(level1Info);
+    });
+    let geolevel1List = this.props.geoLevel1List;
+    if (data) {
+      let isSameGeoAddress = false;
+      if (this.state.userroleType === "external") {
+        isSameGeoAddress =
+          data.billinggeolevel1 === data.deliverygeolevel1 &&
+          data.billinggeolevel2 === data.deliverygeolevel2 &&
+          data.billinggeolevel3 === data.deliverygeolevel3 &&
+          data.billinggeolevel4 === data.deliverygeolevel4 &&
+          data.billinggeolevel5 === data.deliverygeolevel5 &&
+          data.whtownername === data.ownerfirstname + " " + data.ownerlastname;
+        this.setState({ accInfo: isSameGeoAddress ? true : false });
+      }
+      let setFormArray: any = [];
+      let level1Options: any = [];
+      let level2Options: any = [];
+      let level3Options: any = [];
+      let level4Options: any = [];
+      let level5Options: any = [];
+      geoLocationInfo = {
+        geolevel1: "",
+        geolevel2: "",
+        geolevel3: "",
+        geolevel4: "",
+        geolevel5: "",
+      };
+      let geolevel1 = "";
+      let geolevel2 = "";
+      let geolevel3 = "";
+      let geolevel4 = "";
+      let geolevel5 = "";
+      if ("deliverygeolevel1" in data) {
+        level1Options = level1Datas;
+        geolevel1 = data.deliverygeolevel1;
+        level1Options.forEach((level1Info: any) => {
+          if (level1Info.name === data.deliverygeolevel1) {
+            geoLocationInfo.geolevel1 = level1Info.code;
+          }
+        });
+        this.setState({ level1Options: level1Options });
+      }
+      if ("deliverygeolevel2" in data) {
+        let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.deliverygeolevel1);
+        geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
+        filteredLevel2[0]?.geolevel2.forEach((item: any) => {
+          let level2Info = { text: item.name, value: item.name, code: item.code };
+          level2Options.push(level2Info);
+        });
+        let selectedLevel2 = level2Options.filter((level3: any) => level3.text === data.deliverygeolevel2);
+        geoLocationInfo.geolevel2 = selectedLevel2[0]?.code;
+        geolevel2 = data.deliverygeolevel2;
+        this.setState({ level2Options: level2Options });
+      }
+      if ("deliverygeolevel3" in data) {
+        geolevel3 = data.deliverygeolevel3;
+        let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.deliverygeolevel1);
+        let level2List = filteredLevel2[0]?.geolevel2.filter(
+          (level2Info: any) => level2Info.name === data.deliverygeolevel2
+        );
+        level2List &&
+          level2List[0]?.geolevel3?.forEach((item: any) => {
+            let level2Info = {
+              text: item.name,
+              value: item.name,
+              code: item.code,
+            };
+            level3Options.push(level2Info);
+          });
+        let selectedLevel3 = level3Options.filter((level3Info: any) => level3Info.text === geolevel3);
+        geoLocationInfo.geolevel3 = selectedLevel3[0]?.code;
+        this.setState({ level3Options: level3Options });
+      }
+      if ("deliverygeolevel4" in data) {
+        if (this.state.geographicFields[4]) {
+          level4Options = await this.getLevelFourDetails();
+          geolevel4 = data.deliverygeolevel4;
+          level4Options?.forEach((level4: any) => {
+            if (level4.name === geolevel4) {
+              geoLocationInfo.geolevel4 = level4.code;
+            }
+            level4.text = level4.name;
+            level4.value = level4.name;
+          });
+          this.setState({ level4Options: level4Options });
+        }
+      }
+      if ("deliverygeolevel5" in data) {
+        if (this.state.geographicFields[5]) {
+          geolevel5 = data.deliverygeolevel5;
+          level5Options = await this.getLevelFiveDetails();
+          if (level5Options?.length) {
+            level5Options?.forEach((level5: any) => {
+              if (level5.name === geolevel4) {
+                geoLocationInfo.geolevel5 = level5.code;
+              }
+              level5.text = level5.name;
+              level5.value = level5.name;
+            });
+          }
+          this.setState({ level5Options: level5Options });
+        }
+        this.state.geographicFields.forEach((list: any, i: number) => {
+          setFormArray.push({
+            name: list,
+            placeHolder: true,
+            value:
+              list === "geolevel0"
+                ? this.getStoreData.country
+                : list === "geolevel1"
+                ? geolevel1
+                : list === "geolevel2"
+                ? geolevel2
+                : list === "geolevel3"
+                ? geolevel3
+                : list === "geolevel4"
+                ? geolevel4
+                : list === "geolevel5"
+                ? geolevel5
+                : "",
+            options:
+              list === "geolevel0"
+                ? this.state.countryList
+                : list === "geolevel0"
+                ? this.getStoreData.country
+                : list === "geolevel1"
+                ? level1Options
+                : list === "geolevel2"
+                ? level2Options
+                : list === "geolevel3"
+                ? level3Options
+                : list === "geolevel4"
+                ? level4Options
+                : list === "geolevel5"
+                ? level5Options
+                : "",
+            error: "",
+          });
+        });
+      }
+      this.setState({ dynamicFields: setFormArray });
+
+      //Incase of delivery and billing address is different
+      if (this.state.userroleType === "external") {
+        if (!isSameGeoAddress) {
+          setFormArray = [];
+          level2Options = [];
+          level3Options = [];
+          level4Options = [];
+          level5Options = [];
+          geoLocationInfo = {
+            geolevel1: "",
+            geolevel2: "",
+            geolevel3: "",
+            geolevel4: "",
+            geolevel5: "",
+          };
+          if ("billinggeolevel1" in data) {
+            level1Options = level1Datas;
+            geolevel1 = data.billinggeolevel1;
+            level1Options.forEach((level1Info: any) => {
+              if (level1Info.name === data.billinggeolevel1) {
+                geoLocationInfo.geolevel1 = level1Info.code;
+              }
+            });
+            this.setState({ level1Options: level1Options });
+          }
+          if ("billinggeolevel2" in data) {
+            let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.billinggeolevel1);
+            geoLocationInfo.geolevel1 = filteredLevel2[0]?.code;
+            filteredLevel2[0]?.geolevel2.forEach((item: any) => {
+              let level2Info = {
+                text: item.name,
+                value: item.name,
+                code: item.code,
+              };
+              level2Options.push(level2Info);
+            });
+            let selectedLevel2 = level2Options.filter((level3: any) => level3.text === data.billinggeolevel2);
+            geoLocationInfo.geolevel2 = selectedLevel2[0]?.code;
+            geolevel2 = data.billinggeolevel2;
+            this.setState({ level2Options: level2Options });
+          }
+          if ("billinggeolevel3" in data) {
+            geolevel3 = data.billinggeolevel3;
+            let filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === data.billinggeolevel1);
+            let level2List = filteredLevel2[0]?.geolevel2.filter(
+              (level2Info: any) => level2Info.name === data.billinggeolevel2
+            );
+            level2List &&
+              level2List[0]?.geolevel3?.forEach((item: any) => {
+                let level2Info = {
+                  text: item.name,
+                  value: item.name,
+                  code: item.code,
+                };
+                level3Options.push(level2Info);
+              });
+            let selectedLevel3 = level3Options.filter((level3Info: any) => level3Info.text === geolevel3);
+            geoLocationInfo.geolevel3 = selectedLevel3[0]?.code;
+            this.setState({ level3Options: level3Options });
+          }
+          if ("billinggeolevel4" in data) {
+            if (this.state.geographicFields[4]) {
+              level4Options = await this.getLevelFourDetails();
+              geolevel4 = data.billinggeolevel4;
+              level4Options?.forEach((level4: any) => {
+                if (level4.name === geolevel4) {
+                  geoLocationInfo.geolevel4 = level4.code;
+                }
+                level4.text = level4.name;
+                level4.value = level4.name;
+              });
+              this.setState({ level4Options: level4Options });
+            }
+          }
+          if ("billinggeolevel5" in data) {
+            if (this.state.geographicFields[5]) {
+              geolevel5 = data.billinggeolevel5;
+              level5Options = await this.getLevelFiveDetails();
+              if (level5Options?.length) {
+                level5Options?.forEach((level5: any) => {
+                  if (level5.name === geolevel5) {
+                    geoLocationInfo.geolevel5 = level5.code;
+                  }
+                  level5.text = level5.name;
+                  level5.value = level5.name;
+                });
+              }
+              this.setState({ level5Options: level5Options });
+            }
+            this.state.geographicFields.forEach((list: any, i: number) => {
+              setFormArray.push({
+                name: list,
+                placeHolder: true,
+                value:
+                  list === "geolevel0"
+                    ? this.getStoreData.country
+                    : list === "geolevel1"
+                    ? geolevel1
+                    : list === "geolevel2"
+                    ? geolevel2
+                    : list === "geolevel3"
+                    ? geolevel3
+                    : list === "geolevel4"
+                    ? geolevel4
+                    : list === "geolevel5"
+                    ? geolevel5
+                    : "",
+                options:
+                  list === "geolevel0"
+                    ? this.state.countryList
+                    : list === "geolevel0"
+                    ? this.getStoreData.country
+                    : list === "geolevel1"
+                    ? level1Options
+                    : list === "geolevel2"
+                    ? level2Options
+                    : list === "geolevel3"
+                    ? level3Options
+                    : list === "geolevel4"
+                    ? level4Options
+                    : list === "geolevel5"
+                    ? level5Options
+                    : "",
+                error: "",
+              });
+            });
+            this.setState({
+              withHolding: setFormArray,
+            });
+          }
+        }
+      }
+    } else {
+      let setFormArray: any = [];
+      this.state.geographicFields.forEach((list: any, i: number) => {
+        setFormArray.push({
+          name: list,
+          placeHolder: true,
+          value: list === "geolevel0" ? this.getStoreData.country : "",
+          options: list === "geolevel0" ? this.state.countryList : list === "geolevel1" ? level1Datas : "",
+          error: "",
+        });
+      });
+      this.setState({ dynamicFields: setFormArray, withHolding: setFormArray });
+    }
+  };
+
+  getOptionLists = async (cron: any, type: any, value: any, index: any) => {
+    let geolevel1List = this.props.geoLevel1List;
+    if (geolevel1List.length) {
+      geolevel1List.forEach((level1: any) => {
+        level1.text = level1.name;
+        level1.value = level1.name;
+      });
+      this.state.dynamicFields.forEach((list: any, index: number) => {
+        if (type === list.name) {
+          if (list.value === "") {
+            let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+            list.error = `Please select the ${
+              nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+            }`;
+            // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          } else {
+            list.error = "";
+          }
+        }
+        this.setState({ isRendered: true });
+      });
+      this.state.withHolding.forEach((list: any, index: number) => {
+        if (type === list.name) {
+          if (list.value === "") {
+            let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+            list.error = `Please select the ${
+              nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+            }`;
+            // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          } else {
+            list.error = "";
+          }
+        }
+        this.setState({ isRendered: true });
+      });
+      let currentStep = this.state.currentStep;
+      this.setState({ level1Options: geolevel1List });
+      let dynamicFieldVal = JSON.parse(JSON.stringify(this.state.dynamicFields));
+      let withHoldingVal = JSON.parse(JSON.stringify(this.state.withHolding));
+      dynamicFieldVal.forEach((list: any, fieldIndex: number) => {
+        if (fieldIndex > index) {
+          list.value = "";
+          list.options = "";
+        }
+      });
+      withHoldingVal.forEach((list: any, fieldIndex: number) => {
+        if (fieldIndex > index) {
+          list.value = "";
+          list.options = "";
+        }
+      });
+      if (type === "geolevel1") {
+        let filteredLevel1 = geolevel1List?.filter((level1: any) => level1.name === value);
+        let level2Options: any = [];
+
+        filteredLevel1[0]?.geolevel2.forEach((item: any) => {
+          let level1Info = {
+            text: item.name,
+            value: item.name,
+            code: item.code,
+          };
+          level2Options.push(level1Info);
+        });
+        if (this.state.currentStep === 2) {
+          dynamicFieldVal[index + 1].options = level2Options;
+          dynamicFieldVal[index].value = value;
+          dynamicFieldVal[index + 1].value = "";
+          this.setState({ dynamicFields: dynamicFieldVal });
+        } else if (this.state.currentStep === 3) {
+          withHoldingVal[index + 1].options = level2Options;
+          withHoldingVal[index].value = value;
+          withHoldingVal[index + 1].value = "";
+          this.setState({
+            withHolding: withHoldingVal,
+            withHoldingSelected: true,
+          });
+        }
+      } else if (type === "geolevel2") {
+        let filteredLevel2: any = [];
+        if (currentStep === 2) {
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === dynamicFieldVal[1].value);
+        }
+        if (currentStep === 3) {
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === withHoldingVal[1].value);
+        }
+        let level2List = filteredLevel2[0]?.geolevel2.filter((level2Info: any) => level2Info.name === value);
+        let geolevel3: any = [];
+        level2List[0]?.geolevel3?.forEach((item: any) => {
+          let level3Info = {
+            text: item.name,
+            value: item.name,
+            code: item.code,
+          };
+          geolevel3.push(level3Info);
+        });
+        if (this.state.currentStep === 2) {
+          dynamicFieldVal[index + 1].options = geolevel3;
+          dynamicFieldVal[index].value = value;
+          dynamicFieldVal[index + 1].value = "";
+          this.setState({ dynamicFields: dynamicFieldVal });
+        } else if (this.state.currentStep === 3) {
+          withHoldingVal[index + 1].options = geolevel3;
+          withHoldingVal[index].value = value;
+          withHoldingVal[index + 1].value = "";
+          this.setState({ withHolding: withHoldingVal });
+        }
+      } else if (type === "geolevel3") {
+        let filteredLevel2: any = [];
+        if (currentStep === 2) {
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === dynamicFieldVal[1].value);
+          filteredLevel2[0]?.geolevel2.filter((level2Info: any) => level2Info.name === dynamicFieldVal[2].value);
+          dynamicFieldVal[1]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[1].value === option.text) {
+              return (geoLocationInfo.geolevel1 = option.code);
+            }
+          });
+          dynamicFieldVal[2]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[2].value === option.text) {
+              return (geoLocationInfo.geolevel2 = option.code);
+            }
+          });
+          dynamicFieldVal[3]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[3].value === option.text) {
+              return (geoLocationInfo.geolevel3 = option.code);
+            }
+          });
+          if (this.state.geographicFields[4]) {
+            levelFour = await this.getLevelFourDetails();
+            if (levelFour.length) {
+              levelFour.forEach((item: any) => {
+                item.text = item.name;
+                item.value = item.name;
+              });
+              dynamicFieldVal[index + 1].options = levelFour;
+              dynamicFieldVal[index + 1].value = "";
+            }
+          }
+          dynamicFieldVal[index].value = value;
+          this.setState({ dynamicFields: dynamicFieldVal });
+        }
+        if (currentStep === 3) {
+          filteredLevel2 = geolevel1List?.filter((level1: any) => level1.name === withHoldingVal[1].value);
+          filteredLevel2[0]?.geolevel2.filter((level2Info: any) => level2Info.name === withHoldingVal[2].value);
+          withHoldingVal[1]?.options.forEach((option: any) => {
+            if (withHoldingVal[1].value === option.text) {
+              geoLocationInfo.geolevel1 = option.code;
+            }
+          });
+          withHoldingVal[2]?.options.forEach((option: any) => {
+            if (withHoldingVal[2].value === option.text) {
+              geoLocationInfo.geolevel2 = option.code;
+            }
+          });
+          withHoldingVal[3]?.options.forEach((option: any) => {
+            if (withHoldingVal[3].value === option.text) {
+              geoLocationInfo.geolevel3 = option.code;
+            }
+          });
+          if (this.state.geographicFields[4]) {
+            levelFour = await this.getLevelFourDetails();
+            levelFour.forEach((item: any) => {
+              item.text = item.name;
+              item.value = item.name;
+            });
+            if (levelFour.length) {
+              withHoldingVal[index + 1].options = levelFour;
+              withHoldingVal[index + 1].value = "";
+            }
+          }
+          withHoldingVal[index].value = value;
+          this.setState({ withHolding: withHoldingVal });
+        }
+      } else if (type === "geolevel4") {
+        let levelFive: any = [];
+        if (this.state.currentStep === 2) {
+          dynamicFieldVal[1]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[1].value === option.text) {
+              geoLocationInfo.geolevel1 = option.code;
+            }
+          });
+          dynamicFieldVal[2]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[2].value === option.text) {
+              geoLocationInfo.geolevel2 = option.code;
+            }
+          });
+          dynamicFieldVal[3]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[3].value === option.text) {
+              geoLocationInfo.geolevel3 = option.code;
+            }
+          });
+          dynamicFieldVal[4]?.options.forEach((option: any) => {
+            if (dynamicFieldVal[4].value === option.text) {
+              geoLocationInfo.geolevel4 = option.code;
+            }
+          });
+          if (this.state.geographicFields[5]) {
+            levelFive = await this.getLevelFiveDetails();
+            if (levelFive.length) {
+              levelFive.forEach((level5Info: any) => {
+                level5Info.text = level5Info.name;
+                level5Info.value = level5Info.name;
+              });
+              dynamicFieldVal[index + 1].options = levelFive;
+              dynamicFieldVal[index + 1].value = "";
+            }
+          }
+          dynamicFieldVal[index].value = value;
+          this.setState({ dynamicFields: dynamicFieldVal });
+        } else if (this.state.currentStep === 3) {
+          withHoldingVal[1]?.options.forEach((option: any) => {
+            if (withHoldingVal[1].value === option.text) {
+              geoLocationInfo.geolevel1 = option.code;
+            }
+          });
+          withHoldingVal[2]?.options.forEach((option: any) => {
+            if (withHoldingVal[2].value === option.text) {
+              geoLocationInfo.geolevel2 = option.code;
+            }
+          });
+          withHoldingVal[3]?.options.forEach((option: any) => {
+            if (withHoldingVal[3].value === option.text) {
+              geoLocationInfo.geolevel3 = option.code;
+            }
+          });
+          withHoldingVal[4]?.options.forEach((option: any) => {
+            if (withHoldingVal[4].value === option.text) {
+              geoLocationInfo.geolevel4 = option.code;
+            }
+          });
+          if (this.state.geographicFields[5]) {
+            levelFive = await this.getLevelFiveDetails();
+            if (levelFive.length) {
+              levelFive.forEach((level5Info: any) => {
+                level5Info.text = level5Info.name;
+                level5Info.value = level5Info.name;
+              });
+              withHoldingVal[index + 1].options = levelFive;
+              withHoldingVal[index + 1].value = "";
+            }
+          }
+          withHoldingVal[index].value = value;
+          this.setState({ withHolding: withHoldingVal });
+        }
+      } else if (type === "geolevel5") {
+        if (this.state.currentStep === 2) {
+          dynamicFieldVal[index].value = value;
+          this.setState({ dynamicFields: dynamicFieldVal });
+        } else if (this.state.currentStep === 3) {
+          withHoldingVal[index].value = value;
+          this.setState({ withHolding: withHoldingVal });
+        }
+      }
+      let withHoldingdet = withHoldingVal[2]?.value !== "" ? withHoldingVal : dynamicFieldVal;
+      withHoldingdet = JSON.parse(JSON.stringify(withHoldingdet));
+      this.setState({ newWithHolding: withHoldingdet });
+    }
+    if (this.state.userroleType === "external") {
+      this.checkUnsavedData();
+    } else {
+      this.checkUnsavedDataForASA();
+    }
+  };
+
+  getLevelFourDetails = () => {
+    this.setState({ isLoader: true });
+    const { getLevelFour } = apiURL;
+    let data = {
+      geolevel0: this.getStoreData.countryCode,
+      geolevel1: geoLocationInfo.geolevel1,
+      geolevel2: geoLocationInfo.geolevel2,
+      geolevel3: geoLocationInfo.geolevel3,
+    };
+    let levelFour: any = [];
+    return new Promise((resolve, reject) => {
+      invokeGetAuthService(getLevelFour, data)
+        .then((response: any) => {
+          levelFour = response.body?.geolevel4 && response.body.geolevel4;
+          // levelFour = (levelFour.length !== 0) ? response.body.geolevel4 : [],
+          this.setState({ isLoader: false });
+          resolve(levelFour);
+        })
+        .catch((error: any) => {
+          this.setState({ isLoader: false });
+          reject(error);
+          let message = error.message;
+          Alert("warning", message);
+        });
+    });
+  };
+
+  getLevelFiveDetails = () => {
+    this.setState({ isLoader: true });
+    const { getLevelFive } = apiURL;
+    let data = {
+      geolevel0: this.getStoreData.countryCode,
+      geolevel1: geoLocationInfo.geolevel1,
+      geolevel2: geoLocationInfo.geolevel2,
+      geolevel3: geoLocationInfo.geolevel3,
+      geolevel4: geoLocationInfo.geolevel4,
+    };
+    let levelFive: any = [];
+    return new Promise((resolve, reject) => {
+      invokeGetAuthService(getLevelFive, data)
+        .then((response: any) => {
+          levelFive = response.body?.geolevel5 && response.body.geolevel5;
+          // levelFive = Object.keys(response.body.geolevel5).length !== 0 ? response.body.geolevel5 : [],
+          this.setState({ isLoader: false });
+          resolve(levelFive);
+        })
+        .catch((error: any) => {
+          this.setState({ isLoader: false });
+          reject(error);
+          let message = error.message;
+          Alert("warning", message);
+        });
+    });
   };
 
   handleClick(clickType: any, e: any) {
     let formValid = true;
     if (clickType === "personalNext") {
-      formValid = this.checkValidation(e);
+      if (this.state.userroleType === "external") {
+        formValid = this.externalUsersValidation();
+      } else {
+        formValid = this.internalUsersValidation();
+      }
     } else if (clickType === "geographicNext") {
-      formValid = this.geographicValidation();
+      formValid = this.externalUsersValidation();
       if (formValid) {
-        if (this.state.accInfo) {
-          this.setState({ withHolding: this.state.dynamicFields });
+        if (!this.state.isEditPage && !this.state.accInfo && !this.state.withHoldingSelected) {
+          let level1Options: any = [];
+          let setFormArray: any = [];
+          this.props.geoLevel1List.forEach((item: any) => {
+            let level1Info = {
+              text: item.name,
+              code: item.code,
+              value: item.name,
+            };
+            level1Options.push(level1Info);
+          });
+          this.state.geographicFields.forEach((list: any, i: number) => {
+            setFormArray.push({
+              name: list,
+              placeHolder: true,
+              value: list === "geolevel0" ? this.getStoreData.country : "",
+              options: list === "geolevel0" ? this.state.countryList : list === "geolevel1" ? level1Options : "",
+              error: "",
+            });
+          });
+          this.setState({ withHolding: setFormArray });
+        }
+
+        if (this.state.isEditPage && this.state.accInfo) {
+          let dynamicFieldsdet = this.state.dynamicFields;
+          this.setState({ withHolding: dynamicFieldsdet });
         }
       }
     } else if (clickType === "createUser") {
-      formValid = this.geographicValidation();
+      if (this.state.userroleType === "external") {
+        formValid = this.externalUsersValidation();
+      } else {
+        formValid = this.internalUsersValidation();
+      }
+      if (formValid) {
+        this.setState({ shouldBlockNavigation: false });
+      }
     }
+
     const { currentStep } = this.state;
     let newStep = currentStep;
-    if (clickType == "personalNext" || clickType == "shippingNext" || clickType == "geographicNext") {
+    if (clickType === "personalNext" || clickType === "geographicNext") {
       newStep = newStep + 1;
     } else {
       newStep = newStep - 1;
     }
-    formValid = true;
 
     if (newStep > 0 && newStep <= this.state.stepsArray.length) {
       if (formValid) {
@@ -372,409 +1125,794 @@ class CreateUser extends Component<any, any> {
         });
       }
     }
+
     if (clickType === "createUser") {
       if (formValid) {
         // this.setState({
         //     allUserDatas: [...this.state.allUserDatas, this.state.userData, this.state.geographicalValues, this.state.withHoldingValues]
         // });
-        this.submitUserDatas();
-      } else {
-        alert("fail");
+        if (this.state.userroleType === "external") {
+          this.submitretailerUserDatas();
+        } else if (this.state.userroleType === "internal") {
+          this.submitasaUserDatas();
+        }
       }
     }
   }
-  submitUserDatas = () => {
-    const { retailerCreation, updateUser} = apiURL;
-    let stepper2: any = {};
-    this.state.dynamicFields.map((list: any, i: number) => {
-      stepper2[list.name] = list.value;
+
+  submitretailerUserDatas = () => {
+    this.setState({
+      isLoader: true,
     });
-    let stepper3: any = {};
-    this.state.withHolding.map((list: any, i: number) => {
-      stepper3[list.name] = list.value;
+    const { retailerCreation, updateUser } = apiURL;
+    let geoFields: any = {};
+    let shippingFields: any = {};
+    this.state.dynamicFields.forEach((list: any, i: number) => {
+      geoFields[list.name] = list.value;
     });
+    this.state.withHolding.forEach((list: any, i: number) => {
+      shippingFields[list.name] = list.value;
+    });
+    let newUserList = this.state.userData;
+    if (this.state.isStaff) {
+      newUserList.staffdetails.forEach((item: any, index: number) => {
+        delete item.errObj;
+        item.firstname = item.firstname.trim();
+        item.lastname = item.lastname.trim();
+      });
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          staffdetails: newUserList.staffdetails,
+        },
+      }));
+    } else {
+      newUserList.staffdetails = [];
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          staffdetails: newUserList.staffdetails,
+        },
+      }));
+    }
     this.setState({ isLoader: true });
-    let personalData = this.state.userData;
-    const data = {
-      effectivefrom: personalData["fromdate"],
-      expirydate: personalData["expirydate"],
-      username: personalData["username"],
-      firstname: personalData["firstname"],
-      lastname: personalData["lastname"],
-      accountname: personalData["accountname"],
-      ownername: personalData["accountname"],
-      mobilenumber: personalData["mobilenumber"],
-      email: personalData["email"],
-      address: personalData["address"],
-      postalcode: personalData["postalcode"],
-      usertypename : (personalData["role"] == 'Area Sales Agent') ? 'THIRD PARTY' : 'CHANNEL PARTNER',
-      role: personalData["role"],
-      region: stepper2["region"],
-      district: stepper2["district"],
-      epa: stepper2["epa"],
-      village: stepper2["village"],
-      taxid: personalData["taxid"],
-      whtownername: personalData["whtownername"],
-      whtaccountname: personalData["whtaccountname"],
-      whtaddress: personalData["whtaddress"],
-      whtpostalcode: this.state.accInfo
-        ? personalData["postalcode"]
-        : personalData["whtpostalcode"],
-      whtregion: stepper3["region"],
-      whtdistrict: stepper3["district"],
-      whtepa: stepper3["epa"],
-      whtvillage: stepper3["village"],
-      status: personalData['isDeclineUser'] ? 'Declined' : personalData["activateUser"] ? "Active" : "Inactive",
-    };
-    const userDetails = this.state.isValidatePage ? { 
-      isedit : false,
-      lastupdatedby : personalData['lastupdatedby'],
-      lastupdateddate : personalData['lastupdateddate'],
-    } : ''
-    console.log("all", data);
-    const url = this.state.isValidatePage ? updateUser : retailerCreation;
-    const service = this.state.isValidatePage ? invokePostAuthService : invokePostService;
+    let userData = this.state.userData;
+    // userData.staffdetails.forEach((staffInfo:any) => {
+    //   staffInfo.active = staffInfo.active ? 'ACTIVE' : 'INACTIVE'
+    // })
+
+    let data = {};
+    if (this.state.isEditPage) {
+      data = {
+        countrycode: this.getStoreData.countryCode,
+        // ownerfirstname: userData.ownerRows[0].firstname,
+        // ownerlastname: userData.ownerRows[0].lastname,
+        ownerfirstname: userData.ownerRows[0].firstname.trim(),
+        ownerlastname: userData.ownerRows[0].lastname.trim(),
+        ownerphonenumber: userData.ownerRows[0].mobilenumber,
+        owneremail: userData.ownerRows[0].email,
+        locale: "English (Malawi)",
+        usertype: userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+        rolename: userData.rolename,
+        username: userData.username,
+        accounttype: userData.rolename,
+        userstatus: userData.isDeclineUser ? "DECLINED" : userData.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
+        storewithmultiuser: this.state.isStaff ? true : false,
+        iscreatedfrommobile: userData.iscreatedfrommobile,
+        whtaccountname: userData?.whtaccountname.trim(),
+        taxid: userData.taxid,
+        // whtownername: this.state.accInfo
+        //   ? userData.ownerRows[0].firstname +
+        //     " " +
+        //     userData.ownerRows[0].lastname
+        //   : userData.whtownername,
+
+        whtownername: this.state.accInfo
+          ? userData.ownerRows[0].firstname.trim() + " " + userData.ownerRows[0].lastname.trim()
+          : userData.whtownername.trim(),
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
+        deliverystreet: userData.deliverystreet,
+        deliveryzipcode: userData.deliveryzipcode,
+        billinggeolevel0: this.getStoreData.countryCode,
+        billinggeolevel1: shippingFields.geolevel1,
+        billinggeolevel2: shippingFields.geolevel2,
+        billinggeolevel3: shippingFields.geolevel3,
+        billinggeolevel4: shippingFields.geolevel4,
+        billinggeolevel5: shippingFields.geolevel5,
+        billingstreet: this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
+        billingzipcode: this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
+        staffdetails: [...this.state.userData.staffdetails],
+      };
+    } else {
+      data = {
+        countrycode: this.getStoreData.countryCode,
+        ownerfirstname: userData.ownerRows[0].firstname.trim(),
+        ownerlastname: userData.ownerRows[0].lastname.trim(),
+        ownerphonenumber: userData.ownerRows[0].mobilenumber,
+        owneremail: userData.ownerRows[0].email,
+        locale: "English (Malawi)",
+        usertype: userData.rolename === "Area Sales Agent" ? "INTERNAL" : "EXTERNAL",
+        rolename: userData.rolename,
+        accounttype: userData.rolename,
+        userstatus: userData.isDeclineUser ? "DECLINED" : userData.ownerRows[0].active ? "ACTIVE" : "INACTIVE",
+        storewithmultiuser: this.state.isStaff ? true : false,
+        iscreatedfrommobile: false,
+        whtaccountname: userData.whtaccountname.trim(),
+        taxid: userData.taxid,
+        whtownername: this.state.accInfo
+          ? userData.ownerRows[0].firstname.trim() + " " + userData.ownerRows[0].lastname.trim()
+          : userData.whtownername.trim(),
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
+        deliverystreet: userData.deliverystreet,
+        deliveryzipcode: userData.deliveryzipcode,
+        billinggeolevel0: this.getStoreData.countryCode,
+        billinggeolevel1: shippingFields.geolevel1,
+        billinggeolevel2: shippingFields.geolevel2,
+        billinggeolevel3: shippingFields.geolevel3,
+        billinggeolevel4: shippingFields.geolevel4,
+        billinggeolevel5: shippingFields.geolevel5,
+        billingstreet: this.state.accInfo ? userData.deliverystreet : userData.billingstreet,
+        billingzipcode: this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode,
+        staffdetails: [...this.state.userData.staffdetails],
+        ismarketingperference: true,
+        isprivacydataconsent: true,
+      };
+    }
+    const userDetails = this.state.isEditPage
+      ? {
+          isedit: true,
+          lastupdatedby: this.state.username.toUpperCase(),
+          lastupdateddate: new Date().toJSON(),
+        }
+      : "";
+    const url = this.state.isEditPage ? updateUser : retailerCreation;
+    const service = this.state.isEditPage ? invokePostAuthService : invokePostService;
 
     service(url, data, userDetails)
       .then((response: any) => {
         this.setState({
           isLoader: false,
         });
-        let msg='';
-        if (this.state.isValidatePage){
-          if (personalData['isDeclineUser']) {
-            msg = 'User Declined Successfully';
+        let msg = "";
+        if (this.props.location?.page === "validate") {
+          if (userData.isDeclineUser) {
+            msg = "User Declined Successfully";
           } else {
-            msg = 'User Validated Successfully';
+            msg = "User Validated Successfully";
           }
-        }else {
-          msg = 'User Created Successfully';
+        } else if (this.props.location?.page === "edit") {
+          msg = "User Updated Successfully";
+        } else {
+          msg = "User Created Successfully";
         }
-        toastSuccess(msg);
+        // toastSuccess(msg);
+        Alert("success", msg);
+        const { setPromptMode } = this.context;
+        setPromptMode(false);
         this.props.history.push("/userList");
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
-        console.log(error, "error");
+        let message = error.message;
+        if (message === "Retailer with the same Mobilenumber exists") {
+          message = "User with same Mobilenumber already exists";
+        }
+        this.setState({ isRendered: true, currentStep: 1, shouldBlockNavigation: true }, () => {
+          // toastInfo(message);
+          Alert("warning", message);
+        });
       });
   };
-  // handlePersonalChange = (e: any) => {
-  //   let val = this.state.userData;
-  //   if (e.target.name === "activateUser") {
-  //     val[e.target.name] = e.target.checked;
-  //   } else if (e.target.name === "accInfo") {
-  //     if (!e.target.checked) {
-  //       let setFormArray: any = [];
-  //       this.state.geographicFields.map((list: any, i: number) => {
-  //         setFormArray.push({
-  //           name: list,
-  //           placeHolder: true,
-  //           value: list === "country" ? getStoreData.country : "",
-  //           options:
-  //             list === "country"
-  //               ? this.state.countryList
-  //               : i == 1
-  //               ? this.state.hierarchyList
-  //               : "",
-  //           error: "",
-  //         });
-  //       });
-  //       this.setState({ withHolding: setFormArray });
-  //     } else {
-  //       this.setState({ accInfo: e.target.checked });
-  //       this.setState({ withHolding: this.state.dynamicFields });
-  //     }
-  //     this.setState({ accInfo: e.target.checked });
-  //   } else {
-  //     val[e.target.name] = e.target.value;
-  //   }
-  //   // if (e.target.name === 'role') {
-  //   //     let steps = this.state.stepsArray;
-  //   //     this.setState({stepsArray : steps });
-  //   //     if(e.target.value !== 'salesagent' ) {
-  //   //         steps.splice(2,1,'With-Holding Tax');
-  //   //         this.setState({stepsArray : steps });
-  //   //     } else {
-  //   //         steps.splice(2,1,'User Mappings');
-  //   //         this.setState({stepsArray : steps});
-  //   //     }
-  //   // }
-  //   let dateVal = this.dateValidation(e);
-  //   if (dateVal) {
-  //     this.setState({ userData: val });
-  //   }
-  // };
 
-  dateValidation = (e: any) => {
-    let dateValid = true;
-    let usersState = this.state.userData;
-    if (e.target.name === "fromdate") {
-      if (e.target.value < new Date().toISOString().substr(0, 10)) {
-        this.setState({
-          fromDateErr: "From Date should be greater than todays date",
-        });
-        dateValid = false;
-      } else if (e.target.value > usersState.expirydate) {
-        this.setState({
-          fromDateErr: "From Date should be lesser than To date",
-        });
-        dateValid = false;
-      } else if (e.target.value < usersState.expirydate) {
-        this.setState({ toDateErr: "", fromDateErr: "" });
-      } else {
-        this.setState({ fromDateErr: "" });
-      }
+  submitasaUserDatas = () => {
+    this.setState({
+      isLoader: true,
+    });
+    const { asaCreation, editasauser } = apiURL;
+    const asaPersonalData = this.state.asaDatas;
+    let geoFields: any = {};
+    this.state.dynamicFields.forEach((list: any, i: number) => {
+      geoFields[list.name] = list.value;
+    });
+    let userData = this.state.userData;
+    let partners = this.state.partnerDatas;
+    let data = {};
+    if (!this.state.isEditPage) {
+      let userMappings: any = [];
+      partners.forEach((item: any, index: number) => {
+        let mappings: any = {};
+        mappings["channelpartnerid"] = item.channelpartnerid;
+        mappings["isactive"] = true;
+        userMappings.push(mappings);
+      });
+      data = {
+        countrycode: this.getStoreData.countryCode,
+        firstname: asaPersonalData.firstname,
+        lastname: asaPersonalData.lastname,
+        phonenumber: asaPersonalData.mobilenumber,
+        emailid: asaPersonalData.email,
+        locale: "English (Malawi)",
+        usertype: "EXTERNAL",
+        rolename: "ASA",
+        userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
+        street: userData.deliverystreet,
+        zipcode: userData.deliveryzipcode,
+        iscreatedfrommobile: false,
+        usermapping: userMappings,
+      };
+    } else {
+      let userMappings = this.state.partnerDatas;
+      userMappings.forEach((item: any, index: number) => {
+        item["isactive"] = true;
+        delete item.errObj;
+      });
+
+      data = {
+        countrycode: this.getStoreData.countryCode,
+        username: this.props.location.state?.userFields.username,
+        firstname: asaPersonalData.firstname,
+        lastname: asaPersonalData.lastname,
+        phonenumber: asaPersonalData.mobilenumber,
+        emailid: asaPersonalData.email,
+        userstatus: asaPersonalData.active ? "ACTIVE" : "INACTIVE",
+        deliverygeolevel0: this.getStoreData.countryCode,
+        deliverygeolevel1: geoFields.geolevel1,
+        deliverygeolevel2: geoFields.geolevel2,
+        deliverygeolevel3: geoFields.geolevel3,
+        deliverygeolevel4: geoFields.geolevel4,
+        deliverygeolevel5: geoFields.geolevel5,
+        street: userData.deliverystreet,
+        zipcode: userData.deliveryzipcode,
+        usermapping: userMappings,
+      };
     }
-    if (e.target.name === "expirydate") {
-      if (e.target.value < new Date().toISOString().substr(0, 10)) {
+    const url = this.state.isEditPage ? editasauser : asaCreation;
+    const userDetails = this.state.isEditPage
+      ? {
+          lastupdatedby: this.state.username.toUpperCase(),
+          lastupdateddate: new Date().toJSON(),
+        }
+      : "";
+    invokePostAuthService(url, data, userDetails)
+      .then((response: any) => {
         this.setState({
-          toDateErr: "To Date should be greater than todays date",
+          isLoader: false,
         });
-        dateValid = false;
-      } else if (e.target.value < usersState.fromdate) {
-        this.setState({
-          toDateErr: "To Date should be greater than From date",
+        let msg = "";
+        if (this.props.location?.page === "asaedit") {
+          msg = "User Updated Successfully";
+        } else {
+          msg = "User Created Successfully";
+        }
+        // toastSuccess(msg);
+        Alert("success", msg);
+        const { setPromptMode } = this.context;
+        setPromptMode(false);
+        this.props.history.push({
+          pathname: "/userList",
+          page: "asaUser",
         });
-        dateValid = false;
-      } else if (e.target.value > usersState.fromdate) {
-        this.setState({ fromDateErr: "", toDateErr: "" });
-      } else {
-        this.setState({ toDateErr: "" });
-      }
-    }
-    return dateValid;
+      })
+      .catch((error: any) => {
+        this.setState({ isLoader: false });
+        let message = error.message;
+        if (message === "Retailer with the same Mobilenumber exists") {
+          message = "User with same Mobilenumber already exists";
+        }
+        this.setState({ isRendered: true, currentStep: 1, shouldBlockNavigation: true }, () => {
+          // toastInfo(message);
+          Alert("warning", message);
+        });
+      });
   };
 
-  checkValidation = (e: any) => {
+  externalUsersValidation() {
     let formValid = true;
     let userData = this.state.userData;
-    if (userData.role === "" || userData.role === null) {
-      this.setState({ roleErr: "Please enter the User type" });
-      formValid = false;
+    if (this.state.currentStep === 1) {
+      userData.ownerRows.forEach((userInfo: any, idx: number) => {
+        let errObj: any = {
+          firstNameErr: "",
+          lastnameErr: "",
+          emailErr: userInfo.errObj.emailErr,
+          mobilenumberErr: userInfo.errObj.mobilenumberErr,
+        };
+        errObj.firstNameErr = userInfo.firstname ? "" : "Please enter the First Name";
+        errObj.lastnameErr = userInfo.lastname ? "" : "Please enter the Last Name";
+
+        if (userInfo.mobilenumber && errObj.mobilenumberErr !== "Phone Number Exists") {
+          errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
+        } else {
+          errObj.mobilenumberErr =
+            errObj.mobilenumberErr === "Phone Number Exists" ? errObj.mobilenumberErr : "Please enter the Mobile Number";
+        }
+
+        userData.ownerRows[idx].errObj = errObj;
+        if (
+          errObj.firstNameErr !== "" ||
+          errObj.lastnameErr !== "" ||
+          errObj.mobilenumberErr !== "" ||
+          errObj.emailErr !== ""
+        ) {
+          formValid = false;
+        }
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            ownerRows: userData.ownerRows,
+          },
+        }));
+      });
+
+      userData.staffdetails?.forEach((userInfo: any, idx: number) => {
+        let errObj: any = {
+          firstNameErr: "",
+          lastnameErr: "",
+          emailErr: userInfo.errObj.emailErr,
+          mobilenumberErr: userInfo.errObj.mobilenumberErr,
+          isPhoneEdit: userInfo.errObj.isPhoneEdit ? true : false,
+        };
+        errObj.firstNameErr = userInfo.firstname ? "" : "Please enter the First Name";
+        errObj.lastnameErr = userInfo.lastname ? "" : "Please enter the Last Name";
+
+        if (userInfo.mobilenumber && errObj.mobilenumberErr !== "Phone Number Exists") {
+          errObj.mobilenumberErr = userInfo.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
+        } else {
+          errObj.mobilenumberErr =
+            errObj.mobilenumberErr === "Phone Number Exists" ? errObj.mobilenumberErr : "Please enter the Mobile Number";
+        }
+        userData.staffdetails[idx].errObj = errObj;
+        if (
+          errObj.firstNameErr !== "" ||
+          errObj.lastnameErr !== "" ||
+          errObj.mobilenumberErr !== "" ||
+          errObj.emailErr !== ""
+        ) {
+          formValid = false;
+        }
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            staffdetails: userData.staffdetails,
+          },
+        }));
+      });
+    } else if (this.state.currentStep === 2) {
+      this.state.dynamicFields.forEach((list: any, index: number) => {
+        if (list.value === "") {
+          let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          list.error = `Please select the ${
+            nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+          }`;
+          // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          formValid = false;
+        } else {
+          list.error = "";
+        }
+        this.setState({ isRendered: true });
+      });
+      this.setState({ userData: userData });
     } else {
-      this.setState({ roleErr: "" });
+      let accInfo = this.state.accInfo;
+      let whtaccountname = userData.whtaccountname ? "" : "Please enter Store Name";
+
+      if (whtaccountname !== "") {
+        formValid = false;
+      }
+      this.setState({
+        accountnameErr: whtaccountname,
+      });
+
+      if (!accInfo) {
+        let whtownername = userData.whtownername ? "" : "Please enter owner name";
+        if (whtaccountname !== "" || whtownername !== "") {
+          formValid = false;
+        }
+        this.setState({
+          ownernameErr: whtownername,
+        });
+      } else {
+        this.setState({
+          ownernameErr: "",
+        });
+      }
+      this.state.withHolding.forEach((list: any, index: number) => {
+        if (list.value === "") {
+          let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          list.error = `Please select the ${
+            nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
+          }`;
+          // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+          formValid = false;
+        } else {
+          list.error = "";
+        }
+        this.setState({ isRendered: true });
+      });
     }
-    if (userData.firstname === "" || userData.firstname === null) {
-      this.setState({ firstNameErr: "Please enter the First Name" });
-      formValid = false;
-    } else {
-      this.setState({ firstNameErr: "" });
-    }
-    if (userData.lastname === "" || userData.lastname === null) {
-      this.setState({ lastNameErr: "Please enter the Last Name" });
-      formValid = false;
-    } else {
-      this.setState({ lastNameErr: "" });
-    }
-    if (userData.accountname === "" || userData.accountname === null) {
-      this.setState({ accountNameErr: "Please enter the Owner name" });
-      formValid = false;
-    } else {
-      this.setState({ accountNameErr: "" });
-    }
-    if (userData.mobilenumber === "" || userData.mobilenumber === null) {
-      this.setState({ phoneErr: "Please enter the phone" });
-      formValid = false;
-    } else {
-      // let isNumber = this.isNumberKey(e);
-      // if( isNumber ) {
-      //   this.setState({ phoneErr: "Please enter Number" });
-      //   formValid = false;
-      // } else {
-        this.setState({ phoneErr: "" });
-      // }
-    }
-    if (userData.email === "" || userData.email === null) {
-      this.setState({ emailErr: "Please enter the Email" });
-      formValid = false;
-    } else {
-      // let emailValid = this.validateEmail(userData.email);
-      // if(!emailValid){
-      //   formValid = false;
-      // } else {
-        this.setState({ emailErr: "" });
-      // }
+    return formValid;
+  }
+
+  internalUsersValidation = () => {
+    let formValid = true;
+    if (this.state.currentStep === 1) {
+      let asaData = this.state.asaDatas;
+      const { asafirstnameErr, asalastnameErr } = this.state;
+      let asamobilenumberErr = this.state.asamobilenumberErr;
+      let fullNameErr = asaData.firstname === "" ? "Please Enter the First Name" : "";
+      let lastNameErr = asaData.lastname === "" ? "Please Enter the Last Name" : "";
+      if (asaData.mobilenumber && asamobilenumberErr !== "Phone Number Exists") {
+        asamobilenumberErr = asaData.mobilenumber.length === phoneLength ? "" : `Please enter ${phoneLength} Digit`;
+      } else {
+        asamobilenumberErr =
+          asamobilenumberErr === "Phone Number Exists" ? asamobilenumberErr : "Please enter the Mobile Number";
+      }
+      this.setState({ asafirstnameErr: fullNameErr, asalastnameErr: lastNameErr, asamobilenumberErr: asamobilenumberErr });
+
+      if (asafirstnameErr !== "" || asalastnameErr !== "" || asamobilenumberErr !== "") {
+        formValid = false;
+      }
+    } else if (this.state.currentStep === 3) {
+      let datas = this.state.partnerDatas;
+      datas.forEach((userInfo: any, idx: number) => {
+        let errorObj: any = {
+          typeErr: "",
+          locationErr: "",
+          nameErr: "",
+        };
+
+        errorObj.typeErr = userInfo.partnertype ? "" : "Please enter Type";
+        errorObj.locationErr = userInfo.geolevel1 ? "" : "Please enter Location";
+        errorObj.nameErr = userInfo.channelpartnerid ? "" : "Please enter Partner name";
+
+        userInfo.errObj = errorObj;
+        if (errorObj.typeErr !== "" || errorObj.locationErr !== "" || errorObj.nameErr !== "") {
+          formValid = false;
+        }
+        this.setState({ partnerDatas: datas });
+      });
     }
     return formValid;
   };
-  
-  geographicValidation = () => {
-    let userData = this.state.userData;
-    let currentStep = this.state.currentStep;
-    let geographicFormValid = true;
-    if (userData.postalcode === "" || userData.postalcode === null) {
-      this.setState({ postalCodeErr: "Please enter Postal Code" });
-      geographicFormValid = false;
-    } else {
-      this.setState({ postalCodeErr: "" });
-    }
-    if (currentStep == 4) {
-      if (userData.taxid === "" || userData.taxid === null) {
-        this.setState({ taxIdErr: "Please enter Tax Id" });
-        geographicFormValid = false;
+
+  validateEmail = (value: any, idx: number, type: string) => {
+    let ownerRows = [...this.state.userData.ownerRows];
+    let staffdetails = [...this.state.userData.staffdetails];
+
+    if (type === "staff") {
+      if (patterns.emailFormat.test(value)) {
+        staffdetails[idx].errObj.emailErr = "";
+      } else if (value === "") {
+        ownerRows[idx].errObj.emailErr = "";
       } else {
-        this.setState({ taxIdErr: "" });
+        staffdetails[idx].errObj.emailErr = "Please enter a valid email";
       }
     }
-    let fields =
-      currentStep == 2 ? this.state.dynamicFields : this.state.withHolding;
-    fields.map((list: any) => {
-      if (list.value === "") {
-        list.error = "Please enter the " + list.name;
-        geographicFormValid = false;
+    if (type === "owner") {
+      if (patterns.emailFormat.test(value)) {
+        ownerRows[idx].errObj.emailErr = "";
+      } else if (value === "") {
+        ownerRows[idx].errObj.emailErr = "";
       } else {
-        list.error = "";
+        ownerRows[idx].errObj.emailErr = "Please enter a valid email";
       }
-      this.setState({ isRendered: true });
-    });
-    return geographicFormValid;
+    }
+    this.setState((prevState: any) => ({
+      userData: {
+        ...prevState.userData,
+        ownerRows: ownerRows,
+        staffdetails: staffdetails,
+      },
+    }));
   };
-
-  validateEmail = (e: any) => {
-    let emailField = e.target.value;
-    this.setState({ emailErr: "" });
-    let valid = true;
-    if ( emailField === "" || emailField === null ) {
-      this.setState({ emailErr: "Please enter the Email" });
-      valid = false;
-    } else {
-      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(emailField)){
-        this.setState({ emailErr: "" });
-        valid = true;
-      } else {
-        this.setState({ emailErr: "Please enter the Valid Email" });
-        valid = false;
-      }
-    }
-    return valid;
-  }
-
-  isNumberKey = (evt: any) => {
-    this.setState({ phoneErr: "" });
-    let isValid = true;
-    if ( !evt.target.value ) {
-      this.setState({ phoneErr: "Please enter Mobile number" });
-      isValid = false;
-    } else {
-      let pattern = new RegExp(/^[0-9\b]+$/);
-      if ( !pattern.test(evt.target.value) ){
-        this.setState({ phoneErr: "Please enter Number Format" });
-        isValid = false;
-      } else{
-          this.setState({ phoneErr: "" });
-          isValid = true;
-      }
-    }
-    return isValid;
-  }
 
   reset = () => {
     let currentStep = this.state.currentStep;
+    let userData = this.state.userData;
     if (currentStep === 1) {
-      this.setState({
-        userData: {
-          username: "",
-          firstname: "",
-          lastname: "",
-          accountname: "",
-          role: "",
-          ownername: "",
-          email: "",
-          mobilenumber: "",
-        },
-      });
+      if (this.state.userroleType === "external") {
+        userData.ownerRows.forEach((item: any, index: number) => {
+          item.firstname = "";
+          item.lastname = "";
+          if (this.state.isEditPage === false) item.mobilenumber = "";
+          item.email = "";
+          item.errObj = {
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: "",
+            emailErr: "",
+          };
+        });
+        userData.staffdetails.forEach((item: any, index: number) => {
+          item.firstname = "";
+          item.lastname = "";
+          if (this.state.isEditPage === false) item.mobilenumber = "";
+          item.email = "";
+          item.errObj = {
+            firstnameErr: "",
+            lastnameErr: "",
+            mobilenumberErr: "",
+            emailErr: "",
+          };
+        });
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            ownerRows: userData.ownerRows,
+            staffdetails: userData.staffdetails,
+          },
+        }));
+      } else if (this.state.userroleType === "internal") {
+        this.setState(
+          {
+            asaDatas: {
+              firstname: "",
+              lastname: "",
+              mobilenumber: "",
+              email: "",
+              active: true,
+            },
+            asafirstnameErr: "",
+            asalastnameErr: "",
+            asamobilenumberErr: "",
+            asaemailErr: "",
+          },
+          () => {
+            this.checkUnsavedDataForASA();
+          }
+        );
+      }
     } else if (currentStep === 2) {
       let data: any = this.state.dynamicFields;
-      data.map((list: any) => {
-        list.value = "";
+      data.forEach((list: any) => {
+        if (list.name !== "geolevel0") {
+          list.value = "";
+          if (list.name !== "geolevel1") {
+            list.options = "";
+          }
+          list.error = "";
+        }
       });
-
-      this.setState({
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          deliverystreet: "",
+          deliveryzipcode: "",
+        },
         dynamicFields: data,
-        userData: {
-          postalcode: "",
-          address: "",
-        },
-      });
-    } else if (currentStep === 3) {
-      let data: any = this.state.withHolding;
-      data.map((list: any) => {
-        list.value = "";
-      });
-      this.setState({
-        userData: {
-          whtpostalcode: "",
-          whtaddress: "",
-        },
-      });
+      }));
+    } else {
+      if (this.state.userroleType === "external") {
+        if (!this.state.accInfo) {
+          let data: any = this.state.withHolding;
+          data?.forEach((list: any) => {
+            if (list.name !== "geolevel0") {
+              list.value = "";
+              list.error = "";
+              if (list.name !== "geolevel1") {
+                list.options = "";
+              }
+            }
+          });
+          this.setState({ withHolding: data });
+        }
+        this.setState((prevState: any) => ({
+          userData: {
+            ...prevState.userData,
+            taxid: "",
+            whtownername: "",
+            whtaccountname: "",
+            billingstreet: "",
+            billingzipcode: "",
+          },
+          accountnameErr: "",
+          ownernameErr: "",
+        }));
+      } else if (this.state.userroleType === "internal") {
+        let datas = this.state.partnerDatas;
+        datas.forEach((item: any, idx: number) => {
+          item.partnertype = "";
+          item.geolevel1 = "";
+          item.channelpartnerfullname = "";
+          item.channelpartnerid = "";
+          item.errObj = {
+            typeErr: "",
+            locationErr: "",
+            nameErr: "",
+          };
+        });
+        this.setState({
+          partnerDatas: datas,
+          asafirstnameErr: "",
+          asalastnameErr: "",
+          asamobilenumberErr: "",
+          asaemailErr: "",
+        });
+      }
+    }
+    if (this.state.userroleType === "external") {
+      this.checkUnsavedData();
+    } else {
+      if (currentStep !== 1) {
+        this.checkUnsavedDataForASA();
+      }
     }
   };
 
   declineUser = () => {
     let userData = this.state.userData;
-    userData['isDeclineUser'] = true;
-    this.setState({ userData : userData});
-    this.submitUserDatas();
-  }
-
-  handlePersonalChange = (e: any) => {
-    let val = this.state.userData;
-    if (e.target.name === "activateUser") {
-      val[e.target.name] = e.target.checked;
-    } else if (e.target.name === "accInfo") {
-      if (!e.target.checked) {
-        let setFormArray: any = [];
-        this.state.geographicFields.map((list: any, i: number) => {
-          setFormArray.push({
-            name: list,
-            placeHolder: true,
-            value: list === "country" ? getStoreData.country : "",
-            options:
-              list === "country"
-                ? this.state.countryList
-                : i == 1
-                ? this.state.hierarchyList
-                : "",
-            error: "",
-          });
-        });
-        this.setState({ withHolding: setFormArray });
-      } else {
-        this.setState({ accInfo: e.target.checked });
-        this.setState({ withHolding: this.state.dynamicFields });
-      }
-      this.setState({ accInfo: e.target.checked });
-    } else {
-      val[e.target.name] = e.target.value;
-    }
-    let dateVal = this.dateValidation(e);
-    if (dateVal) {
-      this.setState({ userData: val });
-    }
+    userData["isDeclineUser"] = true;
+    this.setState({ userData: userData, shouldBlockNavigation: false });
+    this.submitretailerUserDatas();
   };
 
-  handleChange = (idx: any, e: any , key: any) => {
+  handleChange = (idx: any, e: any, key: string, type: string, val: any) => {
+    let owners = this.state.userData.ownerRows;
+    let staffs = this.state.userData.staffdetails;
 
-    const ownerRows = [...this.state.ownerRows];
-    const staffRows = [...this.state.staffRows];
-    if( key === 'phone') {
-      // ownerRows[idx] = {
-      //   ['mobilenumber']: value
-      // };
-      // staffRows[idx] = {
-      //   ['mobilenumber']: value
-      // };
+    const isOwnerPhoneEists = owners.filter((items: any) => items.mobilenumber === val);
+    const isStaffPhoneEists = staffs.filter((items: any) => items.mobilenumber === val);
+
+    let allowners = this.state.allChannelPartners;
+    let allstaffs = _(allowners).flatMap("staffdetails").value();
+    let allthirdParty = this.state.allThirdPartyUsers;
+
+    const isRetailerOwnerPhoneEistsInDB = allowners.filter((items: any) => items.ownerphonenumber === val);
+    const isRetailerStaffPhoneEistsInDB = allstaffs.filter((items: any) => items.mobilenumber === val);
+    const isThirdPartyPhoneEistsInDB = allthirdParty.filter((items: any) => items.phonenumber === val);
+
+    if (type === "owner") {
+      if (key === "phone") {
+        if (val) {
+          if (val.length !== phoneLength) {
+            owners[idx].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (
+            isStaffPhoneEists.length ||
+            isOwnerPhoneEists.length ||
+            isRetailerOwnerPhoneEistsInDB.length ||
+            isRetailerStaffPhoneEistsInDB.length ||
+            isThirdPartyPhoneEistsInDB.length
+          ) {
+            owners[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
+            owners[idx].errObj.mobilenumberErr = "";
+          }
+        } else {
+          owners[idx].errObj.mobilenumberErr = "Please enter the Mobile Number";
+        }
+        owners[idx]["mobilenumber"] = val;
+      } else if (e.target.name === "active") {
+        owners[idx][e.target.name] = e.target.checked;
+      } else {
+        let { name, value } = e.target;
+        owners[idx][name] = value;
+      }
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          ownerRows: owners,
+        },
+      }));
+      if (e.target?.name) {
+        if (e.target?.name === "firstname") {
+          owners[idx].errObj.firstNameErr = owners[idx].firstname ? "" : "Please enter the First Name";
+        } else if (e.target?.name === "lastname") {
+          owners[idx].errObj.lastnameErr = owners[idx].lastname ? "" : "Please enter the Last Name";
+        }
+      }
+    } else if (type === "staff") {
+      if (key === "phone") {
+        if (val) {
+          if (val.length !== phoneLength) {
+            staffs[idx].errObj.mobilenumberErr = `Please enter ${phoneLength} Digit`;
+          } else if (
+            isStaffPhoneEists.length ||
+            isOwnerPhoneEists.length ||
+            isRetailerOwnerPhoneEistsInDB.length ||
+            isRetailerStaffPhoneEistsInDB.length ||
+            isThirdPartyPhoneEistsInDB.length
+          ) {
+            staffs[idx].errObj.mobilenumberErr = "Phone Number Exists";
+          } else {
+            staffs[idx].errObj.mobilenumberErr = "";
+          }
+        } else {
+          staffs[idx].errObj.mobilenumberErr = "Please enter the Mobile Number";
+        }
+        staffs[idx]["mobilenumber"] = val;
+      } else if (e.target.name === "active") {
+        staffs[idx][e.target.name] = e.target.checked;
+      } else {
+        let { name, value } = e.target;
+        staffs[idx][name] = value;
+      }
+      this.setState((prevState: any) => ({
+        userData: {
+          ...prevState.userData,
+          staffdetails: staffs,
+        },
+      }));
+      if (e.target?.name) {
+        if (e.target?.name === "firstname") {
+          staffs[idx].errObj.firstNameErr = staffs[idx].firstname ? "" : "Please enter the First Name";
+        } else if (e.target?.name === "lastname") {
+          staffs[idx].errObj.lastnameErr = staffs[idx].lastname ? "" : "Please enter the Last Name";
+        }
+      }
     } else {
-      const { name, value } = e.target;
-      ownerRows[idx] = {
-        [name]: value
-      };
-      staffRows[idx] = {
-        [name]: value
-      };
+      if (e.target.name === "accInfo") {
+        if (this.state.isEditPage) {
+          let userFields = this.props.location?.state.userFields;
+          if (!e.target.checked) {
+            this.getDynamicOptionFields(userFields);
+          } else {
+            this.setState({
+              withHolding: this.state.dynamicFields,
+              ownernameErr: "",
+            });
+          }
+        } else {
+          if (e.target.checked) {
+            this.setState({
+              withHolding: this.state.dynamicFields,
+              ownernameErr: "",
+            });
+          } else {
+            this.setState({
+              withHolding: this.state.newWithHolding,
+              ownernameErr: "",
+            });
+          }
+        }
+        this.setState({ accInfo: e.target.checked });
+      } else {
+        let datas = JSON.parse(JSON.stringify(this.state.userData));
+        let { name, value } = e.target;
+        datas[name] = value;
+        if (e.target?.name) {
+          if (e.target?.name === "whtaccountname") {
+            let whtaccountname = datas.whtaccountname ? "" : "Please enter Store Name";
+            this.setState({ accountnameErr: whtaccountname });
+          } else if (e.target?.name === "whtownername") {
+            let whtownername = datas.whtownername ? "" : "Please enter owner name";
+            this.setState({ ownernameErr: whtownername });
+          }
+          this.setState({ userData: datas });
+          if (e.target.name === "rolename") {
+            let steps = this.state.stepsArray;
+            if (e.target.value !== "salesagent") {
+              steps.splice(2, 1, "With-Holding Tax");
+              this.setState({ userroleType: "external" });
+            } else {
+              steps.splice(2, 1, "User Mappings");
+              this.setState({ userroleType: "internal" });
+            }
+            this.setState({ stepsArray: steps });
+          }
+        }
+      }
     }
-    this.setState({ ownerRows });
-    this.setState({ staffRows });
+    if (this.state.userroleType === "external") {
+      this.checkUnsavedData();
+    } else {
+      this.checkUnsavedDataForASA();
+    }
   };
 
   handleAddRow = (type: string) => {
@@ -783,113 +1921,492 @@ class CreateUser extends Component<any, any> {
       lastname: "",
       mobilenumber: "",
       email: "",
+      active: true,
+      isowner: false,
+      errObj: {
+        firstnameErr: "",
+        lastnameErr: "",
+        mobilenumberErr: "",
+        emailErr: "",
+        isPhoneEdit: true,
+      },
     };
-
-    if ( type === 'owner'){
-      this.setState({ ownerRows: [...this.state.ownerRows, item] });
+    let usersObj = this.state.userData;
+    if (type === "owner") {
+      usersObj.ownerRows.push(item);
+      this.setState({ userData: usersObj });
     } else {
-      this.setState({ staffRows: [...this.state.staffRows, item] });
+      usersObj.staffdetails.push(item);
+      this.setState({ userData: usersObj });
     }
   };
 
   handleRemoveSpecificRow = (idx: any, type: string) => () => {
-    if (type === 'owner') {
-      const ownerRows = [...this.state.ownerRows]
-      ownerRows.splice(idx, 1)
-      this.setState({ ownerRows })
+    let userObj = this.state.userData;
+    if (type === "owner") {
+      userObj.ownerRows.splice(idx, 1);
+      this.setState({ userData: userObj });
     } else {
-      const staffRows = [...this.state.staffRows]
-      staffRows.splice(idx, 1)
-      this.setState({ staffRows })
+      userObj.staffdetails.splice(idx, 1);
+      this.setState({ userData: userObj });
     }
-  }
-  handlePhoneChange = (value: any) => {
-    console.log(value);
-    this.setState({ phone: value }, () => {
-      console.log(this.state.phone);
+  };
+  enableStoreStaff = (e: any) => {
+    let isStaff = e.target.checked;
+    let userData = this.state.userData;
+    if (isStaff) {
+      userData.staffdetails.push({
+        firstname: "",
+        lastname: "",
+        mobilenumber: "",
+        email: "",
+        active: true,
+        isowner: false,
+        errObj: {
+          firstnameErr: "",
+          lastnameErr: "",
+          mobilenumberErr: "",
+          emailErr: "",
+          isPhoneEdit: true,
+        },
+      });
+      this.setState((prevState: any) => ({
+        isStaff: isStaff,
+        userData: {
+          ...prevState.userData,
+          staffdetails: userData.staffdetails,
+        },
+      }));
+    } else {
+      this.setState({ deleteStaffPopup: true });
+    }
+  };
+  checkUnsavedData = () => {
+    this.isFilledAllFields = false;
+    let userValues = this.state.userData;
+    let isDeliveryFieldsFilled = false;
+    let isWHTFieldsFilled = false;
+    let isStaffFieldsFilled = false;
+    if (!this.state.isEditPage) {
+      this.state.dynamicFields?.forEach((item: any) => {
+        if (item.name !== "geolevel0" && item.value !== "") {
+          isDeliveryFieldsFilled = true;
+        }
+      });
+      this.state.withHolding?.forEach((item: any) => {
+        if (item.name !== "geolevel0" && item.value !== "") {
+          isWHTFieldsFilled = true;
+        }
+      });
+      userValues.staffdetails?.forEach((item: any) => {
+        if (item.firstname !== "" || item.lastname !== "" || item.mobilenumber !== "") {
+          isStaffFieldsFilled = true;
+        }
+      });
+
+      if (
+        userValues.ownerRows[0].firstname !== "" ||
+        userValues.ownerRows[0].lastname !== "" ||
+        userValues.ownerRows[0].mobilenumber !== "" ||
+        userValues.whtaccountname !== "" ||
+        userValues.whtownername !== "" ||
+        isDeliveryFieldsFilled ||
+        isWHTFieldsFilled ||
+        isStaffFieldsFilled
+      ) {
+        this.isFilledAllFields = true;
+      }
+    } else {
+      let editDatas = this.state.cloneduserData;
+      if (_.isEqual(editDatas, userValues)) {
+        isStaffFieldsFilled = false;
+      } else {
+        isStaffFieldsFilled = true;
+      }
+
+      let userFields = this.props.location.state?.userFields;
+      if (userFields) {
+        this.state.dynamicFields?.forEach((item: any) => {
+          if (item.name !== "geolevel0") {
+            if (item.name === "geolevel1" && item.value !== userFields.deliverygeolevel1) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel2" && item.value !== userFields.deliverygeolevel2) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel3" && item.value !== userFields.deliverygeolevel3) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel4" && item.value !== userFields.deliverygeolevel4) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel5" && item.value !== userFields.deliverygeolevel5) {
+              isDeliveryFieldsFilled = true;
+            }
+          }
+        });
+        this.state.withHolding?.forEach((item: any) => {
+          if (item.name !== "geolevel0") {
+            if (item.name === "geolevel1" && item.value !== userFields.billinggeolevel1) {
+              isWHTFieldsFilled = true;
+            }
+            if (item.name === "geolevel2" && item.value !== userFields.billinggeolevel2) {
+              isWHTFieldsFilled = true;
+            }
+            if (item.name === "geolevel3" && item.value !== userFields.billinggeolevel3) {
+              isWHTFieldsFilled = true;
+            }
+            if (item.name === "geolevel4" && item.value !== userFields.billinggeolevel4) {
+              isWHTFieldsFilled = true;
+            }
+            if (item.name === "geolevel5" && item.value !== userFields.billinggeolevel5) {
+              isWHTFieldsFilled = true;
+            }
+          }
+        });
+      }
+
+      if (
+        userValues.ownerRows[0].firstname !== editDatas.ownerRows[0].firstname ||
+        userValues.ownerRows[0].firstname === "" ||
+        userValues.ownerRows[0].lastname !== editDatas.ownerRows[0].lastname ||
+        userValues.ownerRows[0].lastname === "" ||
+        userValues.ownerRows[0].mobilenumber !== editDatas.ownerRows[0].mobilenumber ||
+        userValues.whtaccountname !== editDatas.whtaccountname ||
+        userValues.whtaccountname === "" ||
+        userValues.whtownername !== editDatas.whtownername ||
+        userValues.whtownername === "" ||
+        isStaffFieldsFilled ||
+        isDeliveryFieldsFilled ||
+        isWHTFieldsFilled
+      ) {
+        this.isFilledAllFields = true;
+      } else {
+        this.isFilledAllFields = false;
+      }
+    }
+    const { setPromptMode } = this.context;
+    setPromptMode(this.isFilledAllFields);
+
+    return this.isFilledAllFields;
+  };
+
+  checkUnsavedDataForASA = () => {
+    this.isFilledAllFields = false;
+    let userValues = this.state.asaDatas;
+    let partnerValues = this.state.partnerDatas;
+    let isDeliveryFieldsFilled = false;
+    let isChannelPartnersFieldsFilled = false;
+    if (!this.state.isEditPage) {
+      this.state.dynamicFields?.forEach((item: any) => {
+        if (item.name !== "geolevel0" && item.value !== "") {
+          isDeliveryFieldsFilled = true;
+        }
+      });
+      partnerValues?.forEach((item: any) => {
+        if (item.partnertype !== "" || item.geolevel1 !== "" || item.channelpartnerfullname !== "") {
+          isChannelPartnersFieldsFilled = true;
+        }
+      });
+
+      if (
+        userValues.firstname !== "" ||
+        userValues.lastname !== "" ||
+        userValues.mobilenumber !== "" ||
+        isDeliveryFieldsFilled ||
+        isChannelPartnersFieldsFilled
+      ) {
+        this.isFilledAllFields = true;
+      }
+    } else {
+      let editclonedasaInfo = this.state.clonedasaInfo;
+      let editclonedasapartnersInfo = this.state.clonedasapartnersInfo;
+      let isasaDataFieldsFilled = false;
+      let isasaPartnerFieldsFilled = false;
+      if (_.isEqual(editclonedasaInfo, userValues)) {
+        isasaDataFieldsFilled = false;
+      } else {
+        isasaDataFieldsFilled = true;
+      }
+      if (_.isEqual(editclonedasapartnersInfo, partnerValues)) {
+        isasaPartnerFieldsFilled = false;
+      } else {
+        isasaPartnerFieldsFilled = true;
+      }
+
+      let userFields = this.props.location.state?.userFields;
+      if (userFields) {
+        this.state.dynamicFields?.forEach((item: any) => {
+          if (item.name !== "geolevel0") {
+            if (item.name === "geolevel1" && item.value !== userFields.deliverygeolevel1) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel2" && item.value !== userFields.deliverygeolevel2) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel3" && item.value !== userFields.deliverygeolevel3) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel4" && item.value !== userFields.deliverygeolevel4) {
+              isDeliveryFieldsFilled = true;
+            }
+            if (item.name === "geolevel5" && item.value !== userFields.deliverygeolevel5) {
+              isDeliveryFieldsFilled = true;
+            }
+          }
+        });
+      }
+
+      if (
+        userValues.firstname !== editclonedasaInfo.firstname ||
+        userValues.firstname === "" ||
+        userValues.lastname !== editclonedasaInfo.lastname ||
+        userValues.lastname === "" ||
+        isasaDataFieldsFilled ||
+        isasaPartnerFieldsFilled ||
+        isDeliveryFieldsFilled
+      ) {
+        this.isFilledAllFields = true;
+      } else {
+        this.isFilledAllFields = false;
+      }
+    }
+    const { setPromptMode } = this.context;
+    setPromptMode(this.isFilledAllFields);
+
+    return this.isFilledAllFields;
+  };
+
+  handleClosePopup = () => {
+    this.setState({ deleteStaffPopup: false });
+  };
+
+  deleteStaff = () => {
+    let userData = this.state.userData;
+    userData.staffdetails = [];
+    this.setState((prevState: any) => ({
+      isStaff: false,
+      userData: {
+        ...prevState.userData,
+        staffdetails: userData.staffdetails,
+      },
+      deleteStaffPopup: false,
+    }));
+  };
+
+  asahandleChange = (e: any, val?: any, key?: string) => {
+    let datas = this.state.asaDatas;
+    let userdata = this.state.userData;
+    let asamobilenumberErr = this.state.asamobilenumberErr;
+
+    let allowners = this.state.allChannelPartners;
+    let allstaffs = _(allowners).flatMap("staffdetails").value();
+    let allthirdParty = this.state.allThirdPartyUsers;
+
+    const isRetailerOwnerPhoneEistsInDB = allowners.filter((items: any) => items.ownerphonenumber === val);
+    const isRetailerStaffPhoneEistsInDB = allstaffs.filter((items: any) => items.mobilenumber === val);
+    const isThirdPartyPhoneEistsInDB = allthirdParty.filter((items: any) => items.phonenumber === val);
+
+    if (key === "mobilenumber") {
+      if (val) {
+        if (val.length !== phoneLength) {
+          asamobilenumberErr = `Please enter ${phoneLength} Digit`;
+        } else if (
+          isThirdPartyPhoneEistsInDB.length ||
+          isRetailerOwnerPhoneEistsInDB.length ||
+          isRetailerStaffPhoneEistsInDB.length
+        ) {
+          asamobilenumberErr = "Phone Number Exists";
+        } else {
+          asamobilenumberErr = "";
+        }
+      } else {
+        asamobilenumberErr = "Please enter the Mobile Number";
+      }
+      datas[key] = val;
+
+      this.setState({ asamobilenumberErr: asamobilenumberErr });
+    } else {
+      let { name, value, checked } = e.target;
+      if (name === "active") {
+        datas[name] = checked;
+      } else if (name === "rolename") {
+        userdata[name] = value;
+        let steps = this.state.stepsArray;
+        if (value !== "salesagent") {
+          steps.splice(2, 1, "With-Holding Tax");
+          this.setState({ userroleType: "external" });
+        } else {
+          steps.splice(2, 1, "User Mappings");
+          this.setState({ userroleType: "internal" });
+        }
+        this.setState({ stepsArray: steps });
+        this.setState({ userData: userdata });
+      } else {
+        datas[name] = value;
+        if (name === "firstname") {
+          let firstNameErr = datas.firstname === "" ? "Please Enter the First Name" : "";
+          this.setState({ asafirstnameErr: firstNameErr });
+        } else if (name === "lastname") {
+          let lastNameErr = datas.lastname === "" ? "Please Enter the Last Name" : "";
+          this.setState({ asalastnameErr: lastNameErr });
+        } else if (name === "mobilenumber") {
+          let mobileErr = datas.mobilenumber === "" ? "Please Enter the Email" : "";
+          this.setState({ asamobilenumberErr: mobileErr });
+        }
+      }
+    }
+    this.setState({ asaDatas: datas });
+    if (this.state.userroleType === "external") {
+      this.checkUnsavedData();
+    } else {
+      this.checkUnsavedDataForASA();
+    }
+  };
+
+  partnerhandleChange = (e: any, idx: number) => {
+    const { name, value } = e.target;
+    const datas = this.state.partnerDatas;
+    datas[idx][name] = value;
+    if (value) {
+      if (name === "partnertype") {
+        datas[idx].errObj.typeErr = "";
+      } else if (name === "geolevel1") {
+        datas[idx].errObj.locationErr = "";
+      }
+      if (name === "channelpartnerfullname") {
+        datas[idx].errObj.nameErr = "";
+      }
+    }
+    this.setState({ partnerDatas: datas });
+    this.setOptionsForChannelPartners(idx);
+    this.checkUnsavedDataForASA();
+  };
+
+  setOptionsForChannelPartners = (idx: number) => {
+    const datas = this.state.partnerDatas;
+    const locationwiseChannelPartners = this.state.locationwiseChannelPartners;
+    let locationInfo = [];
+    locationInfo = locationwiseChannelPartners?.filter(
+      (locationInfo: any) => locationInfo.geolevel1 === datas[idx].geolevel1
+    );
+    if (locationInfo.length) {
+      let retailerList: any = [];
+      retailerList = locationInfo[0]?.partnertypes?.filter(
+        (retailerInfo: any) => retailerInfo.partnertypes === datas[idx].partnertype
+      );
+      let partners: any = [];
+      const channelPartnersOptions = this.state.channelPartnersOptions;
+
+      retailerList[0]?.partnerdetails?.forEach((item: any, index: number) => {
+        let partnersObj: any = {};
+        partnersObj["text"] = item.channelpartnerfullname;
+        partnersObj["value"] = item.channelpartnerid;
+        partnersObj["partnerid"] = item.channelpartnerid;
+        partners.push(partnersObj);
+      });
+
+      if (channelPartnersOptions.length) {
+        channelPartnersOptions[idx] = partners;
+      } else {
+        channelPartnersOptions.push(partners);
+      }
+      this.setState({ channelPartnersOptions: channelPartnersOptions });
+    }
+  };
+
+  getAllPartnersList = () => {
+    this.setState({
+      isLoader: true,
+      locationwiseChannelPartners: [],
+    });
+    const { channelPartners } = apiURL;
+    let data = {
+      countrycode: this.getStoreData.countryCode,
+    };
+    return new Promise((resolve, reject) => {
+      invokeGetAuthService(channelPartners, data)
+        .then((response) => {
+          let res = Object.keys(response.body).length !== 0 ? response.body.rows : [];
+          this.setState({
+            isLoader: false,
+            locationwiseChannelPartners: res,
+          });
+        })
+        .catch((error) => {
+          this.setState({ isLoader: false });
+        });
     });
   };
 
-  // //phone without dial code
-  // handleOnChange(value, data, event, formattedValue) {
-  //   this.setState({ rawPhone: value.slice(data.dialCode.length) })
-  // }
+  asahandleAddRow = () => {
+    const item = {
+      partnertype: "",
+      geolevel1: "",
+      channelpartnerfullname: "",
+      channelpartnerid: "",
+      errObj: {
+        typeErr: "",
+        locationErr: "",
+        nameErr: "",
+      },
+    };
+    let partnerDatas = this.state.partnerDatas;
+    partnerDatas.push(item);
+    this.setState({ partnerDatas: partnerDatas });
+  };
+
+  asahandleRemoveSpecificRow = (idx: any) => () => {
+    let partnerDatas = this.state.partnerDatas;
+    let partnertypeOptions = this.state.channelPartnersOptions;
+    partnerDatas.splice(idx, 1);
+    partnertypeOptions.splice(idx, 1);
+    this.setState({ partnerDatas: partnerDatas, channelPartnersOptions: partnertypeOptions });
+  };
 
   render() {
-    // console.log(this.state.staffRows);
-    console.log('ownerRows', this.state.ownerRows);
-    const dpstyle = {
-      width: "220px",
-      height: "40px",
-    };
-
+    let countryCodeLower = _.toLower(this.loggedUserInfo?.countrycode);
     const {
       currentStep,
       userData,
-      fromDateErr,
-      toDateErr,
-      userNameErr,
-      accNameErr,
-      roleErr,
-      ownerNameErr,
-      phoneErr,
-      emailErr,
-      countryErr,
-      stateErr,
-      districtErr,
-      subDistrictErr,
-      postalCodeErr,
-      villageErr,
-      taxIdErr,
-      postalCodeTaxErr,
-      firstNameErr,
-      lastNameErr,
-      geographicFields,
-      country,
-      state,
-      district,
-      subdistrict,
-      village,
       stepsArray,
-      isValidatePage,
-      isStaff
+      isEditPage,
+      isStaff,
+      deliverystreetErr,
+      deliveryzipcodeErr,
+      accountnameErr,
+      ownernameErr,
+      billingstreetErr,
+      billingzipcodeErr,
+      accInfo,
+      asaDatas,
+      userroleType,
     } = this.state;
+    let currentPage = this.props.location?.page;
+    const fields = currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
 
-    const btnStyleRemove = {
-      color: "white", background: "#C1C1C1 0% 0% no-repeat padding-box",
-      boxshadow: " 0px 3px 6px #00000029", opacity: 1,
-      fontSize: "17px", fontweight: "bold", textalign: "center",
-      width: 35, height: 35, borderRadius: 20
-    }
-    const tableScrollStyle = { maxHeight: "280px", overflowY: "auto", overflowX: "hidden" };
-
-    // const fields =
-    //   currentStep == 3 ? this.state.dynamicFields : this.state.withHolding;
-    const locationList = this.state.dynamicFields?.map((list: any, index: number) => {
-      let nameCapitalized = list.name.charAt(0).toUpperCase() + list.name.slice(1)
+    const locationList = fields?.map((list: any, index: number) => {
+      let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
+      nameCapitalized = nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized;
       return (
-        <>
-          <div className= "col-sm-4 country">
-                <Dropdown
-                  name={list.name}
-                  label={nameCapitalized}
-                  options={list.options}
-                  handleChange={(e: any) => {
-                    list.value = e.target.value;
-                    this.setState({ isRendered: true });
-                    this.getOptionLists('manual',list.name, e.target.value, index);
-                  }}
-                  value={list.value}
-                  isPlaceholder
-                  isDisabled={
-                    (this.state.currentStep === 4 && this.state.accInfo) || (isValidatePage) || (list.name=='country')
-                      ? true
-                      : false
-                  }
-                />
+        <React.Fragment key={`geolevels` + index}>
+          <div className={list.error && currentStep === 3 ? "col-sm-4 country3" : "col-sm-4 country"}>
+            <Dropdown
+              name={list.name}
+              label={nameCapitalized}
+              options={list.options}
+              handleChange={(e: any) => {
+                list.value = e.target.value;
+                this.setState({ isRendered: true });
+                this.getOptionLists("manual", list.name, e.target.value, index);
+              }}
+              value={list.value}
+              isPlaceholder
+              isDisabled={(this.state.currentStep === 3 && this.state.accInfo) || list.name === "geolevel0" ? true : false}
+            />
             {list.error && <span className="error">{list.error}</span>}
           </div>
-        </>
+        </React.Fragment>
       );
     });
 
@@ -897,532 +2414,815 @@ class CreateUser extends Component<any, any> {
     if (currentStep === 1) {
       nextButton = (
         <button
-          className="btn buttonColor buttonStyle"
+          name="personal-next"
+          data-testid="personal-next"
+          className="cus-btn-user buttonStyle"
           onClick={(e) => this.handleClick("personalNext", e)}
         >
           Next
+          <span>
+            <img src={ArrowIcon} alt={NoImage} data-testid="ArrowIcon" className="arrow-i" />{" "}
+            <img src={RtButton} alt={NoImage} data-testid="RtButton" className="layout" />
+          </span>
         </button>
       );
     } else if (currentStep === 2) {
       nextButton = (
-        <button
-          className="btn buttonColor buttonStyle"
-          onClick={(e) => this.handleClick("shippingNext", e)}
-        >
+        <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("geographicNext", e)}>
           Next
-        </button>
-      );
-    } else if (currentStep === 3) {
-      nextButton = (
-        <button
-          className="btn buttonColor buttonStyle"
-          onClick={(e) => this.handleClick("geographicNext", e)}
-        >
-          Next
+          <span>
+            <img src={ArrowIcon} alt="" className="arrow-i" /> <img src={RtButton} alt="" className="layout" />
+          </span>
         </button>
       );
     } else {
       nextButton = (
-        <button
-          className="btn buttonColor createBtn"
-          onClick={(e) => this.handleClick("createUser", e)}
-        >
-          {!this.props.location?.state ? "Create User" : "Approve"}
+        <button className="cus-btn-user buttonStyle" onClick={(e) => this.handleClick("createUser", e)}>
+          {currentPage === "edit" || currentPage === "asaedit"
+            ? "Update"
+            : currentPage === "validate"
+            ? "Approve"
+            : "Create"}
+          {/* <span>
+            <img src={ArrowIcon} alt="" className="arrow-i" />{" "}
+            <img src={RtButton} alt="" className="layout" />
+          </span> */}
         </button>
       );
     }
-    const togglePosition = { top: 20 };
-    const sub_div = {
-      position: "absolute",
-      bottom: "35px",
-      marginLeft: "350px",
-    };
 
     return (
-      <div className="card card-main">
-        <div className="stepper-container-horizontal">
-          <Stepper
-            direction="horizontal"
-            currentStepNumber={currentStep - 1}
-            steps={stepsArray}
-            stepColor="#5A5A5A"
+      <AUX>
+        {(this.state.isLoader || this.props.isLoader) && <Loader />}
+        {this.isFilledAllFields && (
+          <RouterPrompt
+            when={this.state.shouldBlockNavigation}
+            title="Leave this page"
+            cancelText="Cancel"
+            okText="Confirm"
+            onOK={() => true}
+            onCancel={() => false}
           />
-        </div>
-        <div className="col-md-10">
-          <label className="font-weight-bold" style={{fontSize: '17px', color: '#10384F', marginTop: currentStep ==1 ? '0px' : '28px'}}>
-            {stepsArray[currentStep - 1]}
-          </label>
-          <div className="container">
-            {currentStep == 1 && (
-              <>
-                <div className="personal">
-                  <>
-                  <div className="row form-group" style={{ display: 'flex', alignItems: 'center', marginTop: '8px'}}>
-                    <div className="col-sm-3">
-                      <Dropdown
-                        name="role"
-                        label="User Type"
-                        options={options}
-                        handleChange={this.handlePersonalChange}
-                        value={userData.role}
-                        isPlaceholder
-                        isDisabled = {isValidatePage ? true : false} 
-                      />
-                      {roleErr && (
-                        <span className="error">{roleErr} </span>
-                      )}
-                    </div>
-                    <div className="col-sm-3">
-                        <label className="font-weight-bold">Has store staff?
-                            <input type="checkbox" style={{marginLeft: '10px'}} defaultChecked={isStaff} onClick={(e: any) => {this.setState({isStaff: e.target.checked})}} />
-                            <span className="checkmark"></span>
-                        </label>
-                    </div>
-                  </div>
-                  <div  style={{ width:'124%', maxHeight: "280px", overflowY: "auto", overflowX: "hidden"}}>
-                  <div>
-                  {/* <Table borderless> */}
-                    <table className="table table-borderless">
-                    <thead>
-                        <tr>
-                          <th>Type</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Mobile Number</th>
-                          <th>Email</th>
-                          <th>isActive?</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {this.state.ownerRows.map((item: any, idx: number) => (
-                        <tr>
-                          {idx === 0 ? <td className="font-weight-bold">Owner</td> : <td></td>}
-                          <td>
-                            <Input
-                              type="text"
-                              className="form-control"
-                              name="firstname"
-                              placeHolder="Eg: Keanu"
-                              value={this.state.ownerRows[idx].firstname}
-                              onChange={(e: any)=>this.handleChange(idx, e, '')}
-                              disabled={isValidatePage ? true : false}
-                            />
-                            {firstNameErr && (
-                              <span className="error">{firstNameErr} </span>
-                            )}
-                          </td>
-                          <td>
-                            <Input
-                            type="text"
-                            className="form-control"
-                            name="lastname"
-                            placeHolder="Eg: Reeves"
-                            value={this.state.ownerRows[idx].lastname}
-                            onChange={(e: any)=>this.handleChange(idx, e, '')}
-                            disabled={isValidatePage ? true : false}
-                            />
-                            {lastNameErr && (
-                              <span className="error">{lastNameErr} </span>
-                            )}
-                          </td>
-                          <td>
-                          <div  style={{display: 'flex'}}>
-                            <div className='flagInput'>
-                              <PhoneInput
-                                placeholder="Mobile Number"
-                                inputProps={{
-                                  name: "mobilenumber",
-                                  required: true
-                                }}
-                                country={'mw'}
-                                value={this.state.ownerRows[idx].mobilenumber}
-                                onChange={(e)=>this.handleChange(idx, e, 'phone')}
-                                onlyCountries={['mw']}
-                                autoFormat
-                                disableDropdown
-                                disableCountryCode
-                              />
-                            </div>
-                              {/* <div>
-                              <Input
-                              type="text"
-                              className="form-control"
-                              name="mobilenumber"
-                              placeHolder="Mobile Number"
-                              value={userData.mobilenumber}
-                              onChange={(e: any) => this.handlePersonalChange(e)}
-                              disabled={isValidatePage ? true : false}
-                              onKeyUp={(e: any)=>this.isNumberKey(e)}
-                              width="155px"
-                              />
-                              </div> */}
-                            </div>
-                            {phoneErr && <span className="error">{phoneErr} </span>}
-                          </td>
-                          <td>
-                            <Input
-                            type="text"
-                            className="form-control"
-                            name="email"
-                            placeHolder="Eg: abc@mail.com"
-                            value={this.state.ownerRows[idx].email}
-                            onChange={(e: any)=>this.handleChange(idx, e, '')}
-                            disabled={isValidatePage ? true : false}
-                            onKeyUp={(e: any)=>this.validateEmail(e)}
-                          />
-                          {emailErr && <span className="error">{emailErr} </span>}
-                          </td>
-                          <td style={{ display: 'flex', alignItems: 'center'}}>
-                            <div>
-                              <CustomSwitch
-                                checked={userData.activateUser}
-                                onChange={(e: any) => this.handlePersonalChange(e)}
-                                name="activateUser"
-                              />
-                              </div>
-                              <div>
-                                {idx === this.state.ownerRows.length - 1 ?
-                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('owner')} /> 
-                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'owner')} /> }
-                              </div>
-                          </td>
-                        </tr> ))}
-                        </tbody>
-                        </table>
-                        </div>
-                        <div style={{marginTop: '-10px'}}>
-                          {isStaff ? <hr/> : <></>}
-                        </div>
-                        <div>
-                        <table className="table table-borderless">
-                          <tbody>
-                        {isStaff &&
-                        this.state.staffRows.map((item: any, idx: number) => (
-                        <tr>
-                          {idx === 0 ? <td className="font-weight-bold">Store Staffs</td> : <td></td>}
-                          <td>
-                            <Input
-                              type="text"
-                              className="form-control"
-                              name="firstname"
-                              placeHolder="Eg: Keanu"
-                              value={this.state.ownerRows[idx].firstname}
-                              onChange={(e: any) => this.handlePersonalChange(e)}
-                              disabled={isValidatePage ? true : false}
-                            />
-                            {firstNameErr && (
-                              <span className="error">{firstNameErr} </span>
-                            )}
-                          </td>
-                          <td>
-                            <Input
-                            type="text"
-                            className="form-control"
-                            name="lastname"
-                            placeHolder="Eg: Reeves"
-                            value={this.state.ownerRows[idx].lastname}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                            disabled={isValidatePage ? true : false}
-                            />
-                            {lastNameErr && (
-                              <span className="error">{lastNameErr} </span>
-                            )}
-                          </td>
-                          <td>
-                          <div className='flagInput'>
-                            <PhoneInput
-                              placeholder="Mobile Number"
-                              inputProps={{
-                                name: "mobilenumber",
-                                required: true
-                              }}
-                              country={'mw'}
-                              value={this.state.ownerRows[idx].mobilenumber}
-                              onChange={this.handlePhoneChange}
-                              onlyCountries={['mw']}
-                              autoFormat
-                              disableDropdown
-                              disableCountryCode
+        )}
+        {this.state.deleteStaffPopup ? (
+          <AdminPopup open={this.state.deleteStaffPopup} onClose={this.handleClosePopup} maxWidth={"600px"}>
+            <DialogContent>
+              <div className="popup-container">
+                <div className="popup-content">
+                  <div className={`popup-title`}></div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <label style={{ fontSize: "16px", marginTop: "11px" }}>
+                    Are you sure you want to delete store's staff?
+                  </label>
+                </div>
+                <DialogActions>
+                  <Button
+                    autoFocus
+                    onClick={this.handleClosePopup}
+                    className="admin-popup-btn close-btn"
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={this.deleteStaff}
+                    className="admin-popup-btn delete"
+                    autoFocus
+                    style={{ boxShadow: "0px 3px 6px #c7c7c729", border: "1px solid #89D329", borderRadius: "50px" }}
+                  >
+                    DELETE
+                  </Button>
+                </DialogActions>
+              </div>
+            </DialogContent>
+          </AdminPopup>
+        ) : (
+          ""
+        )}
+        <div className="card card-main">
+          <div className="stepper-container-horizontal">
+            <Stepper direction="horizontal" currentStepNumber={currentStep - 1} steps={stepsArray} stepColor="#7DBB41" />
+          </div>
+          <div className="col-md-10" style={{ marginTop: currentStep === 3 ? "-30px" : "0px" }}>
+            <label
+              className="font-weight-bold"
+              style={{
+                fontSize: "17px",
+                color: "#10384F",
+                marginTop: currentStep === 1 ? "0px" : currentStep === 2 ? "28px" : "-3px",
+              }}
+            >
+              {stepsArray[currentStep - 1]}
+            </label>
+            <div className="container">
+              {currentStep === 1 && (
+                <>
+                  {userroleType === "internal" ? (
+                    <AreaSalesManager
+                      handleChange={this.handleChange}
+                      userData={userData}
+                      asaDatas={asaDatas}
+                      asahandleChange={this.asahandleChange}
+                      role={role}
+                      countryCodeLower={countryCodeLower}
+                      currentStep={currentStep}
+                      asafirstnameErr={this.state.asafirstnameErr}
+                      asalastnameErr={this.state.asalastnameErr}
+                      asamobilenumberErr={this.state.asamobilenumberErr}
+                      isEditPage={isEditPage}
+                    />
+                  ) : (
+                    <div className="personal">
+                      <>
+                        <div
+                          className="row"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginTop: "8px",
+                          }}
+                        >
+                          <div className="col-sm-3 form-group">
+                            <Dropdown
+                              name="rolename"
+                              label="User Type"
+                              options={role}
+                              handleChange={(e: any) => this.handleChange("", e, "", "othersteps", "")}
+                              value={userData.rolename}
+                              isPlaceholder
+                              isDisabled
                             />
                           </div>
-                              {/* <Input
-                              type="text"
-                              className="form-control"
-                              name="mobilenumber"
-                              placeHolder="Mobile Number"
-                              value={userData.mobilenumber}
-                              onChange={(e: any) => this.handlePersonalChange(e)}
-                              disabled={isValidatePage ? true : false}
-                              onKeyUp={(e: any)=>this.isNumberKey(e)}
-                              /> */}
-                            {phoneErr && <span className="error">{phoneErr} </span>}
-                          </td>
-                          <td>
-                            <Input
+                          <div className="col-sm-3" style={{ marginLeft: "20px" }}>
+                            <label className="font-weight-bold">
+                              Has store staff?(Max 4)
+                              <input
+                                data-testid="storestaff"
+                                type="checkbox"
+                                style={{ marginLeft: "10px" }}
+                                onChange={(e: any) => {
+                                  this.enableStoreStaff(e);
+                                }}
+                                checked={isStaff}
+                                disabled={
+                                  isEditPage && this.props.location.state?.userFields.storewithmultiuser ? true : false
+                                }
+                              />
+                              <span className="checkmark"></span>
+                            </label>
+                          </div>
+                        </div>
+                        <div
+                          className="personal-information-table"
+                          style={{
+                            width: "124%",
+                            maxHeight: "280px",
+                            overflowY: "auto",
+                            overflowX: "auto",
+                          }}
+                        >
+                          <div style={{ marginRight: "10px" }}>
+                            {/* <Table borderless> */}
+                            <table className="table table-borderless" data-testid="table">
+                              <thead>
+                                <tr>
+                                  <th>Type</th>
+                                  <th>First Name</th>
+                                  <th>Last Name</th>
+                                  <th>Mobile Number</th>
+                                  <th>Email(Optional)</th>
+                                  <th>Active?</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {userData.ownerRows?.map((item: any, idx: number) => (
+                                  <tr key={`ownerRow` + idx}>
+                                    {idx === 0 ? <td className="font-weight-bold">Owner</td> : <td></td>}
+                                    <td>
+                                      <Input
+                                        data-testid="owner-firstname"
+                                        aria-label="owner-firstname"
+                                        type="text"
+                                        className="form-control"
+                                        name="firstname"
+                                        placeHolder="Eg: Keanu"
+                                        value={item.firstname}
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                      />
+                                      {item.errObj?.firstNameErr && (
+                                        <span className="error">{item.errObj.firstNameErr} </span>
+                                      )}
+                                    </td>
+                                    <td>
+                                      <Input
+                                        data-testid="owner-lastname"
+                                        aria-label="owner-lastname"
+                                        type="text"
+                                        className="form-control"
+                                        name="lastname"
+                                        placeHolder="Eg: Reeves"
+                                        value={item.lastname}
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                      />
+                                      {item.errObj?.lastnameErr && <span className="error">{item.errObj.lastnameErr} </span>}
+                                    </td>
+                                    <td>
+                                      <div style={{ display: "flex" }}>
+                                        <div className="flagInput">
+                                          <PhoneInput
+                                            placeholder="Mobile Number"
+                                            inputProps={{
+                                              name: "mobilenumber",
+                                              required: true,
+                                              maxLength:
+                                                process.env.REACT_APP_STAGE === "dev" ||
+                                                process.env.REACT_APP_STAGE === "int"
+                                                  ? 12
+                                                  : 11,
+                                            }}
+                                            country={countryCodeLower}
+                                            value={item.mobilenumber}
+                                            disabled={isEditPage ? true : false}
+                                            onChange={(value, e) => this.handleChange(idx, e, "phone", "owner", value)}
+                                            onlyCountries={[countryCodeLower]}
+                                            autoFormat
+                                            disableDropdown
+                                            disableCountryCode
+                                            // error={!this.state.mobileLimit && 'no'}
+                                            // isValid={this.state.mobileLimit}
+                                            // error={item.mobilenumber && isPossiblePhoneNumber(item.mobilenumber) ? 'true' : 'false'}
+                                            // isValid={(value, country) => {
+                                            //   if (value.length > 9) {
+                                            //     e.preventDefault();
+                                            //     return false;
+                                            //   } else {
+                                            //     return true;
+                                            //   }
+                                            // }}
+                                          />
+                                          {item.errObj?.mobilenumberErr && (
+                                            <span className="error">{item.errObj.mobilenumberErr}</span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <Input
+                                        data-testid="email-input"
+                                        type="email"
+                                        className="form-control"
+                                        name="email"
+                                        placeHolder="Eg: abc@mail.com"
+                                        value={item.email}
+                                        onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                        onKeyUp={(e: any) => this.validateEmail(e.target.value, idx, "owner")}
+                                      />
+                                      {item.errObj?.emailErr && (
+                                        <span className="error" data-testid="error-msg">
+                                          {item.errObj.emailErr}{" "}
+                                        </span>
+                                      )}
+                                    </td>
+                                    <td
+                                      style={{
+                                        display: "flex",
+                                      }}
+                                    >
+                                      <div>
+                                        <CustomSwitch
+                                          checked={item.active}
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "owner", "")}
+                                          name="active"
+                                        />
+                                      </div>
+                                      <div style={{ visibility: "hidden" }}>
+                                        {/* {idx ===
+                                          userData.ownerRows.length - 1 &&
+                                        userData.ownerRows.length < 5 ? (
+                                          <img
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                            }}
+                                            src={AddBtn}
+                                            onClick={() =>
+                                              this.handleAddRow("owner")
+                                            }
+                                          />
+                                        ) : (
+                                          <img
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                            }}
+                                            src={RemoveBtn}
+                                            onClick={this.handleRemoveSpecificRow(
+                                              idx,
+                                              "owner"
+                                            )}
+                                          />
+                                        )} */}
+                                        {idx === userData.ownerRows.length - 1 && userData.ownerRows.length < 4 ? (
+                                          (() => {
+                                            if (idx === 0 && idx === userData.ownerRows.length - 1) {
+                                              return (
+                                                <div>
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                    src={AddBtn}
+                                                    alt=""
+                                                    onClick={() => this.handleAddRow("owner")}
+                                                  />
+                                                </div>
+                                              );
+                                            } else if (idx > 0 && idx === userData.ownerRows.length - 1) {
+                                              return (
+                                                <div>
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                      visibility:
+                                                        isEditPage && this.props.location.state.userFields.storewithmultiuser
+                                                          ? "hidden"
+                                                          : "visible",
+                                                    }}
+                                                    src={RemoveBtn}
+                                                    alt=""
+                                                    onClick={this.handleRemoveSpecificRow(idx, "owner")}
+                                                  />
+                                                  <img
+                                                    style={{
+                                                      width: "50px",
+                                                      height: "50px",
+                                                    }}
+                                                    src={AddBtn}
+                                                    alt=""
+                                                    onClick={() => this.handleAddRow("owner")}
+                                                  />
+                                                </div>
+                                              );
+                                            }
+                                          })()
+                                        ) : (
+                                          <img
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                              visibility:
+                                                isEditPage && this.props.location.state?.userFields.storewithmultiuser
+                                                  ? "hidden"
+                                                  : "visible",
+                                            }}
+                                            src={RemoveBtn}
+                                            alt=""
+                                            onClick={this.handleRemoveSpecificRow(idx, "owner")}
+                                          />
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <div style={{ marginTop: "-10px" }}>{isStaff ? <hr /> : <></>}</div>
+                          <div style={{ marginRight: "13px" }}>
+                            <table className="table table-borderless">
+                              <thead style={{ display: "none" }}>
+                                <tr>
+                                  <th>Type</th>
+                                  <th>First Name</th>
+                                  <th>Last Name</th>
+                                  <th>Mobile Number</th>
+                                  <th>Email(Optional)</th>
+                                  <th>Active?</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {isStaff &&
+                                  userData.staffdetails?.map((item: any, idx: number) => (
+                                    <tr key={`staffRow` + idx}>
+                                      {idx === 0 ? (
+                                        <td className="font-weight-bold">
+                                          Store <br /> Staffs
+                                        </td>
+                                      ) : (
+                                        <td></td>
+                                      )}
+                                      <td>
+                                        <Input
+                                          type="text"
+                                          className="form-control"
+                                          name="firstname"
+                                          placeHolder="Eg: Keanu"
+                                          value={item.firstname}
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                        />
+                                        {item.errObj?.firstNameErr && (
+                                          <span className="error">{item.errObj.firstNameErr} </span>
+                                        )}
+                                      </td>
+                                      <td>
+                                        <Input
+                                          type="text"
+                                          className="form-control"
+                                          name="lastname"
+                                          placeHolder="Eg: Reeves"
+                                          value={item.lastname}
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
+                                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                                        />
+                                        {item.errObj?.lastnameErr && (
+                                          <span className="error">{item.errObj.lastnameErr} </span>
+                                        )}
+                                      </td>
+                                      <td>
+                                        <div style={{ display: "flex" }}>
+                                          <div className="flagInput">
+                                            <PhoneInput
+                                              placeholder="Mobile Number"
+                                              inputProps={{
+                                                name: "mobilenumber",
+                                                required: true,
+                                                maxLength:
+                                                  process.env.REACT_APP_STAGE === "dev" ||
+                                                  process.env.REACT_APP_STAGE === "int"
+                                                    ? 12
+                                                    : 11,
+                                              }}
+                                              country={countryCodeLower}
+                                              value={item.mobilenumber}
+                                              disabled={isEditPage && !item.errObj?.isPhoneEdit ? true : false}
+                                              onChange={(value, e) => this.handleChange(idx, e, "phone", "staff", value)}
+                                              onlyCountries={[countryCodeLower]}
+                                              autoFormat
+                                              disableDropdown
+                                              disableCountryCode
+                                            />
+                                            {item.errObj?.mobilenumberErr && (
+                                              <span className="error">{item.errObj.mobilenumberErr} </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <Input
+                                          type="text"
+                                          className="form-control"
+                                          name="email"
+                                          placeHolder="Eg.abc@mail.com"
+                                          value={item.email}
+                                          onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
+                                          onKeyUp={(e: any) => this.validateEmail(e.target.value, idx, "staff")}
+                                        />
+                                        {item.errObj?.emailErr && <span className="error">{item.errObj.emailErr} </span>}
+                                      </td>
+                                      <td
+                                        style={{
+                                          display: "flex",
+                                        }}
+                                      >
+                                        <div>
+                                          <CustomSwitch
+                                            checked={userData.ownerRows[0].active ? item.active : false}
+                                            onChange={(e: any) => this.handleChange(idx, e, "", "staff", "")}
+                                            name="active"
+                                          />
+                                        </div>
+                                        <div>
+                                          {/* {idx ===
+                                            userData.staffdetails.length - 1 &&
+                                          userData.staffdetails.length < 4 ? (
+                                            <img
+                                              style={{
+                                                width: "50px",
+                                                height: "50px",
+                                              }}
+                                              src={AddBtn}
+                                              onClick={() =>
+                                                this.handleAddRow("staff")
+                                              }
+                                            />
+                                          ) : (
+                                            <img
+                                              style={{
+                                                width: "50px",
+                                                height: "50px",
+                                              }}
+                                              src={RemoveBtn}
+                                              onClick={this.handleRemoveSpecificRow(
+                                                idx,
+                                                "staff"
+                                              )}
+                                            />
+                                          )} */}
+
+                                          {idx === userData.staffdetails.length - 1 && userData.staffdetails.length < 4 ? (
+                                            (() => {
+                                              if (idx === 0 && idx === userData.staffdetails.length - 1) {
+                                                return (
+                                                  <div>
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      alt=""
+                                                      onClick={() => this.handleAddRow("staff")}
+                                                    />
+                                                  </div>
+                                                );
+                                              } else if (idx > 0 && idx === userData.staffdetails.length - 1) {
+                                                return (
+                                                  <div>
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        visibility:
+                                                          isEditPage &&
+                                                          this.props.location.state?.userFields.storewithmultiuser
+                                                            ? "hidden"
+                                                            : "visible",
+                                                      }}
+                                                      src={RemoveBtn}
+                                                      alt=""
+                                                      onClick={this.handleRemoveSpecificRow(idx, "staff")}
+                                                    />
+
+                                                    <img
+                                                      style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                      }}
+                                                      src={AddBtn}
+                                                      alt=""
+                                                      onClick={() => this.handleAddRow("staff")}
+                                                    />
+                                                  </div>
+                                                );
+                                              }
+                                            })()
+                                          ) : (
+                                            <img
+                                              style={{
+                                                width: "50px",
+                                                height: "50px",
+                                                visibility:
+                                                  isEditPage && this.props.location.state?.userFields.storewithmultiuser
+                                                    ? "hidden"
+                                                    : "visible",
+                                              }}
+                                              src={RemoveBtn}
+                                              alt=""
+                                              onClick={this.handleRemoveSpecificRow(idx, "staff")}
+                                            />
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </>
+                    </div>
+                  )}
+                </>
+              )}
+              <div className="geographicLocation" style={{ width: "80%" }}>
+                {currentStep === 2 && (
+                  <>
+                    <div className="row fieldsAlign">{locationList}</div>
+                    <div className="row">
+                      <div className="col-md-8">
+                        <Input
+                          aria-label="delivery-street"
+                          type="text"
+                          className="form-control"
+                          name="deliverystreet"
+                          placeHolder="Street"
+                          value={userData.deliverystreet}
+                          onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                          width="96%"
+                        />
+                        {deliverystreetErr && <span className="error">{deliverystreetErr} </span>}
+                      </div>
+
+                      <div className="col-md-4">
+                        <Input
+                          data-testid="delivery-postal"
+                          type="text"
+                          className="form-control"
+                          name="deliveryzipcode"
+                          placeHolder="Postal Code"
+                          value={userData.deliveryzipcode}
+                          onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                          onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                        />
+                        {deliveryzipcodeErr && <span className="error">{deliveryzipcodeErr} </span>}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              {currentStep === 3 && (
+                <>
+                  {userroleType === "internal" ? (
+                    <AreaSalesManager
+                      handleChange={this.handleChange}
+                      userData={userData}
+                      asaDatas={asaDatas}
+                      asahandleChange={this.asahandleChange}
+                      role={role}
+                      countryCodeLower={countryCodeLower}
+                      currentStep={currentStep}
+                      geolevel1List={this.props.geoLevel1List}
+                      handleAddRow={this.asahandleAddRow}
+                      handleRemoveSpecificRow={this.asahandleRemoveSpecificRow}
+                      partnerhandleChange={this.partnerhandleChange}
+                      partnerDatas={this.state.partnerDatas}
+                      channelPartnersOptions={this.state.channelPartnersOptions}
+                    />
+                  ) : (
+                    <div style={{ marginTop: "-28px" }}>
+                      <div className="row fieldsAlign">
+                        <div className="col-sm-3">
+                          <Input
                             type="text"
                             className="form-control"
-                            name="email"
-                            placeHolder="Eg.abc@mail.com"
-                            value={this.state.ownerRows[idx].email}
-                            onChange={(e: any) => this.handlePersonalChange(e)}
-                            disabled={isValidatePage ? true : false}
-                            onKeyUp={(e: any)=>this.validateEmail(e)}
+                            name="taxid"
+                            placeHolder="Tax Id"
+                            value={userData.taxid}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                           />
-                          {emailErr && <span className="error">{emailErr} </span>}
-                          </td>
-                          <td style={{ display: 'flex', alignItems: 'center'}}>
-                            <div>
-                              <CustomSwitch
-                                checked={userData.activateUser}
-                                onChange={(e: any) => this.handlePersonalChange(e)}
-                                name="activateUser"
-                              />
-                              </div>
-                              <div>
-                                {idx === this.state.staffRows.length - 1 ?
-                                  <img style={{width: '50px', height: '50px'}} src={AddBtn} onClick={()=>this.handleAddRow('staff')} /> 
-                                  :  <img style={{width: '50px', height: '50px'}} src={RemoveBtn} onClick={this.handleRemoveSpecificRow(idx, 'staff')} /> }
-                              </div>
-                          </td>
-                        </tr> ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  </div>
-                  </>
-                </div>
-              </>
-            )}
+                        </div>
+                        <div className="col-sm-3">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="whtaccountname"
+                            placeHolder="Store Name"
+                            value={userData.whtaccountname}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                          />
+                          {accountnameErr && <span className="error">{accountnameErr} </span>}
+                        </div>
+                      </div>
 
-            <div className="shipping">
-              {(currentStep == 2 ) && (
-                <>
-                <div className="row fieldAlign form-group">
-                  <div className="col-md-12">
-                  <Input
-                      type="text"
-                      className="form-control"
-                      name="shippingCountry" 
-                      placeHolder="Country"
-                      value='Malawi'
-                      disabled={isValidatePage ? true : false}
-                    />
-                  </div>
-                </div>
-                <div className="row fieldAlign form-group">
-                  <div className="col-md-3">
-                    <Input
-                      type="text"
-                      className="form-control"
-                      name="shippingCountry" 
-                      placeHolder="Street"
-                      value=''
-                      disabled={isValidatePage ? true : false}
-                    />
-                  </div>
-                  <div className="col-md-3">
-                      <Dropdown
-                        name="city"
-                        label="City"
-                        options={options}
-                        handleChange={this.handlePersonalChange}
-                        value=''
-                        isPlaceholder
-                        isDisabled = {isValidatePage ? true : false} 
-                      />
-                  </div>
-                  <div className="col-md-3">
-                      <Dropdown
-                        name="state"
-                        label="State"
-                        options={options}
-                        handleChange={this.handlePersonalChange}
-                        value=''
-                        isPlaceholder
-                        isDisabled = {isValidatePage ? true : false} 
-                      />
-                  </div>
-                  <div className="col-md-3">
-                    <Input
-                      type="text"
-                      className="form-control"
-                      name="postalcode" 
-                      placeHolder="Postal Code"
-                      value={userData.postalcode}
-                      onChange={(e: any) => this.handlePersonalChange(e)}
-                      disabled={isValidatePage ? true : false}
-                    />
-                  {postalCodeErr && (
-                      <span className="error">{postalCodeErr} </span>
-                    )}
-                  </div>
-                </div>
-               </>
-              )}
-            </div>
-            <div className="geographicLocation" style={{ width: '80%'}}>
-              {(currentStep == 3 ) && (
-                  <div className="row fieldAlign form-group">
-                    {locationList}
-                  </div>
-              )}
-            </div>
-            <div>
-              {currentStep == 4 && (
-                <>
-                  <div className="row fieldAlign form-group">
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="taxid"
-                        placeHolder="Tax Id"
-                        value={userData.taxid}
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={isValidatePage ? true : false}
-                      />
-                      {taxIdErr && <span className="error">{taxIdErr} </span>}
+                      <div
+                        className="row"
+                        style={{
+                          marginTop:
+                            ownernameErr === "" ||
+                            ownernameErr === "undefined" ||
+                            accountnameErr === "" ||
+                            accountnameErr === "undefined"
+                              ? "32px"
+                              : "12px",
+                        }}
+                      >
+                        <div className="col-sm-3">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="whtownername"
+                            placeHolder="Owner Name"
+                            value={
+                              this.state.accInfo
+                                ? userData.ownerRows[0].firstname + " " + userData.ownerRows[0].lastname
+                                : userData.whtownername
+                            }
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            read-only={this.state.accInfo ? "true" : "false"}
+                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                          />
+                          <div>{ownernameErr && <span className="error">{ownernameErr} </span>}</div>
+                        </div>
+                        <div className="col-sm-6">
+                          <label className="font-weight-bold">Same as Personal Info</label>
+                          <CustomSwitch
+                            checked={this.state.accInfo}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            name="accInfo"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        className="row"
+                        style={{
+                          width: "80%",
+                          marginTop:
+                            ownernameErr === "" ||
+                            ownernameErr === "undefined" ||
+                            accountnameErr === "" ||
+                            accountnameErr === "undefined"
+                              ? "32px"
+                              : "12px",
+                        }}
+                      >
+                        {locationList}
+                      </div>
+                      <div className="row" style={{ width: "81%" }}>
+                        <div className="col-md-8">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="billingstreet"
+                            placeHolder="Street"
+                            value={this.state.accInfo ? userData.deliverystreet : userData.billingstreet}
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            read-only={this.state.accInfo ? "true" : "false"}
+                            width="96%"
+                          />
+                          {!accInfo && billingstreetErr && <span className="error">{billingstreetErr} </span>}
+                        </div>
+                        <div className="col-sm-4">
+                          <Input
+                            type="text"
+                            className="form-control"
+                            name="billingzipcode"
+                            placeHolder="Postal Code"
+                            onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
+                            onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
+                            read-only={this.state.accInfo ? "true" : "false"}
+                            value={this.state.accInfo ? userData.deliveryzipcode : userData.billingzipcode}
+                          />
+                          {!accInfo && billingzipcodeErr && <span className="error">{billingzipcodeErr} </span>}
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="accountname"
-                        placeHolder="Account Name"
-                        value={userData.accountname}
-                        onChange={this.handlePersonalChange}
-                        disabled={isValidatePage ? true : false}
-                      />
-                      {accNameErr && (
-                        <span className="error">{accNameErr} </span>
-                      )}
-                    </div>
-                    <div className="col-sm-3">
-                      <label className="font-weight-bold">Same as Personal Info</label>
-                      <CustomSwitch
-                        checked={this.state.accInfo}
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        name="accInfo"
-                        disabled={isValidatePage ? true : false}
-                      />
-                    </div>
-                  </div>
-                  <div className="row fieldAlign form-group">
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="whtcountry" 
-                        placeHolder="Country"
-                        value='Malawi'
-                        disabled={isValidatePage ? true : false}
-                      />
-                    </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="ownername" 
-                        placeHolder="Owner Name"
-                        value=''
-                        disabled={isValidatePage ? true : false}
-                      />
-                    </div>
-                  </div>
-                  <div className="row fieldAlign form-group">
-                    <div className="col-md-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="whtcountry" 
-                        placeHolder="Street"
-                        value=''
-                        disabled={this.state.accInfo || isValidatePage ? true : false}
-                      />
-                    </div>
-                    <div className="col-md-3">
-                        <Dropdown
-                          name="whtcity"
-                          label="City"
-                          options={options}
-                          handleChange={this.handlePersonalChange}
-                          value=''
-                          isPlaceholder
-                          isDisabled={this.state.accInfo || isValidatePage ? true : false}
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <Dropdown
-                          name="whtstate"
-                          label="State"
-                          options={options}
-                          handleChange={this.handlePersonalChange}
-                          value=''
-                          isPlaceholder
-                          isDisabled={this.state.accInfo || isValidatePage ? true : false}
-                        />
-                    </div>
-                    <div className="col-sm-3">
-                      <Input
-                        type="text"
-                        className="form-control"
-                        name="whtpostalcode"
-                        placeHolder="Postal Code"
-                        onChange={(e: any) => this.handlePersonalChange(e)}
-                        disabled={this.state.accInfo || isValidatePage ? true : false}
-                        value={
-                          this.state.accInfo
-                            ? userData.postalcode
-                            : userData.whtpostalcode
-                        }
-                      />
-                      {postalCodeTaxErr && (
-                        <span className="error">{postalCodeTaxErr} </span>
-                      )}
-                    </div>
-                  </div>
-                  </>
+                  )}
+                </>
               )}
             </div>
           </div>
-        </div>
 
-        <div
-          className="submit"
-          style={{ position: "absolute", bottom: "32px", marginLeft: currentStep == 1 ? "510px" : "350px" }}
-        >
-          <div className="">
-            {currentStep !== 1 && (
-              <button
-                className="btn btn-outline-secondary buttonStyle"
-                style={{ marginRight: "30px" }}
-                onClick={(e) => this.handleClick("back", e)}
-              >
-                Back
+          <div
+            className="submit"
+            style={{
+              position: "absolute",
+              bottom: "10px",
+              marginLeft:
+                currentStep === 1
+                  ? "350px"
+                  : currentStep === 3 && this.props.location?.page === "validate"
+                  ? "200px"
+                  : "275px",
+            }}
+          >
+            <div className="">
+              {currentStep !== 1 && (
+                <button className="cus-btn-user reset buttonStyle" onClick={(e) => this.handleClick("back", e)}>
+                  <span>
+                    <img src={ArrowIcon} alt="" className="arrow-i" />
+                  </span>
+                  Back
+                </button>
+              )}
+              {isEditPage && currentStep === 1 && (
+                <button className="cus-btn-user reset buttonStyle" onClick={() => this.props.history.push("/userList")}>
+                  Cancel
+                </button>
+              )}
+              <button className="cus-btn-user reset buttonStyle" onClick={() => this.reset()}>
+                Reset All
               </button>
-            )}
-             {!this.props.location?.state &&
-            <button
-              className="btn btn-outline-secondary buttonStyle"
-              onClick={() => this.reset()}
-            >
-              Reset
-            </button>
-            }
-            {this.props.location?.state && currentStep===4 &&
-             <button
-             className="btn btn-decline buttonStyle"
-             onClick={() => this.declineUser()}
-           >
-             Decline
-           </button>
-            }
+              {nextButton}
+              {this.props.location?.page === "validate" && currentStep === 3 && (
+                <button className="btn buttonStyle dec-btn-user" onClick={() => this.declineUser()}>
+                  Decline
+                </button>
+              )}
+            </div>
+            {/* <div className=""></div> */}
           </div>
-          <div className="">{nextButton}</div>
         </div>
-      </div>
+      </AUX>
     );
   }
 }
+const mapStateToProps = ({ common: { isLoader, geoLevel1List, errorMessage } }: any) => {
+  return {
+    isLoader,
+    geoLevel1List,
+    errorMessage,
+  };
+};
 
-export { CreateUser };
+const mapDispatchToProps = {
+  getGeographicLevel1Options: getGeographicLevel1Options,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateUser);

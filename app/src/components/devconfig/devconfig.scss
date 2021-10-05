@@ -19,6 +19,11 @@
   }
 }
 
+.selectoutline {
+  border-color: gray;
+  outline: none;
+}
+
 .tableStyle {
   border: none !important;
   text-align: center;
@@ -34,15 +39,24 @@
   width: 185px;
 }
 
+.tableLastHeaderStyle {
+  border: none !important;
+  text-align: Left;
+  vertical-align: middle !important;
+  width: 120px;
+}
 .tablebtnStyle {
   border: none !important;
   width: 35px;
   height: 35px;
+  img{
+    cursor: pointer;
+  }
 }
 
 .dpstyle {
   width: 185px;
-  height: 35px;
+  height: 40px;
 }
 
 .btnStyleAdd {
@@ -65,7 +79,7 @@
 }
 
 .tableScrollStyle {
-  max-height: 280px;
+  max-height: 42vh;
   overflow-y: auto;
 }
 
@@ -90,7 +104,7 @@
 /* width */
 ::-webkit-scrollbar {
   height: 4px;
-  width: 4px;
+  width: 5px;
 }
 
 /* Track */
@@ -106,4 +120,116 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+input:read-only {
+  background-color: white;
+}
+
+//Table design
+.devconfig {
+  table {
+    text-align: left;
+    border-collapse: collapse;
+    font-size: 12px;
+    font-family: "appRegular" !important;
+  }
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 0.25rem;
+    vertical-align: baseline !important;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: left;
+    background-color: #ffffff;
+    z-index: 1;
+  }
+
+  // th {
+  //   background: white;
+  //   position: sticky;
+  //   top: 0; /* Don't forget this, required for the stickiness */
+  // }
+}
+//product-categeory
+.product-categeory {
+  margin-left: 60px;
+  button {
+    width: 100px;
+  }
+}
+
+//button style
+.cus-btn-dev {
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  color: #ffffff;
+  background-color: #7eb343 !important;
+  width: 180px;
+  height: 35px;
+  border-radius: 20px;
+  margin-left: 30px;
+  border: 1px solid #7eb343 !important;
+  box-shadow: 0px 1px 3px #0000004d;
+  background: url("../../assets/icons/right_btn.svg") no-repeat right;
+  position: relative;
+  span {
+    position: absolute;
+    right: 30px;
+    line-height: 1;
+  }
+
+  .layout {
+    width: 66%;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+}
+
+.cus-btn-dev.reset {
+  background-color: #ffffff !important;
+  border: 1px solid #dee2e6;
+  color: #10384f;
+  border: 1px solid #7eb343 !important;
+  box-shadow: 0px 1px 3px #0000004d;
+}
+
+@media only screen and (max-width: 1368px) {
+  .label {
+    font-size: 12px;
+    font-family: "appRegular" !important;
+  }
+
+  .card-container {
+    height: 550px;
+    background: white !important;
+  }
+}
+
+@media only screen and (min-width: 1368px) and (max-width: 1920px) {
+  .label {
+    font-size: 14px !important;
+    font-family: "appRegular" !important;
+  }
+
+  .card-container {
+    height: 640px;
+    background: white !important;
+  }
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl {
+    max-width: 1250px;
+  }
 }

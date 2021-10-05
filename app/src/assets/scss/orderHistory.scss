@@ -1,0 +1,39 @@
+//order history table component
+.order-history-table {
+	.filter-status {
+		display: flex;
+		align-items: center;
+		.status-list {
+			margin-left: 12px;
+			button {
+				font-size: 12px;
+			}
+		}
+	}
+
+	.filterRow {
+		margin-right: 15px;
+	}
+}
+//order product popup components
+.order-product-popup {
+	.progressBar li {
+		&.active {
+			&.join {
+				&::after {
+                    width: calc(44.3% - 35px) !important;
+				}
+			}
+            &.dotline-pending {
+				&::after {
+                    width: calc(75% - 35px) !important;
+				}
+			}
+		}
+	}
+    .line-cnt {
+        &.pending-center{
+            left: 46% !important;
+        }
+    }
+}

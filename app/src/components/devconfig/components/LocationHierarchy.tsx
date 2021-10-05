@@ -1,149 +1,257 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux'
+import React from "react";
+import { connect } from "react-redux";
 import "../../devconfig/devconfig.scss";
-import plus_icon from "../../../assets/icons/plus_icon.svg";
-import minus from "../../../assets/icons/minus.svg";
-import { addLocationDpList, addLocationInputList } from '../../../redux/actions';
-export interface IFormValue {
-    id: string;
-    label: string;
-}
+import AddBtn from "../../../assets/icons/add_btn.svg";
+import RemoveBtn from "../../../assets/icons/Remove_row.svg";
+import { addLocationInputList } from "../../../redux/actions";
+import { handledropdownoption } from "../../../utility/helper";
+import { ConfigSelect } from "../../../utility/widgets/dropdown/ConfigSelect";
 
 interface ILocationProps {
-    location: any;
-    setDpList: (data: any) => void;
-    setInputList: (data: any) => void;
-}
-
-export interface IDropdownValue {
-    id: string;
-    value: string[];
-}
-
-interface IParentLoaction {
-    locationhierarchy: string;
-    parentlocation: IDropdownValue[];
+  location: any;
+  setInputList: (data: any) => void;
+  getValidation: () => void;
+  inputList: Array<any>;
+  isValidNext: boolean;
 }
 
 const LocationHierarchy = (props: ILocationProps) => {
-    const { location: { dpList, inputList }, setDpList, setInputList } = props;
-    // const [dpList, setDpList] = useState([{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]);
-    // const [inputList, setInputList] = useState([{ locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]);
-    const [valSelected, setValSelected] = useState('NA');
+  const { inputList, setInputList, getValidation, isValidNext } = props;
 
-
-    // handle input change
-    const handleInputChange = (e: any, index: any) => {
-        const { name, value } = e.target;
-        const list: any = [...inputList];
-        list[index][name] = value;
-        setInputList(list);
-    };
-
-
-    // handle click event of the Remove button
-    const handleRemoveClick = (index: any) => {
-        const list = [...inputList];
-        list.splice(index, 1);
-        setInputList(list);
-        const dpLt = [...dpList]
-        dpLt.splice(index, 1)
-        setDpList(dpLt);
-    };
-
-
-
-    // handle click event of the Add button
-    const handleAddClick = (index: any) => {
-
-
-        setDpList([...inputList]);
-        setInputList([...inputList, { locationhierarchy: "", parentlocation: { id: 0, value: "NA" } }]);
-        const list = [...inputList];
-        const list1 = [...dpList];
-
-    };
-
-    const handleDropdownChange = (event: any, index: any) => {
-
-        // const key = event.target.name;
-        // const value = event.target.value;
-
-        const { name, value } = event.target;
-        const list: any = [...inputList];
-        list[index].parentlocation.value = value;
-        setInputList(list);
-        setValSelected(event.target.value);
+  // handle input change
+  const handleInputChange =(e: any, index: any) => {
+    const { name, value } = e.target;
+    const list: any = [...inputList];
+    if (value) {
+      const isDuplicate = list.find(
+        (duplicate: any) =>
+          duplicate[name].toLowerCase() === value.toLowerCase()
+      );
+      if (isDuplicate) {
+        getValidation();
+        list[index]["isDuplicate"] = true;
+      } else {
+        list[index]["isDuplicate"] = false;
+      }
     }
 
-    return (
-        <div className="col-md-10">
-            <div className="container">
-                <div className="row">
-                    <div className="col-xs-12 col-md-8  column tableScrollStyle">
-                        <table className="table" id="tab_logic">
-                            <thead className="tableStyle">
-                                <tr>
-                                    <th className="text-center tableStyle">Location Level</th>
-                                    <th className="tableHeaderStyle">Location Hierarchy Name</th>
-                                    <th className="tableHeaderStyle">Parent Location</th>
-                                    <th className="tablebtnStyle" />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {inputList.map((item: any, idx: number) => (
-                                    <tr id="addr0" key={idx}>
-                                        <td className="tableStyle">{idx}</td>
-                                        <td className="tableHeaderStyle">
-                                            <input className="form-control dpstyle"
-                                                type="text"
-                                                name="locationhierarchy"
-                                                value={item.locationhierarchy}
-                                                onChange={e => handleInputChange(e, idx)}
-                                                data-id={idx}
-                                            />
-                                        </td>
+    list[index][name] = value;
+    setInputList(list)
 
-                                        <td className="tableHeaderStyle">
-                                            <select defaultValue="NA" name="parentlocation" data-id={idx} className="dpstyle" id="dropdown" value={item.parentlocation.value} onChange={(event) => handleDropdownChange(event, idx)}>
-                                                <option value="NA" key="NA">NA</option>
-                                                {idx > 0 && dpList.length > 0 && (
-                                                    dpList.map(({ locationhierarchy }: any, index: number) => (
-                                                        index < idx && <option value={locationhierarchy} key={locationhierarchy}>
-                                                            {locationhierarchy}
-                                                        </option>
-                                                    ))
+  };
+  
+ 
+  // handle click event of the Remove button
+  const handleRemoveClick = (index: any) => {
+    let list = [...inputList];
+    list.splice(index, 1);
+    list = setCorrectHierLvl(list, index);
+    setInputList(list);
+  };
 
-                                                )}
-                                            </select>
-                                        </td>
-                                        <td className="tablebtnStyle">
-                                            {idx === inputList.length - 1 ? (
-                                                <button className="btn btnStyleAdd" onClick={() => handleAddClick(idx)}><img src={plus_icon} /></button>
-                                            ) : (
-                                                    <button className="btn btnStyleRemove" onClick={() => handleRemoveClick(idx)}><img src={minus} /></button>
-                                                )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+  // handle click event of the Add button
+  const handleAddClick = (index: any) => {
+    const data = inputList[index];
+    getValidation();
+    if (data.name && !data.isDuplicate) {
+      setInputList([
+        ...inputList,
+        {
+          level: inputList.length,
+          name: "",
+          parentlevel: inputList.length -1,
+        },
+      ]);
+    }
+  };
+
+  const handleDropdownChange = (event: any, index: any) => {
+    const { value } = event.target;
+    const list: any = [...inputList];
+    list[index].parentlevel = value;
+    setInputList(list);
+  };
+
+  const setCorrectHierLvl = (list: any, index: number) => {
+    const newList = list.map((listItem: any, idx: number) => {
+      return {
+        ...listItem,
+        level: idx,
+        parentlevel:
+          listItem.parentlevel >= index
+            ? listItem.parentlevel - 1
+            : listItem.parentlevel,
+        // parentlocation : listItem.parentlocation === index ? -1 : listItem.parentlocation > index ? listItem.parentlocation-1 : listItem.parentlocation
+      };
+    });
+    return newList;
+  };
+
+  const LocationDetailsOption = handledropdownoption(
+    inputList,
+    "name"
+  );
+
+
+  return (
+    <div className="col-md-12">
+      <div className="container">
+        <div className="row">
+          <div className="col-xs-12 col-md-8  column tableScrollStyle">
+            <table className="devconfig table label" id="tab_logic">
+              <thead className="tableStyle">
+                <tr>
+                  <th className="text-center tableStyle">Location Level</th>
+                  <th className="tableHeaderStyle">Location Hierarchy Name</th>
+                  <th className="tableHeaderStyle">Parent Location</th>
+                  <th className="tablebtnStyle" />
+                </tr>
+              </thead>
+              <tbody>
+                {inputList.length > 0 &&
+                  inputList.map((item: any, idx: number) => (
+                    <tr id="addr0" key={idx}>
+                      <td className="tableStyle">{idx}</td>
+                      <td className="tableHeaderStyle">
+                        <input
+                          className={`form-control dpstyle label ${
+                            item?.error && isValidNext ? "invalid" : ""
+                          }`}
+                          type="text"
+                          name="name"
+                          value={item.name}
+                          onChange={(e) => handleInputChange(e, idx)}
+                          data-id={idx}
+                          onBlur={getValidation}
+                        />
+                        {item?.error && isValidNext && (
+                          <span className="error">
+                            {"Please enter Location Hierarchy"}
+                          </span>
+                        )}
+                        {item?.isDuplicate && isValidNext && (
+                          <span className="error">
+                            {item.name + " already exists"}
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="tableHeaderStyle">
+                        {/* <select
+                          defaultValue="NAA"
+                          name="parentlocation"
+                          data-id={idx}
+                          className="dpstyle selectoutline label"
+                          id="dropdown"
+                          value={item.parentlocation}
+                          onChange={(event) => handleDropdownChange(event, idx)}
+                        >
+                          <option value="NA" key="NA">
+                            NA
+                          </option>
+                          {idx > 0 &&
+                            inputList.length > 0 &&
+                            inputList.map(
+                              ({ locationhiername }: any, index: number) =>
+                                index < idx && (
+                                  <option value={index} key={locationhiername}>
+                                    {locationhiername}
+                                  </option>
+                                )
+                            )}
+                        </select> */}
+
+                        <ConfigSelect
+                          defaultValue="NA"
+                          name="parentlocation"
+                          options={LocationDetailsOption}
+                          handleChange={(event: any) =>
+                            handleDropdownChange(event, idx)
+                          }
+                          value={
+                            item.parentlevel === -1
+                              ? "NA"
+                              : item.parentlevel
+                          }
+                          isPlaceholder
+                          parentIndex={idx}
+                          locationHierarchySelected={true}
+                        />
+                        {/* {!item.parentlocation&& isValidNext&&(
+                          <span className="error">
+                            {"Please select the Role type"}
+                          </span>
+                        )} */}
+                      </td>
+                      <td className="tablebtnStyle">
+                        {idx === inputList.length - 1 ? (
+                          (() => {
+                            if (idx === 0 && idx === inputList.length - 1) {
+                              return (
+                                <div>
+                                  <img
+                                    alt=""
+                                    style={{ width: "50px", height: "50px" }}
+                                    src={AddBtn}
+                                    onClick={() => handleAddClick(idx)}
+                                  />
+                                </div>
+                              );
+                            } else if (
+                              idx > 0 &&
+                              idx === inputList.length - 1
+                            ) {
+                              return (
+                                <div>
+                                  <td style={{ border: "none" }}>
+                                    <img
+                                      alt=""
+                                      style={{ width: "50px", height: "50px" }}
+                                      src={RemoveBtn}
+                                      onClick={() => handleRemoveClick(idx)}
+                                    />
+                                  </td>
+
+                                  <td style={{ border: "none" }}>
+                                    <img
+                                      alt=""
+                                      style={{ width: "50px", height: "50px" }}
+                                      src={AddBtn}
+                                      onClick={() => handleAddClick(idx)}
+                                    />
+                                  </td>
+                                </div>
+                              );
+                            }
+                          })()
+                        ) : (
+                          <img
+                            alt=""
+                            style={{ width: "50px", height: "50px" }}
+                            src={RemoveBtn}
+                            onClick={() => handleRemoveClick(idx)}
+                          />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 const mapStateToProps = ({ devconfig: { location } }: any) => {
-    return {
-        location
-    }
-}
+  return {
+    location,
+  };
+};
 
 const mapDispatchToProps = {
-    setDpList: addLocationDpList,
-    setInputList: addLocationInputList
-}
+  setInputList: addLocationInputList,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(LocationHierarchy)
+export default connect(mapStateToProps, mapDispatchToProps)(LocationHierarchy);

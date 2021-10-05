@@ -28,11 +28,18 @@
     letter-spacing: 0px;
     color: #1F4359 !important;
     opacity: 1;
+    .col-12{
+      margin-left: 43px;
+    }
+    a{
+      text-decoration: underline;
+      color: #00BCFF;
+    }
 }
 
 
 
-.container {
+.login-container {
     display: block;
     position: relative;
     padding-left: 23px;
@@ -43,11 +50,27 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 18px;
+      width: 18px;    
+      border-radius: 15px;
+      border: 1px solid #adb5bd;
+    }
+    /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
     
   }
   
   /* Hide the browser's default checkbox */
-  .container input {
+  .login-container input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -55,41 +78,29 @@
     width: 0;
   }
   
-  .checkmark {
-    position: absolute;
-    top: 3px;
-    left: 0;
-    height: 15px;
-    width: 15px;    
-    border-radius: 15px;
-    border: 1px solid #1F4359;
-  }
+  
   
   /* On mouse-over, add a grey background color */
-  .container:hover input ~ .checkmark {
+  .login-container:hover input ~ .checkmark {
     // background-color: #ccc;
   }
   
-  .container input:checked ~ .checkmark {
+  .login-container input:checked ~ .checkmark {
     background-color: $primary;
+    border: 1px solid #00bcff;
   }
   
-  /* Create the checkmark/indicator (hidden when not checked) */
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
+  
   
   /* Show the checkmark when checked */
-  .container input:checked ~ .checkmark:after {
+  .login-container input:checked ~ .checkmark:after {
     display: block;
   }
   
   /* Style the checkmark/indicator */
-  .container .checkmark:after {
+  .login-container .checkmark:after {
     left: 6px;
-    top: 0px;
+    top: 2px;
     width: 5px;
     height: 10px;
     border: solid white;

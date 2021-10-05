@@ -11,16 +11,19 @@
 .dashboard {
   display: flex;
   margin: 30px;
-}
-
-@media only screen and (max-width: 1400px) {
-  .card-main {
-    height: 82vh;
+  .count {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f1f1f;
   }
-}
+  .title {
+    font-size: 16px;
+    margin-top: 5px;
+    color: #000000;
+    font-family: "appBold" !important;
+  }
 
-@media only screen and (max-width: 1920px) {
-  .card-main {
-    height: 84vh;
+  .card-list{
+    margin-right: 30px;
   }
 }
