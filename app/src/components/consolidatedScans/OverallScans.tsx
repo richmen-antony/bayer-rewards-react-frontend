@@ -12,6 +12,7 @@ import CalenderIcon from "../../assets/icons/calendar.svg";
 import _ from "lodash";
 import "react-datepicker/dist/react-datepicker.css";
 import { CustomButton } from "../../utility/widgets/button";
+import { FormattedMessage } from "react-intl";
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -90,7 +91,9 @@ export const OverallScans = ({
   return (
     <AUX>
       <div className="">
-        <label className="font-weight-bold scanlabel">overall consolidated scans</label>
+        <label className="font-weight-bold scanlabel">
+          <FormattedMessage id="consolidated.overall" />
+        </label>
         <>
           <div
             className="consolidatedSales-table overallscan"
@@ -105,15 +108,23 @@ export const OverallScans = ({
                     key="firstname"
                     className="consolidated"
                   >
-                    PARTNER NAME/ID
+                    <FormattedMessage id="consolidated.partnerName" />
                     {tableCellIndex === 0 && tableName === "overallScans" ? (
                       <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                     ) : null}
                   </th>
-                  <th className="invtHeader">SEND GOODS</th>
-                  <th className="invtHeader">RECEIVE GOODS</th>
-                  <th className="invtHeader">S2F-WALK-IN</th>
-                  <th className="invtHeader">S2F-ADVISOR</th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="consolidated.sendGoods" />
+                  </th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="consolidated.receiveGoods" />
+                  </th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="consolidated.walkIn" />
+                  </th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="consolidated.advisor" />
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -164,7 +175,7 @@ export const OverallScans = ({
                 ) : (
                   <tr style={{ height: "250px" }}>
                     <td colSpan={10} className="no-records">
-                      No records found
+                      <FormattedMessage id="noRecords" />
                     </td>
                   </tr>
                 )}
@@ -183,7 +194,10 @@ export const OverallScans = ({
             >
               <thead>
                 <tr>
-                  <th style={{ width: "28%", padding: "5px" }}>Total&nbsp;({allConsolidatedScans?.length})</th>
+                  <th style={{ width: "28%", padding: "5px" }}>
+                    <FormattedMessage id="consolidated.total" />
+                    &nbsp;({allConsolidatedScans?.length})
+                  </th>
                   <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSendGoods}</th>
                   <th style={{ width: "17%", padding: "5px", textAlign: "right" }}>{totalReceivedGoods}</th>
                   <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalWalkInSales}</th>
@@ -221,15 +235,21 @@ export const OverallScans = ({
                 </div>
                 <div className="popup-content-row">
                   <div className="content-list">
-                    <label>Username</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.userName" />{" "}
+                    </label>
                     <p>{retailerPopupData.username}</p>
                   </div>
                   <div className="content-list">
-                    <label>Store Name</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.storeName" />
+                    </label>
                     <p>{retailerPopupData.accountname}</p>
                   </div>
                   <div className="content-list">
-                    <label>Phone Number</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.phoneNo" />
+                    </label>
                     <p>{retailerPopupData.phonenumber}</p>
                   </div>
                   {geoLevelsName?.length > 0 &&
@@ -248,7 +268,9 @@ export const OverallScans = ({
                       );
                     })}
                   <div className="content-list">
-                    <label>Postal Code</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.postalCode" />
+                    </label>
                     <p>{retailerPopupData.postalcode}</p>
                   </div>
                 </div>
@@ -257,7 +279,7 @@ export const OverallScans = ({
           </DialogContent>
           <DialogActions>
             <CustomButton
-              label="Filter scans"
+              label={<FormattedMessage id="button.filterScans" />}
               style={{
                 borderRadius: "30px",
                 backgroundColor: "#7eb343",

@@ -15,7 +15,6 @@
     "apply": "Apply",
     "download": "Download",
     "decline": "Decline",
-    "approve": "Approve",
     "ok": "OK",
     "validateandapprove": "Validate & Approve"
   },
@@ -56,7 +55,11 @@
     "userType": "User Type",
     "upload": "Upload",
     "scannedBy": "Scanned By",
-    "scanType": "Scan Type"
+    "scanType": "Scan Type",
+    "scannedPeriod": "Scanned Period",
+    "productGroup": "Product Group",
+    "from": "From",
+    "to": "To"
   },
   "download": {
     "download": "Download",
@@ -222,6 +225,20 @@
     "smsAuthentication": "SMS Authentication",
     "digitalScan": "Digital Scan",
     "smartLabel": "Smart Label"
+  },
+  "consolidated": {
+    "consolidated": "Consolidated Scans",
+    "overall": "overall consolidated scans",
+    "productBrand": "product brand wise scans",
+    "product": "product wise scans",
+    "productHeader": "PRODUCT",
+    "partnerName": "PARTNER NAME/ID",
+    "brand": "BRAND",
+    "sendGoods": "SEND GOODS",
+    "receiveGoods": "RECEIVE GOODS",
+    "walkIn": "S2F-WALK-IN",
+    "advisor": "S2F-ADVISOR",
+    "total": "Total"
   },
   "common": {
     "from": "From",

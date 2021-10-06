@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState, useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,11 +9,11 @@ import Filter from "../../containers/grid/Filter";
 import OverallScans from "./OverallScans";
 import ProductBrandList from "./ProductBrandList";
 import ProductList from "./ProductList";
-import {Button} from "reactstrap";
-import {sortBy} from "../../utility/base/utils/tableSort";
-import {Alert} from "../../utility/widgets/toaster";
+import { Button } from "reactstrap";
+import { sortBy } from "../../utility/base/utils/tableSort";
+import { Alert } from "../../utility/widgets/toaster";
 import Loader from "../../utility/widgets/loader";
-import {getLocalStorageData} from "../../utility/base/localStore";
+import { getLocalStorageData } from "../../utility/base/localStore";
 import CalenderIcon from "../../assets/icons/calendar.svg";
 import ArrowIcon from "../../assets/icons/tick.svg";
 import RtButton from "../../assets/icons/right_btn.svg";
@@ -33,7 +33,8 @@ import {
 } from "../../redux/actions/consolidatedScans/consolidatedScans";
 import ReactSelect from "../../utility/widgets/dropdown/ReactSelect";
 import _ from "lodash";
-import {RSM_ROLE, SCANNED_DATE, PRODUCT_GROUP} from "../../utility/constant";
+import { RSM_ROLE, SCANNED_DATE, PRODUCT_GROUP } from "../../utility/constant";
+import { FormattedMessage } from "react-intl";
 
 let obj: any = getLocalStorageData("userData");
 let userData = JSON.parse(obj);
@@ -41,24 +42,24 @@ let userData = JSON.parse(obj);
 const ConsolidatedScans = (Props: any) => {
   let closeToggle: any;
   const dispatch = useDispatch();
-  const geolevel1List = useSelector(({common}: any) => common?.geoLevel1List);
-  const geographicFields = useSelector(({common}: any) => common?.geographicFields);
-  const levelsName = useSelector(({common}: any) => common?.levelsName);
-  const commonErrorMessage = useSelector(({common}: any) => common?.errorMessage);
-  const allConsolidatedScans = useSelector(({consolidatedScans}: any) => consolidatedScans?.allConsolidatedScans);
-  const scannedBrands = useSelector(({consolidatedScans}: any) => consolidatedScans?.scannedBrands);
-  const scannedProducts = useSelector(({consolidatedScans}: any) => consolidatedScans?.scannedProducts);
-  const isReduxLoader = useSelector(({consolidatedScans}: any) => consolidatedScans?.isLoader);
+  const geolevel1List = useSelector(({ common }: any) => common?.geoLevel1List);
+  const geographicFields = useSelector(({ common }: any) => common?.geographicFields);
+  const levelsName = useSelector(({ common }: any) => common?.levelsName);
+  const commonErrorMessage = useSelector(({ common }: any) => common?.errorMessage);
+  const allConsolidatedScans = useSelector(({ consolidatedScans }: any) => consolidatedScans?.allConsolidatedScans);
+  const scannedBrands = useSelector(({ consolidatedScans }: any) => consolidatedScans?.scannedBrands);
+  const scannedProducts = useSelector(({ consolidatedScans }: any) => consolidatedScans?.scannedProducts);
+  const isReduxLoader = useSelector(({ consolidatedScans }: any) => consolidatedScans?.isLoader);
   // const errorMessage         = useSelector(({consolidatedScans}:any) => consolidatedScans?.errorMessage);
 
   const [searchText, setSearchText] = useState<string>("");
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [dateErrMsg, setDateErrMsg] = useState<string>("");
   const [partnerTypeList, setpartnerTypeList] = useState([
-    {value: "Distributors", label: "Distributors"},
-    {value: "Retailers", label: "Retailers"},
+    { value: "Distributors", label: "Distributors" },
+    { value: "Retailers", label: "Retailers" },
   ]);
-  const [partnerType, setPartnerType] = useState({type: "Retailers"});
+  const [partnerType, setPartnerType] = useState({ type: "Retailers" });
   const [selectedDistributorName, setselectedDistributorName] = useState("");
   const [selectedBrandName, setselectedBrandName] = useState("");
   const [selectedDistributor, setselectedDistributor] = useState(0);
@@ -131,7 +132,7 @@ const ConsolidatedScans = (Props: any) => {
         filteredDatas = getFilteredDatas(filteredDatas);
       }
       let partnertype = partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR";
-      filteredDatas = {...filteredDatas, partnertype: partnertype};
+      filteredDatas = { ...filteredDatas, partnertype: partnertype };
       dispatch(getScannedBrands(soldbyid, isFiltered, filteredDatas));
     } else {
       dispatch(setselectedBrandList([]));
@@ -151,7 +152,7 @@ const ConsolidatedScans = (Props: any) => {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
     let partnertype = partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR";
-    filteredDatas = {...filteredDatas, partnertype: partnertype};
+    filteredDatas = { ...filteredDatas, partnertype: partnertype };
     dispatch(getScannedProducts(soldbyid, isFiltered, selectedBrandName, filteredDatas));
   }, [scannedBrandsSuccess]);
 
@@ -167,7 +168,7 @@ const ConsolidatedScans = (Props: any) => {
       let filteredDatas = {};
       if (isFiltered) {
         filteredDatas = getFilteredDatas(filteredDatas);
-        data = {...data, ...filteredDatas};
+        data = { ...data, ...filteredDatas };
       }
       dispatch(getOverallScans(data));
     }
@@ -194,7 +195,7 @@ const ConsolidatedScans = (Props: any) => {
       filteredDatas = getFilteredDatas(filteredDatas);
     }
     let partnertype = partnerType.type === "Retailers" ? "RETAILER" : "DISTRIBUTOR";
-    filteredDatas = {...filteredDatas, partnertype: partnertype};
+    filteredDatas = { ...filteredDatas, partnertype: partnertype };
     dispatch(getScannedProducts(soldby, isFiltered, productbrand, filteredDatas));
     setselectedBrand(idx);
     scannedBrands?.forEach((item: any, index: number) => {
@@ -230,8 +231,8 @@ const ConsolidatedScans = (Props: any) => {
 
   const getCountryList = () => {
     let res = [
-      {value: "India", text: "India"},
-      {value: "Malawi", text: "Malawi"},
+      { value: "India", text: "India" },
+      { value: "Malawi", text: "Malawi" },
     ];
     setcountryList(res);
   };
@@ -247,13 +248,13 @@ const ConsolidatedScans = (Props: any) => {
   const getDynamicOptionFields = (reset?: string) => {
     let level1List: any = geolevel1List;
     if (!reset) {
-      let allItem = {code: "ALL", name: "ALL", geolevel2: []};
+      let allItem = { code: "ALL", name: "ALL", geolevel2: [] };
       level1List?.unshift(allItem);
     }
     dispatch(setGeolevel1Options(level1List));
     let level1Options: any = [];
     geolevel1List?.forEach((item: any) => {
-      let level1Info = {label: item.name, code: item.code, value: item.name};
+      let level1Info = { label: item.name, code: item.code, value: item.name };
       level1Options.push(level1Info);
     });
     let setFormArray: any = [];
@@ -266,7 +267,7 @@ const ConsolidatedScans = (Props: any) => {
       let filteredLevel1: any = geolevel1List?.filter((list: any) => list.name === userData?.geolevel1);
       filteredLevel1 &&
         filteredLevel1[0]?.geolevel2?.forEach((item: any) => {
-          let level2Info = {label: item.name, value: item.name, code: item.code};
+          let level2Info = { label: item.name, value: item.name, code: item.code };
           level2Options.push(level2Info);
         });
       let geolevel2Obj = {
@@ -276,7 +277,7 @@ const ConsolidatedScans = (Props: any) => {
       };
       level2Options.unshift(geolevel2Obj);
     } else {
-      let level1Info = {label: "ALL", value: "ALL"};
+      let level1Info = { label: "ALL", value: "ALL" };
       level2Options.push(level1Info);
     }
     let usergeolevel1 = userData?.geolevel1;
@@ -292,7 +293,7 @@ const ConsolidatedScans = (Props: any) => {
             ? level1Options
             : list === "geolevel2"
             ? level2Options
-            : [{label: "ALL", value: "ALL"}],
+            : [{ label: "ALL", value: "ALL" }],
         error: "",
       });
     });
@@ -300,13 +301,13 @@ const ConsolidatedScans = (Props: any) => {
   };
 
   const getOptionLists = (cron: any, type: any, value: any, index: any) => {
-    let newvalue = {label: value, name: value};
+    let newvalue = { label: value, name: value };
     let dynamicFieldVal: any = dynamicFields;
     if (type === "geolevel1") {
       let filteredLevel1: any = geolevel1List?.filter((level1: any) => level1.name === value);
       let level2Options: any = [];
       filteredLevel1[0]?.geolevel2.forEach((item: any) => {
-        let level1Info = {label: item.name, value: item.name, code: item.code};
+        let level1Info = { label: item.name, value: item.name, code: item.code };
         level2Options.push(level1Info);
       });
       let geolevel1Obj = {
@@ -314,7 +315,7 @@ const ConsolidatedScans = (Props: any) => {
         value: "ALL",
         code: "ALL",
       };
-      let geolevel3Obj = [{label: "ALL", code: "ALL", name: "ALL", value: "ALL"}];
+      let geolevel3Obj = [{ label: "ALL", code: "ALL", name: "ALL", value: "ALL" }];
       level2Options.unshift(geolevel1Obj);
       dynamicFieldVal[index + 1].options = level2Options;
       dynamicFieldVal[index + 2].options = geolevel3Obj;
@@ -322,7 +323,7 @@ const ConsolidatedScans = (Props: any) => {
       dynamicFieldVal[index + 1].value = "ALL";
       dynamicFieldVal[index + 2].value = "ALL";
       setdynamicFields(dynamicFieldVal);
-      setSelectedFilters({...selectedFilters, geolevel2: "ALL"});
+      setSelectedFilters({ ...selectedFilters, geolevel2: "ALL" });
     } else if (type === "geolevel2") {
       dynamicFieldVal[index].value = value;
       setdynamicFields(dynamicFieldVal);
@@ -351,7 +352,7 @@ const ConsolidatedScans = (Props: any) => {
     let filteredDatas = {};
     if (isFiltered) {
       filteredDatas = getFilteredDatas(filteredDatas);
-      data = {...data, ...filteredDatas};
+      data = { ...data, ...filteredDatas };
     }
     if (type === "overall") {
       type = "Overall_Scans";
@@ -402,7 +403,7 @@ const ConsolidatedScans = (Props: any) => {
         type: selectedOption.value,
       });
     } else {
-      setSelectedFilters({...selectedFilters, [e.name]: selectedOption.value});
+      setSelectedFilters({ ...selectedFilters, [e.name]: selectedOption.value });
     }
     setselectedDistributor(0);
     setselectedBrand(0);
@@ -414,7 +415,7 @@ const ConsolidatedScans = (Props: any) => {
     return (
       <React.Fragment key={`geolevels` + index}>
         {index !== 0 && list.name !== "geolevel3" && list.name !== "geolevel4" && list.name !== "geolevel5" && (
-          <div className="col" style={{marginBottom: "5px"}}>
+          <div className="col" style={{ marginBottom: "5px" }}>
             <ReactSelect
               name={list.name}
               label={`${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
@@ -445,9 +446,9 @@ const ConsolidatedScans = (Props: any) => {
   }
 
   const ref = React.createRef();
-  const DateInput = React.forwardRef(({onChange, placeholder, value, id, onClick}: IProps, ref: any) => (
-    <div style={{border: "1px solid grey", borderRadius: "4px"}}>
-      <img src={CalenderIcon} style={{padding: "2px 5px"}} alt="Calendar" />
+  const DateInput = React.forwardRef(({ onChange, placeholder, value, id, onClick }: IProps, ref: any) => (
+    <div style={{ border: "1px solid grey", borderRadius: "4px" }}>
+      <img src={CalenderIcon} style={{ padding: "2px 5px" }} alt="Calendar" />
       <input
         style={{
           border: "none",
@@ -488,7 +489,7 @@ const ConsolidatedScans = (Props: any) => {
         setDateErrMsg("Start Date should be greater than  End Date");
       }
     }
-    setSelectedFilters({...selectedFilters, [name]: date});
+    setSelectedFilters({ ...selectedFilters, [name]: date });
   };
 
   const applyFilter = () => {
@@ -557,7 +558,9 @@ const ConsolidatedScans = (Props: any) => {
       <div className="consolidatedSales-container">
         <div className="row">
           <div className="filterSection col-sm-12 consolidatedFilterWizard">
-            <label className="font-weight-bold">Consolidated Scans</label>
+            <label className="font-weight-bold">
+              <FormattedMessage id="consolidated.consolidated" />
+            </label>
             <Filter
               handleSearch={handleSearch}
               searchText={searchText}
@@ -573,7 +576,9 @@ const ConsolidatedScans = (Props: any) => {
                 closeToggle = node;
               }}
             >
-              <label className="font-weight-bold pt-2">Product Group</label>
+              <label className="font-weight-bold pt-2">
+                <FormattedMessage id="filter.productGroup" />
+              </label>
               <div className="form-group pt-1">
                 {productCategories.map((item: any, i: number) => (
                   <span className="mr-2 chipLabel" key={i}>
@@ -583,7 +588,7 @@ const ConsolidatedScans = (Props: any) => {
                       }
                       size="sm"
                       onClick={(e) => handleFilterChange(e, "productgroup", item)}
-                      style={{marginBottom: "5px"}}
+                      style={{ marginBottom: "5px" }}
                     >
                       {item}
                     </Button>
@@ -593,7 +598,9 @@ const ConsolidatedScans = (Props: any) => {
               <div className="form-group container" onClick={(e) => e.stopPropagation()}>
                 <div className="row column-dropdown">{locationList}</div>
               </div>
-              <label className="font-weight-bold pt-2">Scanned Period</label>
+              <label className="font-weight-bold pt-2">
+                <FormattedMessage id="filter.scannedPeriod" />
+              </label>
               <div className="pt-1">
                 {scannedPeriodsList.map((item: any, i: number) => (
                   <span className="mr-2 chipLabel" key={i}>
@@ -605,7 +612,7 @@ const ConsolidatedScans = (Props: any) => {
                       }
                       size="sm"
                       onClick={(e) => handleFilterChange(e, "scannedPeriod", item.label, item)}
-                      style={{marginBottom: "5px"}}
+                      style={{ marginBottom: "5px" }}
                     >
                       {item.label}
                     </Button>
@@ -614,11 +621,11 @@ const ConsolidatedScans = (Props: any) => {
               </div>
               {selectedFilters.scannedPeriod === "Custom" && (
                 <React.Fragment>
-                  <label className="font-weight-bold pt-2" htmlFor="order-date" style={{width: "55%"}}>
-                    From
+                  <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
+                    <FormattedMessage id="filter.from" />
                   </label>
                   <label className="font-weight-bold pt-2" htmlFor="order-todate">
-                    To
+                    <FormattedMessage id="filter.to" />
                   </label>
                   <div className="d-flex">
                     <div className="user-filter-date-picker">
@@ -661,7 +668,7 @@ const ConsolidatedScans = (Props: any) => {
                   onClick={(e) => resetFilter(e)}
                   data-testid="reset-all"
                 >
-                  Reset All
+                  <FormattedMessage id="button.resetAll" />
                 </button>
                 <button
                   className="cus-btn-consolidatedscanlog-filter"
@@ -669,7 +676,7 @@ const ConsolidatedScans = (Props: any) => {
                   disabled={dateErrMsg ? true : false}
                   data-testid="apply"
                 >
-                  Apply
+                  <FormattedMessage id="button.apply" />
                   <span>
                     <img src={ArrowIcon} className="arrow-i" alt="" /> <img src={RtButton} className="layout" alt="" />
                   </span>
@@ -678,7 +685,7 @@ const ConsolidatedScans = (Props: any) => {
             </Filter>
           </div>
         </div>
-        <div className="row" style={{opacity: "0.9999"}}>
+        <div className="row" style={{ opacity: "0.9999" }}>
           <div className="col-sm-6">
             <OverallScans
               allConsolidatedScans={allConsolidatedScans}
