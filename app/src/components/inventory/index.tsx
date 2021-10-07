@@ -989,21 +989,21 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                           </label>
                         ) : responseStatus === 500 ? (
                           <label style={{ margin: "28px" }}>
-                            <p>Data error. Please check uploaded excel</p>
+                            <p>Data error. Please check uploaded file</p>
                           </label>
                         ) : (
                           <label style={{ marginTop: "11px" }}>
                             <ul style={{ fontSize: "14px" }}>
                               <li>
-                                Total number of data inserted&nbsp;&nbsp;-&nbsp;
+                                Total number of record(s) inserted&nbsp;&nbsp;-&nbsp;
                                 {totalRecordsInserted} <br />
                               </li>
                               <li>
-                                Total number of data already exists&nbsp;&nbsp;-&nbsp;
+                                Total number of record(s) already exists&nbsp;&nbsp;-&nbsp;
                                 {totalDuplicateRecords}
                               </li>
                               <li>
-                                Total number of invalid/empty data&nbsp;&nbsp;-&nbsp;
+                                Total number of invalid/empty record(s)&nbsp;&nbsp;-&nbsp;
                                 {totalInvalidRecords}
                               </li>
                             </ul>
@@ -1043,7 +1043,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                           <p className="upload-heading">Upload Inventory Files</p>
                         </div>
                         <div className="file-size-and-length">
-                          <p>Files Supported CSV</p>
+                          <p>Files Supported .CSV</p>
                           <p>Max upload size: 5 MB</p>
                         </div>
                         <div

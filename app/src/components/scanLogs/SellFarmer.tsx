@@ -436,11 +436,11 @@ class SellFarmer extends Component<Props, States> {
     }
     // order date - check End date
     if (name === "ordereddateto") {
-      if (date >= val.ordereddatefrom) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "",
         });
-      } else if (date <= val.ordereddatefrom) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
         });
@@ -452,11 +452,11 @@ class SellFarmer extends Component<Props, States> {
     }
     // order date - check Start date
     if (name === "ordereddatefrom") {
-      if (date <= val.ordereddateto) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddateto).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "",
         });
-      } else if (date >= val.ordereddateto) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddateto).format("YYYY-MM-DD")) {
         this.setState({
           dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
         });
@@ -468,11 +468,11 @@ class SellFarmer extends Component<Props, States> {
     }
     // Last updated date - check End date
     if (name === "lastmodifiedto") {
-      if (date >= val.lastmodifiedfrom) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifiedfrom).format("YYYY-MM-DD")) {
         this.setState({
           lastUpdatedDateErr: "",
         });
-      } else if (date <= val.lastmodifiedfrom) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifiedfrom).format("YYYY-MM-DD")) {
         this.setState({
           lastUpdatedDateErr: "Last Updated End Date should be greater than  Last Updated Start Date",
         });
@@ -485,11 +485,11 @@ class SellFarmer extends Component<Props, States> {
 
     // Last updated date - check Start date
     if (name === "lastmodifiedfrom") {
-      if (date <= val.lastmodifiedto) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifiedto).format("YYYY-MM-DD")) {
         this.setState({
           lastUpdatedDateErr: "",
         });
-      } else if (date >= val.lastmodifiedto) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifiedto).format("YYYY-MM-DD")) {
         this.setState({
           lastUpdatedDateErr: "Last Updated Start Date should be lesser than Last Updated End Date",
         });
