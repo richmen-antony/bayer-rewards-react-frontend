@@ -511,11 +511,14 @@ class OrderHistory extends Component<Props, States> {
 
     const pageNumbers = [];
     const pageData = Math.ceil(this.state.totalData / this.state.rowsPerPage);
-    const { label, intl } = this.props;
+    const { label, intl }: any = this.props;
 
     for (let i = 1; i <= pageData; i++) {
       pageNumbers.push(i);
     }
+    const fulfilledTooltip = intl?.messages["order.fulfilledTooltip"];
+    const allTooltip = intl?.messages["order.allTooltip"];
+    let searchTooltip = selectedFilters.status === "FULFILLED" ? fulfilledTooltip : allTooltip;
     return (
       <AUX>
         {isLoader && <Loader />}
@@ -531,9 +534,7 @@ class OrderHistory extends Component<Props, States> {
                     type="text"
                     onChange={this.handleSearch}
                     value={searchText}
-                    tolltip={`Search applicable for Order ID, ${
-                      selectedFilters.status === "FULFILLED" ? "Retailer Name/ID,Store Name," : ""
-                    } Farmer Name/Mobile, Advisor Name/ID.`}
+                    tolltip={`${intl?.messages["filter.searchApp"]} ${searchTooltip} `}
                   />
                   <div className="filter-right-side">
                     <div className="filter-status">

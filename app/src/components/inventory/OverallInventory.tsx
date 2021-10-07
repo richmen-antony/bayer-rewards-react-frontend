@@ -12,6 +12,7 @@ import CalenderIcon from "../../assets/icons/calendar.svg";
 import _ from "lodash";
 import "react-datepicker/dist/react-datepicker.css";
 import { CustomButton } from "../../utility/widgets/button";
+import { FormattedMessage } from "react-intl";
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -97,7 +98,7 @@ export const OverallInventory = ({
     <AUX>
       <div className="">
         <label className="font-weight-bold scanlabel">
-          overall consolidated inventory - {viewType === "Shipper" ? "Quantity" : viewType}
+          <FormattedMessage id="inventory.overallInventory" /> - {viewType === "Shipper" ? "Quantity" : viewType}
         </label>
         <>
           <div
@@ -112,16 +113,26 @@ export const OverallInventory = ({
                     onClick={(e) => handleSort(e, "firstname", allConsolidatedInventory, isAsc, "overallScans")}
                     key="firstname"
                   >
-                    PARTNER NAME/ID
+                    <FormattedMessage id="consolidated.partnerName" />
                     {tableCellIndex === 0 && tableName === "overallScans" ? (
                       <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                     ) : null}
                   </th>
-                  <th className="invtHeader">OPENING</th>
-                  <th className="invtHeader">SELL-IN</th>
-                  <th className="invtHeader">SELL-OUT</th>
-                  <th className="invtHeader">RETURNS</th>
-                  <th className="invtHeader">CLOSING</th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="inventory.opening" />
+                  </th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="inventory.sellIn" />
+                  </th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="inventory.sellOut" />
+                  </th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="inventory.returns" />
+                  </th>
+                  <th className="invtHeader">
+                    <FormattedMessage id="inventory.closing" />
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -176,7 +187,7 @@ export const OverallInventory = ({
                 ) : (
                   <tr style={{ height: "250px" }}>
                     <td colSpan={10} className="no-records">
-                      No records found
+                      <FormattedMessage id="noRecords" />
                     </td>
                   </tr>
                 )}
@@ -195,7 +206,10 @@ export const OverallInventory = ({
             >
               <thead>
                 <tr>
-                  <th style={{ width: "25%", padding: "5px" }}>Total&nbsp;({allConsolidatedInventory?.length})</th>
+                  <th style={{ width: "25%", padding: "5px" }}>
+                    <FormattedMessage id="consolidated.total" />
+                    &nbsp;({allConsolidatedInventory?.length})
+                  </th>
                   <th className="invtFooter">{totalOpeningInventory}</th>
                   <th className="invtFooter">{totalSellIn}</th>
                   <th className="invtFooter">{totalSellOut}</th>
@@ -223,15 +237,21 @@ export const OverallInventory = ({
                 </div>
                 <div className="popup-content-row">
                   <div className="content-list">
-                    <label>Username</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.userName" />
+                    </label>
                     <p>{retailerPopupData.username}</p>
                   </div>
                   <div className="content-list">
-                    <label>Store Name</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.storeName" />
+                    </label>
                     <p>{retailerPopupData.accountname}</p>
                   </div>
                   <div className="content-list">
-                    <label>Phone Number</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.phoneNo" />
+                    </label>
                     <p>{retailerPopupData.phonenumber}</p>
                   </div>
                   {geoLevelsName?.length > 0 &&
@@ -250,7 +270,9 @@ export const OverallInventory = ({
                       );
                     })}
                   <div className="content-list">
-                    <label>Postal Code</label>
+                    <label>
+                      <FormattedMessage id="filterScanPopup.postalCode" />
+                    </label>
                     <p>{retailerPopupData.postalcode}</p>
                   </div>
                 </div>
@@ -259,7 +281,7 @@ export const OverallInventory = ({
           </DialogContent>
           <DialogActions>
             <CustomButton
-              label="Filter scans"
+              label={<FormattedMessage id="button.filterScans" />}
               style={{
                 borderRadius: "30px",
                 backgroundColor: "#7eb343",

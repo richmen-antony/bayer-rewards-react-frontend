@@ -45,74 +45,74 @@ export const RSM_ADMIN_ROLE = "RSM_ADMIN";
 
 // order histroy table header
 const FULFILLED = [
-  {label: "ORDER ID", key: "advisororderid", style: {width: "10%"}},
-  {label: "RETAILER NAME/ID", key: "username", style: {width: "20%"}},
-  {label: "REGION", key: "geolevel1", style: {width: "10%"}},
-  {label: "ORDERED QTY", key: "totalorderedquantity", style: {width: "16%", textAlign: "center"}},
-  {label: "TOTAL COST", key: "totalcost", style: {width: "12%"}},
-  {label: "ADVISOR NAME/ID", key: "advisorname", style: {width: "16%"}},
-  {label: "FARMER NAME/PHONE", key: "farmername", style: {width: "18%"}},
-  {label: "STATUS", key: "orderstatus", style: {width: "10%"}},
-  {label: "UPDATED DATE", key: "lastupdateddate", style: {width: "12%"}, type: "date"},
-  {label: "", key: "", style: {width: "10%"}},
+  { label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
+  { label: "RETAILER NAME/ID", key: "username", style: { width: "20%" } },
+  { label: "REGION", key: "geolevel1", style: { width: "10%" } },
+  { label: "ORDERED QTY", key: "totalorderedquantity", style: { width: "16%", textAlign: "center" } },
+  { label: "TOTAL COST", key: "totalcost", style: { width: "12%" } },
+  { label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
+  { label: "FARMER NAME/PHONE", key: "farmername", style: { width: "18%" } },
+  { label: "STATUS", key: "orderstatus", style: { width: "10%" } },
+  { label: "UPDATED DATE", key: "lastupdateddate", style: { width: "12%" }, type: "date" },
+  { label: "", key: "", style: { width: "10%" } },
 ];
 const PENDING = [
-  {label: "ORDER ID", key: "advisororderid", style: {width: "10%"}},
-  {label: "ADVISOR NAME/ID", key: "advisorname", style: {width: "12%"}},
-  {label: "INTENDED QTY", key: "totalintendedquantity", style: {width: "10%", textAlign: "center"}},
-  {label: "TOTAL COST", key: "totalcost", style: {width: "10%"}},
-  {label: "FARMER NAME/PHONE", key: "farmername", style: {width: "18%"}},
-  {label: "STATUS", key: "orderstatus", style: {width: "10%"}},
-  {label: "ORDERED DATE", key: "ordereddate", style: {width: "10%"}, type: "date"},
-  {label: "UPDATED DATE", key: "lastupdateddate", style: {width: "10%"}, type: "date"},
-  {label: "", key: "", style: {width: "12%"}},
+  { label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
+  { label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
+  { label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
+  { label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
+  { label: "FARMER NAME/PHONE", key: "farmername", style: { width: "18%" } },
+  { label: "STATUS", key: "orderstatus", style: { width: "10%" } },
+  { label: "ORDERED DATE", key: "ordereddate", style: { width: "10%" }, type: "date" },
+  { label: "UPDATED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
+  { label: "", key: "", style: { width: "12%" } },
 ];
 const EXPIRED = [
-  {label: "ORDER ID", key: "advisororderid", style: {width: "10%"}},
-  {label: "ADVISOR NAME/ID", key: "advisorname", style: {width: "12%"}},
-  {label: "INTENDED QTY", key: "totalintendedquantity", style: {width: "10%", textAlign: "center"}},
-  {label: "TOTAL COST", key: "totalcost", style: {width: "10%"}},
-  {label: "FARMER NAME/PHONE", key: "farmername", style: {width: "18%"}},
-  {label: "STATUS", key: "orderstatus", style: {width: "10%"}},
-  {label: "ORDERED DATE", key: "ordereddate", style: {width: "10%"}, type: "date"},
-  {label: "EXPIRED DATE", key: "lastupdateddate", style: {width: "10%"}, type: "date"},
-  {label: "", key: "", style: {width: "12%"}},
+  { label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
+  { label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
+  { label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
+  { label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
+  { label: "FARMER NAME/PHONE", key: "farmername", style: { width: "18%" } },
+  { label: "STATUS", key: "orderstatus", style: { width: "10%" } },
+  { label: "ORDERED DATE", key: "ordereddate", style: { width: "10%" }, type: "date" },
+  { label: "EXPIRED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
+  { label: "", key: "", style: { width: "12%" } },
 ];
 const CANCELLED = [
-  {label: "ORDER ID", key: "advisororderid", style: {width: "10%"}},
-  {label: "ADVISOR NAME/ID", key: "advisorname", style: {width: "12%"}},
-  {label: "INTENDED QTY", key: "totalintendedquantity", style: {width: "10%", textAlign: "center"}},
-  {label: "TOTAL COST", key: "totalcost", style: {width: "10%"}},
-  {label: "FARMER NAME/PHONE", key: "farmername", style: {width: "18%"}},
-  {label: "STATUS", key: "orderstatus", style: {width: "10%"}},
-  {label: "ORDERED DATE", key: "ordereddate", style: {width: "10%"}, type: "date"},
-  {label: "CANCELLED DATE", key: "lastupdateddate", style: {width: "10%"}, type: "date"},
-  {label: "", key: "", style: {width: "12%"}},
+  { label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
+  { label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "12%" } },
+  { label: "INTENDED QTY", key: "totalintendedquantity", style: { width: "10%", textAlign: "center" } },
+  { label: "TOTAL COST", key: "totalcost", style: { width: "10%" } },
+  { label: "FARMER NAME/PHONE", key: "farmername", style: { width: "18%" } },
+  { label: "STATUS", key: "orderstatus", style: { width: "10%" } },
+  { label: "ORDERED DATE", key: "ordereddate", style: { width: "10%" }, type: "date" },
+  { label: "CANCELLED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
+  { label: "", key: "", style: { width: "12%" } },
 ];
 
 // Advisor sales table header
 const ADVISOR_SALES = [
-  {label: "ORDER ID", key: "advisororderid", style: {width: "10%"}},
-  {label: "RETAILER NAME/ID", key: "username", style: {width: "16%"}},
-  {label: "STORE NAME", key: "storename", style: {width: "10%"}},
-  {label: "TOTAL COST", key: "totalcost", style: {width: "12%"}},
-  {label: "ADVISOR NAME/ID", key: "advisorname", style: {width: "16%"}},
-  {label: "FARMER NAME/PHONE NO", key: "farmername", style: {width: "16%"}},
-  {label: "STATUS", key: "orderstatus", style: {width: "10%"}},
-  {label: "UPDATED DATE", key: "lastupdateddate", style: {width: "10%"}, type: "date"},
-  {label: "", key: "", style: {width: "10%"}},
+  { label: "ORDER ID", key: "advisororderid", style: { width: "10%" } },
+  { label: "RETAILER NAME/ID", key: "username", style: { width: "16%" } },
+  { label: "STORE NAME", key: "storename", style: { width: "10%" } },
+  { label: "TOTAL COST", key: "totalcost", style: { width: "12%" } },
+  { label: "ADVISOR NAME/ID", key: "advisorname", style: { width: "16%" } },
+  { label: "FARMER NAME/PHONE NO", key: "farmername", style: { width: "16%" } },
+  { label: "STATUS", key: "orderstatus", style: { width: "10%" } },
+  { label: "UPDATED DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
+  { label: "", key: "", style: { width: "10%" } },
 ];
 // Advisor sales table header
 const WALKIN_SALES = [
-  {label: "LABEL/BATCH ID", key: "labelid", style: {width: "12%"}},
-  {label: "FARMER NAME/ID", key: "farmername", style: {width: "16%"}},
-  {label: "PRODUCT NAME", key: "totalintendedquantity", style: {width: "14%", textAlign: "center"}},
-  {label: "BATCH #", key: "totalcost", style: {width: "12%"}},
-  {label: "SCANNED ON", key: "lastupdateddate", style: {width: "16%"}, type: "date"},
-  {label: "SCANNED BY", key: "farmername", style: {width: "16%"}},
-  {label: "STORE NAME", key: "storename", style: {width: "10%"}},
-  {label: "REGION", key: "geolevel1", style: {width: "10%"}},
-  {label: "EXPIRY DATE", key: "lastupdateddate", style: {width: "10%"}, type: "date"},
+  { label: "LABEL/BATCH ID", key: "labelid", style: { width: "12%" } },
+  { label: "FARMER NAME/ID", key: "farmername", style: { width: "16%" } },
+  { label: "PRODUCT NAME", key: "totalintendedquantity", style: { width: "14%", textAlign: "center" } },
+  { label: "BATCH #", key: "totalcost", style: { width: "12%" } },
+  { label: "SCANNED ON", key: "lastupdateddate", style: { width: "16%" }, type: "date" },
+  { label: "SCANNED BY", key: "farmername", style: { width: "16%" } },
+  { label: "STORE NAME", key: "storename", style: { width: "10%" } },
+  { label: "REGION", key: "geolevel1", style: { width: "10%" } },
+  { label: "EXPIRY DATE", key: "lastupdateddate", style: { width: "10%" }, type: "date" },
 ];
 const OrderHistroyHeader: any = {
   FULFILLED,
@@ -131,37 +131,46 @@ const removeRegionList = () => {
 removeRegionList();
 
 const salesTypeSellToFarmer = [
-  {value: "WALKIN_SALES", label: "Walk-In Sales"},
-  {value: "ADVISOR_SALES", label: "Advisor Sales"},
+  { value: "WALKIN_SALES", label: "Walk-In Sales" },
+  { value: "ADVISOR_SALES", label: "Advisor Sales" },
 ];
-const scannedBySellToFarmer = [{value: "Retailer", label: "Retailer"}];
+const scannedBySellToFarmer = [{ value: "Retailer", label: "Retailer" }];
 const ScanlogHeader: any = {
   ADVISOR_SALES,
   WALKIN_SALES,
 };
 const SCANNED_DATE = [
-  {label: "Today", from: moment(new Date()).format("YYYY-MM-DD"), to: moment(new Date()).format("YYYY-MM-DD")},
+  {
+    label: "Today",
+    from: moment(new Date()).format("YYYY-MM-DD"),
+    to: moment(new Date()).format("YYYY-MM-DD"),
+    locale: "today",
+  },
   {
     label: "This week (Sun - Sat)",
     from: moment().startOf("week").format("YYYY-MM-DD"),
     to: moment().endOf("week").format("YYYY-MM-DD"),
+    locale: "week",
   },
   {
     label: "Last 30 days",
     from: moment().subtract(30, "days").format("YYYY-MM-DD"),
     to: moment(new Date()).format("YYYY-MM-DD"),
+    locale: "month",
   },
   {
     label: "This year (Jan - Dec)",
     from: moment().startOf("year").format("YYYY-MM-DD"),
     to: moment().endOf("year").format("YYYY-MM-DD"),
+    locale: "year",
   },
   {
     label: "Prev. year (Jan - Dec)",
     from: moment().subtract(1, "years").startOf("year").format("YYYY-MM-DD"),
     to: moment().subtract(1, "years").endOf("year").format("YYYY-MM-DD"),
+    locale: "prevYear",
   },
-  {label: "Custom", value: ""},
+  { label: "Custom", value: "", locale: "custom" },
 ];
 
 const PRODUCT_GROUP = ["ALL", "CORN SEED", "HERBICIDES", "FUNGICIDES", "INSECTICIDES"];

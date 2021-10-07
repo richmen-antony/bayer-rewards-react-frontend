@@ -16,7 +16,8 @@
     "download": "Download",
     "decline": "Decline",
     "ok": "OK",
-    "validateandapprove": "Validate & Approve"
+    "validateandapprove": "Validate & Approve",
+    "uploadFile": "Upload File"
   },
   "placeholder": {
     "username": "Enter username",
@@ -59,7 +60,16 @@
     "scannedPeriod": "Scanned Period",
     "productGroup": "Product Group",
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "today": "Today",
+    "week": "This week (Sun - Sat)",
+    "month": "Last 30 days",
+    "year": "This year (Jan - Dec)",
+    "prevYear": "Prev. year (Jan - Dec)",
+    "custom": "Custom",
+    "all": "ALL",
+    "searchApp": "Search applicable for",
+    "region": "Region"
   },
   "download": {
     "download": "Download",
@@ -70,6 +80,20 @@
     "brandWiseInventory": "Brand Wise Inventory",
     "productWiseInventory": "Product Wise Inventory",
     "downloadTemplate": "Download Template"
+  },
+  "upload": {
+    "history": " Upload History",
+    "dataErr": "Data error. Please check uploaded excel",
+    "dataInsert": "Total number of data inserted",
+    "dataExists": "Total number of data already exists",
+    "invalidData": "Total number of invalid/empty data",
+    "upload": "Upload Inventory Files",
+    "supportedFile": "Files Supported CSV",
+    "fileSize": "Max upload size: 5 MB",
+    "drag": "Drag and drop your file here",
+    "or": "or",
+    "browse": "Browse",
+    "year": "Updated Year"
   },
   "landing": {
     "signIn": "Sign In",
@@ -113,7 +137,9 @@
     "orderstatus": "STATUS",
     "lastupdateddate": "UPDATED DATE",
     "geolevel1": "REGION",
-    "ordereddate": "ORDERED DATE"
+    "ordereddate": "ORDERED DATE",
+    "fulfilledTooltip": "Order ID,Retailer Name/ID,Store Name,Farmer Name/Mobile, Advisor Name/ID",
+    "allTooltip": "Order ID,Farmer Name/Mobile, Advisor Name/ID"
   },
   "scanLog": {
     "title": "Scan Logs",
@@ -176,7 +202,9 @@
       "totalCostHeader": "TOTAL COST",
       "advNameIdHeader": "ADVISOR NAME/ID",
       "farNamePhHeader": "FARMER NAME/PHONE NO",
-      "statusHeader": "STATUS"
+      "statusHeader": "STATUS",
+      "walkHelp": "Label, Farmer Name, Product Name, Store Name and Scanned By",
+      "advHelp": "Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID and Store Name"
     },
     "filter": {
       "warhName": "Warehouse Name",
@@ -194,7 +222,12 @@
       "cusName": "Customer Name",
       "distributor": "Distributor",
       "retailer": "Retailer",
-      "region": "Region"
+      "region": "Region",
+      "warhouseOps": "Warehouse Ops",
+      "dispatchSent": "Dispatch Sent",
+      "dispatchReceived": "Dispatch Received",
+      "walkIn": "Walk-In Sales",
+      "advSales": "Advisor Sales"
     }
   },
   "devAdmin": {
@@ -240,18 +273,31 @@
     "advisor": "S2F-ADVISOR",
     "total": "Total"
   },
+  "inventory": {
+    "title": "Distributor Inventory",
+    "productWise": "product wise inventory",
+    "productInventory": "product brand wise inventory",
+    "overallInventory": "overall consolidated inventory",
+    "opening": "OPENING",
+    "sellIn": "SELL-IN",
+    "sellOut": "SELL-OUT",
+    "returns": "RETURNS",
+    "closing": "CLOSING"
+  },
   "common": {
     "from": "From",
     "to": "To"
   },
   "validMsg": {
-    "lessThan": "should be lesser than",
-    "gtThan": "should be greater than",
-    "startDate": "Start Date",
-    "endDate": "End Date",
-    "scanned": "Scanned",
-    "order": "Ordered",
-    "lastUp": "Last Updated"
+    "scanEndGt": "Scanned End Date should be greater than Scanned Start Date",
+    "scanStartLs": "Scanned Start Date should be lesser than Scanned End Date",
+    "scanStartGt": "Scanned Start Date should be greater than Scanned End Date",
+    "orderEndGt": "Ordered End Date should be greater than  Ordered Start Date",
+    "orderStartLs": "Ordered Start Date should be lesser than  Ordered End Date",
+    "orderStartGt": "Ordered Start Date should be greater than Ordered End Date",
+    "lastUpEndGt": "Last Updated End Date should be greater than  Last Updated Start Date",
+    "lastUpStartLs": "Last Updated Start Date should be lesser than  Last Updated End Date",
+    "lastUpStartGt": "Last Updated Start Date should be greater than Last Updated End Date"
   },
   "createUser": {
     "personalInformation": "Personal Information",

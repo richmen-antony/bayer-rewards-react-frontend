@@ -13,7 +13,10 @@
     "delete": "DELETE",
     "filterScans": "Filter scans",
     "apply": "Apply",
-    "download": "Download"
+    "download": "Download",
+    "decline": "Decline",
+    "ok": "OK",
+    "validateandapprove": "Validate & Approve"
   },
   "placeholder": {
     "username": "Enter username",
@@ -52,7 +55,17 @@
     "userType": "User Type",
     "upload": "Upload",
     "scannedBy": "Scanned By",
-    "scanType": "Scan Type"
+    "scanType": "Scan Type",
+    "scannedPeriod": "Scanned Period",
+    "productGroup": "Product Group",
+    "from": "From",
+    "to": "To",
+    "today": "Today es",
+    "week": "This week (Sun - Sat)",
+    "month": "Last 30 days",
+    "year": "This year (Jan - Dec)",
+    "prevYear": "Prev. year (Jan - Dec)",
+    "custom": "Custom"
   },
   "download": {
     "download": "Download",
@@ -174,7 +187,7 @@
     "filter": {
       "warhName": "Warehouse Name",
       "distName": "Distributor Name",
-      "scanBy": "Scanned by es",
+      "scanBy": "Scanned by",
       "delStatus": "Delivery Status",
       "scanPer": "Scanned Period",
       "retailerName": "Retailer Name",
@@ -185,9 +198,10 @@
       "orderDt": "Ordered Date",
       "lastUpDt": "Last Updated Date",
       "cusName": "Customer Name",
-      "distributor": "Distributor",
+      "distributor": "Distributor es",
       "retailer": "Retailer",
-      "region": "Region"
+      "region": "Region",
+      "warhouseOps": "Warehouse Ops es"
     }
   },
   "devAdmin": {
@@ -219,17 +233,85 @@
     "digitalScan": "Digital Scan",
     "smartLabel": "Smart Label"
   },
+  "consolidated": {
+    "consolidated": "Consolidated Scans",
+    "overall": "overall consolidated scans",
+    "productBrand": "product brand wise scans",
+    "product": "product wise scans",
+    "productHeader": "PRODUCT",
+    "partnerName": "PARTNER NAME/ID",
+    "brand": "BRAND",
+    "sendGoods": "SEND GOODS",
+    "receiveGoods": "RECEIVE GOODS",
+    "walkIn": "S2F-WALK-IN",
+    "advisor": "S2F-ADVISOR",
+    "total": "Total"
+  },
   "common": {
     "from": "From",
     "to": "To"
   },
   "validMsg": {
-    "lessThan": "should be lesser than",
-    "gtThan": "should be greater than",
-    "startDate": "Start Date",
-    "endDate": "End Date",
-    "scanned": "Scanned",
-    "order": "Ordered",
-    "lastUp": "Last Updated"
+    "scanEndGt": "Scanned End Date should be greater than Scanned Start Date es",
+    "scanStartLs": "Scanned Start Date should be lesser than Scanned End Date",
+    "scanStartGt": "Scanned Start Date should be greater than Scanned End Date"
+  },
+  "createUser": {
+    "personalInformation": "Personal Information",
+    "addressInformation": "Address Information",
+    "withHoldingTax": "With-Holding tax",
+    "hasStoreStaff": "Has store staff?(Max 4)",
+    "type": "Type",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "mobilenumber": "Mobile Number",
+    "email": "Email(Optional)",
+    "active": "Active?",
+    "owner": "Owner",
+    "store": "Store",
+    "staffs": "Staffs",
+    "storeAlert": "Are you sure you want to delete store's staff?",
+    "geolevelError": "Please select the",
+    "sameAsPersonalInfo": "Same as Personal Info",
+    "placeholder": {
+      "storeName": "Store Name",
+      "ownerName": "Owner Name",
+      "street": "Street",
+      "postalCode": "Postal Code",
+      "taxId": "Tax Id"
+    },
+    "error": {
+      "enterFirstName": "Please enter the First Name",
+      "enterLastName": "Please enter the Last Name",
+      "enterMobile": "Please enter the Mobile Number",
+      "enterEmail": "Please Enter the Email",
+      "enterValidEmail": "Please enter a valid email",
+      "numberExist": "Phone Number Exists",
+      "enterStoreName": "Please enter Store Name",
+      "enterOwnerName": "Please enter owner name",
+      "entertype": "Please enter Type",
+      "enterLocation": "Please enter Location",
+      "enterPartnerName": "Please enter Partner name"
+    },
+    "unsavedPrompt": "There are unsaved changes. Are you sure want to leave this page ?",
+    "unsavedConfirmation": "Confirmation"
+  },
+  "channelPartner": {
+    "channelPartner": "Channel Partners",
+    "username": "USER NAME",
+    "mobile": "MOBILE#",
+    "storename": "STORE NAME",
+    "ownerName": "OWNER NAME",
+    "staffCount": "STAFF COUNT",
+    "status": "STATUS",
+    "updatedBy": "UPDATED BY",
+    "changeLogs": "Change Logs",
+    "searchTooltip": "Search applicable for User Name, Store Name and Owner Name",
+    "areYouWantToChange": "Are you sure you want to change",
+    "accountTo": "account to",
+    "active": "Active",
+    "inActive": "Inactive",
+    "WouldYouLikeToValidate1": "Would you like to validate & approve",
+    "WouldYouLikeToValidate12": "account to use Bayer Rewards mobile application?"
   }
 }
