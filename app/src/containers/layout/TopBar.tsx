@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-} from "reactstrap";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import logo from "../../assets/icons/bayer_logo.svg";
 import menuIcon from "../../assets/icons/menu_icon.svg";
 import "../../assets/scss/layout.scss";
@@ -16,6 +11,7 @@ import MalawiFlag from "../../assets/icons/malawi_flag.svg";
 import Authorization from "../../utility/authorization";
 import { AppContext } from "../context";
 import { InputLabel, Select, MenuItem } from "@material-ui/core";
+import { FormattedMessage } from "react-intl";
 
 type Props = {
   history?: any;
@@ -135,9 +131,7 @@ class TopBar extends Component<Props, States> {
                 style={{ minWidth: "70%" }}
               >
                 {availableLanguages.map((availableLanguages: any) => (
-                  <MenuItem value={availableLanguages.key}>
-                    {availableLanguages.value}
-                  </MenuItem>
+                  <MenuItem value={availableLanguages.key}>{availableLanguages.value}</MenuItem>
                 ))}
               </Select>
             </div>
@@ -152,14 +146,8 @@ class TopBar extends Component<Props, States> {
                 />
               </div>
 
-              <Dropdown
-                isOpen={dropdownOpenprofile}
-                toggle={this.toggleprofile}
-              >
-                <DropdownToggle
-                  className="dropdown-toggle testflag nav-link arrow-none waves-effect nav-user"
-                  tag="a"
-                >
+              <Dropdown isOpen={dropdownOpenprofile} toggle={this.toggleprofile}>
+                <DropdownToggle className="dropdown-toggle testflag nav-link arrow-none waves-effect nav-user" tag="a">
                   <div className="profileToggle">
                     <div className="profileImg">
                       <div className="content">
@@ -169,11 +157,7 @@ class TopBar extends Component<Props, States> {
 
                         <p className="sub-title">{userData.geolevel1}</p>
                       </div>
-                      <img
-                        src={DropdownArrow}
-                        style={{ width: "20%", height: "20%" }}
-                        alt=""
-                      />
+                      <img src={DropdownArrow} style={{ width: "20%", height: "20%" }} alt="" />
                     </div>
 
                     <div>
@@ -183,12 +167,13 @@ class TopBar extends Component<Props, States> {
                 </DropdownToggle>
                 <DropdownMenu>
                   <DropdownItem>
-                    <i className="fa fa-user-circle"></i>{" "}
-                    <span className="ml-1">{userData.fullname}</span>{" "}
+                    <i className="fa fa-user-circle"></i> <span className="ml-1">{userData.fullname}</span>
                   </DropdownItem>
                   <DropdownItem onClick={() => this.handleChange("logout")}>
-                    <i className="fa fa-sign-out-alt text-danger"></i>{" "}
-                    <span className="ml-1"> Logout </span>
+                    <i className="fa fa-sign-out-alt text-danger"></i>
+                    <span className="ml-1">
+                      <FormattedMessage id="sideBar.logout" />
+                    </span>
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>

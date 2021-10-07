@@ -2,6 +2,7 @@ import React from "react";
 import AUX from "../../hoc/Aux_";
 import _ from "lodash";
 import "../../assets/scss/consolidatedSales.scss";
+import { FormattedMessage } from "react-intl";
 
 export type ProductListProps = {
   selectedProductList: Array<object>;
@@ -27,7 +28,9 @@ export const ProductList = ({
   return (
     <AUX>
       <div className="">
-        <label className="font-weight-bold scanlabel">product wise scans - {_.startCase(_.toLower(brandName))}</label>
+        <label className="font-weight-bold scanlabel">
+          <FormattedMessage id="consolidated.product" />- {_.startCase(_.toLower(brandName))}
+        </label>
         <div className="consolidatedSales-table scannedProducts" style={{ height: "26vh", overflowY: "auto" }}>
           <table className="table listTable">
             <thead>
@@ -37,15 +40,23 @@ export const ProductList = ({
                   style={{ width: "23%", cursor: "pointer" }}
                   key="productname"
                 >
-                  PRODUCT
+                  <FormattedMessage id="consolidated.productHeader" />
                   {tableCellIndex === 0 && tableName === "scannedProducts" ? (
                     <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                   ) : null}
                 </th>
-                <th className="invtHeader">SEND GOODS</th>
-                <th className="invtHeader">RECEIVE GOODS</th>
-                <th className="invtHeader">S2F-WALK-IN</th>
-                <th className="invtHeader">S2F-ADVISOR</th>
+                <th className="invtHeader">
+                  <FormattedMessage id="consolidated.sendGoods" />
+                </th>
+                <th className="invtHeader">
+                  <FormattedMessage id="consolidated.receiveGoods" />
+                </th>
+                <th className="invtHeader">
+                  <FormattedMessage id="consolidated.walkIn" />
+                </th>
+                <th className="invtHeader">
+                  <FormattedMessage id="consolidated.advisor" />
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -82,7 +93,7 @@ export const ProductList = ({
               ) : (
                 <tr style={{ height: "110px" }}>
                   <td colSpan={10} className="no-records">
-                    No records found
+                    <FormattedMessage id="noRecords" />
                   </td>
                 </tr>
               )}
@@ -101,7 +112,10 @@ export const ProductList = ({
           >
             <thead>
               <tr>
-                <th style={{ width: "23%", padding: "5px" }}>Total&nbsp;({selectedProductList?.length})</th>
+                <th style={{ width: "23%", padding: "5px" }}>
+                  <FormattedMessage id="consolidated.total" />
+                  &nbsp;({selectedProductList?.length})
+                </th>
                 <th style={{ width: "15%", padding: "5px", textAlign: "right" }}>{totalSendGoods}</th>
                 <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalReceivedGoods}</th>
                 <th style={{ width: "20%", padding: "5px", textAlign: "right" }}>{totalWalkInSales}</th>

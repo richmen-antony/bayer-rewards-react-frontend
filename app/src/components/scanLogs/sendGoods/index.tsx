@@ -147,8 +147,8 @@ class SendGoods extends Component<Props, States> {
       selectedScannedBy: "Warehouse Ops",
       activeSortKeyIcon: "labelid",
       scannedByList: [
-        { value: "Warehouse Ops", label: "Warehouse Ops" },
-        { value: "Distributor", label: "Distributor" },
+        { value: "Warehouse Ops", label: <FormattedMessage id="scanLog.filter.warhouseOps" /> },
+        { value: "Distributor", label: <FormattedMessage id="scanLog.filter.distributor" /> },
       ],
       distributorScanTypeList: [
         { value: "SG - ST", label: "SG - ST" },
@@ -159,9 +159,9 @@ class SendGoods extends Component<Props, States> {
         { value: "SG - W2R", label: "SG - W2R" },
       ],
       goodStatus: [
-        { value: "ALL", label: "ALL" },
-        { value: "GOODS_DISPATCHED", label: "Dispatch Sent" },
-        { value: "GOODS_RECEIVED", label: "Dispatch Received" },
+        { value: "ALL", label: <FormattedMessage id="filter.all" /> },
+        { value: "GOODS_DISPATCHED", label: <FormattedMessage id="scanLog.filter.dispatchSent" /> },
+        { value: "GOODS_RECEIVED", label: <FormattedMessage id="scanLog.filter.dispatchReceived" /> },
       ],
     };
     this.timeOut = 0;
@@ -330,11 +330,11 @@ class SendGoods extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
         this.setState({
-          [condName]: "Scanned End Date should be greater than Scanned Start Date",
+          [condName]: <FormattedMessage id="validMsg.scanEndGt" />,
         });
       } else {
         this.setState({
-          [condName]: "Scanned Start Date should be lesser than Scanned End Date",
+          [condName]: <FormattedMessage id="validMsg.scanStartLs" />,
         });
       }
     }
@@ -346,11 +346,11 @@ class SendGoods extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddateto).format("YYYY-MM-DD")) {
         this.setState({
-          [condName]: "Scanned Start Date should be lesser than Scanned End Date",
+          [condName]: <FormattedMessage id="validMsg.scanStartLs" />,
         });
       } else {
         this.setState({
-          [condName]: "Scanned Start Date should be greater than Scanned End Date",
+          [condName]: <FormattedMessage id="validMsg.scanStartGt" />,
         });
       }
     }
@@ -737,12 +737,12 @@ class SendGoods extends Component<Props, States> {
       warehouseOptions,
       wareHouseDateErrMsg,
     } = this.state;
+    const { messages }: any = this.props?.intl;
     const fields = this.state.dynamicFields;
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       let data: any = getLocalStorageData("userData");
       let userData = JSON.parse(data);
-      const { messages }: any = this.props?.intl;
 
       return (
         <React.Fragment key={`geolevels` + index}>
@@ -790,7 +790,7 @@ class SendGoods extends Component<Props, States> {
                   searchText={searchText}
                   download={this.download}
                   isDownload={true}
-                  toolTipText={`Search applicable for ${toolTipText}`}
+                  toolTipText={`${messages["filter.searchApp"]} ${toolTipText}`}
                   onClose={(node: any) => {
                     this.closeToggle = node;
                   }}
@@ -891,7 +891,8 @@ class SendGoods extends Component<Props, States> {
                               onClick={(e) => this.handleFilterChange(e, "scannedPeriod", item.label, item)}
                               style={{ marginBottom: "5px" }}
                             >
-                              {item.label}
+                              <FormattedMessage id={`filter.${[item.locale]}`} />
+                              {/* {item.label} */}
                             </Button>
                           </span>
                         ))}

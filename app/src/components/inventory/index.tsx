@@ -46,6 +46,7 @@ import Cancel from "../../assets/images/cancel.svg";
 import "../../assets/scss/upload.scss";
 import AdminPopup from "../../containers/components/dialog/AdminPopup";
 import { CustomButton } from "../../utility/widgets/button";
+import { FormattedMessage } from "react-intl";
 
 interface Sheet2CSVOpts {
   header?: any;
@@ -833,7 +834,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
       <div className="consolidatedSales-container">
         <div className="row">
           <div className="filterSection col-sm-12 consolidatedFilterWizard">
-            <label className="font-weight-bold">Distributor Inventory</label>
+            <label className="font-weight-bold">
+              <FormattedMessage id="inventory.title" />
+            </label>
             <Filter
               handleSearch={handleSearch}
               searchText={searchText}
@@ -855,7 +858,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
               isUploadAvailable={true}
               isInventoryDownloadPopup={true}
             >
-              <label className="font-weight-bold pt-2">Product Group</label>
+              <label className="font-weight-bold pt-2">
+                <FormattedMessage id="filter.productGroup" />
+              </label>
               <div className="form-group pt-1">
                 {productCategories.map((item: any, i: number) => (
                   <span className="mr-2 chipLabel" key={i}>
@@ -875,7 +880,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
               <div className="form-group container" onClick={(e) => e.stopPropagation()}>
                 <div className="row column-dropdown">{locationList}</div>
               </div>
-              <label className="font-weight-bold pt-2">Scanned Period</label>
+              <label className="font-weight-bold pt-2">
+                <FormattedMessage id="filter.scannedPeriod" />
+              </label>
               <div className="pt-1">
                 {scannedPeriodsList.map((item: any, i: number) => (
                   <span className="mr-2 chipLabel" key={i}>
@@ -897,10 +904,10 @@ const Inventory = (Props: Sheet2CSVOpts) => {
               {selectedFilters.scannedPeriod === "Custom" && (
                 <React.Fragment>
                   <label className="font-weight-bold pt-2" htmlFor="order-date" style={{ width: "55%" }}>
-                    From
+                    <FormattedMessage id="filter.from" />
                   </label>
                   <label className="font-weight-bold pt-2" htmlFor="order-todate">
-                    To
+                    <FormattedMessage id="filter.to" />
                   </label>
                   <div className="d-flex">
                     <div className="user-filter-date-picker">
@@ -948,7 +955,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                   onClick={(e) => resetFilter(e)}
                   data-testid="reset-all"
                 >
-                  Reset All
+                  <FormattedMessage id="button.resetAll" />
                 </button>
                 <button
                   className="cus-btn-consolidatedscanlog-filter"
@@ -956,7 +963,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                   disabled={dateErrMsg ? true : false}
                   data-testid="apply"
                 >
-                  Apply
+                  <FormattedMessage id="button.apply" />
                   <span>
                     <img src={ArrowIcon} className="arrow-i" alt="" />
                     <img src={RtButton} className="layout" alt="" />
@@ -971,7 +978,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                     <div className="popup-container">
                       <div className="popup-content">
                         <div className={`popup-title`} style={{ fontSize: "18px" }}>
-                          Upload History
+                          <FormattedMessage id="upload.history" />
                         </div>
                       </div>
                       <div
@@ -987,21 +994,26 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                           <label style={{ margin: "28px" }}>{responseMessage}</label>
                         ) : responseStatus === 500 ? (
                           <label style={{ margin: "28px" }}>
-                            <p>Data error. Please check uploaded excel</p>
+                            <p>
+                              <FormattedMessage id="upload.dataErr" />
+                            </p>
                           </label>
                         ) : (
                           <label style={{ marginTop: "11px" }}>
                             <ul style={{ fontSize: "14px" }}>
                               <li>
-                                Total number of data inserted&nbsp;&nbsp;-&nbsp;
+                                <FormattedMessage id="upload.dataInsert" />
+                                &nbsp;&nbsp;-&nbsp;
                                 {totalRecordsInserted} <br />
                               </li>
                               <li>
-                                Total number of data already exists&nbsp;&nbsp;-&nbsp;
+                                <FormattedMessage id="upload.dataExists" />
+                                &nbsp;&nbsp;-&nbsp;
                                 {totalDuplicateRecords}
                               </li>
                               <li>
-                                Total number of invalid/empty data&nbsp;&nbsp;-&nbsp;
+                                <FormattedMessage id="upload.invalidData" />
+                                &nbsp;&nbsp;-&nbsp;
                                 {totalInvalidRecords}
                               </li>
                             </ul>
@@ -1019,7 +1031,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                             borderRadius: "50px",
                           }}
                         >
-                          OK
+                          <FormattedMessage id="button.ok" />
                         </Button>
                       </DialogActions>
                     </div>
@@ -1038,11 +1050,17 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                     <div className="popup-container" style={{ height: "355px" }}>
                       <div className="popup-content">
                         <div>
-                          <p className="upload-heading">Upload Inventory Files</p>
+                          <p className="upload-heading">
+                            <FormattedMessage id="upload.upload" />
+                          </p>
                         </div>
                         <div className="file-size-and-length">
-                          <p>Files Supported CSV</p>
-                          <p>Max upload size: 5 MB</p>
+                          <p>
+                            <FormattedMessage id="upload.supportedFile" />
+                          </p>
+                          <p>
+                            <FormattedMessage id="upload.fileSize" />
+                          </p>
                         </div>
                         <div
                           id="dragAndDropContainer"
@@ -1064,10 +1082,16 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                               {selectedFile === null || (selectedFile != null && !dataValidated) ? (
                                 <div className="browse">
                                   <img className="upload-cloud-image" src={uploadIcon} alt="upload cloud icon" />
-                                  <div>Drag and drop your file here</div>
-                                  <span>or</span>
+                                  <div>
+                                    <FormattedMessage id="upload.drag" />
+                                  </div>
+                                  <span>
+                                    <FormattedMessage id="upload.or" />
+                                  </span>
                                   <div className="selectFile">
-                                    <label htmlFor="file">Browse</label>
+                                    <label htmlFor="file">
+                                      <FormattedMessage id="upload.browse" />
+                                    </label>
                                     <input
                                       type="file"
                                       name="file"
@@ -1108,7 +1132,9 @@ const Inventory = (Props: Sheet2CSVOpts) => {
                           </div>
                         </div>
                         <div className="updated-year">
-                          <p>Updated Year</p>
+                          <p>
+                            <FormattedMessage id="upload.year" />
+                          </p>
                           <DatePicker
                             id="update-date"
                             disabled={true}
@@ -1124,7 +1150,7 @@ const Inventory = (Props: Sheet2CSVOpts) => {
 
                   <DialogActions>
                     <CustomButton
-                      label="Upload File"
+                      label={<FormattedMessage id="button.uploadFile" />}
                       style={{
                         borderRadius: "30px",
                         backgroundColor: "#7eb343",

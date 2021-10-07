@@ -2,6 +2,7 @@ import React from "react";
 import AUX from "../../hoc/Aux_";
 import _ from "lodash";
 import "../../assets/scss/consolidatedSales.scss";
+import { FormattedMessage } from "react-intl";
 
 export type ProductListProps = {
   selectedProductList: Array<object>;
@@ -28,7 +29,9 @@ export const ProductwiseInventory = ({
   return (
     <AUX>
       <div className="">
-        <label className="font-weight-bold scanlabel">product wise inventory - {_.startCase(_.toLower(brandName))}</label>
+        <label className="font-weight-bold scanlabel">
+          <FormattedMessage id="inventory.productWise" /> - {_.startCase(_.toLower(brandName))}
+        </label>
         <div className="consolidatedSales-table scannedProducts" style={{ height: "26vh", overflowY: "auto" }}>
           <table className="table listTable">
             <thead>
@@ -38,16 +41,26 @@ export const ProductwiseInventory = ({
                   style={{ width: "25%", cursor: "pointer" }}
                   key="productname"
                 >
-                  PRODUCT
+                  <FormattedMessage id="consolidated.productHeader" />
                   {tableCellIndex === 0 && tableName === "ProductwiseInventory" ? (
                     <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
                   ) : null}
                 </th>
-                <th className="invtHeader">OPENING</th>
-                <th className="invtHeader">SELL-IN</th>
-                <th className="invtHeader">SELL-OUT</th>
-                <th className="invtHeader">RETURNS</th>
-                <th className="invtHeader">CLOSING</th>
+                <th className="invtHeader">
+                  <FormattedMessage id="inventory.opening" />
+                </th>
+                <th className="invtHeader">
+                  <FormattedMessage id="inventory.sellIn" />
+                </th>
+                <th className="invtHeader">
+                  <FormattedMessage id="inventory.sellOut" />
+                </th>
+                <th className="invtHeader">
+                  <FormattedMessage id="inventory.returns" />
+                </th>
+                <th className="invtHeader">
+                  <FormattedMessage id="inventory.closing" />
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -86,7 +99,7 @@ export const ProductwiseInventory = ({
               ) : (
                 <tr style={{ height: "110px" }}>
                   <td colSpan={10} className="no-records">
-                    No records found
+                    <FormattedMessage id="noRecords" />
                   </td>
                 </tr>
               )}
@@ -104,7 +117,10 @@ export const ProductwiseInventory = ({
           >
             <thead>
               <tr>
-                <th style={{ width: "25%", padding: "5px" }}>Total&nbsp;({selectedProductList?.length})</th>
+                <th style={{ width: "25%", padding: "5px" }}>
+                  <FormattedMessage id="consolidated.total" />
+                  &nbsp;({selectedProductList?.length})
+                </th>
                 <th className="invtFooter">{totalOpeningInventory}</th>
                 <th className="invtFooter">{totalSellIn}</th>
                 <th className="invtFooter">{totalSellOut}</th>

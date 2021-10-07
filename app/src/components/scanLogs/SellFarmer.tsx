@@ -27,7 +27,7 @@ import {
   SCANNED_DATE,
   PRODUCT_GROUP,
 } from "../../utility/constant";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 type PartnerTypes = {
   type: String;
 };
@@ -61,7 +61,7 @@ const Input = React.forwardRef(({ onChange, placeholder, value, id, onClick }: I
   </div>
 ));
 
-type Props = {};
+type Props = {} & WrappedComponentProps;
 
 type States = {
   showPopup: boolean;
@@ -394,11 +394,11 @@ class SellFarmer extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") <= moment(val.scannedDateFrom).format("YYYY-MM-DD")) {
         this.setState({
-          ScannedDateErrMsg: "Scanned End Date should be greater than  Scanned Start Date",
+          ScannedDateErrMsg: <FormattedMessage id="validMsg.scanEndGt" />,
         });
       } else {
         this.setState({
-          ScannedDateErrMsg: "Scanned Start Date should be lesser than  Scanned End Date",
+          ScannedDateErrMsg: <FormattedMessage id="validMsg.scanStartLs" />,
         });
       }
     }
@@ -410,11 +410,11 @@ class SellFarmer extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") >= moment(val.scannedDateTo).format("YYYY-MM-DD")) {
         this.setState({
-          ScannedDateErrMsg: "Scanned Start Date should be lesser than Scanned End Date",
+          ScannedDateErrMsg: <FormattedMessage id="validMsg.scanStartLs" />,
         });
       } else {
         this.setState({
-          ScannedDateErrMsg: "Scanned Start Date should be greater than Scanned End Date",
+          ScannedDateErrMsg: <FormattedMessage id="validMsg.scanStartGt" />,
         });
       }
     }
@@ -426,11 +426,11 @@ class SellFarmer extends Component<Props, States> {
         });
       } else if (date <= val.ordereddatefrom) {
         this.setState({
-          dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderEndGt" />,
         });
       } else {
         this.setState({
-          dateErrMsg: "Ordered Start Date should be lesser than  Ordered End Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderStartLs" />,
         });
       }
     }
@@ -442,11 +442,11 @@ class SellFarmer extends Component<Props, States> {
         });
       } else if (date >= val.ordereddateto) {
         this.setState({
-          dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderStartLs" />,
         });
       } else {
         this.setState({
-          dateErrMsg: "Ordered Start Date should be greater than Ordered End Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderStartGt" />,
         });
       }
     }
@@ -458,11 +458,11 @@ class SellFarmer extends Component<Props, States> {
         });
       } else if (date <= val.lastmodifiedfrom) {
         this.setState({
-          lastUpdatedDateErr: "Last Updated End Date should be greater than  Last Updated Start Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpEndGt" />,
         });
       } else {
         this.setState({
-          lastUpdatedDateErr: "Last Updated Start Date should be lesser than  Last Updated End Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpStartLs" />,
         });
       }
     }
@@ -475,11 +475,11 @@ class SellFarmer extends Component<Props, States> {
         });
       } else if (date >= val.lastmodifiedto) {
         this.setState({
-          lastUpdatedDateErr: "Last Updated Start Date should be lesser than Last Updated End Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpStartLs" />,
         });
       } else {
         this.setState({
-          lastUpdatedDateErr: "Last Updated Start Date should be greater than Last Updated End Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpStartGt" />,
         });
       }
     }
@@ -789,6 +789,7 @@ class SellFarmer extends Component<Props, States> {
       selectedScanType,
     } = this.state;
     const fields = this.state.dynamicFields;
+    const { messages }: any = this.props?.intl;
     const locationList = fields?.map((list: any, index: number) => {
       let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
       let data: any = getLocalStorageData("userData");
@@ -799,7 +800,7 @@ class SellFarmer extends Component<Props, States> {
             <div className="col" style={{ marginBottom: "5px" }}>
               <ReactSelect
                 name={list.name}
-                label={`Scanned by - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
+                label={`${messages["scanLog.filter.scanBy"]} - ${nameCapitalized === "Add" ? "ADD" : nameCapitalized}`}
                 options={list.options}
                 handleChange={(selectedOptions: any, e: any) => {
                   list.value = selectedOptions.value;
@@ -817,9 +818,7 @@ class SellFarmer extends Component<Props, States> {
       );
     });
     const condToolTipText =
-      selectedScanType === "WALKIN_SALES"
-        ? "Label, Farmer Name, Product Name, Store Name and Scanned By"
-        : "Order ID, Retailer Name/ID, Farmer Name/Phone, Advisor Name/ID and Store Name";
+      selectedScanType === "WALKIN_SALES" ? messages["scanLog.st.walkHelp"] : messages["scanLog.st.advHelp"];
     return (
       <AUX>
         {isLoader ? (
@@ -833,7 +832,7 @@ class SellFarmer extends Component<Props, States> {
                   searchText={searchText}
                   download={this.download}
                   isDownload={true}
-                  toolTipText={`Search applicable for ${condToolTipText}`}
+                  toolTipText={`${messages["filter.searchApp"]} ${condToolTipText}`}
                   onClose={(node: any) => {
                     this.closeToggle = node;
                   }}
@@ -1220,4 +1219,4 @@ class SellFarmer extends Component<Props, States> {
   }
 }
 
-export default SellFarmer;
+export default injectIntl(SellFarmer);
