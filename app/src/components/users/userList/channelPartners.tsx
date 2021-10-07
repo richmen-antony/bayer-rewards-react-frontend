@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 import { withRouter } from "react-router-dom";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
@@ -50,7 +50,7 @@ type Props = {
   location?: any;
   history?: any;
   onRef: any;
-};
+} & WrappedComponentProps;
 type States = {
   isLoader: boolean;
   deActivatePopup: boolean;
@@ -69,7 +69,7 @@ type States = {
   searchText: string;
   dropdownOpenFilter: boolean;
   selectedFilters: any;
-  dateErrMsg: string;
+  dateErrMsg: string | any;
   list: Array<any>;
   userStatus: Array<any>;
   isFiltered: boolean;
@@ -136,6 +136,14 @@ const DateInput = React.forwardRef(({ onChange, placeholder, value, id, onClick 
   </div>
 ));
 
+const messages = defineMessages({
+  tooltip: {
+    id: "tooltip.channelPartner",
+  },
+  placeholder: {
+    id: "placeholder.search",
+  },
+});
 class ChannelPartners extends Component<Props, States> {
   tableCellIndex: any;
   loggedUserInfo: any;
@@ -303,17 +311,17 @@ class ChannelPartners extends Component<Props, States> {
         flag = true;
       } else {
         this.setState({
-          dateErrMsg: "Start date should be lesser than End Date",
+          dateErrMsg: <FormattedMessage id="filter.startDateShldLesser" />,
         });
       }
     } else if (name === "endDate") {
       if (e.target.value > new Date().toISOString().substr(0, 10)) {
         this.setState({
-          dateErrMsg: "End Date should not be greater than todays date",
+          dateErrMsg: <FormattedMessage id="filter.endDateNotGreater" />,
         });
       } else if (e.target.value <= val.lastmodifieddatefrom) {
         this.setState({
-          dateErrMsg: "End Date should be greater than Start Date",
+          dateErrMsg: <FormattedMessage id="filter.endDateShldGreater" />,
         });
       } else {
         val[name] = e.target.value;
@@ -1207,11 +1215,11 @@ class ChannelPartners extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifieddatefrom).format("YYYY-MM-DD")) {
         this.setState({
-          dateErrMsg: "End Date should be greater than Start Date",
+          dateErrMsg: <FormattedMessage id="filter.endDateShldGreater" />,
         });
       } else {
         this.setState({
-          dateErrMsg: "Start Date should be lesser than  End Date",
+          dateErrMsg: <FormattedMessage id="filter.startDateShldLesser" />,
         });
       }
     }
@@ -1223,11 +1231,11 @@ class ChannelPartners extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifieddateto).format("YYYY-MM-DD")) {
         this.setState({
-          dateErrMsg: "Start Date should be lesser than End Date",
+          dateErrMsg: <FormattedMessage id="filter.startDateShldLesser" />,
         });
       } else {
         this.setState({
-          dateErrMsg: "Start Date should be greater than  End Date",
+          dateErrMsg: <FormattedMessage id="filter.startDateShldGreater" />,
         });
       }
     }
@@ -1284,6 +1292,7 @@ class ChannelPartners extends Component<Props, States> {
   render() {
     const { totalData, isAsc, isLoader, selectedFilters, userList, userData, isStaff, dateErrMsg, allChannelPartners } =
       this.state;
+    const { intl } = this.props;
 
     let data: any = getLocalStorageData("userData");
     let loggedUserInfo = JSON.parse(data);
@@ -1330,13 +1339,16 @@ class ChannelPartners extends Component<Props, States> {
           isPartner={true}
           selectedPartnerType={this.state.partnerType}
           handlePartnerChange={this.handlePartnerChange}
-          toolTipText="Search applicable for User Name, Store Name and Owner Name"
+          toolTipText={intl.formatMessage(messages.tooltip)}
           onClose={(node: any) => {
             this.closeToggle = node;
           }}
         >
           <div onClick={(e) => e.stopPropagation()}>
-            <label className="font-weight-bold">Status</label>
+            <label className="font-weight-bold">
+              {" "}
+              <FormattedMessage id="channelPartner.filter.status" />
+            </label>
             <div className="pt-1">
               {this.state.userStatus.map((item, index) => (
                 <span className="mr-2" key={`status` + index}>
@@ -1345,7 +1357,7 @@ class ChannelPartners extends Component<Props, States> {
                     size="sm"
                     onClick={(e) => this.handleFilterChange(e, "status", item)}
                   >
-                    {item}
+                    <FormattedMessage id={`${item}`} />
                   </Button>
                 </span>
               ))}
@@ -1353,7 +1365,7 @@ class ChannelPartners extends Component<Props, States> {
           </div>
           <div className="form-group">{locationList}</div>
           <label className="font-weight-bold pt-2" htmlFor="update-date">
-            Last Modified Date
+            <FormattedMessage id="channelPartner.filter.lastMfdDt" />
           </label>
           <div className="d-flex">
             <div className="user-filter-date-picker">
@@ -1389,10 +1401,10 @@ class ChannelPartners extends Component<Props, States> {
 
           <div className="filterFooter pt-3">
             <button className="cus-btn-user-filter reset" onClick={(e) => this.resetFilter(e)}>
-              Reset All
+              <FormattedMessage id="button.resetAll" />
             </button>
             <button className="cus-btn-user-filter" onClick={this.applyFilter} disabled={dateErrMsg ? true : false}>
-              Apply
+              <FormattedMessage id="button.apply" />
               <span>
                 <img src={ArrowIcon} alt="" className="arrow-i" /> <img src={RtButton} alt="" className="layout" />
               </span>
@@ -1775,8 +1787,7 @@ class ChannelPartners extends Component<Props, States> {
                                     <tr key={`staffRows` + staffidx}>
                                       {staffidx === 0 ? (
                                         <td className="font-weight-bold">
-                                          <FormattedMessage id="createUser.store" /> <br />{" "}
-                                          <FormattedMessage id="createUser.staffs" />
+                                          <FormattedMessage id="createUser.storeStaffs" />
                                         </td>
                                       ) : (
                                         <td>{null}</td>
@@ -2146,4 +2157,4 @@ class ChannelPartners extends Component<Props, States> {
   }
 }
 
-export default withRouter(ChannelPartners);
+export default withRouter(injectIntl(ChannelPartners));

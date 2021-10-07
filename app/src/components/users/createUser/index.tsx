@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import { Theme, withStyles } from "@material-ui/core/styles";
@@ -68,6 +68,27 @@ const DialogActions = withStyles((theme: Theme) => ({
     borderRadius: "50px",
   },
 }))(MuiDialogActions);
+
+const messages = defineMessages({
+  street: {
+    id: "createUser.placeholder.street",
+  },
+  postal: {
+    id: "createUser.placeholder.postalCode",
+  },
+  mobilenumber: {
+    id: "createUser.mobilenumber",
+  },
+  taxId: {
+    id: "createUser.placeholder.taxId",
+  },
+  storeName: {
+    id: "createUser.placeholder.storeName",
+  },
+  ownerName: {
+    id: "createUser.placeholder.ownerName",
+  },
+});
 
 class CreateUser extends Component<any, any> {
   static contextType = AppContext;
@@ -753,9 +774,12 @@ class CreateUser extends Component<any, any> {
         if (type === list.name) {
           if (list.value === "") {
             let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-            list.error = `Please select the ${
-              nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
-            }`;
+            list.error = (
+              <>
+                <FormattedMessage id="createUser.geolevelError" />{" "}
+                {nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}
+              </>
+            );
             // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
@@ -767,9 +791,12 @@ class CreateUser extends Component<any, any> {
         if (type === list.name) {
           if (list.value === "") {
             let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-            list.error = `Please select the ${
-              nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
-            }`;
+            list.error = (
+              <>
+                <FormattedMessage id="createUser.geolevelError" />{" "}
+                {nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}
+              </>
+            );
             // list.error = "Please select the " + levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
           } else {
             list.error = "";
@@ -1496,9 +1523,12 @@ class CreateUser extends Component<any, any> {
       this.state.dynamicFields.forEach((list: any, index: number) => {
         if (list.value === "") {
           let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-          list.error = `Please select the ${
-            nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
-          }`;
+          list.error = (
+            <>
+              <FormattedMessage id="createUser.geolevelError" />{" "}
+              {nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}
+            </>
+          );
           formValid = false;
         } else {
           list.error = "";
@@ -1533,9 +1563,12 @@ class CreateUser extends Component<any, any> {
       this.state.withHolding.forEach((list: any, index: number) => {
         if (list.value === "") {
           let nameCapitalized = levelsName[index].charAt(0).toUpperCase() + levelsName[index].slice(1);
-          list.error = `Please select the ${
-            nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized
-          }`;
+          list.error = (
+            <>
+              <FormattedMessage id="createUser.geolevelError" />{" "}
+              {nameCapitalized === "Add" ? "ADD" : nameCapitalized === "Epa" ? "EPA" : nameCapitalized}
+            </>
+          );
           formValid = false;
         } else {
           list.error = "";
@@ -2399,6 +2432,7 @@ class CreateUser extends Component<any, any> {
       asaDatas,
       userroleType,
     } = this.state;
+    const { intl } = this.props;
     let currentPage = this.props.location?.page;
     const fields = currentStep === 2 ? this.state.dynamicFields : this.state.withHolding;
 
@@ -2666,10 +2700,10 @@ class CreateUser extends Component<any, any> {
                                       <div style={{ display: "flex" }}>
                                         <div className="flagInput">
                                           <PhoneInput
-                                            placeholder="Mobile Number"
                                             inputProps={{
                                               name: "mobilenumber",
                                               required: true,
+                                              placeholder: intl.formatMessage(messages.mobilenumber),
                                               maxLength:
                                                 process.env.REACT_APP_STAGE === "dev" ||
                                                 process.env.REACT_APP_STAGE === "int"
@@ -2819,8 +2853,7 @@ class CreateUser extends Component<any, any> {
                                     <tr key={`staffRow` + idx}>
                                       {idx === 0 ? (
                                         <td className="font-weight-bold">
-                                          <FormattedMessage id="createUser.store" /> <br />{" "}
-                                          <FormattedMessage id="createUser.staffs" />
+                                          <FormattedMessage id="createUser.storeStaffs" />
                                         </td>
                                       ) : (
                                         <td></td>
@@ -2993,7 +3026,7 @@ class CreateUser extends Component<any, any> {
                           type="text"
                           className="form-control"
                           name="deliverystreet"
-                          placeHolder="Street"
+                          placeHolder={intl.formatMessage(messages.street)}
                           value={userData.deliverystreet}
                           onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                           width="96%"
@@ -3007,7 +3040,7 @@ class CreateUser extends Component<any, any> {
                           type="text"
                           className="form-control"
                           name="deliveryzipcode"
-                          placeHolder="Postal Code"
+                          placeHolder={intl.formatMessage(messages.postal)}
                           value={userData.deliveryzipcode}
                           onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                           onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
@@ -3044,7 +3077,7 @@ class CreateUser extends Component<any, any> {
                             type="text"
                             className="form-control"
                             name="taxid"
-                            placeHolder="Tax Id"
+                            placeHolder={intl.formatMessage(messages.taxId)}
                             value={userData.taxid}
                             onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                           />
@@ -3054,7 +3087,7 @@ class CreateUser extends Component<any, any> {
                             type="text"
                             className="form-control"
                             name="whtaccountname"
-                            placeHolder="Store Name"
+                            placeHolder={intl.formatMessage(messages.storeName)}
                             value={userData.whtaccountname}
                             onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                             onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
@@ -3080,7 +3113,7 @@ class CreateUser extends Component<any, any> {
                             type="text"
                             className="form-control"
                             name="whtownername"
-                            placeHolder="Owner Name"
+                            placeHolder={intl.formatMessage(messages.ownerName)}
                             value={
                               this.state.accInfo
                                 ? userData.ownerRows[0].firstname + " " + userData.ownerRows[0].lastname
@@ -3124,7 +3157,7 @@ class CreateUser extends Component<any, any> {
                             type="text"
                             className="form-control"
                             name="billingstreet"
-                            placeHolder="Street"
+                            placeHolder={intl.formatMessage(messages.street)}
                             value={this.state.accInfo ? userData.deliverystreet : userData.billingstreet}
                             onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                             read-only={this.state.accInfo ? "true" : "false"}
@@ -3137,7 +3170,7 @@ class CreateUser extends Component<any, any> {
                             type="text"
                             className="form-control"
                             name="billingzipcode"
-                            placeHolder="Postal Code"
+                            placeHolder={intl.formatMessage(messages.postal)}
                             onChange={(e: any) => this.handleChange("", e, "", "otherSteps", "")}
                             onKeyPress={(e: any) => allowAlphabetsNumbers(e)}
                             read-only={this.state.accInfo ? "true" : "false"}
@@ -3209,4 +3242,4 @@ const mapDispatchToProps = {
   getGeographicLevel1Options: getGeographicLevel1Options,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateUser);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CreateUser));

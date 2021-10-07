@@ -15,9 +15,9 @@
     "apply": "Apply",
     "download": "Download",
     "decline": "Decline",
-    "approve": "Approve",
     "ok": "OK",
-    "validateandapprove": "Validate & Approve"
+    "validateandapprove": "Validate & Approve",
+    "changeLogs": "Change Logs"
   },
   "placeholder": {
     "username": "Enter username",
@@ -26,7 +26,9 @@
     "userType": "User Type"
   },
   "tooltip": {
-    "consolidated": "Search applicable for Partner Name/ID"
+    "consolidated": "Search applicable for Partner Name/ID",
+    "channelPartner": "Search applicable for User Name, Store Name and Owner Name",
+    "changeLogs": "Search applicable for User Name, Field, Old Value and New Value"
   },
   "pagination": {
     "sales": "Sales",
@@ -56,7 +58,11 @@
     "userType": "User Type",
     "upload": "Upload",
     "scannedBy": "Scanned By",
-    "scanType": "Scan Type"
+    "scanType": "Scan Type",
+    "startDateShldLesser": "Start date should be lesser than End Date",
+    "endDateShldGreater": "End Date should be greater than Start Date",
+    "endDateNotGreater": "End Date should not be greater than todays date",
+    "startDateShldGreater": "Start Date should be greater than  End Date"
   },
   "download": {
     "download": "Download",
@@ -91,6 +97,7 @@
   },
   "FULFILLED": "FULFILLED",
   "PENDING": "PENDING",
+  "DECLINED": "DECLINED",
   "CANCELLED": "CANCELLED",
   "EXPIRED": "EXPIRED",
   "status": "STATUS",
@@ -98,6 +105,11 @@
   "lastUpdateDate": "Last Updated Date",
   "sixMonthsInterval": "6 months interval",
   "noRecords": "No records found",
+  "Active": "Active",
+  "Inactive": "Inactive",
+  "Pending": "Pending",
+  "Declined": "Declined",
+  "ALL": "ALL",
   "order": {
     "history": "Order History",
     "advisororderid": "ORDER ID",
@@ -248,8 +260,7 @@
     "email": "Email(Optional)",
     "active": "Active?",
     "owner": "Owner",
-    "store": "Store",
-    "staffs": "Staffs",
+    "storeStaffs": "Store\nstaffs",
     "storeAlert": "Are you sure you want to delete store's staff?",
     "geolevelError": "Please select the",
     "sameAsPersonalInfo": "Same as Personal Info",
@@ -285,13 +296,27 @@
     "staffCount": "STAFF COUNT",
     "status": "STATUS",
     "updatedBy": "UPDATED BY",
-    "changeLogs": "Change Logs",
+
     "searchTooltip": "Search applicable for User Name, Store Name and Owner Name",
     "areYouWantToChange": "Are you sure you want to change",
     "accountTo": "account to",
     "active": "Active",
     "inActive": "Inactive",
     "WouldYouLikeToValidate1": "Would you like to validate & approve",
-    "WouldYouLikeToValidate12": "account to use Bayer Rewards mobile application?"
+    "WouldYouLikeToValidate12": "account to use Bayer Rewards mobile application?",
+    "changeLogs": {
+      "userName": "User Name",
+      "field": "Field",
+      "oldValue": "Old Value",
+      "newValue": "New Value",
+      "modifiedDate": "Modified Date",
+      "modifiedTime": "Modified Time",
+      "changeLogs": "CHANGE LOGS",
+      "searchText": "Search applicable for User Name, Field, Old Value and New Value"
+    },
+    "filter": {
+      "status": "Status",
+      "lastMfdDt": "Last Modified Date"
+    }
   }
 }

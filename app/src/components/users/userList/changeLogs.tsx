@@ -1,18 +1,17 @@
 import React, { Component } from "react";
+import { defineMessages, FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 import AUX from "../../../hoc/Aux_";
 import Loaders from "../../../utility/widgets/loader";
 import { sortBy } from "../../../utility/base/utils/tableSort";
 import { apiURL } from "../../../utility/base/utils/config";
-import {
-  invokeGetAuthService
-} from "../../../utility/base/service";
+import { invokeGetAuthService } from "../../../utility/base/service";
 import "../../../assets/scss/users.scss";
 import moment from "moment";
 import NoImage from "../../../assets/images/no_image.svg";
 import leftArrow from "../../../assets/icons/left_arrow.svg";
 import Download from "../../../assets/icons/download.svg";
 import { SearchInput } from "../../../utility/widgets/input/search-input";
-import Pagination  from "../../../utility/widgets/pagination";
+import Pagination from "../../../utility/widgets/pagination";
 import { downloadCsvFile, ErrorMsg } from "../../../utility/helper";
 import { getLocalStorageData } from "../../../utility/base/localStore";
 import _ from "lodash";
@@ -21,7 +20,7 @@ type Props = {
   location?: any;
   history?: any;
   backToUsersList: Function;
-};
+} & WrappedComponentProps;
 type States = {
   isLoader: boolean;
   allChangeLogs: Array<any>;
@@ -29,13 +28,22 @@ type States = {
   isAsc: Boolean;
   totalData: number;
   loggedUserInfo: any;
-  inActiveFilter:boolean;
+  inActiveFilter: boolean;
 };
+
+const messages = defineMessages({
+  tooltip: {
+    id: "tooltip.changeLogs",
+  },
+  placeholder: {
+    id: "placeholder.search",
+  },
+});
 
 class ChangeLogs extends Component<Props, States> {
   tableCellIndex: any;
   timeOut: any;
-  paginationRef:any;
+  paginationRef: any;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -45,7 +53,7 @@ class ChangeLogs extends Component<Props, States> {
       isAsc: true,
       totalData: 0,
       loggedUserInfo: {},
-      inActiveFilter:false
+      inActiveFilter: false,
     };
     this.timeOut = 0;
   }
@@ -65,30 +73,30 @@ class ChangeLogs extends Component<Props, States> {
 
   getChangeLogs = (defaultPageNo?: number) => {
     const { changeLogs } = apiURL;
-    const {state,setDefaultPage}= this.paginationRef;
-		const pageNo=  !defaultPageNo ? 1 : state.pageNo;
-		// set default pagination number 1 and  call the method
-		if(!defaultPageNo){
-			setDefaultPage();
-		}
-    this.setState({ isLoader: true, allChangeLogs: []});
+    const { state, setDefaultPage } = this.paginationRef;
+    const pageNo = !defaultPageNo ? 1 : state.pageNo;
+    // set default pagination number 1 and  call the method
+    if (!defaultPageNo) {
+      setDefaultPage();
+    }
+    this.setState({ isLoader: true, allChangeLogs: [] });
     let data = {
       page: pageNo,
       searchtext: this.state.searchText,
       rowsperpage: state.rowsPerPage,
       countrycode: this.state.loggedUserInfo?.countrycode,
-      isFiltered: true
+      isFiltered: true,
     };
 
     invokeGetAuthService(changeLogs, data)
       .then((response: any) => {
-          const total = response?.totalrows;
-          let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
-          this.setState({
-            isLoader: false,
-            allChangeLogs: data,
-            totalData: Number(total),
-          });
+        const total = response?.totalrows;
+        let data = response?.body && Object.keys(response?.body).length !== 0 ? response.body.rows : [];
+        this.setState({
+          isLoader: false,
+          allChangeLogs: data,
+          totalData: Number(total),
+        });
       })
       .catch((error: any) => {
         this.setState({ isLoader: false });
@@ -97,7 +105,7 @@ class ChangeLogs extends Component<Props, States> {
   };
   handleSearch = (e: any) => {
     let searchText = e.target.value;
-    this.setState({ searchText: searchText,inActiveFilter:false });
+    this.setState({ searchText: searchText, inActiveFilter: false });
     if (this.timeOut) {
       clearTimeout(this.timeOut);
     }
@@ -116,14 +124,14 @@ class ChangeLogs extends Component<Props, States> {
     this.tableCellIndex = e.currentTarget.cellIndex;
     this.onSort(columnname, allChangeLogs, isAsc);
   }
-  
+
   download = () => {
     const { downloadChanglogs } = apiURL;
-    let data :any = {
-      countrycode: this.state.loggedUserInfo.countrycode
+    let data: any = {
+      countrycode: this.state.loggedUserInfo.countrycode,
     };
     if (this.state.searchText) {
-      data ={...data,searchtext: this.state.searchText,isfiltered: true,}
+      data = { ...data, searchtext: this.state.searchText, isfiltered: true };
     }
 
     invokeGetAuthService(downloadChanglogs, data)
@@ -137,14 +145,8 @@ class ChangeLogs extends Component<Props, States> {
       });
   };
   render() {
-    const { backToUsersList } = this.props;
-    const {
-      allChangeLogs,
-      searchText,
-      isLoader,
-      isAsc,
-      totalData,
-    } = this.state;
+    const { backToUsersList, intl } = this.props;
+    const { allChangeLogs, searchText, isLoader, isAsc, totalData } = this.state;
 
     return (
       <AUX>
@@ -161,128 +163,96 @@ class ChangeLogs extends Component<Props, States> {
                   alt={NoImage}
                   onClick={() => backToUsersList()}
                 />
-                CHANGE LOGS
+                <FormattedMessage id="channelPartner.changeLogs.changeLogs" />
               </span>
             </div>
             <div className="col-sm-6 leftAlign">
               <SearchInput
                 data-testid="search-input"
-                placeHolder="Search Logs (min 3 letters)"
+                placeHolder={intl.formatMessage(messages.placeholder)}
                 type="text"
                 onChange={this.handleSearch}
                 value={searchText}
-                tolltip="Search applicable for User Name, Field, Old Value and New Value"
+                tolltip={intl.formatMessage(messages.tooltip)}
               />
               <div>
-                <button
-                  className="btn btn-primary"
-                  style={{ backgroundColor: "#1F445A" }}
-                  onClick={this.download}
-                >
+                <button className="btn btn-primary" style={{ backgroundColor: "#1F445A" }} onClick={this.download}>
                   <img src={Download} width="17" alt={NoImage} data-testid="download" />
                 </button>
               </div>
             </div>
           </div>
-            <div className="table-responsive change-logs">
-              <table className="table" id="tableData">
-                <thead>
-                  <tr>
-                    <th
-                      onClick={(e) =>
-                        this.handleSort(e, "userid", allChangeLogs, isAsc)
-                      }
-                    >
-                      User Name
-                      {this.tableCellIndex !== undefined ? (
-                        this.tableCellIndex === 0 ? (
-                          <i
-                            className={`fas ${
-                              isAsc ? "fa-sort-down" : "fa-sort-up"
-                            } ml-3`}
-                          ></i>
-                        ) : null
-                      ) : (
-                        <i className={"fas fa-sort-up ml-3"}></i>
-                      )}
-                    </th>
-                    <th
-                      onClick={(e) =>
-                        this.handleSort(e, "fieldname", allChangeLogs, isAsc)
-                      }
-                    >
-                      Field
-                      {this.tableCellIndex === 1 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-3`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      onClick={(e) =>
-                        this.handleSort(e, "oldvalue", allChangeLogs, isAsc)
-                      }
-                    >
-                      Old Value
-                      {this.tableCellIndex === 2 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-3`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th
-                      onClick={(e) =>
-                        this.handleSort(e, "newvalue", allChangeLogs, isAsc)
-                      }
-                    >
-                      New Value
-                      {this.tableCellIndex === 3 ? (
-                        <i
-                          className={`fas ${
-                            isAsc ? "fa-sort-down" : "fa-sort-up"
-                          } ml-3`}
-                        ></i>
-                      ) : null}
-                    </th>
-                    <th>Modified Date</th>
-                    <th>Modified Time</th>
-                  </tr>
-                </thead>
-                <tbody>
+          <div className="table-responsive change-logs">
+            <table className="table" id="tableData">
+              <thead>
+                <tr>
+                  <th onClick={(e) => this.handleSort(e, "userid", allChangeLogs, isAsc)}>
+                    <FormattedMessage id="channelPartner.changeLogs.userName" />
+                    {this.tableCellIndex !== undefined ? (
+                      this.tableCellIndex === 0 ? (
+                        <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
+                      ) : null
+                    ) : (
+                      <i className={"fas fa-sort-up ml-3"}></i>
+                    )}
+                  </th>
+                  <th onClick={(e) => this.handleSort(e, "fieldname", allChangeLogs, isAsc)}>
+                    <FormattedMessage id="channelPartner.changeLogs.field" />
+                    {this.tableCellIndex === 1 ? (
+                      <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
+                    ) : null}
+                  </th>
+                  <th onClick={(e) => this.handleSort(e, "oldvalue", allChangeLogs, isAsc)}>
+                    <FormattedMessage id="channelPartner.changeLogs.oldValue" />
+                    {this.tableCellIndex === 2 ? (
+                      <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
+                    ) : null}
+                  </th>
+                  <th onClick={(e) => this.handleSort(e, "newvalue", allChangeLogs, isAsc)}>
+                    <FormattedMessage id="channelPartner.changeLogs.newValue" />
+                    {this.tableCellIndex === 3 ? (
+                      <i className={`fas ${isAsc ? "fa-sort-down" : "fa-sort-up"} ml-3`}></i>
+                    ) : null}
+                  </th>
+                  <th>
+                    {" "}
+                    <FormattedMessage id="channelPartner.changeLogs.modifiedDate" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="channelPartner.changeLogs.modifiedTime" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
                 {allChangeLogs.length > 0 ? (
                   allChangeLogs.map((list: any, i: number) => {
-                    let nameCapitalized = list.fieldname === 'ADD' || list.fieldname === 'EPA' ? list.fieldname: _.startCase(_.toLower(list.fieldname));
+                    let nameCapitalized =
+                      list.fieldname === "ADD" || list.fieldname === "EPA"
+                        ? list.fieldname
+                        : _.startCase(_.toLower(list.fieldname));
                     return (
-                  <AUX key={i}>
-                      <tr>
-                        <td>{list.userid}</td>
-                        <td>{nameCapitalized} </td>
-                        <td>{list.oldvalue} </td>
-                        <td>{list.newvalue} </td>
-                        <td>
-                          {moment(list.lastupdateddate).format("YYYY-MM-DD")}
-                        </td>
-                        <td>
-                          {moment(list.lastupdateddate).format("HH-mm-ss")}
-                        </td>
-                      </tr>
-                    </AUX>
-                     )}
-                  )
-                  ) : (
-                    <tr style={{ height: "250px" }}>
-                      <td colSpan={10} className="no-records">
-                        No records found
-                      </td>
+                      <AUX key={i}>
+                        <tr>
+                          <td>{list.userid}</td>
+                          <td>{nameCapitalized} </td>
+                          <td>{list.oldvalue} </td>
+                          <td>{list.newvalue} </td>
+                          <td>{moment(list.lastupdateddate).format("YYYY-MM-DD")}</td>
+                          <td>{moment(list.lastupdateddate).format("HH-mm-ss")}</td>
+                        </tr>
+                      </AUX>
+                    );
+                  })
+                ) : (
+                  <tr style={{ height: "250px" }}>
+                    <td colSpan={10} className="no-records">
+                      <FormattedMessage id="noRecords" />
+                    </td>
                   </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                )}
+              </tbody>
+            </table>
+          </div>
 
           <div>
             <Pagination
@@ -290,9 +260,9 @@ class ChangeLogs extends Component<Props, States> {
               data={allChangeLogs}
               totalLabel={"Logs"}
               getRecords={this.getChangeLogs}
-							onRef={(node:any)=>{
-								this.paginationRef= node;
-							}}
+              onRef={(node: any) => {
+                this.paginationRef = node;
+              }}
             />
           </div>
         </div>
@@ -301,4 +271,4 @@ class ChangeLogs extends Component<Props, States> {
   }
 }
 
-export default ChangeLogs;
+export default injectIntl(ChangeLogs);

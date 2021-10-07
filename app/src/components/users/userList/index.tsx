@@ -434,13 +434,13 @@ class UserList extends Component<Props, States> {
                 <>
                   <div>
                     <button className="form-control changeLogs" onClick={() => this.handleChangeLog()}>
-                      <img src={Logs} alt={NoImage} data-testid="changelog" /> <span>Change Logs</span>
+                      <img src={Logs} alt={NoImage} data-testid="changelog" /> <span> <FormattedMessage id="button.changeLogs" /></span>
                     </button>
                   </div>
 
                   <div>
                     <button className="btn btn-primary" onClick={this.download} style={{ backgroundColor: "#1F445A" }}>
-                      <img src={Download} width="17" alt={NoImage} data-testid="download" /> <span>Download</span>
+                      <img src={Download} width="17" alt={NoImage} data-testid="download" /> <span><FormattedMessage id="button.download" /></span>
                     </button>
                   </div>
                   {/* <i
