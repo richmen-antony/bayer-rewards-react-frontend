@@ -87,7 +87,6 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
               >
                 <div className={`line-cnt ${data?.orderstatus === "PENDING" ? "pending-center" : ""}`}>
                   <p>
-                    {" "}
                     <FormattedMessage id="scanLog.productPopup.orderDate" />
                   </p>
                   <label>{data?.ordereddate && moment(data?.ordereddate).format("Do MMM, YYYY")}</label>
@@ -152,7 +151,6 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                     <tr>
                       <th></th>
                       <th>
-                        {" "}
                         <FormattedMessage id="scanLog.productPopup.name" />
                       </th>
                       <th>
@@ -229,7 +227,9 @@ const OrderProductPopup: React.FC<Props> = ({ open, close, data }) => {
                                       <p>
                                         <FormattedMessage id="scanLog.productPopup.labelId" />
                                       </p>
-                                      <p className="sub-val">Batch #</p>
+                                      <p className="sub-val">
+                                        <FormattedMessage id="scanLog.productPopup.batch" /> #
+                                      </p>
                                     </div>
                                     {value?.ordered_qrcodes?.length > 0 &&
                                       value.ordered_qrcodes.map((list: any, i: number) => {

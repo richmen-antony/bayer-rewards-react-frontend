@@ -173,6 +173,7 @@
     "productPopup": {
       "orderDate": "Ordered date",
       "fullfilledDate": "Fulfilled date",
+      "expiredDate": "Expiry date",
       "advisorIdName": "Advisor ID & Name",
       "fullfilledIdName": "Fulfilled by ID & Name",
       "farmerIdName": "Farmer ID & Name",
@@ -198,7 +199,8 @@
       "userName": "Username",
       "storeName": "Store Name",
       "phoneNo": "Phone Number",
-      "postalCode": "Postal Code"
+      "postalCode": "Postal Code",
+      "accName": "Account Name"
     },
     "sg": {
       "deliveryHeader": "DELIVERY",
@@ -207,7 +209,11 @@
       "warehouseNameIdHeader": "WAREHOUSE NAME/ID",
       "scannedByHeader": "SCANNED BY",
       "totalQtyHeader": "TOTAL QTY",
-      "gdStatusHeader": "GOODS STATUS"
+      "gdStatusHeader": "GOODS STATUS",
+      "distD2RTooltip": "Label, Customer Name, Product Name, Channel Type, Store Name and Scanned By",
+      "distStTooltip": "Label, Customer Name, Product Name, Channel Type and Scanned By",
+      "wareW2RTooltip": "Delivery ID, Warehouse Name/ID, Retailer Name/ID, Store Name and Scanned By",
+      "wareW2DTooltip": "Delivery ID, Warehouse Name/ID, Distributor Name/ID and Scanned By"
     },
     "st": {
       "farmerNameIdHeader": "FARMER NAME/ID",

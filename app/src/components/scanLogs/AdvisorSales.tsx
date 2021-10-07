@@ -383,7 +383,7 @@ class AdvisorSales extends PureComponent<Props, States> {
               ) : (
                 <tr style={{ height: "250px" }}>
                   <td colSpan={10} className="no-records">
-                    No records found
+                    <FormattedMessage id="noRecords" />
                   </td>
                 </tr>
               )}
@@ -411,7 +411,10 @@ class AdvisorSales extends PureComponent<Props, States> {
                       <p>{retailerPopupData.userid}</p>
                     </div>
                     <div className="content-list">
-                      <label>Account Name</label>
+                      <label>
+                        {" "}
+                        <FormattedMessage id="scanLog.filterScanPopup.accName" />
+                      </label>
                       <p>{retailerPopupData.accountname}</p>
                     </div>
                     <div className="content-list">

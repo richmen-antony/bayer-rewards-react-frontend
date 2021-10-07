@@ -5,7 +5,7 @@ import menuIcon from "../../assets/icons/menu_icon.svg";
 import "../../assets/scss/layout.scss";
 import { getLocalStorageData } from "../../utility/base/localStore";
 import DropdownArrow from "../../assets/images/down-arrow.svg";
-import BayerRewardsImg from "../../assets/icons/logo.svg";
+import BayerRewardsImg from "../../assets/icons/brp_logo.svg";
 import IndiaFLag from "../../assets/icons/india_flag.svg";
 import MalawiFlag from "../../assets/icons/malawi_flag.svg";
 import Authorization from "../../utility/authorization";
@@ -82,10 +82,10 @@ class TopBar extends Component<Props, States> {
         <div className="topbar-left">
           <div className="logo">
             <span>
-              <img src={BayerRewardsImg} alt="Logo" height="80" />
+              <img src={BayerRewardsImg} alt="Logo" height="65" />
             </span>
             <i>
-              <img src={BayerRewardsImg} alt="Logo" height="50" />
+              <img src={BayerRewardsImg} alt="Logo" height="27" />
             </i>
           </div>
         </div>

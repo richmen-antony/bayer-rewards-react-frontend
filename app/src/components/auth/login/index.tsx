@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AUX from "../../../hoc/Aux_";
-import rewardsLogo from "../../../assets/icons/logo.svg";
+import rewardsLogo from "../../../assets/icons/brp_logo.svg";
 import { apiURL } from "../../../utility/base/utils/config";
 import { invokePostServiceLogin } from "../../../utility/base/service";
 import Loaders from "../../../utility/widgets/loader";
@@ -139,7 +139,7 @@ class Login extends Component<Props, States> {
         {isLoader && <Loaders />}
         <div className=" col-md-10 ~form">
           <div className="text-center">
-            <img src={rewardsLogo} width="140" alt="Content2" />
+            <img src={rewardsLogo} width="300" alt="Content2" />
           </div>
           <form className="form-horizontal">
             <div className="form-group">

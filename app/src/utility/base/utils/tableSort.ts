@@ -27,8 +27,8 @@ function compareByAsc(key: any) {
       const xDate = Date.parse(x);
       const yDate = Date.parse(y);
       if (isNaN(xDate) == false && isNaN(yDate) == false){
-        var xx = moment(x, 'YYYY-MM-DD');
-        var yy = moment(y, 'YYYY-MM-DD');
+        var xx = moment(x).format('YYYY-MM-DD');
+        var yy = moment(y).format('YYYY-MM-DD');
         return xx > yy ? 1 : xx < yy ? -1 : 0;
       } else{
         return x.localeCompare(y);
@@ -54,8 +54,8 @@ function compareByDesc(key: any){
       const xDate = Date.parse(x);
       const yDate = Date.parse(y);
       if (isNaN(xDate) == false && isNaN(yDate) == false){
-        var xx = moment(x, 'YYYY-MM-DD');
-        var yy = moment(y, 'YYYY-MM-DD');
+        var xx = moment(x).format('YYYY-MM-DD');
+        var yy = moment(y).format('YYYY-MM-DD');
         return xx > yy ? -1 : xx < yy ? 1 : 0;
       } else{
         return y.localeCompare(x);

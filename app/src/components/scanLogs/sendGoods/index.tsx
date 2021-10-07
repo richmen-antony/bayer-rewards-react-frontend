@@ -769,14 +769,24 @@ class SendGoods extends Component<Props, States> {
       );
     });
     const { filter } = this.activeFilter();
-    const condWarehouseTooptip =
-      this.state.selectedScanType === "SG - W2R" ? "Retailer Name/ID, Store Name" : "Distributor Name/ID";
-    const condDistributorTooptip = this.state.selectedScanType === "SG - D2R" ? " Store Name" : "";
-    const condDistributorSplit = this.state.selectedScanType === "SG - D2R" ? "," : "";
-    const toolTipText =
-      selectedScannedBy === "Distributor"
-        ? `Label, Customer Name, Product Name, Channel Type${condDistributorSplit}${condDistributorTooptip} and Scanned By`
-        : `Delivery ID, Warehouse Name/ID, ${condWarehouseTooptip} and Scanned By`;
+    const distD2RTooltip = messages["scanLog.sg.distD2RTooltip"];
+    const distStTooltip = messages["scanLog.sg.distStTooltip"];
+    const wareW2RTooltip = messages["scanLog.sg.wareW2RTooltip"];
+    const wareW2DTooltip = messages["scanLog.sg.wareW2DTooltip"];
+    let condTolltip: any = "";
+    if (selectedScannedBy === "Distributor") {
+      if (this.state.selectedScanType === "SG - D2R") {
+        condTolltip = distD2RTooltip;
+      } else {
+        condTolltip = distStTooltip;
+      }
+    } else {
+      if (this.state.selectedScanType === "SG - W2R") {
+        condTolltip = wareW2RTooltip;
+      } else {
+        condTolltip = wareW2DTooltip;
+      }
+    }
     return (
       <AUX>
         {isLoader ? (
@@ -790,7 +800,7 @@ class SendGoods extends Component<Props, States> {
                   searchText={searchText}
                   download={this.download}
                   isDownload={true}
-                  toolTipText={`${messages["filter.searchApp"]} ${toolTipText}`}
+                  toolTipText={`${messages["filter.searchApp"]} ${condTolltip}`}
                   onClose={(node: any) => {
                     this.closeToggle = node;
                   }}

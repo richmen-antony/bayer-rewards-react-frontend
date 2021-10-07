@@ -3,7 +3,7 @@ import AUX from "../../../hoc/Aux_";
 import footerImg from "../../../assets/icons/blue_footer.svg";
 import content1 from "../../../assets/icons/image_1.svg";
 import content2 from "../../../assets/icons/image_2.svg";
-import rewardsLogo from "../../../assets/icons/logo.svg";
+import rewardsLogo from "../../../assets/icons/brp_logo.svg";
 import bayerLogo from "../../../assets/icons/bayer_logo.svg";
 import "../../../assets/scss/landing.scss";
 import {
@@ -171,8 +171,8 @@ class LandingPage extends Component<any, any> {
               <div className="col-12 col-md-6 col-lg-4 formRow">
                 {!isLogin ? (
                   <div className=" col-md-12 ~form pt-4 pb-2 pl-2 pr-4">
-                    <div className="text-center">
-                      <img src={rewardsLogo} width="140" alt="Content2" />
+                    <div className="text-center" style={{marginRight:'40px'}}>
+                      <img src={rewardsLogo} width="300" alt="Content2" />
                     </div>
                     {this.state.isLoggedOut ? (
                       <div className="mt-5 logoutContent">

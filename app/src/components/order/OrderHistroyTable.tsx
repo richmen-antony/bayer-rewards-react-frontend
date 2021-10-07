@@ -414,11 +414,11 @@ class OrderHistory extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") <= moment(val.ordereddatefrom).format("YYYY-MM-DD")) {
         this.setState({
-          dateErrMsg: "Ordered End Date should be greater than  Ordered Start Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderEndGt" />,
         });
       } else {
         this.setState({
-          dateErrMsg: "Ordered Start Date should be lesser than  Ordered End Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderStartLs" />,
         });
       }
     }
@@ -430,44 +430,44 @@ class OrderHistory extends Component<Props, States> {
         });
       } else if (moment(date).format("YYYY-MM-DD") >= moment(val.ordereddateto).format("YYYY-MM-DD")) {
         this.setState({
-          dateErrMsg: "Ordered Start Date should be lesser than Ordered End Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderStartLs" />,
         });
       } else {
         this.setState({
-          dateErrMsg: "Ordered Start Date should be greater than Ordered End Date",
+          dateErrMsg: <FormattedMessage id="validMsg.orderStartGt" />,
         });
       }
     }
     // Last updated date - check End date
     if (name === "lastmodifiedto") {
-      if (date >= val.lastmodifiedfrom) {
+      if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifiedfrom).format("YYYY-MM-DD")) {
         this.setState({
           lastUpdatedDateErr: "",
         });
-      } else if (date <= val.lastmodifiedfrom) {
+      } else if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifiedfrom).format("YYYY-MM-DD")) {
         this.setState({
-          lastUpdatedDateErr: "Last Updated End Date should be greater than  Last Updated Start Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpEndGt" />,
         });
       } else {
         this.setState({
-          lastUpdatedDateErr: "Last Updated Start Date should be lesser than  Last Updated End Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpStartLs" />,
         });
       }
     }
 
     // Last updated date - check Start date
     if (name === "lastmodifiedfrom") {
-      if (date <= val.lastmodifiedto) {
+      if (moment(date).format("YYYY-MM-DD") <= moment(val.lastmodifiedto).format("YYYY-MM-DD")) {
         this.setState({
           lastUpdatedDateErr: "",
         });
-      } else if (date >= val.lastmodifiedto) {
+      } else if (moment(date).format("YYYY-MM-DD") >= moment(val.lastmodifiedto).format("YYYY-MM-DD")) {
         this.setState({
-          lastUpdatedDateErr: "Last Updated Start Date should be lesser than Last Updated End Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpStartLs" />,
         });
       } else {
         this.setState({
-          lastUpdatedDateErr: "Last Updated Start Date should be greater than Last Updated End Date",
+          lastUpdatedDateErr: <FormattedMessage id="validMsg.lastUpStartGt" />,
         });
       }
     }
