@@ -51,7 +51,7 @@ function compareByDesc(key: any){
     } else if (y === null) {
         return -1;
     } else if (typeof y === 'string') {
-      const xDate = Date.parse(x);  
+      const xDate = Date.parse(x);
       const yDate = Date.parse(y);
       if (isNaN(xDate) == false && isNaN(yDate) == false){
         var xx = moment(x).format('YYYY-MM-DD');
